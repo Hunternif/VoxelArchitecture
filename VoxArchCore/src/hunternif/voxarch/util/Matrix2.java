@@ -9,13 +9,11 @@ public class Matrix2 {
 	 * @param angle in degrees.
 	 */
 	public static Matrix2 rotationMatrix(double angle) {
-		double sin = MathUtil.sinDeg(angle);
-		double cos = MathUtil.cosDeg(angle);
 		Matrix2 mat = new Matrix2();
-		mat.m00 = cos;
-		mat.m01 = -sin;
-		mat.m10 = sin;
-		mat.m11 = cos;
+		mat.m00 = MathUtil.cosDeg(angle);
+		mat.m01 = -MathUtil.sinDeg(angle);
+		mat.m10 = -mat.m01;
+		mat.m11 = mat.m00;
 		return mat;
 	}
 	
