@@ -1,0 +1,9 @@
+bin
+Thumbs.db
+*.log
+mod.zip
+*.bak
+release
+
+# These properties vary per computer:
+local.properties
