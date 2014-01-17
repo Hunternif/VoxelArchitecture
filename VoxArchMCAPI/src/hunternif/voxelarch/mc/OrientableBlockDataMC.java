@@ -1,7 +1,9 @@
 package hunternif.voxelarch.mc;
 
 import hunternif.voxarch.util.BlockOrientation;
+import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.OrientableBlockData;
+import coolalias.structuregenapi.util.GenHelper;
 
 public class OrientableBlockDataMC extends OrientableBlockData {
 
@@ -10,25 +12,18 @@ public class OrientableBlockDataMC extends OrientableBlockData {
 	}
 
 	@Override
-	public BlockOrientation getOrientaion() {
-		switch (metadata) {
-		case 1: return BlockOrientation.EAST;
-		case 2: return BlockOrientation.WEST;
-		case 3: return BlockOrientation.SOUTH;
-		case 4: return BlockOrientation.NORTH;
-		default: return BlockOrientation.NONE;
-		}
-	}
-
-	@Override
 	public void setOrientaion(BlockOrientation orient) {
-		switch (orient) {
-		case EAST: metadata = 1; break;
-		case WEST: metadata = 2; break;
-		case SOUTH: metadata = 3; break;
-		case NORTH: metadata = 4; break;
-		default: break;
+		if (orient == BlockOrientation.NONE) {
+			// Is this safe?
+			metadata = 0;
+		} else {
+			//TODO: test this in Minecraft
+			// The number of rotations the method GenHelper.getMetadata() accepts is clockwise:
+			int rotations = (int) MathUtil.clampAngle(getOrientaion().angle - orient.angle) / 90;
+			metadata = GenHelper.getMetadata(rotations, id, metadata);
 		}
+		
+		super.setOrientaion(orient);
 	}
 
 }
