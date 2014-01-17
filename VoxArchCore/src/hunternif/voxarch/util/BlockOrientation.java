@@ -3,9 +3,10 @@ package hunternif.voxarch.util;
 /** Used by blocks that can be rotated, such as stairs and wall-attached
  * decorations. */
 public enum BlockOrientation {
-	NORTH(0), EAST(90), SOUTH(180), WEST(270);
+	NONE(0), NORTH(0), EAST(90), SOUTH(180), WEST(270);
 	
 	public final float angle;
+	private static BlockOrientation[] rotations = {NORTH, EAST, SOUTH, WEST};
 	private BlockOrientation(float angle) {
 		this.angle = angle;
 	}
@@ -16,7 +17,7 @@ public enum BlockOrientation {
 		while (angle > 360) angle -= 360;
 		float minDelta = Float.MAX_VALUE;
 		BlockOrientation closest = NORTH;
-		for (BlockOrientation orient : values()) {
+		for (BlockOrientation orient : rotations) {
 			float delta = angle - orient.angle;
 			if (delta < 0) delta += 360;
 			delta = Math.min(delta, 360 - delta);
