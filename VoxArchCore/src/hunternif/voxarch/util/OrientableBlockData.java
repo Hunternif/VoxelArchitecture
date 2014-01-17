@@ -6,6 +6,11 @@ public abstract class OrientableBlockData extends BlockData {
 	public OrientableBlockData(int id, int metadata) {
 		super(id, metadata);
 	}
+	
+	@Override
+	public void rotate(float angle) {
+		setOrientaion(BlockOrientation.closestTo(getOrientaion().angle + angle));
+	}
 
 	public abstract BlockOrientation getOrientaion();
 	

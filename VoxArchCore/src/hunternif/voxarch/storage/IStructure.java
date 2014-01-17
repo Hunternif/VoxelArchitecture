@@ -4,7 +4,7 @@ import hunternif.voxarch.util.IntVec3;
 
 public interface IStructure {
 	/**
-	 * Rotate the structure at arbitrary angle around the vertical axis.
+	 * Rotate the structure at an arbitrary angle around the vertical axis.
 	 * Rotating at a non-right angle will screw the structure significantly.
 	 */
 	void rotate(float angle);

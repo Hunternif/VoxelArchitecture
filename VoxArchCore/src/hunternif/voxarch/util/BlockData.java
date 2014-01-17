@@ -20,4 +20,11 @@ public class BlockData {
 	public int getMetadata() {
 		return metadata;
 	}
+	
+	/**
+	 * Helper method, only actually does something in OrientableBlockData.
+	 * What it does there is set the BlockOrientation closest to the current one
+	 * plus the specified angle.
+	 */
+	public void rotate(float angle) {}
 }
