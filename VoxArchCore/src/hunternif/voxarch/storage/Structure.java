@@ -57,6 +57,7 @@ public class Structure {
 			for (int y = 0; y < getHeight(); y++) {
 				for (int z = 0; z < getLength(); z++) {
 					BlockData block = storage.getBlock(x, y, z);
+					if (block == null) continue;
 					block.rotate(angle);
 					mat.multiplyCeiling(vec.set(x, z));
 					newStorage.setBlock(vec.x, y, vec.y, block);
