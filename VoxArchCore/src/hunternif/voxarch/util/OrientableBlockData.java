@@ -11,7 +11,7 @@ public abstract class OrientableBlockData extends BlockData {
 	public void rotate(float angle) {
 		BlockOrientation orient = getOrientaion();
 		if (orient == BlockOrientation.NONE) return;
-		setOrientaion(BlockOrientation.closestTo(orient.angle + angle));
+		setOrientaion(orient.rotate(angle));
 	}
 
 	public abstract BlockOrientation getOrientaion();
