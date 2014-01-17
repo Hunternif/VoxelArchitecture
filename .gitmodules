@@ -1,0 +1,3 @@
+[submodule "VoxArchMCAPI/StructureGenAPI"]
+	path = VoxArchMCAPI/StructureGenAPI
+	url = https://github.com/coolAlias/StructureGenerationAPI.git
