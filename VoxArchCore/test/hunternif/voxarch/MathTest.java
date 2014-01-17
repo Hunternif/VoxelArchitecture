@@ -1,7 +1,10 @@
 package hunternif.voxarch;
 
 import static junit.framework.Assert.*;
+import hunternif.voxarch.util.IntVec2;
 import hunternif.voxarch.util.MathUtil;
+import hunternif.voxarch.util.Matrix2;
+import hunternif.voxarch.util.Vec2;
 
 import org.junit.Test;
 
@@ -33,6 +36,8 @@ public class MathTest {
 	public void testCeiling() {
 		assertEquals(1, MathUtil.ceiling(0.501f));
 		assertEquals(0, MathUtil.ceiling(-0.501f));
+		assertEquals(1, MathUtil.ceilingAbs(0.501));
+		assertEquals(-1, MathUtil.ceilingAbs(-0.501));
 	}
 	
 	@Test
@@ -43,5 +48,32 @@ public class MathTest {
 		assertEquals(2f, MathUtil.clampAngle(360*11 + 2));
 		assertEquals(358f, MathUtil.clampAngle(360*11 - 2));
 		assertEquals(2f, MathUtil.clampAngle(-360*11 + 2));
+	}
+	
+	@Test
+	public void testSin() {
+		assertEquals(0d, MathUtil.sinDeg(0));
+		assertEquals(1d, MathUtil.sinDeg(90));
+		assertEquals(1d, MathUtil.sinDeg(450));
+		assertEquals(-1d, MathUtil.sinDeg(-90));
+		assertEquals(-1d, MathUtil.sinDeg(270));
+		assertEquals(MathUtil.sinDeg(45), MathUtil.cosDeg(45), 0.000000001);
+	}
+	
+	@Test
+	public void testMatrix() {
+		Matrix2 mat = Matrix2.rotationMatrix(90);
+		Vec2 vec = new Vec2(1.5, 0);
+		mat.multiply(vec);
+		assertEquals(0, vec.x, 0.00000001);
+		assertEquals(1.5, vec.y, 0.00000001);
+		
+		mat = Matrix2.rotationMatrix(-45);
+		IntVec2 intVec = new IntVec2(1, 0);
+		assertEquals(new IntVec2(0, 0), mat.multiplyTruncate(intVec));
+		intVec.set(1, 0);
+		assertEquals(new IntVec2(1, -1), mat.multiplyRound(intVec));
+		intVec.set(1, 0);
+		assertEquals(new IntVec2(1, -1), mat.multiplyCeiling(intVec));
 	}
 }

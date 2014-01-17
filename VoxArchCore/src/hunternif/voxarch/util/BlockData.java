@@ -23,8 +23,8 @@ public class BlockData {
 	
 	/**
 	 * Helper method, only actually does something in OrientableBlockData.
-	 * What it does there is set the BlockOrientation closest to the current one
-	 * plus the specified angle.
+	 * What it does there is rotate the BlockOrientation counterclockwise by
+	 * the specified angle.
 	 */
 	public void rotate(float angle) {}
 }

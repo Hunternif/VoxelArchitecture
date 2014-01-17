@@ -30,6 +30,12 @@ public class IntVec2 {
 		return this;
 	}
 	
+	public IntVec2 set(int x, int y) {
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ")";

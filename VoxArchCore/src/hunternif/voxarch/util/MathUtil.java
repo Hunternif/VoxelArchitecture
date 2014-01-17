@@ -1,6 +1,28 @@
 package hunternif.voxarch.util;
 
 public class MathUtil {
+	private static final double SIN_TABLE_LENGTH_OVER_360 = 65536d / 360d;
+	
+	/** Pre-calculated Sin values in degrees. */
+	private static double[] SIN_TABLE_DEG = new double[65536];
+	static {
+		for (int i = 0; i < 65536; ++i)
+			SIN_TABLE_DEG[i] = Math.sin((double)i / 65536d * 2 * Math.PI);
+
+		SIN_TABLE_DEG[0] = 0;
+		SIN_TABLE_DEG[16383] = 1;
+		SIN_TABLE_DEG[32767] = 0;
+		SIN_TABLE_DEG[49151] = -1;
+	}
+	
+	public static double sinDeg(double degrees) {
+		return SIN_TABLE_DEG[(int) (degrees * SIN_TABLE_LENGTH_OVER_360) & 65535];
+	}
+
+	public static double cosDeg(double degrees) {
+		return SIN_TABLE_DEG[(int) ((degrees + 90) * SIN_TABLE_LENGTH_OVER_360) & 65535];
+	}
+	
 	/** Returns the closest int to the argument, with ties rounding up. */
 	public static int roundUp(float a) {
 		return Math.round(a);
@@ -22,5 +44,18 @@ public class MathUtil {
 	public static int ceiling(float a) {
 		int ceil = (int) a;
 		return a > (float) ceil ? ceil + 1 : ceil;
+	}
+	public static int ceiling(double a) {
+		int ceil = (int) a;
+		return a > (double) ceil ? ceil + 1 : ceil;
+	}
+	/** Returns ceiling for absolute value of a, keeping the sign. */
+	public static int ceilingAbs(double a) {
+		int ceil = (int) a;
+		if (a >= 0) {
+			return a > (double) ceil ? ceil + 1 : ceil;
+		} else {
+			return a < (double) ceil ? ceil - 1 : ceil;
+		}
 	}
 }
