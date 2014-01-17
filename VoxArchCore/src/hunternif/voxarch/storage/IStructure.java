@@ -2,7 +2,7 @@ package hunternif.voxarch.storage;
 
 import hunternif.voxarch.util.IntVec3;
 
-public interface IStructure {
+public interface IStructure extends IBlockStorage {
 	/**
 	 * Rotate the structure at an arbitrary angle around the vertical axis.
 	 * Rotating at a non-right angle will screw the structure significantly.
