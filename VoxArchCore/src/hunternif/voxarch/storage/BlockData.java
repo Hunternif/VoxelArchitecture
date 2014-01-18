@@ -25,11 +25,8 @@ public class BlockData {
 		return metadata;
 	}
 	
-	/**
-	 * Helper method, only actually does something in OrientableBlockData.
-	 * What it does there is rotate the BlockOrientation counterclockwise by
-	 * the specified angle.
-	 */
+	/** Rotate the BlockOrientation (if not NONE) counterclockwise by the
+	 * specified angle. */
 	public void rotate(float angle) {
 		if (orient == BlockOrientation.NONE) return;
 		setOrientaion(orient.rotate(angle));
