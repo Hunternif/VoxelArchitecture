@@ -1,6 +1,6 @@
 package hunternif.voxarch;
 
-import static junit.framework.Assert.*;
+import static org.junit.Assert.*;
 import hunternif.voxarch.util.BlockOrientation;
 
 import org.junit.Test;
