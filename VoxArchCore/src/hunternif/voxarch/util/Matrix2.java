@@ -55,6 +55,16 @@ public class Matrix2 {
 		return mat;
 	}
 	
+	/** Returns a new matrix as a result of transposition of this matrix. */
+	public Matrix2 transpose() {
+		Matrix2 mat = new Matrix2();
+		mat.m00 = m00;
+		mat.m01 = m10;
+		mat.m10 = m01;
+		mat.m11 = m11;
+		return mat;
+	}
+	
 	/**
 	 * Modifies the specified vector to be the product of this matrix and itself.
 	 */
@@ -99,5 +109,10 @@ public class Matrix2 {
 		if (!(obj instanceof Matrix2)) return false;
 		Matrix2 mat = (Matrix2) obj;
 		return m00 == mat.m00 && m01 == mat.m01 && m10 == mat.m10 && m11 == mat.m11;
+	}
+	
+	@Override
+	public String toString() {
+		return m00 + " " + m01 + "\n" + m10 + " " + m11;
 	}
 }

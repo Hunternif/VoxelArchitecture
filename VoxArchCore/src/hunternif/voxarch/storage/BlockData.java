@@ -52,4 +52,9 @@ public class BlockData {
 	public BlockData clone() {
 		return new BlockData(id, metadata);
 	}
+	
+	@Override
+	public String toString() {
+		return "id: " + id + " metadata: " + metadata;
+	}
 }

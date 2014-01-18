@@ -24,10 +24,20 @@ public class MathUtil {
 	}
 	
 	/** Returns the closest int to the argument, with ties rounding up. */
+	public static int roundUp(double a) {
+		return (int)Math.round(a);
+	}
+	/** Returns the closest int to the argument, with ties rounding up. */
 	public static int roundUp(float a) {
 		return Math.round(a);
 	}
 	
+	/** Returns the closest int to the argument, with ties rounding down. */
+	public static int roundDown(double a) {
+		double r = a % 1;
+		if (r < 0) r += 1;
+		return r == 0.5 ? (int)Math.round(a) - 1 : (int)Math.round(a);
+	}
 	/** Returns the closest int to the argument, with ties rounding down. */
 	public static int roundDown(float a) {
 		float r = a % 1;
@@ -57,5 +67,13 @@ public class MathUtil {
 		} else {
 			return a < (double) ceil ? ceil - 1 : ceil;
 		}
+	}
+	
+	public static double min(double a, double b, double c) {
+		return Math.min(Math.min(a, b), c);
+	}
+	
+	public static double min(double a, double b, double c, double d) {
+		return Math.min(Math.min(a, b), Math.min(c, d));
 	}
 }

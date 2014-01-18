@@ -30,9 +30,24 @@ public class Vec2 {
 	}
 	
 	/** Modifies and returns itself. */
+	public Vec2 add(Vec2 vec) {
+		return add(vec.x, vec.y);
+	}
+	/** Modifies and returns itself. */
 	public Vec2 add(double dx, double dy) {
 		this.x += dx;
 		this.y += dy;
+		return this;
+	}
+	
+	/** Modifies and returns itself. */
+	public Vec2 subtract(Vec2 vec) {
+		return subtract(vec.x, vec.y);
+	}
+	/** Modifies and returns itself. */
+	public Vec2 subtract(double dx, double dy) {
+		this.x -= dx;
+		this.y -= dy;
 		return this;
 	}
 	
