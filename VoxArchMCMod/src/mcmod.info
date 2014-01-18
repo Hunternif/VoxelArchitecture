@@ -1,0 +1,17 @@
+[
+{
+  "modid": "voxarch",
+  "name": "Voxel Architecture",
+  "description": "A demo for Voxel Architecture algroithms, using Minecraft as reference implementation of a voxel world.",
+  "version": "@@MOD_VERSION@@",
+  "mcversion": "@@MC_VERSION@@",
+  "logoFile": "",
+  "url": "https://github.com/Hunternif/VoxelArchitecture",
+  "updateUrl": "",
+  "authors": ["Hunternif"],
+  "credits": "Made by Hunternif, using StructureGenerationAPI by coolAlias",
+  "parent": "",
+  "screenshots": [],
+  "dependencies": ["StructureGenAPI"]
+}
+]
