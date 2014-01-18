@@ -53,10 +53,19 @@ public class MathTest {
 	@Test
 	public void testSin() {
 		assertEquals(0d, MathUtil.sinDeg(0));
+		assertEquals(0d, MathUtil.sinDeg(360));
 		assertEquals(1d, MathUtil.sinDeg(90));
 		assertEquals(1d, MathUtil.sinDeg(450));
 		assertEquals(-1d, MathUtil.sinDeg(-90));
 		assertEquals(-1d, MathUtil.sinDeg(270));
+		assertEquals(1d, MathUtil.cosDeg(0));
+		assertEquals(1d, MathUtil.cosDeg(-360));
+		assertEquals(0d, MathUtil.cosDeg(90));
+		assertEquals(0d, MathUtil.cosDeg(-450));
+		assertEquals(0d, MathUtil.cosDeg(-90));
+		assertEquals(0d, MathUtil.cosDeg(270));
+		assertEquals(-1d, MathUtil.cosDeg(180));
+		assertEquals(-1d, MathUtil.cosDeg(-180));
 		assertEquals(MathUtil.sinDeg(45), MathUtil.cosDeg(45), 0.000000001);
 	}
 	
@@ -65,8 +74,8 @@ public class MathTest {
 		Matrix2 mat = Matrix2.rotationMatrix(90);
 		Vec2 vec = new Vec2(1.5, 0);
 		mat.multiply(vec);
-		assertEquals(0, vec.x, 0.00000001);
-		assertEquals(1.5, vec.y, 0.00000001);
+		assertEquals(0d, vec.x);
+		assertEquals(1.5d, vec.y);
 		
 		mat = Matrix2.rotationMatrix(-45);
 		IntVec2 intVec = new IntVec2(1, 0);

@@ -10,9 +10,9 @@ public class MathUtil {
 			SIN_TABLE_DEG[i] = Math.sin((double)i / 65536d * 2 * Math.PI);
 
 		SIN_TABLE_DEG[0] = 0;
-		SIN_TABLE_DEG[16383] = 1;
-		SIN_TABLE_DEG[32767] = 0;
-		SIN_TABLE_DEG[49151] = -1;
+		SIN_TABLE_DEG[16384] = 1;
+		SIN_TABLE_DEG[32768] = 0;
+		SIN_TABLE_DEG[49152] = -1;
 	}
 	
 	public static double sinDeg(double degrees) {
