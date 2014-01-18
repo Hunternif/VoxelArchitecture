@@ -1,4 +1,4 @@
-package hunternif.voxelarch.mc;
+package hunternif.voxarch.mc;
 
 import hunternif.voxarch.util.BlockOrientation;
 import hunternif.voxarch.util.MathUtil;
