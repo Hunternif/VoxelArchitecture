@@ -1,8 +1,12 @@
-package hunternif.voxarch.util;
+package hunternif.voxarch.storage;
+
+import hunternif.voxarch.util.BlockOrientation;
 
 public class BlockData {
 	protected int id;
 	protected int metadata;
+	
+	private BlockOrientation orient = BlockOrientation.NONE;
 	
 	public BlockData(int id) {
 		this(id, 0);
@@ -26,7 +30,19 @@ public class BlockData {
 	 * What it does there is rotate the BlockOrientation counterclockwise by
 	 * the specified angle.
 	 */
-	public void rotate(float angle) {}
+	public void rotate(float angle) {
+		if (orient == BlockOrientation.NONE) return;
+		setOrientaion(orient.rotate(angle));
+	}
+
+	public BlockOrientation getOrientaion() {
+		return orient;
+	}
+	
+	/** Override this method to set metadata appropriately. */
+	public void setOrientaion(BlockOrientation orient) {
+		this.orient = orient;
+	}
 	
 	@Override
 	public boolean equals(Object obj) {

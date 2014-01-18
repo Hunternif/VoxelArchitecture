@@ -1,11 +1,11 @@
 package hunternif.voxarch.mc;
 
+import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.util.BlockOrientation;
 import hunternif.voxarch.util.MathUtil;
-import hunternif.voxarch.util.OrientableBlockData;
 import coolalias.structuregenapi.util.GenHelper;
 
-public class OrientableBlockDataMC extends OrientableBlockData {
+public class OrientableBlockDataMC extends BlockData {
 
 	public OrientableBlockDataMC(int id, int metadata) {
 		super(id, metadata);

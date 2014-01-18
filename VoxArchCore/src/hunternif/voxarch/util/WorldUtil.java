@@ -1,5 +1,6 @@
 package hunternif.voxarch.util;
 
+import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 
 public class WorldUtil {

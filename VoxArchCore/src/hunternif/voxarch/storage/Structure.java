@@ -1,6 +1,5 @@
 package hunternif.voxarch.storage;
 
-import hunternif.voxarch.util.BlockData;
 import hunternif.voxarch.util.IntVec2;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.Matrix2;
