@@ -23,12 +23,20 @@ public class IntVec3 {
 		z = (int)z;
 	}
 	
+	public IntVec3 set(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ", " + z + ")";
 	}
 	
-	public IntVec3 copy() {
+	@Override
+	public IntVec3 clone() {
 		return new IntVec3(x, y, z);
 	}
 	

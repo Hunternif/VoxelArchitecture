@@ -23,16 +23,16 @@ public class IntVec2 {
 		this.y = (int)y;
 	}
 	
+	public IntVec2 set(int x, int y) {
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+	
 	/** Modifies and returns itself. */
 	public IntVec2 add(int dx, int dy) {
 		this.x += dx;
 		this.y += dy;
-		return this;
-	}
-	
-	public IntVec2 set(int x, int y) {
-		this.x = x;
-		this.y = y;
 		return this;
 	}
 	
@@ -41,7 +41,8 @@ public class IntVec2 {
 		return "(" + x + ", " + y + ")";
 	}
 	
-	public IntVec2 copy() {
+	@Override
+	public IntVec2 clone() {
 		return new IntVec2(x, y);
 	}
 	

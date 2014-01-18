@@ -23,6 +23,12 @@ public class Vec2 {
 		this.y = y;
 	}
 	
+	public Vec2 set(double x, double y) {
+		this.x = x;
+		this.y = y;
+		return this;
+	}
+	
 	/** Modifies and returns itself. */
 	public Vec2 add(double dx, double dy) {
 		this.x += dx;
@@ -35,7 +41,8 @@ public class Vec2 {
 		return "(" + x + ", " + y + ")";
 	}
 	
-	public Vec2 copy() {
+	@Override
+	public Vec2 clone() {
 		return new Vec2(x, y);
 	}
 	
