@@ -13,8 +13,9 @@ public class StructureUtil {
 	 * @param factory	is needed to allocate memory for the new structure.
 	 * @param toRotate	initial structure to rotate. It is not modified.
 	 * @param angle		is in degrees, counterclockwise.
+	 * @param closeGaps	attempt to leave no holes caused by aliasing.
 	 */
-	public static Structure rotate(IStorageFactory factory, Structure toRotate, float angle) {
+	public static Structure rotate(IStorageFactory factory, Structure toRotate, float angle, boolean closeGaps) {
 		angle = MathUtil.clampAngle(angle);
 		/*
 		 * Aerial view of the reference frame:
@@ -67,6 +68,14 @@ public class StructureUtil {
 					blockCoords.set(x + 0.5, z + 0.5);
 					rot.multiply(blockCoords).subtract(storageOrigin);
 					newStorage.setBlock((int)blockCoords.x, y, (int)blockCoords.y, block);
+					// Close any gaps:
+					if (closeGaps) {
+						int roundX = Math.min(MathUtil.roundDown(blockCoords.x), newWidth - 1);
+						int roundZ = Math.min(MathUtil.roundDown(blockCoords.y), newLength - 1);
+						newStorage.setBlock((int)blockCoords.x, y, roundZ, block);
+						newStorage.setBlock(roundX, y, (int)blockCoords.y, block);
+						newStorage.setBlock(roundX, y, roundZ, block);
+					}
 				}
 			}
 		}
