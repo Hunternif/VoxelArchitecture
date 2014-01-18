@@ -70,12 +70,15 @@ public class MathTest {
 	}
 	
 	@Test
-	public void testMatrix() {
+	public void testRotationMatrix() {
 		Matrix2 mat = Matrix2.rotationMatrix(90);
 		Vec2 vec = new Vec2(1.5, 0);
-		mat.multiply(vec);
-		assertEquals(0d, vec.x, 0);
-		assertEquals(1.5d, vec.y, 0);
+		assertEquals(new Vec2(0, 1.5), mat.multiply(vec));
+		
+		vec.set(1, 0);
+		Matrix2.rotationMatrix(-135).multiply(vec);
+		assertEquals(-1d/Math.sqrt(2), vec.x, 0.00000001);
+		assertEquals(-1d/Math.sqrt(2), vec.y, 0.00000001);
 		
 		mat = Matrix2.rotationMatrix(-45);
 		IntVec2 intVec = new IntVec2(1, 0);
