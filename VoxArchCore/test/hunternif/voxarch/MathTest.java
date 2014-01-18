@@ -70,7 +70,7 @@ public class MathTest {
 	}
 	
 	@Test
-	public void testRotationMatrix() {
+	public void testRotateVector() {
 		Matrix2 mat = Matrix2.rotationMatrix(90);
 		Vec2 vec = new Vec2(1.5, 0);
 		assertEquals(new Vec2(0, 1.5), mat.multiply(vec));
@@ -87,5 +87,23 @@ public class MathTest {
 		assertEquals(new IntVec2(1, -1), mat.multiplyRound(intVec));
 		intVec.set(1, 0);
 		assertEquals(new IntVec2(1, -1), mat.multiplyCeiling(intVec));
+	}
+	
+	@Test
+	public void testRotateMatrix() {
+		Matrix2 rot = Matrix2.rotationMatrix(90);
+		Matrix2 a = Matrix2.identity();
+		assertEquals(new Matrix2(0, -1,
+								 1,  0), rot.multiply(a));
+		assertEquals(new Matrix2(-1,  0,
+				 				  0, -1), rot.multiply(a));
+		assertEquals(new Matrix2( 0, 1,
+								 -1, 0), rot.multiply(a));
+		
+		rot = Matrix2.rotationMatrix(45);
+		double s = MathUtil.sinDeg(45);
+		assertEquals(new Matrix2(MathUtil.cosDeg(45), -MathUtil.sinDeg(45),
+								 MathUtil.sinDeg(45),  MathUtil.cosDeg(45)),
+					 rot.multiply(Matrix2.identity()));
 	}
 }

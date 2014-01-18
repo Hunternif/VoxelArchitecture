@@ -1,8 +1,19 @@
 package hunternif.voxarch.util;
 
 public class Matrix2 {
-	//m<row><column>
+	/** m[row, column] */
 	public double m00, m01, m10, m11;
+	
+	public Matrix2() {
+		this(0, 0, 0, 0);
+	}
+	
+	public Matrix2(double m00, double m01, double m10, double m11) {
+		this.m00 = m00;
+		this.m01 = m01;
+		this.m10 = m10;
+		this.m11 = m11;
+	}
 	
 	/**
 	 * Creates a 2D rotation matrix.
@@ -17,8 +28,36 @@ public class Matrix2 {
 		return mat;
 	}
 	
-	/** Product of this matrix and the specified vector. Returns the modified
-	 * vector argument. */
+	/**
+	 * Creates a 2D identity matrix.
+	 */
+	public static Matrix2 identity() {
+		Matrix2 mat = new Matrix2();
+		mat.m00 = 1;
+		mat.m01 = 0;
+		mat.m10 = 0;
+		mat.m11 = 1;
+		return mat;
+	}
+	
+	/**
+	 * Modifies this specified matrix to be the product (this * mat).
+	 */
+	public Matrix2 multiply(Matrix2 mat) {
+		double n00 = m00*mat.m00 + m01*mat.m10;
+		double n01 = m00*mat.m01 + m01*mat.m11;
+		double n10 = m10*mat.m00 + m11*mat.m10;
+		double n11 = m10*mat.m01 + m11*mat.m11;
+		mat.m00 = n00;
+		mat.m01 = n01;
+		mat.m10 = n10;
+		mat.m11 = n11;
+		return mat;
+	}
+	
+	/**
+	 * Modifies the specified vector to be the product of this matrix and itself.
+	 */
 	public Vec2 multiply(Vec2 vec) {
 		double nx = vec.x*m00 + vec.y*m01;
 		double ny = vec.x*m10 + vec.y*m11;
@@ -53,5 +92,12 @@ public class Matrix2 {
 		vec.x = MathUtil.ceilingAbs(nx);
 		vec.y = MathUtil.ceilingAbs(ny);
 		return vec;
+	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof Matrix2)) return false;
+		Matrix2 mat = (Matrix2) obj;
+		return m00 == mat.m00 && m01 == mat.m01 && m10 == mat.m10 && m11 == mat.m11;
 	}
 }
