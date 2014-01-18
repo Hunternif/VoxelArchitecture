@@ -27,4 +27,16 @@ public class BlockData {
 	 * the specified angle.
 	 */
 	public void rotate(float angle) {}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if (!(obj instanceof BlockData)) return false;
+		if (obj == this) return true;
+		return ((BlockData)obj).id == id && ((BlockData)obj).metadata == metadata;
+	}
+	
+	@Override
+	public BlockData clone() {
+		return new BlockData(id, metadata);
+	}
 }
