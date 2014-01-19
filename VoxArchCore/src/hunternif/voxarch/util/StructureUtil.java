@@ -59,14 +59,14 @@ public class StructureUtil {
 		// in-between transformations.
 		Vec2 blockCoords = new Vec2(0, 0);
 		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				for (int z = 0; z < length; z++) {
+			for (int z = 0; z < length; z++) {
+				blockCoords.set(x + 0.5, z + 0.5);
+				rot.multiply(blockCoords).subtract(storageOrigin);
+				for (int y = 0; y < height; y++) {
 					BlockData block = toRotate.getStorage().getBlock(x, y, z);
 					if (block == null) continue;
 					block.rotate(angle);
 					// Add 0.5 to approximate position of the center of the block:
-					blockCoords.set(x + 0.5, z + 0.5);
-					rot.multiply(blockCoords).subtract(storageOrigin);
 					newStorage.setBlock((int)blockCoords.x, y, (int)blockCoords.y, block);
 					// Close any gaps:
 					if (closeGaps) {
