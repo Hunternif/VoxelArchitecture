@@ -5,9 +5,9 @@ import hunternif.voxarch.util.BlockOrientation;
 import hunternif.voxarch.util.MathUtil;
 import coolalias.structuregenapi.util.GenHelper;
 
-public class OrientableBlockDataMC extends BlockData {
+public class BlockDataMC extends BlockData {
 
-	public OrientableBlockDataMC(int id, int metadata) {
+	public BlockDataMC(int id, int metadata) {
 		super(id, metadata);
 	}
 
@@ -15,12 +15,12 @@ public class OrientableBlockDataMC extends BlockData {
 	public void setOrientaion(BlockOrientation orient) {
 		if (orient == BlockOrientation.NONE) {
 			// Is this safe?
-			metadata = 0;
+			setMetadata(0);
 		} else {
 			//TODO: test this in Minecraft
 			// The number of rotations the method GenHelper.getMetadata() accepts is clockwise:
 			int rotations = (int) MathUtil.clampAngle(getOrientaion().angle - orient.angle) / 90;
-			metadata = GenHelper.getMetadata(rotations, id, metadata);
+			setMetadata(GenHelper.getMetadata(rotations, getId(), getMetadata()));
 		}
 		
 		super.setOrientaion(orient);

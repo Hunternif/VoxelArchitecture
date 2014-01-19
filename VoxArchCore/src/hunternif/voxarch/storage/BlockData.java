@@ -3,8 +3,8 @@ package hunternif.voxarch.storage;
 import hunternif.voxarch.util.BlockOrientation;
 
 public class BlockData {
-	protected int id;
-	protected int metadata;
+	private int id;
+	private int metadata;
 	
 	private BlockOrientation orient = BlockOrientation.NONE;
 	
@@ -17,10 +17,16 @@ public class BlockData {
 		this.metadata = metadata;
 	}
 	
+	public void setId(int id) {
+		this.id = id;
+	}
 	public int getId() {
 		return id;
 	}
 	
+	public void setMetadata(int metadata) {
+		this.metadata = metadata;
+	}
 	public int getMetadata() {
 		return metadata;
 	}

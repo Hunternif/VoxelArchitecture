@@ -27,16 +27,16 @@ public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	public BlockData getBlock(int x, int y, int z) {
 		int[] data = array[x][y][z];
 		if (data[0] == 0) return null;
-		reusableData.id = data[0];
-		reusableData.metadata = data[1];
+		reusableData.setId(data[0]);
+		reusableData.setMetadata(data[1]);
 		return reusableData;
 	}
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
 		int[] data = array[x][y][z];
-		data[0] = block.id;
-		data[1] = block.metadata;
+		data[0] = block.getId();
+		data[1] = block.getMetadata();
 	}
 
 	@Override
