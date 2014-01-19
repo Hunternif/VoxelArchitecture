@@ -8,8 +8,8 @@ import hunternif.voxarch.storage.Structure;
 public class StructureUtil {
 	/**
 	 * Creates a new structure with the content of the specified structure
-	 * rotated at an arbitrary angle around the Y axis. <b>Warning:</b>
-	 * Rotating at a non-right angle will screw the structure significantly.
+	 * rotated at an arbitrary angle around the Y axis. <b>Warning!
+	 * Rotating at a non-right angle will screw the structure significantly.</b>
 	 * @param factory	is needed to allocate memory for the new structure.
 	 * @param toRotate	initial structure to rotate. It is not modified.
 	 * @param angle		is in degrees, counterclockwise.
@@ -25,7 +25,7 @@ public class StructureUtil {
 		 *  V
 		 *  Z
 		 */
-		// Minus angle, because when rotating against the Y axis
+		// Minus angle, because when rotating around the Y axis
 		// counterclockwise the reference frame XZY is left-handed.
 		Matrix2 rot = Matrix2.rotationMatrix(-angle);
 		// This rotation matrix also serves as the new basis.
@@ -35,7 +35,7 @@ public class StructureUtil {
 		int length = toRotate.getStorage().getLength();
 		
 		// Going to find the origin point for the storage (not the structure!),
-		// i.e. the top left corner (see the figure above).
+		// i.e. the top left corner of the AABB of the rotated structure.
 		Vec2 storageOrigin = new Vec2(0, 0);
 		
 		// Find storage origin coordinates as minimum of coordinates of 4 corner
@@ -55,21 +55,23 @@ public class StructureUtil {
 		IFixedBlockStorage newStorage = factory.createFixed(newWidth, height, newLength);
 		Structure newStruct = new Structure(newStorage);
 		
-		// Using vector of doubles because precision will be needed for
+		// Using a vector of doubles because precision will be needed for
 		// in-between transformations.
 		Vec2 blockCoords = new Vec2(0, 0);
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
+				// Add 0.5 to x and z to operate with the position of the center
+				// of the block instead of its corner:
 				blockCoords.set(x + 0.5, z + 0.5);
 				rot.multiply(blockCoords).subtract(storageOrigin);
 				for (int y = 0; y < height; y++) {
 					BlockData block = toRotate.getStorage().getBlock(x, y, z);
 					if (block == null) continue;
 					block.rotate(angle);
-					// Add 0.5 to approximate position of the center of the block:
 					newStorage.setBlock((int)blockCoords.x, y, (int)blockCoords.y, block);
-					// Close any gaps:
 					if (closeGaps) {
+						// In order to close gaps, round coordinates instead of
+						// simply truncating the mantissa when casting to int:
 						int roundX = Math.min(MathUtil.roundDown(blockCoords.x), newWidth - 1);
 						int roundZ = Math.min(MathUtil.roundDown(blockCoords.y), newLength - 1);
 						newStorage.setBlock((int)blockCoords.x, y, roundZ, block);
