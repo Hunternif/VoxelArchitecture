@@ -20,6 +20,7 @@ public class MCWorld implements IBlockStorage {
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
 		reusableData.setId(world.getBlockId(x, y, z));
+		if (reusableData.getId() == 0) return null;
 		reusableData.setMetadata(world.getBlockMetadata(x, y, z));
 		return reusableData;
 	}
