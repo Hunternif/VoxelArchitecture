@@ -1,6 +1,7 @@
 package hunternif.voxarch.util;
 
 import hunternif.voxarch.storage.BlockData;
+import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.storage.IFixedBlockStorage;
 import hunternif.voxarch.storage.IStorageFactory;
 import hunternif.voxarch.storage.Structure;
@@ -103,5 +104,36 @@ public class StructureUtil {
 			}
 		}
 		return struct;
+	}
+	
+	/**
+	 * Remove all blocks from the specified volume that the specified filter
+	 * doesn't accept.
+	 */
+	public static void clearVolume(IBlockStorage storage, Region3 volume, IBlockFilter filter) {
+		for (int x = volume.minX; x <= volume.maxX; x++) {
+			for (int z = volume.minZ; z <= volume.maxZ; z++) {
+				for (int y = volume.minY; y <= volume.maxY; y++) {
+					BlockData block = storage.getBlock(x, y, z);
+					if (!filter.accept(block)) {
+						storage.clearBlock(x, y, z);
+					}
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Paste the specified structure into the specified storage at the specified
+	 * point.
+	 */
+	public static void pasteStructure(IBlockStorage world, IFixedBlockStorage structure, int x, int y, int z) {
+		for (int nx = 0; nx < structure.getWidth(); nx++) {
+			for (int ny = 0; ny < structure.getHeight(); ny++) {
+				for (int nz = 0; nz < structure.getLength(); nz++) {
+					world.setBlock(x + nx, y + ny, z + nz, structure.getBlock(nx, ny, nz));
+				}
+			}
+		}
 	}
 }
