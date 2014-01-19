@@ -1,5 +1,6 @@
 package hunternif.voxarch.util;
 
+/** 2D vector of doubles. */
 public class Vec2 {
 	public double x;
 	public double y;

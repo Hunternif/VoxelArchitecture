@@ -1,5 +1,6 @@
 package hunternif.voxarch.util;
 
+/** 3D vector of doubles. */
 public class IntVec3 {
 	public int x;
 	public int y;

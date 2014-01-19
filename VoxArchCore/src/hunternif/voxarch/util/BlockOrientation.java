@@ -1,7 +1,7 @@
 package hunternif.voxarch.util;
 
 /**
- * Used by blocks that can be rotated, such as stairs and wall-attached
+ * Used by blocks that can be rotated, such as stairs and wall-mounted
  * decorations.
  */
 public enum BlockOrientation {

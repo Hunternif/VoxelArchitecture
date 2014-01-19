@@ -1,5 +1,8 @@
 package hunternif.voxarch.storage;
 
+/**
+ * IFixedBlockStorage implementation using multidimensional array.
+ */
 public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	/** [0 .. x .. width] [0 .. y .. height] [0 .. z .. length] [id, metadata] */
 	private final int[][][][] array;
@@ -58,7 +61,7 @@ public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 		return array[0][0].length;
 	}
 	
-	/** Returns a multiline representation of a vertical layer. */
+	/** Returns a multiline representation of a horizontal layer. */
 	public String printLayer(int y) {
 		StringBuilder sb = new StringBuilder();
 		for (int z = 0; z < getLength(); z++) {

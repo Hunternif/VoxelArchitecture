@@ -1,5 +1,6 @@
 package hunternif.voxarch.util;
 
+/** 2D vector of integers. */
 public class IntVec2 {
 	public int x;
 	public int y;
