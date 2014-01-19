@@ -1,8 +1,8 @@
 package hunternif.voxarch.mc;
 
-import net.minecraft.world.World;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
+import net.minecraft.world.World;
 
 /** Adapter between Minecraft World and IBlockStorage. */
 public class MCWorld implements IBlockStorage {
@@ -28,7 +28,11 @@ public class MCWorld implements IBlockStorage {
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
 		// Flag 2 will send the change to clients
-		world.setBlock(x, y, z, block.getId(), block.getMetadata(), 2);
+		if (block instanceof ExtBlockDataMC) {
+			((ExtBlockDataMC)block).onPasteIntoWorld(world, x, y, z);
+		} else {
+			world.setBlock(x, y, z, block.getId(), block.getMetadata(), 2);
+		}
 	}
 
 	@Override
