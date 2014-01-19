@@ -1,37 +1,49 @@
 package hunternif.voxarch.storage;
 
 /**
- * IFixedBlockStorage implementation using multidimensional array of BlockData.
- * Doesn't reuse BlockData!
+ * IFixedBlockStorage implementation using multidimensional array of integers.
  */
-public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
-	/** [0 .. x .. width] [0 .. y .. height] [0 .. z .. length] */
-	private final BlockData[][][] array;
+public class MultiDimIntArrayBlockStorage implements IFixedBlockStorage {
+	/** [0 .. x .. width] [0 .. y .. height] [0 .. z .. length] [id, metadata] */
+	private final int[][][][] array;
+	
+	/** BlockData that is returned in every call, to keep the memory overhead
+	 * at the very minimum. */
+	private final BlockData reusableData;
 	
 	public static final IStorageFactory factory = new IStorageFactory() {
 		@Override
 		public IFixedBlockStorage createFixed(int width, int height, int length) {
-			return new MultiDimArrayBlockStorage(width, height, length);
+			return new MultiDimIntArrayBlockStorage(width, height, length);
 		}
 	};
 	
-	public MultiDimArrayBlockStorage(int width, int height, int length) {
-		array = new BlockData[width][height][length];
+	public MultiDimIntArrayBlockStorage(int width, int height, int length) {
+		array = new int[width][height][length][2];
+		reusableData = new BlockData(0);
 	}
 	
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
-		return array[x][y][z];
+		int[] data = array[x][y][z];
+		if (data[0] == 0) return null;
+		reusableData.setId(data[0]);
+		reusableData.setMetadata(data[1]);
+		return reusableData;
 	}
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
-		array[x][y][z] = block;
+		int[] data = array[x][y][z];
+		data[0] = block.getId();
+		data[1] = block.getMetadata();
 	}
 
 	@Override
 	public void clearBlock(int x, int y, int z) {
-		array[x][y][z] = null;
+		int[] data = array[x][y][z];
+		data[0] = 0;
+		data[1] = 0;
 	}
 
 	@Override
@@ -56,9 +68,7 @@ public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 			if (z > 0) sb.append("\n");
 			for (int x = 0; x < getWidth(); x++) {
 				if (x > 0) sb.append(" ");
-				BlockData block = getBlock(x, y, z);
-				if (block == null) sb.append(0);
-				else sb.append(block.getId());
+				sb.append(array[x][y][z][0]);
 			}
 		}
 		return sb.toString();

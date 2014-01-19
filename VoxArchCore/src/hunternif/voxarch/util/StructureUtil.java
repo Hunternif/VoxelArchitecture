@@ -66,7 +66,7 @@ public class StructureUtil {
 				blockCoords.set(x + 0.5, z + 0.5);
 				rot.multiply(blockCoords).subtract(storageOrigin);
 				for (int y = 0; y < height; y++) {
-					BlockData block = toRotate.getStorage().getBlock(x, y, z);
+					BlockData block = toRotate.getStorage().getBlock(x, y, z).clone();
 					if (block == null) continue;
 					block.rotate(angle);
 					newStorage.setBlock((int)blockCoords.x, y, (int)blockCoords.y, block);
