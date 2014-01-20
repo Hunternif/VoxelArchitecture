@@ -1,7 +1,7 @@
 package hunternif.voxarch.plan;
 
 /**
- * Connects 2 NodeJoints on different floors. Multiple NodeStairs should
+ * Connects 2 {@link NodeJoint}s on different floors. Multiple instances should
  * usually be grouped closely.
  * @author Hunternif
  */

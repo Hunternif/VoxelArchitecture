@@ -3,7 +3,7 @@ package hunternif.voxarch.plan;
 import hunternif.voxarch.util.IntVec3;
 
 /**
- * Connects 2 NodeJoints.
+ * Connects 2 {@link NodeJoint}s.
  * @author Hunternif
  */
 public abstract class NodeConnection extends Node {
