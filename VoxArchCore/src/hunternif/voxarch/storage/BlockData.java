@@ -2,6 +2,11 @@ package hunternif.voxarch.storage;
 
 import hunternif.voxarch.util.BlockOrientation;
 
+/**
+ * Contains block id, metadata and {@link BlockOrientation}. The orientation
+ * should modify the metadata in overridden method {@link #setOrientaion}.
+ * @author Hunternif
+ */
 public class BlockData {
 	private int id;
 	private int metadata;

@@ -3,8 +3,11 @@ package hunternif.voxarch.mc;
 import hunternif.voxarch.storage.BlockData;
 import net.minecraft.world.World;
 
-/** Use this class to paste spawn things like paintings, item frames,
- * mob spawners etc. */
+/**
+ * Extended Minecraft-specific block data. Use this class to paste spawn things
+ * like paintings, item frames, mob spawners etc.
+ * @author Hunternif
+ */
 public abstract class ExtBlockDataMC extends BlockData {
 
 	public ExtBlockDataMC(int id, int metadata) {

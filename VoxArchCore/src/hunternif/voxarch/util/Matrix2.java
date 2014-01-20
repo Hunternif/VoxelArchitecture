@@ -1,6 +1,9 @@
 package hunternif.voxarch.util;
 
-/** 2x2 matrix of doubles. */
+/**
+ * 2x2 matrix of doubles.
+ * @author Hunternif
+ */
 public class Matrix2 {
 	/** m[row, column] */
 	public double m00, m01, m10, m11;

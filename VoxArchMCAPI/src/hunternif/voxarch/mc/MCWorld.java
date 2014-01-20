@@ -9,7 +9,10 @@ import java.util.Map;
 
 import net.minecraft.world.World;
 
-/** Adapter between Minecraft World and IBlockStorage. */
+/**
+ * Adapter between Minecraft World and IBlockStorage.
+ * @author Hunternif
+ */
 public class MCWorld implements IBlockStorage {
 
 	/** BlockData that is returned in every call, to keep the memory overhead

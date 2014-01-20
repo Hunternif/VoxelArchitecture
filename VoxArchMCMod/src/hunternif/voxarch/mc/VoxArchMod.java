@@ -8,6 +8,10 @@ import cpw.mods.fml.common.Mod.Instance;
 import cpw.mods.fml.common.event.FMLPreInitializationEvent;
 import cpw.mods.fml.common.network.NetworkMod;
 
+/**
+ * A demo mod for Voxel Architecture.
+ * @author Hunternif
+ */
 @Mod(modid=VoxArchMod.ID, name=VoxArchMod.NAME, version=VoxArchMod.VERSION)
 @NetworkMod(clientSideRequired=false, serverSideRequired=true)
 public class VoxArchMod {

@@ -14,6 +14,7 @@ import hunternif.voxarch.storage.Structure;
  * Size of all segments is N*{@link #cellSize}. The block IDs in the structures
  * should be mere placeholders to be replaced with concrete IDs by
  * {@link Materials}.
+ * @author Hunternif
  */
 public interface Elements {
 	/**

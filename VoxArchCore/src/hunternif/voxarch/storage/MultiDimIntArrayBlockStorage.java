@@ -2,6 +2,7 @@ package hunternif.voxarch.storage;
 
 /**
  * IFixedBlockStorage implementation using multidimensional array of integers.
+ * @author Hunternif
  */
 public class MultiDimIntArrayBlockStorage implements IFixedBlockStorage {
 	/** [0 .. x .. width] [0 .. y .. height] [0 .. z .. length] [id, metadata] */

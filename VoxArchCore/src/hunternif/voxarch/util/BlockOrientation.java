@@ -3,6 +3,7 @@ package hunternif.voxarch.util;
 /**
  * Used by blocks that can be rotated, such as stairs and wall-mounted
  * decorations.
+ * @author Hunternif
  */
 public enum BlockOrientation {
 	NONE(0), EAST(0), NORTH(90), WEST(180), SOUTH(270);

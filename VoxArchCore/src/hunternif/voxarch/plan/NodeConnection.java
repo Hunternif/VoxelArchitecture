@@ -2,7 +2,10 @@ package hunternif.voxarch.plan;
 
 import hunternif.voxarch.util.IntVec3;
 
-/** Connects 2 NodeJoints. */
+/**
+ * Connects 2 NodeJoints.
+ * @author Hunternif
+ */
 public abstract class NodeConnection extends Node {
 
 	private NodeJoint start;

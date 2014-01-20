@@ -7,6 +7,9 @@ import hunternif.voxarch.storage.IFixedBlockStorage;
 
 import org.junit.Test;
 
+/**
+ * @author Hunternif
+ */
 public class BlockStorageTest {
 	@Test
 	public void testArrayBlockStorage() {

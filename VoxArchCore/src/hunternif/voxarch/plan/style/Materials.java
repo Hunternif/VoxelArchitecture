@@ -10,6 +10,7 @@ import hunternif.voxarch.storage.Structure;
  * sub-blocks, but its orientation will be ignored. Every method returns a few
  * variants of the block, as each {@link Structure} can be made of multiple
  * materials.
+ * @author Hunternif
  */
 public interface Materials {
 	BlockData[] floorBlocks();

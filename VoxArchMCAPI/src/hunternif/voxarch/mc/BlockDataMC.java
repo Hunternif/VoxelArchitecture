@@ -5,6 +5,11 @@ import hunternif.voxarch.util.BlockOrientation;
 import hunternif.voxarch.util.MathUtil;
 import coolalias.structuregenapi.util.GenHelper;
 
+/**
+ * Minecraft-specific block data. It Uses coolAlias's StructureGenerationAPI
+ * to set rotation-based metadata.
+ * @author Hunternif
+ */
 public class BlockDataMC extends BlockData {
 
 	public BlockDataMC(int id, int metadata) {

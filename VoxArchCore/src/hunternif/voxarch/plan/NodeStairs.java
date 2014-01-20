@@ -1,7 +1,10 @@
 package hunternif.voxarch.plan;
 
-/** Connects 2 NodeJoints on different floors. Multiple NodeStairs should
- * usually be grouped closely. */
+/**
+ * Connects 2 NodeJoints on different floors. Multiple NodeStairs should
+ * usually be grouped closely.
+ * @author Hunternif
+ */
 public class NodeStairs extends NodeConnection {
 
 	public NodeStairs(ArchPlan plan, Floor floor) {

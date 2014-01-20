@@ -8,7 +8,10 @@ import java.util.Map.Entry;
 import java.util.NavigableSet;
 import java.util.TreeMap;
 
-/** The architectural plan composed of Nodes and Floors. */
+/**
+ * The architectural plan composed of Nodes and Floors.
+ * @author Hunternif
+ */
 public class ArchPlan {
 	private final Geometry geometry;
 	

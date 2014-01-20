@@ -1,6 +1,9 @@
 package hunternif.voxarch.plan;
 
-/** Generic room, can be connected to several corridors. */
+/**
+ * Generic room, can be connected to several corridors.
+ * @author Hunternif
+ */
 public class NodeRoom extends NodeJoint {
 
 	private int widthInCells;

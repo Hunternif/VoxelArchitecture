@@ -1,6 +1,9 @@
 package hunternif.voxarch.util;
 
-/** 2D vector of integers. */
+/**
+ * 2D vector of integers.
+ * @author Hunternif
+ */
 public class IntVec2 {
 	public int x;
 	public int y;

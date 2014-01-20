@@ -8,6 +8,9 @@ import hunternif.voxarch.util.Vec2;
 
 import org.junit.Test;
 
+/**
+ * @author Hunternif
+ */
 public class MathTest {
 	@Test
 	public void testRound() {

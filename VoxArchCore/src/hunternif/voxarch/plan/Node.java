@@ -2,7 +2,10 @@ package hunternif.voxarch.plan;
 
 import hunternif.voxarch.util.IntVec3;
 
-/** Base node of the architectural plan. */
+/**
+ * Base node of the architectural plan.
+ * @author Hunternif
+ */
 public abstract class Node {
 	private final ArchPlan plan;
 	private final Floor floor;

@@ -3,6 +3,7 @@ package hunternif.voxarch.storage;
 /**
  * IFixedBlockStorage implementation using multidimensional array of BlockData.
  * Doesn't reuse BlockData!
+ * @author Hunternif
  */
 public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	/** [0 .. x .. width] [0 .. y .. height] [0 .. z .. length] */

@@ -1,6 +1,9 @@
 package hunternif.voxarch.plan;
 
-/** Connects 2 NodeJoints on the same floor. */
+/**
+ * Connects 2 NodeJoints on the same floor.
+ * @author Hunternif
+ */
 public class NodeCorridor extends NodeConnection {
 
 	public NodeCorridor(ArchPlan plan, Floor floor) {

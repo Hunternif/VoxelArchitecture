@@ -1,8 +1,10 @@
 package hunternif.voxarch.plan;
 
-/** Floor on an architectural plan. Can have arbitrary y level. Corridor nodes
+/**
+ * Floor on an architectural plan. Can have arbitrary y level. Corridor nodes
  * can only connect nodes on the same floor. Negative y level usually means
  * dungeon.
+ * @author Hunternif
  */
 public class Floor implements Comparable<Floor> {
 	private final int yLevel;

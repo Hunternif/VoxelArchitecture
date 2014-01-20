@@ -7,6 +7,7 @@ package hunternif.voxarch.storage;
  * To avoid incurring a large memory overhead, an implementation might reuse the
  * returned BlockData instances, so don't use them for long-term storage.
  * </p>
+ * @author Hunternif
  */
 public interface IBlockStorage {
 	// Using plain ints instead of IntVec3 to improve performance,

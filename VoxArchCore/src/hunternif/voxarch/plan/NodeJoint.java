@@ -3,8 +3,11 @@ package hunternif.voxarch.plan;
 import java.util.ArrayList;
 import java.util.List;
 
-/** A node to which other nodes can connect, i.e. a room to which corridors are
- * connected. */
+/**
+ * A node to which other nodes can connect, i.e. a room to which corridors are
+ * connected.
+ * @author Hunternif
+ */
 public abstract class NodeJoint extends Node {
 
 	/** Nodes connected to a side of this NodeJoint. */

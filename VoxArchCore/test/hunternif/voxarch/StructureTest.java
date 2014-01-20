@@ -9,6 +9,9 @@ import hunternif.voxarch.util.StructureUtil;
 
 import org.junit.Test;
 
+/**
+ * @author Hunternif
+ */
 public class StructureTest { 
 	@Test
 	public void testRotate90() {

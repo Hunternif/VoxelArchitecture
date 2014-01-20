@@ -1,6 +1,9 @@
 package hunternif.voxarch.util;
 
-/** 2D vector of doubles. */
+/**
+ * 2D vector of doubles.
+ * @author Hunternif
+ */
 public class Vec2 {
 	public double x;
 	public double y;

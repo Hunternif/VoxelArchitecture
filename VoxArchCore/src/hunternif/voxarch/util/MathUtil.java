@@ -1,5 +1,9 @@
 package hunternif.voxarch.util;
 
+/**
+ * Math helper methods.
+ * @author Hunternif
+ */
 public class MathUtil {
 	private static final double SIN_TABLE_LENGTH_OVER_360 = 65536d / 360d;
 	

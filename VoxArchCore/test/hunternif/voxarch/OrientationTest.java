@@ -5,6 +5,9 @@ import hunternif.voxarch.util.BlockOrientation;
 
 import org.junit.Test;
 
+/**
+ * @author Hunternif
+ */
 public class OrientationTest {
 
 	@Test

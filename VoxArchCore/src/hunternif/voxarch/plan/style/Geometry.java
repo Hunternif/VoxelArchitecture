@@ -3,6 +3,7 @@ package hunternif.voxarch.plan.style;
 /**
  * This style defines the dimensional features of the architectural plan, such
  * as characteristic size, floor height etc.
+ * @author Hunternif
  */
 public interface Geometry {
 	/**
