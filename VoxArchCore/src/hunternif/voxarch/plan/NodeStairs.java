@@ -24,7 +24,7 @@ public class NodeStairs extends NodeConnection {
 	private static void checkFloors(NodeJoint start, NodeJoint end) {
 		if (start != null && end != null && start.getFloor() == end.getFloor()) {
 			throw new IllegalArgumentException(
-					"Corridor cannot connect nodes on the same floor: "
+					"Stairs cannot connect nodes on the same floor: "
 					+ start.getFloor());
 		}
 	}
