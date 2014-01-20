@@ -1,5 +1,7 @@
 package hunternif.voxarch.plan;
 
+import hunternif.voxarch.plan.style.Geometry;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
@@ -8,17 +10,17 @@ import java.util.TreeMap;
 
 /** The architectural plan composed of Nodes and Floors. */
 public class ArchPlan {
-	private final Config config;
+	private final Geometry geometry;
 	
 	private TreeMap<Floor, List<Node>> map;
 	
-	public ArchPlan(Config config) {
-		this.config = config;
+	public ArchPlan(Geometry config) {
+		this.geometry = config;
 		map = new TreeMap<Floor, List<Node>>();
 	}
 	
-	public Config getConfig() {
-		return config;
+	public Geometry getGeometry() {
+		return geometry;
 	}
 	
 	public NavigableSet<Floor> getFloors() {

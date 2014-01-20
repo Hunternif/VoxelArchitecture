@@ -32,6 +32,6 @@ public abstract class Node {
 	}
 	
 	public Floor getNextFloor() {
-		return new Floor(floor.getYLevel() + plan.getConfig().floorHeight());
+		return new Floor(floor.getYLevel() + plan.getGeometry().floorHeight());
 	}
 }

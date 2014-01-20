@@ -1,10 +1,10 @@
-package hunternif.voxarch.plan;
+package hunternif.voxarch.plan.style;
 
 /**
- * This configuration defines the dimensional features of the architectural
- * plan, such as characteristic size, floor height etc.
+ * This style defines the dimensional features of the architectural plan, such
+ * as characteristic size, floor height etc.
  */
-public interface Config {
+public interface Geometry {
 	/**
 	 * Unit of size, corresponds to corridor width and minimum room size.
 	 */
@@ -16,10 +16,10 @@ public interface Config {
 	//int corridorWidth();
 	/**
 	 * Corresponds to the length of the corridor wall segment structure. Actual
-	 * corridor length will be N times the minimum length.
+	 * corridor length will be N * {@link #cellSize}.
 	 */
 	int minCorridorLength();
-	/** Maximum corridor length. Actual length will be N times the minimum length.*/
+	/** Maximum corridor length. Actual length will be N * {@link #cellSize}. */
 	int maxCorridorLength();
 	
 	/**
@@ -28,7 +28,7 @@ public interface Config {
 	 */
 	//int minRoomSize();
 	/**
-	 * Maximum room size. Actual size will be N times the minimum size.
+	 * Maximum room size. Actual size will be N * {@link #cellSize}.
 	 */
 	int maxRoomSize();
 	

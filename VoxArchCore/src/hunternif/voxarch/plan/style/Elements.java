@@ -1,65 +1,73 @@
-package hunternif.voxarch.plan;
+package hunternif.voxarch.plan.style;
 
+import hunternif.voxarch.plan.Node;
+import hunternif.voxarch.plan.NodeCorridor;
+import hunternif.voxarch.plan.NodeJoint;
+import hunternif.voxarch.plan.NodeRoom;
+import hunternif.voxarch.plan.NodeStairs;
 import hunternif.voxarch.storage.Structure;
 
 /**
- * Style defines the concrete appearance of elements such as joint arches,
+ * This style defines the concrete appearance of elements such as joint arches,
  * columns,decorations etc. All methods may return different variants based on
  * parameters of the node arguments (i.e. dungeon walls for lower floors).
- * Size of all segments is N*{@link #cellSize}.
+ * Size of all segments is N*{@link #cellSize}. The block IDs in the structures
+ * should be mere placeholders to be replaced with concrete IDs by
+ * {@link Materials}.
  */
-public interface Style {
+public interface Elements {
 	/**
-	 * Unit of size, corresponds to corridor width and minimum room size.
-	 * Cell size of the Config has to be the same as in this Style in order
-	 * for them to be compatible.
+	 * Unit of size, corresponds to corridor width and minimum room size. Cell
+	 * size of the {@link Geometry} has to be the same as for these
+	 * {@link Elements} in order for them to be compatible.
 	 */
 	int cellSize();
 	/**
-	 * Variants of gate between NodeJoint and Node, facing south.
+	 * Variants of gate between {@link NodeJoint} and {@link Node}, facing
+	 * south.
 	 */
-	Structure[] getJointGate(NodeJoint joint, Node node);
+	Structure[] jointGate(NodeJoint joint, Node node);
 	/**
 	 * Variants of segment of corridor wall, running from west to east, the
 	 * south side facing outward.
 	 */
-	Structure[] getCorridorWallSegment(NodeCorridor corridor);
+	Structure[] corridorWallSegment(NodeCorridor corridor);
 	/**
 	 * Variants of corridor corner, the outward angle facing south-east.
 	 */
-	Structure[] getCorridorCorner(NodeCorridor corridor);
+	Structure[] corridorCorner(NodeCorridor corridor);
 	/** 
 	 * Variants of segment of room wall, running from west to east, the south
 	 * side facing outward.
 	 */
-	Structure[] getRoomWallSegment(NodeRoom room);
+	Structure[] roomWallSegment(NodeRoom room);
 	/** 
 	 * Variants of floor segment.
 	 */
-	Structure[] getFloorSegment(Node node);
+	Structure[] floorSegment(Node node);
 	/** 
 	 * Variants of stair segment, going up from west to east.
 	 */
-	Structure[] getStairSegment(NodeStairs node);
+	Structure[] stairSegment(NodeStairs node);
 	/**
 	 * Variants of segment of stair corridor wall, running from west to east,
 	 * the south side facing outward.
 	 */
-	Structure[] getStairWallSegment(NodeStairs corridor);
+	Structure[] stairWallSegment(NodeStairs corridor);
 	
 	/**
 	 * Variants of segment of an edge of the roof, running from west to east,
 	 * the south side facing outward.
 	 */
-	Structure[] getRoofEdgeSegment(Node node);
+	Structure[] roofEdgeSegment(Node node);
 	/**
 	 * Variants of roof corner, the outward angle facing south-east.
 	 */
-	Structure[] getRoofCorner(Node node);
+	Structure[] roofCorner(Node node);
 	/**
 	 * Variants of segment of the corridor roof, running from west to east.
 	 */
-	Structure[] getCorridorRoofSegment(NodeCorridor corridor);
+	Structure[] corridorRoofSegment(NodeCorridor corridor);
 	
 	//TODO: bulk roofs for rooms and stairs
 	//TODO: bridges and other terrain-related features
@@ -71,5 +79,5 @@ public interface Style {
 	//void decorateRoom(Structure room);
 	
 	/** Random floor-based decorations of various size. */
-	Structure[] getDecorations();
+	Structure[] decorations();
 }
