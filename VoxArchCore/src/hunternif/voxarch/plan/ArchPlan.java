@@ -9,7 +9,7 @@ import java.util.NavigableSet;
 import java.util.TreeMap;
 
 /**
- * The architectural plan composed of Nodes and Floors.
+ * The architectural plan composed of {@link Node}s and {@link Floor}s.
  * @author Hunternif
  */
 public class ArchPlan {
