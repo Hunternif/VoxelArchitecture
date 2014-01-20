@@ -33,16 +33,13 @@ public interface Elements {
 	 * south side facing outward.
 	 */
 	Structure[] corridorWallSegment(NodeCorridor corridor);
+	
 	/**
-	 * Variants of corridor corner, the outward angle facing south-east.
-	 */
-	Structure[] corridorCorner(NodeCorridor corridor);
-	/** 
 	 * Variants of segment of room wall, running from west to east, the south
 	 * side facing outward.
 	 */
 	Structure[] roomWallSegment(NodeRoom room);
-	/** 
+	/**
 	 * Variants of floor segment.
 	 */
 	Structure[] floorSegment(Node node);
@@ -61,10 +58,6 @@ public interface Elements {
 	 * the south side facing outward.
 	 */
 	Structure[] roofEdgeSegment(Node node);
-	/**
-	 * Variants of roof corner, the outward angle facing south-east.
-	 */
-	Structure[] roofCorner(Node node);
 	/**
 	 * Variants of segment of the corridor roof, running from west to east.
 	 */
