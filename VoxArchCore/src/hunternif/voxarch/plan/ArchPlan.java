@@ -3,7 +3,7 @@ package hunternif.voxarch.plan;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map.Entry;
-import java.util.Set;
+import java.util.NavigableSet;
 import java.util.TreeMap;
 
 /** The architectural plan composed of Nodes and Floors. */
@@ -21,17 +21,17 @@ public class ArchPlan {
 		return config;
 	}
 	
-	public Set<Floor> getFloors() {
-		return map.keySet();
+	public NavigableSet<Floor> getFloors() {
+		return map.navigableKeySet();
 	}
 	public List<Node> getFloorNodes(Floor floor) {
 		return map.get(floor);
 	}
-	public Entry<Floor, List<Node>> getNearestFloorBelow(Floor floor) {
-		return map.floorEntry(floor);
+	public Entry<Floor, List<Node>> getLowerFloor(Floor floor) {
+		return map.lowerEntry(floor);
 	}
-	public Entry<Floor, List<Node>> getNearestFloorAbove(Floor floor) {
-		return map.ceilingEntry(floor);
+	public Entry<Floor, List<Node>> getHigherFloor(Floor floor) {
+		return map.higherEntry(floor);
 	}
 	
 	protected boolean addNode(Node node) {
