@@ -6,8 +6,8 @@ public class NodeRoom extends NodeJoint {
 	private int widthInCells;
 	private int lengthInCells;
 	
-	public NodeRoom(ArchPlan plan) {
-		super(plan);
+	public NodeRoom(ArchPlan plan, Floor floor) {
+		super(plan, floor);
 	}
 	
 	public int getWidthInCells() {

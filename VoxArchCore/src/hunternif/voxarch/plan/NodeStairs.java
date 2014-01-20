@@ -4,8 +4,8 @@ package hunternif.voxarch.plan;
  * usually be grouped closely. */
 public class NodeStairs extends NodeConnection {
 
-	public NodeStairs(ArchPlan plan) {
-		super(plan);
+	public NodeStairs(ArchPlan plan, Floor floor) {
+		super(plan, floor);
 	}
 	
 	@Override

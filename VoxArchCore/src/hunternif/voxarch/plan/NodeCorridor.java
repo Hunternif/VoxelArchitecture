@@ -3,8 +3,8 @@ package hunternif.voxarch.plan;
 /** Connects 2 NodeJoints on the same floor. */
 public class NodeCorridor extends NodeConnection {
 
-	public NodeCorridor(ArchPlan plan) {
-		super(plan);
+	public NodeCorridor(ArchPlan plan, Floor floor) {
+		super(plan, floor);
 	}
 	
 	@Override

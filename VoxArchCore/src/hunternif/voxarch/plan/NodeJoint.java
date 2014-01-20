@@ -16,8 +16,8 @@ public abstract class NodeJoint extends Node {
 	/** Only one node connection can vertically. */
 	private Node nodeUp, nodeDown;
 	
-	public NodeJoint(ArchPlan plan) {
-		super(plan);
+	public NodeJoint(ArchPlan plan, Floor floor) {
+		super(plan, floor);
 	}
 	
 	public Node getNodeUp() {

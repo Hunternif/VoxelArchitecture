@@ -10,8 +10,8 @@ public abstract class NodeConnection extends Node {
 	
 	private IntVec3 endPoint;
 	
-	public NodeConnection(ArchPlan plan) {
-		super(plan);
+	public NodeConnection(ArchPlan plan, Floor floor) {
+		super(plan, floor);
 	}
 	
 	public NodeJoint getStart() {
