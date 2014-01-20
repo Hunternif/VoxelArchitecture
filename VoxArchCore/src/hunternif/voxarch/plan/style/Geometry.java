@@ -3,13 +3,22 @@ package hunternif.voxarch.plan.style;
 /**
  * This style defines the dimensional features of the architectural plan, such
  * as characteristic size, floor height etc.
+ * @see Elements
  * @author Hunternif
  */
 public interface Geometry {
 	/**
-	 * Unit of size, corresponds to corridor width and minimum room size.
+	 * Unit of horizontal size, corresponds to corridor width and minimum room
+	 * size. {@link Elements#cellWidth} has to be the same in order for these 2
+	 * styles to be compatible.
 	 */
-	int cellSize();
+	int cellWidth();
+	/**
+	 * Unit of vertical size, corresponds to minimum corridor and room height.
+	 * {@link Elements#cellHeight} has to be the same in order for these 2
+	 * styles to be compatible.
+	 */
+	int cellHeight();
 	
 	/**
 	 * Corresponds to the width of the gate structure.

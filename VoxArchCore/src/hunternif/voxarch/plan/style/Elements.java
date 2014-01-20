@@ -11,18 +11,33 @@ import hunternif.voxarch.storage.Structure;
  * This style defines the concrete appearance of elements such as joint arches,
  * columns,decorations etc. All methods may return different variants based on
  * parameters of the node arguments (i.e. dungeon walls for lower floors).
- * Size of all segments is N*{@link #cellSize}. The block IDs in the structures
- * should be mere placeholders to be replaced with concrete IDs by
- * {@link Materials}.
+ * <p>
+ * All segments have length N*{@link #cellWidth} and height N*{@link #cellHeight
+ * }. Segment of greater size may be chosen if the width and length of the node
+ * can accommodate it, otherwise segments are tiled in succession. Segments of
+ * greater height may be chosen when 2 nodes directly above each other are
+ * joined, or once again they can be tiled, this time vertically.
+ * </p>
+ * <p>
+ * The block IDs in the structures should be mere placeholders to be replaced
+ * with concrete IDs by {@link Materials}.
+ * </p>
  * @author Hunternif
  */
 public interface Elements {
 	/**
-	 * Unit of size, corresponds to corridor width and minimum room size. Cell
-	 * size of the {@link Geometry} has to be the same as for these
-	 * {@link Elements} in order for them to be compatible.
+	 * Unit of horizontal size, corresponds to corridor width and minimum room
+	 * size. {@link Geometry#cellWidth} has to be the same in order for these 2
+	 * styles to be compatible.
 	 */
-	int cellSize();
+	int cellWidth();
+	/**
+	 * Unit of vertical size, corresponds to corridor width and minimum room
+	 * size. {@link Geometry#cellHeight} has to be the same in order for these 2
+	 * styles to be compatible.
+	 */
+	int cellHeight();
+	
 	/**
 	 * Variants of gate between {@link NodeJoint} and {@link Node}, facing
 	 * south.
