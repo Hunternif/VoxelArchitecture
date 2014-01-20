@@ -11,16 +11,22 @@ import hunternif.voxarch.storage.IBlockStorage;
 public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
 	/** Translation coordinates. */
-	private final double tx, ty, tz;
+	private double tx, ty, tz;
 	/** Angle of rotation. */
-	private final double angle;
-	private final boolean closeGaps;
+	private double angle;
+	private boolean closeGaps;
 	
-	private final Matrix2 rot;
+	private Matrix2 rot;
 	
 	// Saving memory by reusing the same vector:
 	private final Vec2 vec2 = new Vec2(0, 0);
 	private final Vec3 vec3 = new Vec3(0, 0, 0);
+	
+	/** See {@link #PositionTransformer
+	 * (IBlockStorage, double, double, double, double, boolean)} */
+	public PositionTransformer(IBlockStorage storage) {
+		this.storage = storage;
+	}
 	
 	/**
 	 * @param storage the underlying storage.
@@ -33,20 +39,14 @@ public class PositionTransformer implements IBlockStorage {
 	 * 					caused by aliasing when rotating at a non-right angle.
 	 */
 	public PositionTransformer(IBlockStorage storage, double x, double y, double z, double angle, boolean closeGaps) {
-		super();
-		this.storage = storage;
-		this.tx = x;
-		this.ty = y;
-		this.tz = z;
-		this.angle = angle;
-		this.closeGaps = closeGaps;
-		// Minus angle, because when rotating around the Y axis
-		// counterclockwise the reference frame XZY is left-handed.
-		this.rot = Matrix2.rotationMatrix(-angle);
+		this(storage);
+		setTranslation(x, y, z);
+		setRotation(angle);
+		setCloseGaps(closeGaps);
 	}
 	
 	/** No translation, only rotation. See {@link #PositionTransformer
-	 * (IBlockStorage, int, int, int, double, boolean)} */
+	 * (IBlockStorage, double, double, double, double, boolean)} */
 	public PositionTransformer(IBlockStorage storage, double angle, boolean closeGaps) {
 		this(storage, 0, 0, 0, angle, closeGaps);
 	}
@@ -86,5 +86,21 @@ public class PositionTransformer implements IBlockStorage {
 		rot.multiply(vec2);
 		// Apply translation:
 		return vec3.set(vec2.x + tx, y + ty, vec2.y + tz);
+	}
+
+	public void setTranslation(double x, double y, double z) {
+		this.tx = x;
+		this.ty = y;
+		this.tz = z;
+	}
+
+	public void setRotation(double angle) {
+		// Minus angle, because when rotating around the Y axis
+		// counterclockwise the reference frame XZY is left-handed.
+		this.rot = Matrix2.rotationMatrix(-angle);
+	}
+
+	public void setCloseGaps(boolean closeGaps) {
+		this.closeGaps = closeGaps;
 	}
 }
