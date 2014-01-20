@@ -9,24 +9,23 @@ public class NodeCorridor extends NodeConnection {
 	
 	@Override
 	public void setStart(NodeJoint start) {
-		NodeJoint end = getEnd();
-		if (end != null && getEnd().getFloor() != start.getFloor()) {
-			throw new IllegalArgumentException(
-					"Corridor cannot connect nodes on different floors. "
-					+ "Start: " + start.getFloor() + " End: " + end.getFloor());
-		}
+		checkFloors(start, getEnd());
 		super.setStart(start);
 	}
 
 	@Override
 	public void setEnd(NodeJoint end) {
-		NodeJoint start = getStart();
-		if (start != null && end.getFloor() != start.getFloor()) {
+		checkFloors(getStart(), end);
+		super.setEnd(end);
+	}
+	
+	/** Throws an IllegalArgmentException if the floors are not equal. */
+	private static void checkFloors(NodeJoint start, NodeJoint end) {
+		if (start != null && end != null && start.getFloor() != end.getFloor()) {
 			throw new IllegalArgumentException(
 					"Corridor cannot connect nodes on different floors. "
 					+ "Start: " + start.getFloor() + " End: " + end.getFloor());
 		}
-		super.setEnd(end);
 	}
 
 }
