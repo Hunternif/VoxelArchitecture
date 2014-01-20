@@ -5,20 +5,18 @@ import hunternif.voxarch.util.IntVec3;
 /** Base node of the architectural plan. */
 public abstract class Node {
 	private final ArchPlan plan;
-	private Floor floor;
+	private final Floor floor;
 	/** Points to the top left corner. Measured in blocks. */
 	private IntVec3 origin;
 	
-	public Node(ArchPlan plan) {
+	public Node(ArchPlan plan, Floor floor) {
 		this.plan = plan;
+		this.floor = floor;
+		plan.addNode(this);
 	}
 
 	public Floor getFloor() {
 		return floor;
-	}
-
-	public void setFloor(Floor floor) {
-		this.floor = floor;
 	}
 
 	public void setOrigin(IntVec3 origin) {

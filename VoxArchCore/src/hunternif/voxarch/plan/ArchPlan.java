@@ -34,7 +34,7 @@ public class ArchPlan {
 		return map.ceilingEntry(floor);
 	}
 	
-	public boolean addNode(Node node) {
+	protected boolean addNode(Node node) {
 		List<Node> nodes = getFloorNodes(node.getFloor());
 		if (nodes == null) {
 			nodes = new ArrayList<Node>();
