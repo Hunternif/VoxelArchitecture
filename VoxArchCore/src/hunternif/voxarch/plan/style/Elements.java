@@ -39,44 +39,43 @@ public interface Elements {
 	int cellHeight();
 	
 	/**
-	 * Variants of gate between {@link NodeJoint} and {@link Node}, facing
-	 * south.
+	 * Gate between {@link NodeJoint} and {@link Node}, facing south.
 	 */
-	Structure[] jointGate(NodeJoint joint, Node node);
+	Structure jointGate(NodeJoint joint, Node node);
 	/**
-	 * Variants of segment of corridor wall, running from west to east, the
-	 * south side facing outward.
+	 * Segment of corridor wall, running from west to east, the south side
+	 * facing outward.
 	 */
-	Structure[] corridorWallSegment(NodeCorridor corridor);
+	Structure corridorWallSegment(NodeCorridor corridor);
 	
 	/**
-	 * Variants of segment of room wall, running from west to east, the south
-	 * side facing outward.
+	 * Segment of room wall, running from west to east, the south side facing
+	 * outward.
 	 */
-	Structure[] roomWallSegment(NodeRoom room);
+	Structure roomWallSegment(NodeRoom room);
 	/**
-	 * Variants of floor segment.
+	 * Floor segment.
 	 */
-	Structure[] floorSegment(Node node);
+	Structure floorSegment(Node node);
 	/** 
-	 * Variants of stair segment, going up from west to east.
+	 * Stair segment, going up from west to east.
 	 */
-	Structure[] stairSegment(NodeStairs node);
+	Structure stairSegment(NodeStairs node);
 	/**
-	 * Variants of segment of stair corridor wall, running from west to east,
-	 * the south side facing outward.
+	 * Segment of stair corridor wall, running from west to east, the south side
+	 * facing outward.
 	 */
-	Structure[] stairWallSegment(NodeStairs corridor);
+	Structure stairWallSegment(NodeStairs corridor);
 	
 	/**
-	 * Variants of segment of an edge of the roof, running from west to east,
-	 * the south side facing outward.
+	 * Segment of an edge of the roof, running from west to east, the south side
+	 * facing outward.
 	 */
-	Structure[] roofEdgeSegment(Node node);
+	Structure roofEdgeSegment(Node node);
 	/**
-	 * Variants of segment of the corridor roof, running from west to east.
+	 * Segment of the corridor roof, running from west to east.
 	 */
-	Structure[] corridorRoofSegment(NodeCorridor corridor);
+	Structure corridorRoofSegment(NodeCorridor corridor);
 	
 	//TODO: bulk roofs for rooms and stairs
 	//TODO: bridges and other terrain-related features
