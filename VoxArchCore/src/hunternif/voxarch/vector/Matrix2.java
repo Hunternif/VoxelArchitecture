@@ -1,4 +1,6 @@
-package hunternif.voxarch.util;
+package hunternif.voxarch.vector;
+
+import hunternif.voxarch.util.MathUtil;
 
 /**
  * 2x2 matrix of doubles.

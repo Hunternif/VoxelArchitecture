@@ -1,10 +1,12 @@
 package hunternif.voxarch;
 
-import static org.junit.Assert.*;
-import hunternif.voxarch.util.IntVec2;
+import static org.junit.Assert.assertEquals;
 import hunternif.voxarch.util.MathUtil;
-import hunternif.voxarch.util.Matrix2;
-import hunternif.voxarch.util.Vec2;
+import hunternif.voxarch.vector.IntVec2;
+import hunternif.voxarch.vector.Matrix2;
+import hunternif.voxarch.vector.Matrix4;
+import hunternif.voxarch.vector.Vec2;
+import hunternif.voxarch.vector.Vec4;
 
 import org.junit.Test;
 
@@ -73,7 +75,7 @@ public class MathTest {
 	}
 	
 	@Test
-	public void testRotateVector() {
+	public void testRotateVector2() {
 		Matrix2 mat = Matrix2.rotationMatrix(90);
 		Vec2 vec = new Vec2(1.5, 0);
 		assertEquals(new Vec2(0, 1.5), mat.multiply(vec));
@@ -93,7 +95,7 @@ public class MathTest {
 	}
 	
 	@Test
-	public void testRotateMatrix() {
+	public void testMultiplyAndRotateMatrix2() {
 		Matrix2 rot = Matrix2.rotationMatrix(90);
 		Matrix2 a = Matrix2.identity();
 		assertEquals(new Matrix2(0, -1,
@@ -108,5 +110,12 @@ public class MathTest {
 		assertEquals(new Matrix2(MathUtil.cosDeg(45), -MathUtil.sinDeg(45),
 								 MathUtil.sinDeg(45),  MathUtil.cosDeg(45)),
 					 rot.multiply(Matrix2.identity()));
+	}
+	
+	@Test
+	public void testRotateVector4() {
+		Matrix4 mat = Matrix4.rotationY(90);
+		Vec4 vec = new Vec4(1.5, 0, 0.5, 0);
+		assertEquals(new Vec4(0.5, 0, -1.5, 0), mat.multiply(vec));
 	}
 }

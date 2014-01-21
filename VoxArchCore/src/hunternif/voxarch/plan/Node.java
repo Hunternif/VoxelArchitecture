@@ -1,6 +1,6 @@
 package hunternif.voxarch.plan;
 
-import hunternif.voxarch.util.IntVec3;
+import hunternif.voxarch.vector.IntVec3;
 
 /**
  * Base node of the architectural plan.

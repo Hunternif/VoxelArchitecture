@@ -1,4 +1,4 @@
-package hunternif.voxarch.util;
+package hunternif.voxarch.vector;
 
 /**
  * 2D vector of integers.

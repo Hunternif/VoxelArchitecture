@@ -1,6 +1,6 @@
 package hunternif.voxarch.storage;
 
-import hunternif.voxarch.util.IntVec3;
+import hunternif.voxarch.vector.IntVec3;
 
 /**
  * A base class for a set of blocks, meant to be overridden.

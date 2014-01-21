@@ -1,4 +1,4 @@
-package hunternif.voxarch.util;
+package hunternif.voxarch.vector;
 
 /**
  * 3D vector of doubles.

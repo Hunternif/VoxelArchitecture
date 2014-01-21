@@ -4,8 +4,8 @@ import static org.junit.Assert.assertEquals;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.MultiDimArrayBlockStorage;
 import hunternif.voxarch.storage.Structure;
-import hunternif.voxarch.util.IntVec3;
 import hunternif.voxarch.util.StructureUtil;
+import hunternif.voxarch.vector.IntVec3;
 
 import org.junit.Test;
 

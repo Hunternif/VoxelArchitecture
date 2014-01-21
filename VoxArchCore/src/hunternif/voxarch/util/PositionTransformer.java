@@ -2,105 +2,79 @@ package hunternif.voxarch.util;
 
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
+import hunternif.voxarch.vector.Matrix4;
+import hunternif.voxarch.vector.Vec4;
 
 /**
  * A shell over storage, helper class for transforming block coordinates.
- * Successively applies rotation and translation.
  * @author Hunternif
  */
 public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
-	/** Translation coordinates. */
-	private double tx, ty, tz;
 	/** Angle of rotation. */
-	private double angle;
-	private boolean closeGaps;
+	private double angle = 0;
+	private boolean closeGaps = false;
 	
-	private Matrix2 rot;
+	/** Transformation matrix. */
+	private Matrix4 matrix = Matrix4.identity();
 	
-	// Saving memory by reusing the same vector:
-	private final Vec2 vec2 = new Vec2(0, 0);
-	private final Vec3 vec3 = new Vec3(0, 0, 0);
+	/** Saving memory by reusing the same vector. */
+	private final Vec4 vec = new Vec4(0, 0, 0, 1);
 	
-	/** See {@link #PositionTransformer
-	 * (IBlockStorage, double, double, double, double, boolean)} */
 	public PositionTransformer(IBlockStorage storage) {
 		this.storage = storage;
-	}
-	
-	/**
-	 * @param storage the underlying storage.
-	 * @param x translation.
-	 * @param y translation.
-	 * @param z translation.
-	 * @param angle angle of rotation, counterclockwise.
-	 * @param closeGaps if true, will apply every operation to the whole area
-	 * 					that the rotated block covers thereby eliminating gaps
-	 * 					caused by aliasing when rotating at a non-right angle.
-	 */
-	public PositionTransformer(IBlockStorage storage, double x, double y, double z, double angle, boolean closeGaps) {
-		this(storage);
-		setTranslation(x, y, z);
-		setRotation(angle);
-		setCloseGaps(closeGaps);
-	}
-	
-	/** No translation, only rotation. See {@link #PositionTransformer
-	 * (IBlockStorage, double, double, double, double, boolean)} */
-	public PositionTransformer(IBlockStorage storage, double angle, boolean closeGaps) {
-		this(storage, 0, 0, 0, angle, closeGaps);
 	}
 
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
-		transform(x + 0.5, y, z + 0.5);
-		return storage.getBlock((int)vec3.x, (int)vec3.y, (int)vec3.z);
+		vec.set(x + 0.5, y, z + 0.5, 1);
+		matrix.multiply(vec);
+		return storage.getBlock((int)vec.x, (int)vec.y, (int)vec.z);
 	}
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
-		transform(x + 0.5, y, z + 0.5);
-		storage.setBlock((int)vec3.x, (int)vec3.y, (int)vec3.z, block);
+		vec.set(x + 0.5, y, z + 0.5, 1);
+		matrix.multiply(vec);
+		block.rotate((float)angle);
+		storage.setBlock((int)vec.x, (int)vec.y, (int)vec.z, block);
 		if (closeGaps) {
-			storage.setBlock(MathUtil.roundDown(vec3.x), (int)vec3.y, (int)vec3.z, block);
-			storage.setBlock((int)vec3.x, (int)vec3.y, MathUtil.roundDown(vec3.z), block);
-			storage.setBlock(MathUtil.roundDown(vec3.x), (int)vec3.y, MathUtil.roundDown(vec3.z), block);
+			storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, (int)vec.z, block);
+			storage.setBlock((int)vec.x, (int)vec.y, MathUtil.roundDown(vec.z), block);
+			storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z), block);
 		}
 	}
 
 	@Override
 	public void clearBlock(int x, int y, int z) {
-		transform(x + 0.5, y, z + 0.5);
-		storage.clearBlock((int)vec3.x, (int)vec3.y, (int)vec3.z);
+		vec.set(x + 0.5, y, z + 0.5, 1);
+		matrix.multiply(vec);
+		storage.clearBlock((int)vec.x, (int)vec.y, (int)vec.z);
 		if (closeGaps) {
-			storage.clearBlock(MathUtil.roundDown(vec3.x), (int)vec3.y, (int)vec3.z);
-			storage.clearBlock((int)vec3.x, (int)vec3.y, MathUtil.roundDown(vec3.z));
-			storage.clearBlock(MathUtil.roundDown(vec3.x), (int)vec3.y, MathUtil.roundDown(vec3.z));
+			storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, (int)vec.z);
+			storage.clearBlock((int)vec.x, (int)vec.y, MathUtil.roundDown(vec.z));
+			storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
 		}
 	}
 
-	/** Performs rotation and translation. */
-	private Vec3 transform(double x, double y, double z) {
-		// Apply rotation:
-		vec2.set(x, z);
-		rot.multiply(vec2);
-		// Apply translation:
-		return vec3.set(vec2.x + tx, y + ty, vec2.y + tz);
+	/** Apply transformation of translation. */
+	public PositionTransformer translation(double x, double y, double z) {
+		Matrix4.translation(x, y, z).multiply(matrix);
+		return this;
 	}
 
-	public void setTranslation(double x, double y, double z) {
-		this.tx = x;
-		this.ty = y;
-		this.tz = z;
+	/** Apply transformation of rotation around the Y axis. */
+	public PositionTransformer rotationY(double angle) {
+		this.angle += angle;
+		Matrix4.rotationY(angle).multiply(matrix);
+		return this;
 	}
 
-	public void setRotation(double angle) {
-		// Minus angle, because when rotating around the Y axis
-		// counterclockwise the reference frame XZY is left-handed.
-		this.rot = Matrix2.rotationMatrix(-angle);
-	}
-
-	public void setCloseGaps(boolean closeGaps) {
+	/** If true, will apply every operation to the whole area that the rotated
+	 * block covers thereby eliminating gaps caused by aliasing when rotating
+	 * at a non-right angle. */
+	public PositionTransformer setCloseGaps(boolean closeGaps) {
 		this.closeGaps = closeGaps;
+		return this;
 	}
 }

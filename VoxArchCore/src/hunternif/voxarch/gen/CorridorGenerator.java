@@ -19,8 +19,7 @@ public class CorridorGenerator implements NodeGenerator<NodeCorridor> {
 		double angle = Math.atan2(
 				node.getEnd().getOrigin().z - node.getStart().getOrigin().z,
 				node.getEnd().getOrigin().x - node.getStart().getOrigin().x);
-		PositionTransformer trans = new PositionTransformer(world,
-				x, y, z, angle, false);
+		PositionTransformer trans = new PositionTransformer(world).translation(x, y, z).rotationY(angle);
 		//TODO paste elements through transformation and repetitively rotate it
 		// 90 degrees to switch to other walls.
 	}

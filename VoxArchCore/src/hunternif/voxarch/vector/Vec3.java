@@ -1,4 +1,4 @@
-package hunternif.voxarch.util;
+package hunternif.voxarch.vector;
 
 /**
  * 3D vector of doubles.
@@ -82,9 +82,5 @@ public class Vec3 {
 			return false;
 		Vec3 vec = (Vec3) obj;
 		return vec.x == x && vec.y == y && vec.z == z;
-	}
-	
-	public boolean equalsIntVec3(Vec3 vec) {
-		return vec.x == x && vec.y == y;
 	}
 }

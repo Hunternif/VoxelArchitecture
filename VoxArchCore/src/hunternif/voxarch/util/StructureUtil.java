@@ -5,6 +5,9 @@ import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.storage.IFixedBlockStorage;
 import hunternif.voxarch.storage.IStorageFactory;
 import hunternif.voxarch.storage.Structure;
+import hunternif.voxarch.vector.IntVec3;
+import hunternif.voxarch.vector.Matrix2;
+import hunternif.voxarch.vector.Vec2;
 
 public class StructureUtil {
 	/**

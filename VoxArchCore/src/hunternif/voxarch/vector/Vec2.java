@@ -1,4 +1,4 @@
-package hunternif.voxarch.util;
+package hunternif.voxarch.vector;
 
 /**
  * 2D vector of doubles.
@@ -74,10 +74,6 @@ public class Vec2 {
 		if (!(obj instanceof Vec2))
 			return false;
 		Vec2 vec = (Vec2) obj;
-		return vec.x == x && vec.y == y;
-	}
-	
-	public boolean equalsIntVec3(Vec2 vec) {
 		return vec.x == x && vec.y == y;
 	}
 }

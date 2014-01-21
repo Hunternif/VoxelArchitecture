@@ -3,7 +3,7 @@ package hunternif.voxarch.mc;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.BlockOrientation;
-import hunternif.voxarch.util.IntVec3;
+import hunternif.voxarch.vector.IntVec3;
 
 import java.util.EnumMap;
 import java.util.HashMap;
