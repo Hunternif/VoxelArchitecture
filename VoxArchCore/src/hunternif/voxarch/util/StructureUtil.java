@@ -127,16 +127,27 @@ public class StructureUtil {
 	}
 	
 	/**
-	 * Paste the specified structure into the specified storage at the specified
-	 * point.
+	 * Copy and paste blocks from one storage into another at the specified
+	 * coordinates.
 	 */
-	public static void pasteStructure(IBlockStorage world, IFixedBlockStorage structure, int x, int y, int z) {
-		for (int nx = 0; nx < structure.getWidth(); nx++) {
-			for (int ny = 0; ny < structure.getHeight(); ny++) {
-				for (int nz = 0; nz < structure.getLength(); nz++) {
-					world.setBlock(x + nx, y + ny, z + nz, structure.getBlock(nx, ny, nz));
+	public static void pasteStructure(IBlockStorage toStorage, IFixedBlockStorage fromStorage, int x, int y, int z) {
+		for (int nx = 0; nx < fromStorage.getWidth(); nx++) {
+			for (int ny = 0; ny < fromStorage.getHeight(); ny++) {
+				for (int nz = 0; nz < fromStorage.getLength(); nz++) {
+					toStorage.setBlock(x + nx, y + ny, z + nz, fromStorage.getBlock(nx, ny, nz));
 				}
 			}
 		}
+	}
+	
+	/**
+	 * Paste the specified structure into the specified storage so that the
+	 * structure's origin point is at the specified coordinates.
+	 */
+	public static void pasteStructure(IBlockStorage toStorage, Structure structure, int x, int y, int z) {
+		pasteStructure(toStorage, structure.getStorage(),
+				x - structure.getOrigin().x,
+				y - structure.getOrigin().y,
+				z - structure.getOrigin().z);
 	}
 }

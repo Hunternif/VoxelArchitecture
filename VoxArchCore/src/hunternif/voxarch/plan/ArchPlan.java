@@ -1,50 +1,31 @@
 package hunternif.voxarch.plan;
 
-import hunternif.voxarch.plan.style.Geometry;
+import hunternif.voxarch.vector.Vec3;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map.Entry;
-import java.util.NavigableSet;
-import java.util.TreeMap;
 
 /**
- * The architectural plan composed of {@link Node}s and {@link Floor}s.
+ * The architectural plan composed of {@link Room}s.
  * @author Hunternif
  */
 public class ArchPlan {
-	private final Geometry geometry;
+
+	/** The container for all structures in this plan. */
+	private final Room base = new Room(this, null, new Vec3(0, 0, 0), new Vec3(0, 0, 0), 0);
 	
-	private TreeMap<Floor, List<Node>> map;
+	private final List<Gate> gates = new ArrayList<Gate>();
 	
-	public ArchPlan(Geometry config) {
-		this.geometry = config;
-		map = new TreeMap<Floor, List<Node>>();
-	}
-	
-	public Geometry getGeometry() {
-		return geometry;
+	public void addGate(Gate gate) {
+		gates.add(gate);
 	}
 	
-	public NavigableSet<Floor> getFloors() {
-		return map.navigableKeySet();
-	}
-	public List<Node> getFloorNodes(Floor floor) {
-		return map.get(floor);
-	}
-	public Entry<Floor, List<Node>> getLowerFloor(Floor floor) {
-		return map.lowerEntry(floor);
-	}
-	public Entry<Floor, List<Node>> getHigherFloor(Floor floor) {
-		return map.higherEntry(floor);
+	public List<Gate> getGates() {
+		return gates;
 	}
 	
-	protected boolean addNode(Node node) {
-		List<Node> nodes = getFloorNodes(node.getFloor());
-		if (nodes == null) {
-			nodes = new ArrayList<Node>();
-			map.put(node.getFloor(), nodes);
-		}
-		return nodes.add(node);
+	public Room getBase() {
+		return base;
 	}
+
 }
