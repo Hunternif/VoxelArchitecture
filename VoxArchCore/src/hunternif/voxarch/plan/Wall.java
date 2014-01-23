@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan;
 
+import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.vector.Vec2;
 
 public class Wall {
@@ -24,5 +25,17 @@ public class Wall {
 
 	public Room getRoom() {
 		return room;
+	}
+	
+	public double getAngleDeg() {
+		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 360 / Math.PI;
+	}
+	
+	public double getLength() {
+		return p2.distanceTo(p1);
+	}
+	
+	public double getHeight() {
+		return room.getSize().y;
 	}
 }
