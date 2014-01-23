@@ -3,6 +3,11 @@ package hunternif.voxarch.plan;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
+/**
+ * A gate between 2 {@link Room}s, can be vertical or horizontal. A gate
+ * generator should clear a passage and create some sort arch over it.
+ * @author Hunternif
+ */
 public class Gate {
 	public static enum Orientation {
 		VERTICAL, HORIZONTAL;
