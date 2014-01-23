@@ -1,5 +1,8 @@
 package hunternif.voxarch.util;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
+
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.vector.Matrix4;
@@ -11,9 +14,16 @@ import hunternif.voxarch.vector.Vec4;
  */
 public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
-	/** Angle of rotation. */
+	/** Angle of rotation. Need to remember it to rotate the blocks correctly. */
 	private double angle = 0;
 	private boolean closeGaps = false;
+	
+	/** Stack for transformations. */
+	private final Deque<StackData> stack = new ArrayDeque<StackData>();
+	private static class StackData {
+		double angle;
+		Matrix4 matrix;
+	}
 	
 	/** Transformation matrix. */
 	private Matrix4 matrix = Matrix4.identity();
@@ -58,13 +68,13 @@ public class PositionTransformer implements IBlockStorage {
 	}
 
 	/** Apply transformation of translation. */
-	public PositionTransformer translation(double x, double y, double z) {
+	public PositionTransformer translate(double x, double y, double z) {
 		Matrix4.translation(x, y, z).multiply(matrix);
 		return this;
 	}
 
 	/** Apply transformation of rotation around the Y axis. */
-	public PositionTransformer rotationY(double angle) {
+	public PositionTransformer rotateY(double angle) {
 		this.angle += angle;
 		Matrix4.rotationY(angle).multiply(matrix);
 		return this;
@@ -76,5 +86,22 @@ public class PositionTransformer implements IBlockStorage {
 	public PositionTransformer setCloseGaps(boolean closeGaps) {
 		this.closeGaps = closeGaps;
 		return this;
+	}
+	
+	/** Push current transformation info into stack. Similar to OpenGL
+	 * glPushMatrix(). */
+	public void pushTransformation() {
+		StackData data = new StackData();
+		data.angle = angle;
+		data.matrix = matrix.clone();
+		stack.push(data);
+	}
+	
+	/** Pop last transformation into from the stack. Similar to OpenGL
+	 * glPopMatrix(). */
+	public void popTransformation() {
+		StackData data = stack.poll();
+		angle = data.angle;
+		matrix = data.matrix;
 	}
 }

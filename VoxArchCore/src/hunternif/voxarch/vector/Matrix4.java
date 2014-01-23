@@ -98,4 +98,26 @@ public class Matrix4 {
 		vec.s = ns;
 		return vec;
 	}
+	
+	@Override
+	public Matrix4 clone() {
+		Matrix4 mat = new Matrix4();
+		mat.m00 = m00;
+		mat.m01 = m01;
+		mat.m02 = m02;
+		mat.m03 = m03;
+		mat.m10 = m10;
+		mat.m11 = m11;
+		mat.m12 = m12;
+		mat.m13 = m13;
+		mat.m20 = m20;
+		mat.m21 = m21;
+		mat.m22 = m22;
+		mat.m23 = m23;
+		mat.m30 = m30;
+		mat.m31 = m31;
+		mat.m32 = m32;
+		mat.m33 = m33;
+		return mat;
+	}
 }
