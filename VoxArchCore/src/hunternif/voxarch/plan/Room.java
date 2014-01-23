@@ -8,7 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Base class of the architectural plan, can have walls and contain child rooms.
+ * Base class of the architectural plan, can have walls and contain more rooms.
  * @author Hunternif
  */
 public class Room {
@@ -19,10 +19,11 @@ public class Room {
 	
 	protected final List<Wall> walls = new ArrayList<Wall>();
 	
+	/** Vector (width, height, length), doesn't take rotation into account. */
 	private final Vec3 size;
 
 	/** The coordinates in blocks of the origin point relative to the origin
-	 * of the parent node. The origin is located at the center of the floor. */
+	 * of the parent room. The origin is located at the center of the floor. */
 	private final Vec3 origin;
 	
 	private final double rotationY;
