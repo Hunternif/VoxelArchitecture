@@ -6,7 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * The architectural plan composed of {@link Room}s.
+ * The architectural plan composed of {@link Room}s and {@link Gate}s between
+ * them.
  * @author Hunternif
  */
 public class ArchPlan {
