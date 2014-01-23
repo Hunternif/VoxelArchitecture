@@ -33,7 +33,7 @@ public class Generator {
 	public void generate(ArchPlan plan, int x, int y, int z) {
 		//TODO: implement generation algorithm.
 		/*
-		 * The outline of the algorithm:
+		 * Outline of the algorithm:
 		 * 1. Recursively build each room starting from plan base.
 		 * 2. Build all the gates on the plan. The gate generators will override
 		 * 	walls with air to make passages.
@@ -44,8 +44,14 @@ public class Generator {
 		 * 2. Generate floor, still within the walls.
 		 * 3. Generate the walls.
 		 * 4. Generate the ceiling, within the walls.
-		 * 5. Generate all child rooms.
+		 * 5*. Push current generators & materials list indices onto stack.
+		 * 6*. Advance the index into the generators & materials lists.
+		 * 7. Recursively build all child rooms.
+		 * 8*. Pop the list indices.
 		 * 
+		 * The steps marked with asterisk (*) are for proposed for a simple
+		 * level-based style hierarchy.
+		 * TODO: implement a CSS-like style framework.
 		 */
 	}
 }
