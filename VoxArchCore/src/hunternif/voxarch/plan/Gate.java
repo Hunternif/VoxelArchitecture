@@ -50,8 +50,14 @@ public class Gate {
 		return room2;
 	}
 
-	public Orientation getOrientation() {
+	protected Orientation getOrientation() {
 		return orientation;
+	}
+	public boolean isVertical() {
+		return orientation == Orientation.VERTICAL;
+	}
+	public boolean isHorizontal() {
+		return orientation == Orientation.HORIZONTAL;
 	}
 
 	/** Sets rotation of this gate aligned with the closest wall of the
