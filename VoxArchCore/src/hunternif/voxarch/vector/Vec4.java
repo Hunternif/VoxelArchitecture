@@ -62,9 +62,12 @@ public class Vec4 {
 		return new Vec4(x, y, z, s);
 	}
 	
-	public double distanceTo(Vec4 vec2) {
-		return Math.sqrt((x-vec2.x)*(x-vec2.x) + (y-vec2.y)*(y-vec2.y)
-				+ (z-vec2.z)*(z-vec2.z) + (s-vec2.s)*(s-vec2.s));
+	public double squareDistanceTo(Vec4 vec) {
+		return Math.sqrt((x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y)
+				+ (z-vec.z)*(z-vec.z) + (s-vec.s)*(s-vec.s));
+	}
+	public double distanceTo(Vec4 vec) {
+		return Math.sqrt(squareDistanceTo(vec));
 	}
 	
 	@Override

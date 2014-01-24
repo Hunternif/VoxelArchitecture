@@ -9,13 +9,14 @@ import java.util.List;
 
 /**
  * Base class of the architectural plan, can have walls and contain more rooms.
+ * Contains gates between the child rooms.
  * @author Hunternif
  */
 public class Room {
-	private final ArchPlan plan;
-	
 	private final Room parent;
 	private final List<Room> children = new ArrayList<Room>();
+	
+	private final List<Gate> gates = new ArrayList<Gate>();
 	
 	protected final List<Wall> walls = new ArrayList<Wall>();
 	
@@ -28,18 +29,13 @@ public class Room {
 	
 	private final double rotationY;
 	
-	public Room(ArchPlan plan, Room parent, Vec3 origin, Vec3 size, double rotationY) {
-		this.plan = plan;
+	public Room(Room parent, Vec3 origin, Vec3 size, double rotationY) {
 		this.parent = parent;
 		this.origin = new Vec3(origin);
 		this.size = new Vec3(size);
 		this.rotationY = rotationY;
 	}
 	
-	public ArchPlan getPlan() {
-		return plan;
-	}
-
 	public Vec3 getOrigin() {
 		return origin;
 	}
@@ -67,6 +63,15 @@ public class Room {
 	public double getRotationY() {
 		return rotationY;
 	}
+	
+	public void addGate(Gate gate) {
+		gates.add(gate);
+	}
+	
+	public List<Gate> getGates() {
+		return gates;
+	}
+	
 	
 	/** Fills the {@link #walls} array with 4 walls defined by the {@link #size}
 	 * vector. */
@@ -109,5 +114,29 @@ public class Room {
 		// The gate has to be about the size of the intersection of the 2 rooms
 		// Use vertical gate if the room is above or below this one, otherwise
 		// use horizontal gate.
+	}
+	
+	/** Calculates the position of the origin of the room relative to the origin
+	 * of the {@link ArchPlan} by adding together all its parent rooms' origins. */
+	public Vec3 findGlobalPosition() {
+		Vec3 pos = new Vec3(getOrigin());
+		Room room = this;
+		while (room.getParent() != null) {
+			room = room.getParent();
+			pos.add(room.getOrigin());
+		}
+		return pos;
+	}
+	
+	/** Calculates the total rotation of the room around the Y axis by adding
+	 * all its parent rooms' rotations. */
+	public double findGlobalRotationY() {
+		double rot = getRotationY();
+		Room room = this;
+		while (room.getParent() != null) {
+			room = room.getParent();
+			rot += room.getRotationY();
+		}
+		return rot;
 	}
 }

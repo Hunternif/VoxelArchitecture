@@ -34,9 +34,7 @@ public class Generator {
 		//TODO: implement generation algorithm.
 		/*
 		 * Outline of the algorithm:
-		 * 1. Recursively build each room starting from plan base.
-		 * 2. Build all the gates on the plan. The gate generators will override
-		 * 	walls with air to make passages.
+		 * Recursively build each room starting from the plan base.
 		 * 
 		 * Building a room:
 		 * 1. Clear the volume within the walls of the room. Use RoomBlockOutput
@@ -48,6 +46,8 @@ public class Generator {
 		 * 6*. Advance the index into the generators & materials lists.
 		 * 7. Recursively build all child rooms.
 		 * 8*. Pop the list indices.
+		 * 9. Build the gates within this room. The gate generators will
+		 * 	override walls with air to make passages.
 		 * 
 		 * The steps marked with asterisk (*) are for proposed for a simple
 		 * level-based style hierarchy.

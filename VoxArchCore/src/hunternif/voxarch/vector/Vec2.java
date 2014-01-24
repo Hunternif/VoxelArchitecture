@@ -55,6 +55,13 @@ public class Vec2 {
 		return this;
 	}
 	
+	/** Modifies and returns itself. */
+	public Vec2 multiply(double m) {
+		this.x *= m;
+		this.y *= m;
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ")";
@@ -65,8 +72,11 @@ public class Vec2 {
 		return new Vec2(x, y);
 	}
 	
-	public double distanceTo(Vec2 vec2) {
-		return Math.sqrt((x-vec2.x)*(x-vec2.x) + (y-vec2.y)*(y-vec2.y));
+	public double squareDistanceTo(Vec2 vec) {
+		return (x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y);
+	}
+	public double distanceTo(Vec2 vec) {
+		return Math.sqrt(squareDistanceTo(vec));
 	}
 	
 	@Override
@@ -75,5 +85,9 @@ public class Vec2 {
 			return false;
 		Vec2 vec = (Vec2) obj;
 		return vec.x == x && vec.y == y;
+	}
+	
+	public double dotProduct(Vec2 vec) {
+		return x*vec.x + y*vec.y;
 	}
 }

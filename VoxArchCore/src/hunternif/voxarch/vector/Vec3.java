@@ -62,6 +62,14 @@ public class Vec3 {
 		return this;
 	}
 	
+	/** Modifies and returns itself. */
+	public Vec3 multiply(double m) {
+		this.x *= m;
+		this.y *= m;
+		this.z *= m;
+		return this;
+	}
+	
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ", " + z + ")";
@@ -72,8 +80,11 @@ public class Vec3 {
 		return new Vec3(x, y, z);
 	}
 	
+	public double squareDistanceTo(Vec3 vec) {
+		return (x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y) + (z-vec.z)*(z-vec.z);
+	}
 	public double distanceTo(Vec3 vec) {
-		return Math.sqrt((x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y) + (z-vec.z)*(z-vec.z));
+		return Math.sqrt(squareDistanceTo(vec));
 	}
 	
 	@Override
@@ -82,6 +93,10 @@ public class Vec3 {
 			return false;
 		Vec3 vec = (Vec3) obj;
 		return vec.x == x && vec.y == y && vec.z == z;
+	}
+	
+	public double dotProduct(Vec3 vec) {
+		return x*vec.x + y*vec.y + z*vec.z;
 	}
 	
 	/** Returns a new vector that is the cross product [this x vec] */

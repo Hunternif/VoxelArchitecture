@@ -10,7 +10,7 @@ import org.junit.Test;
 public class RoomTest {
 	@Test
 	public void testFourWalls() {
-		Room room = new Room(null, null, new Vec3(0, 0, 0), new Vec3(2, 2, 3), 0);
+		Room room = new Room(null, new Vec3(0, 0, 0), new Vec3(2, 2, 3), 0);
 		room.createFourWalls();
 		assertEquals(4, room.getWalls().size());
 		assertEquals(new Vec2(1, 1.5), room.getWalls().get(0).getP1());
@@ -25,7 +25,7 @@ public class RoomTest {
 	
 	@Test
 	public void testFourRoundWalls() {
-		Room room = new Room(null, null, new Vec3(0, 0, 0), new Vec3(2, 2, 3), 0);
+		Room room = new Room(null, new Vec3(0, 0, 0), new Vec3(2, 2, 3), 0);
 		room.createRoundWalls(4);
 		assertEquals(4, room.getWalls().size());
 		assertEquals(new Vec2(1, 0), room.getWalls().get(0).getP1());
