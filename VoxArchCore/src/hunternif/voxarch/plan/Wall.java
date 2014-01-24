@@ -1,6 +1,5 @@
 package hunternif.voxarch.plan;
 
-import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.vector.Vec2;
 
 public class Wall {

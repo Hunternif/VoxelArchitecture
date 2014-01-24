@@ -72,8 +72,8 @@ public class Vec3 {
 		return new Vec3(x, y, z);
 	}
 	
-	public double distanceTo(Vec3 vec2) {
-		return Math.sqrt((x-vec2.x)*(x-vec2.x) + (y-vec2.y)*(y-vec2.y) + (z-vec2.z)*(z-vec2.z));
+	public double distanceTo(Vec3 vec) {
+		return Math.sqrt((x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y) + (z-vec.z)*(z-vec.z));
 	}
 	
 	@Override
@@ -82,5 +82,10 @@ public class Vec3 {
 			return false;
 		Vec3 vec = (Vec3) obj;
 		return vec.x == x && vec.y == y && vec.z == z;
+	}
+	
+	/** Returns a new vector that is the cross product [this x vec] */
+	public Vec3 crossProduct(Vec3 vec) {
+		return new Vec3(y*vec.z - z*vec.y, z*vec.x - x*vec.z, x*vec.y - y*vec.x);
 	}
 }

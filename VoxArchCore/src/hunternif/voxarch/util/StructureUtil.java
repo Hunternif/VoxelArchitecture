@@ -99,14 +99,19 @@ public class StructureUtil {
 	 * filled uniformly with the specified block data. */
 	public static Structure createFilledBox(IStorageFactory factory, int width, int height, int length, BlockData block) {
 		Structure struct = new Structure(factory.createFixed(width, height, length));
-		for (int x = 0; x < width; x++) {
-			for (int y = 0; y < height; y++) {
-				for (int z = 0; z < length; z++) {
-					struct.getStorage().setBlock(x, y, z, block);
+		fill(struct.getStorage(), block);
+		return struct;
+	}
+	
+	/** Fills the specified fixed-size block storage uniformly with given block. */
+	public static void fill(IFixedBlockStorage storage, BlockData block) {
+		for (int x = 0; x < storage.getWidth(); x++) {
+			for (int y = 0; y < storage.getHeight(); y++) {
+				for (int z = 0; z < storage.getLength(); z++) {
+					storage.setBlock(x, y, z, block);
 				}
 			}
 		}
-		return struct;
 	}
 	
 	/**
