@@ -73,11 +73,19 @@ public class Room {
 	public void createFourWalls() {
 		double a = size.x/2;
 		double b = size.z/2;
+		/*
+		 * Aerial view of the reference frame:
+		 * Y
+		 *  +----> X (East)
+		 *  |
+		 *  V
+		 *  Z
+		 */
 		// Going counterclockwise:
-		walls.add(new Wall(this, new Vec2(a, -b), new Vec2(a, b)));
-		walls.add(new Wall(this, new Vec2(a, b), new Vec2(-a, b)));
-		walls.add(new Wall(this, new Vec2(-a, b), new Vec2(-a, -b)));
-		walls.add(new Wall(this, new Vec2(-a, -b), new Vec2(a, -b)));
+		walls.add(new Wall(this, new Vec2(a, b), new Vec2(a, -b)));
+		walls.add(new Wall(this, new Vec2(a, -b), new Vec2(-a, -b)));
+		walls.add(new Wall(this, new Vec2(-a, -b), new Vec2(-a, b)));
+		walls.add(new Wall(this, new Vec2(-a, b), new Vec2(a, b)));
 	}
 	
 	/** Fills the {@link #walls} array with a cycle of walls approximating an
@@ -88,10 +96,11 @@ public class Room {
 		double a = size.x/2;
 		double b = size.z/2;
 		double angleStep = 360d / (double)vertices;
+		// Going counterclockwise:
 		for (double angle = 0; angle < 360; angle += angleStep) {
 			walls.add(new Wall(this,
-					new Vec2(a * MathUtil.cosDeg(angle), b * MathUtil.sinDeg(angle)),
-					new Vec2(a * MathUtil.cosDeg(angle + angleStep), b * MathUtil.sinDeg(angle + angleStep))));
+					new Vec2(a * MathUtil.cosDeg(angle), - b * MathUtil.sinDeg(angle)),
+					new Vec2(a * MathUtil.cosDeg(angle + angleStep), - b * MathUtil.sinDeg(angle + angleStep))));
 		}
 	}
 	
