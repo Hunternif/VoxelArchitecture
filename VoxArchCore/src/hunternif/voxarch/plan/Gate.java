@@ -1,6 +1,5 @@
 package hunternif.voxarch.plan;
 
-import hunternif.voxarch.util.RoomUtil;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
@@ -19,20 +18,21 @@ public class Gate {
 	/** Coordinates of the origin of the parent room. */
 	private final Vec3 origin;
 	
-	private double rotationY;
+	private final double rotationY;
 	
 	/** For vertical gates it is (width, height), for horizontal (width, length). */
 	private final Vec2 size;
 	
 	private final Orientation orientation;
 	
-	public Gate(Room parent, Room room1, Room room2, Vec3 origin, Vec2 size, Orientation orientation) {
+	public Gate(Room parent, Room room1, Room room2, Vec3 origin, Vec2 size, Orientation orientation, double rotationY) {
 		this.parent = parent;
 		this.room1 = room1;
 		this.room2 = room2;
 		this.origin = origin;
 		this.size = size;
 		this.orientation = orientation;
+		this.rotationY = rotationY;
 	}
 
 	public Vec3 getOrigin() {
@@ -43,9 +43,6 @@ public class Gate {
 		return size;
 	}
 
-	public void setRotationY(double value) {
-		this.rotationY = value;
-	}
 	public double getRotationY() {
 		return rotationY;
 	}
@@ -70,18 +67,5 @@ public class Gate {
 	}
 	public boolean isHorizontal() {
 		return orientation == Orientation.HORIZONTAL;
-	}
-
-	/** Sets rotation of this gate aligned with the closest wall of the
-	 * specified room. Used when connecting rooms together during initial
-	 * stage of generation of {@link ArchPlan}. The room and this gate are
-	 * assumed to have the same parent, i.e. position and rotation relative
-	 * to it. */
-	public void alignToClosestWall(Room room) {
-		Vec2 origin2D = new Vec2(origin.x, origin.z);
-		Wall closest = RoomUtil.findClosestWall(room, origin2D);
-		if (closest != null) {
-			setRotationY(closest.getAngleDeg() + room.getRotationY());
-		}
 	}
 }

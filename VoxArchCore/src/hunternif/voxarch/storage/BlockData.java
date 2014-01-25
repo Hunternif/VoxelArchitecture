@@ -38,7 +38,7 @@ public class BlockData {
 	
 	/** Rotate the BlockOrientation (if not NONE) counterclockwise by the
 	 * specified angle. */
-	public void rotate(float angle) {
+	public void rotate(double angle) {
 		if (orient == BlockOrientation.NONE) return;
 		setOrientaion(orient.rotate(angle));
 	}
