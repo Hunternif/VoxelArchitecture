@@ -51,4 +51,14 @@ public class RoomTest {
 		assertEquals(room.getWalls().get(2), RoomUtil.findClosestWall(room, new Vec2(-1, 0)));
 		assertEquals(room.getWalls().get(2), RoomUtil.findClosestWall(room, new Vec2(-2, 0)));
 	}
+	
+	@Test
+	public void testClosestRotatedWall() {
+		Room room = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 2, 3), 45);
+		room.createFourWalls();
+		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, -1)));
+		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(1, 1)));
+		assertEquals(room.getWalls().get(1), RoomUtil.findClosestWall(room, new Vec2(-1, -1)));
+		assertEquals(room.getWalls().get(2), RoomUtil.findClosestWall(room, new Vec2(-1, 1)));
+	}
 }
