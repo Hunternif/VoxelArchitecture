@@ -4,5 +4,5 @@ import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.vector.Vec2;
 
 public interface CeilingGenerator {
-	void generateFloor(RoomConstrainedStorage dest, Vec2 size, Materials materials);
+	void generateCeiling(RoomConstrainedStorage dest, Vec2 size, Materials materials);
 }

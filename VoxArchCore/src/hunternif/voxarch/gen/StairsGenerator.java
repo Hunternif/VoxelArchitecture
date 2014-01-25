@@ -4,5 +4,5 @@ import hunternif.voxarch.plan.FlightOfStairs;
 import hunternif.voxarch.storage.IBlockStorage;
 
 public interface StairsGenerator {
-	void generateFloor(IBlockStorage dest, FlightOfStairs stairs, Materials materials);
+	void generateStairs(IBlockStorage dest, FlightOfStairs stairs, Materials materials);
 }
