@@ -1,8 +1,6 @@
 package hunternif.voxarch.plan;
 
 import hunternif.voxarch.util.MathUtil;
-import hunternif.voxarch.util.RoomUtil;
-import hunternif.voxarch.vector.Matrix2;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
@@ -108,38 +106,6 @@ public class Room {
 			walls.add(new Wall(this,
 					new Vec2(a * MathUtil.cosDeg(angle), - b * MathUtil.sinDeg(angle)),
 					new Vec2(a * MathUtil.cosDeg(angle + angleStep), - b * MathUtil.sinDeg(angle + angleStep))));
-		}
-	}
-	
-	public void connectHorizontallyTo(Room room) {
-		//TODO create a gate between the rooms and align it to wall.
-		// The gate has to be about the size of the intersection of the 2 rooms
-		// Use vertical gate if the room is above or below this one, otherwise
-		// use horizontal gate.
-		// Algorithm:
-		// 1. Find a wall in this room closest to 
-		// 2. ???
-		// 3. For each of the 2 rooms find the wall closest to the point.
-		// 4. Set the gate to the size of the smallest of the 2 walls, its y
-		//	coordinate to the average of the walls' y coordinate, and align it
-		// 	with the wall belonging to the argument room.
-		
-		// Check every direction this room is facing and see if it faces the
-		// target room.
-		Matrix2 rot = Matrix2.rotationMatrix(getRotationY());
-		Vec2 roomCenter = new Vec2(getOrigin().x, getOrigin().z);
-		double halfWidth = getSize().x/2;
-		double halfLength = getSize().z/2;
-		Vec2 east = rot.multiply(new Vec2(halfWidth, 0)).add(roomCenter);
-		Vec2 north = rot.multiply(new Vec2(0, -halfLength)).add(roomCenter);
-		Vec2 west = rot.multiply(new Vec2(-halfWidth, 0)).add(roomCenter);
-		Vec2 south = rot.multiply(new Vec2(0, halfLength)).add(roomCenter);
-		Vec2[] targets = {east, north, west, south};
-		
-		Vec2 traced = null; // The point on the bounding box of the target room.
-		for (int i = 0; i < 4; i++) {
-			traced = RoomUtil.rayTrace(room, roomCenter, targets[i]);
-			if (traced != null) break;
 		}
 	}
 	
