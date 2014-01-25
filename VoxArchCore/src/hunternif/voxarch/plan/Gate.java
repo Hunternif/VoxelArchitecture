@@ -25,6 +25,10 @@ public class Gate {
 	
 	private final Orientation orientation;
 	
+	/** The type specifies a purpose for the room. It can be used by a generator
+	 * to assign a particular style to it. */
+	private String type = null;
+	
 	public Gate(Room parent, Room room1, Room room2, Vec3 origin, Vec2 size, Orientation orientation, double rotationY) {
 		this.parent = parent;
 		this.room1 = room1;
@@ -67,5 +71,13 @@ public class Gate {
 	}
 	public boolean isHorizontal() {
 		return orientation == Orientation.HORIZONTAL;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
 	}
 }

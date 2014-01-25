@@ -29,6 +29,13 @@ public class Room {
 	
 	private final double rotationY;
 	
+	/** These flags determine whether the floor or the ceiling will be generated. */
+	private boolean hasCeiling = true, hasFloor = true;
+	
+	/** The type specifies a purpose for the room. It can be used by a generator
+	 * to assign a particular style to it. */
+	private String type = null;
+	
 	public Room(Room parent, Vec3 origin, Vec3 size, double rotationY) {
 		this.parent = parent;
 		this.origin = new Vec3(origin);
@@ -131,5 +138,32 @@ public class Room {
 			rot += room.getRotationY();
 		}
 		return rot;
+	}
+
+	public boolean hasCeiling() {
+		return hasCeiling;
+	}
+
+	public Room setHasCeiling(boolean hasCeiling) {
+		this.hasCeiling = hasCeiling;
+		return this;
+	}
+
+	public boolean hasFloor() {
+		return hasFloor;
+	}
+
+	public Room setHasFloor(boolean hasFloor) {
+		this.hasFloor = hasFloor;
+		return this;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public Room setType(String type) {
+		this.type = type;
+		return this;
 	}
 }

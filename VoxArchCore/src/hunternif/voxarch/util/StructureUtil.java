@@ -132,6 +132,19 @@ public class StructureUtil {
 	}
 	
 	/**
+	 * Remove all blocks from the specified fixed-size block storage.
+	 */
+	public static void clearStorage(IFixedBlockStorage storage) {
+		for (int x = 0; x < storage.getWidth(); x++) {
+			for (int y = 0; y < storage.getHeight(); y++) {
+				for (int z = 0; z < storage.getLength(); z++) {
+					storage.clearBlock(x, y, z);
+				}
+			}
+		}
+	}
+	
+	/**
 	 * Copy and paste blocks from one storage into another at the specified
 	 * coordinates.
 	 */

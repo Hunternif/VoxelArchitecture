@@ -3,6 +3,6 @@ package hunternif.voxarch.gen;
 import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.storage.IBlockStorage;
 
-public interface VerGateGenerator {
-	void generateVerGate(IBlockStorage dest, Gate gate, Materials materials);
+public interface VerGateGenerator extends GateGenerator {
+	void generateGate(IBlockStorage dest, Gate gate, Materials materials);
 }
