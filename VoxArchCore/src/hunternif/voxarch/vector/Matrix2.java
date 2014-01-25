@@ -45,6 +45,16 @@ public class Matrix2 {
 		mat.m11 = 1;
 		return mat;
 	}
+
+	/** Create a new matrix with the specified vectors defining its columns. */
+	public static Matrix2 composeFrom(Vec2 vec1, Vec2 vec2) {
+		Matrix2 mat = new Matrix2();
+		mat.m00 = vec1.x;
+		mat.m10 = vec1.y;
+		mat.m01 = vec2.x;
+		mat.m11 = vec2.y;
+		return mat;
+	}
 	
 	/**
 	 * Modifies this specified matrix to be the product (this * mat).
@@ -120,5 +130,9 @@ public class Matrix2 {
 	@Override
 	public String toString() {
 		return m00 + " " + m01 + "\n" + m10 + " " + m11;
+	}
+	
+	public double determinant() {
+		return m00*m11 - m01*m10;
 	}
 }
