@@ -23,7 +23,9 @@ public class RoomUtil {
 									   wall.getP2().y - wall.getP1().y);
 			double t = new Vec2(p).subtract(wall.getP1()).dotProduct(wallVector) /
 					wallVector.dotProduct(wallVector);
-			// We're measuring the distance to a line segment defined by wallVector:
+			// We're measuring the distance to a line segment defined by wallVector,
+			// therefore we constrain the how far the orthogonally projected point
+			// can go along the line.
 			if (t < 0) t = 0;
 			if (t > 1) t = 1;
 			Vec2 dest = new Vec2(wall.getP1()).add(wallVector.multiply(t));
