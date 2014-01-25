@@ -21,8 +21,8 @@ public class RoomUtil {
 		for (Wall wall : room.getWalls()) {
 			Vec2 wallVector = new Vec2(wall.getP2().x - wall.getP1().x,
 									   wall.getP2().y - wall.getP1().y);
-			double t = (p.dotProduct(wallVector) - wall.getP1().dotProduct(wall.getP1())) /
-					(wall.getP1().dotProduct(wallVector) + wallVector.dotProduct(wallVector));
+			double t = new Vec2(p).subtract(wall.getP1()).dotProduct(wallVector) /
+					wallVector.dotProduct(wallVector);
 			// We're measuring the distance to a line segment defined by wallVector:
 			if (t < 0) t = 0;
 			if (t > 1) t = 1;
