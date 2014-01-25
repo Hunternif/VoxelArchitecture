@@ -55,6 +55,11 @@ public class MathUtil {
 		return 360 * ceiling(- angle / 360) + angle;
 	}
 	
+	public static int floor(double a) {
+		int floor = (int) a;
+		return a < (double) floor ? floor - 1 : floor;
+	}
+	
 	public static int ceiling(float a) {
 		int ceil = (int) a;
 		return a > (float) ceil ? ceil + 1 : ceil;
