@@ -28,7 +28,7 @@ public class Wall {
 	
 	/** Returns the angle between the vector of this wall and the X axis. */
 	public double getAngleDeg() {
-		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 360 / Math.PI;
+		return Math.atan2(p2.y - p1.y, p2.x - p1.x) * 180 / Math.PI;
 	}
 	
 	public double getLength() {
