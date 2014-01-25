@@ -3,7 +3,6 @@ package hunternif.voxarch.gen.impl;
 import hunternif.voxarch.gen.HorGateGenerator;
 import hunternif.voxarch.gen.Materials;
 import hunternif.voxarch.plan.Gate;
-import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.MathUtil;
 
@@ -17,7 +16,6 @@ public class SimpleHorGateGenerator implements HorGateGenerator {
 		int height = Math.max(minHeight, MathUtil.roundDown(gate.getSize().y - 1));
 		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x - 2));
 		int startX = width/2, endX = width - startX;
-		BlockData block = materials.gateBlocks()[0];
 		for (int x = startX; x < endX; x++) {
 			for (int y = 0; y < height; y++) {
 				dest.clearBlock(x, y, 0);
