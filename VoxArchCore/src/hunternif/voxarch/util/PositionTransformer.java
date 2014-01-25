@@ -1,12 +1,12 @@
 package hunternif.voxarch.util;
 
-import java.util.ArrayDeque;
-import java.util.Deque;
-
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.vector.Matrix4;
 import hunternif.voxarch.vector.Vec4;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
 
 /**
  * A shell over storage, helper class for transforming block coordinates.
@@ -69,14 +69,14 @@ public class PositionTransformer implements IBlockStorage {
 
 	/** Apply transformation of translation. */
 	public PositionTransformer translate(double x, double y, double z) {
-		Matrix4.translation(x, y, z).multiply(matrix);
+		matrix = matrix.multiply(Matrix4.translation(x, y, z));
 		return this;
 	}
 
 	/** Apply transformation of rotation around the Y axis. */
 	public PositionTransformer rotateY(double angle) {
 		this.angle += angle;
-		Matrix4.rotationY(angle).multiply(matrix);
+		matrix = matrix.multiply(Matrix4.rotationY(angle));
 		return this;
 	}
 
