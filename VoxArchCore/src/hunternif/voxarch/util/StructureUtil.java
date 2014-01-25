@@ -19,7 +19,7 @@ public class StructureUtil {
 	 * @param angle		is in degrees, counterclockwise.
 	 * @param closeGaps	attempt to leave no holes caused by aliasing.
 	 */
-	public static Structure rotate(IStorageFactory factory, Structure toRotate, float angle, boolean closeGaps) {
+	public static Structure rotate(IStorageFactory factory, Structure toRotate, double angle, boolean closeGaps) {
 		angle = MathUtil.clampAngle(angle);
 		/*
 		 * Aerial view of the reference frame:

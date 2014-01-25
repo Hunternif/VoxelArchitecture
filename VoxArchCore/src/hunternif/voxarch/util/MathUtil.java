@@ -50,7 +50,7 @@ public class MathUtil {
 	}
 	
 	/** Clamps the angle in the interval [0, 360), performing 360*N shift if needed. */
-	public static float clampAngle(float angle) {
+	public static double clampAngle(double angle) {
 		if (angle >= 0) return angle % 360;
 		return 360 * ceiling(- angle / 360) + angle;
 	}

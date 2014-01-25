@@ -9,10 +9,10 @@ package hunternif.voxarch.util;
 public enum BlockOrientation {
 	NONE(0), EAST(0), NORTH(90), WEST(180), SOUTH(270);
 	
-	public final float angle;
+	public final double angle;
 	private static final BlockOrientation[] rotations = {EAST, NORTH, WEST, SOUTH};
 	
-	private BlockOrientation(float angle) {
+	private BlockOrientation(double angle) {
 		this.angle = angle;
 	}
 	
@@ -23,7 +23,7 @@ public enum BlockOrientation {
 	 * counterclockwise rotation will be returned.
 	 * </p>
 	 */
-	public static BlockOrientation closestTo(float angle) {
+	public static BlockOrientation closestTo(double angle) {
 		angle = MathUtil.clampAngle(angle);
 		int index = MathUtil.roundUp(angle / 90);
 		if (index >= rotations.length) index = 0;
@@ -34,7 +34,7 @@ public enum BlockOrientation {
 	 * Returns the closest orientation which comes first in the direction of the
 	 * rotation (positive angle is counterclockwise rotation).
 	 */
-	public BlockOrientation rotate(float angle) {
+	public BlockOrientation rotate(double angle) {
 		if (this == NONE) return this;
 		
 		boolean clockwise = angle < 0;
