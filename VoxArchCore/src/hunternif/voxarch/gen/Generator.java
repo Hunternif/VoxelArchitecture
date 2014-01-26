@@ -139,6 +139,11 @@ public class Generator {
 			if (gateMaterials == null) continue;
 			pos.pushTransformation();
 			pos.translate(gate.getOrigin()).rotateY(gate.getRotationY());
+			if (gate.isHorizontal()) {
+				pos.translate(-gate.getSize().x/2 + 0.5, 0, 0);
+			} else {
+				pos.translate(-gate.getSize().x/2 + 0.5, 0, -gate.getSize().y/2 + 0.5);
+			}
 			gen.generateGate(pos, gate, materials);
 			pos.popTransformation();
 		}

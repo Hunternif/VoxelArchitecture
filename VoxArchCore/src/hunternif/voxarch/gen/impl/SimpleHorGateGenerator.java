@@ -10,15 +10,18 @@ public class SimpleHorGateGenerator implements HorGateGenerator {
 
 	public int minWidth = 1;
 	public int minHeight = 2;
+	/** Passage will be cleared this far along the Z axis in both directions. */
+	public int clearance = 1;
 	
 	@Override
 	public void generateGate(IBlockStorage dest, Gate gate, Materials materials) {
 		int height = Math.max(minHeight, MathUtil.roundDown(gate.getSize().y - 1));
 		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x - 2));
-		int startX = width/2, endX = width - startX;
-		for (int x = startX; x < endX; x++) {
+		for (int x = 1; x < width + 1; x++) {
 			for (int y = 0; y < height; y++) {
-				dest.clearBlock(x, y, 0);
+				for (int z = -clearance; z <= clearance; z++) {
+					dest.clearBlock(x, y, z);
+				}
 			}
 		}
 	}
