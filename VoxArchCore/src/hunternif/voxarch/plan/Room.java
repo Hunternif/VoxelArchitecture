@@ -56,6 +56,11 @@ public class Room {
 	public void addChild(Room child) {
 		children.add(child);
 	}
+	public Room addChild(Vec3 origin, Vec3 size, double rotationY) {
+		Room room = new Room(this, origin, size, rotationY);
+		addChild(room);
+		return room;
+	}
 
 	public List<Room> getChildren() {
 		return children;
