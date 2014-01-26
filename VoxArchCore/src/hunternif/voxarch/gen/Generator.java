@@ -73,7 +73,10 @@ public class Generator {
 	protected void generateRoom(PositionTransformer pos, Room room) {
 		RoomConstrainedStorage volume = new RoomConstrainedStorage(pos, room);
 		// Clear volume within the room:
+		pos.pushTransformation();
+		pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
 		StructureUtil.clearStorage(volume);
+		pos.popTransformation();
 		// If found materials, proceed with generation:
 		Materials materials = materialsMap.get(room.getType());
 		if (materials == null) materials = defaultMaterials;
@@ -83,7 +86,10 @@ public class Generator {
 				FloorGenerator floorGen = floorGenMap.get(room.getType());
 				if (floorGen == null) floorGen = defaultFloorGenerator;
 				if (floorGen != null) {
+					pos.pushTransformation();
+					pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
 					floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+					pos.popTransformation();
 				}
 			}
 			// Generate walls:
@@ -103,9 +109,10 @@ public class Generator {
 				CeilingGenerator ceilGen = ceilingGenMap.get(room.getType());
 				if (ceilGen == null) ceilGen = defaultCeilingGenerator;
 				if (ceilGen != null) {
-					pos.translate(0, room.getSize().y, 0);
+					pos.pushTransformation();
+					pos.translate(-room.getSize().x/2, room.getSize().y-1, -room.getSize().z/2);
 					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
-					pos.translate(0, -room.getSize().y, 0);
+					pos.popTransformation();
 				}
 			}
 		}

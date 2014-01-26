@@ -11,11 +11,11 @@ public class SimpleCeilingGenerator implements CeilingGenerator {
 
 	@Override
 	public void generateCeiling(RoomConstrainedStorage dest, Vec2 size, Materials materials) {
-		int halfWidth = MathUtil.ceiling(size.x/2);
-		int halfLength = MathUtil.ceiling(size.y/2);
+		int width = MathUtil.ceiling(size.x);
+		int length = MathUtil.ceiling(size.y);
 		BlockData block = materials.ceilingBlocks()[0];
-		for (int x = -halfWidth; x < halfWidth; x++) {
-			for (int z = -halfLength; z < halfLength; z++) {
+		for (int x = 0; x < width; x++) {
+			for (int z = 0; z < length; z++) {
 				dest.setBlock(x, 0, z, block);
 			}
 		}
