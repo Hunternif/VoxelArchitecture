@@ -47,21 +47,19 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	}
 	
 	/** Returns true if the specified point is within the volume of this room.
-	 * When checking block coordinates, use the center of the block instead of
-	 * its corner. */
+	 * The coordinates are relative to the corner of the room. */
 	//TODO: check more rigorously, there is a bug here!
 	public boolean isWithinRoom(double x, double y, double z) {
 		// Check if the point is above the floor and below the ceiling:
-		if (y < room.getOrigin().y || y > room.getOrigin().y + room.getSize().y) {
+		if (y < 0 || y > room.getSize().y) {
 			return false;
 		}
 		// Check if the point is within the walls:
 		for (Wall wall : room.getWalls()) {
-			// The supplied (x, y, z) are absolute, but wall coordinates are
-			// relative to the room's origin. Keeping that in mind, find the
-			// vector from the wall's P1 to the point in question:
-			Vec3 point = new Vec3(x - room.getOrigin().x - wall.getP1().x, 0,
-								  z - room.getOrigin().z - wall.getP1().y);
+			// + 0.5 is to account for the fact that walls run through the
+			// middle of blocks:
+			Vec3 point = new Vec3(x - room.getSize().x/2 + 0.5 - wall.getP1().x, 0,
+								  z - room.getSize().z/2 + 0.5 - wall.getP1().y);
 			// If the point is inside the room, then the cross product of the
 			// wall vector with it will point upwards.
 			Vec3 wallVec = getWallVector(wall);

@@ -11,6 +11,11 @@ import hunternif.voxarch.vector.Vec3;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class RoomConstrainedStorageTest {
 	@Test
 	public void testNoWalls() {

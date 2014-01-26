@@ -34,7 +34,8 @@ public class Wall {
 	}
 	
 	public double getLength() {
-		return p2.distanceTo(p1);
+		// Plus 1 because the room runs through the middle of blocks:
+		return p2.distanceTo(p1) + 1;
 	}
 	
 	public double getHeight() {

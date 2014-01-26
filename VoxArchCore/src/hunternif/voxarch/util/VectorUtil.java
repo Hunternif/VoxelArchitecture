@@ -2,6 +2,11 @@ package hunternif.voxarch.util;
 
 import hunternif.voxarch.vector.Vec2;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class VectorUtil {
 	/**
 	 * Returns the point on a line segment closest to the specified point.

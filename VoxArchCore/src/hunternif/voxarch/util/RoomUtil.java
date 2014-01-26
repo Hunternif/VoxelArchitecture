@@ -7,6 +7,11 @@ import hunternif.voxarch.vector.Matrix2;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class RoomUtil {
 	/**
 	 * Returns the wall in the room that is closest to the specified point on

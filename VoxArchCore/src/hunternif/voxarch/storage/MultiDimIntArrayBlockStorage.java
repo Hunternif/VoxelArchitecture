@@ -1,5 +1,7 @@
 package hunternif.voxarch.storage;
 
+import hunternif.voxarch.util.DebugUtil;
+
 /**
  * IFixedBlockStorage implementation using multidimensional array of integers.
  * @author Hunternif
@@ -62,17 +64,9 @@ public class MultiDimIntArrayBlockStorage implements IFixedBlockStorage {
 		return array[0][0].length;
 	}
 	
-	/** Returns a multiline representation of a horizontal layer. */
-	public String printLayer(int y) {
-		StringBuilder sb = new StringBuilder();
-		for (int z = 0; z < getLength(); z++) {
-			if (z > 0) sb.append("\n");
-			for (int x = 0; x < getWidth(); x++) {
-				if (x > 0) sb.append(" ");
-				sb.append(array[x][y][z][0]);
-			}
-		}
-		return sb.toString();
+	@Override
+	public String toString() {
+		return DebugUtil.printFixedStorage(this);
 	}
 
 }

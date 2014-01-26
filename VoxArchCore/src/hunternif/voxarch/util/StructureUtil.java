@@ -9,6 +9,11 @@ import hunternif.voxarch.vector.IntVec3;
 import hunternif.voxarch.vector.Matrix2;
 import hunternif.voxarch.vector.Vec2;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class StructureUtil {
 	/**
 	 * Creates a new structure with the content of the specified structure
@@ -118,10 +123,10 @@ public class StructureUtil {
 	 * <p><i>Deprecated. Use {@link RoomConstrainedStorage} instead.</i></p>
 	 */
 	@Deprecated
-	public static void clearVolume(IBlockStorage storage, Region3 volume, IBlockFilter filter) {
-		for (int x = volume.minX; x <= volume.maxX; x++) {
-			for (int z = volume.minZ; z <= volume.maxZ; z++) {
-				for (int y = volume.minY; y <= volume.maxY; y++) {
+	public static void clearVolume(IBlockStorage storage, IntVec3 from, IntVec3 to, IBlockFilter filter) {
+		for (int x = from.x; x <= to.x; x++) {
+			for (int z = from.z; z <= to.z; z++) {
+				for (int y = from.y; y <= to.y; y++) {
 					BlockData block = storage.getBlock(x, y, z);
 					if (!filter.accept(block)) {
 						storage.clearBlock(x, y, z);

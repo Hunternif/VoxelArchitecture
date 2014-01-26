@@ -8,13 +8,20 @@ import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
+import hunternif.voxarch.util.DebugUtil;
 import hunternif.voxarch.util.RoomUtil;
+import hunternif.voxarch.vector.IntVec3;
 import hunternif.voxarch.vector.Vec3;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class GeneratorTest {
 	private static BlockData blockFloor = new BlockData(1);
 	private static BlockData blockWall = new BlockData(2);
@@ -63,21 +70,40 @@ public class GeneratorTest {
 	@Test
 	public void test2Rooms() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(plan.getBase(), new Vec3(1, 0, 1), new Vec3(3, 4, 3), 0);
+		Room room1 = new Room(plan.getBase(), new Vec3(1, 0, 1), new Vec3(3, 5, 3), 0);
 		room1.createFourWalls();
-		Room room2 = new Room(plan.getBase(), new Vec3(4, 0, 1), new Vec3(3, 5, 3), 0);
-		//FIXME: bug: the 2nd room doesn't have ceiling nor floor
+		Room room2 = new Room(plan.getBase(), new Vec3(4, 0, 1), new Vec3(3, 6, 3), 0);
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addGate(RoomUtil.createHorGateBetween(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
-		for (int y = 0; y < 6; y++) {
-			System.out.println(out.printLayer(y));
-			System.out.println("\n");
-		}
-		fail();
-		//assertEquals(blockFloor, out.getBlock(x, 0, z));
+		String expected = ""
+				+ "2 2 2 2 2 2\n"
+				+ "2 1 2 2 1 2\n"
+				+ "2 2 2 2 2 2\n"
+				+ "\n"
+				+ "2 2 2 2 2 2\n"
+				+ "2 0 0 2 0 2\n"
+				+ "2 2 2 2 2 2\n"
+				+ "\n"
+				+ "2 2 2 2 2 2\n"
+				+ "2 0 0 2 0 2\n"
+				+ "2 2 2 2 2 2\n"
+				+ "\n"
+				+ "2 2 2 2 2 2\n"
+				+ "2 0 2 2 0 2\n"
+				+ "2 2 2 2 2 2\n"
+				+ "\n"
+				+ "3 3 3 2 2 2\n"
+				+ "3 3 3 2 0 2\n"
+				+ "3 3 3 2 2 2\n"
+				+ "\n"
+				+ "0 0 0 3 3 3\n"
+				+ "0 0 0 3 3 3\n"
+				+ "0 0 0 3 3 3";
+		
+		assertEquals(expected, DebugUtil.printStorageRegion(out, new IntVec3(0, 0, 0), new IntVec3(6, 6, 3)));
 	}
 }

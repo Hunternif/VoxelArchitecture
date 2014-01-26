@@ -10,6 +10,11 @@ import hunternif.voxarch.vector.Vec3;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class RoomTest {
 	@Test
 	public void testFourWalls() {
@@ -94,7 +99,7 @@ public class RoomTest {
 		Gate gate = RoomUtil.createHorGateBetween(room1, room2);
 		assertEquals((0.5 + 1.5/Math.sqrt(2))/2, gate.getOrigin().x, 0.00001);
 		assertEquals(-(0.5 + 1.5/Math.sqrt(2))/2, gate.getOrigin().z, 0.00001);
-		assertEquals(new Vec2(2, 1), gate.getSize());
+		assertEquals(new Vec2(3, 1), gate.getSize());
 		// Aligned with wall of room2:
 		assertEquals(270, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
 	}
@@ -106,7 +111,7 @@ public class RoomTest {
 		Gate gate = RoomUtil.createHorGateBetween(room1, room2);
 		assertEquals((0.5 + 1.5/Math.sqrt(2))/2, gate.getOrigin().x, 0.00001);
 		assertEquals(-(0.5 + 1.5/Math.sqrt(2))/2, gate.getOrigin().z, 0.00001);
-		assertEquals(new Vec2(2, 1), gate.getSize());
+		assertEquals(new Vec2(3, 1), gate.getSize());
 		// Aligned with wall of room1:
 		assertEquals(135, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
 	}

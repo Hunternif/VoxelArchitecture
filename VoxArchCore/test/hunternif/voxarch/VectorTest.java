@@ -6,6 +6,11 @@ import hunternif.voxarch.vector.Vec2;
 
 import org.junit.Test;
 
+/**
+ * 
+ * @author Hunternif
+ *
+ */
 public class VectorTest {
 	@Test
 	public void testClosestPoint() {
