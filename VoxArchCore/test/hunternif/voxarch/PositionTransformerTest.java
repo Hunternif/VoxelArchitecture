@@ -19,7 +19,7 @@ public class PositionTransformerTest {
 		BlockData block = new BlockData(1);
 		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 2);
-		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 2).rotateY(90);
+		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 1).rotateY(90);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		for (int x = 0; x < 3; x++) {
 			for (int z = 0; z < 2; z++) {
@@ -38,7 +38,7 @@ public class PositionTransformerTest {
 		BlockData block = new BlockData(1);
 		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(2, 1, 3);
-		PositionTransformer trans = new PositionTransformer(out).translate(2, 0, 3).rotateY(180);
+		PositionTransformer trans = new PositionTransformer(out).translate(1, 0, 2).rotateY(180);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		for (int x = 0; x < 2; x++) {
 			for (int z = 0; z < 3; z++) {
@@ -56,9 +56,8 @@ public class PositionTransformerTest {
 	public void testRotate45() {
 		BlockData block = new BlockData(1);
 		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 2, block);
-		
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
-		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 1.4).rotateY(45);
+		PositionTransformer trans = new PositionTransformer(out).translate(0.5, 0, 1).rotateY(45);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		assertEquals(null, out.getBlock(0, 0, 0));
 		assertEquals(null, out.getBlock(1, 0, 1)); // This is an unfortunate hole in the middle.
@@ -76,7 +75,7 @@ public class PositionTransformerTest {
 		BlockData block = new BlockData(1);
 		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 2, block);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
-		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 1.4).rotateY(45).setCloseGaps(true);
+		PositionTransformer trans = new PositionTransformer(out).translate(0.5, 0, 1).rotateY(45).setCloseGaps(true);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		assertEquals(null, out.getBlock(0, 0, 0));
 		assertEquals(block, out.getBlock(1, 0, 1)); // No hole
@@ -108,12 +107,12 @@ public class PositionTransformerTest {
 		BlockData block = new BlockData(1);
 		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 50, 1, 50, block);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(71, 1, 71);
-		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 35).rotateY(45).setCloseGaps(true);
+		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 50d/Math.sqrt(2)).rotateY(45).setCloseGaps(true);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		//System.out.println(((MultiDimIntArrayBlockStorage)out).printLayer(0));
 		for (int x = 0; x < 71; x++) {
 			for (int z = 0; z < 71; z++) {
-				if (x + z >= 35 && x <= 35 + z && z <= 35 + x && x + z < 106) {
+				if (x + z >= 35 && x < 35 + z && z < 35 + x && x + z < 105) {
 					// No holes in the middle:
 					assertEquals(block, out.getBlock(x, 0, z));
 				}
@@ -131,7 +130,7 @@ public class PositionTransformerTest {
 		for (int i = 0; i < 4; i++) {
 			trans.setBlock(1, 0, 0, block);
 			trans.setBlock(2, 0, 0, block);
-			trans.translate(4, 0, 0).rotateY(-90);
+			trans.translate(3, 0, 0).rotateY(-90);
 		}
 		assertEquals(block, out.getBlock(1, 0, 0));
 		assertEquals(block, out.getBlock(2, 0, 0));
@@ -160,14 +159,14 @@ public class PositionTransformerTest {
 		trans.pushTransformation();
 		
 		trans.setBlock(1, 0, 0, block);
-		trans.translate(3, 0, 0).rotateY(-90);
+		trans.translate(2, 0, 0).rotateY(-90);
 		trans.setBlock(1, 0, 0, block);
 		trans.setBlock(2, 0, 0, block);
 		
 		trans.popTransformation();
 		trans.setBlock(0, 0, 1, block);
 		trans.setBlock(0, 0, 2, block);
-		trans.translate(0, 0, 4).rotateY(90);
+		trans.translate(0, 0, 3).rotateY(90);
 		trans.setBlock(0, 0, 1, block);
 		
 		assertEquals(block, out.getBlock(1, 0, 0));

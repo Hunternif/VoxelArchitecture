@@ -9,7 +9,9 @@ import java.util.List;
 
 /**
  * Base class of the architectural plan, can have walls and contain more rooms.
- * Contains gates between the child rooms.
+ * Contains gates between the child rooms. The size of the room should include
+ * the floor at y = 0 and the ceiling at y = height - 1; the walls should run at
+ * 0.5 offset from the edge, i.e. through the middle of the blocks.
  * @author Hunternif
  */
 public class Room {
@@ -83,8 +85,8 @@ public class Room {
 	/** Fills the {@link #walls} array with 4 walls defined by the {@link #size}
 	 * vector. */
 	public void createFourWalls() {
-		double a = size.x/2;
-		double b = size.z/2;
+		double a = size.x/2 - 0.5;
+		double b = size.z/2 - 0.5;
 		/*
 		 * Aerial view of the reference frame:
 		 * Y
@@ -105,8 +107,8 @@ public class Room {
 	 * @param vertices the number of vertices on the oval, has to be >= 3. */
 	public void createRoundWalls(int vertices) {
 		if (vertices < 3) return;
-		double a = size.x/2;
-		double b = size.z/2;
+		double a = size.x/2 - 0.5;
+		double b = size.z/2 - 0.5;
 		double angleStep = 360d / (double)vertices;
 		// Going counterclockwise:
 		for (double angle = 0; angle < 360; angle += angleStep) {

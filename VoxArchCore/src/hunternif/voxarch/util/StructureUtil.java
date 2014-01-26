@@ -14,11 +14,13 @@ public class StructureUtil {
 	 * Creates a new structure with the content of the specified structure
 	 * rotated at an arbitrary angle around the Y axis. <b>Warning!
 	 * Rotating at a non-right angle will screw the structure significantly.</b>
+	 * <p><i>Deprecated. Use {@link PositionTransformer} instead.</i></p>
 	 * @param factory	is needed to allocate memory for the new structure.
 	 * @param toRotate	initial structure to rotate. It is not modified.
 	 * @param angle		is in degrees, counterclockwise.
 	 * @param closeGaps	attempt to leave no holes caused by aliasing.
 	 */
+	@Deprecated
 	public static Structure rotate(IStorageFactory factory, Structure toRotate, double angle, boolean closeGaps) {
 		angle = MathUtil.clampAngle(angle);
 		/*
@@ -45,16 +47,16 @@ public class StructureUtil {
 		// Find storage origin coordinates as minimum of coordinates of 4 corner
 		// points of the storage rectangle.
 		Vec2 tl = rot.multiply(new Vec2(0, 0));
-		Vec2 tr = rot.multiply(new Vec2(width, 0));
-		Vec2 br = rot.multiply(new Vec2(width, length));
-		Vec2 bl = rot.multiply(new Vec2(0, length));
+		Vec2 tr = rot.multiply(new Vec2(width-1, 0));
+		Vec2 br = rot.multiply(new Vec2(width-1, length-1));
+		Vec2 bl = rot.multiply(new Vec2(0, length-1));
 		
 		storageOrigin.x = MathUtil.min(tl.x, tr.x, br.x, bl.x);
 		storageOrigin.y = MathUtil.min(tl.y, tr.y, br.y, bl.y);
 		
 		// Find the new dimensions of the storage:
-		int newWidth = MathUtil.roundUp(Math.abs(rot.m00*width + rot.m01*length));
-		int newLength = MathUtil.roundUp(Math.abs(-rot.m10*width + rot.m11*length));
+		int newWidth = MathUtil.roundUp(Math.abs(rot.m00*width) + Math.abs(rot.m01*length));
+		int newLength = MathUtil.roundUp(Math.abs(-rot.m10*width) + Math.abs(rot.m11*length));
 		
 		IFixedBlockStorage newStorage = factory.createFixed(newWidth, height, newLength);
 		Structure newStruct = new Structure(newStorage);
@@ -64,23 +66,19 @@ public class StructureUtil {
 		Vec2 blockCoords = new Vec2(0, 0);
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
-				// Add 0.5 to x and z to operate with the position of the center
-				// of the block instead of its corner:
-				blockCoords.set(x + 0.5, z + 0.5);
+				blockCoords.set(x, z);
 				rot.multiply(blockCoords).subtract(storageOrigin);
 				for (int y = 0; y < height; y++) {
 					BlockData block = toRotate.getStorage().getBlock(x, y, z).clone();
 					if (block == null) continue;
 					block.rotate(angle);
-					newStorage.setBlock((int)blockCoords.x, y, (int)blockCoords.y, block);
+					int roundX = Math.min(MathUtil.roundDown(blockCoords.x), newWidth - 1);
+					int roundZ = Math.min(MathUtil.roundDown(blockCoords.y), newLength - 1);
+					newStorage.setBlock(roundX, y, roundZ, block);
 					if (closeGaps) {
-						// In order to close gaps, round coordinates instead of
-						// simply truncating the mantissa when casting to int:
-						int roundX = Math.min(MathUtil.roundDown(blockCoords.x), newWidth - 1);
-						int roundZ = Math.min(MathUtil.roundDown(blockCoords.y), newLength - 1);
+						newStorage.setBlock((int)blockCoords.x, y, (int)blockCoords.y, block);
 						newStorage.setBlock((int)blockCoords.x, y, roundZ, block);
 						newStorage.setBlock(roundX, y, (int)blockCoords.y, block);
-						newStorage.setBlock(roundX, y, roundZ, block);
 					}
 				}
 			}
@@ -88,9 +86,9 @@ public class StructureUtil {
 		
 		// Update the origin of the structure:
 		IntVec3 origin = toRotate.getOrigin();
-		Vec2 origin2D = new Vec2(origin.x + 0.5, origin.z + 0.5);
+		Vec2 origin2D = new Vec2(origin.x, origin.z);
 		rot.multiply(origin2D).subtract(storageOrigin);
-		newStruct.setOrigin((int)origin2D.x, origin.y, (int)origin2D.y);
+		newStruct.setOrigin(MathUtil.roundDown(origin2D.x), origin.y, MathUtil.roundDown(origin2D.y));
 		
 		return newStruct;
 	}
@@ -117,7 +115,9 @@ public class StructureUtil {
 	/**
 	 * Remove all blocks from the specified volume that the specified filter
 	 * doesn't accept.
+	 * <p><i>Deprecated. Use {@link RoomConstrainedStorage} instead.</i></p>
 	 */
+	@Deprecated
 	public static void clearVolume(IBlockStorage storage, Region3 volume, IBlockFilter filter) {
 		for (int x = volume.minX; x <= volume.maxX; x++) {
 			for (int z = volume.minZ; z <= volume.maxZ; z++) {

@@ -74,7 +74,7 @@ public class Generator {
 		RoomConstrainedStorage volume = new RoomConstrainedStorage(pos, room);
 		// Clear volume within the room:
 		pos.pushTransformation();
-		pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
+		pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
 		StructureUtil.clearStorage(volume);
 		pos.popTransformation();
 		// If found materials, proceed with generation:
@@ -87,7 +87,7 @@ public class Generator {
 				if (floorGen == null) floorGen = defaultFloorGenerator;
 				if (floorGen != null) {
 					pos.pushTransformation();
-					pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
+					pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
 					floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
 					pos.popTransformation();
 				}
@@ -110,7 +110,7 @@ public class Generator {
 				if (ceilGen == null) ceilGen = defaultCeilingGenerator;
 				if (ceilGen != null) {
 					pos.pushTransformation();
-					pos.translate(-room.getSize().x/2, room.getSize().y-1, -room.getSize().z/2);
+					pos.translate(-room.getSize().x/2 + 0.5, room.getSize().y-1, -room.getSize().z/2 + 0.5);
 					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
 					pos.popTransformation();
 				}

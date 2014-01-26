@@ -2,7 +2,7 @@ package hunternif.voxarch;
 
 import static org.junit.Assert.assertEquals;
 import hunternif.voxarch.storage.BlockData;
-import hunternif.voxarch.storage.MultiDimArrayBlockStorage;
+import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
 import hunternif.voxarch.storage.Structure;
 import hunternif.voxarch.util.StructureUtil;
 import hunternif.voxarch.vector.IntVec3;
@@ -16,9 +16,9 @@ public class StructureTest {
 	@Test
 	public void testRotate90() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
+		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
 		box.setOrigin(1, 0, 1);
-		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 90, false);
+		Structure rotated = StructureUtil.rotate(MultiDimIntArrayBlockStorage.factory, box, 90, false);
 		assertEquals(new IntVec3(3, 1, 2), rotated.getSize());
 		for (int x = 0; x < 3; x++) {
 			for (int z = 0; z < 2; z++) {
@@ -31,9 +31,9 @@ public class StructureTest {
 	@Test
 	public void testRotate180() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
+		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
 		box.setOrigin(0, 0, 1);
-		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 180, false);
+		Structure rotated = StructureUtil.rotate(MultiDimIntArrayBlockStorage.factory, box, 180, false);
 		assertEquals(new IntVec3(2, 1, 3), rotated.getSize());
 		for (int x = 0; x < 2; x++) {
 			for (int z = 0; z < 3; z++) {
@@ -46,9 +46,9 @@ public class StructureTest {
 	@Test
 	public void testRotate45() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 2, block);
+		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 2, block);
 		box.setOrigin(0, 0, 1);
-		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 45, false);
+		Structure rotated = StructureUtil.rotate(MultiDimIntArrayBlockStorage.factory, box, 45, false);
 		assertEquals(new IntVec3(3, 1, 3), rotated.getSize());
 		assertEquals(null, rotated.getStorage().getBlock(0, 0, 0));
 		assertEquals(null, rotated.getStorage().getBlock(1, 0, 1)); // This is an unfortunate hole in the middle.
@@ -65,9 +65,9 @@ public class StructureTest {
 	@Test
 	public void testRotate45CloseGaps() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 2, block);
+		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 2, block);
 		box.setOrigin(0, 0, 1);
-		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 45, true);
+		Structure rotated = StructureUtil.rotate(MultiDimIntArrayBlockStorage.factory, box, 45, true);
 		assertEquals(new IntVec3(3, 1, 3), rotated.getSize());
 		assertEquals(null, rotated.getStorage().getBlock(0, 0, 0));
 		assertEquals(block, rotated.getStorage().getBlock(1, 0, 1)); // No holes.
@@ -84,9 +84,9 @@ public class StructureTest {
 	@Test
 	public void testRotateALittle() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
+		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
 		box.setOrigin(1, 0, 2);
-		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 3, true);
+		Structure rotated = StructureUtil.rotate(MultiDimIntArrayBlockStorage.factory, box, 3, true);
 		assertEquals(new IntVec3(2, 1, 3), rotated.getSize());
 		for (int x = 0; x < 2; x++) {
 			for (int z = 0; z < 3; z++) {
@@ -99,10 +99,10 @@ public class StructureTest {
 	@Test
 	public void testRotate45Large() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 50, 1, 50, block);
+		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 50, 1, 50, block);
 		box.setOrigin(0, 0, 25);
-		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 45, true);
-		//System.out.println(((MultiDimArrayBlockStorage)rotated.getStorage()).printLayer(0));
+		Structure rotated = StructureUtil.rotate(MultiDimIntArrayBlockStorage.factory, box, -45, false);
+		//System.out.println(((MultiDimIntArrayBlockStorage)rotated.getStorage()).printLayer(0));
 		assertEquals(new IntVec3(71, 1, 71), rotated.getSize());
 		for (int x = 0; x < 71; x++) {
 			for (int z = 0; z < 71; z++) {

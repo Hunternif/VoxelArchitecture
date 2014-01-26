@@ -36,13 +36,13 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
-		if (!isWithinRoom(x + 0.5, y, z + 0.5)) return;
+		if (!isWithinRoom(x, y, z)) return;
 		storage.setBlock(x, y, z, block);
 	}
 
 	@Override
 	public void clearBlock(int x, int y, int z) {
-		if (!isWithinRoom(x + 0.5, y, z + 0.5)) return;
+		if (!isWithinRoom(x, y, z)) return;
 		storage.clearBlock(x, y, z);
 	}
 	

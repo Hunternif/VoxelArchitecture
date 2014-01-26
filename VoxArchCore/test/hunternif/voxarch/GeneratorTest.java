@@ -63,9 +63,9 @@ public class GeneratorTest {
 	@Test
 	public void test2Rooms() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(plan.getBase(), new Vec3(1.5, 0, 1.5), new Vec3(3, 4, 3), 0);
+		Room room1 = new Room(plan.getBase(), new Vec3(1, 0, 1), new Vec3(3, 4, 3), 0);
 		room1.createFourWalls();
-		Room room2 = new Room(plan.getBase(), new Vec3(4.5, 0, 1.5), new Vec3(3, 5, 3), 0);
+		Room room2 = new Room(plan.getBase(), new Vec3(4, 0, 1), new Vec3(3, 5, 3), 0);
 		//FIXME: bug: the 2nd room doesn't have ceiling nor floor
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);

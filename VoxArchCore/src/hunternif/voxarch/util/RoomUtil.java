@@ -126,8 +126,9 @@ public class RoomUtil {
 		// plus 1 to account for the floor:
 		Vec3 gatePos = new Vec3(point.x, (from.getOrigin().y + to.getOrigin().y)/2 + 1, point.y); 
 		
-		// The gate can't be taller than any of the connecting rooms:
-		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y;
+		// The gate can't be taller than any of the connecting rooms, minus 1 to
+		// account for the ceiling:
+		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y - 1;
 		
 		Gate gate = new Gate(from.getParent(), from, to, gatePos, size, Gate.Orientation.HORIZONTAL, angle);
 		return gate;
