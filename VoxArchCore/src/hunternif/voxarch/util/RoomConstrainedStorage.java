@@ -48,7 +48,6 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	
 	/** Returns true if the specified point is within the volume of this room.
 	 * The coordinates are relative to the corner of the room. */
-	//TODO: check more rigorously, there is a bug here!
 	public boolean isWithinRoom(double x, double y, double z) {
 		// Check if the point is above the floor and below the ceiling:
 		if (y < 0 || y > room.getSize().y) {
