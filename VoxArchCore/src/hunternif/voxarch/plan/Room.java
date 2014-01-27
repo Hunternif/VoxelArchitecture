@@ -111,12 +111,13 @@ public class Room {
 	 * oval inscribed in the bounding box defined by the {@link #size} vector.
 	 * @param vertices the number of vertices on the oval, has to be >= 3. */
 	public void createRoundWalls(int vertices) {
+		//TODO: increase the radius so that the room fills up as much space as possible.
 		if (vertices < 3) return;
 		double a = size.x/2 - 0.5;
 		double b = size.z/2 - 0.5;
 		double angleStep = 360d / (double)vertices;
 		// Going counterclockwise:
-		for (double angle = 0; angle < 360; angle += angleStep) {
+		for (double angle = angleStep/2; angle < 360 + angleStep/2; angle += angleStep) {
 			walls.add(new Wall(this,
 					new Vec2(a * MathUtil.cosDeg(angle), - b * MathUtil.sinDeg(angle)),
 					new Vec2(a * MathUtil.cosDeg(angle + angleStep), - b * MathUtil.sinDeg(angle + angleStep))));
