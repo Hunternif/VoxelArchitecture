@@ -87,8 +87,10 @@ public class Generator {
 				if (floorGen == null) floorGen = defaultFloorGenerator;
 				if (floorGen != null) {
 					pos.pushTransformation();
+					pos.setCloseGaps(true);
 					pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
 					floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+					pos.setCloseGaps(false);
 					pos.popTransformation();
 				}
 			}
@@ -110,8 +112,10 @@ public class Generator {
 				if (ceilGen == null) ceilGen = defaultCeilingGenerator;
 				if (ceilGen != null) {
 					pos.pushTransformation();
+					pos.setCloseGaps(true);
 					pos.translate(-room.getSize().x/2 + 0.5, room.getSize().y-1, -room.getSize().z/2 + 0.5);
 					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+					pos.setCloseGaps(false);
 					pos.popTransformation();
 				}
 			}
