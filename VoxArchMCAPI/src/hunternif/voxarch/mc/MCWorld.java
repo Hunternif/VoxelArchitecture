@@ -65,6 +65,7 @@ public class MCWorld implements IBlockStorage {
 			((ExtBlockDataMC) block).onPasteIntoWorld(world, x, y, z);
 			extBlocks.put(new IntVec3(x, y, z), (ExtBlockDataMC) block);
 		} else {
+			//FIXME: entities caught up inside the block will spam stack traces and "Wrong location!"
 			world.setBlock(x, y, z, block.getId(), block.getMetadata(), 2);
 			// Apply rotation:
 			RotationHelper.rotateVanillaBlock(Block.blocksList[block.getId()],

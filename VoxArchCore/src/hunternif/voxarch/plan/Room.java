@@ -112,6 +112,7 @@ public class Room {
 	 * @param vertices the number of vertices on the oval, has to be >= 3. */
 	public void createRoundWalls(int vertices) {
 		//TODO: increase the radius so that the room fills up as much space as possible.
+		//TODO: check the round walls, they have protruding ends sticking out.
 		if (vertices < 3) return;
 		double a = size.x/2 - 0.5;
 		double b = size.z/2 - 0.5;

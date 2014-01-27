@@ -19,4 +19,5 @@ public interface Materials {
      */
 	BlockData[] stairsBlocks(double slope);
 	BlockData[] decorationBlocks();
+	//TODO: add sources of light, i.e. tourches, glowing blocks, fire
 }
