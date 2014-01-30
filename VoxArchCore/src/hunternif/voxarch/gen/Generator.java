@@ -29,19 +29,19 @@ public class Generator {
 	private final IBlockStorage world;
 
 	private Materials defaultMaterials;
-	private CeilingGenerator defaultCeilingGenerator;
-	private FloorGenerator defaultFloorGenerator;
-	private HorGateGenerator defaultHorGateGenerator;
-	private VerGateGenerator defaultVerGateGenerator;
-	private StairsGenerator defaultStairsGenerator;
-	private WallGenerator defaultWallGenerator;
+	private ElementGenerator.Ceiling defaultCeilingGenerator;
+	private ElementGenerator.Floor defaultFloorGenerator;
+	private ElementGenerator.HorGate defaultHorGateGenerator;
+	private ElementGenerator.VerGate defaultVerGateGenerator;
+	private ElementGenerator.Stairs defaultStairsGenerator;
+	private ElementGenerator.Wall defaultWallGenerator;
 	private final Map<String, Materials> materialsMap = new HashMap<String, Materials>();
-	private final Map<String, CeilingGenerator> ceilingGenMap = new HashMap<String, CeilingGenerator>();
-	private final Map<String, FloorGenerator> floorGenMap = new HashMap<String, FloorGenerator>();
-	private final Map<String, HorGateGenerator> horGateGenMap = new HashMap<String, HorGateGenerator>();
-	private final Map<String, VerGateGenerator> verGateGenMap = new HashMap<String, VerGateGenerator>();
-	private final Map<String, StairsGenerator> stairsGenMap = new HashMap<String, StairsGenerator>();
-	private final Map<String, WallGenerator> wallGenMap = new HashMap<String, WallGenerator>();
+	private final Map<String, ElementGenerator.Ceiling> ceilingGenMap = new HashMap<String, ElementGenerator.Ceiling>();
+	private final Map<String, ElementGenerator.Floor> floorGenMap = new HashMap<String, ElementGenerator.Floor>();
+	private final Map<String, ElementGenerator.HorGate> horGateGenMap = new HashMap<String, ElementGenerator.HorGate>();
+	private final Map<String, ElementGenerator.VerGate> verGateGenMap = new HashMap<String, ElementGenerator.VerGate>();
+	private final Map<String, ElementGenerator.Stairs> stairsGenMap = new HashMap<String, ElementGenerator.Stairs>();
+	private final Map<String, ElementGenerator.Wall> wallGenMap = new HashMap<String, ElementGenerator.Wall>();
 
 	public Generator(IBlockStorage world) {
 		this.world = world;
@@ -83,7 +83,7 @@ public class Generator {
 		if (materials != null) {
 			// Generate floor:
 			if (room.hasFloor()) {
-				FloorGenerator floorGen = floorGenMap.get(room.getType());
+				ElementGenerator.Floor floorGen = floorGenMap.get(room.getType());
 				if (floorGen == null) floorGen = defaultFloorGenerator;
 				if (floorGen != null) {
 					pos.pushTransformation();
@@ -95,7 +95,7 @@ public class Generator {
 				}
 			}
 			// Generate walls:
-			WallGenerator wallGen = wallGenMap.get(room.getType());
+			ElementGenerator.Wall wallGen = wallGenMap.get(room.getType());
 			if (wallGen == null) wallGen = defaultWallGenerator;
 			if (wallGen != null) {
 				for (Wall wall : room.getWalls()) {
@@ -108,7 +108,7 @@ public class Generator {
 			}
 			// Generate ceiling:
 			if (room.hasCeiling()) {
-				CeilingGenerator ceilGen = ceilingGenMap.get(room.getType());
+				ElementGenerator.Ceiling ceilGen = ceilingGenMap.get(room.getType());
 				if (ceilGen == null) ceilGen = defaultCeilingGenerator;
 				if (ceilGen != null) {
 					pos.pushTransformation();
@@ -129,7 +129,7 @@ public class Generator {
 		}
 		// Build the gates within this room:
 		for (Gate gate : room.getGates()) {
-			GateGenerator gen = null;
+			ElementGenerator.Gate gen = null;
 			if (gate.isHorizontal()) {
 				gen = horGateGenMap.get(gate.getType());
 				if (gen == null) gen = defaultHorGateGenerator;
@@ -157,27 +157,27 @@ public class Generator {
 		this.defaultMaterials = defaultMaterials;
 	}
 
-	public void setDefaultCeilingGenerator(CeilingGenerator defaultCeilingGenerator) {
+	public void setDefaultCeilingGenerator(ElementGenerator.Ceiling defaultCeilingGenerator) {
 		this.defaultCeilingGenerator = defaultCeilingGenerator;
 	}
 
-	public void setDefaultFloorGenerator(FloorGenerator defaultFloorGenerator) {
+	public void setDefaultFloorGenerator(ElementGenerator.Floor defaultFloorGenerator) {
 		this.defaultFloorGenerator = defaultFloorGenerator;
 	}
 
-	public void setDefaultHorGateGenerator(HorGateGenerator defaultHorGateGenerator) {
+	public void setDefaultHorGateGenerator(ElementGenerator.HorGate defaultHorGateGenerator) {
 		this.defaultHorGateGenerator = defaultHorGateGenerator;
 	}
 
-	public void setDefaultVerGateGenerator(VerGateGenerator defaultVerGateGenerator) {
+	public void setDefaultVerGateGenerator(ElementGenerator.VerGate defaultVerGateGenerator) {
 		this.defaultVerGateGenerator = defaultVerGateGenerator;
 	}
 
-	public void setDefaultStairsGenerator(StairsGenerator defaultStairsGenerator) {
+	public void setDefaultStairsGenerator(ElementGenerator.Stairs defaultStairsGenerator) {
 		this.defaultStairsGenerator = defaultStairsGenerator;
 	}
 
-	public void setDefaultWallGenerator(WallGenerator defaultWallGenerator) {
+	public void setDefaultWallGenerator(ElementGenerator.Wall defaultWallGenerator) {
 		this.defaultWallGenerator = defaultWallGenerator;
 	}
 	
@@ -185,27 +185,27 @@ public class Generator {
 		materialsMap.put(type, materials);
 	}
 
-	public void setCeilingGeneratorForType(String type, CeilingGenerator ceilingGenerator) {
+	public void setCeilingGeneratorForType(String type, ElementGenerator.Ceiling ceilingGenerator) {
 		ceilingGenMap.put(type, ceilingGenerator);
 	}
 
-	public void setFloorGeneratorForType(String type, FloorGenerator floorGenerator) {
+	public void setFloorGeneratorForType(String type, ElementGenerator.Floor floorGenerator) {
 		floorGenMap.put(type, floorGenerator);
 	}
 
-	public void setHorGateGeneratorForType(String type, HorGateGenerator horGateGenerator) {
+	public void setHorGateGeneratorForType(String type, ElementGenerator.HorGate horGateGenerator) {
 		horGateGenMap.put(type, horGateGenerator);
 	}
 
-	public void setVerGateGeneratorForType(String type, VerGateGenerator verGateGenerator) {
+	public void setVerGateGeneratorForType(String type, ElementGenerator.VerGate verGateGenerator) {
 		verGateGenMap.put(type, verGateGenerator);
 	}
 
-	public void setStairsGeneratorForType(String type, StairsGenerator stairsGenerator) {
+	public void setStairsGeneratorForType(String type, ElementGenerator.Stairs stairsGenerator) {
 		stairsGenMap.put(type, stairsGenerator);
 	}
 
-	public void setWallGeneratorForType(String type, WallGenerator wallGenerator) {
+	public void setWallGeneratorForType(String type, ElementGenerator.Wall wallGenerator) {
 		wallGenMap.put(type, wallGenerator);
 	}
 }

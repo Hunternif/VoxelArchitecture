@@ -1,13 +1,13 @@
 package hunternif.voxarch.gen.impl;
 
-import hunternif.voxarch.gen.FloorGenerator;
+import hunternif.voxarch.gen.ElementGenerator;
 import hunternif.voxarch.gen.Materials;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.vector.Vec2;
 
-public class SimpleFloorGenerator implements FloorGenerator {
+public class SimpleFloorGenerator implements ElementGenerator.Floor {
 
 	@Override
 	public void generateFloor(RoomConstrainedStorage dest, Vec2 size, Materials materials) {

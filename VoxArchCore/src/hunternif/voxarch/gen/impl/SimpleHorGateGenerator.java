@@ -1,12 +1,12 @@
 package hunternif.voxarch.gen.impl;
 
-import hunternif.voxarch.gen.HorGateGenerator;
+import hunternif.voxarch.gen.ElementGenerator;
 import hunternif.voxarch.gen.Materials;
 import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.MathUtil;
 
-public class SimpleHorGateGenerator implements HorGateGenerator {
+public class SimpleHorGateGenerator implements ElementGenerator.HorGate {
 
 	public int minWidth = 1;
 	public int minHeight = 2;

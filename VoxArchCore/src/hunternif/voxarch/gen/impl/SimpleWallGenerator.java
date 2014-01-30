@@ -1,13 +1,13 @@
 package hunternif.voxarch.gen.impl;
 
+import hunternif.voxarch.gen.ElementGenerator;
 import hunternif.voxarch.gen.Materials;
-import hunternif.voxarch.gen.WallGenerator;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.MathUtil;
 
-public class SimpleWallGenerator implements WallGenerator {
+public class SimpleWallGenerator implements ElementGenerator.Wall {
 
 	@Override
 	public void generateWall(IBlockStorage dest, Wall wall, Materials materials) {
