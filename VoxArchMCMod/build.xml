@@ -43,11 +43,11 @@
         <delete>
             <!-- delete copied sources -->
             <fileset dir="${mcp.src}">
-                <present present="both" targetdir="src" />
+                <present present="both" targetdir="${foreach.src}" />
             </fileset>
             <!-- delete empty directories -->
             <dirset dir="${mcp.src}">
-                <present present="both" targetdir="src" />
+                <present present="both" targetdir="${foreach.src}" />
                 <size value="0"/>
             </dirset>
         </delete>
