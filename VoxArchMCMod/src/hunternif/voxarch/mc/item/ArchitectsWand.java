@@ -46,7 +46,7 @@ public class ArchitectsWand extends Item {
 			gen.setDefaultFloorGenerator(new SimpleFloorGenerator());
 			gen.setDefaultWallGenerator(new SimpleWallGenerator());
 			gen.setDefaultHorGateGenerator(new SimpleHorGateGenerator());
-			gen.generate(RandomPlan.create(), x, y-1, z);
+			gen.generate(RandomPlan.create(), x, y, z);
 		}
 		return true;
 	}
