@@ -115,7 +115,8 @@ public class RoomUtil {
 		}
 		if (wall != null) {
 			angle = wall.getAngleDeg() + wall.getRoom().getRotationY();
-			size.x = wall.getLength();
+			// Plus 1 because the wall runs through the middle of blocks:
+			size.x = wall.getLength() + 1;
 		} else {
 			// The 1st room doesn't have any walls either. Align and resize to
 			// the 1st room's bounding box:

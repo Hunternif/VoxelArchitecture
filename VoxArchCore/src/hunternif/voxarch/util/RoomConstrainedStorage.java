@@ -43,6 +43,8 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	@Override
 	public void clearBlock(int x, int y, int z) {
 		if (!isWithinRoom(x, y, z)) return;
+		//TODO: BUG: When generating a 16x16 room with 16 round walls,
+		// one block in the corner is not cleared.
 		storage.clearBlock(x, y, z);
 	}
 	
