@@ -5,6 +5,7 @@ import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IFixedBlockStorage;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
+import hunternif.voxarch.util.DebugUtil;
 import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.util.StructureUtil;
 import hunternif.voxarch.vector.Vec3;
@@ -48,20 +49,35 @@ public class RoomConstrainedStorageTest {
 	
 	@Test
 	public void testFourRoundWalls() {
-		Room room = new Room(null, new Vec3(1, 0, 1), new Vec3(3, 1, 3), 0);
+		Room room = new Room(null, new Vec3(1, 0, 1), new Vec3(7, 1, 7), 0);
 		room.createRoundWalls(4);
 		BlockData block = new BlockData(1);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
+		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
 		RoomConstrainedStorage constrained = new RoomConstrainedStorage(out, room);
 		StructureUtil.fill(constrained, block);
-		assertEquals(null, out.getBlock(0, 0, 0));
-		assertEquals(block, out.getBlock(1, 0, 0));
-		assertEquals(null, out.getBlock(2, 0, 0));
-		assertEquals(block, out.getBlock(0, 0, 1));
-		assertEquals(block, out.getBlock(1, 0, 1));
-		assertEquals(block, out.getBlock(2, 0, 1));
-		assertEquals(null, out.getBlock(0, 0, 2));
-		assertEquals(block, out.getBlock(1, 0, 2));
-		assertEquals(null, out.getBlock(2, 0, 2));
+		assertEquals("0 0 0 0 0 0 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 0 0 0 0 0 0", DebugUtil.printFixedStorage(out));
+	}
+	
+	@Test
+	public void testEightRoundWalls() {
+		Room room = new Room(null, new Vec3(1, 0, 1), new Vec3(7, 1, 7), 0);
+		room.createRoundWalls(8);
+		BlockData block = new BlockData(1);
+		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
+		RoomConstrainedStorage constrained = new RoomConstrainedStorage(out, room);
+		StructureUtil.fill(constrained, block);
+		assertEquals("0 0 0 0 0 0 0\n" +
+					 "0 0 1 1 1 0 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 0 1 1 1 0 0\n" +
+					 "0 0 0 0 0 0 0", DebugUtil.printFixedStorage(out));
 	}
 }

@@ -35,16 +35,15 @@ public class RoomTest {
 	public void testFourRoundWalls() {
 		Room room = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 2, 4), 0);
 		room.createRoundWalls(4);
-		//TODO fix the test for round walls
 		assertEquals(4, room.getWalls().size());
-		assertEquals(new Vec2(1, 0), room.getWalls().get(0).getP1());
-		assertEquals(new Vec2(0, -1.5), room.getWalls().get(0).getP2());
-		assertEquals(new Vec2(0, -1.5), room.getWalls().get(1).getP1());
-		assertEquals(new Vec2(-1, 0), room.getWalls().get(1).getP2());
-		assertEquals(new Vec2(-1, 0), room.getWalls().get(2).getP1());
-		assertEquals(new Vec2(0, 1.5), room.getWalls().get(2).getP2());
-		assertEquals(new Vec2(0, 1.5), room.getWalls().get(3).getP1());
-		assertEquals(new Vec2(1, 0), room.getWalls().get(3).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), room.getWalls().get(0).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(45), -1.5*MathUtil.sinDeg(45)), room.getWalls().get(0).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(45), -1.5*MathUtil.sinDeg(45)), room.getWalls().get(1).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(135), -1.5*MathUtil.sinDeg(135)), room.getWalls().get(1).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(135), -1.5*MathUtil.sinDeg(135)), room.getWalls().get(2).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(225), -1.5*MathUtil.sinDeg(225)), room.getWalls().get(2).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(225), -1.5*MathUtil.sinDeg(225)), room.getWalls().get(3).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), room.getWalls().get(3).getP2());
 	}
 	
 	@Test
