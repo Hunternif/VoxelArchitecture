@@ -1,19 +1,21 @@
 package hunternif.voxarch;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 import hunternif.voxarch.gen.Generator;
 import hunternif.voxarch.gen.Materials;
-import hunternif.voxarch.gen.impl.*;
+import hunternif.voxarch.gen.impl.SimpleCeilingGenerator;
+import hunternif.voxarch.gen.impl.SimpleFloorGenerator;
+import hunternif.voxarch.gen.impl.SimpleHorGateGenerator;
+import hunternif.voxarch.gen.impl.SimpleWallGenerator;
 import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Room;
+import hunternif.voxarch.plan.gate.AlignedHorGateFactory;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
 import hunternif.voxarch.util.DebugUtil;
-import hunternif.voxarch.util.RoomUtil;
 import hunternif.voxarch.vector.IntVec3;
 import hunternif.voxarch.vector.Vec3;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -76,7 +78,7 @@ public class GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(RoomUtil.createHorGateBetween(room1, room2));
+		plan.getBase().addGate(new AlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
