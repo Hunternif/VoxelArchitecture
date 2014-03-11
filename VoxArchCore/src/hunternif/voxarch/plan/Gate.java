@@ -16,7 +16,8 @@ public class Gate {
 
 	private final Room parent, room1, room2;
 	
-	/** Coordinates of the origin of the parent room. */
+	/** For a horizontal gate, the origin point is in the middle of the gate at
+	 * floor level. For a vertical gate, it is in the actual center of it.*/
 	private final Vec3 origin;
 	
 	private final double rotationY;

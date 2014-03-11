@@ -9,7 +9,7 @@ import hunternif.voxarch.gen.impl.SimpleHorGateGenerator;
 import hunternif.voxarch.gen.impl.SimpleWallGenerator;
 import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Room;
-import hunternif.voxarch.plan.gate.AlignedHorGateFactory;
+import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
 import hunternif.voxarch.util.DebugUtil;
@@ -78,7 +78,7 @@ public class GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new AlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""

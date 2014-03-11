@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan;
 
+import hunternif.voxarch.util.Box;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
@@ -72,6 +73,11 @@ public class Room {
 
 	public Vec3 getSize() {
 		return size;
+	}
+	
+	public Box getBoundingBox() {
+		// Not a field member because the origin and size vectors are mutable.
+		return new Box(origin, size);
 	}
 
 	public double getRotationY() {

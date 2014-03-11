@@ -9,13 +9,12 @@ import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
 /**
- * Creates a horizontal gate between the specified rooms, aligned to the
- * closest wall of the 2nd room. The rooms are assumed to have the same
- * parent, and the 1st room must face the 2nd along one of the horizontal
- * axes (rotation considered).
+ * The gate created is horizontal, aligned to the closest wall of the 2nd room.
+ * The rooms are assumed to have the same parent, and the 1st room must face the
+ * 2nd room along one of the horizontal axes (rotation considered).
  * @author Hunternif
  */
-public class AlignedHorGateFactory implements IGateFactory {
+public class WallAlignedHorGateFactory implements IGateFactory {
 
 	@Override
 	public Gate create(Room from, Room to) {
@@ -75,7 +74,7 @@ public class AlignedHorGateFactory implements IGateFactory {
 		// account for the ceiling:
 		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y - 1;
 		
-		Gate gate = new Gate(from.getParent(), from, to, gatePos, size, Gate.Orientation.HORIZONTAL, angle);
+		Gate gate = new Gate(to.getParent(), from, to, gatePos, size, Gate.Orientation.HORIZONTAL, angle);
 		return gate;
 	}
 

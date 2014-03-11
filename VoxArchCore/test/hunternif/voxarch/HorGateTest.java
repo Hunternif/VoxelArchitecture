@@ -3,7 +3,7 @@ package hunternif.voxarch;
 import static org.junit.Assert.assertEquals;
 import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.plan.Room;
-import hunternif.voxarch.plan.gate.AlignedHorGateFactory;
+import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
 import hunternif.voxarch.plan.gate.IGateFactory;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.vector.Vec2;
@@ -12,7 +12,7 @@ import hunternif.voxarch.vector.Vec3;
 import org.junit.Test;
 
 public class HorGateTest {
-	private IGateFactory gateFactory = new AlignedHorGateFactory();
+	private IGateFactory gateFactory = new WallAlignedHorGateFactory();
 	
 	@Test
 	public void testHorGateNoWalls() {
