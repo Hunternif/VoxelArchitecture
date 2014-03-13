@@ -6,6 +6,12 @@ import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.MathUtil;
 
+/**
+ * Removes any blocks from where the gate is supposed to go. Digs a little
+ * tunnel along the Z axis, in case of really thick walls or other sort of
+ * obstacle obscuring the passage.
+ * @author Hunternif
+ */
 public class SimpleHorGateGenerator implements ElementGenerator.HorGate {
 
 	public int minWidth = 1;

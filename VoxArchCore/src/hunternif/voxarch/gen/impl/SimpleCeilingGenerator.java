@@ -7,6 +7,10 @@ import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.vector.Vec2;
 
+/**
+ * Creates a simple flat ceiling made of one single material.
+ * @author Hunternif
+ */
 public class SimpleCeilingGenerator implements ElementGenerator.Ceiling {
 
 	@Override

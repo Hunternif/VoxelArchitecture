@@ -7,6 +7,10 @@ import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.MathUtil;
 
+/**
+ * Creates a straight 1 block wide wall made of one single material.
+ * @author Hunternif
+ */
 public class SimpleWallGenerator implements ElementGenerator.Wall {
 
 	@Override
