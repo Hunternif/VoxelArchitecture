@@ -143,6 +143,7 @@ public class Generator {
 			if (gateMaterials == null) continue;
 			pos.pushTransformation();
 			pos.translate(gate.getOrigin()).rotateY(gate.getRotationY());
+			// Move the origin to the bottom left corner of the gate:
 			if (gate.isHorizontal()) {
 				pos.translate(-gate.getSize().x/2 + 0.5, 0, 0);
 			} else {

@@ -5,7 +5,7 @@ import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.vector.Vec2;
 
-/** A collection of interfaces for generating elements of a room.
+/** A collection of interfaces for generating various elements of a room.
  * @author Hunternif
  */
 public class ElementGenerator {
