@@ -56,11 +56,15 @@ public class Generator {
 		 * Building a room:
 		 * 1. Clear the volume within the walls of the room.
 		 * 2. Generate floor, still within the walls.
-		 * 3. Generate the walls.
-		 * 4. Generate the ceiling, again within the walls.
+		 * 3. Generate the ceiling, again within the walls.
+		 * 4. Generate the walls.
 		 * 5. Recursively build all child rooms.
 		 * 6. Build the gates within this room. The gate generators will
 		 * 	override walls with air to make passages.
+		 * 
+		 * Walls are generated after the ceiling in order that when building
+		 * multistorey houses the walls aren't interleaved with stripes of
+		 * ceiling blocks.
 		 */
 		PositionTransformer pos = new PositionTransformer(world);
 		pos.translate(x, y, z).rotateY(plan.getBase().getRotationY());
@@ -94,18 +98,6 @@ public class Generator {
 					pos.popTransformation();
 				}
 			}
-			// Generate walls:
-			ElementGenerator.Wall wallGen = wallGenMap.get(room.getType());
-			if (wallGen == null) wallGen = defaultWallGenerator;
-			if (wallGen != null) {
-				for (Wall wall : room.getWalls()) {
-					pos.pushTransformation();
-					pos.translate(wall.getP1().x, 0, wall.getP1().y);
-					pos.rotateY(wall.getAngleDeg());
-					wallGen.generateWall(pos, wall, materials);
-					pos.popTransformation();
-				}
-			}
 			// Generate ceiling:
 			if (room.hasCeiling()) {
 				ElementGenerator.Ceiling ceilGen = ceilingGenMap.get(room.getType());
@@ -116,6 +108,18 @@ public class Generator {
 					pos.translate(-room.getSize().x/2 + 0.5, room.getSize().y-1, -room.getSize().z/2 + 0.5);
 					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
 					pos.setCloseGaps(false);
+					pos.popTransformation();
+				}
+			}
+			// Generate walls:
+			ElementGenerator.Wall wallGen = wallGenMap.get(room.getType());
+			if (wallGen == null) wallGen = defaultWallGenerator;
+			if (wallGen != null) {
+				for (Wall wall : room.getWalls()) {
+					pos.pushTransformation();
+					pos.translate(wall.getP1().x, 0, wall.getP1().y);
+					pos.rotateY(wall.getAngleDeg());
+					wallGen.generateWall(pos, wall, materials);
 					pos.popTransformation();
 				}
 			}
