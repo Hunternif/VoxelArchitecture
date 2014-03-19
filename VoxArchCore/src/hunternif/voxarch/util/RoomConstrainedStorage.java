@@ -14,6 +14,8 @@ import java.util.Map;
  * This block storage that only allows modifying blocks that are within the
  * walls of the specified room. Used for clearing volume for rooms and when
  * building the floor and the ceiling.
+ * <p> The purpose of this class is to preserve only the shape of the room;
+ * its position and rotation are not accounted for! </p>
  * @author Hunternif
  */
 public class RoomConstrainedStorage implements IFixedBlockStorage {
@@ -51,8 +53,10 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	/** Returns true if the specified point is within the volume of this room.
 	 * The coordinates are relative to the corner of the room. */
 	public boolean isWithinRoom(double x, double y, double z) {
-		// Check if the point is above the floor and below the ceiling:
-		if (y < 0 || y > room.getSize().y) {
+		// Check if the point is within the room's bounding box:
+		if (y < 0 || y > room.getSize().y ||
+			x < 0 || x > room.getSize().x ||
+			z < 0 || z > room.getSize().z) {
 			return false;
 		}
 		// Check if the point is within the walls:
