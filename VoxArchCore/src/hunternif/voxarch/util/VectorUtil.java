@@ -17,9 +17,9 @@ public class VectorUtil {
 	public static Vec2 closestPointOnLineSegment(Vec2 from, Vec2 a, Vec2 b) {
 		Vec2 segVec = new Vec2(b.x - a.x, b.y - a.y);
 		double t = new Vec2(from).subtract(a).dotProduct(segVec) / segVec.dotProduct(segVec);
-		// We're measuring the distance to a line segment defined by wallVector,
-		// therefore we constrain the how far the orthogonally projected point
-		// can go along the line.
+		// We're measuring distance to the line segment, taking into account
+		// its finite length, therefore we constrain how far the orthogonally
+		// projected point can go along the line:
 		if (t < 0) t = 0;
 		if (t > 1) t = 1;
 		Vec2 dest = new Vec2(a).add(segVec.multiply(t));
@@ -27,7 +27,7 @@ public class VectorUtil {
 	}
 	
 	/**
-	 * Returns the point on a line segment as a result its intersection with a ray.
+	 * Returns the point on a line segment as a result of its intersection with a ray.
 	 * @param rayStart	starting point of the ray
 	 * @param rayTarget	point on a ray, defining its direction
 	 * @param a			start of the line segment
