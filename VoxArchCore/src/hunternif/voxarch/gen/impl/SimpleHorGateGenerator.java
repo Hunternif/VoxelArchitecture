@@ -21,7 +21,7 @@ public class SimpleHorGateGenerator implements ElementGenerator.HorGate {
 	
 	@Override
 	public void generateGate(IBlockStorage dest, Gate gate, Materials materials) {
-		int height = Math.max(minHeight, MathUtil.roundDown(gate.getSize().y - 1));
+		int height = Math.max(minHeight, MathUtil.roundDown(gate.getSize().y));
 		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x - 2));
 		for (int x = 1; x < width + 1; x++) {
 			for (int y = 0; y < height; y++) {

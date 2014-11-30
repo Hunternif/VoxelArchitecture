@@ -39,7 +39,7 @@ public class Vec3 {
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec3 add(Vec3 vec) {
+	public Vec3 addLocal(Vec3 vec) {
 		return addLocal(vec.x, vec.y, vec.z);
 	}
 	/** Modifies and returns itself. */
@@ -48,6 +48,15 @@ public class Vec3 {
 		this.y += dy;
 		this.z += dz;
 		return this;
+	}
+	
+	/** Returns a new vector. */
+	public Vec3 add(Vec3 vec) {
+		return add(vec.x, vec.y, vec.z);
+	}
+	/** Returns a new vector. */
+	public Vec3 add(double dx, double dy, double dz) {
+		return new Vec3(x + dx, y + dy, z + dz);
 	}
 	
 	/** Modifies and returns itself. */

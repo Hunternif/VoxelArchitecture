@@ -19,7 +19,7 @@ public class RoomUtil {
 	 */
 	public static Wall findClosestWall(Room room, Vec2 point) {
 		Vec2 p = new Vec2(point.x - room.getOrigin().x,
-						  point.y - room.getOrigin().y);
+						  point.y - room.getOrigin().z);
 		Matrix2 rot = Matrix2.rotationMatrix(room.getRotationY());
 		rot.multiplyLocal(p);
 		Wall closest = null;
@@ -41,7 +41,7 @@ public class RoomUtil {
 	 * room's rotation considered.
 	 * @param room		the target room.
 	 * @param start		starting point of the ray.
-	 * @param target	target point of the ray, i.e. some point on the ray.
+	 * @param target	target of the ray, i.e. some point on the ray.
 	 */
 	public static Vec2 rayTrace(Room room, Vec2 start, Vec2 target) {
 		// Retrieve local coordinates of the corners of the room's bounding box:

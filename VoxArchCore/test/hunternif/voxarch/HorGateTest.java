@@ -60,4 +60,43 @@ public class HorGateTest {
 		// Aligned with wall of room1:
 		assertEquals(135, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
 	}
+	
+	@Test
+	public void testLargeRoomsNoWallsX() {
+		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = new Room(new Vec3(10, 40, 20), new Vec3(20, 100, 20), 0);
+		Gate gate = gateFactory.create(room1, room2);
+		assertEquals(new Vec3(0, 21, 10), gate.getOrigin());
+		assertEquals(new Vec2(20, 78), gate.getSize());
+		assertEquals(0, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
+	}
+	@Test
+	public void testLargeRoomsNoWallsZ() {
+		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = new Room(new Vec3(20, 40, 10), new Vec3(20, 100, 20), 0);
+		Gate gate = gateFactory.create(room1, room2);
+		assertEquals(new Vec3(10, 21, 0), gate.getOrigin());
+		assertEquals(new Vec2(20, 78), gate.getSize());
+		assertEquals(90, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
+	}
+	@Test
+	public void testLargeRoomsWallsX() {
+		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = new Room(new Vec3(10, 40, 20), new Vec3(20, 100, 20), 0);
+		room2.createFourWalls();
+		Gate gate = gateFactory.create(room1, room2);
+		assertEquals(new Vec3(0, 21, 10), gate.getOrigin());
+		assertEquals(new Vec2(20, 78), gate.getSize());
+		assertEquals(180, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
+	}
+	@Test
+	public void testLargeRoomsWallsZ() {
+		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = new Room(new Vec3(20, 40, 5), new Vec3(20, 100, 20), 0);
+		room2.createFourWalls();
+		Gate gate = gateFactory.create(room1, room2);
+		assertEquals(new Vec3(10, 21, 0), gate.getOrigin());
+		assertEquals(new Vec2(20, 78), gate.getSize());
+		assertEquals(270, MathUtil.clampAngle(gate.getRotationY()), 0.0000001);
+	}
 }

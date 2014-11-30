@@ -140,7 +140,7 @@ public class Room {
 		Room room = this;
 		while (room.getParent() != null) {
 			room = room.getParent();
-			pos.add(room.getOrigin());
+			pos.addLocal(room.getOrigin());
 		}
 		return pos;
 	}
