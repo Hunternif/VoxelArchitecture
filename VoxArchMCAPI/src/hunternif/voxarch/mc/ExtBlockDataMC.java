@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc;
 
 import hunternif.voxarch.storage.BlockData;
+import net.minecraft.block.Block;
 import net.minecraft.world.World;
 
 /**
@@ -12,14 +13,20 @@ import net.minecraft.world.World;
  * </p>
  * @author Hunternif
  */
-public abstract class ExtBlockDataMC extends BlockData {
+public class ExtBlockDataMC extends BlockData {
 
+	public ExtBlockDataMC(Block block) {
+		this(block, 0);
+	}
+	public ExtBlockDataMC(Block block, int metadata) {
+		this(Block.getIdFromBlock(block), metadata);
+	}
 	public ExtBlockDataMC(int id, int metadata) {
 		super(id, metadata);
 	}
 	
 	/** Called from MCWorld.setBlock(). Use this for special processing like
 	 * spawning HangingEntities, chests etc. */
-	public abstract void onPasteIntoWorld(World world, int x, int y, int z);
+	public void onPasteIntoWorld(World world, int x, int y, int z) {}
 	
 }

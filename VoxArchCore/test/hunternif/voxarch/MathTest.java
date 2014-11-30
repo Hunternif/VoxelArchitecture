@@ -106,7 +106,6 @@ public class MathTest {
 								 -1, 0), rot.multiply(a));
 		
 		rot = Matrix2.rotationMatrix(45);
-		double s = MathUtil.sinDeg(45);
 		assertEquals(new Matrix2(MathUtil.cosDeg(45), -MathUtil.sinDeg(45),
 								 MathUtil.sinDeg(45),  MathUtil.cosDeg(45)),
 					 rot.multiply(Matrix2.identity()));

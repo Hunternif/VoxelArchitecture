@@ -1,7 +1,6 @@
 package hunternif.voxarch;
 
 import static org.junit.Assert.assertEquals;
-import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.RoomUtil;

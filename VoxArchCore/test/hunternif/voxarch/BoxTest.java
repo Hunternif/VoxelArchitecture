@@ -9,14 +9,14 @@ public class BoxTest {
 	@Test
 	public void negativeSize() {
 		try {
-			Box box = new Box(1, -2, .3, .45, 0, 0.1);
+			new Box(1, -2, .3, .45, 0, 0.1);
 			fail("Accepted negative size");
 		} catch (IllegalArgumentException e) {}
 	}
 	@Test
 	public void zeroSize() {
 		try {
-			Box box = new Box(0, 0, 0, 0, 0, 0);
+			new Box(0, 0, 0, 0, 0, 0);
 			fail("Accepted zero size");
 		} catch (IllegalArgumentException e) {}
 	}

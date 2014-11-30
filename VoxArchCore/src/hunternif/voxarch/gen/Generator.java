@@ -78,8 +78,10 @@ public class Generator {
 		RoomConstrainedStorage volume = new RoomConstrainedStorage(pos, room);
 		// Clear volume within the room:
 		pos.pushTransformation();
+		pos.setCloseGaps(true);
 		pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
 		StructureUtil.clearStorage(volume);
+		pos.setCloseGaps(false);
 		pos.popTransformation();
 		// If found materials, proceed with generation:
 		Materials materials = materialsMap.get(room.getType());

@@ -12,6 +12,7 @@ import org.junit.Test;
 /**
  * @author Hunternif
  */
+@Deprecated
 public class StructureTest { 
 	@Test
 	public void testRotate90() {
