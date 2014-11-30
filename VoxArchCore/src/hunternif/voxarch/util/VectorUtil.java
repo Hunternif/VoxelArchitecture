@@ -47,6 +47,17 @@ public class VectorUtil {
 			// Not intersecting
 			return null;
 		}
-		return new Vec2(a).addLocal(lineVec.multiplyLocal(t));
+		Vec2 intersection = new Vec2(a).addLocal(lineVec.multiplyLocal(t));
+		
+		// So far we have found the intersection of the LINE of the ray with the
+		// segment. We must eliminate the case where this intersection happens
+		// on the point of the LINE in the opposite direction of the ray.
+		if ((intersection.x - rayStart.x)*(rayTarget.x - rayStart.x) >= 0 &&
+				(intersection.y - rayStart.y)*(rayTarget.y - rayStart.y) >= 0) {
+			return intersection;
+		} else {
+			// Gotcha!
+			return null;
+		}
 	}
 }
