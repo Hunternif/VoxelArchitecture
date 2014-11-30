@@ -71,9 +71,9 @@ public class GeneratorTest {
 	@Test
 	public void horGate() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(plan.getBase(), new Vec3(1, 0, 1), new Vec3(3, 5, 3), 0);
+		Room room1 = new Room(new Vec3(1, 0, 1), new Vec3(3, 5, 3), 0);
 		room1.createFourWalls();
-		Room room2 = new Room(plan.getBase(), new Vec3(4, 0, 1), new Vec3(3, 6, 3), 0);
+		Room room2 = new Room(new Vec3(4, 0, 1), new Vec3(3, 6, 3), 0);
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
@@ -111,9 +111,9 @@ public class GeneratorTest {
 	@Test
 	public void verGate() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(plan.getBase(), new Vec3(1, 0, 1), new Vec3(3, 3, 3), 0);
+		Room room1 = new Room(new Vec3(1, 0, 1), new Vec3(3, 3, 3), 0);
 		room1.createFourWalls();
-		Room room2 = new Room(plan.getBase(), new Vec3(1, 3, 1), new Vec3(3, 3, 3), 0);
+		Room room2 = new Room(new Vec3(1, 3, 1), new Vec3(3, 3, 3), 0);
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);

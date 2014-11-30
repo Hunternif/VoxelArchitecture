@@ -16,7 +16,7 @@ import java.util.List;
  * @author Hunternif
  */
 public class Room {
-	private final Room parent;
+	private Room parent;
 	private final List<Room> children = new ArrayList<Room>();
 	
 	private final List<Gate> gates = new ArrayList<Gate>();
@@ -39,13 +39,15 @@ public class Room {
 	 * to assign a particular style to it. */
 	private String type = null;
 	
-	public Room(Room parent, Vec3 origin, Vec3 size, double rotationY) {
-		this.parent = parent;
+	public Room(Vec3 origin, Vec3 size, double rotationY) {
 		this.origin = new Vec3(origin);
 		this.size = new Vec3(size);
 		this.rotationY = rotationY;
 	}
 	
+	protected void setParent(Room parent) {
+		this.parent = parent;
+	}
 	public Vec3 getOrigin() {
 		return origin;
 	}
@@ -56,9 +58,10 @@ public class Room {
 	
 	public void addChild(Room child) {
 		children.add(child);
+		child.setParent(this);
 	}
 	public Room addChild(Vec3 origin, Vec3 size, double rotationY) {
-		Room room = new Room(this, origin, size, rotationY);
+		Room room = new Room(origin, size, rotationY);
 		addChild(room);
 		return room;
 	}
