@@ -25,10 +25,10 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		Vec2 roomCenter = new Vec2(from.getOrigin().x, from.getOrigin().z);
 		double halfWidth = from.getSize().x/2;
 		double halfLength = from.getSize().z/2;
-		Vec2 east = rot.multiply(new Vec2(halfWidth, 0)).add(roomCenter);
-		Vec2 north = rot.multiply(new Vec2(0, -halfLength)).add(roomCenter);
-		Vec2 west = rot.multiply(new Vec2(-halfWidth, 0)).add(roomCenter);
-		Vec2 south = rot.multiply(new Vec2(0, halfLength)).add(roomCenter);
+		Vec2 east = rot.multiplyLocal(new Vec2(halfWidth, 0)).addLocal(roomCenter);
+		Vec2 north = rot.multiplyLocal(new Vec2(0, -halfLength)).addLocal(roomCenter);
+		Vec2 west = rot.multiplyLocal(new Vec2(-halfWidth, 0)).addLocal(roomCenter);
+		Vec2 south = rot.multiplyLocal(new Vec2(0, halfLength)).addLocal(roomCenter);
 		Vec2[] targets = {east, north, west, south};
 		
 		Vec2 traced = null; // The point on the bounding box of the target room.

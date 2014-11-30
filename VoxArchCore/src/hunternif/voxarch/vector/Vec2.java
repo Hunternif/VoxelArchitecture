@@ -34,29 +34,29 @@ public class Vec2 {
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec2 add(Vec2 vec) {
-		return add(vec.x, vec.y);
+	public Vec2 addLocal(Vec2 vec) {
+		return addLocal(vec.x, vec.y);
 	}
 	/** Modifies and returns itself. */
-	public Vec2 add(double dx, double dy) {
+	public Vec2 addLocal(double dx, double dy) {
 		this.x += dx;
 		this.y += dy;
 		return this;
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec2 subtract(Vec2 vec) {
-		return subtract(vec.x, vec.y);
+	public Vec2 subtractLocal(Vec2 vec) {
+		return subtractLocal(vec.x, vec.y);
 	}
 	/** Modifies and returns itself. */
-	public Vec2 subtract(double dx, double dy) {
+	public Vec2 subtractLocal(double dx, double dy) {
 		this.x -= dx;
 		this.y -= dy;
 		return this;
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec2 multiply(double m) {
+	public Vec2 multiplyLocal(double m) {
 		this.x *= m;
 		this.y *= m;
 		return this;

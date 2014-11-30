@@ -59,7 +59,7 @@ public class Matrix2 {
 	/**
 	 * Modifies this specified matrix to be the product (this * mat).
 	 */
-	public Matrix2 multiply(Matrix2 mat) {
+	public Matrix2 multiplyLocal(Matrix2 mat) {
 		double n00 = m00*mat.m00 + m01*mat.m10;
 		double n01 = m00*mat.m01 + m01*mat.m11;
 		double n10 = m10*mat.m00 + m11*mat.m10;
@@ -84,7 +84,7 @@ public class Matrix2 {
 	/**
 	 * Modifies the specified vector to be the product of this matrix and itself.
 	 */
-	public Vec2 multiply(Vec2 vec) {
+	public Vec2 multiplyLocal(Vec2 vec) {
 		double nx = vec.x*m00 + vec.y*m01;
 		double ny = vec.x*m10 + vec.y*m11;
 		vec.x = nx;
@@ -93,7 +93,7 @@ public class Matrix2 {
 	}
 	
 	/** See {@link #rotationMatrix(double)}. Truncates mantissa when casting to integer. */
-	public IntVec2 multiplyTruncate(IntVec2 vec) {
+	public IntVec2 multiplyLocalTruncate(IntVec2 vec) {
 		double nx = vec.x*m00 + vec.y*m01;
 		double ny = vec.x*m10 + vec.y*m11;
 		vec.x = (int)nx;
@@ -102,7 +102,7 @@ public class Matrix2 {
 	}
 	
 	/** See {@link #rotationMatrix(double)}. Rounds when casting to integer. */
-	public IntVec2 multiplyRound(IntVec2 vec) {
+	public IntVec2 multiplyLocalRound(IntVec2 vec) {
 		double nx = vec.x*m00 + vec.y*m01;
 		double ny = vec.x*m10 + vec.y*m11;
 		vec.x = (int)Math.round(nx);
@@ -112,7 +112,7 @@ public class Matrix2 {
 	
 	/** See {@link #rotationMatrix(double)}. Returns ceilingAbs when casting to integer.
 	 * @see MathUtil#ceilingAbs(double)*/
-	public IntVec2 multiplyCeiling(IntVec2 vec) {
+	public IntVec2 multiplyLocalCeiling(IntVec2 vec) {
 		double nx = vec.x*m00 + vec.y*m01;
 		double ny = vec.x*m10 + vec.y*m11;
 		vec.x = MathUtil.ceilingAbs(nx);

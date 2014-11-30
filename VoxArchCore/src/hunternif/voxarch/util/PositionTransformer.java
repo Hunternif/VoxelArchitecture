@@ -41,14 +41,14 @@ public class PositionTransformer implements IBlockStorage {
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
 		vec.set(x, y, z, 1);
-		matrix.multiply(vec);
+		matrix.multiplyLocal(vec);
 		return storage.getBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
 	}
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
 		vec.set(x, y, z, 1);
-		matrix.multiply(vec);
+		matrix.multiplyLocal(vec);
 		block.rotate(angle);
 		storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z), block);
 		if (closeGaps) {
@@ -61,7 +61,7 @@ public class PositionTransformer implements IBlockStorage {
 	@Override
 	public void clearBlock(int x, int y, int z) {
 		vec.set(x, y, z, 1);
-		matrix.multiply(vec);
+		matrix.multiplyLocal(vec);
 		storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
 		if (closeGaps) {
 			storage.clearBlock((int)vec.x, (int)vec.y, (int)vec.z);
@@ -72,7 +72,7 @@ public class PositionTransformer implements IBlockStorage {
 
 	/** Apply transformation of translation. */
 	public PositionTransformer translate(double x, double y, double z) {
-		matrix = matrix.multiply(Matrix4.translation(x, y, z));
+		matrix = matrix.multiplyLocal(Matrix4.translation(x, y, z));
 		return this;
 	}
 	
@@ -84,7 +84,7 @@ public class PositionTransformer implements IBlockStorage {
 	/** Apply transformation of rotation around the Y axis. */
 	public PositionTransformer rotateY(double angle) {
 		this.angle += angle;
-		matrix = matrix.multiply(Matrix4.rotationY(angle));
+		matrix = matrix.multiplyLocal(Matrix4.rotationY(angle));
 		return this;
 	}
 

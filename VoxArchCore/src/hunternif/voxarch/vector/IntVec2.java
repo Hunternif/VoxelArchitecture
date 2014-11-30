@@ -34,7 +34,7 @@ public class IntVec2 {
 	}
 	
 	/** Modifies and returns itself. */
-	public IntVec2 add(int dx, int dy) {
+	public IntVec2 addLocal(int dx, int dy) {
 		this.x += dx;
 		this.y += dy;
 		return this;

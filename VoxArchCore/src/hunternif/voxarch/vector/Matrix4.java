@@ -48,7 +48,7 @@ public class Matrix4 {
 	/**
 	 * Modifies this specified matrix to be the product (this * mat).
 	 */
-	public Matrix4 multiply(Matrix4 mat) {
+	public Matrix4 multiplyLocal(Matrix4 mat) {
 		double n00 = m00*mat.m00 + m01*mat.m10 + m02*mat.m20 + m03*mat.m30;
 		double n01 = m00*mat.m01 + m01*mat.m11 + m02*mat.m21 + m03*mat.m31;
 		double n02 = m00*mat.m02 + m01*mat.m12 + m02*mat.m22 + m03*mat.m32;
@@ -87,7 +87,7 @@ public class Matrix4 {
 	/**
 	 * Modifies the specified vector to be the product of this matrix and itself.
 	 */
-	public Vec4 multiply(Vec4 vec) {
+	public Vec4 multiplyLocal(Vec4 vec) {
 		double nx = vec.x*m00 + vec.y*m01 + vec.z*m02 + vec.s*m03;
 		double ny = vec.x*m10 + vec.y*m11 + vec.z*m12 + vec.s*m13;
 		double nz = vec.x*m20 + vec.y*m21 + vec.z*m22 + vec.s*m23;

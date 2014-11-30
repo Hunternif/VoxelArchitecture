@@ -51,10 +51,10 @@ public class StructureUtil {
 		
 		// Find storage origin coordinates as minimum of coordinates of 4 corner
 		// points of the storage rectangle.
-		Vec2 tl = rot.multiply(new Vec2(0, 0));
-		Vec2 tr = rot.multiply(new Vec2(width-1, 0));
-		Vec2 br = rot.multiply(new Vec2(width-1, length-1));
-		Vec2 bl = rot.multiply(new Vec2(0, length-1));
+		Vec2 tl = rot.multiplyLocal(new Vec2(0, 0));
+		Vec2 tr = rot.multiplyLocal(new Vec2(width-1, 0));
+		Vec2 br = rot.multiplyLocal(new Vec2(width-1, length-1));
+		Vec2 bl = rot.multiplyLocal(new Vec2(0, length-1));
 		
 		storageOrigin.x = MathUtil.min(tl.x, tr.x, br.x, bl.x);
 		storageOrigin.y = MathUtil.min(tl.y, tr.y, br.y, bl.y);
@@ -72,7 +72,7 @@ public class StructureUtil {
 		for (int x = 0; x < width; x++) {
 			for (int z = 0; z < length; z++) {
 				blockCoords.set(x, z);
-				rot.multiply(blockCoords).subtract(storageOrigin);
+				rot.multiplyLocal(blockCoords).subtractLocal(storageOrigin);
 				for (int y = 0; y < height; y++) {
 					BlockData block = toRotate.getStorage().getBlock(x, y, z).clone();
 					if (block == null) continue;
@@ -92,7 +92,7 @@ public class StructureUtil {
 		// Update the origin of the structure:
 		IntVec3 origin = toRotate.getOrigin();
 		Vec2 origin2D = new Vec2(origin.x, origin.z);
-		rot.multiply(origin2D).subtract(storageOrigin);
+		rot.multiplyLocal(origin2D).subtractLocal(storageOrigin);
 		newStruct.setOrigin(MathUtil.roundDown(origin2D.x), origin.y, MathUtil.roundDown(origin2D.y));
 		
 		return newStruct;

@@ -34,8 +34,8 @@ public class AlignedVerGateFactory implements IGateFactory {
 		
 		// Find horizontal origin of the 1st room relative to the 2nd:
 		Vec2 ro1 = new Vec2(from.getOrigin().x, from.getOrigin().z);
-		ro1.subtract(to.getOrigin().x, to.getOrigin().z);
-		Matrix2.rotationMatrix(to.getRotationY()).multiply(ro1);
+		ro1.subtractLocal(to.getOrigin().x, to.getOrigin().z);
+		Matrix2.rotationMatrix(to.getRotationY()).multiplyLocal(ro1);
 		
 		// Update box1 with the relative origin. Using 0 floor level, because
 		// we're only interested in their horizontal intersection:
@@ -48,7 +48,7 @@ public class AlignedVerGateFactory implements IGateFactory {
 		}
 		// Gate origin relative to the 2nd room:
 		Vec2 rg = new Vec2((isn.minX + isn.maxX)/2, (isn.minZ + isn.maxZ)/2);
-		Matrix2.rotationMatrix(-to.getRotationY()).multiply(rg);
+		Matrix2.rotationMatrix(-to.getRotationY()).multiplyLocal(rg);
 		Vec3 position = new Vec3(to.getOrigin().x + rg.x, y, to.getOrigin().z + rg.y);
 		Vec2 size = new Vec2(isn.maxX - isn.minX, isn.maxZ - isn.minZ);
 		

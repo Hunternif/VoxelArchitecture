@@ -21,7 +21,7 @@ public class RoomUtil {
 		Vec2 p = new Vec2(point.x - room.getOrigin().x,
 						  point.y - room.getOrigin().y);
 		Matrix2 rot = Matrix2.rotationMatrix(room.getRotationY());
-		rot.multiply(p);
+		rot.multiplyLocal(p);
 		Wall closest = null;
 		double distance = Double.MAX_VALUE;
 		for (Wall wall : room.getWalls()) {
@@ -50,10 +50,10 @@ public class RoomUtil {
 		Vec2 roomCenter = new Vec2(room.getOrigin().x, room.getOrigin().z);
 		double halfWidth = room.getSize().x/2;
 		double halfLength = room.getSize().z/2;
-		Vec2 v1 = rot.multiply(new Vec2(halfWidth, halfLength)).add(roomCenter);
-		Vec2 v2 = rot.multiply(new Vec2(halfWidth, -halfLength)).add(roomCenter);
-		Vec2 v3 = rot.multiply(new Vec2(-halfWidth, -halfLength)).add(roomCenter);
-		Vec2 v4 = rot.multiply(new Vec2(-halfWidth, halfLength)).add(roomCenter);
+		Vec2 v1 = rot.multiplyLocal(new Vec2(halfWidth, halfLength)).addLocal(roomCenter);
+		Vec2 v2 = rot.multiplyLocal(new Vec2(halfWidth, -halfLength)).addLocal(roomCenter);
+		Vec2 v3 = rot.multiplyLocal(new Vec2(-halfWidth, -halfLength)).addLocal(roomCenter);
+		Vec2 v4 = rot.multiplyLocal(new Vec2(-halfWidth, halfLength)).addLocal(roomCenter);
 		Vec2[] vertices = {v1, v2, v3, v4, v1};
 		
 		// Find the closest intersection of the ray with a line segment [vN,vN+1]

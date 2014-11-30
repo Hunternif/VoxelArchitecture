@@ -78,20 +78,20 @@ public class MathTest {
 	public void testRotateVector2() {
 		Matrix2 mat = Matrix2.rotationMatrix(90);
 		Vec2 vec = new Vec2(1.5, 0);
-		assertEquals(new Vec2(0, 1.5), mat.multiply(vec));
+		assertEquals(new Vec2(0, 1.5), mat.multiplyLocal(vec));
 		
 		vec.set(1, 0);
-		Matrix2.rotationMatrix(-135).multiply(vec);
+		Matrix2.rotationMatrix(-135).multiplyLocal(vec);
 		assertEquals(-1d/Math.sqrt(2), vec.x, 0.00000001);
 		assertEquals(-1d/Math.sqrt(2), vec.y, 0.00000001);
 		
 		mat = Matrix2.rotationMatrix(-45);
 		IntVec2 intVec = new IntVec2(1, 0);
-		assertEquals(new IntVec2(0, 0), mat.multiplyTruncate(intVec));
+		assertEquals(new IntVec2(0, 0), mat.multiplyLocalTruncate(intVec));
 		intVec.set(1, 0);
-		assertEquals(new IntVec2(1, -1), mat.multiplyRound(intVec));
+		assertEquals(new IntVec2(1, -1), mat.multiplyLocalRound(intVec));
 		intVec.set(1, 0);
-		assertEquals(new IntVec2(1, -1), mat.multiplyCeiling(intVec));
+		assertEquals(new IntVec2(1, -1), mat.multiplyLocalCeiling(intVec));
 	}
 	
 	@Test
@@ -99,22 +99,22 @@ public class MathTest {
 		Matrix2 rot = Matrix2.rotationMatrix(90);
 		Matrix2 a = Matrix2.identity();
 		assertEquals(new Matrix2(0, -1,
-								 1,  0), rot.multiply(a));
+								 1,  0), rot.multiplyLocal(a));
 		assertEquals(new Matrix2(-1,  0,
-				 				  0, -1), rot.multiply(a));
+				 				  0, -1), rot.multiplyLocal(a));
 		assertEquals(new Matrix2( 0, 1,
-								 -1, 0), rot.multiply(a));
+								 -1, 0), rot.multiplyLocal(a));
 		
 		rot = Matrix2.rotationMatrix(45);
 		assertEquals(new Matrix2(MathUtil.cosDeg(45), -MathUtil.sinDeg(45),
 								 MathUtil.sinDeg(45),  MathUtil.cosDeg(45)),
-					 rot.multiply(Matrix2.identity()));
+					 rot.multiplyLocal(Matrix2.identity()));
 	}
 	
 	@Test
 	public void testRotateVector4() {
 		Matrix4 mat = Matrix4.rotationY(90);
 		Vec4 vec = new Vec4(1.5, 0, 0.5, 0);
-		assertEquals(new Vec4(0.5, 0, -1.5, 0), mat.multiply(vec));
+		assertEquals(new Vec4(0.5, 0, -1.5, 0), mat.multiplyLocal(vec));
 	}
 }

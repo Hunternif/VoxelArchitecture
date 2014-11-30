@@ -27,11 +27,11 @@ public class Vec4 {
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec4 add(Vec4 vec) {
-		return add(vec.x, vec.y, vec.z, vec.s);
+	public Vec4 addLocal(Vec4 vec) {
+		return addLocal(vec.x, vec.y, vec.z, vec.s);
 	}
 	/** Modifies and returns itself. */
-	public Vec4 add(double dx, double dy, double dz, double ds) {
+	public Vec4 addLocal(double dx, double dy, double dz, double ds) {
 		this.x += dx;
 		this.y += dy;
 		this.z += dz;
@@ -40,11 +40,11 @@ public class Vec4 {
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec4 subtract(Vec4 vec) {
-		return subtract(vec.x, vec.y, vec.z, vec.s);
+	public Vec4 subtractLocal(Vec4 vec) {
+		return subtractLocal(vec.x, vec.y, vec.z, vec.s);
 	}
 	/** Modifies and returns itself. */
-	public Vec4 subtract(double dx, double dy, double dz, double ds) {
+	public Vec4 subtractLocal(double dx, double dy, double dz, double ds) {
 		this.x -= dx;
 		this.y -= dy;
 		this.z -= dz;

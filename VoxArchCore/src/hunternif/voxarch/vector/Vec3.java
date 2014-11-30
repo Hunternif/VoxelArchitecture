@@ -40,10 +40,10 @@ public class Vec3 {
 	
 	/** Modifies and returns itself. */
 	public Vec3 add(Vec3 vec) {
-		return add(vec.x, vec.y, vec.z);
+		return addLocal(vec.x, vec.y, vec.z);
 	}
 	/** Modifies and returns itself. */
-	public Vec3 add(double dx, double dy, double dz) {
+	public Vec3 addLocal(double dx, double dy, double dz) {
 		this.x += dx;
 		this.y += dy;
 		this.z += dz;
@@ -51,11 +51,11 @@ public class Vec3 {
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec3 subtract(Vec3 vec) {
-		return subtract(vec.x, vec.y, vec.z);
+	public Vec3 subtractLocal(Vec3 vec) {
+		return subtractLocal(vec.x, vec.y, vec.z);
 	}
 	/** Modifies and returns itself. */
-	public Vec3 subtract(double dx, double dy, double dz) {
+	public Vec3 subtractLocal(double dx, double dy, double dz) {
 		this.x -= dx;
 		this.y -= dy;
 		this.z -= dz;
@@ -63,7 +63,7 @@ public class Vec3 {
 	}
 	
 	/** Modifies and returns itself. */
-	public Vec3 multiply(double m) {
+	public Vec3 multiplyLocal(double m) {
 		this.x *= m;
 		this.y *= m;
 		this.z *= m;
