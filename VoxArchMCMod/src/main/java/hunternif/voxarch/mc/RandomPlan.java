@@ -11,7 +11,7 @@ public class RandomPlan {
 	
 	public static ArchPlan create() {
 		ArchPlan plan = new ArchPlan();
-		grid(plan);		
+		randomGrid(plan);		
 		return plan;
 	}
 	
@@ -20,23 +20,30 @@ public class RandomPlan {
 		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(16, 6, 16), 0).setHasCeiling(false).createRoundWalls(8);
 	}
 	
+	/** A random-sized box with 4 walls. */
+	public static void randomBox(ArchPlan plan) {
+		int size = 3 + (int)Math.round(10*Math.random());
+		System.out.println("Size: " + size);
+		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), 0).setHasCeiling(false).createFourWalls();
+	}
+	
 	/** A flat grid of random-sized interconnected rooms **/
-	public static void grid(ArchPlan plan) {
-		Vec3 roomSize = new Vec3(6, 5, 6);
-		int roomSpacing = 1;
-		Vec3 sizeJitter = new Vec3(3, 1, 3);
+	public static void randomGrid(ArchPlan plan) {
+		Vec3 roomSize = new Vec3(8, 6, 8);
+		int roomSpacing = 0;
+		Vec3 sizeJitter = new Vec3(4, 2, 4);
 		int N = 5;
 		
-		// Step 1. Create a NxN grid of rooms
-		Vec3 corner = new Vec3(-(roomSize.x + roomSpacing)*(N-1)/2 + 0.5, 0, -(roomSize.z + roomSpacing)*(N-1)/2 + 0.5);
+		// Step 1. Create a NxN grid of rooms, randomize their size
+		Vec3 corner = new Vec3(Math.round(-(roomSize.x + roomSpacing)*(N-1)/2), 0, Math.round(-(roomSize.z + roomSpacing)*(N-1)/2));
 		Vec3 curCoords = corner.clone();
 		Room[][] roomArray = new Room[N][N];
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
 				Vec3 size = roomSize.clone();
-				size.x += 2 * (Math.random() - 0.5) * sizeJitter.x;
-				size.y += 2 * (Math.random() - 0.5) * sizeJitter.y;
-				size.z += 2 * (Math.random() - 0.5) * sizeJitter.z;
+				size.x += Math.round(2 * (Math.random() - 0.5) * sizeJitter.x);
+				size.y += Math.round(2 * (Math.random() - 0.5) * sizeJitter.y);
+				size.z += Math.round(2 * (Math.random() - 0.5) * sizeJitter.z);
 				Room room = new Room(curCoords, size, 0).setHasCeiling(false);
 				room.createFourWalls();
 				roomArray[i][j] = room;

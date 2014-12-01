@@ -27,7 +27,8 @@ public class Room {
 	private final Vec3 size;
 
 	/** The coordinates in blocks of the origin point relative to the origin
-	 * of the parent room. The origin is located at the center of the floor. */
+	 * of the parent room. The origin is located in the center of the room
+	 * at the the floor level. */
 	private final Vec3 origin;
 	
 	private final double rotationY;

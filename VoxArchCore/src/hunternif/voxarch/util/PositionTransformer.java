@@ -63,11 +63,12 @@ public class PositionTransformer implements IBlockStorage {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
 		storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
-		if (closeGaps) {
+		// We want to leave no odd blocks in the volume when clearing:
+		//if (closeGaps) {
 			storage.clearBlock((int)vec.x, (int)vec.y, (int)vec.z);
 			storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, (int)vec.z);
 			storage.clearBlock((int)vec.x, (int)vec.y, MathUtil.roundDown(vec.z));
-		}
+		//}
 	}
 
 	/** Apply transformation of translation. */

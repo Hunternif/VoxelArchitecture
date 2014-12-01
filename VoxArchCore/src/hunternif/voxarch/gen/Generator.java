@@ -67,7 +67,7 @@ public class Generator {
 		 * ceiling blocks.
 		 */
 		PositionTransformer pos = new PositionTransformer(world);
-		pos.translate(x, y, z).rotateY(plan.getBase().getRotationY());
+		pos.translate(0.5 + x, y, 0.5 + z).rotateY(plan.getBase().getRotationY());
 		generateRoom(pos, plan.getBase());
 	}
 	
@@ -79,9 +79,14 @@ public class Generator {
 		// Clear volume within the room:
 		pos.pushTransformation();
 		pos.setCloseGaps(true);
+		// Offset ensures that no unnecessary blocks are removed outside the
+		// walls. However, this means that in case of non-axis-aligned walls
+		// some terrain blocks may be left inside due to roundoff errors.
+		// Personally, I prioritize external appearance, so this is acceptable.
+		// TODO: fix the roundoff errors!
+		volume.setOffset(0.1);
 		pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
 		StructureUtil.clearStorage(volume);
-		pos.setCloseGaps(false);
 		pos.popTransformation();
 		// If found materials, proceed with generation:
 		Materials materials = materialsMap.get(room.getType());
@@ -94,9 +99,9 @@ public class Generator {
 				if (floorGen != null) {
 					pos.pushTransformation();
 					pos.setCloseGaps(true);
+					volume.setOffset(0.1);
 					pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
 					floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
-					pos.setCloseGaps(false);
 					pos.popTransformation();
 				}
 			}
@@ -107,9 +112,9 @@ public class Generator {
 				if (ceilGen != null) {
 					pos.pushTransformation();
 					pos.setCloseGaps(true);
+					volume.setOffset(0.1);
 					pos.translate(-room.getSize().x/2 + 0.5, room.getSize().y-1, -room.getSize().z/2 + 0.5);
 					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
-					pos.setCloseGaps(false);
 					pos.popTransformation();
 				}
 			}
@@ -120,6 +125,8 @@ public class Generator {
 				for (Wall wall : room.getWalls()) {
 					pos.pushTransformation();
 					pos.translate(wall.getP1().x, 0, wall.getP1().y);
+					pos.setCloseGaps(false);
+					volume.setOffset(0);
 					pos.rotateY(wall.getAngleDeg());
 					wallGen.generateWall(pos, wall, materials);
 					pos.popTransformation();
@@ -155,6 +162,8 @@ public class Generator {
 			} else {
 				pos.translate(-gate.getSize().x/2 + 0.5, 0, -gate.getSize().y/2 + 0.5);
 			}
+			pos.setCloseGaps(false);
+			volume.setOffset(0);
 			gen.generateGate(pos, gate, materials);
 			pos.popTransformation();
 		}

@@ -80,4 +80,39 @@ public class RoomConstrainedStorageTest {
 					 "0 0 1 1 1 0 0\n" +
 					 "0 0 0 0 0 0 0", DebugUtil.printFixedStorage(out));
 	}
+	
+	@Test
+	public void testOffset4Walls() {
+		Room room = new Room(new Vec3(1, 0, 1), new Vec3(7, 1, 7), 0);
+		room.createFourWalls();
+		BlockData block = new BlockData(1);
+		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
+		RoomConstrainedStorage constrained = new RoomConstrainedStorage(out, room);
+		constrained.setOffset(1);
+		StructureUtil.fill(constrained, block);
+		assertEquals("0 0 0 0 0 0 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 1 1 1 1 1 0\n" +
+					 "0 0 0 0 0 0 0", DebugUtil.printFixedStorage(out));
+	}
+	@Test
+	public void testOffset4Walls2() {
+		Room room = new Room(new Vec3(1, 0, 1), new Vec3(7, 1, 7), 0);
+		room.createFourWalls();
+		BlockData block = new BlockData(1);
+		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
+		RoomConstrainedStorage constrained = new RoomConstrainedStorage(out, room);
+		constrained.setOffset(2);
+		StructureUtil.fill(constrained, block);
+		assertEquals("0 0 0 0 0 0 0\n" +
+					 "0 0 0 0 0 0 0\n" +
+					 "0 0 1 1 1 0 0\n" +
+					 "0 0 1 1 1 0 0\n" +
+					 "0 0 1 1 1 0 0\n" +
+					 "0 0 0 0 0 0 0\n" +
+					 "0 0 0 0 0 0 0", DebugUtil.printFixedStorage(out));
+	}
 }

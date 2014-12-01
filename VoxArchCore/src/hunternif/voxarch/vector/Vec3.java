@@ -5,6 +5,11 @@ package hunternif.voxarch.vector;
  * @author Hunternif
  */
 public class Vec3 {
+	public static final Vec3 ZERO = new Vec3(0, 0, 0);
+	public static final Vec3 UNIT_X = new Vec3(1, 0, 0);
+	public static final Vec3 UNIT_Y = new Vec3(0, 1, 0);
+	public static final Vec3 UNIT_Z = new Vec3(0, 0, 1);
+	
 	public double x;
 	public double y;
 	public double z;
@@ -111,5 +116,19 @@ public class Vec3 {
 	/** Returns a new vector that is the cross product [this x vec] */
 	public Vec3 crossProduct(Vec3 vec) {
 		return new Vec3(y*vec.z - z*vec.y, z*vec.x - x*vec.z, x*vec.y - y*vec.x);
+	}
+	
+	public double length() {
+		return distanceTo(ZERO);
+	}
+	
+	/** Normalizes and returns itself. */
+	public Vec3 normalizeLocal() {
+		double length = length();
+		if (length == 0) return this;
+		x /= length;
+		y /= length;
+		z /= length;
+		return this;
 	}
 }

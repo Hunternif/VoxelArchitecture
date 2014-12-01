@@ -55,7 +55,6 @@ public class MCWorld implements IBlockStorage {
 		if (block instanceof ExtBlockDataMC) {
 			((ExtBlockDataMC) block).onPasteIntoWorld(world, x, y, z);
 		}
-		//FIXME: entities caught up inside the block will spam stack traces and "Wrong location!"
 		Block mcBlock = Block.getBlockById(block.getId());
 		// Flag 2 will send the change to clients
 		world.setBlock(x, y, z, mcBlock, block.getMetadata(), 2);
