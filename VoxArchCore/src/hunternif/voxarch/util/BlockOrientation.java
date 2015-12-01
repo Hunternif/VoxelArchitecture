@@ -7,7 +7,9 @@ package hunternif.voxarch.util;
  * @author Hunternif
  */
 public enum BlockOrientation {
-	NONE(0), EAST(0), NORTH(90), WEST(180), SOUTH(270);
+	EAST(0), NORTH(90), WEST(180), SOUTH(270);
+	
+	public static final BlockOrientation DEFAULT = EAST;
 	
 	public final double angle;
 	private static final BlockOrientation[] rotations = {EAST, NORTH, WEST, SOUTH};
@@ -35,8 +37,6 @@ public enum BlockOrientation {
 	 * rotation (positive angle is counterclockwise rotation).
 	 */
 	public BlockOrientation rotate(double angle) {
-		if (this == NONE) return this;
-		
 		boolean clockwise = angle < 0;
 		angle += this.angle;
 		angle = MathUtil.clampAngle(angle);

@@ -2,14 +2,15 @@ package hunternif.voxarch.mc;
 
 import hunternif.voxarch.mc.item.ArchitectsWand;
 import net.minecraft.creativetab.CreativeTabs;
+import net.minecraftforge.fml.common.Mod;
+import net.minecraftforge.fml.common.Mod.EventHandler;
+import net.minecraftforge.fml.common.Mod.Instance;
+import net.minecraftforge.fml.common.SidedProxy;
+import net.minecraftforge.fml.common.event.FMLInitializationEvent;
+import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
+import net.minecraftforge.fml.common.registry.GameRegistry;
 
 import org.apache.logging.log4j.Logger;
-
-import cpw.mods.fml.common.Mod;
-import cpw.mods.fml.common.Mod.EventHandler;
-import cpw.mods.fml.common.Mod.Instance;
-import cpw.mods.fml.common.event.FMLPreInitializationEvent;
-import cpw.mods.fml.common.registry.GameRegistry;
 
 /**
  * A demo mod for Voxel Architecture.
@@ -29,11 +30,19 @@ public class VoxArchMod {
 	
 	public static ArchitectsWand archWand;
 	
+	@SidedProxy(clientSide="hunternif.voxarch.mc.ClientProxy", serverSide="hunternif.voxarch.mc.CommonProxy")
+	public static CommonProxy proxy;
+	
 	@EventHandler
 	public void preInit(FMLPreInitializationEvent event) {
 		logger = event.getModLog();
 		
 		archWand = (ArchitectsWand)new ArchitectsWand().setCreativeTab(CreativeTabs.tabTools).setUnlocalizedName("architectsWand");
 		GameRegistry.registerItem(archWand, "architectsWand");
+	}
+	
+	@EventHandler
+	public void init(FMLInitializationEvent event) {
+		proxy.init();
 	}
 }

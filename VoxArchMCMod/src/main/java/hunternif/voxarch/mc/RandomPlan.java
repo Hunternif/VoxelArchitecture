@@ -11,7 +11,8 @@ public class RandomPlan {
 	
 	public static ArchPlan create() {
 		ArchPlan plan = new ArchPlan();
-		randomGrid(plan);		
+		//randomGrid(plan);
+		randomBox(plan);
 		return plan;
 	}
 	
@@ -24,15 +25,15 @@ public class RandomPlan {
 	public static void randomBox(ArchPlan plan) {
 		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
-		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), 0).setHasCeiling(false).createFourWalls();
+		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), 45).setHasCeiling(false).createFourWalls();
 	}
 	
 	/** A flat grid of random-sized interconnected rooms **/
 	public static void randomGrid(ArchPlan plan) {
-		Vec3 roomSize = new Vec3(8, 6, 8);
+		Vec3 roomSize = new Vec3(5, 6, 5);
 		int roomSpacing = 0;
-		Vec3 sizeJitter = new Vec3(4, 2, 4);
-		int N = 5;
+		Vec3 sizeJitter = new Vec3(0, 0, 0);
+		int N = 3;
 		
 		// Step 1. Create a NxN grid of rooms, randomize their size
 		Vec3 corner = new Vec3(Math.round(-(roomSize.x + roomSpacing)*(N-1)/2), 0, Math.round(-(roomSize.z + roomSpacing)*(N-1)/2));

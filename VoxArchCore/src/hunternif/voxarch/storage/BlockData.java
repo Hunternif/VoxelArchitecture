@@ -11,7 +11,7 @@ public class BlockData {
 	private int id;
 	private int metadata;
 	
-	private BlockOrientation orient = BlockOrientation.NONE;
+	private BlockOrientation orient = null;
 	
 	public BlockData(int id) {
 		this(id, 0);
@@ -36,10 +36,14 @@ public class BlockData {
 		return metadata;
 	}
 	
+	public boolean hasOrientation() {
+		return orient != null;
+	}
+	
 	/** Rotate the BlockOrientation (if not NONE) counterclockwise by the
 	 * specified angle. */
 	public void rotate(double angle) {
-		if (orient == BlockOrientation.NONE) return;
+		if (!hasOrientation()) return;
 		setOrientaion(orient.rotate(angle));
 	}
 
