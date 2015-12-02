@@ -2,10 +2,20 @@ package hunternif.voxarch.mc;
 
 import hunternif.voxarch.gen.Materials;
 import hunternif.voxarch.storage.BlockData;
+
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.init.Blocks;
 
 public class SimpleMaterials implements Materials {
 
+	private final Map<String, BlockData> oneBlockProps = new HashMap<String, BlockData>();
+	
+	public SimpleMaterials() {
+		oneBlockProps.put("torch", new ExtBlockDataMC(Blocks.torch));
+	}
+	
 	@Override
 	public BlockData[] floorBlocks() {
 		return new BlockData[]{new ExtBlockDataMC(Blocks.cobblestone)};
@@ -38,8 +48,8 @@ public class SimpleMaterials implements Materials {
 	}
 
 	@Override
-	public BlockData[] decorationBlocks() {
-		return new BlockData[]{new ExtBlockDataMC(Blocks.brick_block)};
+	public BlockData oneBlockProp(String name) {
+		return oneBlockProps.get(name);
 	}
 
 }

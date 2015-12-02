@@ -39,12 +39,12 @@ public class GeneratorTest {
 			return new BlockData[] {blockFloor};
 		}
 		@Override
-		public BlockData[] decorationBlocks() {
-			return null;
-		}
-		@Override
 		public BlockData[] ceilingBlocks() {
 			return new BlockData[] {blockCeil};
+		}
+		@Override
+		public BlockData oneBlockProp(String name) {
+			return null;
 		}
 	};
 	

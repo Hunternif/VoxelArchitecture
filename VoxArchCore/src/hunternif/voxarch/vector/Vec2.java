@@ -5,6 +5,10 @@ package hunternif.voxarch.vector;
  * @author Hunternif
  */
 public class Vec2 {
+	public static final Vec2 ZERO = new Vec2(0, 0);
+	public static final Vec2 UNIT_X = new Vec2(1, 0);
+	public static final Vec2 UNIT_Y = new Vec2(0, 1);
+	
 	public double x;
 	public double y;
 	
@@ -33,6 +37,10 @@ public class Vec2 {
 		return this;
 	}
 	
+	/** Creates a new instance. */
+	public Vec2 add(Vec2 vec) {
+		return new Vec2(this.x + vec.x, this.y + vec.y);
+	}
 	/** Modifies and returns itself. */
 	public Vec2 addLocal(Vec2 vec) {
 		return addLocal(vec.x, vec.y);
@@ -44,6 +52,10 @@ public class Vec2 {
 		return this;
 	}
 	
+	/** Creates a new instance. */
+	public Vec2 subtract(Vec2 vec) {
+		return new Vec2(this.x - vec.x, this.y - vec.y);
+	}
 	/** Modifies and returns itself. */
 	public Vec2 subtractLocal(Vec2 vec) {
 		return subtractLocal(vec.x, vec.y);
@@ -89,5 +101,18 @@ public class Vec2 {
 	
 	public double dotProduct(Vec2 vec) {
 		return x*vec.x + y*vec.y;
+	}
+	
+	public double length() {
+		return distanceTo(ZERO);
+	}
+	
+	/** Normalizes and returns itself. */
+	public Vec2 normalizeLocal() {
+		double length = length();
+		if (length == 0) return this;
+		x /= length;
+		y /= length;
+		return this;
 	}
 }

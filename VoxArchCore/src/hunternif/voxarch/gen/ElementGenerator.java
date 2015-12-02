@@ -36,4 +36,8 @@ public class ElementGenerator {
 		/** The wall runs along the X axis. */
 		void generateWall(IBlockStorage dest, hunternif.voxarch.plan.Wall wall, Materials materials);
 	}
+	public static interface Prop {
+		/** A fixed-size prop, i.e. a statue or a simple torch. */
+		void generateProp(IBlockStorage dest, hunternif.voxarch.plan.Prop prop, Materials materials);
+	}
 }

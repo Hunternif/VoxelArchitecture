@@ -1,5 +1,7 @@
 package hunternif.voxarch.mc;
 
+import java.util.Random;
+
 import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.gate.IGateFactory;
@@ -11,8 +13,8 @@ public class RandomPlan {
 	
 	public static ArchPlan create() {
 		ArchPlan plan = new ArchPlan();
-		randomGrid(plan);
-		//randomBox(plan);
+		//randomGrid(plan);
+		randomBox(plan);
 		return plan;
 	}
 	
@@ -23,17 +25,16 @@ public class RandomPlan {
 	
 	/** A random-sized box with 4 walls. */
 	public static void randomBox(ArchPlan plan) {
-		//TODO BUG: In odd-sized rooms there are holes in the floor.
-		int size = 8;//3 + (int)Math.round(10*Math.random());
+		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
-		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), 45).setHasCeiling(false).createFourWalls();
+		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), (new Random()).nextInt(2)*45).setHasCeiling(false).createFourWalls();
 	}
 	
 	/** A flat grid of random-sized interconnected rooms **/
 	public static void randomGrid(ArchPlan plan) {
-		Vec3 roomSize = new Vec3(4, 5, 4);
+		Vec3 roomSize = new Vec3(6, 5, 6);
 		int roomSpacing = 1;
-		Vec3 sizeJitter = new Vec3(0, 0, 0);
+		Vec3 sizeJitter = new Vec3(1, 1, 1);
 		int N = 3;
 		
 		// Step 1. Create a NxN grid of rooms, randomize their size
@@ -58,10 +59,10 @@ public class RandomPlan {
 		// Step 2. Interconnect adjacent rooms
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
-				if (i < N-1) {
+				if (i < N-1 && (Math.random() > 0.5)) {
 					plan.getBase().addGate(gateFactory.create(roomArray[i][j], roomArray[i+1][j]));
 				}
-				if (j < N-1) {
+				if (j < N-1 && (Math.random() > 0.5)) {
 					plan.getBase().addGate(gateFactory.create(roomArray[i][j], roomArray[i][j+1]));
 				}
 			}

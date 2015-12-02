@@ -1,13 +1,14 @@
 package hunternif.voxarch.mc.item;
 
 import hunternif.voxarch.gen.Generator;
+import hunternif.voxarch.gen.impl.OneBlockPropGen;
 import hunternif.voxarch.gen.impl.SimpleCeilingGenerator;
 import hunternif.voxarch.gen.impl.SimpleFloorGenerator;
 import hunternif.voxarch.gen.impl.SimpleHorGateGenerator;
-import hunternif.voxarch.gen.impl.SimpleWallGenerator;
 import hunternif.voxarch.mc.MCWorld;
 import hunternif.voxarch.mc.RandomPlan;
 import hunternif.voxarch.mc.SimpleMaterials;
+import hunternif.voxarch.sandbox.SimpleTorchlitWallGen;
 
 import java.util.List;
 
@@ -39,8 +40,9 @@ public class ArchitectsWand extends Item {
 			gen.setDefaultMaterials(new SimpleMaterials());
 			gen.setDefaultCeilingGenerator(new SimpleCeilingGenerator());
 			gen.setDefaultFloorGenerator(new SimpleFloorGenerator());
-			gen.setDefaultWallGenerator(new SimpleWallGenerator());
+			gen.setDefaultWallGenerator(new SimpleTorchlitWallGen());
 			gen.setDefaultHorGateGenerator(new SimpleHorGateGenerator());
+			gen.setPropGeneratorForName("torch", new OneBlockPropGen("torch"));
 			gen.generate(RandomPlan.create(), pos.getX(), pos.getY(), pos.getZ());
 		}
 		return true;

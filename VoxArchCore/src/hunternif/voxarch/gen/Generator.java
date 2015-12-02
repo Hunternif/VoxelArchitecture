@@ -1,9 +1,6 @@
 package hunternif.voxarch.gen;
 
-import hunternif.voxarch.plan.ArchPlan;
-import hunternif.voxarch.plan.Gate;
-import hunternif.voxarch.plan.Room;
-import hunternif.voxarch.plan.Wall;
+import hunternif.voxarch.plan.*;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.PositionTransformer;
 import hunternif.voxarch.util.RoomConstrainedStorage;
@@ -33,15 +30,17 @@ public class Generator {
 	private ElementGenerator.Floor defaultFloorGenerator;
 	private ElementGenerator.HorGate defaultHorGateGenerator;
 	private ElementGenerator.VerGate defaultVerGateGenerator;
-	private ElementGenerator.Stairs defaultStairsGenerator;
+	//private ElementGenerator.Stairs defaultStairsGenerator;
 	private ElementGenerator.Wall defaultWallGenerator;
 	private final Map<String, Materials> materialsMap = new HashMap<String, Materials>();
 	private final Map<String, ElementGenerator.Ceiling> ceilingGenMap = new HashMap<String, ElementGenerator.Ceiling>();
 	private final Map<String, ElementGenerator.Floor> floorGenMap = new HashMap<String, ElementGenerator.Floor>();
 	private final Map<String, ElementGenerator.HorGate> horGateGenMap = new HashMap<String, ElementGenerator.HorGate>();
 	private final Map<String, ElementGenerator.VerGate> verGateGenMap = new HashMap<String, ElementGenerator.VerGate>();
-	private final Map<String, ElementGenerator.Stairs> stairsGenMap = new HashMap<String, ElementGenerator.Stairs>();
+	//private final Map<String, ElementGenerator.Stairs> stairsGenMap = new HashMap<String, ElementGenerator.Stairs>();
 	private final Map<String, ElementGenerator.Wall> wallGenMap = new HashMap<String, ElementGenerator.Wall>();
+	/** Mapped to prop name, not type! TODO: organize prop names vs types. */
+	private final Map<String, ElementGenerator.Prop> propGenMap = new HashMap<String, ElementGenerator.Prop>();
 
 	public Generator(IBlockStorage world) {
 		this.world = world;
@@ -94,45 +93,44 @@ public class Generator {
 		// If found materials, proceed with generation:
 		Materials materials = materialsMap.get(room.getType());
 		if (materials == null) materials = defaultMaterials;
-		if (materials != null) {
-			// Generate floor:
-			if (room.hasFloor()) {
-				ElementGenerator.Floor floorGen = floorGenMap.get(room.getType());
-				if (floorGen == null) floorGen = defaultFloorGenerator;
-				if (floorGen != null) {
-					volume.setOffset(0.1);
-					pos.pushTransformation();
-					pos.setCloseGaps(true);
-					pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
-					floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
-					pos.popTransformation();
-				}
+		if (materials == null) return; // No materials provided!
+		// Generate floor:
+		if (room.hasFloor()) {
+			ElementGenerator.Floor floorGen = floorGenMap.get(room.getType());
+			if (floorGen == null) floorGen = defaultFloorGenerator;
+			if (floorGen != null) {
+				volume.setOffset(0.1);
+				pos.pushTransformation();
+				pos.setCloseGaps(true);
+				pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
+				floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+				pos.popTransformation();
 			}
-			// Generate ceiling:
-			if (room.hasCeiling()) {
-				ElementGenerator.Ceiling ceilGen = ceilingGenMap.get(room.getType());
-				if (ceilGen == null) ceilGen = defaultCeilingGenerator;
-				if (ceilGen != null) {
-					volume.setOffset(0.1);
-					pos.pushTransformation();
-					pos.setCloseGaps(true);
-					pos.translate(-room.getSize().x/2, room.getSize().y, -room.getSize().z/2);
-					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
-					pos.popTransformation();
-				}
+		}
+		// Generate ceiling:
+		if (room.hasCeiling()) {
+			ElementGenerator.Ceiling ceilGen = ceilingGenMap.get(room.getType());
+			if (ceilGen == null) ceilGen = defaultCeilingGenerator;
+			if (ceilGen != null) {
+				volume.setOffset(0.1);
+				pos.pushTransformation();
+				pos.setCloseGaps(true);
+				pos.translate(-room.getSize().x/2, room.getSize().y, -room.getSize().z/2);
+				ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+				pos.popTransformation();
 			}
-			// Generate walls:
-			ElementGenerator.Wall wallGen = wallGenMap.get(room.getType());
-			if (wallGen == null) wallGen = defaultWallGenerator;
-			if (wallGen != null) {
-				for (Wall wall : room.getWalls()) {
-					pos.pushTransformation();
-					pos.translate(wall.getP1().x, 0, wall.getP1().y);
-					pos.setCloseGaps(false);
-					pos.rotateY(wall.getAngleDeg());
-					wallGen.generateWall(pos, wall, materials);
-					pos.popTransformation();
-				}
+		}
+		// Generate walls:
+		ElementGenerator.Wall wallGen = wallGenMap.get(room.getType());
+		if (wallGen == null) wallGen = defaultWallGenerator;
+		if (wallGen != null) {
+			for (Wall wall : room.getWalls()) {
+				pos.pushTransformation();
+				pos.translate(wall.getP1().x, 0, wall.getP1().y);
+				pos.setCloseGaps(false);
+				pos.rotateY(wall.getAngleDeg());
+				wallGen.generateWall(pos, wall, materials);
+				pos.popTransformation();
 			}
 		}
 		// Recursively build all child rooms:
@@ -155,7 +153,6 @@ public class Generator {
 			if (gen == null) continue;
 			Materials gateMaterials = materialsMap.get(gate.getType());
 			if (gateMaterials == null) gateMaterials = defaultMaterials;
-			if (gateMaterials == null) continue;
 			pos.pushTransformation();
 			pos.translate(gate.getOrigin()).rotateY(gate.getRotationY());
 			// Move the origin to the bottom left corner of the gate:
@@ -167,6 +164,18 @@ public class Generator {
 			pos.setCloseGaps(false);
 			gen.generateGate(pos, gate, materials);
 			pos.popTransformation();
+		}
+		// Build props:
+		for (Prop prop : room.getProps()) {
+			ElementGenerator.Prop gen = propGenMap.get(prop.getName());
+			if (gen != null) {
+				Materials propMaterials = materialsMap.get(prop.getType());
+				if (propMaterials == null) propMaterials = defaultMaterials;
+				pos.pushTransformation();
+				pos.translate(prop.getOrigin()).rotateY(prop.getRotationY());
+				gen.generateProp(pos, prop, propMaterials);
+				pos.popTransformation();
+			}
 		}
 	}
 
@@ -190,9 +199,9 @@ public class Generator {
 		this.defaultVerGateGenerator = defaultVerGateGenerator;
 	}
 
-	public void setDefaultStairsGenerator(ElementGenerator.Stairs defaultStairsGenerator) {
+	/*public void setDefaultStairsGenerator(ElementGenerator.Stairs defaultStairsGenerator) {
 		this.defaultStairsGenerator = defaultStairsGenerator;
-	}
+	}*/
 
 	public void setDefaultWallGenerator(ElementGenerator.Wall defaultWallGenerator) {
 		this.defaultWallGenerator = defaultWallGenerator;
@@ -218,11 +227,15 @@ public class Generator {
 		verGateGenMap.put(type, verGateGenerator);
 	}
 
-	public void setStairsGeneratorForType(String type, ElementGenerator.Stairs stairsGenerator) {
+	/*public void setStairsGeneratorForType(String type, ElementGenerator.Stairs stairsGenerator) {
 		stairsGenMap.put(type, stairsGenerator);
-	}
+	}*/
 
 	public void setWallGeneratorForType(String type, ElementGenerator.Wall wallGenerator) {
 		wallGenMap.put(type, wallGenerator);
+	}
+	
+	public void setPropGeneratorForName(String name, ElementGenerator.Prop propGenerator) {
+		propGenMap.put(name, propGenerator);
 	}
 }

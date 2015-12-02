@@ -44,6 +44,8 @@ public class Room {
 	
 	protected final List<Wall> walls = new ArrayList<Wall>();
 	
+	protected final List<Prop> props = new ArrayList<Prop>();
+	
 	/** Vector (width, height, length), doesn't take rotation into account.
 	 * Components of this vector are equal to the distance between the corners
 	 * of the room. It would take that number + 1 blocks to build each boundary
@@ -102,6 +104,15 @@ public class Room {
 	
 	public List<Wall> getWalls() {
 		return walls;
+	}
+	
+	public void addProp(String name, Vec3 origin, double rotationY) {
+		Prop prop = new Prop(this, name, origin, rotationY);
+		props.add(prop);
+	}
+	
+	public List<Prop> getProps() {
+		return props;
 	}
 
 	/** Vector (width, height, length), doesn't take rotation into account.

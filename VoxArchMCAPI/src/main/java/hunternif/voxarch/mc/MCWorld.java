@@ -71,7 +71,7 @@ public class MCWorld implements IBlockStorage {
 		Block mcBlock = Block.getBlockById(block.getId());
 		//TODO: make sure rotation is applied correctly for particular kinds of blocks, i.e. Portals
 		IBlockState state = mcBlock.getDefaultState();
-		if (block.hasOrientation()) {
+		if (block.hasOrientation() && state.getPropertyNames().contains(FACING)) {
 			state = state.withProperty(FACING, forgeOrientMap.get(block.getOrientaion()));
 		}
 		// Flag 2 will send the change to clients, but won't cause an immediate block update

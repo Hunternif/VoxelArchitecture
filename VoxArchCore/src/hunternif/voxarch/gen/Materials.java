@@ -18,6 +18,9 @@ public interface Materials {
      * stairs or half-slabs.
      */
 	BlockData[] stairsBlocks(double slope);
-	BlockData[] decorationBlocks();
-	//TODO: add sources of light, i.e. tourches, glowing blocks, fire
+	
+	/**
+	 * A specific one block-sized prop, i.e. torch, lamp, glowing block, fire, etc.
+	 */
+	BlockData oneBlockProp(String name);
 }

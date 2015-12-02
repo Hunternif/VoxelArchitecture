@@ -25,6 +25,10 @@ public class ExtBlockDataMC extends BlockData {
 		super(id, metadata);
 	}
 	
+	public Block getBlock() {
+		return Block.getBlockById(getId());
+	}
+	
 	/** Called from MCWorld.setBlock(). Use this for special processing like
 	 * spawning HangingEntities, chests etc. */
 	public void onPasteIntoWorld(World world, int x, int y, int z) {}
