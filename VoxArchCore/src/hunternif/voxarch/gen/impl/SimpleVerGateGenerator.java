@@ -21,10 +21,14 @@ public class SimpleVerGateGenerator implements ElementGenerator.VerGate {
 	
 	@Override
 	public void generateGate(IBlockStorage dest, Gate gate, Materials materials) {
-		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x - 2));
-		int length = Math.max(minLength, MathUtil.roundDown(gate.getSize().y - 2));
-		for (int x = 1; x < width + 1; x++) {
-			for (int z = 1; z < length + 1; z++) {
+		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x));
+		int length = Math.max(minLength, MathUtil.roundDown(gate.getSize().y));
+		// Including boundaries (<=) because a room occupies size + 1 blocks.
+		// Offset of 1 from both boundaries because a the width and length
+		// of the gate span all available space, including where the walls
+		// of the room are.
+		for (int x = 1; x < width; x++) { // <= width - 1
+			for (int z = 1; z < length; z++) { // <= length - 1
 				for (int y = -clearance; y <= clearance; y++) {
 					dest.clearBlock(x, y, z);
 				}

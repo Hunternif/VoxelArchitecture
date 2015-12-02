@@ -5,8 +5,9 @@ import hunternif.voxarch.vector.Vec3;
 
 /**
  * A gate between 2 {@link Room}s, can be vertical or horizontal. A gate
- * generator should clear a passage and create some sort arch over it. The y
- * coordinate should be at room's origin + 1, to account for the floor.
+ * generator should clear a passage and may want to create some sort arch
+ * over it.
+ * The y coordinate should be at room's origin.
  * @author Hunternif
  */
 public class Gate {

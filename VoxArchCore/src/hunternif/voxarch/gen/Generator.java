@@ -67,7 +67,7 @@ public class Generator {
 		 * ceiling blocks.
 		 */
 		PositionTransformer pos = new PositionTransformer(world);
-		pos.translate(0.5 + x, y, 0.5 + z).rotateY(plan.getBase().getRotationY());
+		pos.translate(x, y, z).rotateY(plan.getBase().getRotationY());
 		generateRoom(pos, plan.getBase());
 	}
 	
@@ -83,9 +83,12 @@ public class Generator {
 		// walls. However, this means that in case of non-axis-aligned walls
 		// some terrain blocks may be left inside due to roundoff errors.
 		// Personally, I prioritize external appearance, so this is acceptable.
-		// TODO: fix the roundoff errors!
 		volume.setOffset(0.1);
-		pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
+		// TODO: Reorder the RoomConstrainedStorage to be applied after closing gaps.
+		// The holes in the ground are probably caused by the fact that
+		// RoomConstrainedStorage cuts off possible block positions too early,
+		// and they can't be filled with the closeGaps options.
+		pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
 		StructureUtil.clearStorage(volume);
 		pos.popTransformation();
 		// If found materials, proceed with generation:
@@ -97,10 +100,10 @@ public class Generator {
 				ElementGenerator.Floor floorGen = floorGenMap.get(room.getType());
 				if (floorGen == null) floorGen = defaultFloorGenerator;
 				if (floorGen != null) {
+					volume.setOffset(0.1);
 					pos.pushTransformation();
 					pos.setCloseGaps(true);
-					volume.setOffset(0.1);
-					pos.translate(-room.getSize().x/2 + 0.5, 0, -room.getSize().z/2 + 0.5);
+					pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
 					floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
 					pos.popTransformation();
 				}
@@ -110,10 +113,10 @@ public class Generator {
 				ElementGenerator.Ceiling ceilGen = ceilingGenMap.get(room.getType());
 				if (ceilGen == null) ceilGen = defaultCeilingGenerator;
 				if (ceilGen != null) {
+					volume.setOffset(0.1);
 					pos.pushTransformation();
 					pos.setCloseGaps(true);
-					volume.setOffset(0.1);
-					pos.translate(-room.getSize().x/2 + 0.5, room.getSize().y-1, -room.getSize().z/2 + 0.5);
+					pos.translate(-room.getSize().x/2, room.getSize().y, -room.getSize().z/2);
 					ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
 					pos.popTransformation();
 				}
@@ -126,7 +129,6 @@ public class Generator {
 					pos.pushTransformation();
 					pos.translate(wall.getP1().x, 0, wall.getP1().y);
 					pos.setCloseGaps(false);
-					volume.setOffset(0);
 					pos.rotateY(wall.getAngleDeg());
 					wallGen.generateWall(pos, wall, materials);
 					pos.popTransformation();
@@ -158,12 +160,11 @@ public class Generator {
 			pos.translate(gate.getOrigin()).rotateY(gate.getRotationY());
 			// Move the origin to the bottom left corner of the gate:
 			if (gate.isHorizontal()) {
-				pos.translate(-gate.getSize().x/2 + 0.5, 0, 0);
+				pos.translate(-gate.getSize().x/2, 0, 0);
 			} else {
-				pos.translate(-gate.getSize().x/2 + 0.5, 0, -gate.getSize().y/2 + 0.5);
+				pos.translate(-gate.getSize().x/2, 0, -gate.getSize().y/2);
 			}
 			pos.setCloseGaps(false);
-			volume.setOffset(0);
 			gen.generateGate(pos, gate, materials);
 			pos.popTransformation();
 		}

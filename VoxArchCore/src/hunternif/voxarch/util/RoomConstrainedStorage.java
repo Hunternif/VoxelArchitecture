@@ -14,7 +14,8 @@ import java.util.Map;
  * This block storage that only allows modifying blocks that are within the
  * walls of the specified room. Used for clearing volume for rooms and when
  * building the floor and the ceiling.
- * <p> The purpose of this class is to preserve only the shape of the room!
+ * <p> The purpose of this class is to preserve only the <b>shape</b> of the
+ * room, defined by its walls.
  * Combine it with {@link PositionTransformer} to account for its position
  * and rotation.</p>
  * @author Hunternif
@@ -66,18 +67,16 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	public boolean isWithinRoom(double x, double y, double z) {
 		// Check if the point is within the room's bounding box:
 		if (y < 0 || y > room.getSize().y ||
-			x < 0 || x > room.getSize().x ||
-			z < 0 || z > room.getSize().z) {
+			x < offset || x > room.getSize().x - offset ||
+			z < offset || z > room.getSize().z - offset) {
 			return false;
 		}
 		// Check if the point is within the walls:
 		for (Wall wall : room.getWalls()) {
 			Vec3 wallNorm = getWallNormal(wall);
-			// + 0.5 is to account for the fact that walls run through the
-			// middle of blocks:
-			Vec3 point = new Vec3(x - room.getSize().x/2 + 0.5 - wall.getP1().x + wallNorm.x*offset,
+			Vec3 point = new Vec3(x - room.getSize().x/2 - wall.getP1().x + wallNorm.x*offset,
 								  0,
-								  z - room.getSize().z/2 + 0.5 - wall.getP1().y + wallNorm.z*offset);
+								  z - room.getSize().z/2 - wall.getP1().y + wallNorm.z*offset);
 			// If the point is inside the room, then the cross product of the
 			// wall vector with it will point upwards.
 			Vec3 wallVec = getWallVector(wall);
@@ -113,17 +112,20 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 
 	@Override
 	public int getWidth() {
-		return (int)room.getSize().x;
+		// + 1 because a room occupies size + 1 blocks.
+		return (int)room.getSize().x + 1;
 	}
 
 	@Override
 	public int getHeight() {
-		return (int)room.getSize().y;
+		// + 1 because a room occupies size + 1 blocks.
+		return (int)room.getSize().y + 1;
 	}
 
 	@Override
 	public int getLength() {
-		return (int)room.getSize().z;
+		// + 1 because a room occupies size + 1 blocks.
+		return (int)room.getSize().z + 1;
 	}
 
 }

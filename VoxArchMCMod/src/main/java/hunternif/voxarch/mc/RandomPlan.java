@@ -18,21 +18,21 @@ public class RandomPlan {
 	
 	/** Simple roundish room **/
 	public static void oneRoundishRoom(ArchPlan plan) {
-		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(16, 6, 16), 0).setHasCeiling(false).createRoundWalls(8);
+		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(16, 5, 16), 0).setHasCeiling(false).createRoundWalls(8);
 	}
 	
 	/** A random-sized box with 4 walls. */
 	public static void randomBox(ArchPlan plan) {
 		//TODO BUG: In odd-sized rooms there are holes in the floor.
-		int size = 3 + (int)Math.round(10*Math.random());
+		int size = 8;//3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
 		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), 45).setHasCeiling(false).createFourWalls();
 	}
 	
 	/** A flat grid of random-sized interconnected rooms **/
 	public static void randomGrid(ArchPlan plan) {
-		Vec3 roomSize = new Vec3(5, 6, 5);
-		int roomSpacing = 0;
+		Vec3 roomSize = new Vec3(4, 5, 4);
+		int roomSpacing = 1;
 		Vec3 sizeJitter = new Vec3(0, 0, 0);
 		int N = 3;
 		

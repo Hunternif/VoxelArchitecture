@@ -22,9 +22,13 @@ public class SimpleHorGateGenerator implements ElementGenerator.HorGate {
 	@Override
 	public void generateGate(IBlockStorage dest, Gate gate, Materials materials) {
 		int height = Math.max(minHeight, MathUtil.roundDown(gate.getSize().y));
-		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x - 2));
-		for (int x = 1; x < width; x++) {
-			for (int y = 0; y < height; y++) {
+		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x));
+		// Including boundaries (<=) because a room occupies size + 1 blocks.
+		// Offset of 1 from both boundaries because a the width of the gate spans
+		// all available space, including where the walls, floor and ceiling of
+		// the room are.
+		for (int x = 1; x < width; x++) { // <= width - 1
+			for (int y = 1; y < height; y++) { // <= height - 1
 				for (int z = -clearance; z <= clearance; z++) {
 					dest.clearBlock(x, y, z);
 				}

@@ -12,7 +12,7 @@ import hunternif.voxarch.vector.Vec3;
  * The horizontal position and size of the gate corresponding to the bounding
  * box of the 1st room.
  * The vertical position of the gate is between the ceiling of the lower of the
- * 2 rooms and the floor of the higher. In ambiguity cases the highest possible
+ * 2 rooms and the floor of the higher. In ambiguous cases the highest possible
  * position will be used.
  * The rotation of the 1st room is disregarded, as it is assumed to be equal to
  * rotation as the 2nd room.

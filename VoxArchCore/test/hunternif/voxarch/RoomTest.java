@@ -17,7 +17,7 @@ import org.junit.Test;
 public class RoomTest {
 	@Test
 	public void testFourWalls() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(3, 2, 4), 0);
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
 		room.createFourWalls();
 		assertEquals(4, room.getWalls().size());
 		assertEquals(new Vec2(1, 1.5), room.getWalls().get(0).getP1());
@@ -32,7 +32,7 @@ public class RoomTest {
 	
 	@Test
 	public void testFourRoundWalls() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(3, 2, 4), 0);
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
 		room.createRoundWalls(4);
 		assertEquals(4, room.getWalls().size());
 		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), room.getWalls().get(0).getP1());
@@ -47,7 +47,7 @@ public class RoomTest {
 	
 	@Test
 	public void testClosestWall() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(3, 2, 4), 0);
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
 		room.createFourWalls();
 		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, 0)));
 		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, 1.5)));
@@ -60,7 +60,7 @@ public class RoomTest {
 	
 	@Test
 	public void testClosestRotatedWall() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(4, 2, 4), 45);
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(3, 1, 3), 45);
 		room.createFourWalls();
 		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, -1)));
 		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(1, 1)));

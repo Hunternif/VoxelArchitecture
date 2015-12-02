@@ -11,8 +11,29 @@ import java.util.List;
 /**
  * Base class of the architectural plan, can have walls and contain more rooms.
  * Contains gates between the child rooms. The size of the room should include
- * the floor at y = 0 and the ceiling at y = height - 1; the walls should run at
- * 0.5 offset from the edge, i.e. through the middle of the blocks.
+ * the floor at y = 0 and the ceiling at y = height;
+ * the walls run through the middle of blocks, and each block has its origin in
+ * its center, therefore there is no 0.5 offset.
+ * 
+ * Think of blocks as a replacement for coordinates.
+ * The size of the room equals the number of blocks that make the respective
+ * walls minus one.
+ * In the example below 0 is air, 1 is floor, 2 is wall, 3 is ceiling:
+ * 
+ *  2 2 2
+ *  2 1 2
+ *  2 2 2
+ *  
+ *  2 2 2
+ *  2 0 2
+ *  2 2 2
+ *  
+ *  2 2 2
+ *  2 3 2
+ *  2 2 2
+ *  
+ *  The room traced above floor by floor has size 2x2x2 and origin at (1, 0, 1)
+ *  
  * @author Hunternif
  */
 public class Room {
@@ -23,7 +44,10 @@ public class Room {
 	
 	protected final List<Wall> walls = new ArrayList<Wall>();
 	
-	/** Vector (width, height, length), doesn't take rotation into account. */
+	/** Vector (width, height, length), doesn't take rotation into account.
+	 * Components of this vector are equal to the distance between the corners
+	 * of the room. It would take that number + 1 blocks to build each boundary
+	 * of the room in a world. */
 	private final Vec3 size;
 
 	/** The coordinates in blocks of the origin point relative to the origin
@@ -40,6 +64,11 @@ public class Room {
 	 * to assign a particular style to it. */
 	private String type = null;
 	
+	/**
+	 * @param origin	center of the room, relative to the origin of the parent.
+	 * @param size		length of boundaries, each would occupy size + 1 actual blocks.
+	 * @param rotationY	in degrees, relative to the parent.
+	 */
 	public Room(Vec3 origin, Vec3 size, double rotationY) {
 		this.origin = new Vec3(origin);
 		this.size = new Vec3(size);
@@ -75,6 +104,10 @@ public class Room {
 		return walls;
 	}
 
+	/** Vector (width, height, length), doesn't take rotation into account.
+	 * Components of this vector are equal to the distance between the corners
+	 * of the room. It would take that number + 1 blocks to build each boundary
+	 * of the room in a world. */
 	public Vec3 getSize() {
 		return size;
 	}
@@ -100,8 +133,8 @@ public class Room {
 	/** Fills the {@link #walls} array with 4 walls defined by the {@link #size}
 	 * vector. */
 	public void createFourWalls() {
-		double a = size.x/2 - 0.5;
-		double b = size.z/2 - 0.5;
+		double a = size.x/2;
+		double b = size.z/2;
 		/*
 		 * Aerial view of the reference frame:
 		 * Y
@@ -123,8 +156,8 @@ public class Room {
 	public void createRoundWalls(int vertices) {
 		//TODO: check the round walls, they have protruding ends sticking out.
 		if (vertices < 3) return;
-		double a = size.x/2 - 0.5;
-		double b = size.z/2 - 0.5;
+		double a = size.x/2;
+		double b = size.z/2;
 		double angleStep = 360d / (double)vertices;
 		// Going counterclockwise:
 		for (double angle = -angleStep/2; angle < 360 - angleStep/2; angle += angleStep) {

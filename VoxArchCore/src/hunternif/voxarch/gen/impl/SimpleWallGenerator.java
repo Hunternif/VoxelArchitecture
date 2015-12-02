@@ -18,8 +18,9 @@ public class SimpleWallGenerator implements ElementGenerator.Wall {
 		int length = MathUtil.ceiling(wall.getLength());
 		int height = MathUtil.ceiling(wall.getHeight());
 		BlockData block = materials.wallBlocks()[0];
-		for (int x = 0; x < length; x++) {
-			for (int y = 0; y < height; y++) {
+		// Including boundaries (<=) because a room occupies size + 1 blocks.
+		for (int x = 0; x <= length; x++) {
+			for (int y = 0; y <= height; y++) {
 				dest.setBlock(x, y, 0, block);
 			}
 		}

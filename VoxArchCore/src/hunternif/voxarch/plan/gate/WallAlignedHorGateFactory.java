@@ -58,8 +58,7 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		}
 		if (wall != null) {
 			angle = wall.getAngleDeg() + wall.getRoom().getRotationY();
-			// Plus 1 because the wall runs through the middle of blocks:
-			size.x = wall.getLength() + 1;
+			size.x = wall.getLength();
 			//TODO test gate size when walls are present.
 		} else {
 			// The 1st room doesn't have any walls either. Align and resize to
@@ -75,13 +74,11 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 			//TODO test gate size when no walls. Wtf is this math?
 		}
 		
-		// The y-level of the gate should be between the floors of the rooms,
-		// plus 1 to account for the floor:
-		Vec3 gatePos = new Vec3(point.x, Math.abs(from.getOrigin().y + to.getOrigin().y)/2 + 1, point.y); 
+		// The get can't be lower than any of the rooms' floors:
+		Vec3 gatePos = new Vec3(point.x, Math.max(from.getOrigin().y, to.getOrigin().y), point.y); 
 		
-		// The gate can't be taller than any of the connecting rooms, minus 1 to
-		// account for the ceiling:
-		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y - 1;
+		// The gate can't be taller than any of the rooms' ceilings:
+		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y;
 		
 		Gate gate = new Gate(to.getParent(), from, to, gatePos, size, Gate.Orientation.HORIZONTAL, angle);
 		return gate;
