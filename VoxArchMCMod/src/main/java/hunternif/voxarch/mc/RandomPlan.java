@@ -11,8 +11,8 @@ public class RandomPlan {
 	
 	public static ArchPlan create() {
 		ArchPlan plan = new ArchPlan();
-		//randomGrid(plan);
-		randomBox(plan);
+		randomGrid(plan);
+		//randomBox(plan);
 		return plan;
 	}
 	
@@ -23,6 +23,7 @@ public class RandomPlan {
 	
 	/** A random-sized box with 4 walls. */
 	public static void randomBox(ArchPlan plan) {
+		//TODO BUG: In odd-sized rooms there are holes in the floor.
 		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
 		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), 45).setHasCeiling(false).createFourWalls();
