@@ -1,16 +1,20 @@
 package hunternif.voxarch;
 
 import static org.junit.Assert.*;
+
 import org.junit.Test;
 
+import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.gate.AlignedVerGateFactory;
 import hunternif.voxarch.plan.gate.IGateFactory;
+import hunternif.voxarch.util.DebugUtil;
+import hunternif.voxarch.vector.IntVec3;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
-public class VerGateTest {
+public class VerGateTest extends GeneratorTest {
 	private IGateFactory gateFactory = new AlignedVerGateFactory();
 	
 	@Test
@@ -65,5 +69,45 @@ public class VerGateTest {
 		Room room2 = new Room(new Vec3(4, 2, 0), new Vec3(2, 2, 4), 0);
 		Gate gate = gateFactory.create(room1, room2);
 		assertNull(gate);
+	}
+	
+	@Test
+	public void generator() {
+		ArchPlan plan = new ArchPlan();
+		Room room1 = new Room(new Vec3(1, 0, 1), new Vec3(3, 3, 3), 0);
+		room1.createFourWalls();
+		Room room2 = new Room(new Vec3(1, 3, 1), new Vec3(3, 3, 3), 0);
+		room2.createFourWalls();
+		plan.getBase().addChild(room1);
+		plan.getBase().addChild(room2);
+		plan.getBase().addGate(new AlignedVerGateFactory().create(room1, room2));
+		gen.generate(plan, 0, 0, 0);
+		
+		String expected = ""
+				+ "2 2 2\n"
+				+ "2 1 2\n"
+				+ "2 2 2\n"
+				+ "\n"
+				+ "2 2 2\n"
+				+ "2 0 2\n"
+				+ "2 2 2\n"
+				+ "\n"
+				+ "2 2 2\n"
+				+ "2 0 2\n"
+				+ "2 2 2\n"
+				+ "\n"
+				+ "2 2 2\n"
+				+ "2 0 2\n"
+				+ "2 2 2\n"
+				+ "\n"
+				+ "2 2 2\n"
+				+ "2 0 2\n"
+				+ "2 2 2\n"
+				+ "\n"
+				+ "2 2 2\n"
+				+ "2 3 2\n"
+				+ "2 2 2";
+		
+		assertEquals(expected, DebugUtil.printStorageRegion(out, new IntVec3(0, 0, 0), new IntVec3(3, 6, 3)));
 	}
 }
