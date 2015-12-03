@@ -64,6 +64,10 @@ public class Vec3 {
 		return new Vec3(x + dx, y + dy, z + dz);
 	}
 	
+	/** Returns a new vector. */
+	public Vec3 subtract(Vec3 vec) {
+		return new Vec3(x - vec.x, y - vec.y, z - vec.z);
+	}
 	/** Modifies and returns itself. */
 	public Vec3 subtractLocal(Vec3 vec) {
 		return subtractLocal(vec.x, vec.y, vec.z);
@@ -130,5 +134,9 @@ public class Vec3 {
 		y /= length;
 		z /= length;
 		return this;
+	}
+	
+	public static Vec3 from(Vec4 vec) {
+		return new Vec3(vec.x, vec.y, vec.z);
 	}
 }

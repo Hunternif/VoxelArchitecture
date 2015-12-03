@@ -77,4 +77,8 @@ public class Vec4 {
 		Vec4 vec = (Vec4) obj;
 		return vec.x == x && vec.y == y && vec.z == z && vec.s == s;
 	}
+	
+	public static Vec4 from(Vec3 vec) {
+		return new Vec4(vec.x, vec.y, vec.z, 1);
+	}
 }

@@ -135,6 +135,7 @@ public class Generator {
 		}
 		// Recursively build all child rooms:
 		for (Room child : room.getChildren()) {
+			if (child.isBuilt()) continue;
 			pos.pushTransformation();
 			pos.translate(child.getOrigin()).rotateY(child.getRotationY());
 			generateRoom(pos, child);
@@ -142,6 +143,7 @@ public class Generator {
 		}
 		// Build the gates within this room:
 		for (Gate gate : room.getGates()) {
+			if (gate.isBuilt()) continue;
 			ElementGenerator.Gate gen = null;
 			if (gate.isHorizontal()) {
 				gen = horGateGenMap.get(gate.getType());
@@ -164,6 +166,7 @@ public class Generator {
 			pos.setCloseGaps(false);
 			gen.generateGate(pos, gate, materials);
 			pos.popTransformation();
+			gate.setBuilt(true);
 		}
 		// Build props:
 		for (Prop prop : room.getProps()) {
@@ -177,6 +180,7 @@ public class Generator {
 				pos.popTransformation();
 			}
 		}
+		room.setBuilt(true);
 	}
 
 	public void setDefaultMaterials(Materials defaultMaterials) {

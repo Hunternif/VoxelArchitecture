@@ -1,33 +1,33 @@
 package hunternif.voxarch.mc;
 
-import java.util.Random;
-
 import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.gate.IGateFactory;
 import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
 import hunternif.voxarch.vector.Vec3;
 
+import java.util.Random;
+
 public class RandomPlan {
 	private static IGateFactory gateFactory = new WallAlignedHorGateFactory();
 	
 	public static ArchPlan create() {
 		ArchPlan plan = new ArchPlan();
-		//randomGrid(plan);
-		randomBox(plan);
+		randomGrid(plan);
+		//randomBox(plan);
 		return plan;
 	}
 	
 	/** Simple roundish room **/
 	public static void oneRoundishRoom(ArchPlan plan) {
-		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(16, 5, 16), 0).setHasCeiling(false).createRoundWalls(8);
+		plan.getBase().addChild(Vec3.ZERO, new Vec3(16, 5, 16), 0).setHasCeiling(false).createRoundWalls(8);
 	}
 	
 	/** A random-sized box with 4 walls. */
 	public static void randomBox(ArchPlan plan) {
 		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
-		plan.getBase().addChild(new Vec3(0, 0, 0), new Vec3(size, 3, size), (new Random()).nextInt(2)*45).setHasCeiling(false).createFourWalls();
+		plan.getBase().addChild(Vec3.ZERO, new Vec3(size, 3, size), (new Random()).nextInt(2)*45).setHasCeiling(false).createFourWalls();
 	}
 	
 	/** A flat grid of random-sized interconnected rooms **/

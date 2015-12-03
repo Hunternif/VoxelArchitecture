@@ -36,61 +36,39 @@ import java.util.List;
  *  
  * @author Hunternif
  */
-public class Room {
-	private Room parent;
-	private final List<Room> children = new ArrayList<Room>();
+public class Room extends Node {
+	private final List<Room> children = new ArrayList<Room>(2);
 	
-	private final List<Gate> gates = new ArrayList<Gate>();
+	private final List<Gate> gates = new ArrayList<Gate>(4);
 	
-	protected final List<Wall> walls = new ArrayList<Wall>();
+	protected final List<Wall> walls = new ArrayList<Wall>(4);
 	
-	protected final List<Prop> props = new ArrayList<Prop>();
+	protected final List<Prop> props = new ArrayList<Prop>(2);
 	
 	/** Vector (width, height, length), doesn't take rotation into account.
 	 * Components of this vector are equal to the distance between the corners
 	 * of the room. It would take that number + 1 blocks to build each boundary
 	 * of the room in a world. */
 	private final Vec3 size;
-
-	/** The coordinates in blocks of the origin point relative to the origin
-	 * of the parent room. The origin is located in the center of the room
-	 * at the the floor level. */
-	private final Vec3 origin;
-	
-	private final double rotationY;
 	
 	/** These flags determine whether the floor or the ceiling will be generated. */
 	private boolean hasCeiling = true, hasFloor = true;
 	
-	/** The type specifies a purpose for the room. It can be used by a generator
-	 * to assign a particular style to it. */
-	private String type = null;
-	
 	/**
-	 * @param origin	center of the room, relative to the origin of the parent.
+	 * @param origin	center of the room, relative to the origin of the parent,
+	 * 					at floor level.
 	 * @param size		length of boundaries, each would occupy size + 1 actual blocks.
 	 * @param rotationY	in degrees, relative to the parent.
 	 */
 	public Room(Vec3 origin, Vec3 size, double rotationY) {
-		this.origin = new Vec3(origin);
+		super(origin, rotationY);
 		this.size = new Vec3(size);
-		this.rotationY = rotationY;
-	}
-	
-	protected void setParent(Room parent) {
-		this.parent = parent;
-	}
-	public Vec3 getOrigin() {
-		return origin;
-	}
-	
-	public Room getParent() {
-		return parent;
 	}
 	
 	public void addChild(Room child) {
 		children.add(child);
 		child.setParent(this);
+		setBuilt(false);
 	}
 	public Room addChild(Vec3 origin, Vec3 size, double rotationY) {
 		Room room = new Room(origin, size, rotationY);
@@ -125,11 +103,7 @@ public class Room {
 	
 	public Box getBoundingBox() {
 		// Not a field member because the origin and size vectors are mutable.
-		return new Box(origin, size);
-	}
-
-	public double getRotationY() {
-		return rotationY;
+		return new Box(getOrigin(), size);
 	}
 	
 	public void addGate(Gate gate) {
@@ -217,15 +191,6 @@ public class Room {
 
 	public Room setHasFloor(boolean hasFloor) {
 		this.hasFloor = hasFloor;
-		return this;
-	}
-
-	public String getType() {
-		return type;
-	}
-
-	public Room setType(String type) {
-		this.type = type;
 		return this;
 	}
 }
