@@ -140,4 +140,12 @@ public class RoomUtil {
 			).addLocal(room.getOrigin());
 		
 	}
+	/** Converts the coordinates from the room's parent to local in-room. */
+	public static Vec3 translateToLocal(Room room, Vec3 external) {
+		return Vec3.from(
+				Matrix4.rotationY(-room.getRotationY()).multiplyLocal(
+						Vec4.from(external.subtract(room.getOrigin()))
+					)
+				);
+	}
 }

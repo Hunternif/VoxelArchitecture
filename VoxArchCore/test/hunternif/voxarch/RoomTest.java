@@ -97,6 +97,10 @@ public class RoomTest {
 		assertEquals(new Vec3(3, 1, 0), RoomUtil.translateToParent(room, new Vec3(0, 0, 0)));
 		assertEquals(new Vec3(4, 3, 2), RoomUtil.translateToParent(room, new Vec3(1, 2, 2)));
 		assertEquals(new Vec3(1, 0, -1), RoomUtil.translateToParent(room, new Vec3(-2, -1, -1)));
+		
+		assertEquals(new Vec3(0, 0, 0), RoomUtil.translateToLocal(room, new Vec3(3, 1, 0)));
+		assertEquals(new Vec3(1, 2, 2), RoomUtil.translateToLocal(room, new Vec3(4, 3, 2)));
+		assertEquals(new Vec3(-2, -1, -1), RoomUtil.translateToLocal(room, new Vec3(1, 0, -1)));
 	}
 	@Test
 	public void translateCoordinatesRotated() {
@@ -104,6 +108,10 @@ public class RoomTest {
 		assertEquals(new Vec3(3, 1, 0), RoomUtil.translateToParent(room, new Vec3(0, 0, 0)));
 		assertEquals(new Vec3(5, 3, -1), RoomUtil.translateToParent(room, new Vec3(1, 2, 2)));
 		assertEquals(new Vec3(2, 0, 2), RoomUtil.translateToParent(room, new Vec3(-2, -1, -1)));
+		
+		assertEquals(new Vec3(0, 0, 0), RoomUtil.translateToLocal(room, new Vec3(3, 1, 0)));
+		assertEquals(new Vec3(1, 2, 2), RoomUtil.translateToLocal(room, new Vec3(5, 3, -1)));
+		assertEquals(new Vec3(-2, -1, -1), RoomUtil.translateToLocal(room, new Vec3(2, 0, 2)));
 	}
 	
 	/** Helper method. */
