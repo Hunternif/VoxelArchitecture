@@ -74,6 +74,7 @@ public class Generator {
 	 * contain all the transformations made to this room and its parents, so
 	 * that its origin is now at the room's origin. */
 	protected void generateRoom(PositionTransformer pos, Room room) {
+		//TODO: If the room is a flight of stairs, use a sloped position transformer.
 		RoomConstrainedStorage volume = new RoomConstrainedStorage(pos, room);
 		// Clear volume within the room:
 		pos.pushTransformation();
@@ -125,6 +126,7 @@ public class Generator {
 		if (wallGen == null) wallGen = defaultWallGenerator;
 		if (wallGen != null) {
 			for (Wall wall : room.getWalls()) {
+				if (wall.isTransparent()) continue;
 				pos.pushTransformation();
 				pos.translate(wall.getP1().x, 0, wall.getP1().y);
 				pos.setCloseGaps(false);

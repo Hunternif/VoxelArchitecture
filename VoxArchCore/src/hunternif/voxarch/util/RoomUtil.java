@@ -2,11 +2,15 @@ package hunternif.voxarch.util;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.ListIterator;
 
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.vector.Matrix2;
+import hunternif.voxarch.vector.Matrix4;
 import hunternif.voxarch.vector.Vec2;
+import hunternif.voxarch.vector.Vec3;
+import hunternif.voxarch.vector.Vec4;
 
 /**
  * 
@@ -99,5 +103,41 @@ public class RoomUtil {
 			}
 		}
 		return intersection;
+	}
+	
+	/** WARNING: sub-optimal algorithm! */
+	public static Room findLowestCommonParent(Room roomA, Room roomB) {
+		if (roomA == null || roomB == null) return null;
+		if (roomA == roomB) return roomA;
+		List<Room> ancestryA = new ArrayList<>();
+		while (roomA != null) {
+			ancestryA.add(roomA);
+			roomA = roomA.getParent();
+		}
+		List<Room> ancestryB = new ArrayList<>();
+		while (roomB != null) {
+			ancestryB.add(roomB);
+			roomB = roomB.getParent();
+		}
+		ListIterator<Room> iterA = ancestryA.listIterator(ancestryA.size());
+		ListIterator<Room> iterB = ancestryB.listIterator(ancestryB.size());
+		Room parent = null;
+		while (iterA.hasPrevious() && iterB.hasPrevious()) {
+			Room child = iterA.previous();
+			if (child == iterB.previous()) {
+				parent = child;
+			} else {
+				return parent;
+			}
+		}
+		return parent;
+	}
+	
+	/** Converts the coordinates from local in-room to the room's immediate parent. */
+	public static Vec3 translateToParent(Room room, Vec3 local) {
+		return Vec3.from(
+				Matrix4.rotationY(room.getRotationY()).multiplyLocal(Vec4.from(local))
+			).addLocal(room.getOrigin());
+		
 	}
 }

@@ -20,7 +20,7 @@ public class SimpleTorchlitWallGen extends SimpleWallGenerator {
 		if (block == null) return;
 		// Set orientation to face inward:
 		block.setOrientaion(BlockOrientation.NORTH);
-		//TODO: some torches fall down.
+		//TODO: some torches fall down. Consider spawning them as props.
 		// Starting with a half-step from the edge, and not including the edge
 		// itself because it will probably be covered by another wall:
 		for (int x = torchWallSpacing / 2; x < wall.getLength(); x += torchWallSpacing) {

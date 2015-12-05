@@ -20,7 +20,7 @@ import org.junit.Test;
 public class RoomConstrainedStorageTest {
 	@Test
 	public void testNoWalls() {
-		Room room = new Room(new Vec3(1324, 2345, 45), new Vec3(2, 0, 2), 0);
+		Room room = new Room(new Vec3(1324, 2345, 45), new Vec3(2, 0, 2));
 		BlockData block = new BlockData(1);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
 		RoomConstrainedStorage constrained = new RoomConstrainedStorage(out, room);
@@ -34,7 +34,7 @@ public class RoomConstrainedStorageTest {
 	
 	@Test
 	public void testFourWalls() {
-		Room room = new Room(new Vec3(354, 23, 45), new Vec3(2, 0, 2), 0);
+		Room room = new Room(new Vec3(354, 23, 45), new Vec3(2, 0, 2));
 		room.createFourWalls();
 		BlockData block = new BlockData(1);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
@@ -49,7 +49,7 @@ public class RoomConstrainedStorageTest {
 	
 	@Test
 	public void testFourRoundWalls() {
-		Room room = new Room(new Vec3(243, 56, 12), new Vec3(6, 0, 6), 0);
+		Room room = new Room(new Vec3(243, 56, 12), new Vec3(6, 0, 6));
 		room.createRoundWalls(4);
 		BlockData block = new BlockData(1);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
@@ -66,7 +66,7 @@ public class RoomConstrainedStorageTest {
 	
 	@Test
 	public void testEightRoundWalls() {
-		Room room = new Room(new Vec3(325, 456, 13), new Vec3(6, 0, 6), 0);
+		Room room = new Room(new Vec3(325, 456, 13), new Vec3(6, 0, 6));
 		room.createRoundWalls(8);
 		BlockData block = new BlockData(1);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
@@ -83,7 +83,7 @@ public class RoomConstrainedStorageTest {
 	
 	@Test
 	public void testOffset4Walls() {
-		Room room = new Room(new Vec3(54, 24, 685), new Vec3(6, 0, 6), 0);
+		Room room = new Room(new Vec3(54, 24, 685), new Vec3(6, 0, 6));
 		room.createFourWalls();
 		BlockData block = new BlockData(1);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);
@@ -100,7 +100,7 @@ public class RoomConstrainedStorageTest {
 	}
 	@Test
 	public void testOffset4Walls2() {
-		Room room = new Room(new Vec3(1324, 46, 546), new Vec3(6, 0, 6), 0);
+		Room room = new Room(new Vec3(1324, 46, 546), new Vec3(6, 0, 6));
 		room.createFourWalls();
 		BlockData block = new BlockData(1);
 		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(7, 1, 7);

@@ -28,8 +28,8 @@ public class Node {
 		this.rotationY = rotationY;
 	}
 	/** The origin vector will be copied. */
-	public Node(Vec3 origin, double rotationY) {
-		this(null, origin, rotationY);
+	public Node(Vec3 origin) {
+		this(null, origin, 0);
 	}
 	
 	

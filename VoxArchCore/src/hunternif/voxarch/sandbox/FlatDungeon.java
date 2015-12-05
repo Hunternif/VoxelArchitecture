@@ -5,6 +5,7 @@ import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.plan.gate.IGateFactory;
 import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
+import hunternif.voxarch.plan.gate.WholeWallHorGateFactory;
 import hunternif.voxarch.util.IWeightedOption;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.RandomUtil;
@@ -15,7 +16,7 @@ import java.util.Queue;
 import java.util.Random;
 
 /**
- * Random dungeon consisting of rooms and corridors, each at the same  level.
+ * Random dungeon consisting of rooms and corridors, each at the same Y level.
  * Corridor lengths and room sizes are chosen at random from a predefined set.
  * Each room has a random number of outgoing corridors in random places.
  * Corridors can be extended in any direction via junctions, which are rooms of
@@ -23,6 +24,7 @@ import java.util.Random;
  * @author Hunternif
  */
 public class FlatDungeon extends Room implements IIncrementalBuilding {
+	//TODO consider using long series of walls within one room to generate long corridors. 
 	int corridorWidth = 3;
 	int corridorHeight = 5;
 	int[] corridorLengths = {6, 10, 16};
@@ -31,7 +33,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	int[] roomHeights = {6, 8, 10};
 	int maxNewCorridors = 6;
 	/** Generation will stop when the total corridor length accumulated from the
-	 * starting node reaches this value. Also it can be stopped randomly at any point. */
+	 * starting node reaches this value. It can also stop randomly at any point. */
 	int maxTotalLength = 200;
 	
 	private static enum CorridorOption implements IWeightedOption {
@@ -46,8 +48,9 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 			return probability;
 		}
 	}
+	
 	private static enum JunctionOption implements IWeightedOption {
-		DEAD_END(0.3), TURN(0.4), FORK(0.2), CROSSROADS(0.1);
+		TURN(0.7), FORK(0.2), CROSSROADS(0.1);
 		
 		private JunctionOption(double probability) {
 			this.probability = probability;
@@ -59,7 +62,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		}
 	}
 	private static enum TurnOption implements IWeightedOption {
-		STRAIGHT(0.4), LEFT(0.2), RIGHT(0.2), LEFT_45(0.1), RIGHT_45(0.1);
+		STRAIGHT(0.5), LEFT(0.2), RIGHT(0.2), LEFT_45(0.05), RIGHT_45(0.05);
 		
 		private TurnOption(double probability) {
 			this.probability = probability;
@@ -90,17 +93,16 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	
 	private final Random rand = new Random();
 	
-	private final IGateFactory gateFactory = new WallAlignedHorGateFactory();
+	private final IGateFactory gateFactory = new WholeWallHorGateFactory();
 	
 	public FlatDungeon(Vec3 origin, double rotationY) {
-		super(origin, Vec3.ZERO, rotationY);
+		super(origin, Vec3.ZERO);
 		// Start with a medium-sized room:
 		Corridor start = new Corridor(Vec3.ZERO, corridorLengths[1], 0, 0);
-		addChild(start);
 		start.createFourWalls();
 		corridorQueue.add(start);
 		//TODO update size as it builds.
-		//TODO fix overlaying.
+		//TODO prevent corridors from overlapping.
 	}
 	
 	/** WARNING! This may be very resource intensive and may freeze the game.
@@ -118,17 +120,21 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		if (corridorQueue.isEmpty()) return;
 		setBuilt(false);
 		Corridor node = corridorQueue.poll();
+		
+		// Probability of a dead end increases as total length increases:
+		if (rand.nextDouble() < 0.9*((double)node.totalLength)/((double)maxTotalLength)) {
+			return; // Dead end.
+		}
+		
 		CorridorOption corridorOption = RandomUtil.randomWeightedOption(CorridorOption.values());
 		switch (corridorOption) {
 		case JUNCTION:
 			// TODO fix gates to not penetrate walls.
-			Room junction = new Room(node.endPoint, new Vec3(corridorWidth, corridorHeight, corridorWidth), node.getRotationY());
+			Room junction = new Room(this, node.endPoint, new Vec3(corridorWidth, corridorHeight, corridorWidth), node.getRotationY());
 			junction.createFourWalls();
-			addChild(junction);
 			addGate(gateFactory.create(node, junction));
 			JunctionOption junctionOption = RandomUtil.randomWeightedOption(JunctionOption.values());
 			switch (junctionOption) {
-			case DEAD_END: break; // Ded.
 			case TURN:
 				TurnOption turnOption = RandomUtil.randomWeightedOption(TurnOption.values());
 				Corridor ext1 = null;
@@ -193,7 +199,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	}
 	
 	protected class Corridor extends Room {
-		/** Total corridor length accumulated from the starting node: */
+		/** Total corridor length accumulated from the starting node. */
 		final int totalLength;
 		/** Corridor can open into a room or junction at this point. */
 		final Vec3 endPoint;
@@ -204,7 +210,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		 * @param totalLength
 		 */
 		public Corridor(Vec3 origin, int length, double rotationY, int totalLength) {
-			super(origin, new Vec3(corridorWidth, corridorHeight, length), rotationY);
+			super(FlatDungeon.this, origin, new Vec3(corridorWidth, corridorHeight, length), rotationY);
 			this.totalLength = totalLength;
 			endPoint = origin.add(
 					length/2*MathUtil.sinDeg(rotationY),
@@ -227,7 +233,6 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	/** Helper method to save on code lines. */
 	private void connectNewCorridor(Room junction, Corridor corridor) {
 		corridor.createFourWalls();
-		addChild(corridor);
 		addGate(gateFactory.create(junction, corridor));
 		if (corridor.totalLength < maxTotalLength) {
 			corridorQueue.add(corridor);

@@ -1,6 +1,5 @@
 package hunternif.voxarch.gen;
 
-import hunternif.voxarch.plan.FlightOfStairs;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.vector.Vec2;
@@ -28,9 +27,6 @@ public class ElementGenerator {
 	public static interface VerGate extends ElementGenerator.Gate {
 		/** The coordinates have been set up to point to the bottom left corner. */
 		void generateGate(IBlockStorage dest, hunternif.voxarch.plan.Gate gate, Materials materials);
-	}
-	public static interface Stairs {
-		void generateStairs(IBlockStorage dest, FlightOfStairs stairs, Materials materials);
 	}
 	public static interface Wall {
 		/** The wall runs along the X axis. */

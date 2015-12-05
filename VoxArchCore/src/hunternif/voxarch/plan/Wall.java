@@ -9,10 +9,18 @@ public class Wall {
 	
 	private final Room room;
 	
-	public Wall(Room room, Vec2 p1, Vec2 p2) {
+	/** If true, the wall will not generated, but only used as boundary for
+	 * calculations. */
+	private boolean transparent = false;
+	
+	public Wall(Room room, Vec2 p1, Vec2 p2, boolean transparent) {
 		this.room = room;
 		this.p1 = new Vec2(p1);
 		this.p2 = new Vec2(p2);
+		this.transparent = transparent;
+	}
+	public Wall(Room room, Vec2 p1, Vec2 p2) {
+		this(room, p1, p2, false);
 	}
 
 	public Vec2 getP1() {
@@ -39,5 +47,13 @@ public class Wall {
 	
 	public double getHeight() {
 		return room.getSize().y;
+	}
+
+	public boolean isTransparent() {
+		return transparent;
+	}
+
+	public void setTransparent(boolean transparent) {
+		this.transparent = transparent;
 	}
 }

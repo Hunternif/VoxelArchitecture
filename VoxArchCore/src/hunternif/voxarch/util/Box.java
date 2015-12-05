@@ -23,10 +23,10 @@ public class Box {
 		}
 	}
 	
-	public Box(Vec3 origin, Vec3 size) {
-		this(origin.x - size.x/2, origin.x + size.x/2,
-			 origin.y, origin.y + size.y,
-			 origin.z - size.z/2, origin.z + size.z/2);
+	public Box(Vec3 center, Vec3 size) {
+		this(center.x - size.x/2, center.x + size.x/2,
+			 center.y, center.y + size.y,
+			 center.z - size.z/2, center.z + size.z/2);
 	}
 	
 	@Override

@@ -9,7 +9,7 @@ import hunternif.voxarch.vector.Vec3;
 public class ArchPlan {
 
 	/** The container for all structures in this plan. */
-	private final Room base = new Room(new Vec3(0, 0, 0), new Vec3(0, 0, 0), 0)
+	private final Room base = new Room(new Vec3(0, 0, 0), new Vec3(0, 0, 0))
 								.setHasCeiling(false).setHasFloor(false);
 	
 	public Room getBase() {

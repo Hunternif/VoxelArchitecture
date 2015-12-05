@@ -47,7 +47,7 @@ public class RandomPlan {
 				size.x += Math.round(2 * (Math.random() - 0.5) * sizeJitter.x);
 				size.y += Math.round(2 * (Math.random() - 0.5) * sizeJitter.y);
 				size.z += Math.round(2 * (Math.random() - 0.5) * sizeJitter.z);
-				Room room = new Room(curCoords, size, 0).setHasCeiling(false);
+				Room room = new Room(curCoords, size).setHasCeiling(false);
 				room.createFourWalls();
 				roomArray[i][j] = room;
 				plan.getBase().addChild(room);

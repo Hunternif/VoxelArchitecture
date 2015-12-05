@@ -16,8 +16,8 @@ import org.junit.Test;
  */
 public class RoomTest {
 	@Test
-	public void testFourWalls() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
+	public void fourWalls() {
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3));
 		room.createFourWalls();
 		assertEquals(4, room.getWalls().size());
 		assertEquals(new Vec2(1, 1.5), room.getWalls().get(0).getP1());
@@ -31,8 +31,8 @@ public class RoomTest {
 	}
 	
 	@Test
-	public void testFourRoundWalls() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
+	public void fourRoundWalls() {
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3));
 		room.createRoundWalls(4);
 		assertEquals(4, room.getWalls().size());
 		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), room.getWalls().get(0).getP1());
@@ -46,8 +46,8 @@ public class RoomTest {
 	}
 	
 	@Test
-	public void testClosestWall() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
+	public void closestWall() {
+		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3));
 		room.createFourWalls();
 		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, 0)));
 		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(1, 1.5)));
@@ -59,12 +59,55 @@ public class RoomTest {
 	}
 	
 	@Test
-	public void testClosestRotatedWall() {
-		Room room = new Room(new Vec3(0, 0, 0), new Vec3(3, 1, 3), 45);
+	public void closestRotatedWall() {
+		Room room = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 1, 3), 45);
 		room.createFourWalls();
 		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, -1)));
 		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(1, 1)));
 		assertEquals(room.getWalls().get(1), RoomUtil.findClosestWall(room, new Vec2(-1, -1)));
 		assertEquals(room.getWalls().get(2), RoomUtil.findClosestWall(room, new Vec2(-1, 1)));
+	}
+	
+	@Test
+	public void lowestCommonParent() {
+		Room a = childOf(null);
+		assertEquals(a, RoomUtil.findLowestCommonParent(a, a));
+		Room b = childOf(null);
+		assertEquals(null, RoomUtil.findLowestCommonParent(a, b));
+		a.addChild(b);
+		assertEquals(a, RoomUtil.findLowestCommonParent(a, b));
+		a.removeChild(b);
+		assertEquals(null, RoomUtil.findLowestCommonParent(a, b));
+		a.addChild(b);
+		Room c = childOf(null);
+		Room d = childOf(c);
+		Room e = childOf(d);
+		d.addChild(a);
+		assertEquals(d, RoomUtil.findLowestCommonParent(a, e));
+		assertEquals(d, RoomUtil.findLowestCommonParent(b, e));
+		Room f = childOf(c);
+		assertEquals(c, RoomUtil.findLowestCommonParent(a, f));
+		c.removeChild(d);
+		assertEquals(null, RoomUtil.findLowestCommonParent(a, f));
+	}
+	
+	@Test
+	public void translateCoordinates() {
+		Room room = new Room(new Vec3(3, 1, 0), new Vec3(2, 1, 4));
+		assertEquals(new Vec3(3, 1, 0), RoomUtil.translateToParent(room, new Vec3(0, 0, 0)));
+		assertEquals(new Vec3(4, 3, 2), RoomUtil.translateToParent(room, new Vec3(1, 2, 2)));
+		assertEquals(new Vec3(1, 0, -1), RoomUtil.translateToParent(room, new Vec3(-2, -1, -1)));
+	}
+	@Test
+	public void translateCoordinatesRotated() {
+		Room room = new Room(null, new Vec3(3, 1, 0), new Vec3(2, 1, 4), 90);
+		assertEquals(new Vec3(3, 1, 0), RoomUtil.translateToParent(room, new Vec3(0, 0, 0)));
+		assertEquals(new Vec3(5, 3, -1), RoomUtil.translateToParent(room, new Vec3(1, 2, 2)));
+		assertEquals(new Vec3(2, 0, 2), RoomUtil.translateToParent(room, new Vec3(-2, -1, -1)));
+	}
+	
+	/** Helper method. */
+	public static Room childOf(Room parent) {
+		return new Room(parent, Vec3.ZERO, Vec3.ZERO, 0);
 	}
 }
