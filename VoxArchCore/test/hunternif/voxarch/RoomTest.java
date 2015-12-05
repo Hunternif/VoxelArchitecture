@@ -122,7 +122,7 @@ public class RoomTest {
 		Vec3 vec = new Vec3(-35, 57, 51);
 		assertEquals(vec, RoomUtil.translateToRoom(a, vec, a));
 		assertEquals(vec, RoomUtil.translateToRoom(b, vec, b));
-		assertEquals(vec, RoomUtil.translateToRoom(a, vec, a));
+		assertEquals(vec, RoomUtil.translateToRoom(a, vec, a)); // cached
 		assertEquals(vec, RoomUtil.translateToRoom(b, vec, c));
 		
 		// Now for the actual coordinate test:
@@ -130,6 +130,15 @@ public class RoomTest {
 		b = new Room(a, new Vec3(1, 1, 1), Vec3.ZERO, 0);
 		c = new Room(a, new Vec3(1, 1, 1), Vec3.ZERO, 90);
 		assertEquals(new Vec3(3, 1, 3), RoomUtil.translateToRoom(b, new Vec3(1, 0, 1), null));
+		assertEquals(new Vec3(1, 0, 1), RoomUtil.translateToRoom(null, new Vec3(3, 1, 3), b));
+		assertEquals(new Vec3(2, 1, 2), RoomUtil.translateToParent(b, new Vec3(1, 0, 1)));
+		assertEquals(new Vec3(2, 1, 0), RoomUtil.translateToParent(c, new Vec3(1, 0, 1)));
+		assertEquals(new Vec3(1, 1, 1), RoomUtil.translateToParent(c, new Vec3(0, 0, 0)));
+		assertEquals(new Vec3(2, 1, 2), RoomUtil.translateToParent(a, new Vec3(1, 1, 1)));
+		assertEquals(RoomUtil.translateToRoom(c, new Vec3(0, 0, 0), null),
+				RoomUtil.translateToParent(a, RoomUtil.translateToParent(c, new Vec3(0, 0, 0))));
+		assertEquals(RoomUtil.translateToRoom(c, new Vec3(45, 234, -23), null),
+				RoomUtil.translateToParent(a, RoomUtil.translateToParent(c, new Vec3(45, 234, -23))));
 		assertEquals(new Vec3(3, 1, 1), RoomUtil.translateToRoom(c, new Vec3(1, 0, 1), null));
 	}
 	

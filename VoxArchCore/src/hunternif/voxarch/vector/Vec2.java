@@ -115,4 +115,8 @@ public class Vec2 {
 		y /= length;
 		return this;
 	}
+	
+	public static Vec2 fromXZ(Vec3 vec) {
+		return new Vec2 (vec.x, vec.z);
+	}
 }

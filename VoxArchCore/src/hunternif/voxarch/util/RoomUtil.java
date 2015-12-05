@@ -1,8 +1,10 @@
 package hunternif.voxarch.util;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
@@ -135,25 +137,84 @@ public class RoomUtil {
 		return parent;
 	}
 	
-	/** Converts the coordinates from local in-room to the room's immediate parent. */
+	private static class RoomPair {
+		final Room from, to;
+		public RoomPair(Room from, Room to) {
+			this.from = from;
+			this.to = to;
+		}
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + ((from == null) ? 0 : from.hashCode());
+			result = prime * result + ((to == null) ? 0 : to.hashCode());
+			return result;
+		}
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj) return true;
+			if (obj == null) return false;
+			if (!(obj instanceof RoomPair)) return false;
+			RoomPair r = (RoomPair) obj;
+			return r.from == from && r.to == to;
+		}
+	}
+	/** For caching calls to translate* methods. */
+	private static Map<RoomPair, Matrix4> roomToRoomTranslatorCache = new HashMap<>();
+	
+	/**
+	 * Converts the coordinates from local in-room to the room's immediate
+	 * parent. The vector is not modified.
+	 * <b>Only call this method none of the rooms' ancestors' position and
+	 * orientation will be modified in future!</b> (Because caching)
+	 */
 	public static Vec3 translateToParent(Room room, Vec3 local) {
-		return Vec3.from(
-				Matrix4.rotationY(room.getRotationY()).multiplyLocal(Vec4.from(local))
-			).addLocal(room.getOrigin());
+		return Vec3.from(matrixTranslateToParent(room).multiplyLocal(Vec4.from(local)));
 		
 	}
-	/** Converts the coordinates from the room's parent to local in-room. */
+	private static Matrix4 matrixTranslateToParent(Room room) {
+		RoomPair pairKey = new RoomPair(room, room.getParent());
+		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
+		if (cached == null) {
+			cached = Matrix4.translationAdd(room.getOrigin())
+					.multiplyLocal(Matrix4.rotationY(room.getRotationY()));
+			roomToRoomTranslatorCache.put(pairKey, cached);
+		}
+		return cached;
+	}
+	/**
+	 * Converts the coordinates from the room's parent to local in-room.
+	 * The vector is not modified.
+	 * <b>Only call this method none of the rooms' ancestors' position and
+	 * orientation will be modified in future!</b> (Because caching)
+	 */
 	public static Vec3 translateToLocal(Room room, Vec3 external) {
-		return Vec3.from(
-				Matrix4.rotationY(-room.getRotationY()).multiplyLocal(
-						Vec4.from(external.subtract(room.getOrigin()))
-					)
-				);
+		return Vec3.from(matrixTranslateToLocal(room).multiplyLocal(Vec4.from(external)));
+	}
+	private static Matrix4 matrixTranslateToLocal(Room room) {
+		RoomPair pairKey = new RoomPair(room.getParent(), room);
+		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
+		if (cached == null) {
+			cached = Matrix4.rotationY(-room.getRotationY()).multiplyLocal(
+					Matrix4.translationSubtract(room.getOrigin()));
+			roomToRoomTranslatorCache.put(pairKey, cached);
+		}
+		return cached;
 	}
 	
-	/** Translate the coordinates local to one room, to local coordinates of
-	 * another room. */
+	/**
+	 * Translate the coordinates local to one room, to local coordinates of
+	 * another room.
+	 * <b>Only call this method none of the rooms' ancestors' position and
+	 * orientation will be modified in future!</b> (Because caching)
+	 */
 	public static Vec3 translateToRoom(Room from, Vec3 local, Room to) {
+		RoomPair pairKey = new RoomPair(from, to);
+		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
+		if (cached != null) {
+			return Vec3.from(cached.multiplyLocal(Vec4.from(local)));
+		}
 		List<Room> ancestryFrom = new ArrayList<>();
 		while (from != null) {
 			ancestryFrom.add(from);
@@ -182,13 +243,16 @@ public class RoomUtil {
 				break;
 			}
 		}
+		cached = Matrix4.identity();
 		for (Room room : ancestryFrom) {
 			if (room == parent) break;
-			local = translateToParent(room, local);
+			cached = matrixTranslateToParent(room).multiply(cached);
 		}
 		while (iterTo.hasPrevious()) {
-			local = translateToLocal(iterTo.previous(), local);
+			cached = matrixTranslateToLocal(iterTo.previous()).multiply(cached);
 		}
-		return local;
+		roomToRoomTranslatorCache.put(pairKey, cached);
+		return Vec3.from(cached.multiplyLocal(Vec4.from(local)));
 	}
+	
 }

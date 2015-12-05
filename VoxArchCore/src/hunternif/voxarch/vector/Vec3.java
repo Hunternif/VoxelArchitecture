@@ -139,4 +139,8 @@ public class Vec3 {
 	public static Vec3 from(Vec4 vec) {
 		return new Vec3(vec.x, vec.y, vec.z);
 	}
+	
+	public static Vec3 fromXZ(Vec2 vec) {
+		return new Vec3(vec.x, 0, vec.y);
+	}
 }
