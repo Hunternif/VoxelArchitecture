@@ -23,6 +23,7 @@ public class Node {
 	
 	/** The origin vector will be copied. */
 	public Node(Room parent, Vec3 origin, double rotationY) {
+		if (parent == this) throw new IllegalArgumentException("Node can't be a parent of iteslf");
 		this.parent = parent;
 		this.origin = new Vec3(origin);
 		this.rotationY = rotationY;

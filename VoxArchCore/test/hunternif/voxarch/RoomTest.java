@@ -113,6 +113,25 @@ public class RoomTest {
 		assertEquals(new Vec3(1, 2, 2), RoomUtil.translateToLocal(room, new Vec3(5, 3, -1)));
 		assertEquals(new Vec3(-2, -1, -1), RoomUtil.translateToLocal(room, new Vec3(2, 0, 2)));
 	}
+	@Test
+	public void translateCoords2Way() {
+		// See if equal translating back and forth produces the same result:
+		Room a = new Room(new Vec3(123, -345, 346), Vec3.ZERO);
+		Room b = new Room(a, new Vec3(57, 13, -56), Vec3.ZERO, 90);
+		Room c = new Room(a, new Vec3(57, 13, -56), Vec3.ZERO, 90);
+		Vec3 vec = new Vec3(-35, 57, 51);
+		assertEquals(vec, RoomUtil.translateToRoom(a, vec, a));
+		assertEquals(vec, RoomUtil.translateToRoom(b, vec, b));
+		assertEquals(vec, RoomUtil.translateToRoom(a, vec, a));
+		assertEquals(vec, RoomUtil.translateToRoom(b, vec, c));
+		
+		// Now for the actual coordinate test:
+		a = new Room(new Vec3(1, 0, 1), Vec3.ZERO);
+		b = new Room(a, new Vec3(1, 1, 1), Vec3.ZERO, 0);
+		c = new Room(a, new Vec3(1, 1, 1), Vec3.ZERO, 90);
+		assertEquals(new Vec3(3, 1, 3), RoomUtil.translateToRoom(b, new Vec3(1, 0, 1), null));
+		assertEquals(new Vec3(3, 1, 1), RoomUtil.translateToRoom(c, new Vec3(1, 0, 1), null));
+	}
 	
 	/** Helper method. */
 	public static Room childOf(Room parent) {

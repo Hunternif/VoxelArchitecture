@@ -109,6 +109,8 @@ public class RoomUtil {
 	public static Room findLowestCommonParent(Room roomA, Room roomB) {
 		if (roomA == null || roomB == null) return null;
 		if (roomA == roomB) return roomA;
+		// Including this simple check because it is the most likely situation:
+		if (roomA.getParent() == roomB.getParent()) return roomA.getParent();
 		List<Room> ancestryA = new ArrayList<>();
 		while (roomA != null) {
 			ancestryA.add(roomA);
@@ -123,9 +125,9 @@ public class RoomUtil {
 		ListIterator<Room> iterB = ancestryB.listIterator(ancestryB.size());
 		Room parent = null;
 		while (iterA.hasPrevious() && iterB.hasPrevious()) {
-			Room child = iterA.previous();
-			if (child == iterB.previous()) {
-				parent = child;
+			Room curParent = iterA.previous();
+			if (curParent == iterB.previous()) {
+				parent = curParent;
 			} else {
 				return parent;
 			}
@@ -147,5 +149,46 @@ public class RoomUtil {
 						Vec4.from(external.subtract(room.getOrigin()))
 					)
 				);
+	}
+	
+	/** Translate the coordinates local to one room, to local coordinates of
+	 * another room. */
+	public static Vec3 translateToRoom(Room from, Vec3 local, Room to) {
+		List<Room> ancestryFrom = new ArrayList<>();
+		while (from != null) {
+			ancestryFrom.add(from);
+			from = from.getParent();
+		}
+		List<Room> ancestryTo = new ArrayList<>();
+		while (to != null) {
+			ancestryTo.add(to);
+			to = to.getParent();
+		}
+		ListIterator<Room> iterFrom = ancestryFrom.listIterator(ancestryFrom.size());
+		ListIterator<Room> iterTo = ancestryTo.listIterator(ancestryTo.size());
+		Room parent = null;
+		while (iterFrom.hasPrevious() && iterTo.hasPrevious()) {
+			Room curParent = iterFrom.previous();
+			if (curParent == iterTo.previous()) {
+				parent = curParent;
+			} else {
+				// We need this iterator to point to the child of the lowest common parent:
+				if (iterTo.hasNext()) {
+					iterTo.next();
+				} else {
+					// We only went in 1 step, gotta reset the iterator:
+					iterTo = ancestryTo.listIterator(ancestryTo.size());
+				}
+				break;
+			}
+		}
+		for (Room room : ancestryFrom) {
+			if (room == parent) break;
+			local = translateToParent(room, local);
+		}
+		while (iterTo.hasPrevious()) {
+			local = translateToLocal(iterTo.previous(), local);
+		}
+		return local;
 	}
 }
