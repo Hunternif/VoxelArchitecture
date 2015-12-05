@@ -1,5 +1,8 @@
 package hunternif.voxarch.util;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.vector.Matrix2;
@@ -14,25 +17,51 @@ public class RoomUtil {
 	/**
 	 * Returns the wall in the room that is closest to the specified point on
 	 * the horizontal plane.
+	 * In case of several walls being equally close (e.g. when the shortest
+	 * distance to 2 walls is measured in their mutual corner), the 'closeness'
+	 * is determined by comparing the average distance to their end points.
 	 * @param room
 	 * @param point coordinates relative to the parent of the room.
 	 */
 	public static Wall findClosestWall(Room room, Vec2 point) {
+		// Check if the room has no walls:
+		if (room.getWalls().isEmpty()) return null;
 		Vec2 p = new Vec2(point.x - room.getOrigin().x,
 						  point.y - room.getOrigin().z);
 		Matrix2 rot = Matrix2.rotationMatrix(room.getRotationY());
 		rot.multiplyLocal(p);
-		Wall closest = null;
 		double distance = Double.MAX_VALUE;
+		// First measure the actual distance:
+		List<Wall> candidates = new ArrayList<>();
 		for (Wall wall : room.getWalls()) {
 			Vec2 dest = VectorUtil.closestPointOnLineSegment(p, wall.getP1(), wall.getP2());
 			double curDistance = p.squareDistanceTo(dest);
-			if (curDistance < distance) {
+			if (curDistance == distance) {
+				candidates.add(wall);
+			} else if (curDistance < distance) {
 				distance = curDistance;
-				closest = wall;
+				candidates = new ArrayList<>();
+				candidates.add(wall);
 			}
 		}
-		return closest;
+		if (candidates.size() > 1) {
+			// Compare distances to their end points:
+			//TODO: test the new improved RoomUtil.findClosestWall()
+			Wall closest = null;
+			distance = Double.MAX_VALUE;
+			for (Wall wall : room.getWalls()) {
+				double curDistance = p.squareDistanceTo(wall.getP1()) + p.squareDistanceTo(wall.getP2());
+				if (curDistance < distance) {
+					distance = curDistance;
+					closest = wall;
+				}
+			}
+			// At this point there still might be collisions, but whatever.
+			// Your fault for designing a plan that causes such collisions :^)
+			return closest;
+		} else {
+			return candidates.get(0);
+		}
 	}
 	
 	/**

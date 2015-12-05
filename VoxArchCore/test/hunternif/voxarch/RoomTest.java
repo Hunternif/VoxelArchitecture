@@ -50,7 +50,7 @@ public class RoomTest {
 		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3), 0);
 		room.createFourWalls();
 		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, 0)));
-		assertEquals(room.getWalls().get(0), RoomUtil.findClosestWall(room, new Vec2(1, 1.5)));
+		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(1, 1.5)));
 		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(0.9, 1.6)));
 		assertEquals(room.getWalls().get(2), RoomUtil.findClosestWall(room, new Vec2(-1, 0)));
 		assertEquals(room.getWalls().get(3), RoomUtil.findClosestWall(room, new Vec2(-0.9, 1.5)));
