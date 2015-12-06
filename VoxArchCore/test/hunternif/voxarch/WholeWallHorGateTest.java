@@ -18,8 +18,10 @@ public class WholeWallHorGateTest {
 		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
 		Room a = new Room(base, new Vec3(0, 0, -1), new Vec3(2, 1, 4), 0);
 		a.createFourWalls();
+		base.addChild(a);
 		Room b = new Room(base, new Vec3(2.5, 2, -1), new Vec3(3, 3, 2), 0);
 		b.createFourWalls();
+		base.addChild(b);
 		Gate gate = gateFactory.create(a, b);
 		assertEquals(base, gate.getParent());
 		assertEquals(new Vec3(1, 2, -1), gate.getOrigin());

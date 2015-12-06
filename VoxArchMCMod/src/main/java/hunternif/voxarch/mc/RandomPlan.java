@@ -1,9 +1,11 @@
 package hunternif.voxarch.mc;
 
 import hunternif.voxarch.plan.ArchPlan;
+import hunternif.voxarch.plan.Corridor;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.gate.IGateFactory;
 import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
+import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
 import java.util.Random;
@@ -13,8 +15,9 @@ public class RandomPlan {
 	
 	public static ArchPlan create() {
 		ArchPlan plan = new ArchPlan();
-		randomGrid(plan);
+		//randomGrid(plan);
 		//randomBox(plan);
+		randomCorridor(plan);
 		return plan;
 	}
 	
@@ -67,5 +70,18 @@ public class RandomPlan {
 				}
 			}
 		}
+	}
+	
+	public static void randomCorridor(ArchPlan plan) {
+		Corridor cor = new Corridor(null, Vec3.ZERO, new Vec2(4, 3));
+		cor.setHasCeiling(false);
+		Random rand = new Random();
+		Vec3 lastPoint = new Vec3(Vec3.ZERO);
+		for (int i = 0; i < 5; i++) {
+			lastPoint.addLocal(rand.nextInt(10), 0, rand.nextInt(10));
+			cor.appendPoint(lastPoint);
+		}
+		cor.build();
+		plan.getBase().addChild(cor);
 	}
 }

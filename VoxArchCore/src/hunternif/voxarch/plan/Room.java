@@ -67,7 +67,6 @@ public class Room extends Node {
 	 */
 	public Room(Room parent, Vec3 origin, Vec3 size, double rotationY) {
 		super(parent, origin, rotationY);
-		if (parent != null) parent.children.add(this);
 		this.size = new Vec3(size);
 	}
 	/**
@@ -134,7 +133,6 @@ public class Room extends Node {
 	
 	public void addGate(Gate gate) {
 		gates.add(gate);
-		//TODO: fix the inconsistency that gates are not added to their parent upon creation.
 	}
 	
 	public List<Gate> getGates() {

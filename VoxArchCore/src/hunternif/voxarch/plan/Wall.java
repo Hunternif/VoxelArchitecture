@@ -26,6 +26,7 @@ public class Wall {
 	 * calculations. */
 	private boolean transparent = false;
 	
+	/** Vectors will be copied. */
 	public Wall(Room room, Vec2 p1, Vec2 p2, boolean transparent) {
 		this.room = room;
 		this.p1 = new Vec2(p1);

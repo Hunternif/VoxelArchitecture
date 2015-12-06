@@ -132,6 +132,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 			// TODO fix gates to not penetrate walls.
 			Room junction = new Room(this, node.endPoint, new Vec3(corridorWidth, corridorHeight, corridorWidth), node.getRotationY());
 			junction.createFourWalls();
+			this.addChild(junction);
 			addGate(gateFactory.create(node, junction));
 			JunctionOption junctionOption = RandomUtil.randomWeightedOption(JunctionOption.values());
 			switch (junctionOption) {
@@ -232,6 +233,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	
 	/** Helper method to save on code lines. */
 	private void connectNewCorridor(Room junction, Corridor corridor) {
+		this.addChild(corridor);
 		corridor.createFourWalls();
 		addGate(gateFactory.create(junction, corridor));
 		if (corridor.totalLength < maxTotalLength) {

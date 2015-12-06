@@ -4,6 +4,7 @@ import hunternif.voxarch.util.RoomUtil;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
@@ -26,6 +27,8 @@ public class Corridor extends Room {
 	
 	private final Vec2 sectionSize;
 	
+	private boolean childrenHaveCeiling = true, childrenHaveFloor = true;
+	
 	/**
 	 * @param origin is the starting point of the corridor. It is assumed to be
 	 * 				lying directly on a wall of the starting room (if any).
@@ -36,8 +39,8 @@ public class Corridor extends Room {
 		this.sectionSize = sectionSize;
 		// Should we calculate total room size?
 		appendPoint(Vec3.ZERO); // The origin as first point
-		setHasFloor(false);
-		setHasCeiling(false);
+		super.setHasFloor(false);
+		super.setHasCeiling(false);
 	}
 	
 	/**
@@ -97,8 +100,51 @@ public class Corridor extends Room {
 		}
 		
 		buildEnvelopes();
-		//TODO build corridor path
 		
+		Iterator<Vec3> pathIter = path.iterator();
+		Vec3 e = null;
+		Vec3 f = pathIter.next();
+		for (int i = 0; i < path.size() - 1; i++) {
+			/* Iteration segment:
+			 * end
+			 * a f d
+			 *   x - origin
+			 * b e c
+			 * start
+			 */
+			Vec3 a = envelopeLeft[i+1];
+			Vec3 b = envelopeLeft[i];
+			Vec3 c = envelopeRight[i];
+			Vec3 d = envelopeRight[i+1];
+			e = f;
+			f = pathIter.next();
+			/* Room orientation:
+			 * -----------> X
+			 * start   end
+			 */
+			Vec3 origin = new Vec3((e.x + f.x)/2, (e.y + f.y)/2, (e.z + f.z)/2);
+			Vec3 size = new Vec3(0, sectionSize.y, sectionSize.x); // Need to update length later!
+			double angle = Math.atan2(-(f.z - e.z), f.x - e.x) * 180 / Math.PI;
+			Room room = new Room(this, origin, size, angle);
+			//TODO: insert stairs where the floor has a slope
+			// Insert the walls:
+			Vec2 a2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, a));
+			Vec2 b2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, b));
+			Vec2 c2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, c));
+			Vec2 d2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, d));
+			room.walls.add(new Wall(room, d2, a2, true));
+			room.walls.add(new Wall(room, a2, b2, false));
+			room.walls.add(new Wall(room, b2, c2, true));
+			room.walls.add(new Wall(room, c2, d2, false));
+			// Update length:
+			room.getSize().x = Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
+					Math.max(Math.abs(c2.x), Math.abs(d2.x))) * 2;
+			// This way to calculate origin-vs-size is straight-forward, but
+			// it causes the room volume to extend past its walls in case of
+			// sharp turns.
+			room.setHasCeiling(childrenHaveCeiling).setHasFloor(childrenHaveFloor);
+			this.addChild(room);
+		}
 	}
 	
 	/**
@@ -132,7 +178,7 @@ public class Corridor extends Room {
 		double d_n = d.dotProduct(n);
 		double D = d_n*d_n + 2*p.dotProduct(d); // Discriminant
 		double t = 0;
-		// CHEAT: if D < 0, assume that 90 degree turn is maximum:
+		// CHEAT: if D < 0, assume that a 90 degree angle is the maximum:
 		if (D < 0) {
 			t = sectionSize.x/2;
 		} else {
@@ -197,5 +243,35 @@ public class Corridor extends Room {
 			a = b;
 			b = c;
 		}
+	}
+	
+	@Override
+	/** Will modify the inner rooms' ceiling flag. */
+	public Room setHasCeiling(boolean hasCeiling) {
+		childrenHaveCeiling = hasCeiling;
+		for (Room child : getChildren()) {
+			child.setHasCeiling(hasCeiling);
+		}
+		return this;
+	}
+	@Override
+	public boolean hasCeiling() {
+		if (getChildren().isEmpty()) return false;
+		return getChildren().get(0).hasCeiling();
+	}
+	
+	@Override
+	/** Will modify the inner rooms' floor flag. */
+	public Room setHasFloor(boolean hasFloor) {
+		childrenHaveFloor = hasFloor;
+		for (Room child : getChildren()) {
+			child.setHasFloor(hasFloor);
+		}
+		return this;
+	}
+	@Override
+	public boolean hasFloor() {
+		if (getChildren().isEmpty()) return false;
+		return getChildren().get(0).hasFloor();
 	}
 }
