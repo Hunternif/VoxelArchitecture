@@ -256,8 +256,7 @@ public class Corridor extends Room {
 	}
 	@Override
 	public boolean hasCeiling() {
-		if (getChildren().isEmpty()) return false;
-		return getChildren().get(0).hasCeiling();
+		return childrenHaveCeiling;
 	}
 	
 	@Override
@@ -271,7 +270,6 @@ public class Corridor extends Room {
 	}
 	@Override
 	public boolean hasFloor() {
-		if (getChildren().isEmpty()) return false;
-		return getChildren().get(0).hasFloor();
+		return childrenHaveFloor;
 	}
 }

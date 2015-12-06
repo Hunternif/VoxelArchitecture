@@ -24,7 +24,7 @@ import java.util.Random;
  * @author Hunternif
  */
 public class FlatDungeon extends Room implements IIncrementalBuilding {
-	//TODO consider using long series of walls within one room to generate long corridors. 
+	//TODO use plan.Corridor in dungeon
 	int corridorWidth = 3;
 	int corridorHeight = 5;
 	int[] corridorLengths = {6, 10, 16};

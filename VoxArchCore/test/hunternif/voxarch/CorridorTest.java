@@ -13,7 +13,8 @@ import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
 public class CorridorTest {
-
+	//TODO: test corridor attaching to rooms with gates.
+	
 	private static class CorridorForTesting extends Corridor {
 		public CorridorForTesting(Room parent, Vec3 origin, Vec2 sectionSize) {
 			super(parent, origin, sectionSize);
