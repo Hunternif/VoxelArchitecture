@@ -34,6 +34,8 @@ import java.util.List;
  *  2 2 2
  *  </pre>
  *  The room traced above floor by floor has size 2x2x2 and origin at (1, 0, 1)
+ *  <br>
+ *  TODO: figure out and document which way rotation is counted!
  *  
  * @author Hunternif
  */

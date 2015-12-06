@@ -72,6 +72,10 @@ public class Vec3 {
 	public Vec3 subtractLocal(Vec3 vec) {
 		return subtractLocal(vec.x, vec.y, vec.z);
 	}
+	/** Returns a new vector. */
+	public Vec3 subtract(double dx, double dy, double dz) {
+		return new Vec3(x - dx, y - dy, z - dz);
+	}
 	/** Modifies and returns itself. */
 	public Vec3 subtractLocal(double dx, double dy, double dz) {
 		this.x -= dx;
@@ -80,6 +84,10 @@ public class Vec3 {
 		return this;
 	}
 	
+	/** Returns a new vector. */
+	public Vec3 multiply(double m) {
+		return new Vec3(x*m, y*m, z*m);
+	}
 	/** Modifies and returns itself. */
 	public Vec3 multiplyLocal(double m) {
 		this.x *= m;

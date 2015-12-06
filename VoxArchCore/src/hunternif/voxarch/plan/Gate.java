@@ -25,12 +25,13 @@ public class Gate extends Node {
 	/**
 	 * For a horizontal gate, the origin point is in the middle of the gate at
 	 * floor level. For a vertical gate, it is in the actual center of it.
+	 * The vector arguments will be cloned.
 	 */
 	public Gate(Room parent, Room room1, Room room2, Vec3 origin, Vec2 size, Orientation orientation, double rotationY) {
 		super(parent, origin, rotationY);
 		this.room1 = room1;
 		this.room2 = room2;
-		this.size = size;
+		this.size = new Vec2(size);
 		this.orientation = orientation;
 	}
 

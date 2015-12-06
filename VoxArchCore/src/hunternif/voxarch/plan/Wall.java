@@ -2,6 +2,19 @@ package hunternif.voxarch.plan;
 
 import hunternif.voxarch.vector.Vec2;
 
+/**
+ * Wall that defines a boundary of a room. Should be positioned as follows
+ * (in local coordinates):
+ * <pre>
+ *  +-------------> X
+ *  |      inside
+ *  | p1 == wall == p2
+ *  |      outside
+ *  V
+ * Y
+ * </pre>
+ * @author Hunternif
+ */
 public class Wall {
 	/** Coordinates of end points of the base of the wall relative to the center
 	 * of the containing room. */
