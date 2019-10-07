@@ -1,5 +1,6 @@
 package hunternif.voxarch.gen;
 
+import hunternif.voxarch.gen.impl.*;
 import hunternif.voxarch.plan.*;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.PositionTransformer;
@@ -26,17 +27,17 @@ public class Generator {
 	private final IBlockStorage world;
 
 	private Materials defaultMaterials;
-	private ElementGenerator.Ceiling defaultCeilingGenerator;
-	private ElementGenerator.Floor defaultFloorGenerator;
-	private ElementGenerator.HorGate defaultHorGateGenerator;
-	private ElementGenerator.VerGate defaultVerGateGenerator;
+	private ElementGenerator.Ceiling defaultCeilingGenerator = new SimpleCeilingGenerator();
+	private ElementGenerator.Floor defaultFloorGenerator = new SimpleFloorGenerator();
+	private ElementGenerator.HorGate defaultHorGateGenerator = new SimpleHorGateGenerator();
+	private ElementGenerator.VerGate defaultVerGateGenerator = new SimpleVerGateGenerator();
 	//private ElementGenerator.Stairs defaultStairsGenerator;
-	private ElementGenerator.Wall defaultWallGenerator;
-	private final Map<String, Materials> materialsMap = new HashMap<String, Materials>();
-	private final Map<String, ElementGenerator.Ceiling> ceilingGenMap = new HashMap<String, ElementGenerator.Ceiling>();
-	private final Map<String, ElementGenerator.Floor> floorGenMap = new HashMap<String, ElementGenerator.Floor>();
-	private final Map<String, ElementGenerator.HorGate> horGateGenMap = new HashMap<String, ElementGenerator.HorGate>();
-	private final Map<String, ElementGenerator.VerGate> verGateGenMap = new HashMap<String, ElementGenerator.VerGate>();
+	private ElementGenerator.Wall defaultWallGenerator = new SimpleWallGenerator();
+	private final Map<String, Materials> materialsMap = new HashMap<>();
+	private final Map<String, ElementGenerator.Ceiling> ceilingGenMap = new HashMap<>();
+	private final Map<String, ElementGenerator.Floor> floorGenMap = new HashMap<>();
+	private final Map<String, ElementGenerator.HorGate> horGateGenMap = new HashMap<>();
+	private final Map<String, ElementGenerator.VerGate> verGateGenMap = new HashMap<>();
 	//private final Map<String, ElementGenerator.Stairs> stairsGenMap = new HashMap<String, ElementGenerator.Stairs>();
 	private final Map<String, ElementGenerator.Wall> wallGenMap = new HashMap<String, ElementGenerator.Wall>();
 	/** Mapped to prop name, not type! TODO: organize prop names vs types. */
@@ -100,24 +101,22 @@ public class Generator {
 			ElementGenerator.Floor floorGen = floorGenMap.get(room.getType());
 			if (floorGen == null) floorGen = defaultFloorGenerator;
 			if (floorGen != null) {
-				volume.setOffset(0.1);
 				pos.pushTransformation();
 				pos.setCloseGaps(true);
 				pos.translate(-room.getSize().x/2, 0, -room.getSize().z/2);
-				floorGen.generateFloor(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+				floorGen.generateFloor(pos, new Vec2(room.getSize().x, room.getSize().z), materials);
 				pos.popTransformation();
 			}
 		}
 		// Generate ceiling:
-		if (room.hasCeiling()) {
+		if (room.getHasCeiling()) {
 			ElementGenerator.Ceiling ceilGen = ceilingGenMap.get(room.getType());
 			if (ceilGen == null) ceilGen = defaultCeilingGenerator;
 			if (ceilGen != null) {
-				volume.setOffset(0.1);
 				pos.pushTransformation();
 				pos.setCloseGaps(true);
 				pos.translate(-room.getSize().x/2, room.getSize().y, -room.getSize().z/2);
-				ceilGen.generateCeiling(volume, new Vec2(room.getSize().x, room.getSize().z), materials);
+				ceilGen.generateCeiling(pos, new Vec2(room.getSize().x, room.getSize().z), materials);
 				pos.popTransformation();
 			}
 		}

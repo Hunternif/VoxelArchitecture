@@ -1,4 +1,4 @@
-package hunternif.voxarch.mc;
+package hunternif.voxarch.mc.plan;
 
 import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Corridor;

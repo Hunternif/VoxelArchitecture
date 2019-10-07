@@ -63,6 +63,24 @@ public class Vec3 {
 	public Vec3 add(double dx, double dy, double dz) {
 		return new Vec3(x + dx, y + dy, z + dz);
 	}
+	public Vec3 addX(double dx) {
+		return new Vec3(x + dx, y, z);
+	}
+	public Vec3 addY(double dy) {
+		return new Vec3(x, y + dy, z);
+	}
+	public Vec3 addZ(double dz) {
+		return new Vec3(x, y, z + dz);
+	}
+	public Vec3 addX(int dx) {
+		return new Vec3(x + dx, y, z);
+	}
+	public Vec3 addY(int dy) {
+		return new Vec3(x, y + dy, z);
+	}
+	public Vec3 addZ(int dz) {
+		return new Vec3(x, y, z + dz);
+	}
 	
 	/** Returns a new vector. */
 	public Vec3 subtract(Vec3 vec) {

@@ -1,7 +1,6 @@
 package hunternif.voxarch.gen;
 
 import hunternif.voxarch.storage.IBlockStorage;
-import hunternif.voxarch.util.RoomConstrainedStorage;
 import hunternif.voxarch.vector.Vec2;
 
 /** A collection of interfaces for generating various elements of a room.
@@ -10,11 +9,11 @@ import hunternif.voxarch.vector.Vec2;
 public class ElementGenerator {
 	public static interface Ceiling {
 		/** The origin is assumed to be in the corner of the room at ceiling height. */
-		void generateCeiling(RoomConstrainedStorage dest, Vec2 size, Materials materials);
+		void generateCeiling(IBlockStorage dest, Vec2 size, Materials materials);
 	}
 	public static interface Floor {
 		/** The origin is assumed to be in the corner of the room at floor height. */
-		void generateFloor(RoomConstrainedStorage dest, Vec2 size, Materials materials);
+		void generateFloor(IBlockStorage dest, Vec2 size, Materials materials);
 	}
 	public static interface Gate {
 		void generateGate(IBlockStorage dest, hunternif.voxarch.plan.Gate gate, Materials materials);

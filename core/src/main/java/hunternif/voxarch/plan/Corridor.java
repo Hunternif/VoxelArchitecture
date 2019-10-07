@@ -255,7 +255,7 @@ public class Corridor extends Room {
 		return this;
 	}
 	@Override
-	public boolean hasCeiling() {
+	public boolean getHasCeiling() {
 		return childrenHaveCeiling;
 	}
 	

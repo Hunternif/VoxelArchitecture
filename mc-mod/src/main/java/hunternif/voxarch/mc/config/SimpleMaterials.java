@@ -1,6 +1,7 @@
-package hunternif.voxarch.mc;
+package hunternif.voxarch.mc.config;
 
 import hunternif.voxarch.gen.Materials;
+import hunternif.voxarch.mc.ExtBlockDataMC;
 import hunternif.voxarch.storage.BlockData;
 
 import java.util.HashMap;

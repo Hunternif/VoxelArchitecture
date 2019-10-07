@@ -214,7 +214,7 @@ public class Room extends Node {
 		return rot;
 	}
 
-	public boolean hasCeiling() {
+	public boolean getHasCeiling() {
 		return hasCeiling;
 	}
 
