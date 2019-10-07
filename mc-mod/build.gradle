@@ -1,0 +1,51 @@
+apply plugin: 'net.minecraftforge.gradle.forge'
+
+version = "0.1-1.8"
+group= "hunternif.mc.voxarch"
+archivesBaseName = "voxarch"
+
+minecraft {
+    version = "1.8-11.14.4.1563"
+    if (file('../run').exists()) {
+        runDir = "../run"
+    } else {
+        runDir = "run"
+    }
+    mappings = "snapshot_20150701"
+}
+
+dependencies {
+    implementation project(':core')
+    implementation project(':mc-api')
+}
+
+processResources {
+    // this will ensure that this task is redone when the versions change.
+    inputs.property "version", project.version
+    inputs.property "mcversion", project.minecraft.version
+
+    // replace stuff in mcmod.info, nothing else
+    from(sourceSets.main.resources.srcDirs) {
+        include 'mcmod.info'
+
+        // replace version and mcversion
+        expand 'version':project.version, 'mcversion':project.minecraft.version
+    }
+
+    // copy everything else except the mcmod.info
+    from(sourceSets.main.resources.srcDirs) {
+        exclude 'mcmod.info'
+    }
+}
+
+task deobfJar(type: Jar) {
+    from sourceSets.main.output
+    classifier = 'deobf'
+}
+
+tasks.build.dependsOn('sourceJar', 'deobfJar')
+
+artifacts {
+    archives deobfJar
+    archives sourceJar
+}
