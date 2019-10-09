@@ -23,14 +23,20 @@ public class RandomPlan {
 	
 	/** Simple roundish room **/
 	public static void oneRoundishRoom(ArchPlan plan) {
-		plan.getBase().addChild(Vec3.ZERO, new Vec3(16, 5, 16), 0).setHasCeiling(false).createRoundWalls(8);
+		Room room = new Room(null, Vec3.ZERO, new Vec3(16, 5, 16), 0);
+		room.setHasCeiling(false);
+		room.createRoundWalls(8);
+		plan.getBase().addChild(room);
 	}
 	
 	/** A random-sized box with 4 walls. */
 	public static void randomBox(ArchPlan plan) {
 		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
-		plan.getBase().addChild(Vec3.ZERO, new Vec3(size, 3, size), (new Random()).nextInt(2)*45).setHasCeiling(false).createFourWalls();
+		Room room = new Room(null, Vec3.ZERO, new Vec3(size, 3, size), (new Random()).nextInt(2)*45);
+		room.setHasCeiling(false);
+		room.createFourWalls();
+		plan.getBase().addChild(room);
 	}
 	
 	/** A flat grid of random-sized interconnected rooms **/
@@ -50,7 +56,8 @@ public class RandomPlan {
 				size.x += Math.round(2 * (Math.random() - 0.5) * sizeJitter.x);
 				size.y += Math.round(2 * (Math.random() - 0.5) * sizeJitter.y);
 				size.z += Math.round(2 * (Math.random() - 0.5) * sizeJitter.z);
-				Room room = new Room(curCoords, size).setHasCeiling(false);
+				Room room = new Room(curCoords, size);
+                room.setHasCeiling(false);
 				room.createFourWalls();
 				roomArray[i][j] = room;
 				plan.getBase().addChild(room);
@@ -63,10 +70,10 @@ public class RandomPlan {
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
 				if (i < N-1 && (Math.random() > 0.5)) {
-					plan.getBase().addGate(gateFactory.create(roomArray[i][j], roomArray[i+1][j]));
+					plan.getBase().addChild(gateFactory.create(roomArray[i][j], roomArray[i+1][j]));
 				}
 				if (j < N-1 && (Math.random() > 0.5)) {
-					plan.getBase().addGate(gateFactory.create(roomArray[i][j], roomArray[i][j+1]));
+					plan.getBase().addChild(gateFactory.create(roomArray[i][j], roomArray[i][j+1]));
 				}
 			}
 		}

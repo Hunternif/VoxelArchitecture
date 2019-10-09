@@ -132,17 +132,18 @@ public class Corridor extends Room {
 			Vec2 b2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, b));
 			Vec2 c2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, c));
 			Vec2 d2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, d));
-			room.walls.add(new Wall(room, d2, a2, true));
-			room.walls.add(new Wall(room, a2, b2, false));
-			room.walls.add(new Wall(room, b2, c2, true));
-			room.walls.add(new Wall(room, c2, d2, false));
-			// Update length:
-			room.getSize().x = Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
-					Math.max(Math.abs(c2.x), Math.abs(d2.x))) * 2;
+			room.addChild(new Wall(room, d2, a2, true));
+			room.addChild(new Wall(room, a2, b2, false));
+			room.addChild(new Wall(room, b2, c2, true));
+			room.addChild(new Wall(room, c2, d2, false));
+			// Update length (it's called "width" because it's along the X axis):
+			room.setWidth(Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
+					Math.max(Math.abs(c2.x), Math.abs(d2.x))) * 2);
 			// This way to calculate origin-vs-size is straight-forward, but
 			// it causes the room volume to extend past its walls in case of
 			// sharp turns.
-			room.setHasCeiling(childrenHaveCeiling).setHasFloor(childrenHaveFloor);
+			room.setHasCeiling(childrenHaveCeiling);
+			room.setHasFloor(childrenHaveFloor);
 			this.addChild(room);
 		}
 	}
@@ -192,8 +193,8 @@ public class Corridor extends Room {
 			p2 = RoomUtil.translateToParent(this, p2);
 			double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 			// Not sure about which way the gate is oriented :/
-			Gate gate = new Gate(this.getParent(), room, this, gateOrigin, sectionSize, Gate.Orientation.HORIZONTAL, angle);
-			this.getParent().addGate(gate);
+			Gate gate = new Gate(this.getParent(), room, this, gateOrigin, sectionSize, angle);
+			this.getParent().addChild(gate);
 		}
 		return newPoint;
 	}
@@ -247,12 +248,11 @@ public class Corridor extends Room {
 	
 	@Override
 	/** Will modify the inner rooms' ceiling flag. */
-	public Room setHasCeiling(boolean hasCeiling) {
+	public void setHasCeiling(boolean hasCeiling) {
 		childrenHaveCeiling = hasCeiling;
-		for (Room child : getChildren()) {
+		for (Room child : getRooms()) {
 			child.setHasCeiling(hasCeiling);
 		}
-		return this;
 	}
 	@Override
 	public boolean getHasCeiling() {
@@ -261,15 +261,14 @@ public class Corridor extends Room {
 	
 	@Override
 	/** Will modify the inner rooms' floor flag. */
-	public Room setHasFloor(boolean hasFloor) {
+	public void setHasFloor(boolean hasFloor) {
 		childrenHaveFloor = hasFloor;
-		for (Room child : getChildren()) {
+		for (Room child : getRooms()) {
 			child.setHasFloor(hasFloor);
 		}
-		return this;
 	}
 	@Override
-	public boolean hasFloor() {
+	public boolean getHasFloor() {
 		return childrenHaveFloor;
 	}
 }

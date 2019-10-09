@@ -118,7 +118,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -162,7 +162,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -206,7 +206,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -238,7 +238,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -274,7 +274,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room2, room1));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -306,7 +306,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room2, room1));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -342,7 +342,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room2, room1));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -386,7 +386,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room2, room1));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -430,7 +430,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""
@@ -474,7 +474,7 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(new WallAlignedHorGateFactory().create(room1, room2));
+		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""

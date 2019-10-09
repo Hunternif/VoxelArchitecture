@@ -57,7 +57,7 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 			wall = RoomUtil.findClosestWall(from, point);
 		}
 		if (wall != null) {
-			angle = wall.getAngleDeg() + wall.getRoom().getRotationY();
+			angle = wall.getRotationY() + wall.getParent().getRotationY();
 			size.x = wall.getLength();
 			//TODO test gate size when walls are present.
 		} else {
@@ -80,7 +80,7 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		// The gate can't be taller than any of the rooms' ceilings:
 		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y;
 		
-		Gate gate = new Gate(to.getParent(), from, to, gatePos, size, Gate.Orientation.HORIZONTAL, angle);
+		Gate gate = new Gate(to.getParent(), from, to, gatePos, size, angle);
 		return gate;
 	}
 

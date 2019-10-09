@@ -1,4 +1,4 @@
-package hunternif.voxarch.plan;
+package hunternif.voxarch.plan.legacy;
 
 import hunternif.voxarch.vector.Vec3;
 

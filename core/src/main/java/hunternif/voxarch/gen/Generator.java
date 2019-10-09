@@ -29,15 +29,15 @@ public class Generator {
 	private Materials defaultMaterials;
 	private ElementGenerator.Ceiling defaultCeilingGenerator = new SimpleCeilingGenerator();
 	private ElementGenerator.Floor defaultFloorGenerator = new SimpleFloorGenerator();
-	private ElementGenerator.HorGate defaultHorGateGenerator = new SimpleHorGateGenerator();
-	private ElementGenerator.VerGate defaultVerGateGenerator = new SimpleVerGateGenerator();
+	private ElementGenerator.Gate defaultHorGateGenerator = new SimpleHorGateGenerator();
+	private ElementGenerator.Hatch defaultVerGateGenerator = new SimpleVerGateGenerator();
 	//private ElementGenerator.Stairs defaultStairsGenerator;
 	private ElementGenerator.Wall defaultWallGenerator = new SimpleWallGenerator();
 	private final Map<String, Materials> materialsMap = new HashMap<>();
 	private final Map<String, ElementGenerator.Ceiling> ceilingGenMap = new HashMap<>();
 	private final Map<String, ElementGenerator.Floor> floorGenMap = new HashMap<>();
-	private final Map<String, ElementGenerator.HorGate> horGateGenMap = new HashMap<>();
-	private final Map<String, ElementGenerator.VerGate> verGateGenMap = new HashMap<>();
+	private final Map<String, ElementGenerator.Gate> horGateGenMap = new HashMap<>();
+	private final Map<String, ElementGenerator.Hatch> verGateGenMap = new HashMap<>();
 	//private final Map<String, ElementGenerator.Stairs> stairsGenMap = new HashMap<String, ElementGenerator.Stairs>();
 	private final Map<String, ElementGenerator.Wall> wallGenMap = new HashMap<String, ElementGenerator.Wall>();
 	/** Mapped to prop name, not type! TODO: organize prop names vs types. */
@@ -97,7 +97,7 @@ public class Generator {
 		if (materials == null) materials = defaultMaterials;
 		if (materials == null) return; // No materials provided!
 		// Generate floor:
-		if (room.hasFloor()) {
+		if (room.getHasFloor()) {
 			ElementGenerator.Floor floorGen = floorGenMap.get(room.getType());
 			if (floorGen == null) floorGen = defaultFloorGenerator;
 			if (floorGen != null) {
@@ -125,53 +125,60 @@ public class Generator {
 		if (wallGen == null) wallGen = defaultWallGenerator;
 		if (wallGen != null) {
 			for (Wall wall : room.getWalls()) {
-				if (wall.isTransparent()) continue;
+				if (wall.getTransparent()) continue;
 				pos.pushTransformation();
 				pos.translate(wall.getP1().x, 0, wall.getP1().y);
 				pos.setCloseGaps(false);
-				pos.rotateY(wall.getAngleDeg());
+				pos.rotateY(wall.getRotationY());
 				wallGen.generateWall(pos, wall, materials);
 				pos.popTransformation();
 			}
 		}
 		// Recursively build all child rooms:
-		for (Room child : room.getChildren()) {
+		for (Room child : room.getRooms()) {
 			if (child.isBuilt()) continue;
 			pos.pushTransformation();
 			pos.translate(child.getOrigin()).rotateY(child.getRotationY());
 			generateRoom(pos, child);
 			pos.popTransformation();
 		}
-		// Build the gates within this room:
+		// Build horizontal gates within this room:
 		for (Gate gate : room.getGates()) {
 			if (gate.isBuilt()) continue;
-			ElementGenerator.Gate gen = null;
-			if (gate.isHorizontal()) {
-				gen = horGateGenMap.get(gate.getType());
-				if (gen == null) gen = defaultHorGateGenerator;
-			} else {
-				gen = verGateGenMap.get(gate.getType());
-				if (gen == null) gen = defaultVerGateGenerator;
-			}
+			ElementGenerator.Gate gen = horGateGenMap.get(gate.getType());
+			if (gen == null) gen = defaultHorGateGenerator;
 			if (gen == null) continue;
 			Materials gateMaterials = materialsMap.get(gate.getType());
 			if (gateMaterials == null) gateMaterials = defaultMaterials;
 			pos.pushTransformation();
 			pos.translate(gate.getOrigin()).rotateY(gate.getRotationY());
 			// Move the origin to the bottom left corner of the gate:
-			if (gate.isHorizontal()) {
-				pos.translate(-gate.getSize().x/2, 0, 0);
-			} else {
-				pos.translate(-gate.getSize().x/2, 0, -gate.getSize().y/2);
-			}
+			pos.translate(-gate.getSize().x/2, 0, 0);
 			pos.setCloseGaps(false);
-			gen.generateGate(pos, gate, materials);
+			gen.generateGate(pos, gate, gateMaterials);
 			pos.popTransformation();
 			gate.setBuilt(true);
 		}
+		// Build vertical hatches within this room:
+		for (Hatch hatch : room.getHatches()) {
+			if (hatch.isBuilt()) continue;
+			ElementGenerator.Hatch gen = verGateGenMap.get(hatch.getType());
+			if (gen == null) gen = defaultVerGateGenerator;
+			if (gen == null) continue;
+			Materials gateMaterials = materialsMap.get(hatch.getType());
+			if (gateMaterials == null) gateMaterials = defaultMaterials;
+			pos.pushTransformation();
+			pos.translate(hatch.getOrigin()).rotateY(hatch.getRotationY());
+			// Move the origin to the bottom left corner of the gate:
+			pos.translate(-hatch.getSize().x/2, 0, -hatch.getSize().y/2);
+			pos.setCloseGaps(false);
+			gen.generateGate(pos, hatch, gateMaterials);
+			pos.popTransformation();
+			hatch.setBuilt(true);
+		}
 		// Build props:
 		for (Prop prop : room.getProps()) {
-			ElementGenerator.Prop gen = propGenMap.get(prop.getName());
+			ElementGenerator.Prop gen = propGenMap.get(prop.getType());
 			if (gen != null) {
 				Materials propMaterials = materialsMap.get(prop.getType());
 				if (propMaterials == null) propMaterials = defaultMaterials;
@@ -196,11 +203,11 @@ public class Generator {
 		this.defaultFloorGenerator = defaultFloorGenerator;
 	}
 
-	public void setDefaultHorGateGenerator(ElementGenerator.HorGate defaultHorGateGenerator) {
+	public void setDefaultHorGateGenerator(ElementGenerator.Gate defaultHorGateGenerator) {
 		this.defaultHorGateGenerator = defaultHorGateGenerator;
 	}
 
-	public void setDefaultVerGateGenerator(ElementGenerator.VerGate defaultVerGateGenerator) {
+	public void setDefaultVerGateGenerator(ElementGenerator.Hatch defaultVerGateGenerator) {
 		this.defaultVerGateGenerator = defaultVerGateGenerator;
 	}
 
@@ -224,11 +231,11 @@ public class Generator {
 		floorGenMap.put(type, floorGenerator);
 	}
 
-	public void setHorGateGeneratorForType(String type, ElementGenerator.HorGate horGateGenerator) {
+	public void setHorGateGeneratorForType(String type, ElementGenerator.Gate horGateGenerator) {
 		horGateGenMap.put(type, horGateGenerator);
 	}
 
-	public void setVerGateGeneratorForType(String type, ElementGenerator.VerGate verGateGenerator) {
+	public void setVerGateGeneratorForType(String type, ElementGenerator.Hatch verGateGenerator) {
 		verGateGenMap.put(type, verGateGenerator);
 	}
 

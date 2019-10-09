@@ -18,8 +18,8 @@ public class Box {
 		this.maxY = maxY;
 		this.minZ = minZ;
 		this.maxZ = maxZ;
-		if (minX >= maxX || minY >= maxY || minZ >= maxZ) {
-			throw new IllegalArgumentException("Negative / zero box size: " + this.toString());
+		if (minX > maxX || minY > maxY || minZ > maxZ) {
+			throw new IllegalArgumentException("Negative box size: " + this.toString());
 		}
 	}
 	

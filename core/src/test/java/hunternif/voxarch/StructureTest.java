@@ -7,12 +7,14 @@ import hunternif.voxarch.storage.Structure;
 import hunternif.voxarch.util.StructureUtil;
 import hunternif.voxarch.vector.IntVec3;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
  * @author Hunternif
  */
 @Deprecated
+@Ignore
 public class StructureTest { 
 	@Test
 	public void testRotate90() {

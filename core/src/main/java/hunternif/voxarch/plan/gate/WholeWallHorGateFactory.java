@@ -1,6 +1,7 @@
 package hunternif.voxarch.plan.gate;
 
 import hunternif.voxarch.plan.Gate;
+import hunternif.voxarch.plan.Node;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.util.RoomUtil;
@@ -18,7 +19,7 @@ public class WholeWallHorGateFactory implements IGateFactory {
 	public Gate create(Room from, Room to) {
 		Wall wall = RoomUtil.findClosestWall(to, new Vec2(from.getOrigin().x, from.getOrigin().z));
 		if (wall == null) return null;
-		Room parent = RoomUtil.findLowestCommonParent(from, to);
+		Node parent = RoomUtil.findLowestCommonParent(from, to);
 		
 		// Find position of the wall:
 		Vec3 wallCenter = new Vec3((wall.getP1().x + wall.getP2().x)/2, 0, (wall.getP1().y + wall.getP2().y)/2);
@@ -32,7 +33,7 @@ public class WholeWallHorGateFactory implements IGateFactory {
 		Vec3 p2 = RoomUtil.translateToParent(to, new Vec3(wall.getP2().x, 0, wall.getP2().y));
 		double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 		
-		Gate gate = new Gate(parent, from, to, origin, size, Gate.Orientation.HORIZONTAL, angle);
+		Gate gate = new Gate(parent, from, to, origin, size, angle);
 		return gate;
 	}
 

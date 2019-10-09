@@ -133,7 +133,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 			Room junction = new Room(this, node.endPoint, new Vec3(corridorWidth, corridorHeight, corridorWidth), node.getRotationY());
 			junction.createFourWalls();
 			this.addChild(junction);
-			addGate(gateFactory.create(node, junction));
+            addChild(gateFactory.create(node, junction));
 			JunctionOption junctionOption = RandomUtil.randomWeightedOption(JunctionOption.values());
 			switch (junctionOption) {
 			case TURN:
@@ -235,7 +235,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	private void connectNewCorridor(Room junction, Corridor corridor) {
 		this.addChild(corridor);
 		corridor.createFourWalls();
-		addGate(gateFactory.create(junction, corridor));
+        addChild(gateFactory.create(junction, corridor));
 		if (corridor.totalLength < maxTotalLength) {
 			corridorQueue.add(corridor);
 		}

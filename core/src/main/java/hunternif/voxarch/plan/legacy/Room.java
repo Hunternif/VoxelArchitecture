@@ -1,4 +1,4 @@
-package hunternif.voxarch.plan;
+package hunternif.voxarch.plan.legacy;
 
 import hunternif.voxarch.util.Box;
 import hunternif.voxarch.util.MathUtil;

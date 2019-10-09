@@ -1,6 +1,7 @@
 package hunternif.voxarch.plan.gate;
 
 import hunternif.voxarch.plan.Gate;
+import hunternif.voxarch.plan.Hatch;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.util.Box;
 import hunternif.voxarch.vector.Matrix2;
@@ -19,9 +20,8 @@ import hunternif.voxarch.vector.Vec3;
  * The gate cannot extend beyond the bounding box of the 2nd room.
  * @author Hunternif
  */
-public class AlignedVerGateFactory implements IGateFactory {
-	@Override
-	public Gate create(Room from, Room to) {
+public class AlignedVerGateFactory {
+	public Hatch create(Room from, Room to) {
 		// Find out which of the rooms is above. Do so by comparing the
 		// difference between one room's floor and the other's ceiling level:
 		Box box1 = from.getBoundingBox();
@@ -51,8 +51,8 @@ public class AlignedVerGateFactory implements IGateFactory {
 		Matrix2.rotationMatrix(-to.getRotationY()).multiplyLocal(rg);
 		Vec3 position = new Vec3(to.getOrigin().x + rg.x, y, to.getOrigin().z + rg.y);
 		Vec2 size = new Vec2(isn.maxX - isn.minX, isn.maxZ - isn.minZ);
-		
-		Gate gate = new Gate(to.getParent(), from, to, position, size, Gate.Orientation.VERTICAL, to.getRotationY());
+
+		Hatch gate = new Hatch(to.getParent(), from, to, position, size, to.getRotationY());
 		return gate;
 	}
 }

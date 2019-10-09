@@ -2,6 +2,7 @@ package hunternif.voxarch;
 
 import static org.junit.Assert.*;
 
+import hunternif.voxarch.plan.Hatch;
 import org.junit.Test;
 
 import hunternif.voxarch.plan.ArchPlan;
@@ -15,20 +16,20 @@ import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
 public class AlignedVerGateTest extends GeneratorTest {
-	private IGateFactory gateFactory = new AlignedVerGateFactory();
+	private AlignedVerGateFactory gateFactory = new AlignedVerGateFactory();
 	
 	@Test
 	public void above() {
 		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(3, 2, 3));
 		Room room2 = new Room(new Vec3(0, 2, 0), new Vec3(3, 2, 3));
-		Gate gate = gateFactory.create(room1, room2);
+		Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(0, 2, 0), gate.getOrigin());
 	}
 	@Test
 	public void below() {
 		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(3, 2, 3));
 		Room room2 = new Room(new Vec3(0, -2, 0), new Vec3(3, 2, 3));
-		Gate gate = gateFactory.create(room1, room2);
+        Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(0, 0, 0), gate.getOrigin());
 	}
 	
@@ -36,7 +37,7 @@ public class AlignedVerGateTest extends GeneratorTest {
 	public void concentric() {
 		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(3, 3, 3));
 		Room room2 = new Room(new Vec3(0, 2, 0), new Vec3(2, 2, 4));
-		Gate gate = gateFactory.create(room1, room2);
+        Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getRotationY(), 0);
 		assertEquals(new Vec3(0, 2.5, 0), gate.getOrigin());
 		assertEquals(new Vec2(2, 3), gate.getSize());
@@ -45,7 +46,7 @@ public class AlignedVerGateTest extends GeneratorTest {
 	public void translated() {
 		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(3, 3, 3));
 		Room room2 = new Room(new Vec3(2, 5, 0), new Vec3(2, 2, 4));
-		Gate gate = gateFactory.create(room1, room2);
+        Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getRotationY(), 0);
 		assertEquals(new Vec3(1.25, 4, 0), gate.getOrigin());
 		assertEquals(new Vec2(0.5, 3), gate.getSize());
@@ -54,7 +55,7 @@ public class AlignedVerGateTest extends GeneratorTest {
 	public void rotated45() {
 		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 2, 3), 45);
 		Room room2 = new Room(null, new Vec3(Math.sqrt(1.5*1.5*2), 2, 0), new Vec3(3, 2, 3), 45);
-		Gate gate = gateFactory.create(room1, room2);
+        Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(45, gate.getRotationY(), 0);
 		assertEquals(2, gate.getOrigin().y, 0);
 		assertEquals(Math.sqrt(1.5*1.5*2)/2, gate.getOrigin().x, 0.000001);
@@ -67,7 +68,7 @@ public class AlignedVerGateTest extends GeneratorTest {
 	public void noGate() {
 		Room room1 = new Room(new Vec3(0, 0, 0), new Vec3(3, 3, 3));
 		Room room2 = new Room(new Vec3(4, 2, 0), new Vec3(2, 2, 4));
-		Gate gate = gateFactory.create(room1, room2);
+        Hatch gate = gateFactory.create(room1, room2);
 		assertNull(gate);
 	}
 	
@@ -80,7 +81,7 @@ public class AlignedVerGateTest extends GeneratorTest {
 		room2.createFourWalls();
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
-		plan.getBase().addGate(gateFactory.create(room1, room2));
+		plan.getBase().addChild(gateFactory.create(room1, room2));
 		gen.generate(plan, 0, 0, 0);
 		
 		String expected = ""

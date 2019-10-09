@@ -16,16 +16,13 @@ public class ElementGenerator {
 		void generateFloor(IBlockStorage dest, Vec2 size, Materials materials);
 	}
 	public static interface Gate {
-		void generateGate(IBlockStorage dest, hunternif.voxarch.plan.Gate gate, Materials materials);
-	}
-	public static interface HorGate extends ElementGenerator.Gate {
 		/** The gate is oriented so that the passage is along the Z axis, the
 		 * coordinates have been set up to point to the bottom left corner. */
 		void generateGate(IBlockStorage dest, hunternif.voxarch.plan.Gate gate, Materials materials);
 	}
-	public static interface VerGate extends ElementGenerator.Gate {
+	public static interface Hatch {
 		/** The coordinates have been set up to point to the bottom left corner. */
-		void generateGate(IBlockStorage dest, hunternif.voxarch.plan.Gate gate, Materials materials);
+		void generateGate(IBlockStorage dest, hunternif.voxarch.plan.Hatch hatch, Materials materials);
 	}
 	public static interface Wall {
 		/** The wall runs along the X axis. */

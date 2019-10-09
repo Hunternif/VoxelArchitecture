@@ -139,7 +139,7 @@ public class CorridorTest {
 		cor.appendPoint(new Vec3(2, 0, 0));
 		cor.build();
 		assertEquals(1, cor.getChildren().size());
-		Room r = cor.getChildren().get(0);
+		Room r = cor.getRooms().get(0);
 		assertEquals(new Vec3(1, 0, 0), r.getOrigin());
 		assertEquals(new Vec3(2, 3, 4), r.getSize());
 		assertEquals(0, r.getRotationY(), 0);
@@ -160,7 +160,7 @@ public class CorridorTest {
 		cor.appendPoint(new Vec3(2, 7, 3));
 		cor.appendPoint(new Vec3(4, 0, 3));
 		cor.build();
-		Iterator<Room> iter = cor.getChildren().iterator();
+		Iterator<Room> iter = cor.getRooms().iterator();
 		Room r = iter.next();
 		assertEquals(new Vec3(1, -1, 0), r.getOrigin());
 		assertEquals(new Vec3(4, 3, 2), r.getSize());

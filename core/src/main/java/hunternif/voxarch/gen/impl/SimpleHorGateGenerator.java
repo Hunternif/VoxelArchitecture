@@ -12,7 +12,7 @@ import hunternif.voxarch.util.MathUtil;
  * obstacle obscuring the passage.
  * @author Hunternif
  */
-public class SimpleHorGateGenerator implements ElementGenerator.HorGate {
+public class SimpleHorGateGenerator implements ElementGenerator.Gate {
 
 	public int minWidth = 1;
 	public int minHeight = 2;

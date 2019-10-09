@@ -3,6 +3,7 @@ package hunternif.voxarch.gen.impl;
 import hunternif.voxarch.gen.ElementGenerator;
 import hunternif.voxarch.gen.Materials;
 import hunternif.voxarch.plan.Gate;
+import hunternif.voxarch.plan.Hatch;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.MathUtil;
 
@@ -12,7 +13,7 @@ import hunternif.voxarch.util.MathUtil;
  * of obstacle obscuring the passage.
  * @author Hunternif
  */
-public class SimpleVerGateGenerator implements ElementGenerator.VerGate {
+public class SimpleVerGateGenerator implements ElementGenerator.Hatch {
 
 	public int minWidth = 1;
 	public int minLength = 1;
@@ -20,7 +21,7 @@ public class SimpleVerGateGenerator implements ElementGenerator.VerGate {
 	public int clearance = 1;
 	
 	@Override
-	public void generateGate(IBlockStorage dest, Gate gate, Materials materials) {
+	public void generateGate(IBlockStorage dest, Hatch gate, Materials materials) {
 		int width = Math.max(minWidth, MathUtil.roundDown(gate.getSize().x));
 		int length = Math.max(minLength, MathUtil.roundDown(gate.getSize().y));
 		// Including boundaries (<=) because a room occupies size + 1 blocks.

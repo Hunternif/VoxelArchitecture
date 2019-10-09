@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 
+import hunternif.voxarch.plan.Node;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.vector.Matrix2;
@@ -108,26 +109,26 @@ public class RoomUtil {
 	}
 	
 	/** WARNING: sub-optimal algorithm! */
-	public static Room findLowestCommonParent(Room roomA, Room roomB) {
+	public static Node findLowestCommonParent(Node roomA, Node roomB) {
 		if (roomA == null || roomB == null) return null;
 		if (roomA == roomB) return roomA;
 		// Including this simple check because it is the most likely situation:
 		if (roomA.getParent() == roomB.getParent()) return roomA.getParent();
-		List<Room> ancestryA = new ArrayList<>();
+		List<Node> ancestryA = new ArrayList<>();
 		while (roomA != null) {
 			ancestryA.add(roomA);
 			roomA = roomA.getParent();
 		}
-		List<Room> ancestryB = new ArrayList<>();
+		List<Node> ancestryB = new ArrayList<>();
 		while (roomB != null) {
 			ancestryB.add(roomB);
 			roomB = roomB.getParent();
 		}
-		ListIterator<Room> iterA = ancestryA.listIterator(ancestryA.size());
-		ListIterator<Room> iterB = ancestryB.listIterator(ancestryB.size());
-		Room parent = null;
+		ListIterator<Node> iterA = ancestryA.listIterator(ancestryA.size());
+		ListIterator<Node> iterB = ancestryB.listIterator(ancestryB.size());
+		Node parent = null;
 		while (iterA.hasPrevious() && iterB.hasPrevious()) {
-			Room curParent = iterA.previous();
+			Node curParent = iterA.previous();
 			if (curParent == iterB.previous()) {
 				parent = curParent;
 			} else {
@@ -138,8 +139,8 @@ public class RoomUtil {
 	}
 	
 	private static class RoomPair {
-		final Room from, to;
-		public RoomPair(Room from, Room to) {
+		final Node from, to;
+		public RoomPair(Node from, Node to) {
 			this.from = from;
 			this.to = to;
 		}
@@ -169,11 +170,11 @@ public class RoomUtil {
 	 * <b>Only call this method none of the rooms' ancestors' position and
 	 * orientation will be modified in future!</b> (Because caching)
 	 */
-	public static Vec3 translateToParent(Room room, Vec3 local) {
+	public static Vec3 translateToParent(Node room, Vec3 local) {
 		return Vec3.from(matrixTranslateToParent(room).multiplyLocal(Vec4.from(local)));
 		
 	}
-	private static Matrix4 matrixTranslateToParent(Room room) {
+	private static Matrix4 matrixTranslateToParent(Node room) {
 		RoomPair pairKey = new RoomPair(room, room.getParent());
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached == null) {
@@ -189,10 +190,10 @@ public class RoomUtil {
 	 * <b>Only call this method none of the rooms' ancestors' position and
 	 * orientation will be modified in future!</b> (Because caching)
 	 */
-	public static Vec3 translateToLocal(Room room, Vec3 external) {
+	public static Vec3 translateToLocal(Node room, Vec3 external) {
 		return Vec3.from(matrixTranslateToLocal(room).multiplyLocal(Vec4.from(external)));
 	}
-	private static Matrix4 matrixTranslateToLocal(Room room) {
+	private static Matrix4 matrixTranslateToLocal(Node room) {
 		RoomPair pairKey = new RoomPair(room.getParent(), room);
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached == null) {
@@ -209,27 +210,27 @@ public class RoomUtil {
 	 * <b>Only call this method none of the rooms' ancestors' position and
 	 * orientation will be modified in future!</b> (Because caching)
 	 */
-	public static Vec3 translateToRoom(Room from, Vec3 local, Room to) {
+	public static Vec3 translateToRoom(Node from, Vec3 local, Node to) {
 		RoomPair pairKey = new RoomPair(from, to);
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached != null) {
 			return Vec3.from(cached.multiplyLocal(Vec4.from(local)));
 		}
-		List<Room> ancestryFrom = new ArrayList<>();
+		List<Node> ancestryFrom = new ArrayList<>();
 		while (from != null) {
 			ancestryFrom.add(from);
 			from = from.getParent();
 		}
-		List<Room> ancestryTo = new ArrayList<>();
+		List<Node> ancestryTo = new ArrayList<>();
 		while (to != null) {
 			ancestryTo.add(to);
 			to = to.getParent();
 		}
-		ListIterator<Room> iterFrom = ancestryFrom.listIterator(ancestryFrom.size());
-		ListIterator<Room> iterTo = ancestryTo.listIterator(ancestryTo.size());
-		Room parent = null;
+		ListIterator<Node> iterFrom = ancestryFrom.listIterator(ancestryFrom.size());
+		ListIterator<Node> iterTo = ancestryTo.listIterator(ancestryTo.size());
+		Node parent = null;
 		while (iterFrom.hasPrevious() && iterTo.hasPrevious()) {
-			Room curParent = iterFrom.previous();
+			Node curParent = iterFrom.previous();
 			if (curParent == iterTo.previous()) {
 				parent = curParent;
 			} else {
@@ -244,7 +245,7 @@ public class RoomUtil {
 			}
 		}
 		cached = Matrix4.identity();
-		for (Room room : ancestryFrom) {
+		for (Node room : ancestryFrom) {
 			if (room == parent) break;
 			cached = matrixTranslateToParent(room).multiply(cached);
 		}
