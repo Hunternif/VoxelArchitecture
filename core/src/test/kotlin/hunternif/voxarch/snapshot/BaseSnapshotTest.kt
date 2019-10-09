@@ -44,7 +44,9 @@ abstract class BaseSnapshotTest(
         if (!Files.exists(path.parent)) {
             Files.createDirectories(path.parent)
         }
-        ImageIO.write(getImage(slice), "png", Files.newOutputStream(path))
+        Files.newOutputStream(path).use {
+            ImageIO.write(getImage(slice), "png", it)
+        }
     }
 
     private fun getImage(slice: Slice):BufferedImage {

@@ -1,8 +1,11 @@
 package hunternif.voxarch.snapshot
 
 import org.apache.commons.io.FileUtils
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.JUnitCore
+import org.junit.runner.notification.Failure
+import org.junit.runner.notification.RunListener
 import org.reflections.Reflections
 import java.nio.file.Files
 import java.nio.file.Path
@@ -11,7 +14,13 @@ import javax.imageio.ImageIO
 
 class Snapshots {
     private val reflections = Reflections("hunternif.voxarch.snapshot")
-    private val junit = JUnitCore()
+    private val junit = JUnitCore().apply {
+        addListener(object : RunListener() {
+            override fun testFailure(failure: Failure) {
+                Assert.fail(failure.trace)
+            }
+        })
+    }
 
     @Test
     fun verifyAllSnapshots() {
@@ -33,6 +42,7 @@ class Snapshots {
         REFERENCES_DIR.onDirs { refDir ->
             refDir.onFiles { refFile ->
                 val testFile = SNAPSHOTS_DIR.resolve("${refDir.fileName}/${refFile.fileName}")
+                assert(Files.exists(testFile)) { "Missing snapshot $refFile" }
                 compareImages(refFile, testFile)
             }
         }
