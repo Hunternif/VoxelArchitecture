@@ -10,6 +10,7 @@ import org.junit.Rule
 import org.junit.rules.TestName
 import java.awt.image.BufferedImage
 import java.nio.file.Files
+import java.nio.file.Path
 import java.nio.file.Paths
 import javax.imageio.ImageIO
 
@@ -39,7 +40,7 @@ abstract class BaseSnapshotTest(
     }
 
     fun record(slice: Slice) {
-        val path = Paths.get("./out/snapshots/${javaClass.canonicalName}/${name.methodName}.png")
+        val path = SNAPSHOTS_DIR.resolve("${javaClass.canonicalName}/${name.methodName}.png")
         if (!Files.exists(path.parent)) {
             Files.createDirectories(path.parent)
         }
@@ -65,6 +66,8 @@ abstract class BaseSnapshotTest(
     }
 
     companion object {
+        val SNAPSHOTS_DIR: Path = Paths.get("./out/snapshots")
+
         const val BG_COLOR = 0xffffff
 
         const val ID_AIR = 0

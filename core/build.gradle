@@ -2,8 +2,10 @@ apply plugin: 'java-library'
 apply plugin: 'kotlin'
 
 dependencies {
-    testImplementation 'junit:junit:4.12'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
+    testImplementation 'junit:junit:4.12'
+    testImplementation 'org.reflections:reflections:0.9.11'
+    testImplementation 'commons-io:commons-io:2.6'
 }
 sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
