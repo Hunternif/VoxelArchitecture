@@ -28,6 +28,10 @@ public class Box {
 			 center.y, center.y + size.y,
 			 center.z - size.z/2, center.z + size.z/2);
 	}
+
+	public static Box fromCorners(Vec3 start, Vec3 end) {
+		return new Box(start.x, end.x, start.y, end.y, start.z, end.z);
+	}
 	
 	@Override
 	public String toString() {

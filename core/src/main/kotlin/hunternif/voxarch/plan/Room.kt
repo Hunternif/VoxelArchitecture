@@ -2,65 +2,55 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.util.Box
 import hunternif.voxarch.util.MathUtil
-import hunternif.voxarch.vector.Vec2
 import hunternif.voxarch.vector.Vec3
 
 /**
  * ```
  * Y
- *  +-------> X (East)
- *  | xz1--+
- *  | |    |
- *  | +--xz2
+ *  +------------> X (East)
+ *  | start ---+
+ *  | | origin |
+ *  | +----- end (roof level)
  *  V
  *  Z
  * ```
- * @param origin somewhere at floor level, will be copied
- * @param xz1 corner of the room relative to _its origin_, with lower XZ values, will be copied
- * @param xz2 corner of the room relative to _its origin_, with higher XZ values, will be copied
- * @param height
+ * @param origin anywhere, will be copied
+ * @param start corner of the room relative to _parent's origin_, with lower XZ values, will be copied
+ * @param end corner of the room relative to _parent's origin_, with higher XZ values, will be copied
  */
 open class Room(
     origin: Vec3,
-    xz1: Vec2,
-    xz2: Vec2,
-    var height: Double
+    start: Vec3,
+    end: Vec3
 ) : Node(origin) {
-    var xz1: Vec2 = xz1.clone()
-    var xz2: Vec2 = xz2.clone()
+    var start: Vec3 = start.clone()
+    var end: Vec3 = end.clone()
     open var hasCeiling = true
     open var hasFloor = true
 
     init {
-        require(xz2.x >= xz1.x) { "Room points must be in order of increasing X" }
-        require(xz2.y >= xz1.y) { "Room points must be in order of increasing Z" }
+        require(end.x >= start.x) { "Room corners must be in order of increasing X" }
+        require(end.y >= start.y) { "Room corners must be in order of increasing Y" }
+        require(end.z >= start.z) { "Room corners must be in order of increasing Z" }
     }
 
+    /** when modified, origin becomes the center of the floor */
     var width: Double
-        get() = xz2.x - xz1.x
-        set(value) { // set vs center. might want to change this
-            floorCenter.apply {
-                xz1.x = x - value/2
-                xz2.x = x + value/2
-            }
+        get() = end.x - start.x
+        set(value) {
+            start.x = origin.x - value/2
+            end.x = origin.x + value/2
         }
-    var length: Double
-        get() = xz2.y - xz1.y
-        set(value) { // set vs center. might want to change this
-            floorCenter.apply {
-                xz1.y = y - value/2
-                xz2.y = y + value/2
-            }
-        }
+    val height: Double get() = end.y - start.y
+    val length: Double get() = end.z - start.z
     /** Vector (width, height, length), doesn't take rotation into account.
      * Components of this vector are equal to the distance between the corners
      * of the room. It would take that number + 1 blocks to build each boundary
      * of the room in a world. */
     //TODO: make room size count the actual number of blocks
     val size get() = Vec3(width, height, length)
-    val floorCenter get() = origin.add(xz1.x, 0.0, xz1.y).addLocal(width/2, 0.0, length/2)
-    /** relative to the parent's origin*/
-    val boundingBox get() = Box(floorCenter, size)
+    /** relative to the parent's origin */
+    val boundingBox get() = Box.fromCorners(start, end)
 
     val rooms get() = children.filterIsInstance<Room>()
     val walls get() = children.filterIsInstance<Wall>()
@@ -77,13 +67,13 @@ open class Room(
         /*
 		 * (Wall indices)
 		 * +---------> X
-		 * | xz1 a
-		 * |  +- 1 -+
-		 * |  |     |
-		 * |  2     0 b
-		 * |  |     |
-		 * |  +- 3 -+
-		 * V        xz2
+		 * | start
+		 * |   +- 1 -+
+		 * |   |     |
+		 * |   2     0 b
+		 * |   |     |
+		 * |   +- 3 -+
+		 * V      a  end
 		 * Z
 		 */
         // Going counterclockwise:
@@ -122,7 +112,7 @@ open class Room(
     }
 
 
-    // legacy constructor
+    /** legacy constructor */
     constructor(
         parent: Node?,
         origin: Vec3,
@@ -130,14 +120,13 @@ open class Room(
         rotationY: Double
     ) : this(
         origin,
-        Vec2(-size.x/2, -size.z/2),
-        Vec2(size.x/2, size.z/2),
-        size.y
+        origin.add(-size.x/2, 0.0, -size.z/2),
+        origin.add(size.x/2, size.y, size.z/2)
     ) {
         this.parent = parent
         this.rotationY = rotationY
     }
 
-    // legacy constructor
+    /** Origin is set in the center of the floor */
     constructor(origin: Vec3, size: Vec3): this(null, origin, size, 0.0)
 }
