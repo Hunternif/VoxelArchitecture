@@ -14,4 +14,4 @@ import hunternif.voxarch.vector.Vec3
  * During planning it is effectively treated as a point.
  * @param origin will be copied
  */
-class Prop(origin: Vec3) : Node(origin)
+open class Prop(origin: Vec3) : Node(origin)

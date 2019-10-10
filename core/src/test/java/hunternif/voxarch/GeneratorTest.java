@@ -7,9 +7,11 @@ import hunternif.voxarch.gen.impl.SimpleFloorGenerator;
 import hunternif.voxarch.gen.impl.SimpleHorGateGenerator;
 import hunternif.voxarch.gen.impl.SimpleVerGateGenerator;
 import hunternif.voxarch.gen.impl.SimpleWallGenerator;
+import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
 
+import hunternif.voxarch.vector.Vec3;
 import org.junit.Before;
 
 /**
@@ -61,5 +63,13 @@ public class GeneratorTest {
 		gen.setDefaultHorGateGenerator(new SimpleHorGateGenerator());
 		gen.setDefaultVerGateGenerator(new SimpleVerGateGenerator());
 		gen.setDefaultMaterials(mat);
+	}
+
+	public static Room testRoom(Vec3 origin, Vec3 size) {
+		Room room = new Room(null, origin, size, 0);
+		room.setHasFloor(true);
+		room.setHasCeiling(true);
+		room.createFourWalls();
+		return room;
 	}
 }

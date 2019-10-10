@@ -18,7 +18,7 @@ import hunternif.voxarch.vector.Vec3
  * @param origin the lower-left point, will be copied
  * @param size X=width, Y=height
  */
-class Gate(
+open class Gate(
     origin: Vec3,
     var size: Vec2
 ) : Node(origin) {

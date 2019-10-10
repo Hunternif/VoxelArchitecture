@@ -112,10 +112,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void diffRoomHeight1b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1), new Vec3(2, 4, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(4, 0, 1), new Vec3(2, 6, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 4, 2));
+		Room room2 = testRoom(new Vec3(4, 0, 1), new Vec3(2, 6, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
@@ -156,10 +154,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void diffFloorHeight1b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1), new Vec3(2, 4, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(4, 2, 1), new Vec3(2, 4, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 4, 2));
+		Room room2 = testRoom(new Vec3(4, 2, 1), new Vec3(2, 4, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
@@ -200,10 +196,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void west1b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1), new Vec3(2, 3, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(4, 0, 1), new Vec3(2, 3, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
+		Room room2 = testRoom(new Vec3(4, 0, 1), new Vec3(2, 3, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
@@ -232,10 +226,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void west2b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1.5), new Vec3(2, 3, 3), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(4, 0, 1.5), new Vec3(2, 3, 3), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1.5), new Vec3(2, 3, 3));
+		Room room2 = testRoom(new Vec3(4, 0, 1.5), new Vec3(2, 3, 3));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
@@ -268,10 +260,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void east1b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1), new Vec3(2, 3, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(4, 0, 1), new Vec3(2, 3, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
+		Room room2 = testRoom(new Vec3(4, 0, 1), new Vec3(2, 3, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
@@ -300,10 +290,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void east2b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1.5), new Vec3(2, 3, 3), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(4, 0, 1.5), new Vec3(2, 3, 3), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1.5), new Vec3(2, 3, 3));
+		Room room2 = testRoom(new Vec3(4, 0, 1.5), new Vec3(2, 3, 3));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
@@ -336,10 +324,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void north1b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1), new Vec3(2, 3, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(1, 0, 4), new Vec3(2, 3, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
+		Room room2 = testRoom(new Vec3(1, 0, 4), new Vec3(2, 3, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
@@ -380,10 +366,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void north2b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1.5, 0, 1), new Vec3(3, 3, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(1.5, 0, 4), new Vec3(3, 3, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1.5, 0, 1), new Vec3(3, 3, 2));
+		Room room2 = testRoom(new Vec3(1.5, 0, 4), new Vec3(3, 3, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room2, room1));
@@ -424,10 +408,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void south1b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1, 0, 1), new Vec3(2, 3, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(1, 0, 4), new Vec3(2, 3, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
+		Room room2 = testRoom(new Vec3(1, 0, 4), new Vec3(2, 3, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));
@@ -468,10 +450,8 @@ public class WallAlignedHorGateTest extends GeneratorTest {
 	@Test
 	public void south2b() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(null, new Vec3(1.5, 0, 1), new Vec3(3, 3, 2), 0);
-		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(1.5, 0, 4), new Vec3(3, 3, 2), 0);
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1.5, 0, 1), new Vec3(3, 3, 2));
+		Room room2 = testRoom(new Vec3(1.5, 0, 4), new Vec3(3, 3, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(new WallAlignedHorGateFactory().create(room1, room2));

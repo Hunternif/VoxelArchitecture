@@ -34,6 +34,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
         ArchPlan().apply {
             base.addChild(
                 Room(Vec3(0, 0, 0), Vec3(9, 0, 9)).apply {
+                    hasFloor = true
                     hasCeiling = false
                     type = "ground"
                 }

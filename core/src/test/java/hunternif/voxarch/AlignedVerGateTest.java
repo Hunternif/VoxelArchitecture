@@ -75,10 +75,8 @@ public class AlignedVerGateTest extends GeneratorTest {
 	@Test
 	public void generator() {
 		ArchPlan plan = new ArchPlan();
-		Room room1 = new Room(new Vec3(1, 0, 1), new Vec3(2, 2, 2));
-		room1.createFourWalls();
-		Room room2 = new Room(new Vec3(1, 3, 1), new Vec3(2, 2, 2));
-		room2.createFourWalls();
+		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 2, 2));
+		Room room2 = testRoom(new Vec3(1, 3, 1), new Vec3(2, 2, 2));
 		plan.getBase().addChild(room1);
 		plan.getBase().addChild(room2);
 		plan.getBase().addChild(gateFactory.create(room1, room2));

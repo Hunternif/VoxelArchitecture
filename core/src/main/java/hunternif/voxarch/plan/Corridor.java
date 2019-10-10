@@ -137,8 +137,10 @@ public class Corridor extends Room {
 			room.addChild(new Wall(room, b2, c2, true));
 			room.addChild(new Wall(room, c2, d2, false));
 			// Update length (it's called "width" because it's along the X axis):
-			room.setWidth(Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
-					Math.max(Math.abs(c2.x), Math.abs(d2.x))) * 2);
+			double halfLength = Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
+					Math.max(Math.abs(c2.x), Math.abs(d2.x)));
+			room.getStart().x = -halfLength;
+			room.getEnd().x = halfLength;
 			// This way to calculate origin-vs-size is straight-forward, but
 			// it causes the room volume to extend past its walls in case of
 			// sharp turns.

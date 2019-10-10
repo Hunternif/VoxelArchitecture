@@ -18,7 +18,7 @@ import hunternif.voxarch.vector.Vec3
  * @param origin the lower-left point, will be copied
  * @param size X=width, Y=length (Z)
  */
-class Hatch(
+open class Hatch(
     origin: Vec3,
     var size: Vec2
 ) : Node(origin) {

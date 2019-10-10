@@ -25,6 +25,7 @@ class CastleSetup(private val env: Environment) {
                 Vec3(foundationSide - 1, 0, foundationSide - 1)
             ).apply {
                 type = FOUNDATION
+                hasFloor = true
                 hasCeiling = false
             }
         )
@@ -34,6 +35,8 @@ class CastleSetup(private val env: Environment) {
                 Vec3(wallSide - 1, wallHeight, wallSide - 1)
             ).apply {
                 type = TOWER_FLOOR
+                hasFloor = true
+                hasCeiling = true
                 createFourWalls()
             }
         )

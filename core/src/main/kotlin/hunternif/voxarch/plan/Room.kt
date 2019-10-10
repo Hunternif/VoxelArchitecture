@@ -25,8 +25,8 @@ open class Room(
 ) : Node(origin) {
     var start: Vec3 = start.clone()
     var end: Vec3 = end.clone()
-    open var hasCeiling = true
-    open var hasFloor = true
+    open var hasCeiling = false
+    open var hasFloor = false
 
     init {
         require(end.x >= start.x) { "Room corners must be in order of increasing X" }
@@ -34,13 +34,7 @@ open class Room(
         require(end.z >= start.z) { "Room corners must be in order of increasing Z" }
     }
 
-    /** when modified, origin becomes the center of the floor */
-    var width: Double
-        get() = end.x - start.x
-        set(value) {
-            start.x = origin.x - value/2
-            end.x = origin.x + value/2
-        }
+    val width: Double get() = end.x - start.x
     val height: Double get() = end.y - start.y
     val length: Double get() = end.z - start.z
     /** Vector (width, height, length), doesn't take rotation into account.

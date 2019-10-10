@@ -18,7 +18,7 @@ import kotlin.math.atan2
  * @param start lower XZ values, Y = floor level, will be copied.
  * @param end relative to _parent's origin_, higher XZ values, Y = wall height, will be copied.
  */
-class Wall(
+open class Wall(
     start: Vec3,
     end: Vec3,
     /** If true, the wall will not be generated, only used as boundary for calculations. */
