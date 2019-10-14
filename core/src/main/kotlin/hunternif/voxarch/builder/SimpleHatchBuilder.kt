@@ -2,7 +2,6 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Hatch
 import hunternif.voxarch.storage.IBlockStorage
-import kotlin.math.ceil
 import kotlin.math.max
 
 /**
@@ -18,8 +17,8 @@ class SimpleHatchBuilder(
     private val clearance: Int = 1
 ): Builder<Hatch>() {
     override fun build(node: Hatch, world: IBlockStorage, context: BuildContext) {
-        val width = max(minWidth, ceil(node.size.x).toInt())
-        val length = max(minLength, ceil(node.size.y).toInt())
+        val width = max(minWidth, node.size.x.toInt())
+        val length = max(minLength, node.size.y.toInt())
         // Offset of 1 from both boundaries because the width & length of the hatch
         // span all available space, including where the walls go.
         for (x in 1 until width) {

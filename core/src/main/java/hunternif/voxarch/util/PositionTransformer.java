@@ -19,10 +19,9 @@ public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
 	/** Angle of rotation. Need to remember it to rotate the blocks correctly. */
 	private double angle = 0;
-	private boolean closeGaps = false;
 	
 	/** Stack for transformations. */
-	private final Deque<StackData> stack = new ArrayDeque<StackData>();
+	private final Deque<StackData> stack = new ArrayDeque<>();
 	private static class StackData {
 		double angle;
 		Matrix4 matrix;
@@ -40,6 +39,10 @@ public class PositionTransformer implements IBlockStorage {
 
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
+		return getBlock((double)x, (double)y, (double)z);
+	}
+
+	public BlockData getBlock(double x, double y, double z) {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
 		return storage.getBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
@@ -47,28 +50,25 @@ public class PositionTransformer implements IBlockStorage {
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
+		setBlock((double)x, (double)y, (double)z, block);
+	}
+
+	public void setBlock(double x, double y, double z, BlockData block) {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
 		block.rotate(angle);
 		storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z), block);
-		if (closeGaps) {
-			storage.setBlock((int)vec.x, (int)vec.y, (int)vec.z, block);
-			storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, (int)vec.z, block);
-			storage.setBlock((int)vec.x, (int)vec.y, MathUtil.roundDown(vec.z), block);
-		}
 	}
 
 	@Override
 	public void clearBlock(int x, int y, int z) {
+		clearBlock((double)x, (double)y, (double)z);
+	}
+
+	public void clearBlock(double x, double y, double z) {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
 		storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
-		// We want to leave no odd blocks in the volume when clearing:
-		//if (closeGaps) {
-			storage.clearBlock((int)vec.x, (int)vec.y, (int)vec.z);
-			storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, (int)vec.z);
-			storage.clearBlock((int)vec.x, (int)vec.y, MathUtil.roundDown(vec.z));
-		//}
 	}
 
 	/** Apply transformation of translation. */
@@ -91,9 +91,12 @@ public class PositionTransformer implements IBlockStorage {
 
 	/** If true, will apply every operation to the whole area that the rotated
 	 * block covers thereby eliminating gaps caused by aliasing when rotating
-	 * at a non-right angle. */
+	 * at a non-right angle.
+	 *
+	 * Deprecated: use steps of 0.5 blocks to fill gaps.
+	 */
+	@Deprecated
 	public PositionTransformer setCloseGaps(boolean closeGaps) {
-		this.closeGaps = closeGaps;
 		return this;
 	}
 	

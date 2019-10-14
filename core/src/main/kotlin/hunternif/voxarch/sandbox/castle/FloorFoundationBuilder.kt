@@ -5,7 +5,6 @@ import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.gen.Environment
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.storage.IBlockStorage
-import kotlin.math.ceil
 
 class FloorFoundationBuilder(
     private val material: String,
@@ -14,22 +13,23 @@ class FloorFoundationBuilder(
 
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
-        transformer.setCloseGaps(true)
-        val width = ceil(node.width).toInt()
-        val length = ceil(node.length).toInt()
         val block = context.materials.get(material)
-        for (x in 0..width) {
-            for (z in 0..length) {
-                var y = 0
+        // step by 0.5 in order to prevent gaps when the node is rotated
+        var x = 0.0
+        while (x <= node.width) {
+            var z = 0.0
+            while (z <= node.length) {
+                var y = 0.0
                 while(true) {
                     val b = transformer.getBlock(x, y, z)
                     if (b != null && b.id !in env.buildThroughBlocks) break
                     transformer.setBlock(x, y, z, block)
                     y--
                 }
+                z += 0.5
             }
+            x += 0.5
         }
-        transformer.setCloseGaps(false)
         super.build(node, world, context)
     }
 }

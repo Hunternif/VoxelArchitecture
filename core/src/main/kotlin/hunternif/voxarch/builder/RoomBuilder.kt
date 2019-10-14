@@ -21,12 +21,18 @@ open class RoomBuilder : Builder<Room>() {
     companion object {
         private fun Room.clearVolume(world: IBlockStorage) {
             //TODO use RoomConstrainedStorage with offset?
-            for (x in 0..width.toInt()) {
-                for (y in 0..height.toInt()) {
-                    for (z in 0..length.toInt()) {
-                        world.clearBlock(x, y, z)
+            val transformer = world.transformer()
+            // step by 0.5 in order to prevent gaps when the node is rotated
+            var x = 0.0
+            while (x <= width) {
+                var z = 0.0
+                while (z <= length) {
+                    for (y in 0..height.toInt()) {
+                        transformer.clearBlock(x, y.toDouble(), z)
                     }
+                    z += 0.5
                 }
+                x += 0.5
             }
         }
     }

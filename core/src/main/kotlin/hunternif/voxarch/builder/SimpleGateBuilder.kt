@@ -1,9 +1,7 @@
 package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Gate
-import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
-import kotlin.math.ceil
 import kotlin.math.max
 
 /**
@@ -19,8 +17,8 @@ class SimpleGateBuilder(
     private val clearance: Int = 1
 ): Builder<Gate>() {
     override fun build(node: Gate, world: IBlockStorage, context: BuildContext) {
-        val width = max(minWidth, ceil(node.size.x).toInt())
-        val height = max(minHeight, ceil(node.size.y).toInt())
+        val width = max(minWidth, node.size.x.toInt())
+        val height = max(minHeight, node.size.y.toInt())
         // Offset of 1 from both boundaries because the width of the gate spans
         // all available space, including where the walls, floor and ceiling go.
         for (x in 1 until width) {
