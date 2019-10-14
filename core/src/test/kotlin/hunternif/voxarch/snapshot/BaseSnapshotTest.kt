@@ -1,8 +1,6 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.*
-import hunternif.voxarch.gen.Generator
-import hunternif.voxarch.gen.Materials
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.floor
 import hunternif.voxarch.storage.BlockData
@@ -33,16 +31,12 @@ abstract class BaseSnapshotTest(
     val name = TestName()
 
     lateinit var out: MultiDimIntArrayBlockStorage
-    lateinit var gen: Generator
     lateinit var buildContext: BuildContext
     lateinit var builder: Builder<Node>
 
     @Before
     fun setup() {
         out = MultiDimIntArrayBlockStorage(width, height, length)
-        gen = Generator(out).apply {
-            setDefaultMaterials(DEFAULT_MATERIALS)
-        }
         buildContext = BuildContext()
         builder = Builder()
         setupDefaultMaterials()
@@ -119,15 +113,6 @@ abstract class BaseSnapshotTest(
         const val ID_FLOOR = 1
         const val ID_WALL = 2
         const val ID_ROOF = 3
-
-        val DEFAULT_MATERIALS = object : Materials {
-            override fun floorBlocks() = arrayOf(BlockData(ID_FLOOR))
-            override fun ceilingBlocks() = arrayOf(BlockData(ID_ROOF))
-            override fun wallBlocks() = arrayOf(BlockData(ID_WALL))
-            override fun gateBlocks() = null
-            override fun stairsBlocks(slope: Double) = null
-            override fun oneBlockProp(name: String) = null
-        }
 
         val DEFAULT_COLORMAP = mapOf(
             ID_AIR to BG_COLOR,
