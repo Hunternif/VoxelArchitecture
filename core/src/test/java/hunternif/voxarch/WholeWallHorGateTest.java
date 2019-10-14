@@ -24,7 +24,7 @@ public class WholeWallHorGateTest {
 		base.addChild(b);
 		Gate gate = gateFactory.create(a, b);
 		assertEquals(base, gate.getParent());
-		assertEquals(new Vec3(1, 2, -1), gate.getOrigin());
+		assertEquals(new Vec3(1, 2, -1), gate.getCenter());
 		assertEquals(new Vec2(2, 3), gate.getSize());
 		assertEquals(-90, gate.getRotationY(), 0.0001);
 	}
@@ -37,7 +37,7 @@ public class WholeWallHorGateTest {
 		b.createFourWalls();
 		Gate gate = gateFactory.create(a, b);
 		assertEquals(null, gate.getParent());
-		assertEquals(new Vec3(1, 2, -1), gate.getOrigin());
+		assertEquals(new Vec3(1, 2, -1), gate.getCenter());
 		assertEquals(new Vec2(2, 3), gate.getSize());
 		assertEquals(-90, gate.getRotationY(), 0.0001);
 	}
@@ -49,7 +49,7 @@ public class WholeWallHorGateTest {
 		Room b = new Room(null, new Vec3(-2.5, 2, -1), new Vec3(3, 3, 2), 0);
 		b.createFourWalls();
 		Gate gate = gateFactory.create(a, b);
-		assertEquals(new Vec3(-1, 2, -1), gate.getOrigin());
+		assertEquals(new Vec3(-1, 2, -1), gate.getCenter());
 		assertEquals(new Vec2(2, 3), gate.getSize());
 		assertEquals(90, gate.getRotationY(), 0.0001);
 	}

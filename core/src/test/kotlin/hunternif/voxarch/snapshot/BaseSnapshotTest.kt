@@ -1,13 +1,11 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.builder.*
+import hunternif.voxarch.builder.BaseBuilderTest
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.floor
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IFixedBlockStorage
-import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage
 import hunternif.voxarch.vector.Vec3
-import org.junit.Before
 import org.junit.Rule
 import org.junit.rules.TestName
 import java.awt.image.BufferedImage
@@ -26,24 +24,9 @@ abstract class BaseSnapshotTest(
     private val height: Int,
     private val length: Int,
     private val blockColorMap: Map<Int, Int> = DEFAULT_COLORMAP
-) {
+) : BaseBuilderTest(width, height, length) {
     @get:Rule
     val name = TestName()
-
-    lateinit var out: MultiDimIntArrayBlockStorage
-    lateinit var buildContext: BuildContext
-    lateinit var builder: Builder<Node>
-
-    @Before
-    fun setup() {
-        out = MultiDimIntArrayBlockStorage(width, height, length)
-        buildContext = BuildContext()
-        builder = Builder()
-        setupDefaultMaterials()
-        setupDefaultBuilders()
-    }
-
-    fun build(node: Node) = builder.build(node, out, buildContext)
 
     fun record(slice: Slice) {
         val path = SNAPSHOTS_DIR.resolve("${javaClass.canonicalName}/${name.methodName}.png")
@@ -73,28 +56,6 @@ abstract class BaseSnapshotTest(
         fun getBlock(x: Int, y: Int): BlockData?
     }
 
-    private fun setupDefaultMaterials() {
-        buildContext.materials.apply {
-            set(MaterialConfig.FLOOR) { BlockData(ID_FLOOR) }
-            set(MaterialConfig.WALL) { BlockData(ID_WALL) }
-            set(MaterialConfig.ROOF) { BlockData(ID_ROOF) }
-        }
-    }
-
-    private fun setupDefaultBuilders() {
-        buildContext.builders.apply {
-            set(
-                TYPE_FLOOR to SimpleFloorBuilder(MaterialConfig.FLOOR),
-                TYPE_ROOF to SimpleFloorBuilder(MaterialConfig.ROOF),
-                null to SimpleFloorBuilder(MaterialConfig.FLOOR)
-            )
-            setDefault(SimpleWallBuilder(MaterialConfig.WALL))
-            setDefault(SimpleGateBuilder())
-            setDefault(SimpleHatchBuilder())
-            setDefault<Node>(Builder())
-        }
-    }
-
     fun Node.ground() {
         floor(Vec3.ZERO, Vec3(width - 1, 0, length - 1)).apply {
             type = TYPE_FLOOR
@@ -105,14 +66,6 @@ abstract class BaseSnapshotTest(
         val SNAPSHOTS_DIR: Path = Paths.get("./out/snapshots")
 
         const val BG_COLOR = 0xffffff
-
-        const val TYPE_FLOOR = "floor"
-        const val TYPE_ROOF = "roof"
-
-        const val ID_AIR = 0
-        const val ID_FLOOR = 1
-        const val ID_WALL = 2
-        const val ID_ROOF = 3
 
         val DEFAULT_COLORMAP = mapOf(
             ID_AIR to BG_COLOR,
