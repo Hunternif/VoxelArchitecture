@@ -16,24 +16,24 @@ class CastleSetup2(private val env: Environment) {
     }
 
     /**
-     * Widths and heights are given in actual number of blocks.
-     * I.e. if you query `floor.width`, you will get (this number - 1).
+     * Widths and heights are given as distance between blocks.
+     * I.e. width 2 will result in 3 blocks.
      */
     fun squareTower(
-        foundationHeight: Int = 3,
-        foundationSide: Int = 7,
-        wallSide: Int = 5,
+        foundationHeight: Int = 2,
+        foundationSide: Int = 6,
+        wallSide: Int = 4,
         wallHeight: Int = 6
     ) = Structure().apply {
         centeredFloor(
             Vec3(0, foundationHeight, 0),
-            Vec3(foundationSide - 1, 0, foundationSide - 1)
+            Vec3(foundationSide, 0, foundationSide)
         ) {
             type = FOUNDATION
         }
         centeredRoom(
             Vec3(0, foundationHeight, 0),
-            Vec3(wallSide - 1, wallHeight, wallSide - 1)
+            Vec3(wallSide, wallHeight, wallSide)
         ) {
             floor()
             ceiling()

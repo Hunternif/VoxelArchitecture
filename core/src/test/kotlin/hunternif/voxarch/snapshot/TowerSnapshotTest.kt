@@ -14,7 +14,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
         castleSetup.setup(buildContext)
         val structure = Structure().apply {
             ground()
-            addChild(castleSetup.squareTower(), Vec3(5, 0, 5))
+            addChild(castleSetup.squareTower(), Vec3(5, 1, 5))
         }
         build(structure)
         record(out.sliceZ(3))
@@ -25,7 +25,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
         castleSetup.setup(buildContext)
         val structure = Structure().apply {
             ground()
-            addChild(castleSetup.squareTower(), Vec3(5, 0, 5))
+            addChild(castleSetup.squareTower(), Vec3(5, 1, 5))
         }
         build(structure)
         record(out.sliceZ(4))
