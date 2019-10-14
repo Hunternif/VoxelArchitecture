@@ -25,8 +25,6 @@ open class Room(
 ) : Node(origin) {
     var start: Vec3 = start.clone()
     var end: Vec3 = end.clone()
-    open var hasCeiling = false
-    open var hasFloor = false
 
     init {
         require(end.x >= start.x) { "Room corners must be in order of increasing X" }
@@ -44,9 +42,10 @@ open class Room(
     //TODO: make room size count the actual number of blocks
     val size get() = Vec3(width, height, length)
     /** relative to the parent's origin */
-    val boundingBox get() = Box.fromCorners(start, end)
+    val boundingBox: Box get() = Box.fromCorners(start, end)
 
     val rooms get() = children.filterIsInstance<Room>()
+    val floors get() = children.filterIsInstance<Floor>()
     val walls get() = children.filterIsInstance<Wall>()
     val props get() = children.filterIsInstance<Prop>()
     val gates get() = children.filterIsInstance<Gate>()
@@ -123,4 +122,18 @@ open class Room(
 
     /** Origin is set in the center of the floor */
     constructor(origin: Vec3, size: Vec3): this(null, origin, size, 0.0)
+
+    // LEGACY
+    @Deprecated("use child node Floor")
+    open var hasCeiling = false
+        set(value) {
+            field = value
+            if (value) ceiling()
+        }
+    @Deprecated("use child node Floor")
+    open var hasFloor = false
+        set(value) {
+            field = value
+            if (value) floor()
+        }
 }

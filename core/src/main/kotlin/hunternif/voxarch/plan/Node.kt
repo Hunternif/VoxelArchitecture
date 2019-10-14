@@ -8,7 +8,7 @@ import hunternif.voxarch.vector.Vec3
 abstract class Node(
     origin: Vec3
 ) {
-    var origin: Vec3 = origin.clone()
+    open var origin: Vec3 = origin.clone()
     var parent: Node? = null
     /** Rotation around Y axis in degrees */
     open var rotationY = 0.0
