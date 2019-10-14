@@ -3,7 +3,7 @@ package hunternif.voxarch.builder
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
 
-class SimpleWallBuilder(private val material: String): Builder<Wall>() {
+open class SimpleWallBuilder(private val material: String): Builder<Wall>() {
     override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
         if (node.transparent) return
         val length = node.length.toInt()

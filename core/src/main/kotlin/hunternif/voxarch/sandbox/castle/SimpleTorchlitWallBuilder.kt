@@ -1,0 +1,31 @@
+package hunternif.voxarch.sandbox.castle
+
+import hunternif.voxarch.builder.BuildContext
+import hunternif.voxarch.builder.MaterialConfig
+import hunternif.voxarch.builder.SimpleWallBuilder
+import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.BlockOrientation
+
+class SimpleTorchlitWallBuilder(
+    wallMaterial: String,
+    private val torchWallSpacing: Int = 4,
+    private val torchHeight: Int = 3
+) : SimpleWallBuilder(wallMaterial) {
+
+    override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
+        super.build(node, world, context)
+        val block = context.materials.get(MaterialConfig.TORCH)
+        block.orientaion = BlockOrientation.NORTH
+
+        //TODO: some torches fall down. Consider spawning them as props.
+
+        // Starting with a half-step from the edge, and not including the edge
+        // itself because it will probably be covered by another wall:
+        var x = torchWallSpacing / 2
+        while (x < node.length) {
+            world.setBlock(x, torchHeight, -1, block)
+            x += torchWallSpacing
+        }
+    }
+}

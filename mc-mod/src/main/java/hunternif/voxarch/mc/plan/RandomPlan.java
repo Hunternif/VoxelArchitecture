@@ -1,8 +1,8 @@
 package hunternif.voxarch.mc.plan;
 
-import hunternif.voxarch.plan.ArchPlan;
 import hunternif.voxarch.plan.Corridor;
 import hunternif.voxarch.plan.Room;
+import hunternif.voxarch.plan.Structure;
 import hunternif.voxarch.plan.gate.IGateFactory;
 import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
 import hunternif.voxarch.vector.Vec2;
@@ -13,8 +13,8 @@ import java.util.Random;
 public class RandomPlan {
 	private static IGateFactory gateFactory = new WallAlignedHorGateFactory();
 	
-	public static ArchPlan create() {
-		ArchPlan plan = new ArchPlan();
+	public static Structure create() {
+		Structure plan = new Structure();
 		//randomGrid(plan);
 		//randomBox(plan);
 		randomCorridor(plan);
@@ -22,25 +22,25 @@ public class RandomPlan {
 	}
 	
 	/** Simple roundish room **/
-	public static void oneRoundishRoom(ArchPlan plan) {
+	public static void oneRoundishRoom(Structure plan) {
 		Room room = new Room(null, Vec3.ZERO, new Vec3(16, 5, 16), 0);
 		room.setHasCeiling(false);
 		room.createRoundWalls(8);
-		plan.getBase().addChild(room);
+		plan.addChild(room);
 	}
 	
 	/** A random-sized box with 4 walls. */
-	public static void randomBox(ArchPlan plan) {
+	public static void randomBox(Structure plan) {
 		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
 		Room room = new Room(null, Vec3.ZERO, new Vec3(size, 3, size), (new Random()).nextInt(2)*45);
 		room.setHasCeiling(false);
 		room.createFourWalls();
-		plan.getBase().addChild(room);
+		plan.addChild(room);
 	}
 	
 	/** A flat grid of random-sized interconnected rooms **/
-	public static void randomGrid(ArchPlan plan) {
+	public static void randomGrid(Structure plan) {
 		Vec3 roomSize = new Vec3(6, 5, 6);
 		int roomSpacing = 1;
 		Vec3 sizeJitter = new Vec3(1, 1, 1);
@@ -60,7 +60,7 @@ public class RandomPlan {
                 room.setHasCeiling(false);
 				room.createFourWalls();
 				roomArray[i][j] = room;
-				plan.getBase().addChild(room);
+				plan.addChild(room);
 				curCoords.x += roomSize.x + roomSpacing;
 			}
 			curCoords.x = corner.x;
@@ -70,16 +70,16 @@ public class RandomPlan {
 		for (int i = 0; i < N; i++) {
 			for (int j = 0; j < N; j++) {
 				if (i < N-1 && (Math.random() > 0.5)) {
-					plan.getBase().addChild(gateFactory.create(roomArray[i][j], roomArray[i+1][j]));
+					plan.addChild(gateFactory.create(roomArray[i][j], roomArray[i+1][j]));
 				}
 				if (j < N-1 && (Math.random() > 0.5)) {
-					plan.getBase().addChild(gateFactory.create(roomArray[i][j], roomArray[i][j+1]));
+					plan.addChild(gateFactory.create(roomArray[i][j], roomArray[i][j+1]));
 				}
 			}
 		}
 	}
 	
-	public static void randomCorridor(ArchPlan plan) {
+	public static void randomCorridor(Structure plan) {
 		Corridor cor = new Corridor(null, Vec3.ZERO, new Vec2(4, 3));
 		cor.setHasCeiling(false);
 		Random rand = new Random();
@@ -89,6 +89,6 @@ public class RandomPlan {
 			cor.appendPoint(lastPoint);
 		}
 		cor.build();
-		plan.getBase().addChild(cor);
+		plan.addChild(cor);
 	}
 }
