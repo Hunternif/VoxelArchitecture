@@ -70,10 +70,10 @@ open class Room(
 		 * Z
 		 */
         // Going counterclockwise:
-        addChild(Wall(Vec3(a, 0.0, b), Vec3(a, height, -b)))
-        addChild(Wall(Vec3(a, 0.0, -b), Vec3(-a, height, -b)))
-        addChild(Wall(Vec3(-a, 0.0, -b), Vec3(-a, height, b)))
-        addChild(Wall(Vec3(-a, 0.0, b), Vec3(a, height, b)))
+        wall(Vec3(a, 0.0, b), Vec3(a, height, -b))
+        wall(Vec3(a, 0.0, -b), Vec3(-a, height, -b))
+        wall(Vec3(-a, 0.0, -b), Vec3(-a, height, b))
+        wall(Vec3(-a, 0.0, b), Vec3(a, height, b))
     }
 
     /** Adds to children [count] walls arranged in an oval inscribed within room edges.
@@ -88,7 +88,7 @@ open class Room(
         // Going counterclockwise:
         var angle = -angleStep / 2
         while (angle < 360 - angleStep / 2) {
-            addChild(Wall(
+            wall(
                 Vec3(
                     a * MathUtil.cosDeg(angle),
                     0.0,
@@ -99,7 +99,7 @@ open class Room(
                     height,
                     -b * MathUtil.sinDeg(angle + angleStep)
                 )
-            ))
+            )
             angle += angleStep
         }
     }
