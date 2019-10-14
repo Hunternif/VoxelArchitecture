@@ -15,6 +15,6 @@ See [Wiki](https://github.com/Hunternif/VoxelArchitecture/wiki) for more.
 
 Projects
 --------
-* VoxArchCore will contain all the generation algorithms for buildings and interfaces for voxel storage, decoupled from concrete implementations such as Minecraft.
-* VoxArchMCAPI will act as a reference implementation of voxel storage; the actual interface implementations will act as adaptors to a Minecraft world.
-* VoxArchMCMod will be a complete Minecraft Forge Mod for experimenting with building structures.
+* `core` will contain all the generation algorithms for buildings and interfaces for voxel storage, decoupled from concrete implementations such as Minecraft.
+* `mc-api` will act as a reference implementation of voxel storage; the actual interface implementations will act as adaptors to a Minecraft world.
+* `mc-mod` will be a complete Minecraft Forge Mod for experimenting with building structures.
