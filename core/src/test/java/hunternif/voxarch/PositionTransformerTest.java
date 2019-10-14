@@ -71,24 +71,6 @@ public class PositionTransformerTest {
 	}
 	
 	@Test
-	public void testRotate45CloseGaps() {
-		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 2, block);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
-		PositionTransformer trans = new PositionTransformer(out).translate(0.5, 0, 1).rotateY(45).setCloseGaps(true);
-		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
-		assertEquals(null, out.getBlock(0, 0, 0));
-		assertEquals(block, out.getBlock(1, 0, 1)); // No hole
-		assertEquals(null, out.getBlock(2, 0, 2));
-		assertEquals(null, out.getBlock(2, 0, 0));
-		assertEquals(null, out.getBlock(0, 0, 2));
-		assertEquals(block, out.getBlock(1, 0, 0));
-		assertEquals(block, out.getBlock(0, 0, 1));
-		assertEquals(block, out.getBlock(1, 0, 2));
-		assertEquals(block, out.getBlock(2, 0, 1));
-	}
-	
-	@Test
 	public void testRotateALittle() {
 		BlockData block = new BlockData(1);
 		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
@@ -100,26 +82,6 @@ public class PositionTransformerTest {
 				assertEquals(block, out.getBlock(x, 0, z));
 			}
 		}
-	}
-	
-	@Test
-	public void testRotate45Large() {
-		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 50, 1, 50, block);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(71, 1, 71);
-		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 50d/Math.sqrt(2)).rotateY(45).setCloseGaps(true);
-		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
-		//System.out.println(((MultiDimIntArrayBlockStorage)out).printLayer(0));
-		for (int x = 0; x < 71; x++) {
-			for (int z = 0; z < 71; z++) {
-				if (x + z >= 35 && x < 35 + z && z < 35 + x && x + z < 105) {
-					// No holes in the middle:
-					assertEquals(block, out.getBlock(x, 0, z));
-				}
-			}
-		}
-		assertEquals(block, out.getBlock(35, 0, 0));
-		assertEquals(block, out.getBlock(0, 0, 35));
 	}
 	
 	@Test

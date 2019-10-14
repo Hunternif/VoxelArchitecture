@@ -3,8 +3,11 @@ package hunternif.voxarch.snapshot
 import hunternif.voxarch.builder.BaseBuilderTest
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.floor
-import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IFixedBlockStorage
+import hunternif.voxarch.util.Slice
+import hunternif.voxarch.util.XSlice
+import hunternif.voxarch.util.YSlice
+import hunternif.voxarch.util.ZSlice
 import hunternif.voxarch.vector.Vec3
 import org.junit.Rule
 import org.junit.rules.TestName
@@ -41,19 +44,13 @@ abstract class BaseSnapshotTest(
     private fun getImage(slice: Slice):BufferedImage {
         val image = BufferedImage(slice.width, slice.height, BufferedImage.TYPE_INT_RGB)
         for (x in 0 until slice.width) {
-            for (y in 0 until height) {
+            for (y in 0 until slice.height) {
                 val block = slice.getBlock(x, y)
                 val color = blockColorMap.getOrDefault(block?.id ?: ID_AIR, BG_COLOR)
-                image.setRGB(x, height - 1 - y, color)
+                image.setRGB(x, slice.height - 1 - y, color)
             }
         }
         return image
-    }
-
-    interface Slice {
-        val width: Int
-        val height: Int
-        fun getBlock(x: Int, y: Int): BlockData?
     }
 
     fun Node.ground() {
@@ -74,35 +71,8 @@ abstract class BaseSnapshotTest(
             ID_ROOF to 0xB13B42
         )
 
-
-        fun IFixedBlockStorage.sliceX(offset: Int): Slice {
-            val storage = this
-            return object : Slice {
-                override val width = storage.length
-                override val height = storage.height
-                override fun getBlock(x: Int, y: Int) =
-                    storage.getBlock(offset, y, x)
-            }
-        }
-
-        fun IFixedBlockStorage.sliceY(offset: Int): Slice {
-            val storage = this
-            return object : Slice {
-                override val width = storage.width
-                override val height = storage.length
-                override fun getBlock(x: Int, y: Int) =
-                    storage.getBlock(x, offset, y)
-            }
-        }
-
-        fun IFixedBlockStorage.sliceZ(offset: Int): Slice {
-            val storage = this
-            return object : Slice {
-                override val width = storage.width
-                override val height = storage.height
-                override fun getBlock(x: Int, y: Int) =
-                    storage.getBlock(x, y, offset)
-            }
-        }
+        fun IFixedBlockStorage.sliceX(offset: Int): Slice = XSlice(this, offset)
+        fun IFixedBlockStorage.sliceY(offset: Int): Slice = YSlice(this, offset)
+        fun IFixedBlockStorage.sliceZ(offset: Int): Slice = ZSlice(this, offset)
     }
 }

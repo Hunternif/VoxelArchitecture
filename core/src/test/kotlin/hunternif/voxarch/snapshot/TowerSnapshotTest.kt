@@ -48,7 +48,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
     }
 
     @Test
-    fun rotated() {
+    fun `rotated diagonal view`() {
         castleSetup.setup(buildContext)
         val structure = Structure().apply {
             ground()
@@ -59,6 +59,20 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
         }
         build(structure)
         record(out.sliceX(5))
+    }
+
+    @Test
+    fun `rotated top view`() {
+        castleSetup.setup(buildContext)
+        val structure = Structure().apply {
+            ground()
+            addChild(
+                castleSetup.squareTower(wallSide = 6).apply { rotationY = 45.0 },
+                Vec3(5, 1, 5)
+            )
+        }
+        build(structure)
+        record(out.sliceY(9))
     }
 
     companion object {
