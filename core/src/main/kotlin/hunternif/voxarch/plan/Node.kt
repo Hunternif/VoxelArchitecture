@@ -38,6 +38,11 @@ abstract class Node(
         _children.add(child)
     }
 
+    fun addChild(child: Node, position: Vec3) {
+        addChild(child)
+        child.origin = position
+    }
+
     fun removeChild(child: Node) {
         if (_children.remove(child)) child.parent = null
     }
