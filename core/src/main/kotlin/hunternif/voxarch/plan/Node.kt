@@ -2,7 +2,6 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.vector.Vec3
 
-
 /**
  * @param origin will be copied
  */
@@ -15,12 +14,19 @@ abstract class Node(
     open var rotationY = 0.0
 
     private val _children = mutableListOf<Node>()
-    val children: List<Node>
-        get() = _children.toList()
+    val children: List<Node> get() = _children.toList()
 
-    /** The purpose of this node. It can be used by a generator
-     * to assign a particular architectural style or materials to it. */
+    /**
+     * Describes the purpose of this node. It can be used to find
+     * a Builder with a particular architectural style or materials to it.
+     *
+     * When set, will recursively apply to all children that don't have a type.
+     */
     var type: String? = null
+        set(value) {
+            children.filter { (it.type ?: field) == field }.forEach { it.type = value }
+            field = value
+        }
 
     /** For use with incremental building. True means that this node will not be re-built.  */
     var isBuilt = false
@@ -28,6 +34,7 @@ abstract class Node(
     fun addChild(child: Node) {
         child.parent?.removeChild(child)
         child.parent = this
+        child.type = child.type ?: type
         _children.add(child)
     }
 
