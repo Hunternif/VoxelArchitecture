@@ -19,7 +19,7 @@ class BuilderConfig {
      * If you set a builder for `null` type, it will be used by default,
      * when the Node has no type, or when the builder for this type is not set.
      */
-    internal inline fun <reified T: Node> set(vararg typeBuilder: Pair<String?, Builder<T>>) {
+    inline fun <reified T: Node> set(vararg typeBuilder: Pair<String?, Builder<T>>) {
         buildersForClass(T::class.java).apply {
             typeBuilder.forEach { pair ->
                 set(pair.first, pair.second)
@@ -27,7 +27,7 @@ class BuilderConfig {
         }
     }
 
-    internal inline fun <reified T: Node> setDefault(builder: Builder<T>) {
+    inline fun <reified T: Node> setDefault(builder: Builder<T>) {
         buildersForClass(T::class.java).set(null, builder)
     }
 

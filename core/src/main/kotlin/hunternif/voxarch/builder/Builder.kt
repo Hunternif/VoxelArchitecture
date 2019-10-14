@@ -13,7 +13,7 @@ import hunternif.voxarch.util.PositionTransformer
  */
 open class Builder<in T : Node> {
     /**
-     * [world] has been rotated with respect to [Node.rotationY]
+     * Assuming that the [world] has been rotated with respect to [Node.rotationY]
      * and positioned so that (0, 0, 0) is at the Node's origin.
      *
      * When overriding, don't forget to call [buildChildren]

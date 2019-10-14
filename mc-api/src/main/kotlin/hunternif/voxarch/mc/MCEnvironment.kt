@@ -1,4 +1,4 @@
-package hunternif.voxarch.mc.config
+package hunternif.voxarch.mc
 
 import hunternif.voxarch.gen.Environment
 import net.minecraft.block.*
