@@ -28,7 +28,7 @@ class BuilderConfig {
     }
 
     inline fun <reified T: Node> setDefault(builder: Builder<T>) {
-        buildersForClass(T::class.java).set(null, builder)
+        buildersForClass(T::class.java).setDefault(builder)
     }
 
     /**
@@ -51,6 +51,7 @@ class BuilderConfig {
 
     class NodeClassBuilders<T: Node> {
         private val map: MutableMap<String?, Builder<T>> = mutableMapOf()
+        fun setDefault(builder: Builder<T>) { map[null] = builder }
         fun set(type: String?, builder: Builder<T>) { map[type] = builder }
         /** If builder is not found for type, will try default type. */
         fun get(type: String?): Builder<T>? = map[type] ?: map[null]

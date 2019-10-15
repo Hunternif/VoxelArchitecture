@@ -10,6 +10,7 @@ val defaultContext = BuildContext().apply {
         set(MaterialConfig.FLOOR) { ExtBlockDataMC(Blocks.cobblestone) }
         set(MaterialConfig.WALL) { ExtBlockDataMC(Blocks.planks) }
         set(MaterialConfig.ROOF) { ExtBlockDataMC(Blocks.log) }
+        set(MaterialConfig.TORCH) { ExtBlockDataMC(Blocks.torch) }
     }
     builders.apply {
         setDefault(SimpleFloorBuilder(MaterialConfig.FLOOR))

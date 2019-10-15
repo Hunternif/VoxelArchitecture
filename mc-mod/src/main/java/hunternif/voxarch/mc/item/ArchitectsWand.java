@@ -2,23 +2,35 @@ package hunternif.voxarch.mc.item;
 
 import hunternif.voxarch.builder.BuildContext;
 import hunternif.voxarch.builder.MainBuilder;
+import hunternif.voxarch.builder.MaterialConfig;
+import hunternif.voxarch.mc.IncrementalBuilder;
 import hunternif.voxarch.mc.MCEnvironment;
+import hunternif.voxarch.mc.MCExtensionsKt;
 import hunternif.voxarch.mc.MCWorld;
+import hunternif.voxarch.mc.plan.RandomPlan;
 import hunternif.voxarch.plan.Structure;
+import hunternif.voxarch.plan.Wall;
+import hunternif.voxarch.sandbox.FlatDungeon;
 import hunternif.voxarch.sandbox.castle.CastleSetup;
+import hunternif.voxarch.sandbox.castle.SimpleTorchlitWallBuilder;
+import hunternif.voxarch.vector.Vec3;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.BlockPos;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import java.util.List;
 import java.util.Random;
 
+import static hunternif.voxarch.mc.MCExtensionsKt.*;
 import static hunternif.voxarch.mc.config.BuilderSetupKt.getDefaultContext;
 
 public class ArchitectsWand extends Item {
+
+	private BuildContext context = getDefaultContext();
 
 	public ArchitectsWand() {
 		setMaxStackSize(1);
@@ -29,20 +41,20 @@ public class ArchitectsWand extends Item {
 	public void addInformation(ItemStack stack, EntityPlayer player, List list, boolean showAdvanced) {
 		list.add("Summon a building");
 	}
-	
+
 	@Override
 	public boolean onItemUse(ItemStack stack, EntityPlayer player,
 			World world, BlockPos pos, EnumFacing side,
 			float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
-//			Generator gen = new Generator(new MCWorld(world));
-//			gen.setDefaultMaterials(new SimpleMaterials());
-//			gen.setDefaultWallGenerator(new SimpleTorchlitWallGen());
-//			gen.setDefaultWallGenerator(new CrenellationGen(2, 3, 1, 1));
-//			gen.setPropGeneratorForName("torch", new OneBlockPropGen("torch"));
+
+			context.getBuilders().buildersForClass(Wall.class).setDefault(
+					new SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3));
 
 			// random corridor
-//			gen.generate(RandomPlan.create(), pos.getX(), pos.getY(), pos.getZ());
+			Structure plan = RandomPlan.create();
+			plan.setOrigin(toVec3(pos));
+			new MainBuilder().build(plan, new MCWorld(world), context);
 
 			// simple room
 //			ArchPlan plan = new ArchPlan();
@@ -53,21 +65,22 @@ public class ArchitectsWand extends Item {
 //			gen.generate(plan, pos.getX(), pos.getY(), pos.getZ());
 
 			// tower
-			BuildContext context = getDefaultContext();
-			CastleSetup castleSetup = new CastleSetup(MCEnvironment.environment);
-			castleSetup.setup(context);
-			Structure tower = castleSetup.squareTower(2, 6, 4, 6);
-			tower.getOrigin().set(pos.getX(), pos.getY(), pos.getZ());
-			tower.setRotationY(new Random().nextInt(2) * 45);
-			new MainBuilder().build(tower, new MCWorld(world), context);
-
-			player.setPositionAndUpdate(pos.getX(), pos.getY() + 10, pos.getZ());
+//			CastleSetup castleSetup = new CastleSetup(MCEnvironment.environment);
+//			castleSetup.setup(context);
+//			Structure tower = castleSetup.squareTower(2, 6, 4, 6);
+//			tower.setOrigin(toVec3(pos));
+//			tower.setRotationY(new Random().nextInt(2) * 45);
+//			new MainBuilder().build(tower, new MCWorld(world), context);
+//			player.setPositionAndUpdate(pos.getX(), pos.getY() + 10, pos.getZ());
 
 			// random flat dungeon
-//			ArchPlan plan = new ArchPlan();
-//			FlatDungeon dungeon = new FlatDungeon(Vec3.ZERO, 0);
-//			plan.getBase().addChild(dungeon);
-//			FMLCommonHandler.instance().bus().register(new IncrementalBuilder(dungeon, gen, plan, pos.getX(), pos.getY(), pos.getZ()));
+//			Structure plan = new Structure();
+//			FlatDungeon dungeon = new FlatDungeon(toVec3(pos), 0);
+//			context.getBuilders().buildersForClass(Wall.class).setDefault(
+//					new SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3));
+//			plan.addChild(dungeon);
+//			FMLCommonHandler.instance().bus().register(
+//					new IncrementalBuilder(dungeon, plan, new MainBuilder(), context));
 		}
 		return true;
 	}

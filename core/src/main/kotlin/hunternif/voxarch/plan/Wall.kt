@@ -15,7 +15,7 @@ import kotlin.math.atan2
  *  Z
  * ```
  * [rotationY] is read-only and is determined by `origin` and `end`.
- * @param start lower XZ values, Y = floor level, will be copied.
+ * @param start relative to _parent's origin_, lower XZ values, Y = floor level, will be copied.
  * @param end relative to _parent's origin_, higher XZ values, Y = wall height, will be copied.
  */
 open class Wall(

@@ -4,7 +4,6 @@ import hunternif.voxarch.plan.IIncrementalBuilding;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.plan.gate.IGateFactory;
-import hunternif.voxarch.plan.gate.WallAlignedHorGateFactory;
 import hunternif.voxarch.plan.gate.WholeWallHorGateFactory;
 import hunternif.voxarch.util.IWeightedOption;
 import hunternif.voxarch.util.MathUtil;
@@ -205,7 +204,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		/** Corridor can open into a room or junction at this point. */
 		final Vec3 endPoint;
 		/**
-		 * @param start		point in the middle of the start of the corridor
+		 * @param origin		point in the middle of the start of the corridor
 		 * @param length
 		 * @param rotationY
 		 * @param totalLength

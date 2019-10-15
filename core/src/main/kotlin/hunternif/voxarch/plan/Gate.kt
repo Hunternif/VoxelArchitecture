@@ -40,8 +40,8 @@ open class Gate(
      */
     constructor(
         parent: Node?,
-        room1: Room,
-        room2: Room,
+        room1: Node,
+        room2: Node,
         origin: Vec3,
         size: Vec2,
         rotationY: Double

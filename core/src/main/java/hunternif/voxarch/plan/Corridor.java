@@ -4,9 +4,7 @@ import hunternif.voxarch.util.RoomUtil;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.ListIterator;
+import java.util.*;
 
 /**
  * A corridor consisting of multiple straight segments that follow a path
@@ -15,7 +13,7 @@ import java.util.ListIterator;
  * at the start and the end.
  * @author Hunternif
  */
-public class Corridor extends Room {
+public class Corridor extends Structure {
 
 	protected final LinkedList<Vec3> path = new LinkedList<>();
 	
@@ -28,19 +26,28 @@ public class Corridor extends Room {
 	private final Vec2 sectionSize;
 	
 	private boolean childrenHaveCeiling = true, childrenHaveFloor = true;
-	
+
 	/**
 	 * @param origin is the starting point of the corridor. It is assumed to be
 	 * 				lying directly on a wall of the starting room (if any).
 	 * @param sectionSize is (width, height) of the corridor's cross-section.
 	 */
-	public Corridor(Room parent, Vec3 origin, Vec2 sectionSize) {
-		super(parent, origin, Vec3.ZERO, 0);
+	public Corridor(Node parent, Vec3 origin, Vec2 sectionSize) {
+		this.setParent(parent);
+		this.setOrigin(origin);
 		this.sectionSize = sectionSize;
 		// Should we calculate total room size?
 		appendPoint(Vec3.ZERO); // The origin as first point
-		super.setHasFloor(false);
-		super.setHasCeiling(false);
+	}
+
+	public List<Room> getRooms() {
+		List<Room> rooms = new ArrayList<>();
+		for (Node node : getChildren()) {
+			if (Room.class.isAssignableFrom(node.getClass())) {
+				rooms.add((Room) node);
+			}
+		}
+		return rooms;
 	}
 	
 	/**
@@ -57,7 +64,7 @@ public class Corridor extends Room {
 	}
 	
 	/**
-	 * See {@link #attachStartTo(Room)}.
+	 * See {@link #attachStartTo(Room, boolean)}.
 	 * The <em>last</em> point of the path is assumed to already be lying a wall
 	 * of this room.
 	 */
@@ -247,8 +254,7 @@ public class Corridor extends Room {
 			b = c;
 		}
 	}
-	
-	@Override
+
 	/** Will modify the inner rooms' ceiling flag. */
 	public void setHasCeiling(boolean hasCeiling) {
 		childrenHaveCeiling = hasCeiling;
@@ -256,12 +262,10 @@ public class Corridor extends Room {
 			child.setHasCeiling(hasCeiling);
 		}
 	}
-	@Override
 	public boolean getHasCeiling() {
 		return childrenHaveCeiling;
 	}
-	
-	@Override
+
 	/** Will modify the inner rooms' floor flag. */
 	public void setHasFloor(boolean hasFloor) {
 		childrenHaveFloor = hasFloor;
@@ -269,7 +273,6 @@ public class Corridor extends Room {
 			child.setHasFloor(hasFloor);
 		}
 	}
-	@Override
 	public boolean getHasFloor() {
 		return childrenHaveFloor;
 	}
