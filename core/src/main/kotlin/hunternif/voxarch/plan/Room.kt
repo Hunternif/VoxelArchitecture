@@ -10,39 +10,39 @@ import hunternif.voxarch.vector.Vec3
  *  +------------> X (East)
  *  | start ---+
  *  | | origin |
- *  | +----- end (roof level)
+ *  | +--------+
  *  V
  *  Z
  * ```
- * @param origin anywhere, will be copied
- * @param start corner of the room relative to _parent's origin_, with lower XZ values, will be copied
- * @param end corner of the room relative to _parent's origin_, with higher XZ values, will be copied
+ * @param origin located anywhere, will be copied
+ * @param size will be copied
+ * @param start internal offset of the low-XZ corner of the room.
+ *              By default it's set so that origin is at the center of the floor.
  */
 open class Room(
     origin: Vec3,
-    start: Vec3,
-    end: Vec3
+    size: Vec3,
+    start: Vec3 = Vec3(-size.x/2, 0.0, -size.z/2)
 ) : Node(origin) {
     var start: Vec3 = start.clone()
-    var end: Vec3 = end.clone()
 
-    init {
-        require(end.x >= start.x) { "Room corners must be in order of increasing X" }
-        require(end.y >= start.y) { "Room corners must be in order of increasing Y" }
-        require(end.z >= start.z) { "Room corners must be in order of increasing Z" }
-    }
-
-    val width: Double get() = end.x - start.x
-    val height: Double get() = end.y - start.y
-    val length: Double get() = end.z - start.z
+    var width: Double
+        get() = size.x
+        set(value) { size.x = value }
+    var height: Double
+        get() = size.y
+        set(value) { size.y = value }
+    var length: Double
+        get() = size.z
+        set(value) { size.z = value }
     /** Vector (width, height, length), doesn't take rotation into account.
-     * Components of this vector are equal to the distance between the corners
+     * Components of this vector are equal to distances between corner blocks
      * of the room. It would take that number + 1 blocks to build each boundary
      * of the room in a world. */
-    //TODO: make room size count the actual number of blocks
-    val size get() = Vec3(width, height, length)
-    /** relative to the parent's origin */
-    val boundingBox: Box get() = Box.fromCorners(start, end)
+    var size: Vec3 = size.clone()
+
+    /** Relative to the parent's origin. Doesn't take into account rotation! */
+    val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
 
     val rooms get() = children.filterIsInstance<Room>()
     val floors get() = children.filterIsInstance<Floor>()
@@ -63,10 +63,10 @@ open class Room(
 		 * | start
 		 * |   +- 1 -+
 		 * |   |     |
-		 * |   2     0 b
+		 * |   2  o  0 b
 		 * |   |     |
 		 * |   +- 3 -+
-		 * V      a  end
+		 * V      a
 		 * Z
 		 */
         // Going counterclockwise:
@@ -111,17 +111,13 @@ open class Room(
         origin: Vec3,
         size: Vec3,
         rotationY: Double
-    ) : this(
-        origin,
-        origin.add(-size.x/2, 0.0, -size.z/2),
-        origin.add(size.x/2, size.y, size.z/2)
-    ) {
+    ) : this(origin, size) {
         this.parent = parent
         this.rotationY = rotationY
     }
 
     /** Origin is set in the center of the floor */
-    constructor(origin: Vec3, size: Vec3): this(null, origin, size, 0.0)
+    constructor(origin: Vec3, size: Vec3): this(origin, size, Vec3(-size.x/2, 0.0, -size.z/2))
 
     // LEGACY
     @Deprecated("use child node Floor")
