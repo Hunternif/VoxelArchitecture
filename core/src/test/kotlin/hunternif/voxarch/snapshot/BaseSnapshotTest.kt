@@ -23,9 +23,9 @@ import javax.imageio.ImageIO
  * @param blockColorMap maps block id to RGB pixel color
  */
 abstract class BaseSnapshotTest(
-    private val width: Int,
-    private val height: Int,
-    private val length: Int,
+    width: Int,
+    height: Int,
+    length: Int,
     private val blockColorMap: Map<Int, Int> = DEFAULT_COLORMAP
 ) : BaseBuilderTest(width, height, length) {
     @get:Rule

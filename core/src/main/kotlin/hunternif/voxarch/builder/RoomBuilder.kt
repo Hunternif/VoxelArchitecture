@@ -20,21 +20,24 @@ open class RoomBuilder : Builder<Room>() {
     }
 
     companion object {
+        private const val margin = 0.5
+
         private fun Room.clearVolume(world: IBlockStorage) {
             val transformer = world.transformer()
             transformer.pushTransformation()
-            transformer.translate(start.subtract(origin))
+            transformer.translate(start)
 
             val constraint = RoomConstrainedStorage(transformer, this)
             // Set offset so that blocks are not accidentally removed outside the room
             // due to aliasing from rotation:
             constraint.setOffset(0.1)
 
-            // step by 0.5 in order to prevent gaps when the node is rotated
-            var x = 0.0
-            while (x <= width) {
-                var z = 0.0
-                while (z <= length) {
+            // step by 0.5 in order to prevent gaps when the node is rotated.
+            // extra margin on the edges is to prevent building outside walls.
+            var x = margin
+            while (x <= width - margin) {
+                var z = margin
+                while (z <= length - margin) {
                     for (y in 0..height.toInt()) {
                         if (constraint.isWithinRoom(x, y.toDouble(), z))
                             transformer.clearBlock(x, y.toDouble(), z)
@@ -43,7 +46,6 @@ open class RoomBuilder : Builder<Room>() {
                 }
                 x += 0.5
             }
-
             transformer.popTransformation()
         }
     }

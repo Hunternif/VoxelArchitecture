@@ -11,7 +11,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun tower_layer1() {
-        castleSetup.setup(buildContext)
+        castleSetup.setup(context)
         val structure = Structure().apply {
             ground()
             addChild(castleSetup.squareTower(), Vec3(5, 1, 5))
@@ -22,7 +22,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun tower_layer2() {
-        castleSetup.setup(buildContext)
+        castleSetup.setup(context)
         val structure = Structure().apply {
             ground()
             addChild(castleSetup.squareTower(), Vec3(5, 1, 5))
@@ -33,7 +33,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun `odd size`() {
-        castleSetup.setup(buildContext)
+        castleSetup.setup(context)
         val structure = Structure().apply {
             ground()
             addChild(
@@ -49,7 +49,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun `rotated diagonal view`() {
-        castleSetup.setup(buildContext)
+        castleSetup.setup(context)
         val structure = Structure().apply {
             ground()
             addChild(
@@ -63,7 +63,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun `rotated top view`() {
-        castleSetup.setup(buildContext)
+        castleSetup.setup(context)
         val structure = Structure().apply {
             ground()
             addChild(

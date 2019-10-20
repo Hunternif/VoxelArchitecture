@@ -146,6 +146,7 @@ public class Corridor extends Structure {
 			// Update length (it's called "width" because it's along the X axis):
 			room.setWidth(Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
 					Math.max(Math.abs(c2.x), Math.abs(d2.x))) * 2);
+			room.getStart().addLocal(-room.getWidth()/2, 0, 0);
 			// This way to calculate origin-vs-size is straight-forward, but
 			// it causes the room volume to extend past its walls in case of
 			// sharp turns.

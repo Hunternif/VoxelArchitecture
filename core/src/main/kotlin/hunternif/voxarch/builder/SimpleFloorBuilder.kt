@@ -3,16 +3,19 @@ package hunternif.voxarch.builder
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.storage.IBlockStorage
 
-class SimpleFloorBuilder(private val material: String): Builder<Floor>() {
+class SimpleFloorBuilder(
+    private val material: String,
+    private val margin: Double = 0.25
+): Builder<Floor>() {
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
         val block = context.materials.get(material)
         // step by 0.5 in order to prevent gaps when the node is rotated.
-        // extra margin 0.1 on the edges is to prevent building outside walls.
-        var x = 0.0
-        while (x <= node.width) {
-            var z = 0.0
-            while (z <= node.length) {
+        // extra margin on the edges is to prevent building outside walls.
+        var x = margin
+        while (x <= node.width - margin) {
+            var z = margin
+            while (z <= node.length - margin) {
                 transformer.setBlock(x, 0.0, z, block)
                 z += 0.5
             }

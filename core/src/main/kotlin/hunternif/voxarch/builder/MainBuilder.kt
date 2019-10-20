@@ -5,6 +5,7 @@ import hunternif.voxarch.storage.IBlockStorage
 
 /**
  * Use this builder to start building in an open world.
+ * Don't register it in [BuildContext]
  */
 class MainBuilder : Builder<Structure>() {
     /**

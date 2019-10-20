@@ -113,7 +113,9 @@ public class PositionTransformer implements IBlockStorage {
 	 * glPopMatrix(). */
 	public void popTransformation() {
 		StackData data = stack.poll();
-		angle = data.angle;
-		matrix = data.matrix;
+		if (data != null) {
+			angle = data.angle;
+			matrix = data.matrix;
+		}
 	}
 }

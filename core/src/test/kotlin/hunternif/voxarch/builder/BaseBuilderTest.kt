@@ -10,27 +10,27 @@ import hunternif.voxarch.vector.Vec3
 import org.junit.Before
 
 abstract class BaseBuilderTest(
-    private val width: Int,
-    private val height: Int,
-    private val length: Int
+    internal val width: Int,
+    internal val height: Int,
+    internal val length: Int
 ) {
     lateinit var out: MultiDimIntArrayBlockStorage
-    lateinit var buildContext: BuildContext
+    lateinit var context: BuildContext
     lateinit var builder: Builder<Node>
 
     @Before
-    fun setup() {
+    open fun setup() {
         out = MultiDimIntArrayBlockStorage(width, height, length)
-        buildContext = BuildContext()
+        context = BuildContext()
         builder = Builder()
         setupDefaultMaterials()
         setupDefaultBuilders()
     }
 
-    fun build(node: Node) = builder.build(node, out, buildContext)
+    fun build(node: Node) = builder.build(node, out, context)
 
     private fun setupDefaultMaterials() {
-        buildContext.materials.apply {
+        context.materials.apply {
             set(MaterialConfig.FLOOR) { BlockData(ID_FLOOR) }
             set(MaterialConfig.WALL) { BlockData(ID_WALL) }
             set(MaterialConfig.ROOF) { BlockData(ID_ROOF) }
@@ -38,7 +38,7 @@ abstract class BaseBuilderTest(
     }
 
     private fun setupDefaultBuilders() {
-        buildContext.builders.apply {
+        context.builders.apply {
             set(
                 TYPE_FLOOR to SimpleFloorBuilder(MaterialConfig.FLOOR),
                 TYPE_ROOF to SimpleFloorBuilder(MaterialConfig.ROOF),

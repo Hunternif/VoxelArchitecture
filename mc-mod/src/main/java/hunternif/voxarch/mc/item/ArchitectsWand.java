@@ -8,6 +8,7 @@ import hunternif.voxarch.mc.MCEnvironment;
 import hunternif.voxarch.mc.MCExtensionsKt;
 import hunternif.voxarch.mc.MCWorld;
 import hunternif.voxarch.mc.plan.RandomPlan;
+import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Structure;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.sandbox.FlatDungeon;
@@ -48,8 +49,8 @@ public class ArchitectsWand extends Item {
 			float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
 
-			context.getBuilders().buildersForClass(Wall.class).setDefault(
-					new SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3));
+//			context.getBuilders().buildersForClass(Wall.class).setDefault(
+//					new SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3));
 
 			// random corridor
 			Structure plan = RandomPlan.create();
@@ -57,12 +58,13 @@ public class ArchitectsWand extends Item {
 			new MainBuilder().build(plan, new MCWorld(world), context);
 
 			// simple room
-//			ArchPlan plan = new ArchPlan();
-//			Room room = new Room(Vec3.ZERO, new Vec3(10, 3, 9));
+//			Structure plan = new Structure();
+//			plan.setOrigin(toVec3(pos));
+//			Room room = new Room(Vec3.ZERO, new Vec3(8, 3, 8));
+//			room.setRotationY(45);
 //			room.createFourWalls();
-//			room.setHasCeiling(false);
-//			plan.getBase().addChild(room);
-//			gen.generate(plan, pos.getX(), pos.getY(), pos.getZ());
+//			plan.addChild(room);
+//			new MainBuilder().build(plan, new MCWorld(world), context);
 
 			// tower
 //			CastleSetup castleSetup = new CastleSetup(MCEnvironment.environment);

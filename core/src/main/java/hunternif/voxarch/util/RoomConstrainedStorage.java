@@ -18,6 +18,7 @@ import java.util.Map;
  * room, defined by its walls.
  * Combine it with {@link PositionTransformer} to account for its position
  * and rotation.</p>
+ * <p><b>Coordinates are set from the corner of the room, not origin.</b></B></p>
  * @author Hunternif
  */
 public class RoomConstrainedStorage implements IFixedBlockStorage {
@@ -29,10 +30,10 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	
 	/** Map of 3D vectors pointing from each wall's P1 to is P2. Reused for
 	 * finding cross product. */
-	private final Map<Wall, Vec3> wallVectorMap = new HashMap<Wall, Vec3>();
+	private final Map<Wall, Vec3> wallVectorMap = new HashMap<>();
 	
 	/** Map of 3D vector normals for each wall. Reused for calculating offset. */
-	private final Map<Wall, Vec3> wallNormalMap = new HashMap<Wall, Vec3>();
+	private final Map<Wall, Vec3> wallNormalMap = new HashMap<>();
 
 	public RoomConstrainedStorage(IBlockStorage storage, Room room) {
 		this.storage = storage;
