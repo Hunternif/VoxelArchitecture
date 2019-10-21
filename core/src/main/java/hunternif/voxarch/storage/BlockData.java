@@ -70,6 +70,6 @@ public class BlockData {
 	
 	@Override
 	public String toString() {
-		return "id: " + id + " metadata: " + metadata;
+		return "id: " + id + " " + orient.name() + " meta: " + metadata;
 	}
 }

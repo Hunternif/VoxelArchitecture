@@ -14,6 +14,7 @@ class SimpleTorchlitWallBuilder(
 ) : SimpleWallBuilder(wallMaterial) {
 
     override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
+        if (node.transparent) return
         super.build(node, world, context)
         val block = context.materials.get(MaterialConfig.TORCH)
         block.orientaion = BlockOrientation.NORTH

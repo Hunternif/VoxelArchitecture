@@ -41,7 +41,7 @@ public class Matrix4 {
 	}
 	
 	/**
-	 * Creates a transformation matrix of rotation around the Y axis.
+	 * Creates a transformation matrix of counterclockwise rotation around the Y axis.
 	 * @param angle angle in degrees.
 	 */
 	public static Matrix4 rotationY(double angle) {

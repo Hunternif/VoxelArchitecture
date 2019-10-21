@@ -38,10 +38,10 @@ class RoomBuilderTest {
         floor = spy(Floor(Vec3.ZERO, Vec3.ZERO))
         wall = spy(Wall(Vec3.ZERO, Vec3.ZERO))
         childRoom = spy(Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO))
-        prop = spy(Prop(Vec3.ZERO))
+        prop = spy(Prop(Vec3.ZERO, "prop1"))
         gate = spy(Gate(Vec3.ZERO, Vec2.ZERO))
         hatch = spy(Hatch(Vec3.ZERO, Vec2.ZERO))
-        node = spy(Prop(Vec3.ZERO))
+        node = spy(Prop(Vec3.ZERO, "prop2"))
     }
 
     @Test

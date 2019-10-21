@@ -84,8 +84,7 @@ inline fun Node.prop(
     type: String,
     crossinline action: Prop.() -> Unit = {}
 ) {
-    Prop(start).let {
-        it.type = type
+    Prop(start, type).let {
         this.addChild(it)
         action.invoke(it)
     }

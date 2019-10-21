@@ -50,4 +50,17 @@ public class OrientationTest {
 		assertEquals(BlockOrientation.EAST, BlockOrientation.EAST.rotate(-45));
 	}
 
+	@Test
+	public void testRotateBig() {
+		assertEquals(BlockOrientation.NORTH, BlockOrientation.EAST.rotate(90));
+		assertEquals(BlockOrientation.WEST, BlockOrientation.EAST.rotate(180));
+		assertEquals(BlockOrientation.SOUTH, BlockOrientation.EAST.rotate(270));
+		assertEquals(BlockOrientation.EAST, BlockOrientation.EAST.rotate(360));
+		assertEquals(BlockOrientation.NORTH, BlockOrientation.EAST.rotate(450));
+		assertEquals(BlockOrientation.SOUTH, BlockOrientation.EAST.rotate(-90));
+		assertEquals(BlockOrientation.WEST, BlockOrientation.EAST.rotate(-180));
+		assertEquals(BlockOrientation.NORTH, BlockOrientation.EAST.rotate(-270));
+		assertEquals(BlockOrientation.EAST, BlockOrientation.EAST.rotate(-360));
+		assertEquals(BlockOrientation.SOUTH, BlockOrientation.EAST.rotate(-450));
+	}
 }

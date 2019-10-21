@@ -17,7 +17,7 @@ import java.util.Deque;
  */
 public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
-	/** Angle of rotation. Need to remember it to rotate the blocks correctly. */
+	/** Angle of counterclockwise rotation. Need to remember it to rotate the blocks correctly. */
 	private double angle = 0;
 	
 	/** Stack for transformations. */
@@ -56,8 +56,10 @@ public class PositionTransformer implements IBlockStorage {
 	public void setBlock(double x, double y, double z, BlockData block) {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
+		BlockOrientation cachedOrientation = block.getOrientaion();
 		block.rotate(angle);
 		storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z), block);
+		block.setOrientaion(cachedOrientation);
 	}
 
 	@Override
@@ -82,7 +84,7 @@ public class PositionTransformer implements IBlockStorage {
 		return translate(vec.x, vec.y, vec.z);
 	}
 
-	/** Apply transformation of rotation around the Y axis. */
+	/** Apply transformation of rotation counterclockwise around the Y axis. */
 	public PositionTransformer rotateY(double angle) {
 		this.angle += angle;
 		matrix = matrix.multiplyLocal(Matrix4.rotationY(angle));

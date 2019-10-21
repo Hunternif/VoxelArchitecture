@@ -56,7 +56,7 @@ class BuilderConfigTest {
 
     @Test
     fun `get null because no builder set`() {
-        val node = Prop(Vec3.ZERO)
+        val node = Prop(Vec3.ZERO, "type")
         assertNull(config.get(node))
     }
 }

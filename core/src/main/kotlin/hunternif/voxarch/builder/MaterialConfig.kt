@@ -23,5 +23,6 @@ class MaterialConfig {
         const val FLOOR = "floor"
         const val ROOF = "roof"
         const val TORCH = "torch"
+        const val POST = "post"
     }
 }

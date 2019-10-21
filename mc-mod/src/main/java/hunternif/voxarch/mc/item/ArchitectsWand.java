@@ -7,7 +7,9 @@ import hunternif.voxarch.mc.IncrementalBuilder;
 import hunternif.voxarch.mc.MCEnvironment;
 import hunternif.voxarch.mc.MCExtensionsKt;
 import hunternif.voxarch.mc.MCWorld;
+import hunternif.voxarch.mc.config.BuilderSetupKt;
 import hunternif.voxarch.mc.plan.RandomPlan;
+import hunternif.voxarch.plan.Prop;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Structure;
 import hunternif.voxarch.plan.Wall;
@@ -48,9 +50,16 @@ public class ArchitectsWand extends Item {
 			World world, BlockPos pos, EnumFacing side,
 			float hitX, float hitY, float hitZ) {
 		if (!world.isRemote) {
+			System.out.println("270-yaw: " + (270-player.rotationYaw));
 
-//			context.getBuilders().buildersForClass(Wall.class).setDefault(
-//					new SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3));
+			context.getBuilders().buildersForClass(Wall.class).setDefault(
+					new SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3));
+
+			// torch stand for testing
+//			Structure plan = new Structure(toVec3(pos));
+//			plan.addChild(new Prop(Vec3.UNIT_Y, BuilderSetupKt.TORCH_STAND));
+//			plan.setRotationY(270-player.rotationYaw);
+//			new MainBuilder().build(plan, new MCWorld(world), context);
 
 			// random corridor
 			Structure plan = RandomPlan.create();
@@ -60,8 +69,8 @@ public class ArchitectsWand extends Item {
 			// simple room
 //			Structure plan = new Structure();
 //			plan.setOrigin(toVec3(pos));
-//			Room room = new Room(Vec3.ZERO, new Vec3(8, 3, 8));
-//			room.setRotationY(45);
+//			Room room = new Room(new Vec3(0, 0, 5), new Vec3(3, 3, 6));
+//			plan.setRotationY(-player.rotationYaw);
 //			room.createFourWalls();
 //			plan.addChild(room);
 //			new MainBuilder().build(plan, new MCWorld(world), context);

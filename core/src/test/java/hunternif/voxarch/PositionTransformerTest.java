@@ -1,10 +1,13 @@
 package hunternif.voxarch;
 
+import static hunternif.voxarch.util.BlockOrientation.*;
 import static org.junit.Assert.*;
+
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IFixedBlockStorage;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
 import hunternif.voxarch.storage.Structure;
+import hunternif.voxarch.util.BlockOrientation;
 import hunternif.voxarch.util.PositionTransformer;
 import hunternif.voxarch.util.StructureUtil;
 
@@ -144,5 +147,81 @@ public class PositionTransformerTest {
 		assertEquals(null, out.getBlock(2, 0, 3));
 		assertEquals(null, out.getBlock(1, 0, 1));
 		assertEquals(null, out.getBlock(1, 0, 2));
+	}
+
+	@Test
+	public void testRotateBlock() {
+		BlockData block = new BlockData(1);
+		block.setOrientaion(BlockOrientation.EAST);
+		CachedRotationStorage out = new CachedRotationStorage();
+		PositionTransformer trans = new PositionTransformer(out);
+		trans.rotateY(90);
+
+		trans.setBlock(0, 0, 0, block);
+		assertEquals(NORTH, out.orientation);
+
+		trans.rotateY(90);
+		trans.setBlock(0, 0, 0, block);
+		assertEquals(WEST, out.orientation);
+
+		trans.rotateY(90);
+		trans.setBlock(0, 0, 0, block);
+		assertEquals(SOUTH, out.orientation);
+
+		trans.rotateY(90);
+		trans.setBlock(0, 0, 0, block);
+		assertEquals(EAST, out.orientation);
+
+		trans.rotateY(90);
+		trans.setBlock(0, 0, 0, block);
+		assertEquals(NORTH, out.orientation);
+	}
+
+	@Test
+	public void testNestedRotateBlock() {
+		BlockData block = new BlockData(1);
+		block.setOrientaion(BlockOrientation.EAST);
+		CachedRotationStorage out = new CachedRotationStorage();
+		PositionTransformer trans1 = new PositionTransformer(out);
+		trans1.rotateY(90);
+		PositionTransformer trans2 = new PositionTransformer(trans1);
+		trans2.rotateY(90);
+
+		trans2.setBlock(0, 0, 0, block);
+		assertEquals(WEST, out.orientation);
+
+		trans2.rotateY(90);
+		trans2.setBlock(0, 0, 0, block);
+		assertEquals(SOUTH, out.orientation);
+
+		trans2.rotateY(90);
+		trans2.setBlock(0, 0, 0, block);
+		assertEquals(EAST, out.orientation);
+
+		trans2.rotateY(90);
+		trans2.setBlock(0, 0, 0, block);
+		assertEquals(NORTH, out.orientation);
+
+		trans2.rotateY(90);
+		trans2.setBlock(0, 0, 0, block);
+		assertEquals(WEST, out.orientation);
+	}
+
+	private static class CachedRotationStorage implements IFixedBlockStorage {
+		BlockOrientation orientation;
+		@Override
+		public void setBlock(int x, int y, int z, BlockData block) {
+			orientation = block.getOrientaion();
+		}
+		@Override
+		public int getWidth() { return 0; }
+		@Override
+		public int getHeight() { return 0; }
+		@Override
+		public int getLength() { return 0; }
+		@Override
+		public BlockData getBlock(int x, int y, int z) { return null; }
+		@Override
+		public void clearBlock(int x, int y, int z) { }
 	}
 }
