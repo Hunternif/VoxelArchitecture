@@ -107,7 +107,8 @@ public class Corridor extends Structure {
 		}
 		
 		buildEnvelopes();
-		
+
+		RoomUtil roomUtil = new RoomUtil();
 		Iterator<Vec3> pathIter = path.iterator();
 		Vec3 e = null;
 		Vec3 f = pathIter.next();
@@ -135,10 +136,10 @@ public class Corridor extends Structure {
 			Room room = new Room(this, origin, size, angle);
 			//TODO: insert stairs where the floor has a slope
 			// Insert the walls:
-			Vec2 a2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, a));
-			Vec2 b2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, b));
-			Vec2 c2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, c));
-			Vec2 d2 = Vec2.fromXZ(RoomUtil.translateToLocal(room, d));
+			Vec2 a2 = Vec2.fromXZ(roomUtil.translateToLocal(room, a));
+			Vec2 b2 = Vec2.fromXZ(roomUtil.translateToLocal(room, b));
+			Vec2 c2 = Vec2.fromXZ(roomUtil.translateToLocal(room, c));
+			Vec2 d2 = Vec2.fromXZ(roomUtil.translateToLocal(room, d));
 			room.addChild(new Wall(room, d2, a2, true));
 			room.addChild(new Wall(room, a2, b2, false));
 			room.addChild(new Wall(room, b2, c2, true));
@@ -169,13 +170,14 @@ public class Corridor extends Structure {
 	 * 			coordinates
 	 */
 	protected Vec3 findPointOnNormalToWall(Room room, Vec3 first, Vec3 second, boolean addGate) {
+		RoomUtil roomUtil = new RoomUtil();
 		// Translate the point into room coordinates to find the closest wall:
-		Vec3 firstInRoom = RoomUtil.translateToRoom(this, first, room.getParent());
-		Wall wall = RoomUtil.findClosestWall(room, Vec2.fromXZ(firstInRoom));
+		Vec3 firstInRoom = roomUtil.translateToRoom(this, first, room.getParent());
+		Wall wall = roomUtil.findClosestWall(room, Vec2.fromXZ(firstInRoom));
 		if (wall == null) return null;
 		// Translate coordinates back inside this corridor:
-		Vec3 p1 = RoomUtil.translateToRoom(room, Vec3.fromXZ(wall.getP1()), this);
-		Vec3 p2 = RoomUtil.translateToRoom(room, Vec3.fromXZ(wall.getP2()), this);
+		Vec3 p1 = roomUtil.translateToRoom(room, Vec3.fromXZ(wall.getP1()), this);
+		Vec3 p2 = roomUtil.translateToRoom(room, Vec3.fromXZ(wall.getP2()), this);
 		// Vector parallel the wall, spanning corridor (gate) width:
 		Vec3 p = p2.subtract(p1).normalizeLocal().multiplyLocal(sectionSize.x);
 		// Normal to the wall:
@@ -196,9 +198,9 @@ public class Corridor extends Structure {
 		Vec3 newPoint = first.add(n.multiplyLocal(t));
 		
 		if (addGate) {
-			Vec3 gateOrigin = RoomUtil.translateToParent(this, first);
-			p1 = RoomUtil.translateToParent(this, p1);
-			p2 = RoomUtil.translateToParent(this, p2);
+			Vec3 gateOrigin = roomUtil.translateToParent(this, first);
+			p1 = roomUtil.translateToParent(this, p1);
+			p2 = roomUtil.translateToParent(this, p2);
 			double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 			// Not sure about which way the gate is oriented :/
 			Gate gate = new Gate(this.getParent(), room, this, gateOrigin, sectionSize, angle);

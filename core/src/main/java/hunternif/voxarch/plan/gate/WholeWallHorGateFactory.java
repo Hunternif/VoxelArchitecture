@@ -17,20 +17,21 @@ public class WholeWallHorGateFactory implements IGateFactory {
 
 	@Override
 	public Gate create(Room from, Room to) {
-		Wall wall = RoomUtil.findClosestWall(to, new Vec2(from.getOrigin().x, from.getOrigin().z));
+		RoomUtil roomUtil = new RoomUtil();
+		Wall wall = roomUtil.findClosestWall(to, new Vec2(from.getOrigin().x, from.getOrigin().z));
 		if (wall == null) return null;
-		Node parent = RoomUtil.findLowestCommonParent(from, to);
+		Node parent = roomUtil.findLowestCommonParent(from, to);
 		
 		// Find position of the wall:
 		Vec3 wallCenter = new Vec3((wall.getP1().x + wall.getP2().x)/2, 0, (wall.getP1().y + wall.getP2().y)/2);
-		Vec3 origin = RoomUtil.translateToParent(to, wallCenter);
+		Vec3 origin = roomUtil.translateToParent(to, wallCenter);
 		
 		Vec2 size = new Vec2(wall.getLength(), wall.getHeight());
 		
 		// Find angle
 		//TODO: make sure the direction of the gate is correct
-		Vec3 p1 = RoomUtil.translateToParent(to, new Vec3(wall.getP1().x, 0, wall.getP1().y));
-		Vec3 p2 = RoomUtil.translateToParent(to, new Vec3(wall.getP2().x, 0, wall.getP2().y));
+		Vec3 p1 = roomUtil.translateToParent(to, new Vec3(wall.getP1().x, 0, wall.getP1().y));
+		Vec3 p2 = roomUtil.translateToParent(to, new Vec3(wall.getP2().x, 0, wall.getP2().y));
 		double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 		
 		Gate gate = new Gate(parent, from, to, origin, size, angle);

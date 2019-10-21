@@ -38,9 +38,10 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		
 		Vec2 traced = null; // The point on the bounding box of the target room.
 		Vec2 target = null;
+		RoomUtil roomUtil = new RoomUtil();
 		for (int i = 0; i < 4; i++) {
 			target = targets[i];
-			traced = RoomUtil.rayTrace(to, room1Center, target);
+			traced = roomUtil.rayTrace(to, room1Center, target);
 			if (traced != null) break;
 		}
 		if (traced == null) return null;
@@ -51,10 +52,10 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		double angle = 0;
 		Vec2 size = new Vec2(0, 0);
 		// Align and resize the gate to the closest wall of the second room:
-		Wall wall = RoomUtil.findClosestWall(to, point);
+		Wall wall = roomUtil.findClosestWall(to, point);
 		if (wall == null) {
 			// The target room has no walls, align to the 1st room:
-			wall = RoomUtil.findClosestWall(from, point);
+			wall = roomUtil.findClosestWall(from, point);
 		}
 		if (wall != null) {
 			angle = wall.getRotationY() + wall.getParent().getRotationY();

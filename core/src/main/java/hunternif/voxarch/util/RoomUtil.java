@@ -30,7 +30,7 @@ public class RoomUtil {
 	 * @param room
 	 * @param point coordinates relative to the parent of the room.
 	 */
-	public static Wall findClosestWall(Room room, Vec2 point) {
+	public Wall findClosestWall(Room room, Vec2 point) {
 		// Check if the room has no walls:
 		if (room.getWalls().isEmpty()) return null;
 		Vec2 p = new Vec2(point.x - room.getOrigin().x,
@@ -79,7 +79,7 @@ public class RoomUtil {
 	 * @param start		starting point of the ray.
 	 * @param target	target of the ray, i.e. some point on the ray.
 	 */
-	public static Vec2 rayTrace(Room room, Vec2 start, Vec2 target) {
+	public Vec2 rayTrace(Room room, Vec2 start, Vec2 target) {
 		// Retrieve local coordinates of the corners of the room's bounding box:
 		// (Minus angle, because this is the reference frame XZY is left-handed)
 		Matrix2 rot = Matrix2.rotationMatrix(-room.getRotationY());
@@ -109,7 +109,7 @@ public class RoomUtil {
 	}
 	
 	/** WARNING: sub-optimal algorithm! */
-	public static Node findLowestCommonParent(Node roomA, Node roomB) {
+	public Node findLowestCommonParent(Node roomA, Node roomB) {
 		if (roomA == null || roomB == null) return null;
 		if (roomA == roomB) return roomA;
 		// Including this simple check because it is the most likely situation:
@@ -162,7 +162,7 @@ public class RoomUtil {
 		}
 	}
 	/** For caching calls to translate* methods. */
-	private static Map<RoomPair, Matrix4> roomToRoomTranslatorCache = new HashMap<>();
+	private Map<RoomPair, Matrix4> roomToRoomTranslatorCache = new HashMap<>();
 	
 	/**
 	 * Converts the coordinates from local in-room to the room's immediate
@@ -170,11 +170,11 @@ public class RoomUtil {
 	 * <b>Only call this method none of the rooms' ancestors' position and
 	 * orientation will be modified in future!</b> (Because caching)
 	 */
-	public static Vec3 translateToParent(Node room, Vec3 local) {
+	public Vec3 translateToParent(Node room, Vec3 local) {
 		return Vec3.from(matrixTranslateToParent(room).multiplyLocal(Vec4.from(local)));
 		
 	}
-	private static Matrix4 matrixTranslateToParent(Node room) {
+	private Matrix4 matrixTranslateToParent(Node room) {
 		RoomPair pairKey = new RoomPair(room, room.getParent());
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached == null) {
@@ -190,10 +190,10 @@ public class RoomUtil {
 	 * <b>Only call this method none of the rooms' ancestors' position and
 	 * orientation will be modified in future!</b> (Because caching)
 	 */
-	public static Vec3 translateToLocal(Node room, Vec3 external) {
+	public Vec3 translateToLocal(Node room, Vec3 external) {
 		return Vec3.from(matrixTranslateToLocal(room).multiplyLocal(Vec4.from(external)));
 	}
-	private static Matrix4 matrixTranslateToLocal(Node room) {
+	private Matrix4 matrixTranslateToLocal(Node room) {
 		RoomPair pairKey = new RoomPair(room.getParent(), room);
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached == null) {
@@ -210,7 +210,7 @@ public class RoomUtil {
 	 * <b>Only call this method none of the rooms' ancestors' position and
 	 * orientation will be modified in future!</b> (Because caching)
 	 */
-	public static Vec3 translateToRoom(Node from, Vec3 local, Node to) {
+	public Vec3 translateToRoom(Node from, Vec3 local, Node to) {
 		RoomPair pairKey = new RoomPair(from, to);
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached != null) {
