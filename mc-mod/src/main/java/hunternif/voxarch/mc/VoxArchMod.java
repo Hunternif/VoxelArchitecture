@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc;
 
 import hunternif.voxarch.mc.item.ArchitectsWand;
+import hunternif.voxarch.mc.item.ItemRadar;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.common.Mod.EventHandler;
@@ -29,6 +30,7 @@ public class VoxArchMod {
 	public static Logger logger;
 	
 	public static ArchitectsWand archWand;
+	public static ItemRadar radar;
 
 	@SidedProxy(clientSide="hunternif.voxarch.mc.ClientProxy", serverSide="hunternif.voxarch.mc.CommonProxy")
 	public static CommonProxy proxy;
@@ -38,7 +40,9 @@ public class VoxArchMod {
 		logger = event.getModLog();
 		
 		archWand = (ArchitectsWand)new ArchitectsWand().setCreativeTab(CreativeTabs.tabTools).setUnlocalizedName("architectsWand");
+		radar = (ItemRadar)new ItemRadar().setCreativeTab(CreativeTabs.tabTools).setUnlocalizedName("radar");
 		GameRegistry.registerItem(archWand, "architectsWand");
+		GameRegistry.registerItem(radar, "radar");
 	}
 	
 	@EventHandler

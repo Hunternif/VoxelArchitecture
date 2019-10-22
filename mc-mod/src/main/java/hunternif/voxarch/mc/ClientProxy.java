@@ -9,5 +9,7 @@ public class ClientProxy extends CommonProxy {
 		super.init();
 		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(VoxArchMod.archWand, 0,
 				new ModelResourceLocation(VoxArchMod.ID + ":architectsWand", "inventory"));
+		Minecraft.getMinecraft().getRenderItem().getItemModelMesher().register(VoxArchMod.radar, 0,
+				new ModelResourceLocation(VoxArchMod.ID + ":radar", "inventory"));
 	}
 }
