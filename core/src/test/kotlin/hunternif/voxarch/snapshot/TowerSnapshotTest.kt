@@ -1,6 +1,6 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.gen.Environment
+import hunternif.voxarch.world.Environment
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.CastleSetup
 import hunternif.voxarch.vector.Vec3
@@ -76,6 +76,6 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
     }
 
     companion object {
-        val DEFAULT_ENV = Environment(listOf())
+        val DEFAULT_ENV = Environment(setOf())
     }
 }

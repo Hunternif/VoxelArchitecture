@@ -1,6 +1,6 @@
 package hunternif.voxarch.mc
 
-import hunternif.voxarch.gen.Environment
+import hunternif.voxarch.world.Environment
 import net.minecraft.block.*
 import net.minecraft.init.Blocks
 
@@ -99,7 +99,7 @@ class MCEnvironment {
             ).map {
                 buildThroughBlocks.add(Block.getIdFromBlock(it))
             }
-            environment = Environment(buildThroughBlocks.toList())
+            environment = Environment(buildThroughBlocks.toHashSet())
         }
     }
 }

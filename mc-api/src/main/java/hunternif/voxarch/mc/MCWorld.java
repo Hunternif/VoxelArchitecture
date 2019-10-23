@@ -3,6 +3,8 @@ package hunternif.voxarch.mc;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.BlockOrientation;
+import hunternif.voxarch.world.Environment;
+import hunternif.voxarch.world.IBlockWorld;
 import net.minecraft.block.Block;
 import net.minecraft.block.properties.PropertyDirection;
 import net.minecraft.block.state.IBlockState;
@@ -20,7 +22,9 @@ import com.google.common.collect.EnumBiMap;
  * 
  * @author Hunternif
  */
-public class MCWorld implements IBlockStorage {
+public class MCWorld implements IBlockWorld {
+
+	private Environment env = MCEnvironment.environment;
 
 	/**
 	 * Bridges Forge block rotation enum with my custom one. Used to apply
@@ -83,4 +87,24 @@ public class MCWorld implements IBlockStorage {
 		world.setBlockState(new BlockPos(x, y, z), Blocks.air.getDefaultState(), 2);
 	}
 
+	@Override
+	public int getMaxHeight() {
+		return world.getHeight();
+	}
+
+	@Override
+	public int getHeight(int x, int z) {
+		return world.getHeight(new BlockPos(x, 0, z)).getY();
+	}
+
+	@Override
+	public int getTerrainHeight(int x, int z) {
+		BlockPos top = world.getHeight(new BlockPos(x, 0, z));
+		while (top.getY() > 0) {
+			int blockId = Block.getIdFromBlock(world.getBlockState(top).getBlock());
+			if (env.getBuildThroughBlocks().contains(blockId)) top = top.down();
+			else break;
+		}
+		return top.getY();
+	}
 }

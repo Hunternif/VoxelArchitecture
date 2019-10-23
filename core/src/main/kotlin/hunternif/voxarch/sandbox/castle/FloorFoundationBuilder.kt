@@ -2,7 +2,7 @@ package hunternif.voxarch.sandbox.castle
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
-import hunternif.voxarch.gen.Environment
+import hunternif.voxarch.world.Environment
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.storage.IBlockStorage
 

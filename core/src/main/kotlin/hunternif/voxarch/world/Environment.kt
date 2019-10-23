@@ -1,8 +1,8 @@
-package hunternif.voxarch.gen
+package hunternif.voxarch.world
 
 /**
  * Describes some aspects of the world in which we are building
  */
 data class Environment(
-    val buildThroughBlocks: List<Int>
+    val buildThroughBlocks: Set<Int>
 )
