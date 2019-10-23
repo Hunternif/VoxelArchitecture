@@ -1,7 +1,6 @@
 package hunternif.voxarch.mc;
 
 import hunternif.voxarch.storage.BlockData;
-import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.util.BlockOrientation;
 import hunternif.voxarch.world.Environment;
 import hunternif.voxarch.world.IBlockWorld;
@@ -24,7 +23,7 @@ import com.google.common.collect.EnumBiMap;
  */
 public class MCWorld implements IBlockWorld {
 
-	private Environment env = MCEnvironment.environment;
+	private Environment env = MCEnvironment.INSTANCE;
 
 	/**
 	 * Bridges Forge block rotation enum with my custom one. Used to apply
@@ -39,7 +38,7 @@ public class MCWorld implements IBlockWorld {
 	}
 	
 	//Stole this from BlockAnvil etc.
-	public static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
+	private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
 
 	/**
 	 * BlockData that is returned in every call, to keep the memory overhead at
@@ -99,12 +98,12 @@ public class MCWorld implements IBlockWorld {
 
 	@Override
 	public int getTerrainHeight(int x, int z) {
-		BlockPos top = world.getHeight(new BlockPos(x, 0, z));
-		while (top.getY() > 0) {
-			int blockId = Block.getIdFromBlock(world.getBlockState(top).getBlock());
-			if (env.getBuildThroughBlocks().contains(blockId)) top = top.down();
-			else break;
+		int y = getHeight(x, z);
+		while (y > 0) {
+			BlockData block = getBlock(x, y, z);
+			if (env.isTerrain(block)) break;
+			else y--;
 		}
-		return top.getY();
+		return y;
 	}
 }

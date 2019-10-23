@@ -22,7 +22,7 @@ class FloorFoundationBuilder(
                 var y = 0.0
                 while(true) {
                     val b = transformer.getBlock(x, y, z)
-                    if (b != null && b.id !in env.buildThroughBlocks) break
+                    if (b != null && !env.shouldBuildThrough(b)) break
                     transformer.setBlock(x, y, z, block)
                     y--
                 }

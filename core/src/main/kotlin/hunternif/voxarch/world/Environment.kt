@@ -1,8 +1,11 @@
 package hunternif.voxarch.world
 
+import hunternif.voxarch.storage.BlockData
+
 /**
  * Describes some aspects of the world in which we are building
  */
-data class Environment(
-    val buildThroughBlocks: Set<Int>
-)
+interface Environment {
+    fun isTerrain(block: BlockData?): Boolean
+    fun shouldBuildThrough(block: BlockData?): Boolean
+}

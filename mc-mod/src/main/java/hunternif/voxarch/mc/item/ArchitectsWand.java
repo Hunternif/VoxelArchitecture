@@ -76,7 +76,7 @@ public class ArchitectsWand extends Item {
 //			new MainBuilder().build(plan, new MCWorld(world), context);
 
 			// tower
-//			CastleSetup castleSetup = new CastleSetup(MCEnvironment.environment);
+//			CastleSetup castleSetup = new CastleSetup(MCEnvironment.INSTANCE);
 //			castleSetup.setup(context);
 //			Structure tower = castleSetup.squareTower(2, 6, 4, 6);
 //			tower.setOrigin(toVec3(pos));

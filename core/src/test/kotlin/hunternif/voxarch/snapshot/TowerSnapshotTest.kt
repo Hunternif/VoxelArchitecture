@@ -3,6 +3,7 @@ package hunternif.voxarch.snapshot
 import hunternif.voxarch.world.Environment
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.CastleSetup
+import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
@@ -76,6 +77,9 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
     }
 
     companion object {
-        val DEFAULT_ENV = Environment(setOf())
+        val DEFAULT_ENV = object : Environment {
+            override fun isTerrain(block: BlockData?): Boolean = true
+            override fun shouldBuildThrough(block: BlockData?): Boolean = false
+        }
     }
 }
