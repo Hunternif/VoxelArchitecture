@@ -20,6 +20,8 @@ class HeightMap(
         if (it < minHeight) return minHeight
         return it
     }
+    fun at(p: IntVec2) = at(p.x, p.y)
+    operator fun contains(p: IntVec2) = p.x in 0 until width && p.y in 0 until length
 
     companion object {
         /**

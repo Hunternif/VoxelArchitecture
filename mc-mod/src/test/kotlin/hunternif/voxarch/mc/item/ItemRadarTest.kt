@@ -13,8 +13,8 @@ class ItemRadarTest {
             maxHeight = 2
         }
         ItemRadar
-        assertEquals(0x000000, heightMap.getColor(0))
-        assertEquals(0x657f65, heightMap.getColor(1))
-        assertEquals(0xccffcc, heightMap.getColor(2))
+        assertEquals(0x000000, heightMap.getColor(0, 0xccffcc))
+        assertEquals(0x657f65, heightMap.getColor(1, 0xccffcc))
+        assertEquals(0xccffcc, heightMap.getColor(2, 0xccffcc))
     }
 }

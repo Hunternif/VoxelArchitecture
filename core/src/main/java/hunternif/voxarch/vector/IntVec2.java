@@ -1,5 +1,7 @@
 package hunternif.voxarch.vector;
 
+import hunternif.voxarch.util.BlockOrientation;
+
 /**
  * 2D vector of integers.
  * @author Hunternif
@@ -32,7 +34,12 @@ public class IntVec2 {
 		this.y = y;
 		return this;
 	}
-	
+
+	/** Returns new instance. */
+	public IntVec2 add(int dx, int dy) {
+		return new IntVec2(x + dx, y + dy);
+	}
+
 	/** Modifies and returns itself. */
 	public IntVec2 addLocal(int dx, int dy) {
 		this.x += dx;
@@ -71,7 +78,13 @@ public class IntVec2 {
 		return x + (y << 16);
 	}
 	
-	public boolean equalsIntVec3(IntVec2 vec) {
-		return vec.x == x && vec.y == y;
+	public IntVec2 next(BlockOrientation direction) {
+		switch (direction) {
+			default:
+			case EAST: return new IntVec2(x + 1, y);
+			case NORTH: return new IntVec2(x, y - 1);
+			case WEST: return new IntVec2(x - 1, y);
+			case SOUTH: return new IntVec2(x, y + 1);
+		}
 	}
 }
