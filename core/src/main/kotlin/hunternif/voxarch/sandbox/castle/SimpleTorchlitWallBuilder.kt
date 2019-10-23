@@ -5,7 +5,7 @@ import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.builder.SimpleWallBuilder
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.BlockOrientation
+import hunternif.voxarch.util.Direction
 
 class SimpleTorchlitWallBuilder(
     wallMaterial: String,
@@ -17,7 +17,7 @@ class SimpleTorchlitWallBuilder(
         if (node.transparent) return
         super.build(node, world, context)
         val block = context.materials.get(MaterialConfig.TORCH)
-        block.orientaion = BlockOrientation.NORTH
+        block.orientation = Direction.NORTH
 
         //TODO: some torches fall down. Consider spawning them as props.
 

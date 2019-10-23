@@ -1,7 +1,7 @@
 package hunternif.voxarch.mc;
 
 import hunternif.voxarch.storage.BlockData;
-import hunternif.voxarch.util.BlockOrientation;
+import hunternif.voxarch.util.Direction;
 import hunternif.voxarch.world.Environment;
 import hunternif.voxarch.world.IBlockWorld;
 import net.minecraft.block.Block;
@@ -16,7 +16,7 @@ import com.google.common.collect.EnumBiMap;
 import net.minecraft.world.gen.ChunkProviderSettings;
 
 /**
- * Adapter between Minecraft World and IBlockStorage. Note that BlockOrientation
+ * Adapter between Minecraft World and IBlockStorage. Note that Direction
  * is transformed into metadata in setBlock(), but the reverse doesn't happen in
  * getBlock().
  * 
@@ -30,12 +30,12 @@ public class MCWorld implements IBlockWorld {
 	 * Bridges Forge block rotation enum with my custom one. Used to apply
 	 * correct metadata when pasting rotated blocks into the world.
 	 */
-	private static final EnumBiMap<BlockOrientation, EnumFacing> forgeOrientMap = EnumBiMap.create(BlockOrientation.class, EnumFacing.class);
+	private static final EnumBiMap<Direction, EnumFacing> forgeOrientMap = EnumBiMap.create(Direction.class, EnumFacing.class);
 	static {
-		forgeOrientMap.put(BlockOrientation.SOUTH, EnumFacing.SOUTH);
-		forgeOrientMap.put(BlockOrientation.NORTH, EnumFacing.NORTH);
-		forgeOrientMap.put(BlockOrientation.EAST, EnumFacing.EAST);
-		forgeOrientMap.put(BlockOrientation.WEST, EnumFacing.WEST);
+		forgeOrientMap.put(Direction.SOUTH, EnumFacing.SOUTH);
+		forgeOrientMap.put(Direction.NORTH, EnumFacing.NORTH);
+		forgeOrientMap.put(Direction.EAST, EnumFacing.EAST);
+		forgeOrientMap.put(Direction.WEST, EnumFacing.WEST);
 	}
 	
 	//Stole this from BlockAnvil etc.
@@ -62,7 +62,7 @@ public class MCWorld implements IBlockWorld {
 		reusableData.setMetadata(state.getBlock().getMetaFromState(state));
 		if (state.getProperties().containsKey(FACING)) { // Block is rotate-able
 			EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
-			reusableData.setOrientaion(forgeOrientMap.inverse().get(enumfacing));
+			reusableData.setOrientation(forgeOrientMap.inverse().get(enumfacing));
 		}
 		return reusableData;
 	}
@@ -76,7 +76,7 @@ public class MCWorld implements IBlockWorld {
 		//TODO: make sure rotation is applied correctly for particular kinds of blocks, i.e. Portals
 		IBlockState state = mcBlock.getDefaultState();
 		if (block.hasOrientation() && state.getPropertyNames().contains(FACING)) {
-			state = state.withProperty(FACING, forgeOrientMap.get(block.getOrientaion()));
+			state = state.withProperty(FACING, forgeOrientMap.get(block.getOrientation()));
 		}
 		// Flag 2 will send the change to clients, but won't cause an immediate block update
 		world.setBlockState(new BlockPos(x, y, z), state, 2);

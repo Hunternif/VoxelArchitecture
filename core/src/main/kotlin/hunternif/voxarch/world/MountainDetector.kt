@@ -1,7 +1,7 @@
 package hunternif.voxarch.world
 
-import hunternif.voxarch.util.BlockOrientation
-import hunternif.voxarch.util.BlockOrientation.*
+import hunternif.voxarch.util.Direction
+import hunternif.voxarch.util.Direction.*
 import hunternif.voxarch.vector.IntVec2
 import java.util.*
 import kotlin.collections.HashSet
@@ -30,7 +30,7 @@ private fun HeightMap.descend(start: IntVec2): Set<IntVec2> {
     while (queue.isNotEmpty()) {
         val p = queue.pop()
         if (p !in this || !area.add(p)) continue
-        val explore = { dir: BlockOrientation ->
+        val explore = { dir: Direction ->
             if (avgSlope(p, dir, slopeLength) > slopeThreshold) {
                 queue.push(p.next(dir))
             }
@@ -43,7 +43,7 @@ private fun HeightMap.descend(start: IntVec2): Set<IntVec2> {
     return area
 }
 
-private fun HeightMap.avgSlope(start: IntVec2, dir: BlockOrientation, length: Int): Double {
+private fun HeightMap.avgSlope(start: IntVec2, dir: Direction, length: Int): Double {
     var dist = 0.0
     var dY = 0.0
     var prev = start

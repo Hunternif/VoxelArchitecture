@@ -1,13 +1,13 @@
 package hunternif.voxarch;
 
-import static hunternif.voxarch.util.BlockOrientation.*;
+import static hunternif.voxarch.util.Direction.*;
 import static org.junit.Assert.*;
 
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IFixedBlockStorage;
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
 import hunternif.voxarch.storage.Structure;
-import hunternif.voxarch.util.BlockOrientation;
+import hunternif.voxarch.util.Direction;
 import hunternif.voxarch.util.PositionTransformer;
 import hunternif.voxarch.util.StructureUtil;
 
@@ -152,7 +152,7 @@ public class PositionTransformerTest {
 	@Test
 	public void testRotateBlock() {
 		BlockData block = new BlockData(1);
-		block.setOrientaion(BlockOrientation.EAST);
+		block.setOrientation(Direction.EAST);
 		CachedRotationStorage out = new CachedRotationStorage();
 		PositionTransformer trans = new PositionTransformer(out);
 		trans.rotateY(90);
@@ -180,7 +180,7 @@ public class PositionTransformerTest {
 	@Test
 	public void testNestedRotateBlock() {
 		BlockData block = new BlockData(1);
-		block.setOrientaion(BlockOrientation.EAST);
+		block.setOrientation(Direction.EAST);
 		CachedRotationStorage out = new CachedRotationStorage();
 		PositionTransformer trans1 = new PositionTransformer(out);
 		trans1.rotateY(90);
@@ -208,10 +208,10 @@ public class PositionTransformerTest {
 	}
 
 	private static class CachedRotationStorage implements IFixedBlockStorage {
-		BlockOrientation orientation;
+		Direction orientation;
 		@Override
 		public void setBlock(int x, int y, int z, BlockData block) {
-			orientation = block.getOrientaion();
+			orientation = block.getOrientation();
 		}
 		@Override
 		public int getWidth() { return 0; }

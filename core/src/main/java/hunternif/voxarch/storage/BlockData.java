@@ -1,17 +1,17 @@
 package hunternif.voxarch.storage;
 
-import hunternif.voxarch.util.BlockOrientation;
+import hunternif.voxarch.util.Direction;
 
 /**
- * Contains block id, metadata and {@link BlockOrientation}. The orientation
- * should modify the metadata in overridden method {@link #setOrientaion}.
+ * Contains block id, metadata and {@link Direction}. The orientation
+ * should modify the metadata in overridden method {@link #setOrientation}.
  * @author Hunternif
  */
 public class BlockData {
 	private int id;
 	private int metadata;
 	
-	private BlockOrientation orient = null;
+	private Direction orient = null;
 	
 	public BlockData(int id) {
 		this(id, 0);
@@ -40,19 +40,19 @@ public class BlockData {
 		return orient != null;
 	}
 	
-	/** Rotate the BlockOrientation (if not NONE) counterclockwise by the
+	/** Rotate the Direction (if not NONE) counterclockwise by the
 	 * specified angle. */
 	public void rotate(double angle) {
 		if (!hasOrientation()) return;
-		setOrientaion(orient.rotate(angle));
+		setOrientation(orient.rotate(angle));
 	}
 
-	public BlockOrientation getOrientaion() {
+	public Direction getOrientation() {
 		return orient;
 	}
 	
 	/** Override this method to set metadata appropriately. */
-	public void setOrientaion(BlockOrientation orient) {
+	public void setOrientation(Direction orient) {
 		this.orient = orient;
 	}
 	

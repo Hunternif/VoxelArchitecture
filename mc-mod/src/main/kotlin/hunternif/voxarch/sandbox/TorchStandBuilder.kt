@@ -5,7 +5,7 @@ import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.BlockOrientation
+import hunternif.voxarch.util.Direction
 
 class TorchStandBuilder : Builder<Prop>() {
     override fun build(node: Prop, world: IBlockStorage, context: BuildContext) {
@@ -18,7 +18,7 @@ class TorchStandBuilder : Builder<Prop>() {
             setBlock(0, 1, 0, post)
             setBlock(0, 2, 0, block)
 
-            torch.orientaion = BlockOrientation.EAST
+            torch.orientation = Direction.EAST
             setBlock(1, 2, 0, torch)
 
             torch.rotate(90.0)

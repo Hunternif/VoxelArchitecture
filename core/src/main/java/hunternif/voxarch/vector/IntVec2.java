@@ -1,6 +1,6 @@
 package hunternif.voxarch.vector;
 
-import hunternif.voxarch.util.BlockOrientation;
+import hunternif.voxarch.util.Direction;
 
 /**
  * 2D vector of integers.
@@ -78,7 +78,7 @@ public class IntVec2 {
 		return x + (y << 16);
 	}
 	
-	public IntVec2 next(BlockOrientation direction) {
+	public IntVec2 next(Direction direction) {
 		switch (direction) {
 			default:
 			case EAST: return new IntVec2(x + 1, y);
