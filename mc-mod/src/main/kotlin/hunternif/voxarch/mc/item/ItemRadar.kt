@@ -35,10 +35,12 @@ class ItemRadar : Item() {
         stack: ItemStack, world: World, player: EntityPlayer
     ): ItemStack {
         if (world.isRemote) {
-            val map = MCWorld(world).terrainMap(
+            val mcWorld = MCWorld(world)
+            val map = mcWorld.terrainMap(
                 IntVec2(player.posX.toInt(), player.posZ.toInt()),
                 IntVec2(radius*2 + 1, radius*2 + 1)
             )
+            map.minHeight = mcWorld.seaLevel
             map.print()
         }
         return stack

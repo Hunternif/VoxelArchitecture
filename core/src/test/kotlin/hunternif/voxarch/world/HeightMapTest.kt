@@ -3,7 +3,7 @@ package hunternif.voxarch.world
 import com.nhaarman.mockitokotlin2.*
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.HeightMap.Companion.heightMap
-import org.junit.Before
+import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentMatchers.intThat
@@ -14,11 +14,6 @@ import org.mockito.junit.MockitoJUnitRunner
 class HeightMapTest {
     @Mock lateinit var world: IBlockWorld
 
-    @Before
-    fun setup() {
-        whenever(world.getHeight(any(), any())) doReturn 0
-    }
-
     @Test
     fun `scan area`() {
         world.heightMap(IntVec2(3, 3), IntVec2(3, 4))
@@ -27,5 +22,22 @@ class HeightMapTest {
         verify(world, never()).getHeight(any(), intThat { z -> z !in 2..5 })
         verify(world, times(12)).getHeight(
             intThat { x -> x in 2..4 }, intThat { z -> z in 2..5 })
+    }
+
+    @Test
+    fun `clip height`() {
+        HeightMap(1, 1).apply {
+            set(0, 5, 0)
+
+            minHeight = 3
+            Assert.assertEquals(5, at(0, 0))
+
+            minHeight = 6
+            Assert.assertEquals(6, at(0, 0))
+
+            minHeight = 0
+            maxHeight = 4
+            Assert.assertEquals(4, at(0, 0))
+        }
     }
 }

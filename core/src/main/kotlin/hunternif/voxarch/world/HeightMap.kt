@@ -11,7 +11,15 @@ class HeightMap(
     var maxHeight = 256
     var center: IntVec2 = IntVec2(0, 0)
 
-    fun at(x: Int, z: Int) = map[x][z]
+    fun set(x: Int, y: Int, z: Int) {
+        map[x][z] = y
+    }
+
+    fun at(x: Int, z: Int): Int = map[x][z].let {
+        if (it > maxHeight) return maxHeight
+        if (it < minHeight) return minHeight
+        return it
+    }
 
     companion object {
         /**
@@ -39,7 +47,7 @@ class HeightMap(
                 maxHeight = 0
                 for (x in 0 until area.x) {
                     for (z in 0 until area.y) {
-                        var height = this@map.mapper(start.x + x, start.y + z)
+                        val height = this@map.mapper(start.x + x, start.y + z)
                         map[x][z] = height
                         if (height < minHeight) minHeight = height
                         if (height > maxHeight) maxHeight = height

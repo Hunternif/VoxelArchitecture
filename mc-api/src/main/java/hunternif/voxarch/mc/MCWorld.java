@@ -13,6 +13,7 @@ import net.minecraft.util.EnumFacing;
 import net.minecraft.world.World;
 
 import com.google.common.collect.EnumBiMap;
+import net.minecraft.world.gen.ChunkProviderSettings;
 
 /**
  * Adapter between Minecraft World and IBlockStorage. Note that BlockOrientation
@@ -105,5 +106,13 @@ public class MCWorld implements IBlockWorld {
 			else y--;
 		}
 		return y;
+	}
+
+	@Override
+	public int getSeaLevel() {
+		String settingsJson = world.getWorldInfo().getGeneratorOptions();
+		ChunkProviderSettings settings = ChunkProviderSettings.Factory
+				.jsonToFactory(settingsJson).func_177864_b();
+		return settings.seaLevel;
 	}
 }
