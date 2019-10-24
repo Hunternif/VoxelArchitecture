@@ -57,7 +57,7 @@ class MountainDetectorTest {
         assertEquals(SLOPE, segments[2, 0])
         assertEquals(GROUND, segments[0, 1])
         assertEquals(GROUND, segments[1, 1])
-        assertEquals(GROUND, segments[2, 1]) // because the slope is gentle
+        assertEquals(TOP, segments[2, 1])
         assertEquals(SLOPE, segments[0, 2])
         assertEquals(TOP, segments[1, 2])
         assertEquals(TOP, segments[2, 2])
@@ -65,33 +65,6 @@ class MountainDetectorTest {
 
     @Test
     fun uniteTops() {
-        val map = HeightMap(listOf(
-            listOf(0, 0, 0),
-            listOf(0, 1, 2),
-            listOf(0, 2, 2)
-        ))
-
-        val segments = map.segments(1.5, 1.5)
-        val tops = map.uniteTops(segments)
-
-        assertEquals(GROUND, segments[0, 0])
-        assertEquals(GROUND, segments[1, 0])
-        assertEquals(SLOPE, segments[2, 0])
-        assertEquals(GROUND, segments[0, 1])
-        assertEquals(GROUND, segments[1, 1])
-        assertEquals(TOP, segments[2, 1]) // fixed by uniting
-        assertEquals(SLOPE, segments[0, 2])
-        assertEquals(TOP, segments[1, 2])
-        assertEquals(TOP, segments[2, 2])
-
-        assertEquals(3, tops.size)
-        assertTrue(tops.contains(IntVec2(1, 2)))
-        assertTrue(tops.contains(IntVec2(2, 1)))
-        assertTrue(tops.contains(IntVec2(2, 2)))
-    }
-
-    @Test
-    fun uniteTops2() {
         val map = HeightMap(listOf(
             listOf(1, 1),
             listOf(0, 1)

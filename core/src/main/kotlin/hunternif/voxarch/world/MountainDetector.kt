@@ -9,7 +9,7 @@ import java.util.*
 
 /** Gradient ascent, assuming every slope steep enough is a mountain. */
 fun HeightMap.detectMountains(
-    slopeStartThreshold: Double = 1.5,
+    slopeStartThreshold: Double = 2.5,
     slopeEndThreshold: Double = 1.0
 ): Collection<Mountain> {
     val segments = segments(slopeStartThreshold, slopeEndThreshold)
@@ -77,30 +77,31 @@ internal fun cluster(points: Set<IntVec2>): Set<Set<IntVec2>> {
 }
 
 internal enum class Segment {
-    UNEXPLORED, GROUND, SLOPE, TOP
+    GROUND, SLOPE, TOP
 }
 
 /** Map every point to a [Segment] based on [gradient] */
 //TODO traverse gradient in multiple directions that satisfy
 // slope threshold, to close gaps in the bottom-right corner
 internal fun HeightMap.segments(
-    slopeStartThreshold: Double = 1.5,
-    slopeEndThreshold: Double = 1.0
+    slopeStartThreshold: Double,
+    slopeEndThreshold: Double
 ): Array2D<Segment> {
     val gradient = gradient()
-    val segments = Array2D(width, length, UNEXPLORED)
+    val segments = Array2D(width, length, GROUND)
     for (start in this) {
         var p = start
         var prevSeg = GROUND
         while (p in this) {
             var seg = segments[p]
-            if (seg != UNEXPLORED) break
+            if (seg != GROUND) break
             val slope = gradient[p]
             seg = when {
                 slope.height >= slopeStartThreshold -> SLOPE
                 prevSeg == SLOPE && slope.height < slopeEndThreshold -> TOP
                 else -> prevSeg
             }
+            if (seg == GROUND) break // it can become TOP when ascended from another direction
             segments[p] = seg
             prevSeg = seg
             p = p.next(slope.dir)
