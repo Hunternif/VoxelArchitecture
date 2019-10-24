@@ -81,30 +81,53 @@ internal enum class Segment {
 }
 
 /** Map every point to a [Segment] based on [gradient] */
-//TODO traverse gradient in multiple directions that satisfy
-// slope threshold, to close gaps in the bottom-right corner
 internal fun HeightMap.segments(
     slopeStartThreshold: Double,
     slopeEndThreshold: Double
 ): Array2D<Segment> {
-    val gradient = gradient()
     val segments = Array2D(width, length, GROUND)
-    for (start in this) {
-        var p = start
-        var prevSeg = GROUND
-        while (p in this) {
-            var seg = segments[p]
-            if (seg != GROUND) break
-            val slope = gradient[p]
-            seg = when {
-                slope.height >= slopeStartThreshold -> SLOPE
-                prevSeg == SLOPE && slope.height < slopeEndThreshold -> TOP
-                else -> prevSeg
+    val slopeQueue = LinkedList<IntVec2>() // candidates for SLOPE or TOP
+
+    // 1. Begin SLOPEs
+    for (p in this) {
+        if (segments[p] != GROUND) continue
+        Direction.values().forEach {
+            if (slope(p, it) >= slopeStartThreshold) {
+                segments[p] = SLOPE
+                slopeQueue.push(p.next(it))
             }
-            if (seg == GROUND) break // it can become TOP when ascended from another direction
-            segments[p] = seg
-            prevSeg = seg
-            p = p.next(slope.dir)
+        }
+    }
+
+    // 2. Continue SLOPEs and mark possible TOPs
+    val topQueue = LinkedList<IntVec2>() // candidates for continuation of TOP
+    while (slopeQueue.isNotEmpty()) {
+        val p = slopeQueue.pop()
+        if (p !in this || segments[p] != GROUND) continue
+        Direction.values().forEach {
+            val slope = slope(p, it)
+            if (slope >= slopeEndThreshold) {
+                // continue SLOPE while under threshold
+                segments[p] = SLOPE
+                slopeQueue.push(p.next(it))
+            } else if (segments[p] != SLOPE) {
+                segments[p] = TOP
+                // spread TOP flat or upwards
+                if (slope >= 0) topQueue.push(p.next(it))
+            }
+        }
+    }
+
+    // 3. Spread out TOPs to fill gaps
+    while (topQueue.isNotEmpty()) {
+        val p = topQueue.pop()
+        if (p !in this || segments[p] != GROUND) continue
+        Direction.values().forEach {
+            val slope = slope(p, it)
+            if (slope >= 0) {
+                segments[p] = TOP
+                topQueue.push(p.next(it))
+            }
         }
     }
     return segments
