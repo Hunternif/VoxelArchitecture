@@ -14,7 +14,7 @@ public enum Direction {
 	public final double angle;
 	private static final Direction[] rotations = {EAST, NORTH, WEST, SOUTH};
 	
-	private Direction(double angle) {
+	Direction(double angle) {
 		this.angle = angle;
 	}
 	
@@ -31,7 +31,17 @@ public enum Direction {
 		if (index >= rotations.length) index = 0;
 		return rotations[index];
 	}
-	
+
+	public Direction getOpposite() {
+		switch (this) {
+			default:
+			case EAST: return WEST;
+			case NORTH: return SOUTH;
+			case WEST: return EAST;
+			case SOUTH: return NORTH;
+		}
+	}
+
 	/**
 	 * Returns the closest orientation which comes first in the direction of the
 	 * rotation (positive angle is counterclockwise rotation).

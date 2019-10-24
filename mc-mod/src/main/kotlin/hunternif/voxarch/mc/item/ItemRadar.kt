@@ -51,20 +51,22 @@ class ItemRadar : Item() {
     companion object {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
         private const val normalColor = 0xccffcc
-        private const val mountColor = 0xe58066
+        private const val slopeColor = 0xe58066
+        private const val topColor = 0xeecc66
 
         fun HeightMap.print() {
             val mountains = detectMountains()
+            minHeight -= 10 // to see the ocean color clearly
 
             val image = BufferedImage(width, length, BufferedImage.TYPE_INT_RGB)
-            for (x in 0 until width) {
-                for (z in 0 until length) {
-                    val baseColor =
-                        if (mountains.any { it.contains(IntVec2(x, z)) }) mountColor
-                        else normalColor
-                    val color = getColor(at(x, z), baseColor)
-                    image.setRGB(x, z, color)
+            for (p in this) {
+                val baseColor = when {
+                    mountains.any { p in it.slope } -> slopeColor
+                    mountains.any { p in it.top } -> topColor
+                    else -> normalColor
                 }
+                val color = getColor(at(p), baseColor)
+                image.setRGB(p.x, p.y, color)
             }
             val file = newFile()
             Files.newOutputStream(file).use {

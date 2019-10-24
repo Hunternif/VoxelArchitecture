@@ -1,27 +1,25 @@
 package hunternif.voxarch.world
 
+import hunternif.voxarch.vector.Array2D
 import hunternif.voxarch.vector.IntVec2
 
-class HeightMap(
-    val width: Int,
-    val length: Int
-) {
-    private val map = Array(width) { IntArray(length) }
+class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
     var minHeight = 0
     var maxHeight = 256
     var center: IntVec2 = IntVec2(0, 0)
 
-    fun set(x: Int, y: Int, z: Int) {
-        map[x][z] = y
+    /** [list] must be a valid 2d list. */
+    internal constructor(list: List<List<Int>>): this(list[0].size, list.size) {
+        for (p in this) {
+            this[p] = list[p.y][p.x]
+        }
     }
 
-    fun at(x: Int, z: Int): Int = map[x][z].let {
+    override operator fun get(x: Int, y: Int): Int = super.get(x, y).let {
         if (it > maxHeight) return maxHeight
         if (it < minHeight) return minHeight
         return it
     }
-    fun at(p: IntVec2) = at(p.x, p.y)
-    operator fun contains(p: IntVec2) = p.x in 0 until width && p.y in 0 until length
 
     companion object {
         /**
@@ -50,7 +48,7 @@ class HeightMap(
                 for (x in 0 until area.x) {
                     for (z in 0 until area.y) {
                         val height = this@map.mapper(start.x + x, start.y + z)
-                        map[x][z] = height
+                        this[x, z] = height
                         if (height < minHeight) minHeight = height
                         if (height > maxHeight) maxHeight = height
                     }

@@ -27,17 +27,17 @@ class HeightMapTest {
     @Test
     fun `clip height`() {
         HeightMap(1, 1).apply {
-            set(0, 5, 0)
+            this[0, 0] = 5
 
             minHeight = 3
-            Assert.assertEquals(5, at(0, 0))
+            Assert.assertEquals(5, get(0, 0))
 
             minHeight = 6
-            Assert.assertEquals(6, at(0, 0))
+            Assert.assertEquals(6, get(0, 0))
 
             minHeight = 0
             maxHeight = 4
-            Assert.assertEquals(4, at(0, 0))
+            Assert.assertEquals(4, get(0, 0))
         }
     }
 }
