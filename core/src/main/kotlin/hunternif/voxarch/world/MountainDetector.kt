@@ -7,13 +7,13 @@ import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.Segment.*
 import java.util.*
 
-/** Gradient ascent, assuming every slope steep enough is a mountain. */
+/** Gradient ascent, assuming every midSlope steep enough is a mountain. */
 fun HeightMap.detectMountains(
-    slopeStartThreshold: Double = 2.5,
-    slopeEndThreshold: Double = 1.0
+    slopeStartThreshold: Double = 3.0,
+    slopeEndThreshold: Double = 1.5
 ): Collection<Mountain> {
     val segments = segments(slopeStartThreshold, slopeEndThreshold)
-    val allTops = uniteTops(segments)
+    val allTops = segments.filter { segments[it] == TOP }.toSet()
     val topClusters = cluster(allTops)
     return topClusters.map { top ->
         val slope = descendFromTop(top, segments)
@@ -100,20 +100,20 @@ internal fun HeightMap.segments(
     }
 
     // 2. Continue SLOPEs and mark possible TOPs
+    val seen = hashSetOf<IntVec2>()
     val topQueue = LinkedList<IntVec2>() // candidates for continuation of TOP
     while (slopeQueue.isNotEmpty()) {
         val p = slopeQueue.pop()
-        if (p !in this || segments[p] != GROUND) continue
+        if (p !in this || !seen.add(p)) continue
         Direction.values().forEach {
             val slope = slope(p, it)
             if (slope >= slopeEndThreshold) {
                 // continue SLOPE while under threshold
                 segments[p] = SLOPE
                 slopeQueue.push(p.next(it))
-            } else if (segments[p] != SLOPE) {
+            } else if (slope >= 0 && segments[p] != SLOPE) {
                 segments[p] = TOP
-                // spread TOP flat or upwards
-                if (slope >= 0) topQueue.push(p.next(it))
+                topQueue.push(p.next(it))
             }
         }
     }
@@ -133,42 +133,14 @@ internal fun HeightMap.segments(
     return segments
 }
 
-/**
- * For every GROUND adjacent to TOP, convert it to TOP.
- * __Input [segments] is modified!__
- * @return all TOP points
- */
-internal fun HeightMap.uniteTops(segments: Array2D<Segment>): Set<IntVec2> {
-    val explored = hashSetOf<IntVec2>()
-    val queue = LinkedList<IntVec2>()
-    queue.addAll( segments.filter { segments[it] == TOP } )
-    while (queue.isNotEmpty()) {
-        val p = queue.pop()
-        if (!explored.add(p)) continue
-        val unite = { dir: Direction ->
-            val next = p.next(dir)
-            // Limit height difference, otherwise TOP can "leak" up or down a gentle slope
-            if (next in this && at(p) == at(next) && segments[next] == GROUND) {
-                segments[next] = TOP
-                queue.push(next)
-            }
-        }
-        unite(EAST)
-        unite(NORTH)
-        unite(WEST)
-        unite(SOUTH)
-    }
-    return explored
-}
-
 data class Slope(val dir: Direction, val height: Double)
 
 /** Each value points in the direction of greatest height */
 fun HeightMap.gradient(): Array2D<Slope> {
     val gradient = Array2D(width, length, Slope(EAST, 0.0))
     for (p in this) {
-        val dx = slope(p, EAST)
-        val dz = slope(p, SOUTH)
+        val dx = midSlope(p, EAST)
+        val dz = midSlope(p, SOUTH)
         gradient[p] =
             mapOf(EAST to dx, WEST to -dx, SOUTH to dz, NORTH to -dz)
                 .map { Slope(it.key, it.value) }
@@ -177,8 +149,8 @@ fun HeightMap.gradient(): Array2D<Slope> {
     return gradient
 }
 
-/** Proper gradient slope at [start] in the direction [dir] */
-internal fun HeightMap.slope(start: IntVec2, dir: Direction): Double {
+/** Gradient slope exactly at [start] in the direction [dir] */
+internal fun HeightMap.midSlope(start: IntVec2, dir: Direction): Double {
     val prev = start.next(dir.opposite)
     val next = start.next(dir)
     if (prev !in this) {
@@ -189,4 +161,11 @@ internal fun HeightMap.slope(start: IntVec2, dir: Direction): Double {
         return (at(start) - at(prev)).toDouble()
     }
     return (at(next) - at(prev)).toDouble()/2.0
+}
+
+/** Gradient slope at midpoint between [start] and `start.next(dir)`*/
+internal fun HeightMap.slope(start: IntVec2, dir: Direction): Double {
+    val next = start.next(dir)
+    if (next !in this) return 0.0
+    return (at(next) - at(start)).toDouble()
 }

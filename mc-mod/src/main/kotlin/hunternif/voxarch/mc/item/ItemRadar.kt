@@ -21,6 +21,7 @@ import java.nio.file.Path
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.imageio.ImageIO
+import kotlin.math.floor
 
 class ItemRadar : Item() {
     private val radius = 64
@@ -39,7 +40,7 @@ class ItemRadar : Item() {
         if (world.isRemote) {
             val mcWorld = MCWorld(world)
             val map = mcWorld.terrainMap(
-                IntVec2(player.posX.toInt(), player.posZ.toInt()),
+                IntVec2(floor(player.posX).toInt(), floor(player.posZ).toInt()),
                 IntVec2(radius*2 + 1, radius*2 + 1)
             )
             map.minHeight = mcWorld.seaLevel

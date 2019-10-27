@@ -16,9 +16,9 @@ class MountainDetectorTest {
         map[1, 0] = 1
         map[2, 0] = 3
 
-        assertEquals(1.0, map.slope(IntVec2(0, 0), EAST), 0.0)
-        assertEquals(1.5, map.slope(IntVec2(1, 0), EAST), 0.0)
-        assertEquals(2.0, map.slope(IntVec2(2, 0), EAST), 0.0)
+        assertEquals(1.0, map.midSlope(IntVec2(0, 0), EAST), 0.0)
+        assertEquals(1.5, map.midSlope(IntVec2(1, 0), EAST), 0.0)
+        assertEquals(2.0, map.midSlope(IntVec2(2, 0), EAST), 0.0)
     }
 
     @Test
@@ -61,30 +61,6 @@ class MountainDetectorTest {
         assertEquals(SLOPE, segments[0, 2])
         assertEquals(TOP, segments[1, 2])
         assertEquals(TOP, segments[2, 2])
-    }
-
-    @Test
-    fun uniteTops() {
-        val map = HeightMap(listOf(
-            listOf(1, 1),
-            listOf(0, 1)
-        ))
-        val segments = Array2D(listOf(
-            listOf(GROUND, TOP),
-            listOf(GROUND, GROUND)
-        ))
-
-        val tops = map.uniteTops(segments)
-
-        assertEquals(TOP, segments[0, 0])
-        assertEquals(TOP, segments[1, 0])
-        assertEquals(GROUND, segments[0, 1])
-        assertEquals(TOP, segments[1, 1])
-
-        assertEquals(3, tops.size)
-        assertTrue(tops.contains(IntVec2(0, 0)))
-        assertTrue(tops.contains(IntVec2(1, 0)))
-        assertTrue(tops.contains(IntVec2(1, 1)))
     }
 
     @Test
