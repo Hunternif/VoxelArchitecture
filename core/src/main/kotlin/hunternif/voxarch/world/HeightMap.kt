@@ -21,6 +21,14 @@ class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
         return it
     }
 
+    fun average(): Double {
+        var total = 0.0
+        for (p in this) {
+            total += at(p)
+        }
+        return total/width/length
+    }
+
     companion object {
         /**
          * Returns a snapshot of the world's height map around [center] of size [area].

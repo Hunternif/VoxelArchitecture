@@ -6,6 +6,8 @@ import hunternif.voxarch.vector.Array2D
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.Segment.*
 import java.util.*
+import kotlin.math.abs
+import kotlin.math.floor
 
 data class MountainDetectorConfig(
     val slopeStartThreshold: Double = 3.0,
@@ -18,10 +20,14 @@ data class MountainDetectorConfig(
 fun HeightMap.detectMountains(
     config: MountainDetectorConfig = MountainDetectorConfig()
 ): Collection<Mountain> {
+    val prevMin = minHeight
+    minHeight = floor(average()).toInt()
     val segments = segments(config)
     val allTops = segments.filter { segments[it] == TOP }.toSet()
     val topClusters = cluster(allTops).filter { it.size >= config.minTopArea }
-    return topClusters.map { top -> descendFromTop(top, segments) }
+    val mountains = topClusters.map { top -> descendFromTop(top, segments) }
+    minHeight = prevMin
+    return mountains
 }
 
 internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segment>) : Mountain {
