@@ -50,7 +50,9 @@ class MountainDetectorTest {
             listOf(0, 2, 2)
         ))
 
-        val segments = map.segments(1.5, 1.5)
+        val segments = map.segments(
+            MountainDetectorConfig(1.5, 1.5)
+        )
 
         assertEquals(GROUND, segments[0, 0])
         assertEquals(GROUND, segments[1, 0])
@@ -114,14 +116,14 @@ class MountainDetectorTest {
             listOf(TOP, SLOPE)
         ))
 
-        val slope1 = map.descendFromTop(setOf(IntVec2(1, 0)), segments)
-        assertEquals(2, slope1.size)
-        assertTrue(slope1.contains(IntVec2(0,0)))
-        assertTrue(slope1.contains(IntVec2(1,1)))
+        val m1 = map.descendFromTop(setOf(IntVec2(1, 0)), segments)
+        assertEquals(2, m1.slope.size)
+        assertTrue(m1.slope.contains(IntVec2(0,0)))
+        assertTrue(m1.slope.contains(IntVec2(1,1)))
 
-        val slope2 = map.descendFromTop(setOf(IntVec2(0, 1)), segments)
-        assertEquals(2, slope2.size)
-        assertTrue(slope2.contains(IntVec2(0,0)))
-        assertTrue(slope2.contains(IntVec2(1,1)))
+        val m2 = map.descendFromTop(setOf(IntVec2(0, 1)), segments)
+        assertEquals(2, m2.slope.size)
+        assertTrue(m2.slope.contains(IntVec2(0,0)))
+        assertTrue(m2.slope.contains(IntVec2(1,1)))
     }
 }

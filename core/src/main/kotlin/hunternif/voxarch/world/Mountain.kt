@@ -2,7 +2,8 @@ package hunternif.voxarch.world
 
 import hunternif.voxarch.vector.IntVec2
 
-class Mountain(
+data class Mountain(
     val slope: Set<IntVec2>,
-    val top: Set<IntVec2> = hashSetOf()
+    val top: Set<IntVec2>,
+    val perimeter: Set<IntVec2>
 )

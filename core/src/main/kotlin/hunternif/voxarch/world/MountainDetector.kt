@@ -7,22 +7,24 @@ import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.Segment.*
 import java.util.*
 
+data class MountainDetectorConfig(
+    val slopeStartThreshold: Double = 3.0,
+    val slopeEndThreshold: Double = 1.5
+)
+
 /** Gradient ascent, assuming every midSlope steep enough is a mountain. */
 fun HeightMap.detectMountains(
-    slopeStartThreshold: Double = 3.0,
-    slopeEndThreshold: Double = 1.5
+    config: MountainDetectorConfig = MountainDetectorConfig()
 ): Collection<Mountain> {
-    val segments = segments(slopeStartThreshold, slopeEndThreshold)
+    val segments = segments(config)
     val allTops = segments.filter { segments[it] == TOP }.toSet()
     val topClusters = cluster(allTops)
-    return topClusters.map { top ->
-        val slope = descendFromTop(top, segments)
-        Mountain(slope, top)
-    }
+    return topClusters.map { top -> descendFromTop(top, segments) }
 }
 
-internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segment>) : Set<IntVec2> {
+internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segment>) : Mountain {
     val slope = hashSetOf<IntVec2>()
+    val perimeter = hashSetOf<IntVec2>()
     val explored = hashSetOf<IntVec2>()
     val queue = LinkedList<IntVec2>()
     queue.addAll(top)
@@ -31,12 +33,15 @@ internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segme
         if (!explored.add(p)) continue
         val descend = { dir: Direction ->
             val next = p.next(dir)
-            // ensure we're descending, to separate 2 adjacent mountains
-            if (next in this && next !in explored &&
-                segments[next] == SLOPE && at(next) <= at(p)
-            ) {
-                slope.add(next)
-                queue.push(next)
+            if (next in this) {
+                // ensure we're descending, to separate 2 adjacent mountains
+                if (next !in explored && segments[next] == SLOPE && at(next) <= at(p)) {
+                    slope.add(next)
+                    queue.push(next)
+                }
+                if (segments[p] == TOP && segments[next] != TOP) {
+                    perimeter.add(next)
+                }
             }
         }
         descend(EAST)
@@ -44,7 +49,7 @@ internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segme
         descend(WEST)
         descend(SOUTH)
     }
-    return slope
+    return Mountain(slope, top, perimeter)
 }
 
 /** Combine adjacent points into clusters */
@@ -80,11 +85,8 @@ internal enum class Segment {
     GROUND, SLOPE, TOP
 }
 
-/** Map every point to a [Segment] based on [gradient] */
-internal fun HeightMap.segments(
-    slopeStartThreshold: Double,
-    slopeEndThreshold: Double
-): Array2D<Segment> {
+/** Map every point to a [Segment] based on slope. */
+internal fun HeightMap.segments(config: MountainDetectorConfig): Array2D<Segment> {
     val segments = Array2D(width, length, GROUND)
     val slopeQueue = LinkedList<IntVec2>() // candidates for SLOPE or TOP
 
@@ -92,7 +94,7 @@ internal fun HeightMap.segments(
     for (p in this) {
         if (segments[p] != GROUND) continue
         Direction.values().forEach {
-            if (slope(p, it) >= slopeStartThreshold) {
+            if (slope(p, it) >= config.slopeStartThreshold) {
                 segments[p] = SLOPE
                 slopeQueue.push(p.next(it))
             }
@@ -107,7 +109,7 @@ internal fun HeightMap.segments(
         if (p !in this || !seen.add(p)) continue
         Direction.values().forEach {
             val slope = slope(p, it)
-            if (slope >= slopeEndThreshold) {
+            if (slope >= config.slopeEndThreshold) {
                 // continue SLOPE while under threshold
                 segments[p] = SLOPE
                 slopeQueue.push(p.next(it))

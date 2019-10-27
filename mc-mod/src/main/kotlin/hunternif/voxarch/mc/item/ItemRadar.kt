@@ -51,9 +51,11 @@ class ItemRadar : Item() {
 
     companion object {
         private val dateFormat = SimpleDateFormat("yyyy-MM-dd_HH.mm.ss")
-        private const val normalColor = 0xccffcc
+        private const val groundColor = 0xccffcc
         private const val slopeColor = 0xe58066
         private const val topColor = 0xeecc66
+        private const val perimeterGroundColor = 0x667fe5
+        private const val perimeterSlopeColor = 0x925fa5
 
         fun HeightMap.print() {
             val mountains = detectMountains()
@@ -62,9 +64,13 @@ class ItemRadar : Item() {
             val image = BufferedImage(width, length, BufferedImage.TYPE_INT_RGB)
             for (p in this) {
                 val baseColor = when {
+                    mountains.any { p in it.perimeter } -> when {
+                        mountains.any { p in it.slope } -> perimeterSlopeColor
+                        else -> perimeterGroundColor
+                    }
                     mountains.any { p in it.slope } -> slopeColor
                     mountains.any { p in it.top } -> topColor
-                    else -> normalColor
+                    else -> groundColor
                 }
                 val color = getColor(at(p), baseColor)
                 image.setRGB(p.x, p.y, color)
