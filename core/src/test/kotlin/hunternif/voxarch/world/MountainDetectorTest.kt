@@ -67,16 +67,17 @@ class MountainDetectorTest {
 
     @Test
     fun cluster() {
+        val map = HeightMap(12, 12)
         val points = setOf(
             IntVec2(10, 10),
             IntVec2(0, 0),
-            IntVec2(99, 99),
+            IntVec2(5, 5),
             IntVec2(0, 1),
             IntVec2(10, 11),
             IntVec2(1, 1)
         )
 
-        val clusters = cluster(points)
+        val clusters = map.cluster(points, MountainDetectorConfig())
 
         assertEquals(3, clusters.size)
         val sorted = clusters.sortedBy { it.size }
@@ -84,7 +85,7 @@ class MountainDetectorTest {
         val cluster2 = sorted[1]
         val cluster3 = sorted[2]
 
-        assertTrue(cluster1.contains(IntVec2(99, 99)))
+        assertTrue(cluster1.contains(IntVec2(5, 5)))
         assertTrue(cluster2.contains(IntVec2(10, 10)))
         assertTrue(cluster2.contains(IntVec2(10, 11)))
         assertTrue(cluster3.contains(IntVec2(0, 0)))
@@ -94,13 +95,14 @@ class MountainDetectorTest {
 
     @Test
     fun cluster2() {
+        val map = HeightMap(5, 5)
         val points = setOf(
             IntVec2(1, 3),
             IntVec2(0, 3),
             IntVec2(4, 0)
         )
 
-        val clusters = cluster(points)
+        val clusters = map.cluster(points, MountainDetectorConfig())
 
         assertEquals(2, clusters.size)
     }

@@ -13,7 +13,10 @@ data class MountainDetectorConfig(
     val slopeStartThreshold: Double = 3.0,
     val slopeEndThreshold: Double = 1.5,
     /** mountains with top area less than this will be filtered out */
-    val minTopArea: Int = 6
+    val minTopArea: Int = 6,
+    /** a single mountain's top will not contain blocks with height
+     * that are further than this away from avg height */
+    val topHeightSpread: Double = 3.0
 )
 
 /** Gradient ascent, assuming every midSlope steep enough is a mountain. */
@@ -24,7 +27,7 @@ fun HeightMap.detectMountains(
     minHeight = floor(average()).toInt()
     val segments = segments(config)
     val allTops = segments.filter { segments[it] == TOP }.toSet()
-    val topClusters = cluster(allTops).filter { it.size >= config.minTopArea }
+    val topClusters = cluster(allTops, config).filter { it.size >= config.minTopArea }
     val mountains = topClusters.map { top -> descendFromTop(top, segments) }
     minHeight = prevMin
     return mountains
@@ -47,7 +50,7 @@ internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segme
                     slope.add(next)
                     queue.push(next)
                 }
-                if (segments[p] == TOP && segments[next] != TOP) {
+                if (segments[p] == TOP && next !in top) {
                     perimeter.add(next)
                 }
             }
@@ -60,22 +63,27 @@ internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segme
     return Mountain(slope, top, perimeter)
 }
 
-/** Combine adjacent points into clusters */
-internal fun cluster(points: Set<IntVec2>): Set<Set<IntVec2>> {
+/** Combine adjacent points into clusters, within height range */
+internal fun HeightMap.cluster(points: Set<IntVec2>, config: MountainDetectorConfig): Set<Set<IntVec2>> {
     val clusters = hashSetOf<Set<IntVec2>>()
     val explored = hashSetOf<IntVec2>()
-    for (start in points) {
+    val pointsByHeight = points.sortedByDescending { at(it) }
+    for (start in pointsByHeight) {
         if (start in explored) continue
         val cluster = hashSetOf<IntVec2>()
+        var totalHeight = 0.0
+        var avgHeight: Double
         val queue = LinkedList<IntVec2>()
         queue.push(start)
         while (queue.isNotEmpty()) {
             val p = queue.pop()
             if (!explored.add(p)) continue
             cluster.add(p)
+            totalHeight += at(p)
+            avgHeight = totalHeight/cluster.size
             val explore = { dir: Direction ->
                 val next = p.next(dir)
-                if (next in points) {
+                if (next in points && abs(avgHeight - at(next)) <= config.topHeightSpread) {
                     queue.push(next)
                 }
             }
