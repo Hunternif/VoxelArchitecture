@@ -9,7 +9,9 @@ import java.util.*
 
 data class MountainDetectorConfig(
     val slopeStartThreshold: Double = 3.0,
-    val slopeEndThreshold: Double = 1.5
+    val slopeEndThreshold: Double = 1.5,
+    /** mountains with top area less than this will be filtered out */
+    val minTopArea: Int = 6
 )
 
 /** Gradient ascent, assuming every midSlope steep enough is a mountain. */
@@ -18,7 +20,7 @@ fun HeightMap.detectMountains(
 ): Collection<Mountain> {
     val segments = segments(config)
     val allTops = segments.filter { segments[it] == TOP }.toSet()
-    val topClusters = cluster(allTops)
+    val topClusters = cluster(allTops).filter { it.size >= config.minTopArea }
     return topClusters.map { top -> descendFromTop(top, segments) }
 }
 
@@ -166,8 +168,8 @@ internal fun HeightMap.midSlope(start: IntVec2, dir: Direction): Double {
 }
 
 /** Gradient slope at midpoint between [start] and `start.next(dir)`*/
-internal fun HeightMap.slope(start: IntVec2, dir: Direction): Double {
+internal fun HeightMap.slope(start: IntVec2, dir: Direction): Int {
     val next = start.next(dir)
-    if (next !in this) return 0.0
-    return (at(next) - at(start)).toDouble()
+    if (next !in this) return 0
+    return at(next) - at(start)
 }
