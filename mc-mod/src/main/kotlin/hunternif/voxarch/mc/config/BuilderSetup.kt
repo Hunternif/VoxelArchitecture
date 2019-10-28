@@ -8,8 +8,8 @@ import net.minecraft.init.Blocks
 
 val defaultContext = BuildContext().apply {
     materials.apply {
-        set(MaterialConfig.FLOOR) { ExtBlockDataMC(Blocks.cobblestone) }
-        set(MaterialConfig.WALL) { ExtBlockDataMC(Blocks.planks) }
+        set(MaterialConfig.FLOOR) { ExtBlockDataMC(Blocks.stone) }
+        set(MaterialConfig.WALL) { ExtBlockDataMC(Blocks.cobblestone) }
         set(MaterialConfig.ROOF) { ExtBlockDataMC(Blocks.log) }
         set(MaterialConfig.TORCH) { ExtBlockDataMC(Blocks.torch) }
         set(MaterialConfig.POST) { ExtBlockDataMC(Blocks.oak_fence) }

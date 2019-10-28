@@ -2,11 +2,19 @@ package hunternif.voxarch.world
 
 import hunternif.voxarch.vector.Array2D
 import hunternif.voxarch.vector.IntVec2
+import hunternif.voxarch.vector.Vec3
 
 class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
     var minHeight = 0
     var maxHeight = 256
+    /** Relative to the world*/
     var center: IntVec2 = IntVec2(0, 0)
+    /** Relative to the world, with height */
+    val center3: Vec3 get() = Vec3(center.x, at(middle), center.y)
+    /** Low-XZ corner of the map, relative to the world */
+    val start: IntVec2 get() = IntVec2(center.x - middle.x, center.y - middle.y)
+    /** Internal middle point of the map, i.e. between (0,0) and (width, length) */
+    private val middle: IntVec2 get() = IntVec2((width-1)/2, (length-1)/2)
 
     /** [list] must be a valid 2d list. */
     internal constructor(list: List<List<Int>>): this(list[0].size, list.size) {
@@ -48,7 +56,6 @@ class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
             area: IntVec2,
             mapper: IBlockWorld.(Int, Int) -> Int
         ): HeightMap {
-            val start = IntVec2(center.x - (area.x-1)/2, center.y - (area.y-1)/2)
             return HeightMap(area.x, area.y).apply {
                 this.center = center
                 minHeight = this@map.maxHeight

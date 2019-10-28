@@ -33,7 +33,7 @@ fun HeightMap.detectMountains(
     return mountains
 }
 
-internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segment>) : Mountain {
+internal fun HeightMap.descendFromTop(top: Area, segments: Array2D<Segment>) : Mountain {
     val slope = hashSetOf<IntVec2>()
     val perimeter = hashSetOf<IntVec2>()
     val explored = hashSetOf<IntVec2>()
@@ -60,12 +60,12 @@ internal fun HeightMap.descendFromTop(top: Set<IntVec2>, segments: Array2D<Segme
         descend(WEST)
         descend(SOUTH)
     }
-    return Mountain(slope, top, perimeter)
+    return Mountain(start, slope, top, perimeter)
 }
 
 /** Combine adjacent points into clusters, within height range */
-internal fun HeightMap.cluster(points: Set<IntVec2>, config: MountainDetectorConfig): Set<Set<IntVec2>> {
-    val clusters = hashSetOf<Set<IntVec2>>()
+internal fun HeightMap.cluster(points: Area, config: MountainDetectorConfig): Set<Area> {
+    val clusters = hashSetOf<Area>()
     val explored = hashSetOf<IntVec2>()
     val pointsByHeight = points.sortedByDescending { at(it) }
     for (start in pointsByHeight) {
@@ -150,8 +150,6 @@ internal fun HeightMap.segments(config: MountainDetectorConfig): Array2D<Segment
     }
     return segments
 }
-
-data class Slope(val dir: Direction, val height: Double)
 
 /** Each value points in the direction of greatest height */
 fun HeightMap.gradient(): Array2D<Slope> {
