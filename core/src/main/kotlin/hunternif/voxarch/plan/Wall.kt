@@ -15,8 +15,8 @@ import kotlin.math.atan2
  *  Z
  * ```
  * [rotationY] is read-only and is determined by `origin` and `end`.
- * @param start relative to _parent's origin_, lower XZ values, Y = floor level, will be copied.
- * @param end relative to _parent's origin_, higher XZ values, Y = wall height, will be copied.
+ * @param start relative to _parent's origin_, Y = floor level, will be copied.
+ * @param end relative to _parent's origin_, Y = wall height, will be copied.
  */
 open class Wall(
     start: Vec3,
@@ -25,10 +25,6 @@ open class Wall(
     var transparent: Boolean = false
 ) : Node(start) {
     var end: Vec3 = end.clone()
-
-    init {
-        require(end.y >= origin.y) { "Wall points must be in order of increasing Y" }
-    }
 
     override var rotationY: Double
         get() = atan2(-end.z + origin.z, end.x - origin.x) * 180 / Math.PI

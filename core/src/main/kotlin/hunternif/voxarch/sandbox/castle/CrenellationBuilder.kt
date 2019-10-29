@@ -15,7 +15,8 @@ class CrenellationBuilder(
     private val merlonLength: Int = 1,
     private val merlonHeight: Int = 2,
     private val crenelLength: Int = 1,
-    private val crenelHeight: Int = 1
+    private val crenelHeight: Int = 1,
+    private val downToGround: Boolean = false
 ) : Builder<Wall>() {
 
     override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
@@ -42,6 +43,18 @@ class CrenellationBuilder(
                 }
             }
             i = (i + 1) % (merlonLength + crenelLength)
+        }
+        // 3. optional foundation
+        if (downToGround) {
+            for (x in 0..wallLength) {
+                var y = -1
+                while(true) {
+                    val b = world.getBlock(x, y, 0)
+                    if (b != null && !context.env.shouldBuildThrough(b)) break
+                    world.setBlock(x, y, 0, block)
+                    y--
+                }
+            }
         }
         super.build(node, world, context)
     }

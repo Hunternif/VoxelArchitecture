@@ -4,7 +4,6 @@ import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.MainBuilder
 import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.mc.IncrementalBuilder
-import hunternif.voxarch.mc.MCEnvironment
 import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.mc.config.*
 import hunternif.voxarch.mc.plan.RandomPlan
@@ -77,7 +76,7 @@ class ArchitectsWand : Item() {
 //            MainBuilder().build(plan, mcWorld, context)
 
             // tower
-//            val castleSetup = CastleBlueprint(MCEnvironment)
+//            val castleSetup = CastleBlueprint()
 //            castleSetup.setup(context)
 //            val tower = castleSetup.squareTower(2, 6, 4, 6).apply {
 //                origin = pos.toVec3()
@@ -92,7 +91,7 @@ class ArchitectsWand : Item() {
                 IntVec2(floor(player.posX).toInt(), floor(player.posZ).toInt()),
                 IntVec2(radius*2 + 1, radius*2 + 1)
             )
-            val castle = CastleBlueprint(MCEnvironment)
+            val castle = CastleBlueprint()
             castle.setup(context)
             val plan = castle.layout(terrain)
             MainBuilder().build(plan, mcWorld, context)

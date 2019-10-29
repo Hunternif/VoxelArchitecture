@@ -8,7 +8,7 @@ import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
 class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
-    private var castleBlueprint = CastleBlueprint(DEFAULT_ENV)
+    private var castleBlueprint = CastleBlueprint()
 
     override fun setup() {
         super.setup()
@@ -74,12 +74,5 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
         }
         build(structure)
         record(out.sliceY(9))
-    }
-
-    companion object {
-        val DEFAULT_ENV = object : Environment {
-            override fun isTerrain(block: BlockData?): Boolean = true
-            override fun shouldBuildThrough(block: BlockData?): Boolean = false
-        }
     }
 }

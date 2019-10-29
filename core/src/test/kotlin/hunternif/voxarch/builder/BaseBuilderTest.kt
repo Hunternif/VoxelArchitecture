@@ -7,6 +7,7 @@ import hunternif.voxarch.plan.floor
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage
 import hunternif.voxarch.vector.Vec3
+import hunternif.voxarch.world.Environment
 import org.junit.Before
 
 abstract class BaseBuilderTest(
@@ -21,7 +22,7 @@ abstract class BaseBuilderTest(
     @Before
     open fun setup() {
         out = MultiDimIntArrayBlockStorage(width, height, length)
-        context = BuildContext()
+        context = BuildContext(DEFAULT_ENV)
         builder = Builder()
         setupDefaultMaterials()
         setupDefaultBuilders()
@@ -66,5 +67,10 @@ abstract class BaseBuilderTest(
         const val ID_FLOOR = 1
         const val ID_WALL = 2
         const val ID_ROOF = 3
+
+        val DEFAULT_ENV = object : Environment {
+            override fun isTerrain(block: BlockData?): Boolean = true
+            override fun shouldBuildThrough(block: BlockData?): Boolean = false
+        }
     }
 }

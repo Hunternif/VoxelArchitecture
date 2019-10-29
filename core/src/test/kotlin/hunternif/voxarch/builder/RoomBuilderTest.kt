@@ -31,7 +31,7 @@ class RoomBuilderTest {
 
     @Before
     fun setup() {
-        buildContext = BuildContext().apply{
+        buildContext = BuildContext(mock()).apply{
             builders.set(null to builder)
         }
         room = spy(Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO))

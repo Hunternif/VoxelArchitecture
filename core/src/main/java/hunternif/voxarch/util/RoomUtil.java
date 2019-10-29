@@ -78,6 +78,7 @@ public class RoomUtil {
 	 * @param room		the target room.
 	 * @param start		starting point of the ray.
 	 * @param target	target of the ray, i.e. some point on the ray.
+	 * @return			ray hit point on the room's bounding box
 	 */
 	public Vec2 rayTrace(Room room, Vec2 start, Vec2 target) {
 		// Retrieve local coordinates of the corners of the room's bounding box:

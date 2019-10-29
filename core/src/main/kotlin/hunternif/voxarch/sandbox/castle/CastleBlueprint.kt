@@ -3,28 +3,33 @@ package hunternif.voxarch.sandbox.castle
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.util.RoomUtil
 import hunternif.voxarch.vector.Box2D
 import hunternif.voxarch.vector.IntVec2
+import hunternif.voxarch.vector.Vec2
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.world.*
 import kotlin.math.max
 
 class CastleBlueprint(
-    private val env: Environment,
     private val config: Config = Config()
 ) {
     class Config(
-        val bigTowerMinWidth: Int = 2,
+        val bigTowerMinWidth: Int = 3,
         val bigTowerHeight: Int = 6,
         val wallTowerWidth: Int = 3,
         val wallTowerHeight: Int = 4,
-        val wallSectionLength: Int = 10
+        val wallSectionLength: Int = 10,
+        val wallHeight: Int = 2
         )
+
+    private val roomUtil = RoomUtil()
 
     fun setup(context: BuildContext) {
         context.builders.apply {
-            set(FOUNDATION to FloorFoundationBuilder(MaterialConfig.WALL, env))
+            set(FOUNDATION to FloorFoundationBuilder(MaterialConfig.WALL))
             set(TOWER_MAIN to CrenellationBuilder(MaterialConfig.WALL))
+            set(CURTAIN_WALL to CrenellationBuilder(MaterialConfig.WALL, downToGround = true))
         }
     }
 
@@ -34,11 +39,10 @@ class CastleBlueprint(
         // all further points will have XZ relative to heightmap, but absolute Y.
         val structure = Structure(Vec3(terrain.start.x, 0, terrain.start.y))
         for (m in mountains) {
+            if (m.rank > 0.7) {
+                structure.bigTower(m, terrain)
+            }
             structure.spreadCurtainWall(m, terrain)
-//            when {
-//                m.rank > 0.9 -> structure.bigTower(m, terrain)
-//                else -> structure.spreadCurtainWall(m, terrain)
-//            }
         }
         return structure
     }
@@ -54,34 +58,75 @@ class CastleBlueprint(
             IntVec2(config.wallTowerWidth, config.wallTowerWidth),
             (config.wallSectionLength + config.wallTowerWidth).toDouble()
         )
+        // TODO have a global collection of towers to reduce clustering from adjacent mountains
+        val towers = mutableListOf<Room>()
         for (box in boxes) {
             if (box.width < config.wallTowerWidth || box.length < config.wallTowerWidth) continue
-            towerFromBox(box, config.wallTowerHeight, terrain)
+            towers.add(towerFromBox(box, config.wallTowerHeight, terrain))
         }
-        // TODO build walls between towers
-        // TODO have a global collection of towers to reduce clustering from adjacent mountains
+        // elevate all towers to the same height
+        val maxElevation = towers.map { it.origin.y }.max() ?: 0.0
+        towers.forEach { it.origin.y = maxElevation }
+        buildWallsBetween(towers, m.top)
+    }
+
+    private fun Structure.buildWallsBetween(towers: List<Room>, area: Area) {
+        if (towers.isEmpty()) return
+        // TODO connect towers in order of minimum distance
+        for (i in 0 until towers.count()-1) {
+            buildWallBetween(towers[i], towers[i+1], area)
+        }
+        buildWallBetween(towers.last(), towers[0], area)
+    }
+
+    private fun Structure.buildWallBetween(t1: Room, t2: Room, area: Area) {
+        // TODO consider inside-outside of the wall
+        if (t1 == t2) return
+        val c1 = t1.origin.toXZ()
+        val c2 = t2.origin.toXZ()
+        val middle = t1.origin.add(t2.origin).multiplyLocal(0.5)
+        val p1 = roomUtil.rayTrace(t1, middle.toXZ(), c1) ?: c1
+        val p2 = roomUtil.rayTrace(t2, middle.toXZ(), c2) ?: c2
+        // TODO sometimes the wall goes too far deep into the tower
+
+        //TODO ensure that walls don't go outside the mountain top?
+//        val length = p2.distanceTo(p1)
+//        val wallVec = p2.subtract(p1).normalizeLocal()
+//        val w = p1.clone()
+//        var outsideArea = false
+//        for (i in 0..length.toInt()) {
+//            if (w.toInt() !in area) { outsideArea = true; break }
+//            w.addLocal(wallVec)
+//        }
+//        if (outsideArea) return
+
+        val y = max(t1.origin.y, t2.origin.y)
+        wall(Vec3(p1.x, y, p1.y), Vec3(p2.x, y + config.wallHeight, p2.y)) {
+            type = CURTAIN_WALL
+        }
     }
 
     /**
      * Fill the entire top with a single tower, stretching it as wide as possible.
+     * @return null if not enough space to fit a big tower as defined in [config]
      * ```
      *  +---+
      *  |___|
      * /     \
      * ```
      */
-    private fun Structure.bigTower(m: Mountain, terrain: HeightMap) {
-        val box = m.top.fitBox()
-        if (box.width < config.bigTowerMinWidth || box.length < config.bigTowerMinWidth) return
-        towerFromBox(box, config.bigTowerHeight, terrain)
+    private fun Structure.bigTower(m: Mountain, terrain: HeightMap): Room? {
+        val box = m.topWithFlatPerimeter.fitBox()
+        if (box.width < config.bigTowerMinWidth || box.length < config.bigTowerMinWidth) return null
+        return towerFromBox(box, config.bigTowerHeight, terrain)
     }
 
-    private fun Structure.towerFromBox(box: Box2D, towerHeight: Int, terrain: HeightMap) {
+    private fun Structure.towerFromBox(box: Box2D, towerHeight: Int, terrain: HeightMap): Room {
         val maxHeight = box.fold(0) { acc, p -> max(acc, terrain[p]) }
         val start = Vec3(box.start.x, maxHeight, box.start.y)
         val end = Vec3(box.end.x, maxHeight, box.end.y)
-        floor(start, end) { type = FOUNDATION }
-        room(start, end.addY(towerHeight)) {
+        return room(start, end.addY(towerHeight)) {
+            floor { type = FOUNDATION }
             floor()
             ceiling()
             createFourWalls()
@@ -119,5 +164,6 @@ class CastleBlueprint(
     companion object {
         const val FOUNDATION = "foundation"
         const val TOWER_MAIN = "tower_main"
+        const val CURTAIN_WALL = "curtain_wall"
     }
 }

@@ -2,11 +2,12 @@ package hunternif.voxarch.mc.config
 
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.mc.ExtBlockDataMC
+import hunternif.voxarch.mc.MCEnvironment
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.sandbox.TorchStandBuilder
 import net.minecraft.init.Blocks
 
-val defaultContext = BuildContext().apply {
+val defaultContext = BuildContext(MCEnvironment).apply {
     materials.apply {
         set(MaterialConfig.FLOOR) { ExtBlockDataMC(Blocks.stone) }
         set(MaterialConfig.WALL) { ExtBlockDataMC(Blocks.cobblestone) }

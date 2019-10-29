@@ -7,8 +7,7 @@ import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.storage.IBlockStorage
 
 class FloorFoundationBuilder(
-    private val material: String,
-    private val env: Environment
+    private val material: String
 ) : Builder<Floor>() {
 
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
@@ -22,7 +21,7 @@ class FloorFoundationBuilder(
                 var y = 0.0
                 while(true) {
                     val b = transformer.getBlock(x, y, z)
-                    if (b != null && !env.shouldBuildThrough(b)) break
+                    if (b != null && !context.env.shouldBuildThrough(b)) break
                     transformer.setBlock(x, y, z, block)
                     y--
                 }
