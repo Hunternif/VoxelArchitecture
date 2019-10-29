@@ -87,7 +87,13 @@ public class Vec2 {
 	public double squareDistanceTo(Vec2 vec) {
 		return (x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y);
 	}
+	public double squareDistanceTo(IntVec2 vec) {
+		return (x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y);
+	}
 	public double distanceTo(Vec2 vec) {
+		return Math.sqrt(squareDistanceTo(vec));
+	}
+	public double distanceTo(IntVec2 vec) {
 		return Math.sqrt(squareDistanceTo(vec));
 	}
 	
@@ -118,5 +124,9 @@ public class Vec2 {
 	
 	public static Vec2 fromXZ(Vec3 vec) {
 		return new Vec2 (vec.x, vec.z);
+	}
+
+	public IntVec2 toInt() {
+		return new IntVec2(Math.round(x), Math.round(y));
 	}
 }

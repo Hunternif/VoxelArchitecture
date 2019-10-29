@@ -20,4 +20,7 @@ data class Mountain(
         if (perimeter.isEmpty()) return 0.0
         return perimeter.intersect(slope).size.toDouble() / perimeter.size.toDouble()
     }
+
+    /** top + part of perimeter that's not a slope */
+    val topWithFlatPerimeter: Area get() = perimeter.subtract(slope).union(top)
 }

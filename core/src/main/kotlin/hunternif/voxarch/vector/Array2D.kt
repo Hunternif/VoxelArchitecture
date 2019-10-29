@@ -29,11 +29,11 @@ open class Array2D<T>(
 
     open operator fun contains(p: IntVec2) = p.x in 0 until width && p.y in 0 until length
 
-    override operator fun iterator(): Iterator<IntVec2> = sequence {
+    override operator fun iterator(): Iterator<IntVec2> = iterator {
         for (x in 0 until width) {
             for (z in 0 until length) {
                 yield(IntVec2(x, z))
             }
         }
-    }.iterator()
+    }
 }
