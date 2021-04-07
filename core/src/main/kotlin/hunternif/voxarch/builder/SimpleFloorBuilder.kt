@@ -9,13 +9,13 @@ class SimpleFloorBuilder(
 ): Builder<Floor>() {
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
-        val block = context.materials.get(material)
         // step by 0.5 in order to prevent gaps when the node is rotated.
         // extra margin on the edges is to prevent building outside walls.
         var x = margin
         while (x <= node.width - margin) {
             var z = margin
             while (z <= node.length - margin) {
+                val block = context.materials.get(material)
                 transformer.setBlock(x, 0.0, z, block)
                 z += 0.5
             }

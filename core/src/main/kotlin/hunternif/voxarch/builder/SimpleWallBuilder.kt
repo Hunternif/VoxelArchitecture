@@ -8,9 +8,9 @@ open class SimpleWallBuilder(private val material: String): Builder<Wall>() {
         if (node.transparent) return
         val length = node.length.toInt()
         val height = node.height.toInt()
-        val block = context.materials.get(material)
         for (x in 0..length) {
             for (y in 0..height) {
+                val block = context.materials.get(material)
                 world.setBlock(x, y, 0, block)
             }
         }

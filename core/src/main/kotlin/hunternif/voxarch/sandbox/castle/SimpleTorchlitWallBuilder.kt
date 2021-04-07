@@ -16,8 +16,6 @@ class SimpleTorchlitWallBuilder(
     override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
         if (node.transparent) return
         super.build(node, world, context)
-        val block = context.materials.get(MaterialConfig.TORCH)
-        block.orientation = Direction.NORTH
 
         //TODO: some torches fall down. Consider spawning them as props.
 
@@ -25,6 +23,8 @@ class SimpleTorchlitWallBuilder(
         // itself because it will probably be covered by another wall:
         var x = torchWallSpacing / 2
         while (x < node.length) {
+            val block = context.materials.get(MaterialConfig.TORCH)
+            block.orientation = Direction.NORTH
             world.setBlock(x, torchHeight, -1, block)
             x += torchWallSpacing
         }

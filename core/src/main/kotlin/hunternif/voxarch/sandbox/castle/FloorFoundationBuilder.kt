@@ -12,7 +12,6 @@ class FloorFoundationBuilder(
 
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
-        val block = context.materials.get(material)
         // step by 0.5 in order to prevent gaps when the node is rotated
         var x = 0.0
         while (x <= node.width) {
@@ -22,6 +21,7 @@ class FloorFoundationBuilder(
                 while(true) {
                     val b = transformer.getBlock(x, y, z)
                     if (b != null && !context.env.shouldBuildThrough(b)) break
+                    val block = context.materials.get(material)
                     transformer.setBlock(x, y, z, block)
                     y--
                 }

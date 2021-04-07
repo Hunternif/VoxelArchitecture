@@ -23,10 +23,10 @@ class CrenellationBuilder(
         if (node.transparent) return
         val wallLength = ceil(node.length).toInt()
         val wallHeight = ceil(node.height).toInt()
-        val block = context.materials.get(material)
         // 1. base wall
         for (x in 0..wallLength) {
             for (y in 0..wallHeight) {
+                val block = context.materials.get(material)
                 world.setBlock(x, y, 0, block)
             }
         }
@@ -35,10 +35,12 @@ class CrenellationBuilder(
         for (x in 0..wallLength) {
             if (i < merlonLength) {
                 for (y in 1..merlonHeight) {
+                    val block = context.materials.get(material)
                     world.setBlock(x, y + wallHeight, 0, block)
                 }
             } else {
                 for (y in 1..crenelHeight) {
+                    val block = context.materials.get(material)
                     world.setBlock(x, y + wallHeight, 0, block)
                 }
             }
@@ -51,6 +53,7 @@ class CrenellationBuilder(
                 while(true) {
                     val b = world.getBlock(x, y, 0)
                     if (b != null && !context.env.shouldBuildThrough(b)) break
+                    val block = context.materials.get(material)
                     world.setBlock(x, y, 0, block)
                     y--
                 }
