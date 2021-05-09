@@ -12,39 +12,40 @@ class TowerBlueprint(
 ) {
     class Config(
         val width: Int = 6,
-        val height: Int = 8,
+        val height: Int = 12,
 
-        val roofOffset: Int = 1,
+        val roofOffset: Int = 2,
 
         // [4, ..) Higher values make rounder tower.
-        val sideCount: Int = 4,
+        val sideCount: Int = 8,
 
-        val spireWidth: Int = 6,
-        val spireHeight: Int = 0
+        val spireHeight: Int = 10,
+
+        val withCrenellation: Boolean = true
     )
 
     fun setup(context: BuildContext) {
         context.builders.apply {
             set(FOUNDATION to FloorFoundationBuilder(MaterialConfig.WALL))
-            set(TOWER_BODY to CorbelWallBuilder(MaterialConfig.WALL, MaterialConfig.WALL_DECORATION))
-            set(TOWER_ROOF to CrenellationBuilder(MaterialConfig.WALL_DECORATION, downToGround = false))
-            when (config.sideCount) {
-                // TODO: pyramid roof builder
-                // 4 -> set(TOWER_SPIRE to PyramidBuilder(MaterialConfig.ROOF))
-                // TODO: conic roof builder
-                //else -> set(TOWER_SPIRE to ConeBuilder(MaterialConfig.ROOF))
-            }
+            set(TOWER_BODY to CorbelWallBuilder(
+                MaterialConfig.WALL,
+                MaterialConfig.WALL_DECORATION,
+                corbelDepth = config.roofOffset
+            ))
+            set(TOWER_ROOF to CrenellationBuilder(MaterialConfig.WALL_DECORATION))
+            set(TOWER_SPIRE to PyramidBuilder(MaterialConfig.ROOF, config.sideCount))
         }
     }
 
     fun layout(origin: IntVec3): Structure {
         val size = config.run { Vec3(width, height, width) }
 
-        val roofOrigin = config.run { Vec3(0, height, 0) }
+        val roofOrigin = config.run { Vec3(0, height + 1, 0) }
         val roofSize = config.run { Vec3(width + roofOffset*2, 0, width + roofOffset*2) }
 
+        val hasSpire = config.spireHeight > 0
         val spireOrigin = config.run { Vec3(0, height + 1, 0) }
-        val spireSize = config.run { Vec3(spireWidth, spireHeight, spireWidth) }
+        val spireSize = roofSize.addY(config.spireHeight)
 
         return Structure().apply {
             centeredRoom(Vec3(origin), size) {
@@ -52,15 +53,21 @@ class TowerBlueprint(
                 floor()
                 createTowerWalls()
                 type = TOWER_BODY
-                // overhanging roof:
-                centeredRoom(roofOrigin, roofSize) {
-                    ceiling()
-                    createTowerWalls()
-                    type = TOWER_ROOF
-                }
+
                 // spire:
-                centeredRoom(spireOrigin, spireSize) {
-                    type = TOWER_SPIRE
+                if (hasSpire) {
+                    centeredRoom(spireOrigin, spireSize) {
+                        type = TOWER_SPIRE
+                    }
+                }
+
+                // overhanging roof:
+                if (config.withCrenellation) {
+                    centeredRoom(roofOrigin, roofSize) {
+                        ceiling()
+                        createTowerWalls()
+                        type = TOWER_ROOF
+                    }
                 }
             }
         }

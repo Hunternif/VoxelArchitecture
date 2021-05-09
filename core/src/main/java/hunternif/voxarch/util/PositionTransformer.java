@@ -18,7 +18,7 @@ import java.util.Deque;
 public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
 	/** Angle of counterclockwise rotation. Need to remember it to rotate the blocks correctly. */
-	private double angle = 0;
+	private double angleY = 0;
 	
 	/** Stack for transformations. */
 	private final Deque<StackData> stack = new ArrayDeque<>();
@@ -57,7 +57,7 @@ public class PositionTransformer implements IBlockStorage {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
 		Direction cachedOrientation = block.getOrientation();
-		block.rotate(angle);
+		block.rotate(angleY);
 		storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z), block);
 		block.setOrientation(cachedOrientation);
 	}
@@ -86,8 +86,19 @@ public class PositionTransformer implements IBlockStorage {
 
 	/** Apply transformation of rotation counterclockwise around the Y axis. */
 	public PositionTransformer rotateY(double angle) {
-		this.angle += angle;
+		this.angleY += angle;
 		matrix = matrix.multiplyLocal(Matrix4.rotationY(angle));
+		return this;
+	}
+
+	//TODO: store rotation as vector? Currently the XZ rotations will not affect blocks.
+	public PositionTransformer rotateX(double angle) {
+		matrix = matrix.multiplyLocal(Matrix4.rotationX(angle));
+		return this;
+	}
+
+	public PositionTransformer rotateZ(double angle) {
+		matrix = matrix.multiplyLocal(Matrix4.rotationZ(angle));
 		return this;
 	}
 
@@ -106,7 +117,7 @@ public class PositionTransformer implements IBlockStorage {
 	 * glPushMatrix(). */
 	public void pushTransformation() {
 		StackData data = new StackData();
-		data.angle = angle;
+		data.angle = angleY;
 		data.matrix = matrix.clone();
 		stack.push(data);
 	}
@@ -116,7 +127,7 @@ public class PositionTransformer implements IBlockStorage {
 	public void popTransformation() {
 		StackData data = stack.poll();
 		if (data != null) {
-			angle = data.angle;
+			angleY = data.angle;
 			matrix = data.matrix;
 		}
 	}
