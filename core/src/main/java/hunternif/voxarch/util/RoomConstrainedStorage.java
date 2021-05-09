@@ -19,6 +19,7 @@ import java.util.Map;
  * Combine it with {@link PositionTransformer} to account for its position
  * and rotation.</p>
  * <p><b>Coordinates are set from the corner of the room, not origin.</b></B></p>
+ * TODO: use coordinates start from room origin.
  * @author Hunternif
  */
 public class RoomConstrainedStorage implements IFixedBlockStorage {

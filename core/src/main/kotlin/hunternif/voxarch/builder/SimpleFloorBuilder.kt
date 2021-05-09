@@ -2,24 +2,33 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.RoomConstrainedStorage
 
 class SimpleFloorBuilder(
     private val material: String,
+    /** Step by 0.5 in order to prevent gaps when the node is rotated. */
+    private val step: Double = 0.5,
+    /** Extra margin on the edges is to prevent building outside walls. */
     private val margin: Double = 0.25
 ): Builder<Floor>() {
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
-        val transformer = world.transformer()
-        // step by 0.5 in order to prevent gaps when the node is rotated.
-        // extra margin on the edges is to prevent building outside walls.
+        val transformer =
+            when (node) {
+                is Floor.RoomBound -> {
+                    val constraint = RoomConstrainedStorage(world, node.room)
+                    constraint.transformer()
+                }
+                else -> world.transformer()
+            }
         var x = margin
         while (x <= node.width - margin) {
             var z = margin
             while (z <= node.length - margin) {
                 val block = context.materials.get(material)
                 transformer.setBlock(x, 0.0, z, block)
-                z += 0.5
+                z += step
             }
-            x += 0.5
+            x += step
         }
         super.build(node, world, context)
     }
