@@ -112,9 +112,23 @@ public class MathTest {
 	}
 	
 	@Test
-	public void testRotateVector4() {
+	public void testRotateVector4AroundY() {
 		Matrix4 mat = Matrix4.rotationY(90);
 		Vec4 vec = new Vec4(1.5, 0, 0.5, 0);
 		assertEquals(new Vec4(0.5, 0, -1.5, 0), mat.multiplyLocal(vec));
+	}
+
+	@Test
+	public void testRotateVector4AroundX() {
+		Matrix4 mat = Matrix4.rotationX(90);
+		Vec4 vec = new Vec4(0, 1.5, 0.5, 0);
+		assertEquals(new Vec4(0, -0.5, 1.5, 0), mat.multiplyLocal(vec));
+	}
+
+	@Test
+	public void testRotateVector4AroundZ() {
+		Matrix4 mat = Matrix4.rotationZ(90);
+		Vec4 vec = new Vec4(1.5, 0.5, 0, 0);
+		assertEquals(new Vec4(-0.5, 1.5, 0, 0), mat.multiplyLocal(vec));
 	}
 }
