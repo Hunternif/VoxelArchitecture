@@ -35,7 +35,7 @@ fun symmetricSpacing(
 
     // Naive implementation will use minSpace
 
-    while (space > minSpace * 3) {
+    while (space >= minSpace * 3) {
         val step = minSpace
         i += step
         j -= step
