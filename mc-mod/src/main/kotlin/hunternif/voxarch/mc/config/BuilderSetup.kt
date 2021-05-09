@@ -17,6 +17,7 @@ val defaultContext = BuildContext(MCEnvironment).apply {
                 ExtBlockDataMC(Blocks.stone)
             ).takeRandom()
         }
+        set(MaterialConfig.WALL_DECORATION) { ExtBlockDataMC(Blocks.stonebrick) }
         set(MaterialConfig.ROOF) { ExtBlockDataMC(Blocks.log) }
         set(MaterialConfig.TORCH) { ExtBlockDataMC(Blocks.torch) }
         set(MaterialConfig.POST) { ExtBlockDataMC(Blocks.oak_fence) }

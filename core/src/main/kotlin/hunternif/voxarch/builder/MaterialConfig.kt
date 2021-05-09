@@ -20,6 +20,7 @@ class MaterialConfig {
     companion object {
         // Some default materials
         const val WALL = "wall"
+        const val WALL_DECORATION = "wall_decoration"
         const val FLOOR = "floor"
         const val ROOF = "roof"
         const val TORCH = "torch"

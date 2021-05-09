@@ -9,6 +9,9 @@ import kotlin.math.ceil
 /**
  * Adds castle crenellations above ceiling level.
  * "Merlon" is the rising part, "crenel" is the dip.
+ *
+ * Sizes are defined using the "natural" convention, see
+ * [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
  */
 class CrenellationBuilder(
     private val material: String,

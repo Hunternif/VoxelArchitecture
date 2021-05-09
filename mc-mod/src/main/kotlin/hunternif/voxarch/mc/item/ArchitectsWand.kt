@@ -27,7 +27,9 @@ import java.util.Random
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
+import hunternif.voxarch.sandbox.castle.TowerBlueprint
 import hunternif.voxarch.vector.IntVec2
+import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.world.HeightMap.Companion.terrainMap
 import kotlin.math.floor
 
@@ -47,6 +49,8 @@ class ArchitectsWand : Item() {
         stack: ItemStack, world: World, player: EntityPlayer
     ): ItemStack {
         if (!world.isRemote) {
+            val posX = floor(player.posX).toInt()
+            val posZ = floor(player.posZ).toInt()
             println("270-yaw: " + (270 - player.rotationYaw))
 
             val mcWorld = MCWorld(world)
@@ -85,16 +89,16 @@ class ArchitectsWand : Item() {
 //            MainBuilder().build(tower, mcWorld, context)
 //            player.setPositionAndUpdate(pos.x.toDouble(), (pos.y + 10).toDouble(), pos.z.toDouble())
 
-            // tower on mountain
-            val radius = 64
-            val terrain = mcWorld.terrainMap(
-                IntVec2(floor(player.posX).toInt(), floor(player.posZ).toInt()),
-                IntVec2(radius*2 + 1, radius*2 + 1)
-            )
-            val castle = CastleBlueprint()
-            castle.setup(context)
-            val plan = castle.layout(terrain)
-            MainBuilder().build(plan, mcWorld, context)
+            // castle on mountain
+//            val radius = 64
+//            val terrain = mcWorld.terrainMap(
+//                IntVec2(posX, posZ),
+//                IntVec2(radius*2 + 1, radius*2 + 1)
+//            )
+//            val castle = CastleBlueprint()
+//            castle.setup(context)
+//            val plan = castle.layout(terrain)
+//            MainBuilder().build(plan, mcWorld, context)
 
             // random flat dungeon
 //            val plan = Structure()
@@ -103,6 +107,13 @@ class ArchitectsWand : Item() {
 //            plan.addChild(dungeon)
 //            FMLCommonHandler.instance().bus().register(
 //                IncrementalBuilder(dungeon, plan, MainBuilder(), context))
+
+            // fancy tower
+            val pos = IntVec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
+            val tower = TowerBlueprint()
+            tower.setup(context)
+            val plan = tower.layout(pos)
+            MainBuilder().build(plan, mcWorld, context)
         }
         return stack
     }
