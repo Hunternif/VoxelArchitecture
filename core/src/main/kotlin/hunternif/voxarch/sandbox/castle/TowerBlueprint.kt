@@ -33,7 +33,7 @@ class TowerBlueprint(
                 corbelDepth = config.roofOffset
             ))
             set(TOWER_ROOF to CrenellationBuilder(MaterialConfig.WALL_DECORATION))
-            set(TOWER_SPIRE to PyramidBuilder(MaterialConfig.ROOF, config.sideCount))
+            set(TOWER_SPIRE to PyramidBuilder(MaterialConfig.ROOF))
         }
     }
 
@@ -57,6 +57,8 @@ class TowerBlueprint(
                 // spire:
                 if (hasSpire) {
                     centeredRoom(spireOrigin, spireSize) {
+                        createTowerWalls()
+                        walls.forEach { it.transparent = true }
                         type = TOWER_SPIRE
                     }
                 }

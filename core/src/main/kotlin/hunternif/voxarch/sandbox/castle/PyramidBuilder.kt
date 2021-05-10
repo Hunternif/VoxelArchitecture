@@ -10,44 +10,17 @@ import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
- * Inscribe a pyramid into the room.
+ * Inscribe a pyramid into the room. Every section based on the walls.
  */
 class PyramidBuilder(
-    private val material: String,
-    private val sideCount: Int = 4
+    private val material: String
 ): Builder<Room>() {
     override fun build(node: Room, world: IBlockStorage, context: BuildContext) {
-        val a = node.size.x/2
-        val b = node.size.z/2
         val tip = Vec3(0.0, node.height, 0.0)
-
-        if (sideCount == 4) {
-            buildSection(Vec3(a, 0.0, b), Vec3(a, 0.0, -b), tip, world, context)
-            buildSection(Vec3(a, 0.0, -b), Vec3(-a, 0.0, -b), tip, world, context)
-            buildSection(Vec3(-a, 0.0, -b), Vec3(-a, 0.0, b), tip, world, context)
-            buildSection(Vec3(-a, 0.0, b), Vec3(a, 0.0, b), tip, world, context)
-        } else {
-            val angleStep = 360.0 / sideCount.toDouble()
-            // Going counterclockwise:
-            var angle = -angleStep / 2
-            while (angle < 360 - angleStep / 2) {
-                buildSection(
-                    Vec3(
-                        a * MathUtil.cosDeg(angle),
-                        0.0,
-                        -b * MathUtil.sinDeg(angle)
-                    ),
-                    Vec3(
-                        a * MathUtil.cosDeg(angle + angleStep),
-                        0.0,
-                        -b * MathUtil.sinDeg(angle + angleStep)
-                    ),
-                    tip,
-                    world,
-                    context
-                )
-                angle += angleStep
-            }
+        node.walls.forEach {
+            val p1 = it.origin
+            val p2 = Vec3(it.end.x, 0.0, it.end.z)
+            buildSection(p1, p2, tip, world, context)
         }
         super.build(node, world, context)
     }
