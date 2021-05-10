@@ -12,20 +12,19 @@ class SimpleFloorBuilder(
     private val margin: Double = 0.25
 ): Builder<Floor>() {
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
-        val transformer =
-            when (node) {
-                is Floor.RoomBound -> {
-                    val constraint = RoomConstrainedStorage(world, node.room)
-                    constraint.transformer()
-                }
-                else -> world.transformer()
-            }
+        val transformer = world.transformer()
+        val constraint = if (node is Floor.RoomBound) {
+            RoomConstrainedStorage(world, node.room)
+        } else null
+
         var x = margin
         while (x <= node.width - margin) {
             var z = margin
             while (z <= node.length - margin) {
-                val block = context.materials.get(material)
-                transformer.setBlock(x, 0.0, z, block)
+                if (constraint?.isWithinRoom(x, 0.0, z) != false) {
+                    val block = context.materials.get(material)
+                    transformer.setBlock(x, 0.0, z, block)
+                }
                 z += step
             }
             x += step
