@@ -53,6 +53,7 @@ public class MathTest {
 		assertEquals(2f, MathUtil.clampAngle(360*11 + 2), 0);
 		assertEquals(358f, MathUtil.clampAngle(360*11 - 2), 0);
 		assertEquals(2f, MathUtil.clampAngle(-360*11 + 2), 0);
+		assertEquals(1.3455676, MathUtil.clampAngle(361.3455676), 0.0000001);
 	}
 	
 	@Test
@@ -71,7 +72,17 @@ public class MathTest {
 		assertEquals(0d, MathUtil.cosDeg(270), 0);
 		assertEquals(-1d, MathUtil.cosDeg(180), 0);
 		assertEquals(-1d, MathUtil.cosDeg(-180), 0);
-		assertEquals(MathUtil.sinDeg(45), MathUtil.cosDeg(45), 0.000000001);
+		assertEquals(MathUtil.sinDeg(22.5), -MathUtil.cosDeg(112.5), 0.0001);
+		assertEquals(MathUtil.sinDeg(22.5), MathUtil.cosDeg(67.5), 0.0001);
+		assertEquals(MathUtil.sinDeg(45), MathUtil.cosDeg(45), 0.0001);
+		assertEquals(0.5, MathUtil.sinDeg(30), 0.0001);
+		assertEquals(0.5, MathUtil.sinDeg(150), 0.0001);
+		assertEquals(-0.5, MathUtil.sinDeg(210), 0.0001);
+		assertEquals(-0.5, MathUtil.sinDeg(330), 0.0001);
+		assertEquals(0.5, MathUtil.cosDeg(60), 0.0001);
+		assertEquals(-0.5, MathUtil.cosDeg(120), 0.0001);
+		assertEquals(-0.5, MathUtil.cosDeg(240), 0.0001);
+		assertEquals(0.5, MathUtil.cosDeg(300), 0.0001);
 	}
 	
 	@Test
@@ -112,9 +123,23 @@ public class MathTest {
 	}
 	
 	@Test
-	public void testRotateVector4() {
+	public void testRotateVector4AroundY() {
 		Matrix4 mat = Matrix4.rotationY(90);
 		Vec4 vec = new Vec4(1.5, 0, 0.5, 0);
 		assertEquals(new Vec4(0.5, 0, -1.5, 0), mat.multiplyLocal(vec));
+	}
+
+	@Test
+	public void testRotateVector4AroundX() {
+		Matrix4 mat = Matrix4.rotationX(90);
+		Vec4 vec = new Vec4(0, 1.5, 0.5, 0);
+		assertEquals(new Vec4(0, -0.5, 1.5, 0), mat.multiplyLocal(vec));
+	}
+
+	@Test
+	public void testRotateVector4AroundZ() {
+		Matrix4 mat = Matrix4.rotationZ(90);
+		Vec4 vec = new Vec4(1.5, 0.5, 0, 0);
+		assertEquals(new Vec4(-0.5, 1.5, 0, 0), mat.multiplyLocal(vec));
 	}
 }

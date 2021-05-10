@@ -74,7 +74,7 @@ public class MCWorld implements IBlockWorld {
 		}
 		Block mcBlock = Block.getBlockById(block.getId());
 		//TODO: make sure rotation is applied correctly for particular kinds of blocks, i.e. Portals
-		IBlockState state = mcBlock.getDefaultState();
+		IBlockState state = mcBlock.getStateFromMeta(block.getMetadata());
 		if (block.hasOrientation() && state.getPropertyNames().contains(FACING)) {
 			state = state.withProperty(FACING, forgeOrientMap.get(block.getOrientation()));
 		}

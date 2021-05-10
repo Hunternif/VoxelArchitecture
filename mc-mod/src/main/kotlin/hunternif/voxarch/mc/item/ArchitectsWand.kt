@@ -12,8 +12,6 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.sandbox.FlatDungeon
-import hunternif.voxarch.sandbox.castle.CastleBlueprint
-import hunternif.voxarch.sandbox.castle.SimpleTorchlitWallBuilder
 import hunternif.voxarch.vector.Vec3
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
@@ -27,7 +25,10 @@ import java.util.Random
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
+import hunternif.voxarch.sandbox.castle.*
+import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.vector.IntVec2
+import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.world.HeightMap.Companion.terrainMap
 import kotlin.math.floor
 
@@ -47,12 +48,14 @@ class ArchitectsWand : Item() {
         stack: ItemStack, world: World, player: EntityPlayer
     ): ItemStack {
         if (!world.isRemote) {
+            val posX = floor(player.posX).toInt()
+            val posZ = floor(player.posZ).toInt()
             println("270-yaw: " + (270 - player.rotationYaw))
 
             val mcWorld = MCWorld(world)
 
             context.builders.buildersForClass(Wall::class.java).setDefault(
-                SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3))
+                SimpleTorchlitWallBuilder(MAT_WALL, 4, 3))
 
             // torch stand for testing
 //            val plan = Structure(pos.toVec3()).apply {
@@ -85,24 +88,32 @@ class ArchitectsWand : Item() {
 //            MainBuilder().build(tower, mcWorld, context)
 //            player.setPositionAndUpdate(pos.x.toDouble(), (pos.y + 10).toDouble(), pos.z.toDouble())
 
-            // tower on mountain
-            val radius = 64
-            val terrain = mcWorld.terrainMap(
-                IntVec2(floor(player.posX).toInt(), floor(player.posZ).toInt()),
-                IntVec2(radius*2 + 1, radius*2 + 1)
-            )
-            val castle = CastleBlueprint()
-            castle.setup(context)
-            val plan = castle.layout(terrain)
-            MainBuilder().build(plan, mcWorld, context)
+            // castle on mountain
+//            val radius = 64
+//            val terrain = mcWorld.terrainMap(
+//                IntVec2(posX, posZ),
+//                IntVec2(radius*2 + 1, radius*2 + 1)
+//            )
+//            val castle = CastleBlueprint()
+//            castle.setup(context)
+//            val plan = castle.layout(terrain)
+//            MainBuilder().build(plan, mcWorld, context)
 
             // random flat dungeon
 //            val plan = Structure()
 //            val dungeon = FlatDungeon(pos.toVec3(), 0.0)
-//            context.builders.setDefault(SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3))
+//            context.builders.setDefault(SimpleTorchlitWallBuilder(MAT_WALL, 4, 3))
 //            plan.addChild(dungeon)
 //            FMLCommonHandler.instance().bus().register(
 //                IncrementalBuilder(dungeon, plan, MainBuilder(), context))
+
+            context.builders.setCastleBuilders()
+
+            // fancy tower
+            val pos = IntVec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
+            val tower = TowerBlueprint()
+            val plan = tower.layout(pos)
+            MainBuilder().build(plan, mcWorld, context)
         }
         return stack
     }

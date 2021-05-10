@@ -1,12 +1,9 @@
 package hunternif.voxarch.sandbox.castle
 
-import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.RoomUtil
 import hunternif.voxarch.vector.Box2D
 import hunternif.voxarch.vector.IntVec2
-import hunternif.voxarch.vector.Vec2
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.world.*
 import kotlin.math.max
@@ -24,14 +21,6 @@ class CastleBlueprint(
         )
 
     private val roomUtil = RoomUtil()
-
-    fun setup(context: BuildContext) {
-        context.builders.apply {
-            set(FOUNDATION to FloorFoundationBuilder(MaterialConfig.WALL))
-            set(TOWER_MAIN to CrenellationBuilder(MaterialConfig.WALL))
-            set(CURTAIN_WALL to CrenellationBuilder(MaterialConfig.WALL, downToGround = true))
-        }
-    }
 
     fun layout(terrain: HeightMap): Structure {
         val mountains = terrain.detectMountains()
@@ -102,7 +91,7 @@ class CastleBlueprint(
 
         val y = max(t1.origin.y, t2.origin.y)
         wall(Vec3(p1.x, y, p1.y), Vec3(p2.x, y + config.wallHeight, p2.y)) {
-            type = CURTAIN_WALL
+            type = BLD_CURTAIN_WALL
         }
     }
 
@@ -126,11 +115,11 @@ class CastleBlueprint(
         val start = Vec3(box.start.x, maxHeight, box.start.y)
         val end = Vec3(box.end.x, maxHeight, box.end.y)
         return room(start, end.addY(towerHeight)) {
-            floor { type = FOUNDATION }
+            floor { type = BLD_FOUNDATION }
             floor()
             ceiling()
             createFourWalls()
-            type = TOWER_MAIN
+            type = BLD_TOWER_MAIN
         }
     }
 
@@ -148,7 +137,7 @@ class CastleBlueprint(
             Vec3(0, foundationHeight, 0),
             Vec3(foundationSide, 0, foundationSide)
         ) {
-            type = FOUNDATION
+            type = BLD_FOUNDATION
         }
         centeredRoom(
             Vec3(0, foundationHeight, 0),
@@ -157,13 +146,7 @@ class CastleBlueprint(
             floor()
             ceiling()
             createFourWalls()
-            type = TOWER_MAIN
+            type = BLD_TOWER_MAIN
         }
-    }
-
-    companion object {
-        const val FOUNDATION = "foundation"
-        const val TOWER_MAIN = "tower_main"
-        const val CURTAIN_WALL = "curtain_wall"
     }
 }

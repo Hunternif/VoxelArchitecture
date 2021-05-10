@@ -26,6 +26,10 @@ public class MathUtil {
 	public static double cosDeg(double degrees) {
 		return SIN_TABLE_DEG[(int) ((degrees + 90) * SIN_TABLE_LENGTH_OVER_360) & 65535];
 	}
+
+	public static double atan2Deg(double y, double x) {
+		return Math.atan2(y, x) * 180 / Math.PI;
+	}
 	
 	/** Returns the closest int to the argument, with ties rounding up. */
 	public static int roundUp(double a) {

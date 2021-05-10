@@ -1,10 +1,10 @@
-package hunternif.voxarch.sandbox.castle
+package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
-import hunternif.voxarch.world.Environment
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.RoomConstrainedStorage
 
 class FloorFoundationBuilder(
     private val material: String
@@ -12,11 +12,19 @@ class FloorFoundationBuilder(
 
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
+        val constraint = if (node is Floor.RoomBound) {
+            RoomConstrainedStorage(world, node.room)
+        } else null
+
         // step by 0.5 in order to prevent gaps when the node is rotated
         var x = 0.0
         while (x <= node.width) {
             var z = 0.0
             while (z <= node.length) {
+                if (constraint?.isWithinRoom(x, 0.0, z) == false) {
+                    z += 0.5
+                    continue
+                }
                 var y = 0.0
                 while(true) {
                     val b = transformer.getBlock(x, y, z)

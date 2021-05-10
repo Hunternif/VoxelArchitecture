@@ -1,9 +1,9 @@
-package hunternif.voxarch.sandbox.castle
+package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.builder.SimpleWallBuilder
 import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.sandbox.castle.MAT_TORCH
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
 
@@ -23,7 +23,7 @@ class SimpleTorchlitWallBuilder(
         // itself because it will probably be covered by another wall:
         var x = torchWallSpacing / 2
         while (x < node.length) {
-            val block = context.materials.get(MaterialConfig.TORCH)
+            val block = context.materials.get(MAT_TORCH)
             block.orientation = Direction.NORTH
             world.setBlock(x, torchHeight, -1, block)
             x += torchWallSpacing

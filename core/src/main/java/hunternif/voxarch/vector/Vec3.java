@@ -17,6 +17,10 @@ public class Vec3 {
 	public Vec3(Vec3 vec) {
 		this(vec.x, vec.y, vec.z);
 	}
+
+	public Vec3(IntVec3 vec) {
+		this(vec.x, vec.y, vec.z);
+	}
 	
 	public Vec3(int x, int y, int z) {
 		this.x = x;

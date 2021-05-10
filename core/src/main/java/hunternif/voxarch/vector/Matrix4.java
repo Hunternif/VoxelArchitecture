@@ -52,6 +52,32 @@ public class Matrix4 {
 		mat.m22 = mat.m00;
 		return mat;
 	}
+
+	/**
+	 * Creates a transformation matrix of counterclockwise rotation around the X axis.
+	 * @param angle angle in degrees.
+	 */
+	public static Matrix4 rotationX(double angle) {
+		Matrix4 mat = identity();
+		mat.m11 = MathUtil.cosDeg(angle);
+		mat.m21 = MathUtil.sinDeg(angle);
+		mat.m22 = mat.m11;
+		mat.m12 = -mat.m21;
+		return mat;
+	}
+
+	/**
+	 * Creates a transformation matrix of counterclockwise rotation around the Z axis.
+	 * @param angle angle in degrees.
+	 */
+	public static Matrix4 rotationZ(double angle) {
+		Matrix4 mat = identity();
+		mat.m00 = MathUtil.cosDeg(angle);
+		mat.m10 = MathUtil.sinDeg(angle);
+		mat.m11 = mat.m00;
+		mat.m01 = -mat.m10;
+		return mat;
+	}
 	
 	/**
 	 * Modifies <em>this matrix</em> to be the product (this * mat).
