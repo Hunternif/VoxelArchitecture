@@ -28,7 +28,7 @@ class TowerBlueprint(
         val roofSize = config.run { Vec3(width + roofOffset*2, 0, width + roofOffset*2) }
 
         val hasSpire = config.spireHeight > 0
-        val spireOrigin = config.run { Vec3(0, height + 1, 0) }
+        val spireOrigin = roofOrigin.clone()
         val spireSize = roofSize.addY(config.spireHeight)
 
         return Structure().apply {
@@ -36,6 +36,7 @@ class TowerBlueprint(
                 floor { type = BLD_FOUNDATION }
                 floor()
                 createTowerWalls()
+                // TODO: place corbels as separate nodes
                 type = BLD_TOWER_BODY
 
                 // spire:

@@ -5,8 +5,8 @@ import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.MathUtil
+import hunternif.voxarch.util.PositionTransformer
 import hunternif.voxarch.vector.Vec3
-import kotlin.math.ceil
 import kotlin.math.sqrt
 
 /**
@@ -48,25 +48,43 @@ class PyramidBuilder(
         transformer.popTransformation()
     }
 
+    /**
+     * ```
+     *          Z ^
+     *            | (outside)
+     *  X <-------+--------
+     *       \base|base/
+     *        \   |   /
+     *         \  |  /
+     *          \ | /
+     *           \|/   | dz
+     *          (tip)
+     * ```
+     */
     private fun fillTriangle(
         base: Double,
         slopeLength: Double,
-        world: IBlockStorage,
+        transformer: PositionTransformer,
         context: BuildContext
     ) {
-        val lengthInt = ceil(slopeLength).toInt()
-        val baseInt = ceil(base).toInt()
-        for (dz in 0 .. lengthInt) {
-            for (x in 0 .. baseInt) {
-                if (x <= dz * baseInt / lengthInt) {
-                    val z = dz - lengthInt
+        var dz = 0.0
+        while (dz <= slopeLength) {
+            var x = 0.0
+            while (x <= base) {
+
+                if (x <= dz * base / slopeLength) {
+                    val z = dz - slopeLength
                     var block = context.materials.get(material)
-                    world.setBlock(x, 0, z, block)
+                    transformer.setBlock(x, 0.0, z, block)
 
                     block = context.materials.get(material)
-                    world.setBlock(-x, 0, z, block)
+                    transformer.setBlock(-x, 0.0, z, block)
                 }
+
+                //TODO: fix holes in pyramid
+                x += 1.0
             }
+            dz += 1.0
         }
     }
 }

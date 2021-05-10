@@ -33,8 +33,6 @@ class CorbelWallBuilder(
     }
 
     override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
-        //TODO: handle corbels at wall corners. It might need to turn 45 degrees.
-
         if (node.transparent) return
         val wallLength = ceil(node.length).toInt()
         val wallHeight = ceil(node.height).toInt()
