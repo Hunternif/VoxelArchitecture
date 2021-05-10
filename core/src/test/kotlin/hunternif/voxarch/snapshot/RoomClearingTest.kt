@@ -1,9 +1,9 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.builder.RoomBuilder
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.room
+import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
@@ -13,7 +13,7 @@ class RoomClearingTest: BaseSnapshotTest(10, 1, 10) {
         super.setup()
         context.builders.setDefault(RoomBuilder())
 
-        val fillBlock = context.materials.get(MaterialConfig.FLOOR)
+        val fillBlock = context.materials.get(MAT_FLOOR)
         for (x in 0 until width) {
             for (z in 0 until length) {
                 for (y in 0 until height) {

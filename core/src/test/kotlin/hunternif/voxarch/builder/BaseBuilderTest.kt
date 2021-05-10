@@ -4,6 +4,7 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.ceiling
 import hunternif.voxarch.plan.floor
+import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage
 import hunternif.voxarch.vector.Vec3
@@ -32,20 +33,20 @@ abstract class BaseBuilderTest(
 
     private fun setupDefaultMaterials() {
         context.materials.apply {
-            set(MaterialConfig.FLOOR) { BlockData(ID_FLOOR) }
-            set(MaterialConfig.WALL) { BlockData(ID_WALL) }
-            set(MaterialConfig.ROOF) { BlockData(ID_ROOF) }
+            set(MAT_FLOOR) { BlockData(ID_FLOOR) }
+            set(MAT_WALL) { BlockData(ID_WALL) }
+            set(MAT_ROOF) { BlockData(ID_ROOF) }
         }
     }
 
     private fun setupDefaultBuilders() {
         context.builders.apply {
             set(
-                TYPE_FLOOR to SimpleFloorBuilder(MaterialConfig.FLOOR),
-                TYPE_ROOF to SimpleFloorBuilder(MaterialConfig.ROOF),
-                null to SimpleFloorBuilder(MaterialConfig.FLOOR)
+                TYPE_FLOOR to SimpleFloorBuilder(MAT_FLOOR),
+                TYPE_ROOF to SimpleFloorBuilder(MAT_ROOF),
+                null to SimpleFloorBuilder(MAT_FLOOR)
             )
-            setDefault(SimpleWallBuilder(MaterialConfig.WALL))
+            setDefault(SimpleWallBuilder(MAT_WALL))
             setDefault(SimpleGateBuilder())
             setDefault(SimpleHatchBuilder())
             setDefault<Node>(Builder())

@@ -4,7 +4,6 @@ import hunternif.voxarch.storage.BlockData
 
 /**
  * Provides block data for material name.
- * See [Companion] for some default materials.
  */
 class MaterialConfig {
     private val map = mutableMapOf<String, () -> BlockData>()
@@ -16,14 +15,4 @@ class MaterialConfig {
     fun get(name: String) = map.getOrDefault(name, ::default)()
 
     private fun default() = BlockData(0)
-
-    companion object {
-        // Some default materials
-        const val WALL = "wall"
-        const val WALL_DECORATION = "wall_decoration"
-        const val FLOOR = "floor"
-        const val ROOF = "roof"
-        const val TORCH = "torch"
-        const val POST = "post"
-    }
 }

@@ -1,9 +1,8 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.world.Environment
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.CastleBlueprint
-import hunternif.voxarch.storage.BlockData
+import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
@@ -12,7 +11,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     override fun setup() {
         super.setup()
-        castleBlueprint.setup(context)
+        context.builders.setCastleBuilders()
     }
 
     @Test

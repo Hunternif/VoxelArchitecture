@@ -1,4 +1,4 @@
-package hunternif.voxarch.sandbox.castle
+package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder

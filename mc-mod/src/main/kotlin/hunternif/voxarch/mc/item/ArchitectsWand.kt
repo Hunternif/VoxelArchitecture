@@ -12,8 +12,6 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.sandbox.FlatDungeon
-import hunternif.voxarch.sandbox.castle.CastleBlueprint
-import hunternif.voxarch.sandbox.castle.SimpleTorchlitWallBuilder
 import hunternif.voxarch.vector.Vec3
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
@@ -27,7 +25,8 @@ import java.util.Random
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
-import hunternif.voxarch.sandbox.castle.TowerBlueprint
+import hunternif.voxarch.sandbox.castle.*
+import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.world.HeightMap.Companion.terrainMap
@@ -56,7 +55,7 @@ class ArchitectsWand : Item() {
             val mcWorld = MCWorld(world)
 
             context.builders.buildersForClass(Wall::class.java).setDefault(
-                SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3))
+                SimpleTorchlitWallBuilder(MAT_WALL, 4, 3))
 
             // torch stand for testing
 //            val plan = Structure(pos.toVec3()).apply {
@@ -103,15 +102,16 @@ class ArchitectsWand : Item() {
             // random flat dungeon
 //            val plan = Structure()
 //            val dungeon = FlatDungeon(pos.toVec3(), 0.0)
-//            context.builders.setDefault(SimpleTorchlitWallBuilder(MaterialConfig.WALL, 4, 3))
+//            context.builders.setDefault(SimpleTorchlitWallBuilder(MAT_WALL, 4, 3))
 //            plan.addChild(dungeon)
 //            FMLCommonHandler.instance().bus().register(
 //                IncrementalBuilder(dungeon, plan, MainBuilder(), context))
 
+            context.builders.setCastleBuilders()
+
             // fancy tower
             val pos = IntVec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
             val tower = TowerBlueprint()
-            tower.setup(context)
             val plan = tower.layout(pos)
             MainBuilder().build(plan, mcWorld, context)
         }

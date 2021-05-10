@@ -1,8 +1,5 @@
 package hunternif.voxarch.sandbox.castle
 
-import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.MaterialConfig
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
@@ -14,7 +11,7 @@ class TowerBlueprint(
         val width: Int = 6,
         val height: Int = 12,
 
-        val roofOffset: Int = 2,
+        val roofOffset: Int = 1,
 
         // [4, ..) Higher values make rounder tower.
         val sideCount: Int = 8,
@@ -23,19 +20,6 @@ class TowerBlueprint(
 
         val withCrenellation: Boolean = true
     )
-
-    fun setup(context: BuildContext) {
-        context.builders.apply {
-            set(FOUNDATION to FloorFoundationBuilder(MaterialConfig.WALL))
-            set(TOWER_BODY to CorbelWallBuilder(
-                MaterialConfig.WALL,
-                MaterialConfig.WALL_DECORATION,
-                corbelDepth = config.roofOffset
-            ))
-            set(TOWER_ROOF to CrenellationBuilder(MaterialConfig.WALL_DECORATION))
-            set(TOWER_SPIRE to PyramidBuilder(MaterialConfig.ROOF))
-        }
-    }
 
     fun layout(origin: IntVec3): Structure {
         val size = config.run { Vec3(width, height, width) }
@@ -49,17 +33,17 @@ class TowerBlueprint(
 
         return Structure().apply {
             centeredRoom(Vec3(origin), size) {
-                floor { type = FOUNDATION }
+                floor { type = BLD_FOUNDATION }
                 floor()
                 createTowerWalls()
-                type = TOWER_BODY
+                type = BLD_TOWER_BODY
 
                 // spire:
                 if (hasSpire) {
                     centeredRoom(spireOrigin, spireSize) {
                         createTowerWalls()
                         walls.forEach { it.transparent = true }
-                        type = TOWER_SPIRE
+                        type = BLD_TOWER_SPIRE
                     }
                 }
 
@@ -68,7 +52,7 @@ class TowerBlueprint(
                     centeredRoom(roofOrigin, roofSize) {
                         ceiling()
                         createTowerWalls()
-                        type = TOWER_ROOF
+                        type = BLD_TOWER_ROOF
                     }
                 }
             }
@@ -80,12 +64,5 @@ class TowerBlueprint(
             4 -> createFourWalls()
             else -> createRoundWalls(config.sideCount)
         }
-    }
-
-    companion object {
-        const val FOUNDATION = "foundation"
-        const val TOWER_BODY = "tower_body"
-        const val TOWER_ROOF = "tower_roof"
-        const val TOWER_SPIRE = "tower_spire"
     }
 }
