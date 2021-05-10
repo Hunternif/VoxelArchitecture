@@ -109,11 +109,15 @@ class ArchitectsWand : Item() {
 
             context.builders.setCastleBuilders()
 
+            // animating the building
+            val animationWorld = MCWorldAnimation(world)
+            FMLCommonHandler.instance().bus().register(animationWorld)
+
             // fancy tower
             val pos = IntVec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
             val tower = TowerBlueprint()
             val plan = tower.layout(pos)
-            MainBuilder().build(plan, mcWorld, context)
+            MainBuilder().build(plan, animationWorld, context)
         }
         return stack
     }
