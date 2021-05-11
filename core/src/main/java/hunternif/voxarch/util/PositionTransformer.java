@@ -48,6 +48,23 @@ public class PositionTransformer implements IBlockStorage {
 		return storage.getBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
 	}
 
+	/**
+	 * If this is the only transformer over the destination voxel world,
+	 * then the result is the actual angle we're at relative to that world.
+	 */
+	public Double getAngleY() {
+		return angleY;
+	}
+
+	/**
+	 * Transforms the given coordinates and returns a new vector.
+	 */
+	public Vec3 transform(double x, double y, double z) {
+		vec.set(x, y, z, 1);
+		matrix.multiplyLocal(vec);
+		return new Vec3(vec.x, vec.y, vec.z);
+	}
+
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
 		setBlock((double)x, (double)y, (double)z, block);

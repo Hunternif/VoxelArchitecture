@@ -2,7 +2,6 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.PositionTransformer
 
 /**
  * Builds any [Node] into "physical" blocks inside a world,
@@ -41,10 +40,5 @@ open class Builder<in T : Node> {
                 popTransformation()
             }
         }
-    }
-
-    companion object {
-        internal fun IBlockStorage.transformer() =
-            this as? PositionTransformer ?: PositionTransformer(this)
     }
 }

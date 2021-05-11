@@ -4,6 +4,7 @@ import static org.junit.Assert.*;
 import hunternif.voxarch.util.VectorUtil;
 import hunternif.voxarch.vector.Vec2;
 
+import hunternif.voxarch.vector.Vec3;
 import org.junit.Test;
 
 /**
@@ -35,5 +36,13 @@ public class VectorTest {
 		assertEquals(null, VectorUtil.rayTrace(r1, r2, new Vec2(10, 0), new Vec2(20, 0)));
 		assertEquals(new Vec2(0, 0), VectorUtil.rayTrace(r1, r2, new Vec2(0, 0), new Vec2(1, 1)));
 		assertNull(VectorUtil.rayTrace(r1, r2, new Vec2(-1, -1), new Vec2(-1, 1)));
+	}
+
+	@Test
+	public void testIsInteger() {
+		assertTrue(new Vec3(1, 2, 3).isInteger());
+		assertFalse(new Vec3(1.1, 2, 3).isInteger());
+		assertFalse(new Vec3(1, -2.1, 3).isInteger());
+		assertFalse(new Vec3(1, 2, 3.1).isInteger());
 	}
 }

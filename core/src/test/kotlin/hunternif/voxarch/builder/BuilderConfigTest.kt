@@ -1,9 +1,6 @@
 package hunternif.voxarch.builder
 
-import hunternif.voxarch.plan.Floor
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Prop
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNull
@@ -50,7 +47,7 @@ class BuilderConfigTest {
     @Test
     fun `get superclass`() {
         val room = Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO)
-        val node = Floor.RoomBound(room, 0.0)
+        val node = room.floor()
         assertEquals(floorBuilder, config.get(node))
     }
 

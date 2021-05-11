@@ -117,7 +117,7 @@ class ArchitectsWand : Item() {
             val pos = IntVec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
             val tower = TowerBlueprint()
             val plan = tower.layout(pos)
-            MainBuilder().build(plan, animationWorld, context)
+            MainBuilder().build(plan, mcWorld, context)
         }
         return stack
     }

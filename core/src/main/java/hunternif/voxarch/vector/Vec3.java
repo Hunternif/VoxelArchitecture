@@ -176,4 +176,8 @@ public class Vec3 {
 	public Vec2 toXZ() {
 		return new Vec2(x, z);
 	}
+
+	public boolean isInteger() {
+		return x - Math.round(x) == 0 && y - Math.round(y) == 0 && z - Math.round(z) == 0;
+	}
 }

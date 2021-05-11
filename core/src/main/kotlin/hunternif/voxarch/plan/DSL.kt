@@ -26,9 +26,9 @@ inline fun Node.centeredRoom(
 /** Adds a child [Floor], measured from corner */
 inline fun Node.floor(
     start: Vec3,
-    end: Vec3,
+    size: Vec3,
     crossinline action: Floor.() -> Unit = {}
-): Floor = Floor(start, end).also {
+): Floor = Floor(start, size).also {
     this.addChild(it)
     action.invoke(it)
 }
@@ -40,14 +40,14 @@ inline fun Node.centeredFloor(
     crossinline action: Floor.() -> Unit = {}
 ): Floor = floor(
     center.add(-size.x/2, 0.0, -size.z/2),
-    center.add(size.x/2, size.y, size.z/2),
+    size,
     action
 )
 
 /** Adds a room-bound [Floor] at floor level, matching its size and clipped to its shape */
 inline fun Room.floor(
     crossinline action: Floor.() -> Unit = {}
-): Floor = Floor.RoomBound(this, 0.0).also {
+): Floor = Floor(start, Vec3(width, 0.0, length)).also {
     this.addChild(it)
     action.invoke(it)
 }
@@ -55,7 +55,7 @@ inline fun Room.floor(
 /** Adds a room-bound [Floor] at ceiling level, matching room size and clipped to its shape */
 inline fun Room.ceiling(
     crossinline action: Floor.() -> Unit = {}
-): Floor = Floor.RoomBound(this, this.height).also {
+): Floor = Floor(start.addY(height),  Vec3(width, 0.0, length)).also {
     this.addChild(it)
     action.invoke(it)
 }
