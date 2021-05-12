@@ -11,8 +11,6 @@ import hunternif.voxarch.vector.Vec3
  * Data about a single turret, in the context of the placement algorithm.
  */
 data class TurretData(
-    /** Current recursion depth */
-    val depth: Int,
     /** Angle in polar coordinates from the center or parent turret. */
     val angle: Double,
     /** Radius in polar coordinates from the center or parent turret. */
@@ -81,7 +79,6 @@ fun towerWithTurrets(
     placeTurrets: TurretPlacer = ::placeNoTurrets
 ): Room {
     val turretData = TurretData(
-        depth = 0,
         angle = 0.0,
         distance = 0.0,
         size = size,
@@ -90,13 +87,14 @@ fun towerWithTurrets(
         bottomShape = BottomShape.FLAT
     )
     return recursiveTowerWithTurrets(
-        origin, turretData, commonStyle, maxRecursions, seed, placeTurrets)
+        origin, turretData, commonStyle, 0, maxRecursions, seed, placeTurrets)
 }
 
 private fun recursiveTowerWithTurrets(
     origin: Vec3,
     turretData: TurretData,
     style: TowerStyle,
+    depth: Int,
     maxRecursions: Int,
     seed: Long,
     placeTurrets: TurretPlacer
@@ -104,11 +102,11 @@ private fun recursiveTowerWithTurrets(
     val tower = turretData.run {
         tower(origin, size, roofShape, bodyShape, style)
     }
-    if (turretData.depth < maxRecursions) {
+    if (depth < maxRecursions) {
         placeTurrets(turretData, seed).forEach {
             val pos = Vec3.UNIT_X.rotateY(it.angle).multiplyLocal(it.distance)
             val childTurret = recursiveTowerWithTurrets(
-                pos, it, style, maxRecursions, seed, placeTurrets)
+                pos, it, style, maxRecursions, depth + 1, seed, placeTurrets)
             tower.addChild(childTurret)
         }
     }
