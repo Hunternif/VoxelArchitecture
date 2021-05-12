@@ -10,7 +10,14 @@ public class Vec4 {
 	public Vec4(Vec4 vec) {
 		this(vec.x, vec.y, vec.z, vec.s);
 	}
-	
+
+	public Vec4(int x, int y, int z, int s) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		this.s = s;
+	}
+
 	public Vec4(double x, double y, double z, double s) {
 		this.x = x;
 		this.y = y;

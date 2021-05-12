@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc.item
 
 import hunternif.voxarch.builder.BuildContext
+import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.MainBuilder
 import hunternif.voxarch.builder.MaterialConfig
 import hunternif.voxarch.mc.IncrementalBuilder
@@ -58,7 +59,7 @@ class ArchitectsWand : Item() {
                 SimpleTorchlitWallBuilder(MAT_WALL, 4, 3))
 
             // torch stand for testing
-//            val plan = Structure(pos.toVec3()).apply {
+//            val plan = Structure(player.position.toVec3()).apply {
 //                prop(Vec3.UNIT_Y, TORCH_STAND)
 //                rotationY = 270.0 - player.rotationYaw
 //            }
@@ -66,11 +67,11 @@ class ArchitectsWand : Item() {
 
             // random corridor
 //            var plan = RandomPlan.create()
-//            plan.origin = pos.toVec3()
+//            plan.origin = player.position.toVec3()
 //            MainBuilder().build(plan, mcWorld, context)
 
             // simple room
-//            val plan = Structure(pos.toVec3()).apply {
+//            val plan = Structure(player.position.toVec3()).apply {
 //                room(Vec3(0, 0, 5), Vec3(3, 3, 6)) {
 //                    createFourWalls()
 //                }
@@ -114,9 +115,10 @@ class ArchitectsWand : Item() {
             FMLCommonHandler.instance().bus().register(animationWorld)
 
             // fancy tower
-            val pos = IntVec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
-            val tower = TowerBlueprint()
-            val plan = tower.layout(pos)
+            val pos = Vec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
+            val roofShape = RoofShape.values().random()
+            val bodyShape = BodyShape.values().random()
+            val plan = tower(pos, roofShape = roofShape, bodyShape = bodyShape)
             MainBuilder().build(plan, mcWorld, context)
         }
         return stack

@@ -1,5 +1,9 @@
 package hunternif.voxarch.util
 
+import hunternif.voxarch.vector.Matrix4
+import hunternif.voxarch.vector.Vec3
+import hunternif.voxarch.vector.Vec4
+
 /**
  * Create a left-right-symmetric spacing of integers between 0 and [length].
  *
@@ -47,4 +51,13 @@ fun symmetricSpacing(
         result.add(length / 2)
     }
     return result.sorted()
+}
+
+/**
+ * Returns a new [Vec3] rotated by [angle] degrees.
+ */
+fun Vec3.rotateY(angle: Double): Vec3 {
+    val vec4 = Vec4(x, y, z, 1.0)
+    Matrix4.rotationY(angle).multiplyLocal(vec4)
+    return Vec3.from(vec4)
 }
