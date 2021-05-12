@@ -14,10 +14,10 @@ val defaultContext = BuildContext(MCEnvironment).apply {
     materials.apply {
         set(MAT_FLOOR) { ExtBlockDataMC(Blocks.stone) }
         set(MAT_WALL) {
-            listOf(
+            arrayOf(
                 ExtBlockDataMC(Blocks.cobblestone),
                 ExtBlockDataMC(Blocks.stone)
-            ).takeRandom()
+            ).random()
         }
         set(MAT_WALL_DECORATION) { ExtBlockDataMC(Blocks.stonebrick) }
         set(MAT_ROOF) { ExtBlockDataMC(Blocks.planks, BlockPlanks.EnumType.DARK_OAK.metadata) }
@@ -33,11 +33,6 @@ val defaultContext = BuildContext(MCEnvironment).apply {
         setDefault<Node>(Builder())
         set(TORCH_STAND to TorchStandBuilder())
     }
-}
-
-private fun <T> List<T>.takeRandom(): T {
-    return if (this.size == 1) first()
-    else get(Random.nextInt(this.size))
 }
 
 const val TORCH_STAND = "torchStand"
