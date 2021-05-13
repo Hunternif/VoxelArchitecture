@@ -3,7 +3,8 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.vector.Vec3
 
 /**
- * @param origin will be copied
+ * @param origin coordinates of nodes inside this Node are counted
+ *               from this origin.
  */
 abstract class Node(
     origin: Vec3

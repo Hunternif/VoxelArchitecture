@@ -14,10 +14,12 @@ import hunternif.voxarch.vector.Vec3
  *  V
  *  Z
  * ```
- * @param origin located anywhere, will be copied
- * @param size will be copied
+ * @param origin coordinates of nodes inside this Node are counted
+ *            from this origin.
+ * @param size size in centric coordinates,
+ * see [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
  * @param start internal offset of the low-XZ corner of the room.
- *              By default it's set so that origin is at the center of the floor.
+ *            By default it's set so that origin is at the center of the floor.
  */
 open class Room(
     origin: Vec3,
