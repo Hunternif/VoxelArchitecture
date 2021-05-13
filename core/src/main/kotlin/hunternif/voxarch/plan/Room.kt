@@ -41,6 +41,8 @@ open class Room(
      * of the room in a world. */
     var size: Vec3 = size.clone()
 
+    internal val floorCenter: Vec3 = start.add(size.x/2, 0.0, size.z/2)
+
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
 
@@ -57,23 +59,24 @@ open class Room(
     fun createFourWalls() {
         val a = size.x/2
         val b = size.z/2
+        val c = floorCenter
         /*
 		 * (Wall indices)
 		 * +---------> X
 		 * | start
 		 * |   +- 1 -+
 		 * |   |     |
-		 * |   2  o  0 b
+		 * |   2  c  0 b
 		 * |   |     |
 		 * |   +- 3 -+
 		 * V      a
 		 * Z
 		 */
         // Going counterclockwise:
-        wall(Vec3(a, 0.0, b), Vec3(a, height, -b))
-        wall(Vec3(a, 0.0, -b), Vec3(-a, height, -b))
-        wall(Vec3(-a, 0.0, -b), Vec3(-a, height, b))
-        wall(Vec3(-a, 0.0, b), Vec3(a, height, b))
+        wall(c.add(a, 0.0, b), c.add(a, height, -b))
+        wall(c.add(a, 0.0, -b), c.add(-a, height, -b))
+        wall(c.add(-a, 0.0, -b), c.add(-a, height, b))
+        wall(c.add(-a, 0.0, b), c.add(a, height, b))
     }
 
     /** Adds to children [count] walls arranged in an oval inscribed within room edges.
@@ -84,17 +87,18 @@ open class Room(
         if (count < 3) return
         val a = size.x / 2
         val b = size.z / 2
+        val c = floorCenter
         val angleStep = 360.0 / count.toDouble()
         // Going counterclockwise:
         var angle = -angleStep / 2
         while (angle < 360 - angleStep / 2) {
             wall(
-                Vec3(
+                c.add(
                     a * MathUtil.cosDeg(angle),
                     0.0,
                     -b * MathUtil.sinDeg(angle)
                 ),
-                Vec3(
+                c.add(
                     a * MathUtil.cosDeg(angle + angleStep),
                     height,
                     -b * MathUtil.sinDeg(angle + angleStep)

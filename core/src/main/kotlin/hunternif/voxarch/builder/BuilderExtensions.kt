@@ -4,6 +4,7 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PositionTransformer
 import hunternif.voxarch.util.RoomConstrainedStorage
+import hunternif.voxarch.vector.Vec3
 import kotlin.math.roundToInt
 
 fun IBlockStorage.transformer() =
@@ -49,6 +50,25 @@ fun IBlockStorage.fillXZ(
             }
             z += step
         }
+        x += step
+    }
+}
+
+fun line(
+    p1: Vec3,
+    p2: Vec3,
+    step: Double = 1.0,
+    offset: Double = 0.0, // from start and end
+    build: (pos: Vec3) -> Unit
+) {
+    val lineVec = p2.subtract(p1).normalizeLocal()
+    val stepVec = lineVec.multiply(step)
+    val length = p2.distanceTo(p1)
+    val pos = p1.add(lineVec.multiply(offset))
+    var x = offset
+    while (x <= length - offset) {
+        build(pos)
+        pos.addLocal(stepVec)
         x += step
     }
 }
