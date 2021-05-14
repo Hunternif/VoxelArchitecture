@@ -111,15 +111,27 @@ class ArchitectsWand : Item() {
             context.builders.setCastleBuilders()
 
             // animating the building
-            val animationWorld = MCWorldAnimation(world)
+            val animationWorld = MCWorldAnimation(mcWorld, 200)
             FMLCommonHandler.instance().bus().register(animationWorld)
 
             // fancy tower
             val pos = Vec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
             val roofShape = RoofShape.values().random()
             val bodyShape = BodyShape.values().random()
-            val plan = tower(pos, roofShape = roofShape, bodyShape = bodyShape)
-            MainBuilder().build(plan, mcWorld, context)
+//            val plan = tower(
+//                pos,
+//                size = Vec3(2, 4, 2),
+//                roofShape = roofShape,
+//                bodyShape = bodyShape
+//            )
+            val plan = towerWithTurrets(
+                origin = pos,
+                size = Vec3(18, 32, 18),
+                roofShape = roofShape,
+                bodyShape = bodyShape,
+                placeTurrets = ::place4Turrets
+            )
+            MainBuilder().build(plan, animationWorld, context)
         }
         return stack
     }

@@ -43,12 +43,15 @@ open class Room(
      * of the room in a world. */
     var size: Vec3 = size.clone()
 
-    internal val floorCenter: Vec3 = start.add(size.x/2, 0.0, size.z/2)
+    /** Vs local origin */
+    val innerFloorCenter: Vec3 = start.add(size.x/2, 0.0, size.z/2)
+    /** Vs parent's origin */
+    val floorCenter: Vec3 = origin.add(innerFloorCenter)
 
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
 
-    val rooms get() = children.filterIsInstance<Room>()
+    val rooms get() = children.filterIsInstance<Room>().subtract(floors)
     val floors get() = children.filterIsInstance<Floor>()
     val walls get() = children.filterIsInstance<Wall>()
     val props get() = children.filterIsInstance<Prop>()
@@ -61,7 +64,7 @@ open class Room(
     fun createFourWalls() {
         val a = size.x/2
         val b = size.z/2
-        val c = floorCenter
+        val c = innerFloorCenter
         /*
 		 * (Wall indices)
 		 * +---------> X
@@ -89,7 +92,7 @@ open class Room(
         if (count < 3) return
         val a = size.x / 2
         val b = size.z / 2
-        val c = floorCenter
+        val c = innerFloorCenter
         val angleStep = 360.0 / count.toDouble()
         // Going counterclockwise:
         var angle = -angleStep / 2

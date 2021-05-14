@@ -16,6 +16,7 @@ const val MAT_POST = "post"
 
 // Building node types
 const val BLD_FOUNDATION = "foundation"
+const val BLD_TURRET_BOTTOM = "turret_bottom"
 const val BLD_TOWER_MAIN = "tower_main"
 const val BLD_CURTAIN_WALL = "curtain_wall"
 const val BLD_TOWER_BODY = "tower_body"
@@ -36,4 +37,5 @@ fun BuilderConfig.setCastleBuilders() {
     ))
     set(BLD_TOWER_ROOF to CrenellationBuilder(MAT_WALL_DECORATION))
     set(BLD_TOWER_SPIRE to PyramidBuilder(MAT_ROOF))
+    set(BLD_TURRET_BOTTOM to PyramidBuilder(MAT_WALL, upsideDown = true))
 }
