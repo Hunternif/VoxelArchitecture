@@ -1,13 +1,19 @@
 package hunternif.voxarch.mc
 
 import hunternif.voxarch.storage.BlockData
-import net.minecraft.world.World
+import hunternif.voxarch.storage.IBlockStorage
 import net.minecraftforge.fml.common.FMLCommonHandler
+import net.minecraftforge.fml.common.eventhandler.EventBus
 import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
 import net.minecraftforge.fml.common.gameevent.TickEvent
 import java.util.*
+import kotlin.math.ceil
 
-class MCWorldAnimation(world: World) : MCWorld(world) {
+class MCWorldAnimation(
+    private val world: IBlockStorage,
+    private val blocksPerSecond: Int = 20,
+    private val eventBus: EventBus = FMLCommonHandler.instance().bus()
+) : IBlockStorage by world {
     private data class BlockEntry(
         val x: Int,
         val y: Int,
@@ -23,14 +29,21 @@ class MCWorldAnimation(world: World) : MCWorld(world) {
 
     @SubscribeEvent
     fun onTick(event: TickEvent.WorldTickEvent) {
-        if (event.world.worldTime % 2 == 0L) { // once every 2 ticks
+        val blocksPerTick = blocksPerSecond.toDouble() / 20.0
+        val intBlocksPerTick = ceil(blocksPerTick).toInt()
+        val ticksPerBlock = 1.0 / blocksPerTick
+        val intTicksPerBlock = ceil(ticksPerBlock).toInt()
+        if (event.world.worldTime % intTicksPerBlock == 0L) {
             if (!queue.isEmpty()) {
-                queue.pop().apply {
-                    super.setBlock(x, y, z, block)
+                for (t in 1..intBlocksPerTick) {
+                    queue.pop().apply {
+                        world.setBlock(x, y, z, block)
+                    }
+                    if (queue.isEmpty()) break
                 }
             } else {
                 println("Building animation complete")
-                FMLCommonHandler.instance().bus().unregister(this)
+                eventBus.unregister(this)
             }
         }
     }
