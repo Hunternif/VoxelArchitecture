@@ -63,7 +63,11 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 	public void setOffset(double offset) {
 		this.offset = offset;
 	}
-	
+
+	public boolean isWithinRoom(Vec3 vec) {
+		return isWithinRoom(vec.x, vec.y, vec.z);
+	}
+
 	/** Returns true if the specified point is within the volume of this room.
 	 * The coordinates are relative to the corner of the room. */
 	public boolean isWithinRoom(double x, double y, double z) {

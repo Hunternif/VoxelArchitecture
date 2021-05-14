@@ -75,7 +75,7 @@ public class PositionTransformer implements IBlockStorage {
 		matrix.multiplyLocal(vec);
 		Direction cachedOrientation = block.getOrientation();
 		block.rotate(angleY);
-		storage.setBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z), block);
+		storage.setBlock(MathUtil.roundDown(vec.x), MathUtil.roundDown(vec.y), MathUtil.roundDown(vec.z), block);
 		block.setOrientation(cachedOrientation);
 	}
 

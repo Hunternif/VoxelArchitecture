@@ -11,6 +11,10 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
     override fun setup() {
         super.setup()
         context.builders.set(TYPE_PYRAMID to PyramidBuilder(MAT_ROOF))
+        context.builders.set(
+            TYPE_PYRAMID_UPSIDE_DOWN to
+                PyramidBuilder(MAT_ROOF, upsideDown = true)
+        )
     }
 
     @Test
@@ -79,6 +83,19 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
         record(out.sliceX(6))
     }
 
+    @Test
+    fun `square 45deg pyramid upside down profile x`() {
+        val pyramid = Structure().apply {
+            room(Vec3(0, 4, 0), Vec3(8, 8, 8)).apply {
+                type = TYPE_PYRAMID_UPSIDE_DOWN
+                createFourWalls()
+                walls.forEach { it.transparent = true }
+            }
+        }
+        build(pyramid)
+        record(out.sliceX(4))
+    }
+
     private fun squarePyramid(height: Int) = Structure().apply {
         room(Vec3.ZERO, Vec3(8, height, 8)).apply {
             type = TYPE_PYRAMID
@@ -97,5 +114,6 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
 
     companion object {
         private const val TYPE_PYRAMID = "pyramid"
+        private const val TYPE_PYRAMID_UPSIDE_DOWN = "pyramid_upside_down"
     }
 }
