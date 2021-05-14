@@ -46,7 +46,7 @@ class PyramidBuilder(
     ) {
         val transformer = world.transformer()
         line(p1, p2, 0.5) {
-            line(it, apex, 0.5, 0.1) { p ->
+            line(it, apex, 1.0, 0.1) { p ->
                 val block = context.materials.get(material)
                 transformer.setBlock(p.x, p.y, p.z, block)
             }
