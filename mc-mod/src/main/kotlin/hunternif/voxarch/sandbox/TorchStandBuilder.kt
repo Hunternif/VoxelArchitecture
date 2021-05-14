@@ -30,5 +30,6 @@ class TorchStandBuilder : Builder<Prop>() {
             torch.rotate(90.0)
             setBlock(0, 2, 1, torch)
         }
+        super.build(node, world, context)
     }
 }

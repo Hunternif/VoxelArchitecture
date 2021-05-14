@@ -44,7 +44,7 @@ inline fun Node.centeredFloor(
     action
 )
 
-/** Adds a room-bound [Floor] at floor level, matching its size and clipped to its shape */
+/** Adds a room-bound [Floor] at floor level, matching its size. */
 inline fun Room.floor(
     crossinline action: Floor.() -> Unit = {}
 ): Floor = Floor(start, Vec3(width, 0.0, length)).also {
@@ -52,7 +52,7 @@ inline fun Room.floor(
     action.invoke(it)
 }
 
-/** Adds a room-bound [Floor] at ceiling level, matching room size and clipped to its shape */
+/** Adds a room-bound [Floor] at ceiling level, matching room size. */
 inline fun Room.ceiling(
     crossinline action: Floor.() -> Unit = {}
 ): Floor = Floor(start.addY(height),  Vec3(width, 0.0, length)).also {

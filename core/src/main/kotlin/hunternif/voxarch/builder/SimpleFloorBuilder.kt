@@ -15,5 +15,6 @@ open class SimpleFloorBuilder(
             val block = context.materials.get(material)
             transformer.setBlock(x, 0.0, z, block)
         }
+        super.build(node, world, context)
     }
 }
