@@ -1,36 +1,19 @@
 package hunternif.voxarch.mc.item
 
-import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.MainBuilder
-import hunternif.voxarch.builder.MaterialConfig
-import hunternif.voxarch.mc.IncrementalBuilder
 import hunternif.voxarch.mc.MCWorld
-import hunternif.voxarch.mc.config.*
-import hunternif.voxarch.mc.plan.RandomPlan
-import hunternif.voxarch.plan.Prop
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.Wall
-import hunternif.voxarch.sandbox.FlatDungeon
 import hunternif.voxarch.vector.Vec3
 import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
-import net.minecraft.util.BlockPos
-import net.minecraft.util.EnumFacing
 import net.minecraft.world.World
 import net.minecraftforge.fml.common.FMLCommonHandler
-import java.util.Random
 
-import hunternif.voxarch.plan.*
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
-import hunternif.voxarch.vector.IntVec2
-import hunternif.voxarch.vector.IntVec3
-import hunternif.voxarch.world.HeightMap.Companion.terrainMap
 import kotlin.math.floor
 
 class ArchitectsWand : Item() {
@@ -129,7 +112,7 @@ class ArchitectsWand : Item() {
                 size = Vec3(18, 32, 18),
                 roofShape = roofShape,
                 bodyShape = bodyShape,
-                placeTurrets = ::place4Turrets
+                turretPlacer = Placer4Turrets()
             )
             MainBuilder().build(plan, animationWorld, context)
         }

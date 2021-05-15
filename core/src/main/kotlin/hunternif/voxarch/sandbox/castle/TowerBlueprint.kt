@@ -71,10 +71,8 @@ fun towerWithTurrets(
     bodyShape: BodyShape,
     commonStyle: TowerStyle = TowerStyle(),
     maxRecursions: Int = 4,
-    /** Random seed */
-    seed: Long = 0,
     /** Function to place child turrets onto the given turret. */
-    placeTurrets: TurretPlacer = ::placeNoTurrets
+    turretPlacer: TurretPlacer = PlacerNoTurrets
 ): Room {
     val turretData = TurretData(
         angle = 0.0,
@@ -85,7 +83,7 @@ fun towerWithTurrets(
         bottomShape = BottomShape.FOUNDATION
     )
     return recursiveTowerWithTurrets(
-        origin, turretData, commonStyle, 0, maxRecursions, seed, placeTurrets)
+        origin, turretData, commonStyle, 0, maxRecursions, turretPlacer)
 }
 
 private fun recursiveTowerWithTurrets(
@@ -94,52 +92,24 @@ private fun recursiveTowerWithTurrets(
     style: TowerStyle,
     depth: Int,
     maxRecursions: Int,
-    seed: Long,
-    placeTurrets: TurretPlacer
+    turretPlacer: TurretPlacer
 ): Room {
     val tower = turretData.run {
         tower(origin, size, roofShape, bodyShape, bottomShape, style)
     }
     if (depth < maxRecursions) {
-        placeTurrets(turretData, seed).forEach {
+        turretPlacer.placeTurrets(turretData).forEach {
             val pos = Vec3.UNIT_X
                 .rotateY(it.angle)
                 .multiplyLocal(it.distance)
                 .addY(turretData.size.y + it.baseline)
             val childTurret = recursiveTowerWithTurrets(
-                pos, it, style, depth + 1, maxRecursions, seed, placeTurrets)
+                pos, it, style, depth + 1, maxRecursions, turretPlacer)
             tower.addChild(childTurret)
             // TODO: if distance > parent size, place bridge
         }
     }
     return tower
-}
-
-/**
- * Returns a list of child turret placements.
- */
-typealias TurretPlacer = (parent: TurretData, seed: Long) -> List<TurretData>
-
-fun placeNoTurrets(parent: TurretData, seed: Long) = emptyList<TurretData>()
-
-/** Place turrets symmetrically in 4 directions. */
-fun place4Turrets(parent: TurretData, seed: Long): List<TurretData> {
-    if (parent.size.x < 2) return emptyList()
-    val result = mutableListOf<TurretData>()
-    for (angle in 0..270 step 90) {
-        val size = parent.size.multiply(0.333)
-        result.add(TurretData(
-            angle = angle.toDouble(),
-            //TODO: allow asymmetric parent shape
-            distance = parent.size.x / 2 + 1,
-            size = size,
-            baseline = -size.y / 2,
-            roofShape = parent.roofShape,
-            bodyShape = parent.bodyShape,
-            bottomShape = BottomShape.TAPERED
-        ))
-    }
-    return result
 }
 
 fun tower(
