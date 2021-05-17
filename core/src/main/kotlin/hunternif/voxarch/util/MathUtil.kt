@@ -3,6 +3,7 @@ package hunternif.voxarch.util
 import hunternif.voxarch.vector.Matrix4
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.vector.Vec4
+import kotlin.random.Random
 
 /**
  * Create a left-right-symmetric spacing of integers between 0 and [length].
@@ -65,4 +66,23 @@ fun Vec3.rotateY(angle: Double): Vec3 {
     val vec4 = Vec4(x, y, z, 1.0)
     Matrix4.rotationY(angle).multiplyLocal(vec4)
     return Vec3.from(vec4)
+}
+
+/**
+ * Gets the next random *even* Int from the given [range].
+ */
+fun Random.nextEvenInt(range: IntRange): Int {
+    return nextEvenInt(range.first, range.last + 1)
+}
+
+/**
+ * Gets the next random *even* Int between [from] (inclusive)
+ * and [until] exclusive.
+ */
+fun Random.nextEvenInt(from: Int, until: Int): Int {
+    val startPadding = if (from % 2 == 0) 0 else 1
+    val start = from / 2 + startPadding
+    val end = until / 2
+    // +1 because [until] it's exclusive
+    return this.nextInt(start, end + 1) * 2
 }

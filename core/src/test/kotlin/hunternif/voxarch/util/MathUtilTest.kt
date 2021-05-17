@@ -5,6 +5,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.junit.MockitoJUnitRunner
 import org.junit.Assert.assertEquals
+import kotlin.random.Random
 
 @RunWith(MockitoJUnitRunner::class)
 class MathUtilTest {
@@ -27,5 +28,27 @@ class MathUtilTest {
         assertEquals(Vec3(0, 3, -1), Vec3(0, 3, 1).rotateY(180.0))
         assertEquals(Vec3(-1, 3, 0), Vec3(0, 3, 1).rotateY(270.0))
         assertEquals(Vec3(0, 0, 1), Vec3(0, 0, 1).rotateY(360.0))
+    }
+
+    @Test
+    fun `random even int via range arg`() {
+        // seed 333 returns all values from 1..10 within 10 calls
+        val rand = Random(333)
+        val validResults = listOf(2, 4, 6, 8, 10)
+        for (x in 1..10) {
+            val result = rand.nextEvenInt(1 .. 10)
+            assert(validResults.contains(result)) { "Returned $result" }
+        }
+    }
+
+    @Test
+    fun `random even int via int arg`() {
+        // seed 333 returns all values from 1..10 within 10 calls
+        val rand = Random(333)
+        val validResults = listOf(2, 4, 6, 8, 10)
+        for (x in 1..10) {
+            val result = rand.nextEvenInt(1, 11)
+            assert(validResults.contains(result)) { "Returned $result" }
+        }
     }
 }
