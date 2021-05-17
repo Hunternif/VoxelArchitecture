@@ -13,10 +13,13 @@ fun IBlockStorage.transformer() =
 /**
  * Runs the function [buildAtXZ] at every (X,Z) point inside the room's walls.
  *
- * When the room is rotated to a non-right angle
- * Optionally offset by [rotationOffset] from the walls inward into the room.
+ * **Reference frame origin must be set to the low-XZ corner of the room!**
  *
- * [rotationMargin] and [rotationStep] are used .
+ * When the room is rotated to a non-right angle, offsets are enabled:
+ * * [rotationMargin] is distance inward from the walls to building site.
+ * * [rotationOffset] is distance inward from the walls for constraint checking.
+ * * [rotationStep] is increment for X & Z.
+ * TODO: remove excessive margins & offsets.
  */
 fun IBlockStorage.fillXZ(
     node: Room,

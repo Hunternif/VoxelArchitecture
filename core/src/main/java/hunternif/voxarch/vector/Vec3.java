@@ -1,5 +1,7 @@
 package hunternif.voxarch.vector;
 
+import org.jetbrains.annotations.Nullable;
+
 /**
  * 3D vector of doubles.
  * @author Hunternif
@@ -180,4 +182,8 @@ public class Vec3 {
 	public boolean isInteger() {
 		return x - Math.round(x) == 0 && y - Math.round(y) == 0 && z - Math.round(z) == 0;
 	}
+
+    public Vec3 unaryMinus() {
+        return multiply(-1);
+    }
 }

@@ -45,7 +45,7 @@ public class PositionTransformer implements IBlockStorage {
 	public BlockData getBlock(double x, double y, double z) {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
-		return storage.getBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
+		return storage.getBlock(MathUtil.roundDown(vec.x), MathUtil.roundDown(vec.y), MathUtil.roundDown(vec.z));
 	}
 
 	/**

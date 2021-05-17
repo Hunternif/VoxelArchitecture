@@ -43,7 +43,7 @@ class Placer4Turrets(seed: Long = 0) : TurretPlacer {
                 size = size,
                 roofShape = parent.roofShape,
                 bodyShape = parent.bodyShape,
-                bottomShape = BottomShape.TAPERED,
+                bottomShape = BottomShape.FOUNDATION,
                 positionType = TurretPosition.WALL
             ))
         }

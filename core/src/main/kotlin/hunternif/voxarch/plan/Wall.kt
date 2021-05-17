@@ -24,6 +24,8 @@ open class Wall(
     /** If true, the wall will not be generated, only used as boundary for calculations. */
     var transparent: Boolean = false
 ) : Node(start) {
+    val bottomStart: Vec3 get() = origin
+    val bottomEnd: Vec3 get() = Vec3(end.x, 0.0, end.z)
     var end: Vec3 = end.clone()
 
     override var rotationY: Double
