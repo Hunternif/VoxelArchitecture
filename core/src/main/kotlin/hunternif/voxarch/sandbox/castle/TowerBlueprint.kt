@@ -9,19 +9,17 @@ import kotlin.math.ceil
  * Data about a single turret, in the context of the placement algorithm.
  */
 data class TurretData(
-    /** Angle in polar coordinates from the center or parent turret. */
-    val angle: Double,
-    /** Radius in polar coordinates from the center or parent turret. */
-    val distance: Double,
-    /** Rotation of the current turret. Usually it's the same as [angle] */
-    val rotation: Double = angle,
-    /** Y offset of the current turret from the roof of parent turret. */
-    val baseline: Double = 0.0,
+    /** Position relative to origin of parent turret. */
+    val origin: Vec3,
     /** Size of the current turret. */
     val size: Vec3,
+    /** Rotation of the current turret. Usually facing away
+     * from the center of parent turret. */
+    val angle: Double,
     val roofShape: RoofShape,
     val bodyShape: BodyShape,
-    val bottomShape: BottomShape
+    val bottomShape: BottomShape,
+    val positionType: TurretPosition
 )
 
 enum class RoofShape {
@@ -47,6 +45,20 @@ enum class BottomShape {
     FOUNDATION,
     /** Tapers to a point. Could be partially hidden in parent turret's wall. */
     TAPERED
+}
+enum class TurretPosition {
+    /** Sits on the edge of the wall of parent turret. */
+    WALL,
+    /** Sits away from parent turret with a bridge to parent's wall. */
+    WALL_BRIDGE,
+    /** Sits on the corner of 2 walls of _rectangular_ parent turret. */
+    CORNER,
+    /** Sits away from parent turret with a bridge to parent's corner. */
+    CORNER_BRIDGE,
+    /** Sits directly on the roof of parent turret. */
+    TOP,
+    /** No relation to parent turret. */
+    NONE
 }
 
 /**
@@ -75,19 +87,19 @@ fun towerWithTurrets(
     turretPlacer: TurretPlacer = PlacerNoTurrets
 ): Room {
     val turretData = TurretData(
-        angle = 0.0,
-        distance = 0.0,
+        origin = origin,
         size = size,
+        angle = 0.0,
         roofShape = roofShape,
         bodyShape = bodyShape,
-        bottomShape = BottomShape.FOUNDATION
+        bottomShape = BottomShape.FOUNDATION,
+        positionType = TurretPosition.NONE
     )
     return recursiveTowerWithTurrets(
-        origin, turretData, commonStyle, 0, maxRecursions, turretPlacer)
+        turretData, commonStyle, 0, maxRecursions, turretPlacer)
 }
 
 private fun recursiveTowerWithTurrets(
-    origin: Vec3,
     turretData: TurretData,
     style: TowerStyle,
     depth: Int,
@@ -99,12 +111,8 @@ private fun recursiveTowerWithTurrets(
     }
     if (depth < maxRecursions) {
         turretPlacer.placeTurrets(turretData).forEach {
-            val pos = Vec3.UNIT_X
-                .rotateY(it.angle)
-                .multiplyLocal(it.distance)
-                .addY(turretData.size.y + it.baseline)
             val childTurret = recursiveTowerWithTurrets(
-                pos, it, style, depth + 1, maxRecursions, turretPlacer)
+                it, style, depth + 1, maxRecursions, turretPlacer)
             tower.addChild(childTurret)
             // TODO: if distance > parent size, place bridge
         }
