@@ -3,6 +3,7 @@ package hunternif.voxarch.util
 import hunternif.voxarch.vector.Matrix4
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.vector.Vec4
+import kotlin.math.round
 import kotlin.random.Random
 
 /**
@@ -86,3 +87,15 @@ fun Random.nextEvenInt(from: Int, until: Int): Int {
     // +1 because [until] it's exclusive
     return this.nextInt(start, end + 1) * 2
 }
+
+fun <T> Random.next(items: Array<T>): T = items[nextInt(items.size)]
+
+fun <T> Random.next(items: List<T>): T = items[nextInt(items.size)]
+
+fun Double.clamp(min: Double, max: Double): Double = when {
+    this < min -> min
+    this > max -> max
+    else -> this
+}
+
+fun Double.roundToEven() = round(this / 2)*2

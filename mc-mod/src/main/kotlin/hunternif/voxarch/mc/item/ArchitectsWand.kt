@@ -109,10 +109,10 @@ class ArchitectsWand : Item() {
 //            )
             val plan = towerWithTurrets(
                 origin = pos,
-                size = Vec3(18, 32, 18),
+                size = Vec3(12, 32, 12),
                 roofShape = roofShape,
                 bodyShape = bodyShape,
-                turretPlacer = Placer4Turrets()
+                turretPlacer = GrandCastleTurretPlacer(seed = System.currentTimeMillis())
             )
             MainBuilder().build(plan, animationWorld, context)
         }

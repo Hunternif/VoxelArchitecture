@@ -28,6 +28,10 @@ class MathUtilTest {
         assertEquals(Vec3(0, 3, -1), Vec3(0, 3, 1).rotateY(180.0))
         assertEquals(Vec3(-1, 3, 0), Vec3(0, 3, 1).rotateY(270.0))
         assertEquals(Vec3(0, 0, 1), Vec3(0, 0, 1).rotateY(360.0))
+        assertEquals(Vec3(-1, 3, 0), Vec3(0, 3, 1).rotateY(-90.0))
+        assertEquals(Vec3(0, 3, -1), Vec3(0, 3, 1).rotateY(-180.0))
+        assertEquals(Vec3(1, 0, 0), Vec3(0, 0, 1).rotateY(-270.0))
+        assertEquals(Vec3(0, 0, 1), Vec3(0, 0, 1).rotateY(-360.0))
     }
 
     @Test
@@ -50,5 +54,22 @@ class MathUtilTest {
             val result = rand.nextEvenInt(1, 11)
             assert(validResults.contains(result)) { "Returned $result" }
         }
+    }
+
+    @Test
+    fun `test clamp`() {
+        assertEquals(2.0, 1.0.clamp(2.0, 5.0), 0.0)
+        assertEquals(2.0, 2.0.clamp(2.0, 5.0), 0.0)
+        assertEquals(3.0, 3.0.clamp(2.0, 5.0), 0.0)
+        assertEquals(5.0, 5.0.clamp(2.0, 5.0), 0.0)
+        assertEquals(5.0, 6.0.clamp(2.0, 5.0), 0.0)
+    }
+
+    @Test
+    fun `test roundToEven`() {
+        assertEquals(2.0, 1.5.roundToEven(), 0.0)
+        assertEquals(2.0, 2.0.roundToEven(), 0.0)
+        assertEquals(2.0, 2.1.roundToEven(), 0.0)
+        assertEquals(4.0, 3.1.roundToEven(), 0.0)
     }
 }

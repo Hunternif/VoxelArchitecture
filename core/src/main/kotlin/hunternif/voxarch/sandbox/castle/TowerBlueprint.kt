@@ -1,7 +1,6 @@
 package hunternif.voxarch.sandbox.castle
 
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.ceil
 
@@ -19,7 +18,9 @@ data class TurretData(
     val roofShape: RoofShape,
     val bodyShape: BodyShape,
     val bottomShape: BottomShape,
-    val positionType: TurretPosition
+    val positionType: TurretPosition,
+    /** Recursion depth. */
+    val depth: Int
 )
 
 enum class RoofShape {
@@ -68,7 +69,7 @@ data class TowerStyle(
     /** Offset for borders and spires in all child turrets. */
     val roofOffset: Int = 1,
     /** Y/X ratio of spires for all child turrets. */
-    val spireRatio: Double = 1.25,
+    val spireRatio: Double = 1.5,
     /** Y/X ratio of tapered bottoms of turrets. */
     val turretTaperRatio: Double = 0.75
 )
@@ -93,7 +94,8 @@ fun towerWithTurrets(
         roofShape = roofShape,
         bodyShape = bodyShape,
         bottomShape = BottomShape.FOUNDATION,
-        positionType = TurretPosition.NONE
+        positionType = TurretPosition.NONE,
+        depth = 1
     )
     return recursiveTowerWithTurrets(
         turretData, commonStyle, 0, maxRecursions, turretPlacer)
@@ -111,8 +113,9 @@ private fun recursiveTowerWithTurrets(
     }
     if (depth < maxRecursions) {
         turretPlacer.placeTurrets(turretData).forEach {
+            val turret = it.copy(depth = depth + 1)
             val childTurret = recursiveTowerWithTurrets(
-                it, style, depth + 1, maxRecursions, turretPlacer)
+                turret, style, depth + 1, maxRecursions, turretPlacer)
             tower.addChild(childTurret)
             // TODO: if distance > parent size, place bridge
         }
