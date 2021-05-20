@@ -1,6 +1,5 @@
 package hunternif.voxarch.sandbox.castle.turret
 
-import hunternif.voxarch.sandbox.castle.tower
 import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.vector.Vec3
 
@@ -16,7 +15,7 @@ fun Turret.add4TurretsRecursive(depth: Int = 0) {
             it.x *= (this.size.x / 2 + 1)
             it.z *= (this.size.z / 2 + 1)
         }
-        tower(
+        turret(
             origin = origin,
             size = size,
             roofShape = this.roofShape,

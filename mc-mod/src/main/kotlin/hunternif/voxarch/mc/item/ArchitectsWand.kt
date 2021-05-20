@@ -12,7 +12,6 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
@@ -103,7 +102,7 @@ class ArchitectsWand : Item() {
             val pos = Vec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
             val roofShape = RoofShape.values().random()
             val bodyShape = BodyShape.values().random()
-//            val plan = createTower(
+//            val plan = createTurret(
 //                origin = pos,
 //                size = Vec3(18, 24, 18),
 //                roofShape = roofShape,
@@ -111,7 +110,7 @@ class ArchitectsWand : Item() {
 //            ).apply {
 //                add4TurretsRecursive()
 //            }
-            val plan = createTower(
+            val plan = createTurret(
                 origin = pos,
                 size = Vec3(12, 32, 12),
                 roofShape = roofShape,

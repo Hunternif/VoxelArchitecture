@@ -1,6 +1,5 @@
 package hunternif.voxarch.sandbox.castle.turret
 
-import hunternif.voxarch.sandbox.castle.tower
 import hunternif.voxarch.util.clamp
 import hunternif.voxarch.util.next
 import hunternif.voxarch.util.rotateY
@@ -63,7 +62,7 @@ fun Turret.addGrandCastleTurretsRecursive(
             it.z *= round(this.size.z * 0.55)
         }
 
-        tower(
+        turret(
             origin = origin,
             size = Vec3(width, height, width),
             roofShape = roofShape,

@@ -1,12 +1,12 @@
-package hunternif.voxarch.sandbox.castle
+package hunternif.voxarch.sandbox.castle.turret
 
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.sandbox.castle.turret.*
+import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.ceil
 
 // DSL
-fun Node.tower(
+fun Node.turret(
     origin: Vec3,
     size: Vec3 = Vec3(6.0, 12.0, 6.0),
     roofShape: RoofShape,
@@ -14,14 +14,14 @@ fun Node.tower(
     bottomShape: BottomShape = BottomShape.FOUNDATION,
     style: TowerStyle = TowerStyle(),
     action: Turret.() -> Unit = {}
-): Turret = createTower(
+): Turret = createTurret(
     origin, size, roofShape, bodyShape, bottomShape, style
 ).also {
     this.addChild(it)
     action.invoke(it)
 }
 
-fun createTower(
+fun createTurret(
     origin: Vec3,
     size: Vec3 = Vec3(6.0, 12.0, 6.0),
     roofShape: RoofShape,
