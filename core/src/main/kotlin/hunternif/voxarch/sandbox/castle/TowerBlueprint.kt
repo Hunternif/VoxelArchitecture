@@ -1,136 +1,34 @@
 package hunternif.voxarch.sandbox.castle
 
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.sandbox.castle.turret.*
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.ceil
 
-/**
- * Data about a single turret, in the context of the placement algorithm.
- */
-data class TurretData(
-    /** Position relative to origin of parent turret. */
-    val origin: Vec3,
-    /** Size of the current turret. */
-    val size: Vec3,
-    /** Rotation of the current turret. Usually facing away
-     * from the center of parent turret. */
-    val angle: Double,
-    val roofShape: RoofShape,
-    val bodyShape: BodyShape,
-    val bottomShape: BottomShape,
-    val positionType: TurretPosition,
-    /** Recursion depth. */
-    val depth: Int
-)
-
-enum class RoofShape {
-    /** Flat top surrounded by a border. */
-    FLAT_BORDERED,
-    /** Pyramid/cone roof with no border. */
-    SPIRE,
-    /** Pyramid/cone roof surrounded by a border. */
-    SPIRE_BORDERED,
-    /** Spherical dome. */
-    //DOME
-}
-enum class BodyShape {
-    /** Square or rectangle. */
-    SQUARE,
-    /** Round or oval. */
-    ROUND
-}
-enum class BottomShape {
-    /** Turrets sits directly on top of parent turret. */
-    FLAT,
-    /** Stretches down to the ground. */
-    FOUNDATION,
-    /** Tapers to a point. Could be partially hidden in parent turret's wall. */
-    TAPERED
-}
-enum class TurretPosition {
-    /** Sits on the edge of the wall of parent turret. */
-    WALL,
-    /** Sits away from parent turret with a bridge to parent's wall. */
-    WALL_BRIDGE,
-    /** Sits on the corner of 2 walls of _rectangular_ parent turret. */
-    CORNER,
-    /** Sits away from parent turret with a bridge to parent's corner. */
-    CORNER_BRIDGE,
-    /** Sits directly on the roof of parent turret. */
-    TOP,
-    /** No relation to parent turret. */
-    NONE
-}
-
-/**
- * Parameters that affect geometry, that should apply to all child turrets.
- */
-data class TowerStyle(
-    /** Offset for borders and spires in all child turrets. */
-    val roofOffset: Int = 1,
-    /** Y/X ratio of spires for all child turrets. */
-    val spireRatio: Double = 1.5,
-    /** Y/X ratio of tapered bottoms of turrets. */
-    val turretTaperRatio: Double = 0.75
-)
-
-/**
- * Lay out a tower structure with multiple recursive turrets.
- */
-fun towerWithTurrets(
+// DSL
+fun Node.tower(
     origin: Vec3,
-    size: Vec3,
+    size: Vec3 = Vec3(6.0, 12.0, 6.0),
     roofShape: RoofShape,
     bodyShape: BodyShape,
-    commonStyle: TowerStyle = TowerStyle(),
-    maxRecursions: Int = 4,
-    /** Function to place child turrets onto the given turret. */
-    turretPlacer: TurretPlacer = PlacerNoTurrets
-): Room {
-    val turretData = TurretData(
-        origin = origin,
-        size = size,
-        angle = 0.0,
-        roofShape = roofShape,
-        bodyShape = bodyShape,
-        bottomShape = BottomShape.FOUNDATION,
-        positionType = TurretPosition.NONE,
-        depth = 1
-    )
-    return recursiveTowerWithTurrets(
-        turretData, commonStyle, 0, maxRecursions, turretPlacer)
+    bottomShape: BottomShape = BottomShape.FOUNDATION,
+    style: TowerStyle = TowerStyle(),
+    action: Turret.() -> Unit = {}
+): Turret = createTower(
+    origin, size, roofShape, bodyShape, bottomShape, style
+).also {
+    this.addChild(it)
+    action.invoke(it)
 }
 
-private fun recursiveTowerWithTurrets(
-    turretData: TurretData,
-    style: TowerStyle,
-    depth: Int,
-    maxRecursions: Int,
-    turretPlacer: TurretPlacer
-): Room {
-    val tower = turretData.run {
-        tower(origin, size, roofShape, bodyShape, bottomShape, style)
-    }
-    if (depth < maxRecursions) {
-        turretPlacer.placeTurrets(turretData).forEach {
-            val turret = it.copy(depth = depth + 1)
-            val childTurret = recursiveTowerWithTurrets(
-                turret, style, depth + 1, maxRecursions, turretPlacer)
-            tower.addChild(childTurret)
-            // TODO: if distance > parent size, place bridge
-        }
-    }
-    return tower
-}
-
-fun tower(
+fun createTower(
     origin: Vec3,
     size: Vec3 = Vec3(6.0, 12.0, 6.0),
     roofShape: RoofShape,
     bodyShape: BodyShape,
     bottomShape: BottomShape = BottomShape.FOUNDATION,
     style: TowerStyle = TowerStyle()
-): Room {
+): Turret {
     val roofOrigin = Vec3(0.0, size.y + 1, 0.0)
     val roofSize = Vec3(
         size.x + style.roofOffset*2,
@@ -159,7 +57,12 @@ fun tower(
     val taperedBottomHeight = avgRadius * style.turretTaperRatio * 2
     val taperedBottomSize = Vec3(size.x, taperedBottomHeight, size.z)
 
-    return Room(origin, size).apply {
+    return Turret(origin, size).apply {
+        this.roofShape = roofShape
+        this.bodyShape = bodyShape
+        this.bottomShape = bottomShape
+        this.style = style
+
         if (hasFoundation) {
             floor { type = BLD_FOUNDATION }
         }

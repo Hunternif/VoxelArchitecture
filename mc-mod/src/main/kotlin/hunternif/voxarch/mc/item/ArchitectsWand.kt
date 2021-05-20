@@ -12,8 +12,10 @@ import net.minecraftforge.fml.common.FMLCommonHandler
 
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
+import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
+import hunternif.voxarch.sandbox.castle.turret.*
 import kotlin.math.floor
 
 class ArchitectsWand : Item() {
@@ -101,19 +103,22 @@ class ArchitectsWand : Item() {
             val pos = Vec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
             val roofShape = RoofShape.values().random()
             val bodyShape = BodyShape.values().random()
-//            val plan = tower(
-//                pos,
-//                size = Vec3(2, 4, 2),
+//            val plan = createTower(
+//                origin = pos,
+//                size = Vec3(18, 24, 18),
 //                roofShape = roofShape,
 //                bodyShape = bodyShape
-//            )
-            val plan = towerWithTurrets(
+//            ).apply {
+//                add4TurretsRecursive()
+//            }
+            val plan = createTower(
                 origin = pos,
                 size = Vec3(12, 32, 12),
                 roofShape = roofShape,
-                bodyShape = bodyShape,
-                turretPlacer = GrandCastleTurretPlacer(seed = System.currentTimeMillis())
-            )
+                bodyShape = bodyShape
+            ).apply {
+                addGrandCastleTurretsRecursive(seed = System.currentTimeMillis())
+            }
             MainBuilder().build(plan, animationWorld, context)
         }
         return stack
