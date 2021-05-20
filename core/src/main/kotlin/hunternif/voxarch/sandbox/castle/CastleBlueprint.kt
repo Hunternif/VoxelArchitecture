@@ -12,12 +12,12 @@ class CastleBlueprint(
     private val config: Config = Config()
 ) {
     class Config(
-        val bigTowerMinWidth: Int = 3,
-        val bigTowerHeight: Int = 6,
-        val wallTowerWidth: Int = 3,
-        val wallTowerHeight: Int = 4,
+        val bigTowerMinWidth: Int = 6,
+        val bigTowerHeight: Int = 8,
+        val wallTowerWidth: Int = 4,
+        val wallTowerHeight: Int = 6,
         val wallSectionLength: Int = 10,
-        val wallHeight: Int = 2
+        val wallHeight: Int = 4
         )
 
     private val roomUtil = RoomUtil()
