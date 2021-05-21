@@ -88,6 +88,7 @@ fun Random.nextEvenInt(range: IntRange): Int {
  * and [until] exclusive.
  */
 fun Random.nextEvenInt(from: Int, until: Int): Int {
+    require(until > from) { "until < from" }
     val startPadding = if (from % 2 == 0) 0 else 1
     val start = from / 2 + startPadding
     val end = until / 2
@@ -96,12 +97,56 @@ fun Random.nextEvenInt(from: Int, until: Int): Int {
 }
 
 
+/**
+ * Selects one from the given items with equal probability.
+ */
 fun <T> Random.next(vararg items: T): T = items[nextInt(items.size)]
 
-fun Double.clamp(min: Double, max: Double): Double = when {
-    this < min -> min
-    this > max -> max
-    else -> this
+
+interface IRandomOption { val probability: Double }
+class RandomOption<T>(
+    override val probability: Double,
+    val value: T
+) : IRandomOption
+
+/**
+ * Selects one from the given options with _unequal_ probability.
+ * Probabilities should be >= 0, but need not add up to 1.
+ * At least one option should have probability > 0.
+ */
+fun <O : IRandomOption> Random.nextWeighted(vararg options: O): O {
+    require(options.isNotEmpty()) { "options are empty" }
+    val sumTotal = options.sumByDouble { it.probability }
+    var toss = this.nextDouble() * sumTotal
+    for (opt in options) {
+        if (opt.probability <= 0) continue
+        toss -= opt.probability
+        if (toss <= 0) return opt
+    }
+    // This should never occur
+    return options[0]
+}
+
+
+/**
+ * Gets the next random Double between [from] (incl.) and [to] (excl.).
+ * If [to] <= [from], returns [to].
+ */
+fun Random.nextDoubleOrMax(from: Double, to: Double): Double {
+    if (to <= from) return to
+    return this.nextDouble(from, to)
+}
+
+/**
+ * Ensures the result is between [min] (incl.) and [max] (incl.).
+ * In case when max < min, returns [max].
+ */
+fun Double.clamp(min: Double, max: Double): Double {
+    return when {
+        this < min -> min
+        this > max -> max
+        else -> this
+    }
 }
 
 fun Double.roundToEven() = round(this / 2)*2

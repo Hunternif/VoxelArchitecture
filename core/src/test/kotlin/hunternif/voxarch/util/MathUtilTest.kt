@@ -63,6 +63,8 @@ class MathUtilTest {
         assertEquals(3.0, 3.0.clamp(2.0, 5.0), 0.0)
         assertEquals(5.0, 5.0.clamp(2.0, 5.0), 0.0)
         assertEquals(5.0, 6.0.clamp(2.0, 5.0), 0.0)
+        // special case: max < min
+        assertEquals(7.0, 6.0.clamp(7.0, 5.0), 0.0)
     }
 
     @Test
@@ -71,5 +73,25 @@ class MathUtilTest {
         assertEquals(2.0, 2.0.roundToEven(), 0.0)
         assertEquals(2.0, 2.1.roundToEven(), 0.0)
         assertEquals(4.0, 3.1.roundToEven(), 0.0)
+    }
+
+    @Test
+    fun `test next random weighted`() {
+        class TestOption(override val probability: Double) : IRandomOption
+        val a = TestOption(6.0)
+        val b = TestOption(1.0)
+        val c = TestOption(3.0)
+
+        val hits = mutableMapOf<TestOption, Int>()
+        val rand = Random(3333)
+
+        for (x in 1..10000) {
+            val result = rand.nextWeighted(a, b, c)
+            hits[result] = (hits[result] ?: 0) + 1
+        }
+
+        assertEquals(6000.0, hits[a]?.toDouble() ?: 0.0, 60.0)
+        assertEquals(1000.0, hits[b]?.toDouble() ?: 0.0, 60.0)
+        assertEquals(3000.0, hits[c]?.toDouble() ?: 0.0, 60.0)
     }
 }

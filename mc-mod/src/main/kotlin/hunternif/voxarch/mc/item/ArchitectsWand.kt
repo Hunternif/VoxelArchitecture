@@ -110,14 +110,18 @@ class ArchitectsWand : Item() {
 //            ).apply {
 //                add4TurretsRecursive()
 //            }
-            val plan = createTurret(
+//            val plan = createTurret(
+//                origin = pos,
+//                size = Vec3(12, 32, 12),
+//                roofShape = roofShape,
+//                bodyShape = bodyShape
+//            ).apply {
+//                addGrandCastleTurretsRecursive(seed = System.currentTimeMillis())
+//            }
+            val plan = createCastleFromTurrets(
                 origin = pos,
-                size = Vec3(12, 32, 12),
-                roofShape = roofShape,
-                bodyShape = bodyShape
-            ).apply {
-                addGrandCastleTurretsRecursive(seed = System.currentTimeMillis())
-            }
+                seed = System.currentTimeMillis()
+            )
             MainBuilder().build(plan, animationWorld, context)
         }
         return stack
