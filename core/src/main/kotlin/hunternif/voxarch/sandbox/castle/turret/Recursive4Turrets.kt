@@ -5,7 +5,7 @@ import hunternif.voxarch.vector.Vec3
 
 private const val minWidth = 2
 
-fun Turret.add4TurretsRecursive(depth: Int = 0) {
+fun Turret.add4TurretsRecursive() {
     if (this.size.x < minWidth) return
 
     for (angle in 0..270 step 90) {
@@ -21,11 +21,11 @@ fun Turret.add4TurretsRecursive(depth: Int = 0) {
             roofShape = this.roofShape,
             bodyShape = this.bodyShape,
             bottomShape = BottomShape.FOUNDATION,
-            style = this.style
+            positionType = TurretPosition.WALL,
+            style = this.style,
+            level = this.level + 1
         ) {
-            turretAngle = angle.toDouble()
-            positionType = TurretPosition.WALL
-            add4TurretsRecursive(depth + 1)
+            add4TurretsRecursive()
         }
     }
 }

@@ -5,17 +5,20 @@ import hunternif.voxarch.vector.Vec3
 
 class Turret(
     origin: Vec3,
-    size: Vec3
-) : Room(origin, size) {
-    var roofShape: RoofShape = RoofShape.FLAT_BORDERED
-    var bodyShape: BodyShape = BodyShape.SQUARE
-    var bottomShape: BottomShape = BottomShape.FLAT
-    var positionType: TurretPosition = TurretPosition.NONE
-    var style: TowerStyle = TowerStyle()
+    size: Vec3,
+    val roofShape: RoofShape = RoofShape.FLAT_BORDERED,
+    val bodyShape: BodyShape = BodyShape.SQUARE,
+    val bottomShape: BottomShape = BottomShape.FLAT,
+    val positionType: TurretPosition = TurretPosition.NONE,
+    val style: TowerStyle = TowerStyle(),
 
     /** Angle vs parent turret. Usually facing away from the center. */
-    var turretAngle: Double = 0.0
-}
+    val turretAngle: Double = 0.0,
+
+    /** Level in a hierarchy of nested turrets.
+     * Usually equal to recursion depth, but not always. */
+    val level: Int = 0
+) : Room(origin, size)
 
 enum class RoofShape {
     /** Flat top surrounded by a border. */

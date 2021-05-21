@@ -23,10 +23,8 @@ private const val heightRatio = 0.4 + (1 - tall)*0.4
 
 private val maxDepth = ceil(dense/3).toInt()
 
-fun Turret.addGrandCastleTurretsRecursive(
-    seed: Long,
-    depth: Int = 0
-) {
+fun Turret.addGrandCastleTurretsRecursive(seed: Long) {
+    val depth = level + 1
     if (depth > maxDepth) return
 
     // Assuming the current turret can be non-symmetrical,
@@ -37,9 +35,9 @@ fun Turret.addGrandCastleTurretsRecursive(
 
     for (t in 1 .. turretCount) {
         val bodyShape = Random(seed + depth)
-            .next(BodyShape.values())
+            .next(*BodyShape.values())
         val roofShape = Random(seed + depth)
-            .next(RoofShape.values())
+            .next(*RoofShape.values())
 
         // Don't rotate the turret itself (square looks bad at an angle),
         // but take into account orientation of the parent.
@@ -68,11 +66,12 @@ fun Turret.addGrandCastleTurretsRecursive(
             roofShape = roofShape,
             bodyShape = bodyShape,
             bottomShape = BottomShape.TAPERED,
-            style = this.style
+            positionType = TurretPosition.WALL,
+            style = this.style,
+            angle = angle,
+            level = this.level + 1
         ) {
-            turretAngle = angle
-            positionType = TurretPosition.WALL
-            addGrandCastleTurretsRecursive(seed, depth + 1)
+            addGrandCastleTurretsRecursive(seed)
         }
     }
 }

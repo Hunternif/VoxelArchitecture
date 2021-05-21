@@ -8,14 +8,25 @@ import kotlin.math.ceil
 // DSL
 fun Node.turret(
     origin: Vec3,
-    size: Vec3 = Vec3(6.0, 12.0, 6.0),
+    size: Vec3,
     roofShape: RoofShape,
     bodyShape: BodyShape,
     bottomShape: BottomShape = BottomShape.FOUNDATION,
+    positionType: TurretPosition = TurretPosition.NONE,
     style: TowerStyle = TowerStyle(),
+    angle: Double = 0.0,
+    level: Int = 1,
     action: Turret.() -> Unit = {}
 ): Turret = createTurret(
-    origin, size, roofShape, bodyShape, bottomShape, style
+    origin = origin,
+    size = size,
+    roofShape = roofShape,
+    bodyShape = bodyShape,
+    bottomShape = bottomShape,
+    positionType = positionType,
+    style = style,
+    angle = angle,
+    level = level
 ).also {
     this.addChild(it)
     action.invoke(it)
@@ -27,7 +38,10 @@ fun createTurret(
     roofShape: RoofShape,
     bodyShape: BodyShape,
     bottomShape: BottomShape = BottomShape.FOUNDATION,
-    style: TowerStyle = TowerStyle()
+    positionType: TurretPosition = TurretPosition.NONE,
+    style: TowerStyle = TowerStyle(),
+    angle: Double = 0.0,
+    level: Int = 0
 ): Turret {
     val roofOrigin = Vec3(0.0, size.y + 1, 0.0)
     val roofSize = Vec3(
@@ -57,12 +71,17 @@ fun createTurret(
     val taperedBottomHeight = avgRadius * style.turretTaperRatio * 2
     val taperedBottomSize = Vec3(size.x, taperedBottomHeight, size.z)
 
-    return Turret(origin, size).apply {
-        this.roofShape = roofShape
-        this.bodyShape = bodyShape
-        this.bottomShape = bottomShape
-        this.style = style
-
+    return Turret(
+        origin = origin,
+        size = size,
+        roofShape = roofShape,
+        bodyShape = bodyShape,
+        bottomShape = bottomShape,
+        positionType = positionType,
+        style = style,
+        turretAngle = angle,
+        level = level
+    ).apply {
         if (hasFoundation) {
             floor { type = BLD_FOUNDATION }
         }

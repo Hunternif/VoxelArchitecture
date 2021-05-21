@@ -70,6 +70,13 @@ fun Vec3.rotateY(angle: Double): Vec3 {
 }
 
 /**
+ * Gets the next random *even* Int up to [until] (exclusive).
+ */
+fun Random.nextEvenInt(until: Int): Int {
+    return nextEvenInt(0, until + 1)
+}
+
+/**
  * Gets the next random *even* Int from the given [range].
  */
 fun Random.nextEvenInt(range: IntRange): Int {
@@ -88,9 +95,8 @@ fun Random.nextEvenInt(from: Int, until: Int): Int {
     return this.nextInt(start, end + 1) * 2
 }
 
-fun <T> Random.next(items: Array<T>): T = items[nextInt(items.size)]
 
-fun <T> Random.next(items: List<T>): T = items[nextInt(items.size)]
+fun <T> Random.next(vararg items: T): T = items[nextInt(items.size)]
 
 fun Double.clamp(min: Double, max: Double): Double = when {
     this < min -> min
