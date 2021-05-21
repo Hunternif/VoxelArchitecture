@@ -15,6 +15,8 @@ private const val minWalkingSpace = 2
 private const val minInteriorHeight = 4
 /** If a turret is at least this wide, must continue building on top. */
 private const val minPlazaWidth = 12
+/** How far a tapered turret can project from parent turret. */
+private const val maxOverhang = 4
 
 fun createCastleFromTurrets(
     origin: Vec3,
@@ -64,23 +66,25 @@ private fun Turret.decorateWithTurrets(seed: Long) {
 
     // These wall decorations are mutually exclusive
     val wallOptions = mutableListOf<BuildOption>().apply {
-        option(1.0) { turretsInCorners(seed) }
         if (bodyShape == SQUARE) {
+            option(1.0) { turretsInCorners(seed) }
             if (width < minPlazaWidth && height >= minInteriorHeight) {
                 option(0.5) { singleTurret(ROUND, seed) }
                 option(0.5) { singleTurret(SQUARE, seed) }
                 option(0.0) { flyingButtress(seed) }
                 option(0.5) { balcony(SQUARE, seed) }
                 option(0.0) { perimeterBalcony(seed) }
-                option(0.5) { /* do nothing */ }
             }
         } else if (bodyShape == ROUND) {
+            option(0.5) { turretsInCorners(seed) }
             if (width < minPlazaWidth && height >= minInteriorHeight) {
                 option(1.0) { singleTurret(ROUND, seed) }
                 option(0.5) { balcony(ROUND, seed) }
                 option(0.0) { perimeterBalcony(seed) }
-                option(0.5) { /* do nothing */ }
             }
+        }
+        if (width < minPlazaWidth) {
+            option(1.0) { /* do nothing if it's small enough */ }
         }
     }.toTypedArray()
     Random(seed+100).nextWeighted(*wallOptions).build(this)
@@ -133,6 +137,9 @@ private fun Turret.thinWall(seed: Long) {
 
 
 // Decorations
+//TODO: massive turrets should sit lower and favour Foundation
+//TODO: if the turret is too wide, don't build a spire
+
 
 /** Attaches 1 tapered turret to the side. */
 private fun Turret.singleTurret(shape: BodyShape, seed: Long) {
@@ -150,8 +157,8 @@ private fun Turret.singleTurret(shape: BodyShape, seed: Long) {
     // TODO: proper attachment to square walls
     val origin = Vec3.UNIT_X.rotateY(angle).also {
         it.y = yOffset
-        it.x *= round(this.size.x * 0.6)
-        it.z *= round(this.size.z * 0.6)
+        it.x = round(it.x * this.size.x * 0.6)
+        it.z = round(it.z * this.size.z * 0.6)
     }
 
     val roofShape = Random(seed+1002).randomRoof()
@@ -176,6 +183,7 @@ private fun Turret.centerTower(seed: Long) {
     val roofWidth = width + style.roofOffset * 2
     val width = (roofWidth * 0.75)
         .clamp(minWidth, roofWidth - minWalkingSpace * 2)
+    //TODO: it can't be too tall & thin
 
     val heightRatio = Random(seed+1010)
         .nextDouble(0.2, 0.8)
@@ -204,6 +212,7 @@ private fun Turret.randomTowerOnTop(seed: Long) {
     val width = (Random(seed+10000001)
         .nextDouble(0.2 * 0.75) * roofWidth)
         .clamp(4.0, roofWidth - minWalkingSpace * 2)
+    //TODO: it can't be too tall & thin
 
     val heightRatio = Random(seed+10000002)
         .nextDouble(0.2, 0.8)
@@ -247,8 +256,8 @@ private fun Turret.balcony(shape: BodyShape, seed: Long) {
     // TODO: proper attachment to square walls
     val origin = Vec3.UNIT_X.rotateY(angle).also {
         it.y = yOffset
-        it.x *= round(this.size.x * 0.6)
-        it.z *= round(this.size.z * 0.6)
+        it.x = round(it.x * this.size.x * 0.6)
+        it.z = round(it.z * this.size.z * 0.6)
     }
     // TODO: add entrance
     turret(
@@ -273,9 +282,11 @@ private fun Turret.perimeterBalcony(seed: Long) {
 private fun Turret.turretsInCorners(seed: Long) {
     val height = round(this.height * 0.6)
     val width = (Random(seed+1040)
-        .nextDouble(0.25, 0.75) * this.width)
+        .nextDouble(0.25, 0.5) * this.width)
         .clamp(1.0, maxWidth) // can be extra narrow
         .roundToEven() // even sizes are better for symmetry
+    // How far the child turret can be from parent origin
+    val maxRadius = (this.width/2 + maxOverhang) - width/2
 
     val yOffset = round(Random(seed+1041)
         .nextDoubleOrMax(width, this.height))
@@ -285,14 +296,15 @@ private fun Turret.turretsInCorners(seed: Long) {
     val bodyShape = Random(seed+1043).randomBody()
     val bottomShape = when(this.bottomShape) {
         FLAT, TAPERED -> TAPERED
+        //TODO: lower levels should favor foundation
         FOUNDATION -> Random(seed+1044).next(FOUNDATION, TAPERED)
     }
 
     for (angle in 45..(360-45) step 90) {
         val origin = Vec3.UNIT_X.rotateY(angle).also {
             it.y = yOffset
-            it.x *= round(radius + style.roofOffset)
-            it.z *= round(radius + style.roofOffset)
+            it.x = round((it.x * radius).clamp(-maxRadius, maxRadius))
+            it.z = round((it.z * radius).clamp(-maxRadius, maxRadius))
         }
         turret(
             origin = origin,
