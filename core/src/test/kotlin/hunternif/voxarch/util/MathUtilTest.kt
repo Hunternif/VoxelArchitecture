@@ -94,4 +94,24 @@ class MathUtilTest {
         assertEquals(1000.0, hits[b]?.toDouble() ?: 0.0, 60.0)
         assertEquals(3000.0, hits[c]?.toDouble() ?: 0.0, 60.0)
     }
+
+    @Test
+    fun `test next random weighted 100%`() {
+        class TestOption(override val probability: Double) : IRandomOption
+        val a = TestOption(1.0)
+        val b = TestOption(0.0)
+        val c = TestOption(0.0)
+
+        val hits = mutableMapOf<TestOption, Int>()
+        val rand = Random(1)
+
+        for (x in 1..10000) {
+            val result = rand.nextWeighted(a, b, c)
+            hits[result] = (hits[result] ?: 0) + 1
+        }
+
+        assertEquals(10000, hits[a])
+        assertEquals(null, hits[b])
+        assertEquals(null, hits[c])
+    }
 }

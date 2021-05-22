@@ -41,6 +41,7 @@ fun createCastleFromTurrets(
 }
 
 private fun Turret.addTurretsRecursive(seed: Long) {
+    if (width <= 2) return
     if (level < 10 && width > 5 && bottomShape == FOUNDATION) {
         expandWithTurrets(seed+5555555)
     }
@@ -279,10 +280,12 @@ private fun Turret.perimeterBalcony(seed: Long) {
     // TODO: perimeter balcony
 }
 
+//TODO: favor not going above parent roof height
 private fun Turret.turretsInCorners(seed: Long) {
     val height = round(this.height * 0.6)
-    val width = (Random(seed+1040)
-        .nextDouble(0.25, 0.5) * this.width)
+    val widthRatio = Random(seed+1040)
+        .nextDouble(0.25, 0.5)
+    val width = (widthRatio * this.width)
         .clamp(1.0, maxWidth) // can be extra narrow
         .roundToEven() // even sizes are better for symmetry
     // How far the child turret can be from parent origin
@@ -296,8 +299,14 @@ private fun Turret.turretsInCorners(seed: Long) {
     val bodyShape = Random(seed+1043).randomBody()
     val bottomShape = when(this.bottomShape) {
         FLAT, TAPERED -> TAPERED
-        //TODO: lower levels should favor foundation
-        FOUNDATION -> Random(seed+1044).next(FOUNDATION, TAPERED)
+        FOUNDATION -> {
+            val foundationProb = ((2.0 - level/10)*widthRatio).clamp(0.0, 1.0)
+            val taperProb =  1 - foundationProb
+            Random(seed+1044).nextWeighted(
+                RandomOption(foundationProb, FOUNDATION),
+                RandomOption(taperProb, TAPERED)
+            ).value
+        }
     }
 
     for (angle in 45..(360-45) step 90) {
@@ -317,6 +326,7 @@ private fun Turret.turretsInCorners(seed: Long) {
             angle = angle.toDouble(),
             level = this.level + 1
         ) {
+            // TODO break the symmetry of turrets at the same level doing the same thing
             addTurretsRecursive(seed + 10000000 + angle*1000 + level)
         }
     }
