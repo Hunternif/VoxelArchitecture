@@ -288,12 +288,17 @@ private fun Turret.turretsInCorners(seed: Long) {
     val width = (widthRatio * this.width)
         .clamp(1.0, maxWidth) // can be extra narrow
         .roundToEven() // even sizes are better for symmetry
-    // How far the child turret can be from parent origin
-    val maxRadius = (this.width/2 + maxOverhang) - width/2
 
     val yOffset = round(Random(seed+1041)
         .nextDoubleOrMax(width, this.height))
-    val radius = sqrt(size.x*size.x + size.z*size.z)/2
+
+    val radius = when(bodyShape) {
+        SQUARE -> sqrt(size.x*size.x + size.z*size.z)/2
+        ROUND -> this.width * 0.55
+    }
+
+    // How far the child turret sit from parent origin
+    val maxRadius = (this.width/2 + maxOverhang) - width/2
 
     val roofShape = Random(seed+1042).randomRoof()
     val bodyShape = Random(seed+1043).randomBody()
