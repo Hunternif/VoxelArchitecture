@@ -4,34 +4,40 @@ import hunternif.voxarch.builder.MainBuilder
 import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.vector.Vec3
-import net.minecraft.entity.player.EntityPlayer
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
 import net.minecraft.world.World
-import net.minecraftforge.fml.common.FMLCommonHandler
 
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
+import net.minecraft.client.util.ITooltipFlag
+import net.minecraft.entity.player.PlayerEntity
+import net.minecraft.util.ActionResult
+import net.minecraft.util.Hand
+import net.minecraft.util.text.ITextComponent
+import net.minecraft.util.text.StringTextComponent
+import net.minecraftforge.common.MinecraftForge
 import kotlin.math.floor
 
-class ArchitectsWand : Item() {
+class ArchitectsWand(properties: Properties) : Item(properties) {
 
     private val context = defaultContext
 
-    init {
-        setMaxStackSize(1)
-    }
-
-    override fun addInformation(stack: ItemStack, player: EntityPlayer, list: MutableList<Any?>, showAdvanced: Boolean) {
-        list.add("Summon a building")
+    override fun addInformation(
+        stack: ItemStack,
+        worldIn: World?,
+        tooltip: MutableList<ITextComponent>,
+        flagIn: ITooltipFlag
+    ) {
+        tooltip.add(StringTextComponent("Summon a building"))
     }
 
     override fun onItemRightClick(
-        stack: ItemStack, world: World, player: EntityPlayer
-    ): ItemStack {
+        world: World, player: PlayerEntity, hand: Hand
+    ): ActionResult<ItemStack> {
         if (!world.isRemote) {
             val posX = floor(player.posX).toInt()
             val posZ = floor(player.posZ).toInt()
@@ -96,7 +102,7 @@ class ArchitectsWand : Item() {
 
             // animating the building
             val animationWorld = MCWorldAnimation(mcWorld, 200)
-            FMLCommonHandler.instance().bus().register(animationWorld)
+            MinecraftForge.EVENT_BUS.register(animationWorld)
 
             // fancy tower
             val pos = Vec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
@@ -124,7 +130,7 @@ class ArchitectsWand : Item() {
             )
             MainBuilder().build(plan, animationWorld, context)
         }
-        return stack
+        return ActionResult.resultPass(player.getHeldItem(hand))
     }
 
 }

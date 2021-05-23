@@ -2,17 +2,17 @@ package hunternif.voxarch.mc
 
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IBlockStorage
-import net.minecraftforge.fml.common.FMLCommonHandler
-import net.minecraftforge.fml.common.eventhandler.EventBus
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent
-import net.minecraftforge.fml.common.gameevent.TickEvent
+import net.minecraftforge.common.MinecraftForge
+import net.minecraftforge.event.TickEvent
+import net.minecraftforge.eventbus.api.IEventBus
+import net.minecraftforge.eventbus.api.SubscribeEvent
 import java.util.*
 import kotlin.math.ceil
 
 class MCWorldAnimation(
     private val world: IBlockStorage,
     private val blocksPerSecond: Int = 20,
-    private val eventBus: EventBus = FMLCommonHandler.instance().bus()
+    private val eventBus: IEventBus = MinecraftForge.EVENT_BUS
 ) : IBlockStorage by world {
     private data class BlockEntry(
         val x: Int,
@@ -33,7 +33,7 @@ class MCWorldAnimation(
         val intBlocksPerTick = ceil(blocksPerTick).toInt()
         val ticksPerBlock = 1.0 / blocksPerTick
         val intTicksPerBlock = ceil(ticksPerBlock).toInt()
-        if (event.world.worldTime % intTicksPerBlock == 0L) {
+        if (event.world.gameTime % intTicksPerBlock == 0L) {
             if (!queue.isEmpty()) {
                 for (t in 1..intBlocksPerTick) {
                     queue.pop().apply {

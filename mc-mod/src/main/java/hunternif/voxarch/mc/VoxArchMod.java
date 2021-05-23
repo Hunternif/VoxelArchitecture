@@ -2,51 +2,39 @@ package hunternif.voxarch.mc;
 
 import hunternif.voxarch.mc.item.ArchitectsWand;
 import hunternif.voxarch.mc.item.ItemRadar;
-import net.minecraft.creativetab.CreativeTabs;
+import net.minecraft.item.Item;
+import net.minecraft.item.ItemGroup;
+import net.minecraft.util.ResourceLocation;
+import net.minecraftforge.event.RegistryEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod;
-import net.minecraftforge.fml.common.Mod.EventHandler;
-import net.minecraftforge.fml.common.Mod.Instance;
-import net.minecraftforge.fml.common.SidedProxy;
-import net.minecraftforge.fml.common.event.FMLInitializationEvent;
-import net.minecraftforge.fml.common.event.FMLPreInitializationEvent;
-import net.minecraftforge.fml.common.registry.GameRegistry;
-
+import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 /**
  * A demo mod for Voxel Architecture.
  * @author Hunternif
  */
-@Mod(modid=VoxArchMod.ID, name=VoxArchMod.NAME, version=VoxArchMod.VERSION)
+@Mod("voxarch")
 public class VoxArchMod {
-	public static final String ID = "voxarch";
-	public static final String NAME = "Voxel Architecture";
-	public static final String VERSION = "0.1-1.7.10";
-	public static final String CHANNEL = ID;
 	
-	@Instance(ID)
-	public static VoxArchMod instance;
+	public static Logger logger = LogManager.getLogger();;
 	
-	public static Logger logger;
-	
-	public static ArchitectsWand archWand;
-	public static ItemRadar radar;
+	public static ArchitectsWand archWand = new ArchitectsWand(
+			new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1)
+	);
+	public static ItemRadar radar = new ItemRadar(
+			new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1)
+	);
 
-	@SidedProxy(clientSide="hunternif.voxarch.mc.ClientProxy", serverSide="hunternif.voxarch.mc.CommonProxy")
-	public static CommonProxy proxy;
-	
-	@EventHandler
-	public void preInit(FMLPreInitializationEvent event) {
-		logger = event.getModLog();
-		
-		archWand = (ArchitectsWand)new ArchitectsWand().setCreativeTab(CreativeTabs.tabTools).setUnlocalizedName("architectsWand");
-		radar = (ItemRadar)new ItemRadar().setCreativeTab(CreativeTabs.tabTools).setUnlocalizedName("radar");
-		GameRegistry.registerItem(archWand, "architectsWand");
-		GameRegistry.registerItem(radar, "radar");
-	}
-	
-	@EventHandler
-	public void init(FMLInitializationEvent event) {
-		proxy.init();
+	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)
+	public static class RegistryEvents {
+		@SubscribeEvent
+		public static void onItemRegistry(final RegistryEvent.Register<Item> itemRegistryEvent) {
+			archWand.setRegistryName(new ResourceLocation("voxarch:architects_wand"));
+			radar.setRegistryName(new ResourceLocation("voxarch:radar"));
+			itemRegistryEvent.getRegistry().register(archWand);
+			itemRegistryEvent.getRegistry().register(radar);
+		}
 	}
 }

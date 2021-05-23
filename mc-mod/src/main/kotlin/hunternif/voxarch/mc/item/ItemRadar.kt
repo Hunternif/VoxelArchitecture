@@ -7,12 +7,18 @@ import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.detectMountains
 import net.minecraft.client.Minecraft
+import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.player.EntityPlayer
+import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.event.ClickEvent
 import net.minecraft.item.Item
 import net.minecraft.item.ItemStack
+import net.minecraft.util.ActionResult
 import net.minecraft.util.ChatComponentText
 import net.minecraft.util.ChatComponentTranslation
+import net.minecraft.util.Hand
+import net.minecraft.util.text.ITextComponent
+import net.minecraft.util.text.StringTextComponent
 import net.minecraft.world.World
 import java.awt.Color
 import java.awt.image.BufferedImage
@@ -23,20 +29,21 @@ import java.util.*
 import javax.imageio.ImageIO
 import kotlin.math.floor
 
-class ItemRadar : Item() {
+class ItemRadar(properties: Properties) : Item(properties) {
     private val radius = 64
 
-    init {
-        maxStackSize = 1
-    }
-
-    override fun addInformation(stack: ItemStack, player: EntityPlayer, tooltip: MutableList<Any?>, advanced: Boolean) {
-        tooltip.add("Scan heightmap of surroundings")
+    override fun addInformation(
+        stack: ItemStack,
+        worldIn: World?,
+        tooltip: MutableList<ITextComponent>,
+        flagIn: ITooltipFlag
+    ) {
+        tooltip.add(StringTextComponent("Scan heightmap of surroundings"))
     }
 
     override fun onItemRightClick(
-        stack: ItemStack, world: World, player: EntityPlayer
-    ): ItemStack {
+        world: World, player: PlayerEntity, hand: Hand
+    ): ActionResult<ItemStack> {
         if (world.isRemote) {
             val mcWorld = MCWorld(world)
             val map = mcWorld.terrainMap(
@@ -46,7 +53,7 @@ class ItemRadar : Item() {
             map.minHeight = mcWorld.seaLevel
             map.print()
         }
-        return stack
+        return ActionResult.resultPass(player.getHeldItem(hand))
     }
 
     companion object {

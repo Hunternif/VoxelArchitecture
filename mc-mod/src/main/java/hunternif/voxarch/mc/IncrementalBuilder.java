@@ -4,9 +4,9 @@ import hunternif.voxarch.builder.BuildContext;
 import hunternif.voxarch.builder.MainBuilder;
 import hunternif.voxarch.plan.IIncrementalBuilding;
 import hunternif.voxarch.plan.Structure;
-import net.minecraftforge.fml.common.FMLCommonHandler;
-import net.minecraftforge.fml.common.eventhandler.SubscribeEvent;
-import net.minecraftforge.fml.common.gameevent.TickEvent.WorldTickEvent;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.event.TickEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class IncrementalBuilder {
 	private final IIncrementalBuilding building;
@@ -27,11 +27,11 @@ public class IncrementalBuilder {
 	}
 	
 	@SubscribeEvent
-	public void onTick(WorldTickEvent event) {
-		if (event.world.getWorldTime() % 20 == 0) { // once per second
+	public void onTick(TickEvent.WorldTickEvent event) {
+		if (event.world.getGameTime() % 20 == 0) { // once per second
 			if (building.isDone()) {
 				System.out.println("done building");
-				FMLCommonHandler.instance().bus().unregister(this);
+				MinecraftForge.EVENT_BUS.unregister(this);
 			} else {
 				System.out.println("build!");
 				building.buildStep();

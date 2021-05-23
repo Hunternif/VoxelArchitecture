@@ -4,9 +4,9 @@ import com.nhaarman.mockitokotlin2.*
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IBlockStorage
 import net.minecraft.world.World
-import net.minecraftforge.fml.common.eventhandler.EventBus
-import net.minecraftforge.fml.common.gameevent.TickEvent
-import net.minecraftforge.fml.relauncher.Side
+import net.minecraftforge.event.TickEvent
+import net.minecraftforge.eventbus.api.IEventBus
+import net.minecraftforge.fml.LogicalSide
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mock
@@ -16,7 +16,7 @@ import org.mockito.junit.MockitoJUnitRunner
 class MCWorldAnimationTest {
     @Mock lateinit var mcWorld: World
 
-    @Mock lateinit var eventBus: EventBus
+    @Mock lateinit var eventBus: IEventBus
 
     @Mock lateinit var world: IBlockStorage
 
@@ -85,8 +85,8 @@ class MCWorldAnimationTest {
     }
 
     private fun tickEvent(ticks: Int): TickEvent.WorldTickEvent {
-        whenever(mcWorld.worldTime) doReturn ticks.toLong()
-        return TickEvent.WorldTickEvent(Side.SERVER, TickEvent.Phase.START, mcWorld)
+        whenever(mcWorld.gameTime) doReturn ticks.toLong()
+        return TickEvent.WorldTickEvent(LogicalSide.SERVER, TickEvent.Phase.START, mcWorld)
     }
 
     companion object {
