@@ -1,7 +1,7 @@
 apply plugin: 'net.minecraftforge.gradle'
 apply plugin: 'kotlin'
 
-version = "0.1-1.8"
+version = "0.1-1.15.2"
 group= "hunternif.mc.voxarch"
 archivesBaseName = "voxarch"
 

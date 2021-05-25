@@ -15,7 +15,8 @@ plugins {
 
 allprojects {
     repositories {
-        maven { url = "https://files.minecraftforge.net/maven" }
+        // Commenting this out fixed "could not find patchy.jar"
+//        maven { url = "https://files.minecraftforge.net/maven" }
         jcenter()
         mavenCentral()
     }
