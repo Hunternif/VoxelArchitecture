@@ -16,7 +16,7 @@ import org.junit.Test;
 public class PositionTransformerTest { 
 	@Test
 	public void testRotate90() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
 		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(3, 1, 2);
 		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 1).rotateY(90);
@@ -35,7 +35,7 @@ public class PositionTransformerTest {
 	
 	@Test
 	public void testRotate180() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
 		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(2, 1, 3);
 		PositionTransformer trans = new PositionTransformer(out).translate(1, 0, 2).rotateY(180);
@@ -54,7 +54,7 @@ public class PositionTransformerTest {
 	
 	@Test
 	public void testRotate45() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 2, block);
 		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(3, 1, 3);
 		PositionTransformer trans = new PositionTransformer(out).translate(0.5, 0, 1).rotateY(45);
@@ -72,7 +72,7 @@ public class PositionTransformerTest {
 	
 	@Test
 	public void testRotateALittle() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
 		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(2, 1, 3);
 		PositionTransformer trans = new PositionTransformer(out).rotateY(3);
@@ -86,7 +86,7 @@ public class PositionTransformerTest {
 	
 	@Test
 	public void testGenerateBox() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(4, 1, 4);
 		PositionTransformer trans = new PositionTransformer(out);
 		for (int i = 0; i < 4; i++) {
@@ -115,7 +115,7 @@ public class PositionTransformerTest {
 	
 	@Test
 	public void testGenerateUnevenBoxWithStack() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(3, 1, 4);
 		PositionTransformer trans = new PositionTransformer(out);
 		trans.pushTransformation();
@@ -148,7 +148,7 @@ public class PositionTransformerTest {
 
 	@Test
 	public void testRotateBlock() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		block.setOrientation(Direction.EAST);
 		CachedRotationStorage out = new CachedRotationStorage();
 		PositionTransformer trans = new PositionTransformer(out);
@@ -176,7 +176,7 @@ public class PositionTransformerTest {
 
 	@Test
 	public void testNestedRotateBlock() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		block.setOrientation(Direction.EAST);
 		CachedRotationStorage out = new CachedRotationStorage();
 		PositionTransformer trans1 = new PositionTransformer(out);

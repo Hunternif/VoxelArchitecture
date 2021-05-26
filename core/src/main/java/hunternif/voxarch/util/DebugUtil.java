@@ -30,7 +30,7 @@ public class DebugUtil {
 					if (dx > 0) sb.append(" ");
 					BlockData block = storage.getBlock(x, y, z);
 					if (block == null) sb.append(0);
-					else sb.append(block.getId());
+					else sb.append(block.getKey());
 				}
 			}
 		}

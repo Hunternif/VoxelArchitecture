@@ -18,7 +18,7 @@ import org.junit.Test;
 public class StructureTest { 
 	@Test
 	public void testRotate90() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
 		box.setOrigin(1, 0, 1);
 		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 90, false);
@@ -33,7 +33,7 @@ public class StructureTest {
 	
 	@Test
 	public void testRotate180() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
 		box.setOrigin(0, 0, 1);
 		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 180, false);
@@ -48,7 +48,7 @@ public class StructureTest {
 	
 	@Test
 	public void testRotate45() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 2, block);
 		box.setOrigin(0, 0, 1);
 		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 45, false);
@@ -67,7 +67,7 @@ public class StructureTest {
 	
 	@Test
 	public void testRotate45CloseGaps() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 2, block);
 		box.setOrigin(0, 0, 1);
 		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 45, true);
@@ -86,7 +86,7 @@ public class StructureTest {
 	
 	@Test
 	public void testRotateALittle() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
 		box.setOrigin(1, 0, 2);
 		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, 3, true);
@@ -101,7 +101,7 @@ public class StructureTest {
 	
 	@Test
 	public void testRotate45Large() {
-		BlockData block = new BlockData(1);
+		BlockData block = new BlockData("B");
 		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 50, 1, 50, block);
 		box.setOrigin(0, 0, 25);
 		Structure rotated = StructureUtil.rotate(MultiDimArrayBlockStorage.factory, box, -45, false);

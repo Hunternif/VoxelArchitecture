@@ -90,6 +90,6 @@ class MCWorldAnimationTest {
     }
 
     companion object {
-        private val block = BlockData(0)
+        private val block = BlockData("B")
     }
 }

@@ -26,7 +26,7 @@ abstract class BaseSnapshotTest(
     width: Int,
     height: Int,
     length: Int,
-    private val blockColorMap: Map<Int, Int> = DEFAULT_COLORMAP
+    private val blockColorMap: Map<String, Int> = DEFAULT_COLORMAP
 ) : BaseBuilderTest(width, height, length) {
     @get:Rule
     val name = TestName()
@@ -46,7 +46,7 @@ abstract class BaseSnapshotTest(
         for (x in 0 until slice.width) {
             for (y in 0 until slice.height) {
                 val block = slice.getBlock(x, y)
-                val color = blockColorMap.getOrDefault(block?.id ?: ID_AIR, BG_COLOR)
+                val color = blockColorMap.getOrDefault(block?.key ?: ID_AIR, BG_COLOR)
                 image.setRGB(x, slice.height - 1 - y, color)
             }
         }

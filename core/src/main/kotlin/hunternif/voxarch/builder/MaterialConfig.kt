@@ -14,5 +14,5 @@ class MaterialConfig {
 
     fun get(name: String) = map.getOrDefault(name, ::default)()
 
-    private fun default() = BlockData(0)
+    private fun default() = BlockData("unknown")
 }

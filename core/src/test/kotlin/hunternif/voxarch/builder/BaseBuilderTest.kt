@@ -64,10 +64,10 @@ abstract class BaseBuilderTest(
         const val TYPE_FLOOR = "floor"
         const val TYPE_ROOF = "roof"
 
-        const val ID_AIR = 0
-        const val ID_FLOOR = 1
-        const val ID_WALL = 2
-        const val ID_ROOF = 3
+        const val ID_AIR = "0"
+        const val ID_FLOOR = "1"
+        const val ID_WALL = "2"
+        const val ID_ROOF = "3"
 
         val DEFAULT_ENV = object : Environment {
             override fun isTerrain(block: BlockData?): Boolean = true

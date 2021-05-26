@@ -6,7 +6,7 @@ import hunternif.voxarch.util.Direction
  * Contains block id and [orientation].
  * @author Hunternif
  */
-open class BlockData constructor(var id: Int) {
+open class BlockData(var key: String) {
 
     var orientation: Direction? = null
 
@@ -23,19 +23,19 @@ open class BlockData constructor(var id: Int) {
     override fun equals(other: Any?): Boolean {
         if (other !is BlockData) return false
         return if (other === this) true
-        else other.id == id && other.orientation == orientation
+        else other.key == key && other.orientation == orientation
     }
 
     fun clone(): BlockData {
-        return BlockData(id)
+        return BlockData(key)
     }
 
     override fun toString(): String {
-        return "id: " + id + " " + orientation?.name
+        return "id: " + key + " " + orientation?.name
     }
 
     override fun hashCode(): Int {
-        var result = id
+        var result = key.hashCode()
         result = 31 * result + (orientation?.hashCode() ?: 0)
         return result
     }
