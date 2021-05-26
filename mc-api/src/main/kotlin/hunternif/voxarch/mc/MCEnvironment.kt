@@ -3,115 +3,87 @@ package hunternif.voxarch.mc
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.world.Environment
 import net.minecraft.block.*
-import net.minecraft.init.Blocks
+import net.minecraft.util.ResourceLocation
+import net.minecraftforge.registries.ForgeRegistries
+
+private val BlockData.mcBlock: Block
+    get() = when (this) {
+        is ExtBlockDataMC -> this.block
+        else -> ForgeRegistries.BLOCKS.getValue(ResourceLocation(key))
+            ?: Blocks.AIR
+    }
 
 object MCEnvironment : Environment {
-    private val buildThroughBlocks = mutableSetOf<Int>()
-    private val seaBlocks = mutableSetOf<Int>()
+    private val buildThroughBlocks = mutableSetOf<Block>()
+    private val seaBlocks = mutableSetOf<Block>()
 
     override fun isTerrain(block: BlockData?): Boolean =
-        block?.id?.let { it in seaBlocks || it !in buildThroughBlocks } ?: false
+        block?.mcBlock?.let { it in seaBlocks || it !in buildThroughBlocks } ?: false
 
     override fun shouldBuildThrough(block: BlockData?): Boolean =
-        block?.id in buildThroughBlocks
+        block?.mcBlock in buildThroughBlocks
 
     init {
-        for (block in Block.blockRegistry.filterIsInstance(Block::class.java)) {
-            if (block is BlockStaticLiquid)
-                seaBlocks.add(block.id)
+        for (block in ForgeRegistries.BLOCKS.values) {
+            if (block is FlowingFluidBlock)
+                seaBlocks.add(block)
 
-            if (block is BlockLeaves ||
-                block is BlockLiquid ||
-                block is BlockBush ||
-                block is BlockFire ||
-                block is BlockBush ||
-                block is BlockRedstoneWire ||
-                block is BlockRedstoneRepeater ||
-                block is BlockRedstoneComparator ||
-                block is BlockDaylightDetector ||
-                block is BlockDoublePlant
-            ) buildThroughBlocks.add(block.id)
-        }
-        listOf(
-            Blocks.air,
-            Blocks.sapling,
-            Blocks.sponge,
-            Blocks.bed,
-            Blocks.golden_rail,
-            Blocks.detector_rail,
-            Blocks.web,
-            Blocks.standing_sign,
-            Blocks.ladder,
-            Blocks.rail,
-            Blocks.lever,
-            Blocks.stone_pressure_plate,
-            Blocks.unlit_redstone_torch,
-            Blocks.redstone_torch,
-            Blocks.cactus,
-            Blocks.reeds,
-            Blocks.oak_fence,
-            Blocks.spruce_fence,
-            Blocks.birch_fence,
-            Blocks.jungle_fence,
-            Blocks.dark_oak_fence,
-            Blocks.acacia_fence,
-            Blocks.pumpkin,
-            Blocks.cake,
-            Blocks.trapdoor,
-            Blocks.monster_egg,
-            Blocks.melon_block,
-            Blocks.pumpkin_stem,
-            Blocks.melon_stem,
-            Blocks.vine,
-            Blocks.oak_fence_gate,
-            Blocks.spruce_fence_gate,
-            Blocks.birch_fence_gate,
-            Blocks.jungle_fence_gate,
-            Blocks.dark_oak_fence_gate,
-            Blocks.acacia_fence_gate,
-            Blocks.stone_slab,
-            Blocks.brick_block,
-            Blocks.torch,
-            Blocks.oak_door,
-            Blocks.spruce_door,
-            Blocks.birch_door,
-            Blocks.jungle_door,
-            Blocks.acacia_door,
-            Blocks.dark_oak_door,
-            Blocks.oak_stairs,
-            Blocks.stone_stairs,
-            Blocks.wall_sign,
-            Blocks.stone_button,
-            Blocks.snow_layer,
-            Blocks.brick_stairs,
-            Blocks.stone_brick_stairs,
-            Blocks.waterlily,
-            Blocks.wooden_slab,
-            Blocks.cocoa,
-            Blocks.sandstone_stairs,
-            Blocks.tripwire_hook,
-            Blocks.tripwire,
-            Blocks.flower_pot,
-            Blocks.carrots,
-            Blocks.potatoes,
-            Blocks.wooden_button,
-            Blocks.light_weighted_pressure_plate,
-            Blocks.heavy_weighted_pressure_plate,
-            Blocks.barrier,
-            Blocks.iron_trapdoor,
-            Blocks.carpet,
-            Blocks.acacia_stairs,
-            Blocks.dark_oak_stairs,
-            Blocks.standing_banner,
-            Blocks.stone_slab2,
-            Blocks.brown_mushroom_block,
-            Blocks.red_mushroom_block,
-            // Tree trunks, but we might use them as building material
-            Blocks.log,
-            Blocks.log2,
-            Blocks.brick_block
-        ).map {
-            buildThroughBlocks.add(it.id)
+            if (
+                // broad categories
+                block is FlowingFluidBlock ||
+                block is HorizontalBlock ||
+                block is HorizontalFaceBlock ||
+                // transparent blocks in nature
+                block is AirBlock ||
+                block is FireBlock ||
+                block is SnowBlock ||
+                block is BarrierBlock ||
+                // plants
+                block is LeavesBlock ||
+                block is LogBlock || // could be building material!
+                block is SaplingBlock ||
+                block is BushBlock ||
+                block is StemBlock ||
+                block is SpongeBlock ||
+                block is DoublePlantBlock ||
+                block is CactusBlock ||
+                block is SugarCaneBlock ||
+                block is StemGrownBlock ||
+                block is VineBlock ||
+                // fauna
+                block is WebBlock ||
+                block is TurtleEggBlock ||
+                // decorations
+                block is CakeBlock ||
+                block is FlowerPotBlock ||
+                block is AbstractSignBlock ||
+                block is AbstractSkullBlock ||
+                block is LanternBlock ||
+                block is CampfireBlock ||
+                block is CarpetBlock ||
+                block is AbstractBannerBlock ||
+                // buttons, redstone etc
+                block is AbstractButtonBlock ||
+                block is AbstractPressurePlateBlock ||
+                block is LeverBlock ||
+                block is RedstoneWireBlock ||
+                block is RedstoneDiodeBlock ||
+                block is TripWireBlock ||
+                block is TripWireHookBlock ||
+                block is DaylightDetectorBlock ||
+                block is AbstractRailBlock ||
+                // semi-transparent structures
+                block is SlabBlock ||
+                block is StairsBlock ||
+                block is WallBlock ||
+                block is FenceBlock ||
+                block is FenceGateBlock ||
+                block is TorchBlock ||
+                block is LadderBlock ||
+                block is DoorBlock
+            ) {
+                buildThroughBlocks.add(block)
+            }
         }
     }
 }

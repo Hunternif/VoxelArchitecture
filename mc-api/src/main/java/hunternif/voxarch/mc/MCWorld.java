@@ -1,19 +1,20 @@
 package hunternif.voxarch.mc;
 
+import com.google.common.collect.EnumBiMap;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.util.Direction;
 import hunternif.voxarch.world.Environment;
 import hunternif.voxarch.world.IBlockWorld;
 import net.minecraft.block.Block;
-import net.minecraft.block.properties.PropertyDirection;
-import net.minecraft.block.state.IBlockState;
-import net.minecraft.init.Blocks;
-import net.minecraft.util.BlockPos;
-import net.minecraft.util.EnumFacing;
+import net.minecraft.block.BlockState;
+import net.minecraft.block.Blocks;
+import net.minecraft.util.ResourceLocation;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.world.World;
+import net.minecraftforge.registries.ForgeRegistries;
 
-import com.google.common.collect.EnumBiMap;
-import net.minecraft.world.gen.ChunkProviderSettings;
+import static net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING;
+import static net.minecraft.world.gen.Heightmap.Type.WORLD_SURFACE_WG;
 
 /**
  * Adapter between Minecraft World and IBlockStorage. Note that Direction
@@ -26,26 +27,14 @@ public class MCWorld implements IBlockWorld {
 
 	private Environment env = MCEnvironment.INSTANCE;
 
-	/**
-	 * Bridges Forge block rotation enum with my custom one. Used to apply
-	 * correct metadata when pasting rotated blocks into the world.
-	 */
-	private static final EnumBiMap<Direction, EnumFacing> forgeOrientMap = EnumBiMap.create(Direction.class, EnumFacing.class);
+	private static final EnumBiMap<Direction, net.minecraft.util.Direction> directionMap =
+			EnumBiMap.create(Direction.class, net.minecraft.util.Direction.class);
 	static {
-		forgeOrientMap.put(Direction.SOUTH, EnumFacing.SOUTH);
-		forgeOrientMap.put(Direction.NORTH, EnumFacing.NORTH);
-		forgeOrientMap.put(Direction.EAST, EnumFacing.EAST);
-		forgeOrientMap.put(Direction.WEST, EnumFacing.WEST);
+		directionMap.put(Direction.EAST, net.minecraft.util.Direction.EAST);
+		directionMap.put(Direction.NORTH, net.minecraft.util.Direction.NORTH);
+		directionMap.put(Direction.WEST, net.minecraft.util.Direction.WEST);
+		directionMap.put(Direction.SOUTH, net.minecraft.util.Direction.SOUTH);
 	}
-	
-	//Stole this from BlockAnvil etc.
-	private static final PropertyDirection FACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
-
-	/**
-	 * BlockData that is returned in every call, to keep the memory overhead at
-	 * the very minimum.
-	 */
-	private final BlockData reusableData = new BlockData(0);
 
 	private final World world;
 
@@ -55,16 +44,14 @@ public class MCWorld implements IBlockWorld {
 
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
-		IBlockState state = world.getBlockState(new BlockPos(x, y, z));
-		reusableData.setId(Block.getIdFromBlock(state.getBlock()));
-		if (reusableData.getId() == 0)
-			return null;
-		reusableData.setMetadata(state.getBlock().getMetaFromState(state));
-		if (state.getProperties().containsKey(FACING)) { // Block is rotate-able
-			EnumFacing enumfacing = (EnumFacing)state.getValue(FACING);
-			reusableData.setOrientation(forgeOrientMap.inverse().get(enumfacing));
+		BlockState state = world.getBlockState(new BlockPos(x, y, z));
+		ExtBlockDataMC result = new ExtBlockDataMC(state.getBlock());
+		if (state.has(HORIZONTAL_FACING)) { // Block is rotate-able
+			net.minecraft.util.Direction direction =
+					state.get(HORIZONTAL_FACING);
+			result.setOrientation(directionMap.inverse().get(direction));
 		}
-		return reusableData;
+		return result;
 	}
 
 	@Override
@@ -72,11 +59,13 @@ public class MCWorld implements IBlockWorld {
 		if (block instanceof ExtBlockDataMC) {
 			((ExtBlockDataMC) block).onPasteIntoWorld(world, x, y, z);
 		}
-		Block mcBlock = Block.getBlockById(block.getId());
+		Block mcBlock = ForgeRegistries.BLOCKS.getValue(
+				new ResourceLocation(block.getKey())
+		);
 		//TODO: make sure rotation is applied correctly for particular kinds of blocks, i.e. Portals
-		IBlockState state = mcBlock.getStateFromMeta(block.getMetadata());
-		if (block.hasOrientation() && state.getPropertyNames().contains(FACING)) {
-			state = state.withProperty(FACING, forgeOrientMap.get(block.getOrientation()));
+		BlockState state = mcBlock.getDefaultState();
+		if (block.hasOrientation() && state.has(HORIZONTAL_FACING)) {
+			state = state.with(HORIZONTAL_FACING, directionMap.get(block.getOrientation()));
 		}
 		// Flag 2 will send the change to clients, but won't cause an immediate block update
 		world.setBlockState(new BlockPos(x, y, z), state, 2);
@@ -84,7 +73,7 @@ public class MCWorld implements IBlockWorld {
 
 	@Override
 	public void clearBlock(int x, int y, int z) {
-		world.setBlockState(new BlockPos(x, y, z), Blocks.air.getDefaultState(), 2);
+		world.setBlockState(new BlockPos(x, y, z), Blocks.AIR.getDefaultState(), 2);
 	}
 
 	@Override
@@ -94,7 +83,7 @@ public class MCWorld implements IBlockWorld {
 
 	@Override
 	public int getHeight(int x, int z) {
-		return world.getHeight(new BlockPos(x, 0, z)).getY();
+		return world.getHeight(WORLD_SURFACE_WG, new BlockPos(x, 0, z)).getY();
 	}
 
 	@Override
@@ -110,9 +99,6 @@ public class MCWorld implements IBlockWorld {
 
 	@Override
 	public int getSeaLevel() {
-		String settingsJson = world.getWorldInfo().getGeneratorOptions();
-		ChunkProviderSettings settings = ChunkProviderSettings.Factory
-				.jsonToFactory(settingsJson).func_177864_b();
-		return settings.seaLevel;
+		return world.getSeaLevel();
 	}
 }
