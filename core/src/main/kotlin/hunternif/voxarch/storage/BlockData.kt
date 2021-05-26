@@ -10,10 +10,6 @@ open class BlockData(var key: String) {
 
     var orientation: Direction? = null
 
-    fun hasOrientation(): Boolean {
-        return orientation != null
-    }
-
     /** Rotate the Direction (if not NONE) counterclockwise by the
      * specified angle.  */
     fun rotate(angle: Double) {
