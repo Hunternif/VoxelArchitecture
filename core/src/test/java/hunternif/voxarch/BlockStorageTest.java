@@ -14,7 +14,7 @@ public class BlockStorageTest {
 	@Test
 	public void testArrayBlockStorage() {
 		IFixedBlockStorage storage = new MultiDimArrayBlockStorage(2, 3, 4);
-		BlockData block = new BlockData(1, 3);
+		BlockData block = new BlockData(1);
 		storage.setBlock(1, 2, 0, block);
 		for (int x = 0; x < 2; x++) {
 			for (int y = 0; y < 3; y++) {

@@ -6,7 +6,7 @@ import hunternif.voxarch.plan.ceiling
 import hunternif.voxarch.plan.floor
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.BlockData
-import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage
+import hunternif.voxarch.storage.MultiDimArrayBlockStorage
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.world.Environment
 import org.junit.Before
@@ -16,13 +16,13 @@ abstract class BaseBuilderTest(
     internal val height: Int,
     internal val length: Int
 ) {
-    lateinit var out: MultiDimIntArrayBlockStorage
+    lateinit var out: MultiDimArrayBlockStorage
     lateinit var context: BuildContext
     lateinit var builder: Builder<Node>
 
     @Before
     open fun setup() {
-        out = MultiDimIntArrayBlockStorage(width, height, length)
+        out = MultiDimArrayBlockStorage(width, height, length)
         context = BuildContext(DEFAULT_ENV)
         builder = Builder()
         setupDefaultMaterials()

@@ -3,10 +3,7 @@ package hunternif.voxarch;
 import static hunternif.voxarch.util.Direction.*;
 import static org.junit.Assert.*;
 
-import hunternif.voxarch.storage.BlockData;
-import hunternif.voxarch.storage.IFixedBlockStorage;
-import hunternif.voxarch.storage.MultiDimIntArrayBlockStorage;
-import hunternif.voxarch.storage.Structure;
+import hunternif.voxarch.storage.*;
 import hunternif.voxarch.util.Direction;
 import hunternif.voxarch.util.PositionTransformer;
 import hunternif.voxarch.util.StructureUtil;
@@ -20,8 +17,8 @@ public class PositionTransformerTest {
 	@Test
 	public void testRotate90() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 2);
+		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
+		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(3, 1, 2);
 		PositionTransformer trans = new PositionTransformer(out).translate(0, 0, 1).rotateY(90);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		for (int x = 0; x < 3; x++) {
@@ -39,8 +36,8 @@ public class PositionTransformerTest {
 	@Test
 	public void testRotate180() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(2, 1, 3);
+		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
+		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(2, 1, 3);
 		PositionTransformer trans = new PositionTransformer(out).translate(1, 0, 2).rotateY(180);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		for (int x = 0; x < 2; x++) {
@@ -58,8 +55,8 @@ public class PositionTransformerTest {
 	@Test
 	public void testRotate45() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 2, block);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 3);
+		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 2, block);
+		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(3, 1, 3);
 		PositionTransformer trans = new PositionTransformer(out).translate(0.5, 0, 1).rotateY(45);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		assertEquals(null, out.getBlock(0, 0, 0));
@@ -76,8 +73,8 @@ public class PositionTransformerTest {
 	@Test
 	public void testRotateALittle() {
 		BlockData block = new BlockData(1);
-		Structure box = StructureUtil.createFilledBox(MultiDimIntArrayBlockStorage.factory, 2, 1, 3, block);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(2, 1, 3);
+		Structure box = StructureUtil.createFilledBox(MultiDimArrayBlockStorage.factory, 2, 1, 3, block);
+		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(2, 1, 3);
 		PositionTransformer trans = new PositionTransformer(out).rotateY(3);
 		StructureUtil.pasteStructure(trans, box.getStorage(), 0, 0, 0);
 		for (int x = 0; x < 2; x++) {
@@ -90,7 +87,7 @@ public class PositionTransformerTest {
 	@Test
 	public void testGenerateBox() {
 		BlockData block = new BlockData(1);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(4, 1, 4);
+		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(4, 1, 4);
 		PositionTransformer trans = new PositionTransformer(out);
 		for (int i = 0; i < 4; i++) {
 			trans.setBlock(1, 0, 0, block);
@@ -119,7 +116,7 @@ public class PositionTransformerTest {
 	@Test
 	public void testGenerateUnevenBoxWithStack() {
 		BlockData block = new BlockData(1);
-		IFixedBlockStorage out = MultiDimIntArrayBlockStorage.factory.createFixed(3, 1, 4);
+		IFixedBlockStorage out = MultiDimArrayBlockStorage.factory.createFixed(3, 1, 4);
 		PositionTransformer trans = new PositionTransformer(out);
 		trans.pushTransformation();
 		

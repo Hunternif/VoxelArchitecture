@@ -3,15 +3,11 @@ package hunternif.voxarch.storage
 import hunternif.voxarch.util.Direction
 
 /**
- * Contains block id, metadata and [Direction]. The orientation
- * should modify the metadata in overridden method [.setOrientation].
+ * Contains block id and [orientation].
  * @author Hunternif
  */
-open class BlockData @JvmOverloads constructor(
-    var id: Int, var metadata: Int = 0
-) {
+open class BlockData constructor(var id: Int) {
 
-    /** Override this method to set metadata appropriately.  */
     var orientation: Direction? = null
 
     fun hasOrientation(): Boolean {
@@ -27,21 +23,19 @@ open class BlockData @JvmOverloads constructor(
     override fun equals(other: Any?): Boolean {
         if (other !is BlockData) return false
         return if (other === this) true
-        else other.id == id && other.metadata == metadata &&
-            other.orientation == orientation
+        else other.id == id && other.orientation == orientation
     }
 
     fun clone(): BlockData {
-        return BlockData(id, metadata)
+        return BlockData(id)
     }
 
     override fun toString(): String {
-        return "id: " + id + " " + orientation?.name + " meta: " + metadata
+        return "id: " + id + " " + orientation?.name
     }
 
     override fun hashCode(): Int {
         var result = id
-        result = 31 * result + metadata
         result = 31 * result + (orientation?.hashCode() ?: 0)
         return result
     }
