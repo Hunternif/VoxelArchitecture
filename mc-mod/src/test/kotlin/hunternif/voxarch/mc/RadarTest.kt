@@ -1,4 +1,4 @@
-package hunternif.voxarch.mc.item
+package hunternif.voxarch.mc
 
 import hunternif.voxarch.sandbox.getColor
 import hunternif.voxarch.world.HeightMap

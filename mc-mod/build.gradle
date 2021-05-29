@@ -63,9 +63,7 @@ minecraft {
 dependencies {
     minecraft 'net.minecraftforge:forge:1.15.2-31.2.31'
 
-    implementation project(':core')
-    implementation project(':mc-api')
-
+    provided project(':core')
     provided "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
 
     testImplementation 'junit:junit:4.12'

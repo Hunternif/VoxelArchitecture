@@ -1,1 +1,1 @@
-include ':mc-mod', ':mc-api', ':core'
+include ':mc-mod', ':core'
