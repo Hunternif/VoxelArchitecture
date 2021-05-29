@@ -38,3 +38,35 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+// Copies all jars from all sub-projects into the same folder
+task copyJars() {
+    allprojects { p ->
+        if (p != rootProject) {
+            copy {
+                from 'build/libs'
+                into rootDir.path + '/build/jar'
+            }
+        }
+    }
+}
+
+// Adds the 'provided' dependencies into the (deobf!) jar.
+// This is mainly for Kotlin stdlib.
+// TODO: make it reobfuscated, and include all projects into a single jar.
+allprojects {
+    configurations {
+        provided
+        compile.extendsFrom(provided)
+    }
+
+    task providedJar(type: Jar) {
+        classifier = 'all'
+        from {
+            configurations.provided.collect {
+                it.isDirectory() ? it : zipTree(it)
+            }
+        }
+        with jar
+    }
+}
