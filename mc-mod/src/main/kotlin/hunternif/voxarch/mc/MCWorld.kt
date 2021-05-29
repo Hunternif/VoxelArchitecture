@@ -10,7 +10,7 @@ import net.minecraft.state.properties.BlockStateProperties.HORIZONTAL_FACING
 import net.minecraft.util.ResourceLocation
 import net.minecraft.util.math.BlockPos
 import net.minecraft.world.World
-import net.minecraft.world.gen.Heightmap.Type.WORLD_SURFACE_WG
+import net.minecraft.world.gen.Heightmap.Type.WORLD_SURFACE
 import net.minecraftforge.registries.ForgeRegistries
 import net.minecraft.util.Direction as McDirection
 
@@ -71,7 +71,7 @@ class MCWorld(private val world: World) : IBlockWorld {
     override val maxHeight: Int = world.height
 
     override fun getHeight(x: Int, z: Int): Int =
-        world.getHeight(WORLD_SURFACE_WG, BlockPos(x, 0, z)).y
+        world.getHeight(WORLD_SURFACE, BlockPos(x, 0, z)).y
 
     //TODO: try using Heightmap.Type
     override fun getTerrainHeight(x: Int, z: Int): Int {
