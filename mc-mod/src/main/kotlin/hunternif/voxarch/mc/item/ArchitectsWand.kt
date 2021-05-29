@@ -24,8 +24,6 @@ import kotlin.math.floor
 
 class ArchitectsWand(properties: Properties) : Item(properties) {
 
-    private val context = defaultContext
-
     override fun addInformation(
         stack: ItemStack,
         worldIn: World?,
@@ -43,6 +41,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
             val posZ = floor(player.posZ).toInt()
             println("270-yaw: " + (270 - player.rotationYaw))
 
+            val context = defaultContext
             val mcWorld = MCWorld(world)
 
             context.builders.buildersForClass(Wall::class.java).setDefault(
