@@ -28,28 +28,28 @@ import kotlin.math.floor
 class ItemRadar(properties: Properties) : Item(properties) {
     private val radius = 64
 
-    override fun addInformation(
+    override fun appendHoverText(
         stack: ItemStack,
-        worldIn: World?,
+        world: World?,
         tooltip: MutableList<ITextComponent>,
-        flagIn: ITooltipFlag
+        flag: ITooltipFlag
     ) {
         tooltip.add(StringTextComponent("Scan heightmap of surroundings"))
     }
 
-    override fun onItemRightClick(
+    override fun use(
         world: World, player: PlayerEntity, hand: Hand
     ): ActionResult<ItemStack> {
-        if (world.isRemote) {
+        if (world.isClientSide) {
             val mcWorld = MCWorld(world)
             val map = mcWorld.terrainMap(
-                IntVec2(floor(player.posX).toInt(), floor(player.posZ).toInt()),
+                IntVec2(floor(player.x).toInt(), floor(player.z).toInt()),
                 IntVec2(radius*2 + 1, radius*2 + 1)
             )
             map.minHeight = mcWorld.seaLevel
             map.print()
         }
-        return ActionResult.resultPass(player.getHeldItem(hand))
+        return ActionResult.pass(player.getItemInHand(hand))
     }
 
     companion object {
@@ -65,7 +65,7 @@ class ItemRadar(properties: Properties) : Item(properties) {
         }
 
         private fun HeightMap.newFile(): Path {
-            val dir = Minecraft.getInstance().gameDir.toPath().resolve("screenshots")
+            val dir = Minecraft.getInstance().gameDirectory.toPath().resolve("screenshots")
             Files.createDirectories(dir)
             val timestamp = dateFormat.format(Date())
             return dir.resolve("heightmap[${center.x}x${center.y}]_$timestamp.png")
@@ -73,16 +73,16 @@ class ItemRadar(properties: Properties) : Item(properties) {
 
         private fun printChatMessage(file: Path) {
             val text = StringTextComponent(file.fileName.toString()).apply {
-                applyTextStyle(TextFormatting.UNDERLINE)
-                applyTextStyle {
-                    it.clickEvent = ClickEvent(
+                withStyle(TextFormatting.UNDERLINE)
+                withStyle {
+                    it.withClickEvent(ClickEvent(
                         ClickEvent.Action.OPEN_FILE,
                         file.toAbsolutePath().normalize().toString()
-                    )
+                    ))
                 }
             }
             val message = TranslationTextComponent("screenshot.success", text)
-            Minecraft.getInstance().ingameGUI.chatGUI.printChatMessage(message)
+            Minecraft.getInstance().gui.chat.addMessage(message)
         }
     }
 }

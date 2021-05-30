@@ -21,10 +21,10 @@ public class VoxArchMod {
 	public static Logger logger = LogManager.getLogger();;
 	
 	public static ArchitectsWand archWand = new ArchitectsWand(
-			new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1)
+			new Item.Properties().tab(ItemGroup.TAB_TOOLS).stacksTo(1)
 	);
 	public static ItemRadar radar = new ItemRadar(
-			new Item.Properties().group(ItemGroup.TOOLS).maxStackSize(1)
+			new Item.Properties().tab(ItemGroup.TAB_TOOLS).stacksTo(1)
 	);
 
 	@Mod.EventBusSubscriber(bus = Mod.EventBusSubscriber.Bus.MOD)

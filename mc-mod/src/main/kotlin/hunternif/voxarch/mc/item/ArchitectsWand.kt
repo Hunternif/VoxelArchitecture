@@ -24,22 +24,22 @@ import kotlin.math.floor
 
 class ArchitectsWand(properties: Properties) : Item(properties) {
 
-    override fun addInformation(
+    override fun appendHoverText(
         stack: ItemStack,
-        worldIn: World?,
+        world: World?,
         tooltip: MutableList<ITextComponent>,
-        flagIn: ITooltipFlag
+        flag: ITooltipFlag
     ) {
         tooltip.add(StringTextComponent("Summon a building"))
     }
 
-    override fun onItemRightClick(
+    override fun use(
         world: World, player: PlayerEntity, hand: Hand
     ): ActionResult<ItemStack> {
-        if (!world.isRemote) {
-            val posX = floor(player.posX).toInt()
-            val posZ = floor(player.posZ).toInt()
-            println("270-yaw: " + (270 - player.rotationYaw))
+        if (!world.isClientSide) {
+            val posX = floor(player.x).toInt()
+            val posZ = floor(player.z).toInt()
+            println("270-yaw: " + (270 - player.yRot))
 
             val context = defaultContext
             val mcWorld = MCWorld(world)
@@ -129,7 +129,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
             )
             MainBuilder().build(plan, animationWorld, context)
         }
-        return ActionResult.resultPass(player.getHeldItem(hand))
+        return ActionResult.pass(player.getItemInHand(hand))
     }
 
 }

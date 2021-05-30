@@ -40,7 +40,6 @@ object MCEnvironment : Environment {
                 block is BarrierBlock ||
                 // plants
                 block is LeavesBlock ||
-                block is LogBlock || // could be building material!
                 block is SaplingBlock ||
                 block is BushBlock ||
                 block is StemBlock ||
@@ -83,6 +82,17 @@ object MCEnvironment : Environment {
                 block is DoorBlock
             ) {
                 buildThroughBlocks.add(block)
+            }
+            // Tree trunks. Could be building materials!
+            listOf(
+                Blocks.ACACIA_LOG,
+                Blocks.BIRCH_LOG,
+                Blocks.DARK_OAK_LOG,
+                Blocks.JUNGLE_LOG,
+                Blocks.OAK_LOG,
+                Blocks.SPRUCE_LOG
+            ).map {
+                buildThroughBlocks.add(it)
             }
         }
     }

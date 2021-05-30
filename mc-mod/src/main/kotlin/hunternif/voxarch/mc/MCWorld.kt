@@ -36,8 +36,8 @@ class MCWorld(private val world: World) : IBlockWorld {
     override fun getBlock(x: Int, y: Int, z: Int): BlockData {
         val state = world.getBlockState(BlockPos(x, y, z))
         val result = ExtBlockDataMC(state.block)
-        if (state.has(HORIZONTAL_FACING)) { // Block is rotate-able
-            val direction = state.get(HORIZONTAL_FACING)
+        if (state.hasProperty(HORIZONTAL_FACING)) { // Block is rotate-able
+            val direction = state.getValue(HORIZONTAL_FACING)
             result.orientation = directionMap.inverse()[direction]
         }
         return result
@@ -53,25 +53,25 @@ class MCWorld(private val world: World) : IBlockWorld {
                 ?: Blocks.AIR
         }
         //TODO: make sure rotation is applied correctly for special blocks, e.g. Portals
-        val state = mcBlock.defaultState.apply {
-            if (has(HORIZONTAL_FACING)) {
+        val state = mcBlock.defaultBlockState().apply {
+            if (hasProperty(HORIZONTAL_FACING)) {
                 block.orientation?.let { directionMap[it] }?.let {
-                    with(HORIZONTAL_FACING, it)
+                    setValue(HORIZONTAL_FACING, it)
                 }
             }
         }
         // Flag 2 will send the change to clients, but won't cause an immediate block update
-        world.setBlockState(BlockPos(x, y, z), state, 2)
+        world.setBlock(BlockPos(x, y, z), state, 2)
     }
 
     override fun clearBlock(x: Int, y: Int, z: Int) {
-        world.setBlockState(BlockPos(x, y, z), Blocks.AIR.defaultState, 2)
+        world.setBlock(BlockPos(x, y, z), Blocks.AIR.defaultBlockState(), 2)
     }
 
     override val maxHeight: Int = world.height
 
     override fun getHeight(x: Int, z: Int): Int =
-        world.getHeight(WORLD_SURFACE, BlockPos(x, 0, z)).y
+        world.getHeight(WORLD_SURFACE, x, z)
 
     //TODO: try using Heightmap.Type
     override fun getTerrainHeight(x: Int, z: Int): Int {
