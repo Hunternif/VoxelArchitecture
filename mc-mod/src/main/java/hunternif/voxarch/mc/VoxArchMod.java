@@ -15,7 +15,7 @@ import org.apache.logging.log4j.Logger;
  * A demo mod for Voxel Architecture.
  * @author Hunternif
  */
-@Mod("voxarch")
+@Mod("voxarch-mc-mod")
 public class VoxArchMod {
 	
 	public static Logger logger = LogManager.getLogger();;
