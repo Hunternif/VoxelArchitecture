@@ -16,15 +16,15 @@ public class IntVec3 {
 	}
 	
 	public IntVec3(float x, float y, float z) {
-		x = (int)x;
-		y = (int)y;
-		z = (int)z;
+		this.x = (int)x;
+		this.y = (int)y;
+		this.z = (int)z;
 	}
 	
 	public IntVec3(double x, double y, double z) {
-		x = (int)x;
-		y = (int)y;
-		z = (int)z;
+		this.x = (int)x;
+		this.y = (int)y;
+		this.z = (int)z;
 	}
 	
 	public IntVec3 set(int x, int y, int z) {

@@ -1,5 +1,6 @@
 package hunternif.voxarch.util
 
+import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -113,5 +114,10 @@ class MathUtilTest {
         assertEquals(10000, hits[a])
         assertEquals(null, hits[b])
         assertEquals(null, hits[c])
+    }
+
+    @Test
+    fun `test toIntVec3`() {
+        assertEquals(IntVec3(1, 2, 3), Vec3(1.0, 2.0, 3.0).toIntVec3())
     }
 }

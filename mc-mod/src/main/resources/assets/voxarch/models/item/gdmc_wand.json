@@ -1,0 +1,6 @@
+{
+    "parent": "item/handheld",
+    "textures": {
+        "layer0": "voxarch:items/gdmc_wand"
+    }
+}
