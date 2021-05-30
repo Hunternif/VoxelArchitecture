@@ -15,13 +15,13 @@ license="The mod is licensed under GPL, see LICENSE"
 # A list of mods - how many allowed here is determined by the individual mod loader
 [[mods]] #mandatory
 # The modid of the mod
-modId="voxarch-mc-mod" #mandatory
+modId="voxarch-gdmc-mod" #mandatory
 # The version number of the mod - there's a few well known ${} variables useable here or just hardcode it
 # ${file.jarVersion} will substitute the value of the Implementation-Version as read from the mod's JAR file metadata
 # see the associated build.gradle script for how to populate this completely automatically during a build
 version="${file.jarVersion}" #mandatory
  # A display name for the mod
-displayName="Voxel Architecture" #mandatory
+displayName="Voxel Architecture GDMC 2021" #mandatory
 # A URL to query for updates for this mod. See the JSON update specification https://mcforge.readthedocs.io/en/latest/gettingstarted/autoupdate/
 #updateJSONURL="https://change.me.example.invalid/updates.json" #optional
 # A URL for the "homepage" for this mod, displayed in the mod UI
@@ -34,7 +34,7 @@ credits="Inspired by Zivbot's Grand Castle Generator" #optional
 authors="Hunternifs" #optional
 # The description text for the mod (multi line!) (#mandatory)
 description='''
-A demo for Voxel Architecture algroithms, using Minecraft as reference implementation of a voxel world.
+A GDMC 2021 entry using the Voxel Architecture framework to build a settlement.
 '''
 # A dependency - use the . to indicate dependency for a specific modid. Dependencies are optional.
 [[dependencies.examplemod]] #optional
