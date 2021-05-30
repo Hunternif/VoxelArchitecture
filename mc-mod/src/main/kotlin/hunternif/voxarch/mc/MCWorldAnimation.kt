@@ -1,5 +1,6 @@
 package hunternif.voxarch.mc
 
+import com.google.common.annotations.VisibleForTesting
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IBlockStorage
 import net.minecraftforge.common.MinecraftForge
@@ -28,12 +29,17 @@ class MCWorldAnimation(
     }
 
     @SubscribeEvent
-    fun onTick(event: TickEvent.WorldTickEvent) {
+    fun onTickEvent(event: TickEvent.WorldTickEvent) {
+        onTick(event.world.gameTime)
+    }
+
+    @VisibleForTesting
+    internal fun onTick(ticksElapsed: Long) {
         val blocksPerTick = blocksPerSecond.toDouble() / 20.0
         val intBlocksPerTick = ceil(blocksPerTick).toInt()
         val ticksPerBlock = 1.0 / blocksPerTick
         val intTicksPerBlock = ceil(ticksPerBlock).toInt()
-        if (event.world.gameTime % intTicksPerBlock == 0L) {
+        if (ticksElapsed % intTicksPerBlock == 0L) {
             if (!queue.isEmpty()) {
                 for (t in 1..intBlocksPerTick) {
                     queue.pop().apply {
