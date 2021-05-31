@@ -28,9 +28,9 @@ class CastleBlueprint(
         // all further points will have XZ relative to heightmap, but absolute Y.
         val structure = Structure(Vec3(terrain.start.x, 0, terrain.start.y))
         for (m in mountains) {
-            if (m.rank > 0.7) {
-                structure.bigTower(m, terrain)
-            }
+//            if (m.rank > 0.7) {
+//                structure.bigTower(m, terrain)
+//            }
             structure.spreadCurtainWall(m, terrain)
         }
         return structure
@@ -43,7 +43,7 @@ class CastleBlueprint(
      * ```
      */
     private fun Structure.spreadCurtainWall(m: Mountain, terrain: HeightMap) {
-        val boxes = m.topWithFlatPerimeter.spreadBoxesAlongPerimeter(
+        val boxes = m.top.spreadBoxesAlongPerimeter(
             IntVec2(config.wallTowerWidth, config.wallTowerWidth),
             (config.wallSectionLength + config.wallTowerWidth).toDouble()
         )

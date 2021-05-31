@@ -1,7 +1,6 @@
 package hunternif.voxarch.sandbox
 
-import hunternif.voxarch.world.HeightMap
-import hunternif.voxarch.world.detectMountains
+import hunternif.voxarch.world.*
 import java.awt.Color
 import java.awt.image.BufferedImage
 

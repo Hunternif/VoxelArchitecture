@@ -16,7 +16,7 @@ data class MountainDetectorConfig(
     val minTopArea: Int = 6,
     /** a single mountain's top will not contain blocks with height
      * that are further than this away from avg height */
-    val topHeightSpread: Double = 3.0
+    val topHeightSpread: Double = 10.0
 )
 
 /** Gradient ascent, assuming every midSlope steep enough is a mountain. */
