@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc.item
 
 import hunternif.voxarch.mc.MCWorld
+import hunternif.voxarch.mc.gdmc.defaultRadius
 import hunternif.voxarch.sandbox.image
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.HeightMap
@@ -26,8 +27,6 @@ import javax.imageio.ImageIO
 import kotlin.math.floor
 
 class ItemRadar(properties: Properties) : Item(properties) {
-    private val radius = 64
-
     override fun appendHoverText(
         stack: ItemStack,
         world: World?,
@@ -42,6 +41,7 @@ class ItemRadar(properties: Properties) : Item(properties) {
     ): ActionResult<ItemStack> {
         if (world.isClientSide) {
             val mcWorld = MCWorld(world)
+            val radius = defaultRadius
             val map = mcWorld.terrainMap(
                 IntVec2(floor(player.x).toInt(), floor(player.z).toInt()),
                 IntVec2(radius*2 + 1, radius*2 + 1)

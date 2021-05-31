@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc.item
 
 import hunternif.voxarch.mc.gdmc.buildSettlement
+import hunternif.voxarch.mc.gdmc.defaultRadius
 import hunternif.voxarch.mc.toVec3
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.Entity
@@ -16,8 +17,6 @@ import net.minecraft.world.World
 
 class GdmcWand(properties: Properties) : Item(properties) {
 
-    private val radius = 128.0
-
     override fun appendHoverText(
         stack: ItemStack,
         world: World?,
@@ -31,6 +30,7 @@ class GdmcWand(properties: Properties) : Item(properties) {
         world: World, player: PlayerEntity, hand: Hand
     ): ActionResult<ItemStack> {
         if (!world.isClientSide) {
+            val radius = defaultRadius
 
             val pos = player.blockPosition().toVec3()
             val from = pos.add(-radius, 0.0, -radius).toIntVec3()
