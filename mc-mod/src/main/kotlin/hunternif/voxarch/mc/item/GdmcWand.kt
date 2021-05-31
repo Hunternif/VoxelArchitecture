@@ -38,7 +38,7 @@ class GdmcWand(properties: Properties) : Item(properties) {
 
             player.chatMessage("Will build from $from to $to")
             player.chatMessage("Building...")
-            buildSettlement(world, from.x, from.z, to.x ,to.z)
+            buildSettlement(world, from.toXZ(), to.toXZ())
             player.chatMessage("Finished building")
         }
         return ActionResult.pass(player.getItemInHand(hand))

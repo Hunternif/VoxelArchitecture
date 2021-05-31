@@ -8,7 +8,7 @@ import hunternif.voxarch.sandbox.TorchStandBuilder
 import hunternif.voxarch.sandbox.castle.*
 import net.minecraft.block.Blocks
 
-val defaultContext = BuildContext(MCEnvironment).apply {
+val defaultContext get() = BuildContext(MCEnvironment).apply {
     materials.apply {
         set(MAT_FLOOR) { ExtBlockDataMC(Blocks.STONE) }
         set(MAT_WALL) {

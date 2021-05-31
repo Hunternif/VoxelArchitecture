@@ -3,6 +3,7 @@ package hunternif.voxarch.world
 import hunternif.voxarch.vector.Array2D
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.vector.Vec3
+import kotlin.math.abs
 
 class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
     var minHeight = 0
@@ -45,10 +46,20 @@ class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
             map(center, area) { x, z -> getHeight(x, z) }
 
         /**
+         * Returns a snapshot of the world's height map from [from] to [to],
+         * ignoring non-terrain blocks.
+         */
+        fun IBlockWorld.terrainMap(from: IntVec2, to: IntVec2): HeightMap {
+            val center = IntVec2((from.x + to.x)/2, (from.y + to.y)/2)
+            val area = IntVec2(abs(to.x - from.x), abs(to.y - from.y))
+            return terrainMapCentered(center, area)
+        }
+
+        /**
          * Returns a snapshot of the world's height map around [center] of size [area],
          * ignoring non-terrain blocks.
          */
-        fun IBlockWorld.terrainMap(center: IntVec2, area: IntVec2): HeightMap =
+        fun IBlockWorld.terrainMapCentered(center: IntVec2, area: IntVec2): HeightMap =
             map(center, area) { x, z -> getTerrainHeight(x, z) }
 
         private fun IBlockWorld.map(

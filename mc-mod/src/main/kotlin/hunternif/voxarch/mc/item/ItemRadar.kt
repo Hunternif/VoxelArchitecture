@@ -5,7 +5,7 @@ import hunternif.voxarch.mc.gdmc.defaultRadius
 import hunternif.voxarch.sandbox.image
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.world.HeightMap
-import hunternif.voxarch.world.HeightMap.Companion.terrainMap
+import hunternif.voxarch.world.HeightMap.Companion.terrainMapCentered
 import net.minecraft.client.Minecraft
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.player.PlayerEntity
@@ -42,7 +42,7 @@ class ItemRadar(properties: Properties) : Item(properties) {
         if (world.isClientSide) {
             val mcWorld = MCWorld(world)
             val radius = defaultRadius
-            val map = mcWorld.terrainMap(
+            val map = mcWorld.terrainMapCentered(
                 IntVec2(floor(player.x).toInt(), floor(player.z).toInt()),
                 IntVec2(radius*2 + 1, radius*2 + 1)
             )

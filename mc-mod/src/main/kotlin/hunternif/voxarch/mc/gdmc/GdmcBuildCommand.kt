@@ -2,6 +2,7 @@ package hunternif.voxarch.mc.gdmc
 
 import com.mojang.brigadier.CommandDispatcher
 import com.mojang.brigadier.context.CommandContext
+import hunternif.voxarch.mc.toXZ
 import net.minecraft.command.CommandSource
 import net.minecraft.command.Commands
 import net.minecraft.command.arguments.BlockPosArgument.blockPos
@@ -38,7 +39,7 @@ private fun perform(
     source.chatMessage("Will build a settlement somewhere from " +
         "${from.prettyXz()} to ${to.prettyXz()}")
     source.chatMessage("Building...")
-    buildSettlement(world, from.x, from.z, to.x, to.z)
+    buildSettlement(world, from.toXZ(), to.toXZ())
     source.chatMessage("Finished building")
     return 1
 }

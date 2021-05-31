@@ -70,4 +70,8 @@ public class IntVec3 {
 	public boolean equalsIntVec3(IntVec3 vec) {
 		return vec.x == x && vec.y == y && vec.z == z;
 	}
+
+	public IntVec2 toXZ() {
+		return new IntVec2(x, z);
+	}
 }
