@@ -343,13 +343,13 @@ private fun Turret.flyingButtress(seed: Long) {
 
 
 
-private fun Random.randomRoof(): RoofShape = nextWeighted(
+fun Random.randomRoof(): RoofShape = nextWeighted(
     RandomOption(2.0, RoofShape.FLAT_BORDERED),
     RandomOption(1.0, RoofShape.SPIRE),
     RandomOption(1.0, RoofShape.SPIRE_BORDERED)
 ).value
 
-private fun Random.randomBody(): BodyShape = nextWeighted(
+fun Random.randomBody(): BodyShape = nextWeighted(
     RandomOption(1.0, SQUARE),
     RandomOption(1.0, ROUND)
 ).value

@@ -11,7 +11,7 @@ import kotlin.math.round
 import kotlin.random.Random
 
 /** How many sub-elements, values 0.5 - 10*/
-private const val dense: Double = 5.0
+private const val dense: Double = 6.0
 
 /** How tall and narrow the turrets, values 0.05 - 1*/
 private const val tall: Double = 0.5
@@ -31,7 +31,8 @@ fun Turret.addGrandCastleTurretsRecursive(seed: Long) {
     // use its smallest dimension as 'width':
     val parentWidth = min(this.size.x, this.size.z)
 
-    val turretCount = ceil(dense/3).toInt() - depth + 1
+    val denseTurrets = dense + Random(seed+123).nextDouble(0.0, 2.0)
+    val turretCount = ceil(denseTurrets/3).toInt() - depth + 1
 
     for (t in 1 .. turretCount) {
         val bodyShape = Random(seed + depth)
@@ -51,7 +52,7 @@ fun Turret.addGrandCastleTurretsRecursive(seed: Long) {
 
         val yOffset = ceil(
             Random(seed + t + depth)
-                .nextDouble(width, this.size.y)
+                .nextDouble(min(width, this.size.y-1), this.size.y)
         )
 
         val origin = Vec3.UNIT_X.rotateY(angle).also {

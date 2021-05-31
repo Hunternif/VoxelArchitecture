@@ -4,6 +4,7 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 
 class Turret(
+    /** maps to the center of the floor */
     origin: Vec3,
     size: Vec3,
     val roofShape: RoofShape = RoofShape.FLAT_BORDERED,

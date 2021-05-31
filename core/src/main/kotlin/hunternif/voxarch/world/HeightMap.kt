@@ -38,6 +38,17 @@ class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
         return total/width/length
     }
 
+    //TODO: test this
+    fun averageIn(area: Area): Double {
+        var totalHeight = 0.0
+        var totalPoints = 0
+        for (p in this.intersect(area)) {
+            totalHeight += at(p)
+            totalPoints += 1
+        }
+        return totalHeight/totalPoints
+    }
+
     companion object {
         /**
          * Returns a snapshot of the world's height map around [center] of size [area].

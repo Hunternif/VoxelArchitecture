@@ -85,7 +85,7 @@ fun Random.nextEvenInt(range: IntRange): Int {
 
 /**
  * Gets the next random *even* Int between [from] (inclusive)
- * and [until] exclusive.
+ * and [until] (exclusive).
  */
 fun Random.nextEvenInt(from: Int, until: Int): Int {
     require(until > from) { "until < from" }
