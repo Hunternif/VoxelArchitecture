@@ -42,6 +42,10 @@ public class PositionTransformer implements IBlockStorage {
 		return getBlock((double)x, (double)y, (double)z);
 	}
 
+	public BlockData getBlock(Vec3 p) {
+		return getBlock(p.x, p.y, p.z);
+	}
+
 	public BlockData getBlock(double x, double y, double z) {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
@@ -68,6 +72,10 @@ public class PositionTransformer implements IBlockStorage {
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
 		setBlock((double)x, (double)y, (double)z, block);
+	}
+
+	public void setBlock(Vec3 p, BlockData block) {
+		setBlock(p.x, p.y, p.z, block);
 	}
 
 	public void setBlock(double x, double y, double z, BlockData block) {

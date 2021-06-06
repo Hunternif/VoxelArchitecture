@@ -61,15 +61,16 @@ fun line(
     p1: Vec3,
     p2: Vec3,
     step: Double = 1.0,
-    offset: Double = 0.0, // from start and end
+    startOffset: Double = 0.0,
+    endOffset: Double = 0.0,
     build: (pos: Vec3) -> Unit
 ) {
     val lineVec = p2.subtract(p1).normalizeLocal()
     val stepVec = lineVec.multiply(step)
     val length = p2.distanceTo(p1)
-    val pos = p1.add(lineVec.multiply(offset))
-    var x = offset
-    while (x <= length - offset) {
+    val pos = p1.add(lineVec.multiply(startOffset))
+    var x = startOffset
+    while (x <= length - endOffset) {
         build(pos)
         pos.addLocal(stepVec)
         x += step

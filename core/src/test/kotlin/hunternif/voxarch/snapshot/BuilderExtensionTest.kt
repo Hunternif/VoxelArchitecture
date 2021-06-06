@@ -33,7 +33,7 @@ class BuilderExtensionTest : BaseSnapshotTest(10, 10, 10) {
 
     @Test
     fun `line xz with offset`() {
-        line(Vec3.ZERO, Vec3(9, 0, 9), 0.5, 1.0) {
+        line(Vec3.ZERO, Vec3(9, 0, 9), 0.5, 1.0, 1.0) {
             putBlock(it)
         }
         record(out.sliceY(0))

@@ -20,6 +20,7 @@ import javax.imageio.ImageIO
 /**
  * Example: `record(out.sliceZ(1))`
  * -- this will "slice" the storage along the XY plane at z = 1 and render it to a pixel image.
+ * TODO: in Y slice, the Z axis on the image is inverted, compared to Minecraft.
  * @param blockColorMap maps block id to RGB pixel color
  */
 abstract class BaseSnapshotTest(
