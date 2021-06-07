@@ -60,6 +60,19 @@ inline fun Room.ceiling(
     action.invoke(it)
 }
 
+/** Adds a path that follows the room's walls at [y] level. */
+inline fun Room.perimeter(
+    y: Double = 0.0,
+    crossinline action: Path.() -> Unit = {}
+): Path = Path(Vec3.ZERO).also { path ->
+    this.walls.forEach { wall ->
+        path.addPoint(Vec3(wall.p1.x, y, wall.p1.y))
+    }
+    path.loopToStart()
+    this.addChild(path)
+    action.invoke(path)
+}
+
 /** Adds a child [Wall] */
 inline fun Node.wall(
     start: Vec3,

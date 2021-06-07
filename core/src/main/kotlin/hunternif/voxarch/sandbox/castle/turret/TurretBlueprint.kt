@@ -112,9 +112,10 @@ fun createTurret(
         // overhanging roof:
         if (withCrenellation) {
             centeredRoom(roofOrigin, roofSize) {
+                type = BLD_TOWER_ROOF
                 ceiling()
                 createTowerWalls(bodyShape)
-                type = BLD_TOWER_ROOF
+                perimeter(1.0)
             }
         }
     }

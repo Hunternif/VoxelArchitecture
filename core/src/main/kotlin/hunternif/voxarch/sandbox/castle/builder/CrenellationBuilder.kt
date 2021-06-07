@@ -2,8 +2,10 @@ package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
+import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.PathHugger
 import kotlin.math.ceil
 
 /**
@@ -18,50 +20,29 @@ class CrenellationBuilder(
     private val merlonLength: Int = 1,
     private val merlonHeight: Int = 2,
     private val crenelLength: Int = 1,
-    private val crenelHeight: Int = 1,
-    private val downToGround: Boolean = false
-) : Builder<Wall>() {
+    private val crenelHeight: Int = 1
+) : Builder<Path>() {
 
-    override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
-        if (node.transparent) return
-        val wallLength = ceil(node.length).toInt()
-        val wallHeight = ceil(node.height).toInt()
-        // 1. base wall
-        for (x in 0 .. wallLength) {
-            for (y in 0..wallHeight) {
-                val block = context.materials.get(material)
-                world.setBlock(x, y, 0, block)
-            }
-        }
-        // 2. crenellation
+    override fun build(node: Path, world: IBlockStorage, context: BuildContext) {
+        val wallLength = ceil(node.totalLength).toInt()
+        val hugger = PathHugger(world, node)
+
         var i = 0
         for (x in 0 .. wallLength) {
             if (i < merlonLength) {
-                for (y in 1..merlonHeight) {
+                for (y in 0 until merlonHeight) {
                     val block = context.materials.get(material)
-                    world.setBlock(x, y + wallHeight, 0, block)
+                    hugger.setBlock(x, y, 0, block)
                 }
             } else {
-                for (y in 1..crenelHeight) {
+                for (y in 0 until crenelHeight) {
                     val block = context.materials.get(material)
-                    world.setBlock(x, y + wallHeight, 0, block)
+                    hugger.setBlock(x, y, 0, block)
                 }
             }
             i = (i + 1) % (merlonLength + crenelLength)
         }
-        // 3. optional foundation
-        if (downToGround) {
-            for (x in 0 .. wallLength) {
-                var y = -1
-                while(true) {
-                    val b = world.getBlock(x, y, 0)
-                    if (b != null && !context.env.shouldBuildThrough(b)) break
-                    val block = context.materials.get(material)
-                    world.setBlock(x, y, 0, block)
-                    y--
-                }
-            }
-        }
+
         super.build(node, world, context)
     }
 }

@@ -10,18 +10,18 @@ class PathTest {
         val path = Path(Vec3.ZERO)
 
         val p0 = Vec3(0, 0, 0)
-        path.add(p0)
+        path.addPoint(p0)
         assertEquals(0.0, path.totalLength, 0.0)
         assertTrue(path.segments.isEmpty())
 
         val p1 = Vec3(1, 0, 0)
-        path.add(p1)
+        path.addPoint(p1)
         assertEquals(1.0, path.totalLength, 0.0)
         assertEquals(1, path.segments.size)
         assertEquals(PathSegment(p0, p1, 1.0, 0.0), path.segments[0])
 
         val p2 = Vec3(1, 0, 2)
-        path.add(p2)
+        path.addPoint(p2)
         assertEquals(3.0, path.totalLength, 0.0)
         assertEquals(2, path.segments.size)
         assertEquals(PathSegment(p1, p2, 2.0, 1.0), path.segments[1])

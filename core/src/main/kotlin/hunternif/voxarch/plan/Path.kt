@@ -23,10 +23,10 @@ open class Path(origin: Vec3) : Node(origin) {
 
     /** Alternative constructor to add */
     constructor(origin: Vec3, points: List<Vec3>) : this(origin) {
-        points.forEach { add(it) }
+        points.forEach { addPoint(it) }
     }
 
-    fun add(point: Vec3) {
+    fun addPoint(point: Vec3) {
         points.lastOrNull()?.let {
             val distance = _segments.lastOrNull()?.run {
                 distanceFromStart + length
@@ -36,6 +36,13 @@ open class Path(origin: Vec3) : Node(origin) {
             ))
         }
         _points.add(point)
+    }
+
+    /** Connects the end of the path to the start */
+    fun loopToStart() {
+        points.firstOrNull()?.let {
+            addPoint(it)
+        }
     }
 
     /**
