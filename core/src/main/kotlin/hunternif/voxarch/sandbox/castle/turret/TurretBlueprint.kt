@@ -95,10 +95,17 @@ fun createTurret(
                 type = BLD_TURRET_BOTTOM
             }
         }
+        type = BLD_TOWER_BODY
         floor()
         createTowerWalls(bodyShape)
+
+        // corbels
+        walls.forEach {
+            it.path(size.y) {
+                type = BLD_TOWER_CORBEL
+            }
+        }
         // TODO: place corbels as separate nodes
-        type = BLD_TOWER_BODY
 
         // spire:
         if (hasSpire) {

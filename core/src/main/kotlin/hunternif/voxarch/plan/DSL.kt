@@ -83,6 +83,18 @@ inline fun Node.wall(
     action.invoke(it)
 }
 
+/** Adds a child [Path] that follows this wall at [y] level. */
+inline fun Wall.path(
+    y: Double = 0.0,
+    crossinline action: Path.() -> Unit = {}
+): Path = Path(Vec3(0.0, y, 0.0)).also {
+    it.addPoint(Vec3.ZERO)
+    // move only along x because Wall overrides rotationY
+    it.addPoint(Vec3(length, 0.0, 0.0))
+    this.addChild(it)
+    action.invoke(it)
+}
+
 /** Adds a child [Prop] */
 inline fun Node.prop(
     start: Vec3,
