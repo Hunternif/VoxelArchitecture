@@ -120,4 +120,13 @@ class MathUtilTest {
     fun `test toIntVec3`() {
         assertEquals(IntVec3(1, 2, 3), Vec3(1.0, 2.0, 3.0).toIntVec3())
     }
+
+    @Test
+    fun `segment angle Y`() {
+        assertEquals(0.0, segmentAngleY(Vec3.ZERO, Vec3(1, 0, 0)), 0.0001)
+        assertEquals(90.0, segmentAngleY(Vec3.ZERO, Vec3(0, 0, -1)), 0.0001)
+        assertEquals(-90.0, segmentAngleY(Vec3.ZERO, Vec3(0, 0, 1)), 0.0001)
+        assertEquals(45.0, segmentAngleY(Vec3.ZERO, Vec3(1, 0, -1)), 0.0001)
+
+    }
 }

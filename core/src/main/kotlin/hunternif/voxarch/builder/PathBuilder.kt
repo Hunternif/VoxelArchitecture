@@ -14,12 +14,13 @@ open class PathBuilder<in T : Path>(
         // distance traveled along the CURRENT SECTION of the path
         var traveled = 0.0
 
-        node.zipWithNext { p1, p2 ->
-            line(p1, p2, step = step, startOffset = traveled) { p ->
+        // TODO: rotate transformer, and rename to `buildAtX`
+        node.segments.forEach { s ->
+            line(s.p1, s.p2, step = step, startOffset = traveled) { p ->
                 buildAt(p, node, world, context)
                 traveled += step
             }
-            traveled -= p1.distanceTo(p2)
+            traveled -= s.length
         }
         super.build(node, world, context)
     }

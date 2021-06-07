@@ -3,6 +3,7 @@ package hunternif.voxarch.util
 import hunternif.voxarch.vector.Matrix4
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.vector.Vec4
+import kotlin.math.atan2
 import kotlin.math.round
 
 /**
@@ -67,6 +68,10 @@ fun Vec3.rotateY(angle: Double): Vec3 {
     Matrix4.rotationY(angle).multiplyLocal(vec4)
     return Vec3.from(vec4)
 }
+
+/** Angle in degrees of a line segment [start]-[end] vs X axis. */
+fun segmentAngleY(start: Vec3, end: Vec3) =
+    atan2(-end.z + start.z, end.x - start.x) * 180 / Math.PI
 
 /**
  * Ensures the result is between [min] (incl.) and [max] (incl.).
