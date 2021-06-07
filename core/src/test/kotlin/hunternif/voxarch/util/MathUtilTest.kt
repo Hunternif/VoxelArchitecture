@@ -127,6 +127,8 @@ class MathUtilTest {
         assertEquals(90.0, segmentAngleY(Vec3.ZERO, Vec3(0, 0, -1)), 0.0001)
         assertEquals(-90.0, segmentAngleY(Vec3.ZERO, Vec3(0, 0, 1)), 0.0001)
         assertEquals(45.0, segmentAngleY(Vec3.ZERO, Vec3(1, 0, -1)), 0.0001)
-
+        assertEquals(180.0, segmentAngleY(Vec3.ZERO, Vec3(-1, 0, 0)), 0.0001)
+        assertEquals(135.0, segmentAngleY(Vec3.ZERO, Vec3(-1, 0, -1)), 0.0001)
+        assertEquals(-135.0, segmentAngleY(Vec3.ZERO, Vec3(-1, 0, 1)), 0.0001)
     }
 }
