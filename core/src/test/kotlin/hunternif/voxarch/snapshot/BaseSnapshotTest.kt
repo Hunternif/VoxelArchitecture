@@ -69,7 +69,8 @@ abstract class BaseSnapshotTest(
             ID_AIR to BG_COLOR,
             ID_FLOOR to 0x593B3C,
             ID_WALL to 0xF0B06C,
-            ID_ROOF to 0xB13B42
+            ID_ROOF to 0xB13B42,
+            ID_WALL_DECO to 0xAE977D
         )
 
         fun IFixedBlockStorage.sliceX(offset: Int): Slice = XSlice(this, offset)

@@ -36,6 +36,7 @@ abstract class BaseBuilderTest(
             set(MAT_FLOOR) { BlockData(ID_FLOOR) }
             set(MAT_WALL) { BlockData(ID_WALL) }
             set(MAT_ROOF) { BlockData(ID_ROOF) }
+            set(MAT_WALL_DECORATION) { BlockData(ID_WALL_DECO) }
         }
     }
 
@@ -68,6 +69,7 @@ abstract class BaseBuilderTest(
         const val ID_FLOOR = "1"
         const val ID_WALL = "2"
         const val ID_ROOF = "3"
+        const val ID_WALL_DECO = "4"
 
         val DEFAULT_ENV = object : Environment {
             override fun isTerrain(block: BlockData?): Boolean = true
