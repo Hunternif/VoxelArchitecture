@@ -34,6 +34,20 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     }
 
     @Test
+    fun `crenellations width 4`() {
+        val structure = turret(4)
+        build(structure)
+        record(out.sliceY(8))
+    }
+
+    @Test
+    fun `crenellations width 6`() {
+        val structure = turret(6)
+        build(structure)
+        record(out.sliceY(8))
+    }
+
+    @Test
     fun `turret corbels width 4`() {
         val structure = turret(4)
         build(structure)

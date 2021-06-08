@@ -64,9 +64,9 @@ inline fun Room.ceiling(
 inline fun Room.perimeter(
     y: Double = 0.0,
     crossinline action: Path.() -> Unit = {}
-): Path = Path(Vec3.ZERO).also { path ->
+): Path = Path(Vec3(0.0, y, 0.0)).also { path ->
     this.walls.forEach { wall ->
-        path.addPoint(Vec3(wall.p1.x, y, wall.p1.y))
+        path.addPoint(Vec3(wall.p1.x, 0.0, wall.p1.y))
     }
     path.loopToStart()
     this.addChild(path)

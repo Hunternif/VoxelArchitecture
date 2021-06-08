@@ -122,7 +122,6 @@ fun createTurret(
                 type = BLD_TOWER_ROOF
                 ceiling()
                 createTowerWalls(bodyShape)
-                perimeter(1.0)
             }
         }
     }

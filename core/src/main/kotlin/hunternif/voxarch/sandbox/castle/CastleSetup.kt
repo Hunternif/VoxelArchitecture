@@ -4,10 +4,7 @@ import hunternif.voxarch.builder.BuilderConfig
 import hunternif.voxarch.builder.SimpleWallBuilder
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.Wall
-import hunternif.voxarch.sandbox.castle.builder.CorbelBuilder
-import hunternif.voxarch.sandbox.castle.builder.CrenellationBuilder
-import hunternif.voxarch.sandbox.castle.builder.FloorFoundationBuilder
-import hunternif.voxarch.sandbox.castle.builder.PyramidBuilder
+import hunternif.voxarch.sandbox.castle.builder.*
 
 // Materials
 const val MAT_WALL = "wall"
@@ -32,14 +29,11 @@ const val BLD_TOWER_SPIRE = "tower_spire"
  */
 fun BuilderConfig.setCastleBuilders() {
     set(BLD_FOUNDATION to FloorFoundationBuilder(MAT_WALL))
-    set<Wall>(BLD_TOWER_MAIN to SimpleWallBuilder(MAT_WALL))
-    set<Path>(BLD_TOWER_MAIN to CrenellationBuilder(MAT_WALL))
-    set<Wall>(BLD_CURTAIN_WALL to SimpleWallBuilder(MAT_WALL, downToGround = true))
-    set<Path>(BLD_CURTAIN_WALL to CrenellationBuilder(MAT_WALL))
+    set<Wall>(BLD_TOWER_MAIN to CrenellationWallBuilder(MAT_WALL))
+    set<Wall>(BLD_CURTAIN_WALL to CrenellationWallBuilder(MAT_WALL, downToGround = true))
     set<Wall>(BLD_TOWER_BODY to SimpleWallBuilder(MAT_WALL))
     set<Path>(BLD_TOWER_CORBEL to CorbelBuilder(MAT_WALL_DECORATION))
-    set<Wall>(BLD_TOWER_ROOF to SimpleWallBuilder(MAT_WALL_DECORATION))
-    set<Path>(BLD_TOWER_ROOF to CrenellationBuilder(MAT_WALL_DECORATION))
+    set<Wall>(BLD_TOWER_ROOF to CrenellationWallBuilder(MAT_WALL_DECORATION))
     set(BLD_TOWER_SPIRE to PyramidBuilder(MAT_ROOF))
     set(BLD_TURRET_BOTTOM to PyramidBuilder(MAT_WALL, upsideDown = true))
 }

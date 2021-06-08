@@ -146,7 +146,6 @@ class CastleBlueprint(
             floor()
             ceiling()
             createFourWalls()
-            perimeter(1.0 + wallHeight)
             type = BLD_TOWER_MAIN
         }
     }
