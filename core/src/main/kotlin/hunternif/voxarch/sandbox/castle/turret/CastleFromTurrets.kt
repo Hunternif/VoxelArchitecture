@@ -2,6 +2,7 @@ package hunternif.voxarch.sandbox.castle.turret
 
 import hunternif.voxarch.sandbox.castle.turret.BodyShape.*
 import hunternif.voxarch.sandbox.castle.turret.BottomShape.*
+import hunternif.voxarch.sandbox.castle.turret.RoofShape.*
 import hunternif.voxarch.util.*
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.*
@@ -10,13 +11,13 @@ import kotlin.random.Random
 private const val minWidth = 2.0
 private const val maxWidth = 12.0
 /** Walkways should we at least this wide. */
-private const val minWalkingSpace = 2
+private const val minWalkingSpace = 2.0
 /** Interior floors can be at least this tall. */
-private const val minInteriorHeight = 4
+private const val minInteriorHeight = 4.0
 /** If a turret is at least this wide, must continue building on top. */
-private const val minPlazaWidth = 12
+private const val minPlazaWidth = 12.0
 /** How far a tapered turret can project from parent turret. */
-private const val maxOverhang = 4
+private const val maxOverhang = 4.0
 
 fun createCastleFromTurrets(
     origin: Vec3,
@@ -30,7 +31,8 @@ fun createCastleFromTurrets(
     return createTurret(
         origin = origin,
         size = size,
-        roofShape = RoofShape.FLAT_BORDERED, //Random(seed+1).randomRoof(),
+        // start with flat so we can build on top
+        roofShape = FLAT_BORDERED,
         bodyShape = Random(seed+2).randomBody(),
         bottomShape = FOUNDATION,
         style = TowerStyle(),
@@ -41,11 +43,13 @@ fun createCastleFromTurrets(
 }
 
 private fun Turret.addTurretsRecursive(seed: Long) {
-    if (width <= 2) return
-    if (level < 10 && width > 5 && bottomShape == FOUNDATION) {
-        expandWithTurrets(seed+5555555)
+    if (hasSpace(5.0) && bottomShape == FOUNDATION) {
+        expandWithTurrets(seed+4444444)
     }
-    decorateWithTurrets(seed+666666)
+    if (hasSpace(minWidth, minWalkingSpace) && roofShape == FLAT_BORDERED) {
+        buildOnTop(seed+5555555)
+    }
+    decorateWithTurrets(seed+6666666)
     // TODO prevent the next level from doing the same thing as the previous level?
 }
 
@@ -62,14 +66,23 @@ private fun Turret.expandWithTurrets(seed: Long) {
     }
 }
 
-private fun Turret.decorateWithTurrets(seed: Long) {
-    if (width <= minWidth) return
+private fun Turret.buildOnTop(seed: Long) {
+    val topOptions = mutableListOf<BuildOption>().apply {
+        option(1.0) { centerTower(seed+10101) }
+        option(level) { /* do nothing */ }
 
+    }.toTypedArray()
+    Random(seed+10102).nextWeighted(*topOptions).build(this)
+}
+
+private fun Turret.decorateWithTurrets(seed: Long) {
     // These wall decorations are mutually exclusive
     val wallOptions = mutableListOf<BuildOption>().apply {
-        if (bodyShape == SQUARE) {
+        if (hasSpace(minWalkingSpace * 4)) {
             option(1.0) { turretsInCorners(seed) }
-            if (width < minPlazaWidth && height >= minInteriorHeight) {
+        }
+        if (bodyShape == SQUARE) {
+            if (!hasSpace(minPlazaWidth) && height >= minInteriorHeight) {
                 option(0.5) { singleTurret(ROUND, seed) }
                 option(0.5) { singleTurret(SQUARE, seed) }
                 option(0.0) { flyingButtress(seed) }
@@ -77,8 +90,7 @@ private fun Turret.decorateWithTurrets(seed: Long) {
                 option(0.0) { perimeterBalcony(seed) }
             }
         } else if (bodyShape == ROUND) {
-            option(0.5) { turretsInCorners(seed) }
-            if (width < minPlazaWidth && height >= minInteriorHeight) {
+            if (!hasSpace(minPlazaWidth) && height >= minInteriorHeight) {
                 option(1.0) { singleTurret(ROUND, seed) }
                 option(0.5) { balcony(ROUND, seed) }
                 option(0.0) { perimeterBalcony(seed) }
@@ -89,18 +101,6 @@ private fun Turret.decorateWithTurrets(seed: Long) {
         }
     }.toTypedArray()
     Random(seed+100).nextWeighted(*wallOptions).build(this)
-
-    // Additional top decorations
-    if (roofShape == RoofShape.FLAT_BORDERED) {
-        val topOptions = mutableListOf<BuildOption>().apply {
-            option(0.5) { centerTower(seed + 10101) }
-            option(0.5) { randomTowerOnTop(seed + 10101) }
-            if (width < minPlazaWidth) {
-                option(0.5) { /* do nothing if it's small enough */ }
-            }
-        }.toTypedArray()
-        Random(seed+10102).nextWeighted(*topOptions).build(this)
-    }
 }
 
 private class BuildOption(
@@ -114,6 +114,10 @@ private fun MutableList<BuildOption>.option(
 ) {
     add(BuildOption(probability, build))
 }
+private fun MutableList<BuildOption>.option(
+    probability: Int,
+    build: Turret.() -> Unit
+) = option(probability.toDouble(), build)
 
 
 // Horizontal expansions
@@ -162,7 +166,7 @@ private fun Turret.singleTurret(shape: BodyShape, seed: Long) {
         it.z = round(it.z * this.size.z * 0.6)
     }
 
-    val roofShape = Random(seed+1002).randomRoof()
+    val roofShape = randomRoof(seed+1002)
 
     turret(
         origin = origin,
@@ -190,7 +194,7 @@ private fun Turret.centerTower(seed: Long) {
         .nextDouble(0.2, 0.8)
     val height = round(this.height * heightRatio)
 
-    val roofShape = Random(seed+1002).randomRoof()
+    val roofShape = randomRoof(seed+1002)
 
     turret(
         origin = Vec3(0.0, this.height + 1, 0.0),
@@ -224,7 +228,7 @@ private fun Turret.randomTowerOnTop(seed: Long) {
     val z = round(Random(seed+10000004)
         .nextDouble(-0.5, 0.5) * (this.width - width))
 
-    val roofShape = Random(seed+10000005).randomRoof()
+    val roofShape = randomRoof(seed+10000005)
     val bodyShape = Random(seed+10000006).randomBody()
 
     turret(
@@ -264,7 +268,7 @@ private fun Turret.balcony(shape: BodyShape, seed: Long) {
     turret(
         origin = origin,
         size = Vec3(width, 0.0, width),
-        roofShape = RoofShape.FLAT_BORDERED,
+        roofShape = FLAT_BORDERED,
         bodyShape = shape,
         bottomShape = TAPERED,
         positionType = TurretPosition.WALL,
@@ -281,6 +285,8 @@ private fun Turret.perimeterBalcony(seed: Long) {
 }
 
 //TODO: favor not going above parent roof height
+//TODO: if the turret is too wide and low, prevent building child turrets in the
+// direction of the parent turret.
 private fun Turret.turretsInCorners(seed: Long) {
     val height = round(this.height * 0.6)
     val widthRatio = Random(seed+1040)
@@ -300,16 +306,14 @@ private fun Turret.turretsInCorners(seed: Long) {
     // How far the child turret sit from parent origin
     val maxRadius = (this.width/2 + maxOverhang) - width/2
 
-    val roofShape = Random(seed+1042).randomRoof()
+    val roofShape = randomRoof(seed+1042)
     val bodyShape = Random(seed+1043).randomBody()
     val bottomShape = when(this.bottomShape) {
         FLAT, TAPERED -> TAPERED
         FOUNDATION -> {
-            val foundationProb = ((2.0 - level/10)*widthRatio).clamp(0.0, 1.0)
-            val taperProb =  1 - foundationProb
             Random(seed+1044).nextWeighted(
-                RandomOption(foundationProb, FOUNDATION),
-                RandomOption(taperProb, TAPERED)
+                RandomOption(1.0, FOUNDATION),
+                RandomOption(0.5 + level / 2.0, TAPERED)
             ).value
         }
     }
@@ -332,7 +336,7 @@ private fun Turret.turretsInCorners(seed: Long) {
             level = this.level + 1
         ) {
             // TODO break the symmetry of turrets at the same level doing the same thing
-            addTurretsRecursive(seed + 10000000 + angle*1000 + level)
+            addTurretsRecursive(seed + 10000000 + angle*level)
         }
     }
 }
@@ -344,12 +348,47 @@ private fun Turret.flyingButtress(seed: Long) {
 
 
 fun Random.randomRoof(): RoofShape = nextWeighted(
-    RandomOption(2.0, RoofShape.FLAT_BORDERED),
-    RandomOption(1.0, RoofShape.SPIRE),
-    RandomOption(1.0, RoofShape.SPIRE_BORDERED)
+    RandomOption(1.0, FLAT_BORDERED),
+    RandomOption(0.5, SPIRE),
+    RandomOption(0.5, SPIRE_BORDERED)
 ).value
+
+/** Takes into account turret size, makes sure spires are not too tall. */
+fun Turret.randomRoof(seed: Long): RoofShape {
+    val avgRadius = (size.x + size.z) / 4
+    val spireHeight = (avgRadius + style.roofOffset) * style.spireRatio * 2
+    return Random(seed).nextWeighted(
+        RandomOption(1.0 + spireHeight / 6, FLAT_BORDERED),
+        RandomOption(0.5, SPIRE),
+        RandomOption(0.5, SPIRE_BORDERED)
+    ).value
+}
 
 fun Random.randomBody(): BodyShape = nextWeighted(
     RandomOption(1.0, SQUARE),
     RandomOption(1.0, ROUND)
 ).value
+
+/** Checks if the roof fits [offset] + [space] + [offset] on both X & Z axes. */
+private fun Turret.hasSpace(space: Double, offset: Double = 0.0): Boolean =
+    width + style.roofOffset * 2 >= offset * 2 + space &&
+    length + style.roofOffset * 2 >= offset * 2 + space
+
+/**
+ * Calculate how much sq.b. area there is on top, minus the [offset] from sides.
+ */
+private fun Turret.roofArea(offset: Int = 0): Double =
+    when (roofShape) {
+        SPIRE, SPIRE_BORDERED -> 0.0
+        FLAT_BORDERED -> {
+            when (bodyShape) {
+                SQUARE ->
+                    (width + (style.roofOffset - offset) * 2) *
+                    (height + (style.roofOffset - offset) * 2)
+                ROUND ->
+                    (width / 2 + (style.roofOffset - offset)) *
+                    (height / 2 + (style.roofOffset - offset)) *
+                    PI
+            }
+        }
+    }
