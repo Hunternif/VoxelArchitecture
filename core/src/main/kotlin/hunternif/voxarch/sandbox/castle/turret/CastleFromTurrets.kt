@@ -307,7 +307,10 @@ private fun Turret.turretsInCorners(seed: Long) {
     val maxRadius = (this.width/2 + maxOverhang) - width/2
 
     val roofShape = randomRoof(seed+1042)
-    val bodyShape = Random(seed+1043).randomBody()
+    val bodyShape = when (this.bodyShape) {
+        SQUARE -> Random(seed+1043).randomBody()
+        ROUND -> ROUND
+    }
     val bottomShape = when(this.bottomShape) {
         FLAT, TAPERED -> TAPERED
         FOUNDATION -> {
