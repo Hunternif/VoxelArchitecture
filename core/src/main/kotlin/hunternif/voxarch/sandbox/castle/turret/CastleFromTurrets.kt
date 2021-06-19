@@ -357,8 +357,9 @@ fun Random.randomRoof(): RoofShape = nextWeighted(
 fun Turret.randomRoof(seed: Long): RoofShape {
     val avgRadius = (size.x + size.z) / 4
     val spireHeight = (avgRadius + style.roofOffset) * style.spireRatio * 2
+    val flatProb = if (spireHeight < 20) 1.0 else spireHeight / 6
     return Random(seed).nextWeighted(
-        RandomOption(1.0 + spireHeight / 6, FLAT_BORDERED),
+        RandomOption(flatProb, FLAT_BORDERED),
         RandomOption(0.5, SPIRE),
         RandomOption(0.5, SPIRE_BORDERED)
     ).value
