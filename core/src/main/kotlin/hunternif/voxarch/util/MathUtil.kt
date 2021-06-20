@@ -4,6 +4,7 @@ import hunternif.voxarch.vector.Matrix4
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.vector.Vec4
 import kotlin.math.atan2
+import kotlin.math.max
 import kotlin.math.round
 
 /**
@@ -84,5 +85,7 @@ fun Double.clamp(min: Double, max: Double): Double {
         else -> this
     }
 }
+fun Double.clampMin(min: Double): Double = max(min, this)
 
+fun Double.round() = round(this)
 fun Double.roundToEven() = round(this / 2)*2

@@ -10,7 +10,8 @@ class Turret(
     val roofShape: RoofShape = RoofShape.FLAT_BORDERED,
     val bodyShape: BodyShape = BodyShape.SQUARE,
     val bottomShape: BottomShape = BottomShape.FLAT,
-    val positionType: TurretPosition = TurretPosition.NONE,
+    /** position of this turret in relation to parent turret */
+    var positionType: TurretPosition = TurretPosition.NONE,
     val style: TowerStyle = TowerStyle(),
 
     /** Angle vs parent turret. Usually facing away from the center. */
@@ -19,7 +20,9 @@ class Turret(
     /** Level in a hierarchy of nested turrets.
      * Usually equal to recursion depth, but not always. */
     val level: Int = 0
-) : Room(origin, size)
+) : Room(origin, size) {
+    val roofWidth: Double get() = width + style.roofOffset * 2
+}
 
 enum class RoofShape {
     /** Flat top surrounded by a border. */

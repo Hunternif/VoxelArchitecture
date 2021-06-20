@@ -123,7 +123,11 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //            ).apply {
 //                addGrandCastleTurretsRecursive(seed = System.currentTimeMillis())
 //            }
-            val plan = createCastleFromTurrets(
+//            val plan = createCastleFromTurrets(
+//                origin = pos,
+//                seed = System.currentTimeMillis()
+//            )
+            val plan = createCastleTopDown(
                 origin = pos,
                 seed = System.currentTimeMillis()
             )
