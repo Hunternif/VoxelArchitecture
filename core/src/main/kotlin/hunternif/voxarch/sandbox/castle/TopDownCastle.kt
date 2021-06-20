@@ -39,7 +39,7 @@ fun createCastleTopDown(
         bodyShape = Random(seed + 2).randomBody(),
         bottomShape = FOUNDATION,
         style = TowerStyle(),
-        level = 3
+        level = 4
     )
     return createParentRecursive(topTurret, seed)
 }
@@ -53,6 +53,7 @@ private fun createParentRecursive(turret: Turret, seed: Long): Node {
 private fun createParent(turret: Turret, seed: Long): Turret {
     val options = mutableListOf<BuildOption>().apply {
         option(1.0) { innerWard(it, seed) }
+        option(1.0) { outerWard(it, seed) }
     }.toTypedArray()
 
     return Random(seed + 100100100)
@@ -63,6 +64,18 @@ private fun createParent(turret: Turret, seed: Long): Turret {
 /** Returns a fake turret that contains an "inner ward" surrounded by walls,
  * and [keep] acts as a keep sitting on one of the walls. */
 private fun innerWard(keep: Turret, seed: Long): Turret {
+    val ward = outerWard(keep, seed)
+    // The keep sits in the middle of a random wall
+    val keepWall = ward.walls.random(Random(seed + 1010))
+    keep.origin = keepWall.run {
+        Vec3((p1.x + p2.x)/2, keep.origin.y, (p1.y + p2.y)/2)
+    }
+    return ward
+}
+
+/** Returns a fake turret that contains an "outer ward" surrounded by walls,
+ * and [keep] acts as a keep sitting in the center. */
+private fun outerWard(keep: Turret, seed: Long): Turret {
     val wardWidthInc = Random(seed + 1002)
         .nextDouble(minWalkSpace * 2, 25.0)
     val wardWidth = round(keep.width + wardWidthInc).roundToEven()
@@ -133,13 +146,8 @@ private fun innerWard(keep: Turret, seed: Long): Turret {
             }
         }
 
-        // The keep sits in the middle of a random wall
-        val keepWall = walls.random(Random(seed + 1010))
-        val keepPos = keepWall.run {
-            Vec3((p1.x + p2.x)/2, keepElevation, (p1.y + p2.y)/2)
-        }
-
-        addChild(keep, keepPos)
+        // Place keep in the center
+        addChild(keep, Vec3.ZERO.addY(keepElevation))
         keep.positionType = TurretPosition.WALL
     }
 }
