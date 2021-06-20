@@ -68,7 +68,7 @@ private fun innerWard(keep: Turret, seed: Long): Turret {
     // The keep sits in the middle of a random wall
     val keepWall = ward.walls.random(Random(seed + 1010))
     keep.origin = keepWall.run {
-        Vec3((p1.x + p2.x)/2, keep.origin.y, (p1.y + p2.y)/2)
+        Vec3(round((p1.x + p2.x)/2), keep.origin.y, round((p1.y + p2.y)/2))
     }
     return ward
 }
@@ -98,18 +98,21 @@ private fun outerWard(keep: Turret, seed: Long): Turret {
     val wallHeight = round(turretHeight - wallTowerOffset).clampMin(3.0)
 
     val turretCount = when (wardShape) {
-        SQUARE -> 4.0
-        // assuming wall section length should equal to turret width
+        SQUARE -> 4
+        // assuming wall section length should equal to turret width * 1.5
         ROUND -> (wardWidth * PI / (turretWidth + keep.style.roofOffset * 2) / 2.5)
-            .clampMin(4.0).roundToEven()
+            .clampMin(4.0).roundToEven().toInt()
     }
-    if (turretCount == 4.0) wardShape = SQUARE
+    if (turretCount == 4) wardShape = SQUARE
 
     val turretRoofShape = Random(seed + 1005).randomRoof()
     val turretBodyShape = Random(seed + 1006).randomBody()
     val turretBottomShape = if (keep.level > 1) {
         Random(seed + 1007).next(TAPERED, FOUNDATION)
     } else FOUNDATION
+
+    val angleStep = 360.0 / turretCount
+    val radius = wardWidth / 2 / MathUtil.cosDeg(angleStep / 2)
 
     return Turret(
         origin = keep.origin,
@@ -119,12 +122,11 @@ private fun outerWard(keep: Turret, seed: Long): Turret {
         level = keep.level - 1
     ).apply {
         val turrets = mutableListOf<Turret>()
-        val angleStep = 360.0 / turretCount
         var angle = angleStep / 2
         while (angle < 360.0) {
             val origin = Vec3.UNIT_X.rotateY(angle).also {
-                it.x = round(it.x * wardWidth / 2)
-                it.z = round(it.z * wardWidth / 2)
+                it.x = round(it.x * radius)
+                it.z = round(it.z * radius)
             }
             turrets.add(turret(
                 origin = origin,
