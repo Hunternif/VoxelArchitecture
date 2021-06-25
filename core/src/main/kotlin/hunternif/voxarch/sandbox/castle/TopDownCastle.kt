@@ -18,7 +18,7 @@ private const val minWalkSpace = 2.0
 /** Interior floors can be at least this tall. */
 private const val minInteriorHeight = 4.0
 /** Wall is this much lower than the tower */
-const val wallTowerOffset = 4.0
+private const val wallTowerOffset = 4.0
 
 /**
  * Start with a small turret on top, and recursively add more structures below.

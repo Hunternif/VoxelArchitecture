@@ -1,6 +1,5 @@
-package hunternif.voxarch.mc
+package hunternif.voxarch.sandbox
 
-import hunternif.voxarch.sandbox.getColor
 import hunternif.voxarch.world.HeightMap
 import org.junit.Assert.assertEquals
 import org.junit.Test

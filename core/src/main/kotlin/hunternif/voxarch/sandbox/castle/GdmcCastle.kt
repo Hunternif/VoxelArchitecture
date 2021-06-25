@@ -1,10 +1,9 @@
-package hunternif.voxarch.mc.gdmc
+package hunternif.voxarch.sandbox.castle
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.wall
-import hunternif.voxarch.sandbox.castle.BLD_CURTAIN_WALL
 import hunternif.voxarch.sandbox.castle.turret.addGrandCastleTurretsRecursive
 import hunternif.voxarch.sandbox.castle.turret.randomBody
 import hunternif.voxarch.sandbox.castle.turret.randomRoof
@@ -15,23 +14,31 @@ import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.world.HeightMap
 import hunternif.voxarch.world.Mountain
+import hunternif.voxarch.world.detectMountains
 import hunternif.voxarch.world.spreadBoxesAlongPerimeter
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.random.Random
 
-const val towerWidth = 6
-const val towerHeight = 8
-const val wallSectionLength = 16
+private const val towerWidth = 6
+private const val towerHeight = 8
+private const val wallSectionLength = 16
 
 /** Wall is this much lower than the tower */
-const val wallTowerOffset = 4
+private const val wallTowerOffset = 4
 
 // Not used because I'm ok with walls running into ground
 //const val wallMinHeight = 2
 
+fun HeightMap.findBiggestMountain(): Mountain? =
+    detectMountains()
+        // minimum allowed area
+        .filter { it.top.size > towerWidth * towerWidth *2 }
+        // find widest * tallest mountain
+        .maxBy { it.top.size * averageIn(it.top) }
+
 /** Puts 4 towers a bitoff the center of the map. */
-internal fun defaultCastle(terrain: HeightMap, seed:Long): Node {
+fun defaultCastle(terrain: HeightMap, seed:Long): Node {
     val side = wallSectionLength + towerWidth
     val w = towerWidth
     // top left corner is such that the castle is close to center
@@ -48,7 +55,7 @@ internal fun defaultCastle(terrain: HeightMap, seed:Long): Node {
     return castleFromBoxes(boxes, terrain, seed)
 }
 
-internal fun mountainCastle(terrain: HeightMap, mnt: Mountain, seed:Long): Node {
+fun mountainCastle(terrain: HeightMap, mnt: Mountain, seed:Long): Node {
     val boxes = mnt.top.spreadBoxesAlongPerimeter(
         IntVec2(towerWidth, towerWidth),
         (wallSectionLength + towerWidth).toDouble()
