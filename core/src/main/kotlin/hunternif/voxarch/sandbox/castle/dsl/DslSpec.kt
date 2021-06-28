@@ -47,7 +47,7 @@ ward(styleClass = "ward") {
 
 // Rules for secondary parameters like size, style. Sorta like CSS.
 /*
-rule(styleClass = "ward") {
+style(styleClass = "ward") {
     // vx means voxel, i.e. exact block size
     width { 30.vx to 50.vx } // random size, get seed from parent
     // parent is a built turret instance
@@ -57,7 +57,7 @@ rule(styleClass = "ward") {
         shape = SQUARE
     }
 }
-rule("ward_turret") {
+style("ward_turret") {
     // Ensure that all immediate children will have the same style:
     seed = parent.seed
     width {
@@ -78,11 +78,11 @@ rule("ward_turret") {
         bottomShape = random(TAPERED, FOUNDATION)
     }
 }
-rule("ward_wall") {
+style("ward_wall") {
     paddingTop { 4.vx }
     height { 100.pct }
 }
-rule("keep") {
+style("keep") {
     height {
         100.pct to 200.pct
     }
@@ -93,7 +93,7 @@ rule("keep") {
     // Place in the center of the parent Wall or Room
     align = CENTER
 }
-rule("keep_deco") {
+style("keep_deco") {
     // This prevents decorations when the turret is too small
     if (parent.width <= 4) {
         visibility = GONE
@@ -117,6 +117,6 @@ rule("keep_deco") {
 // CSS sizes propagate from parent to child. Parent's attributes should not be
 // decided based on child's random sizes!
 // Parent passes to children its modified random seed (e.g. seed + i).
-// The CSS rule can decide to use the parent's seed, so that all immediate
+// The CSS style can decide to use the parent's seed, so that all immediate
 // children of that parent will look the same. But the children's children still
 // have their own seeds!

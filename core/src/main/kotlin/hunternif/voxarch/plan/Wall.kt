@@ -36,7 +36,9 @@ open class Wall(
     val p2: Vec2 get() = Vec2.fromXZ(end)
 
     val length: Double get() = p2.distanceTo(p1)
-    val height: Double get() = end.y - origin.y
+    var height: Double
+        get() = end.y - origin.y
+        set(value) { end.y = origin.y + value}
 
 
     /** Legacy constructor */

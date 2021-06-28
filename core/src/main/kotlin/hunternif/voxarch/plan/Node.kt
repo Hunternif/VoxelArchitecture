@@ -6,7 +6,7 @@ import hunternif.voxarch.vector.Vec3
  * @param origin coordinates of nodes inside this Node are counted
  *               from this origin.
  */
-abstract class Node(
+open class Node(
     origin: Vec3
 ) {
     open var origin: Vec3 = origin.clone()
