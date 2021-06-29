@@ -2,6 +2,7 @@ package hunternif.voxarch.sandbox.castle.dsl
 
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.util.clamp
 
 interface Dimension {
     fun calculate(base: Double): Double
@@ -30,6 +31,7 @@ fun StyledNode.height(block: StyleSize.() -> Dimension) {
         else -> 0.0
     }
     val newValue = dim.calculate(baseValue)
+        .clamp(style.min, style.max)
     when (node) {
         is Room -> node.height = newValue
         is Wall -> node.height = newValue
@@ -43,8 +45,10 @@ fun StyledNode.width(block: StyleSize.() -> Dimension) {
         is Room -> parent.width
         else -> 0.0
     }
+    val newValue = dim.calculate(baseValue)
+        .clamp(style.min, style.max)
     when (node) {
-        is Room -> node.width = dim.calculate(baseValue)
+        is Room -> node.width = newValue
     }
 }
 
@@ -52,10 +56,12 @@ fun StyledNode.length(block: StyleSize.() -> Dimension) {
     val style = StyleSize()
     val dim = style.block()
     val baseValue = when(val parent = node.parent) {
-        is Room -> parent.width
+        is Room -> parent.length
         else -> 0.0
     }
+    val newValue = dim.calculate(baseValue)
+        .clamp(style.min, style.max)
     when (node) {
-        is Room -> node.length = dim.calculate(baseValue)
+        is Room -> node.length = newValue
     }
 }

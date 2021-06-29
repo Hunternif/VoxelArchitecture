@@ -85,6 +85,8 @@ fun Double.clamp(min: Double, max: Double): Double {
         else -> this
     }
 }
+fun Double.clamp(min: Int, max: Int): Double =
+    clamp(min.toDouble(), max.toDouble())
 fun Double.clampMin(min: Double): Double = max(min, this)
 
 fun Double.round() = round(this)
