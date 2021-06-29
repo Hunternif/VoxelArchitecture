@@ -94,4 +94,52 @@ class DomTest {
         val room = dom.children.first() as Room
         assertEquals(Vec3(110, 46, 144), room.size)
     }
+
+    @Test
+    fun `use parent seed`() {
+        val seed = 3L
+        val style = Stylesheet().apply {
+            style("random") {
+                height { 1.vx to 1000.vx }
+            }
+            style("parent_seed") {
+                useParentSeed()
+            }
+        }
+        val dom = DomRoot(style, seed).apply {
+            room("random")
+            room("random")
+            room("parent_seed", "random")
+            room("parent_seed", "random")
+        }.build()
+
+        val room1 = dom.children[0] as Room
+        val room2 = dom.children[1] as Room
+        val room3 = dom.children[2] as Room
+        val room4 = dom.children[3] as Room
+        assertEquals(804.0, room1.height, 0.0)
+        assertEquals(5.0, room2.height, 0.0)
+        assertEquals(144.0, room3.height, 0.0)
+        assertEquals(144.0, room4.height, 0.0)
+    }
+
+    @Test
+    fun `multiple classes`() {
+        val seed = 3L
+        val style = Stylesheet().apply {
+            style("height_100") {
+                height { 100.vx }
+            }
+            style("width_200") {
+                width { 200.vx }
+            }
+        }
+        val dom = DomRoot(style, seed).apply {
+            room("height_100", "width_200")
+        }.build()
+
+        val room = dom.children.first() as Room
+        assertEquals(100.0, room.height, 0.0)
+        assertEquals(200.0, room.width, 0.0)
+    }
 }
