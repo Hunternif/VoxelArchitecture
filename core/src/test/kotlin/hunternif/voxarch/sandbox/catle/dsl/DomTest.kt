@@ -2,6 +2,7 @@ package hunternif.voxarch.sandbox.catle.dsl
 
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.sandbox.castle.dsl.*
+import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -73,19 +74,17 @@ class DomTest {
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
-        assertEquals(8.0, child.height, 0.0)
-        assertEquals(21.0, child.width, 0.0)
-        assertEquals(1.0, child.length, 0.0)
+        assertEquals(Vec3(21, 8, 1), child.size)
     }
 
     @Test
     fun `room with random size`() {
-        val seed = 1L
+        val seed = 0L
         val style = Stylesheet().apply {
             style("random") {
-                height { 5.vx to 10.vx }
-                width { 10.vx to 20.vx }
-                length { 10.vx to 20.vx }
+                height { 1.vx to 100.vx }
+                width { 1.vx to 1000.vx }
+                length { 1.vx to 1000.vx }
             }
         }
         val dom = DomRoot(style, seed).apply {
@@ -93,8 +92,6 @@ class DomTest {
         }.build()
 
         val room = dom.children.first() as Room
-        assertEquals(6.0, room.height, 0.0)
-        assertEquals(11.0, room.width, 0.0)
-        assertEquals(18.0, room.length, 0.0)
+        assertEquals(Vec3(110, 46, 144), room.size)
     }
 }

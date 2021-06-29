@@ -81,8 +81,9 @@ fun DomBuilder.node(
     vararg styleClass: String,
     block: DomBuilder.() -> Unit = {}
 ) {
+    val childSeed = seed + children.size + 1
     children.add(
-        NodeDomBuilder(styleClass, this, seed + 1).apply(block)
+        NodeDomBuilder(styleClass, this, childSeed).apply(block)
     )
 }
 
@@ -90,7 +91,8 @@ fun DomBuilder.room(
     vararg styleClass: String,
     block: DomBuilder.() -> Unit = {}
 ) {
+    val childSeed = seed + children.size + 1
     children.add(
-        RoomDomBuilder(styleClass, this, seed + 1).apply(block)
+        RoomDomBuilder(styleClass, this, childSeed).apply(block)
     )
 }
