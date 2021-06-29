@@ -6,33 +6,20 @@ import hunternif.voxarch.util.clamp
 import hunternif.voxarch.util.round
 import kotlin.random.Random
 
-interface Dimension {
-    fun calculate(base: Double, seed: Long): Double
-}
-
-internal class StaticDimension(private val value: Double) : Dimension {
-    override fun calculate(base: Double, seed: Long): Double = value
-}
-internal class PercentDimension(private val percent: Double) : Dimension {
-    override fun calculate(base: Double, seed: Long): Double = base * 0.01 * percent
-}
-internal class RandomDimension(
-    private val from: Dimension,
-    private val to: Dimension
-) : Dimension {
-    override fun calculate(base: Double, seed: Long): Double {
-        val fromVal = from.calculate(base, seed)
-        val toVal = to.calculate(base, seed)
-        return Random(seed).nextDouble(fromVal, toVal).round()
-    }
-}
+typealias Dimension = (base: Double, seed: Long) -> Double
 
 /** voxels (blocks) */
-val Int.vx: Dimension get() = StaticDimension(this.toDouble())
+val Int.vx: Dimension get() = { _, _ -> this.toDouble() }
+
 /** percent vs parent size */
-val Int.pct: Dimension get() = PercentDimension(this.toDouble())
+val Int.pct: Dimension get() = { base, _ -> base * 0.01 * this.toDouble() }
+
 /** random value between given min and max, based on seed */
-infix fun Dimension.to(max: Dimension): Dimension = RandomDimension(this, max)
+infix fun Dimension.to(upperBound: Dimension): Dimension = { base, seed ->
+    val fromVal = this(base, seed)
+    val toVal = upperBound(base, seed)
+    Random(seed).nextDouble(fromVal, toVal).round()
+}
 
 @CastleDsl
 class StyleSize(var min: Int = 0, var max: Int = Int.MAX_VALUE)
@@ -46,7 +33,7 @@ fun StyledNode.height(block: StyleSize.() -> Dimension) {
         is Wall -> parent.height
         else -> 0.0
     }
-    val newValue = dim.calculate(baseValue, seed + 10000001)
+    val newValue = dim(baseValue, seed + 10000001)
         .clamp(style.min, style.max)
     when (node) {
         is Room -> node.height = newValue
@@ -62,7 +49,7 @@ fun StyledNode.width(block: StyleSize.() -> Dimension) {
         is Room -> parent.width
         else -> 0.0
     }
-    val newValue = dim.calculate(baseValue, seed + 10000002)
+    val newValue = dim(baseValue, seed + 10000002)
         .clamp(style.min, style.max)
     when (node) {
         is Room -> node.width = newValue
@@ -77,7 +64,7 @@ fun StyledNode.length(block: StyleSize.() -> Dimension) {
         is Room -> parent.length
         else -> 0.0
     }
-    val newValue = dim.calculate(baseValue, seed + 10000003)
+    val newValue = dim(baseValue, seed + 10000003)
         .clamp(style.min, style.max)
     when (node) {
         is Room -> node.length = newValue
