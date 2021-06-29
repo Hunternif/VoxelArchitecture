@@ -1,12 +1,23 @@
 package hunternif.voxarch.sandbox.castle.dsl
 
 import com.google.common.collect.ArrayListMultimap
-import hunternif.voxarch.plan.Node
 
 
 typealias StyleRule = StyledNode.() -> Unit
 
-class StyledNode(val node: Node, val seed: Long)
+class StyledNode(
+    internal val domBuilder: DomBuilder,
+    internal var seed: Long = domBuilder.seed
+) {
+    /**
+     * Use seed of the parent DOM builder to calculate random values.
+     * This makes the _immediate_ children appear identical, but the children's
+     * children can be randomized.
+     */
+    fun useParentSeed() {
+        seed = domBuilder.parent.seed
+    }
+}
 
 @CastleDsl
 class Stylesheet {
@@ -17,8 +28,7 @@ class Stylesheet {
     }
 
     internal fun apply(domBuilder: DomBuilder, styleClass: Array<out String>) {
-        val node = domBuilder.node ?: return
-        val styled = StyledNode(node, domBuilder.seed)
+        val styled = StyledNode(domBuilder, domBuilder.seed)
         styleClass.flatMap { styles[it] }.forEach { it.invoke(styled) }
     }
 }

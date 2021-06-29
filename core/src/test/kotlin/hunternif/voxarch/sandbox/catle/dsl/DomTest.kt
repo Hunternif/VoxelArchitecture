@@ -2,8 +2,10 @@ package hunternif.voxarch.sandbox.catle.dsl
 
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.sandbox.castle.dsl.*
+import hunternif.voxarch.util.round
 import org.junit.Assert.*
 import org.junit.Test
+import kotlin.random.Random
 
 class DomTest {
     @Test
@@ -76,5 +78,26 @@ class DomTest {
         assertEquals(8.0, child.height, 0.0)
         assertEquals(21.0, child.width, 0.0)
         assertEquals(1.0, child.length, 0.0)
+    }
+
+    @Test
+    fun `room with random size`() {
+        val seed = 0L
+        val style = Stylesheet().apply {
+            style("random") {
+                useParentSeed()
+                height { 5.vx to 10.vx }
+                width { 10.vx to 20.vx }
+            }
+        }
+        val dom = DomRoot(style, seed).apply {
+            room("random")
+        }.build()
+
+        val random1 = Random(seed).nextDouble(5.0, 10.0).round()
+        val random2 = Random(seed).nextDouble(10.0, 20.0).round()
+        val room = dom.children.first() as Room
+        assertEquals(random1, room.height, 0.0)
+        assertEquals(random2, room.width, 0.0)
     }
 }
