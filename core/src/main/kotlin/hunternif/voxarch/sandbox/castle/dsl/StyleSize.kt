@@ -46,7 +46,7 @@ fun StyledNode.height(block: StyleSize.() -> Dimension) {
         is Wall -> parent.height
         else -> 0.0
     }
-    val newValue = dim.calculate(baseValue, seed)
+    val newValue = dim.calculate(baseValue, seed + 10000001)
         .clamp(style.min, style.max)
     when (node) {
         is Room -> node.height = newValue
@@ -62,7 +62,7 @@ fun StyledNode.width(block: StyleSize.() -> Dimension) {
         is Room -> parent.width
         else -> 0.0
     }
-    val newValue = dim.calculate(baseValue, seed)
+    val newValue = dim.calculate(baseValue, seed + 10000002)
         .clamp(style.min, style.max)
     when (node) {
         is Room -> node.width = newValue
@@ -77,7 +77,7 @@ fun StyledNode.length(block: StyleSize.() -> Dimension) {
         is Room -> parent.length
         else -> 0.0
     }
-    val newValue = dim.calculate(baseValue, seed)
+    val newValue = dim.calculate(baseValue, seed + 10000003)
         .clamp(style.min, style.max)
     when (node) {
         is Room -> node.length = newValue
