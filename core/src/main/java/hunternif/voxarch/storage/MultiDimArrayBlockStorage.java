@@ -10,6 +10,8 @@ import hunternif.voxarch.util.DebugUtil;
 public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	/** [0 .. x .. width] [0 .. y .. height] [0 .. z .. length] */
 	private final BlockData[][][] array;
+	/** If true, getting or setting blocks outside the array will not throw. */
+	public boolean safeBoundary = false;
 	
 	public static final IStorageFactory factory = new IStorageFactory() {
 		@Override
@@ -24,17 +26,30 @@ public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	
 	@Override
 	public BlockData getBlock(int x, int y, int z) {
-		return array[x][y][z];
+		try {
+			return array[x][y][z];
+		} catch (ArrayIndexOutOfBoundsException e) {
+			if (safeBoundary) return new BlockData("outside");
+			else throw e;
+		}
 	}
 
 	@Override
 	public void setBlock(int x, int y, int z, BlockData block) {
-		array[x][y][z] = block;
+		try {
+			array[x][y][z] = block;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			if (!safeBoundary) throw e;
+		}
 	}
 
 	@Override
 	public void clearBlock(int x, int y, int z) {
-		array[x][y][z] = null;
+		try {
+			array[x][y][z] = null;
+		} catch (ArrayIndexOutOfBoundsException e) {
+			if (!safeBoundary) throw e;
+		}
 	}
 
 	@Override

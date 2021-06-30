@@ -63,7 +63,7 @@ private fun createParent(turret: Turret, seed: Long): Turret {
 
 /** Returns a fake turret that contains an "inner ward" surrounded by walls,
  * and [keep] acts as a keep sitting on one of the walls. */
-private fun innerWard(keep: Turret, seed: Long): Turret {
+fun innerWard(keep: Turret, seed: Long): Turret {
     val ward = outerWard(keep, seed)
     // The keep sits in the middle of a random wall
     val keepWall = ward.walls.random(Random(seed + 1010))
@@ -75,7 +75,7 @@ private fun innerWard(keep: Turret, seed: Long): Turret {
 
 /** Returns a fake turret that contains an "outer ward" surrounded by walls,
  * and [keep] acts as a keep sitting in the center. */
-private fun outerWard(keep: Turret, seed: Long): Turret {
+fun outerWard(keep: Turret, seed: Long): Turret {
     val wardWidthInc = Random(seed + 1002)
         .nextDouble(minWalkSpace * 2, 25.0)
     val wardWidth = round(keep.width + wardWidthInc).roundToEven()
