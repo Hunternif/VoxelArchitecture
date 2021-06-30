@@ -52,4 +52,6 @@ open class Wall(
     }
     /** Legacy constructor */
     constructor(room: Room, p1: Vec2, p2: Vec2): this(room, p1, p2, false)
+
+    constructor(): this(Vec3.ZERO, Vec3.ZERO)
 }

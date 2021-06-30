@@ -128,6 +128,8 @@ open class Room(
     /** Origin is set in the center of the floor */
     constructor(origin: Vec3, size: Vec3): this(origin, size, Vec3(-size.x/2, 0.0, -size.z/2))
 
+    constructor() : this(Vec3.ZERO, Vec3.ZERO)
+
     // LEGACY
     @Deprecated("use child node Floor")
     open var hasCeiling = false

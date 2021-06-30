@@ -58,4 +58,6 @@ open class Hatch(
         this.parent = parent
         this.rotationY = rotationY
     }
+
+    constructor(): this(Vec3.ZERO, Vec2.ZERO)
 }

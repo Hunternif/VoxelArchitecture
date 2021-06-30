@@ -16,7 +16,7 @@ fun DomBuilder.node(
     vararg styleClass: String,
     block: DomBuilder.() -> Unit = {}
 ) {
-    createChild(styleClass) { Node(Vec3.ZERO) }.block()
+    createChild(styleClass) { Node() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
@@ -24,5 +24,5 @@ fun DomBuilder.room(
     vararg styleClass: String,
     block: DomBuilder.() -> Unit = {}
 ) {
-    createChild(styleClass) { Room(Vec3.ZERO, Vec3.ZERO) }.block()
+    createChild(styleClass) { Room() }.block()
 }

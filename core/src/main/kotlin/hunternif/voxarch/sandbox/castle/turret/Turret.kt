@@ -7,12 +7,12 @@ class Turret(
     /** maps to the center of the floor */
     origin: Vec3,
     size: Vec3,
-    val roofShape: RoofShape = RoofShape.FLAT_BORDERED,
-    val bodyShape: BodyShape = BodyShape.SQUARE,
-    val bottomShape: BottomShape = BottomShape.FLAT,
+    var roofShape: RoofShape = RoofShape.FLAT_BORDERED,
+    var bodyShape: BodyShape = BodyShape.SQUARE,
+    var bottomShape: BottomShape = BottomShape.FLAT,
     /** position of this turret in relation to parent turret */
     var positionType: TurretPosition = TurretPosition.NONE,
-    val style: TowerStyle = TowerStyle(),
+    var style: TowerStyle = TowerStyle(),
 
     /** Angle vs parent turret. Usually facing away from the center. */
     val turretAngle: Double = 0.0,
@@ -22,6 +22,7 @@ class Turret(
     val level: Int = 0
 ) : Room(origin, size) {
     val roofWidth: Double get() = width + style.roofOffset * 2
+    constructor() : this(Vec3.ZERO, Vec3.ZERO)
 }
 
 enum class RoofShape {

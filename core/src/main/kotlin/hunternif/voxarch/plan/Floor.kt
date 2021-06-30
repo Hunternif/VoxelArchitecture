@@ -19,4 +19,6 @@ import hunternif.voxarch.vector.Vec3
 open class Floor(
     start: Vec3,
     size: Vec3
-): Room(start, size, Vec3.ZERO)
+): Room(start, size, Vec3.ZERO) {
+    constructor() : this(Vec3.ZERO, Vec3.ZERO)
+}

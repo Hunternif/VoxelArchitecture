@@ -18,4 +18,6 @@ open class Prop(origin: Vec3, type: String) : Node(origin) {
     init {
         this.type = type
     }
+
+    constructor(type: String): this(Vec3.ZERO, type)
 }

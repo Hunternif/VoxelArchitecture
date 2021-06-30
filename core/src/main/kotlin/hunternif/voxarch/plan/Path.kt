@@ -63,4 +63,6 @@ open class Path(origin: Vec3) : Node(origin) {
         get() = _segments.lastOrNull()?.run {
             distanceFromStart + length
         } ?: 0.0
+
+    constructor(): this(Vec3.ZERO)
 }

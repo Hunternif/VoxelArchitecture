@@ -48,4 +48,5 @@ open class Node(
         if (_children.remove(child)) child.parent = null
     }
 
+    constructor() : this(Vec3.ZERO)
 }
