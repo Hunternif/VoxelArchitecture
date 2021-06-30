@@ -6,6 +6,7 @@ import hunternif.voxarch.plan.Structure
 @DslMarker
 annotation class CastleDsl
 
+/** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
 abstract class DomBuilder {
     internal abstract val root: DomRoot
@@ -18,7 +19,11 @@ abstract class DomBuilder {
     internal abstract fun build(): Node?
 }
 
-/** Root of the DOM. */
+/** Root of the DOM.
+ * @param stylesheet this stylesheet will apply to all elements in this DOM.
+ * @param seed each child element will receive a seed value that's derived
+ *             from this root seed value by a deterministic arithmetic.
+ */
 class DomRoot(
     internal val stylesheet: Stylesheet = Stylesheet(),
     override val seed: Long = 0
@@ -33,7 +38,7 @@ class DomRoot(
     }
 }
 
-/** Represents abstract empty [Node].*/
+/** Represents any nodes below the root. */
 private class NodeDomBuilder(
     private val styleClass: Array<out String>,
     override val parent: DomBuilder,
