@@ -12,7 +12,7 @@ class StyledNode(
     /**
      * Use seed of the parent DOM builder to calculate random values.
      * This makes the _immediate_ children appear identical, but the children's
-     * children can be randomized.
+     * children seeds can still be different.
      */
     fun useParentSeed() {
         seed = domBuilder.parent.seed

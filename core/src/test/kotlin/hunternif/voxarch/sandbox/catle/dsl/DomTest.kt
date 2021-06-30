@@ -109,18 +109,26 @@ class DomTest {
         val dom = DomRoot(style, seed).apply {
             room("random")
             room("random")
-            room("parent_seed", "random")
-            room("parent_seed", "random")
+            room("parent_seed", "random") {
+                room("random")
+            }
+            room("parent_seed", "random") {
+                room("random")
+            }
         }.build()
 
         val room1 = dom.children[0] as Room
         val room2 = dom.children[1] as Room
         val room3 = dom.children[2] as Room
         val room4 = dom.children[3] as Room
+        val nested1 = room3.children[0] as Room
+        val nested2 = room4.children[0] as Room
         assertEquals(804.0, room1.height, 0.0)
         assertEquals(5.0, room2.height, 0.0)
         assertEquals(144.0, room3.height, 0.0)
         assertEquals(144.0, room4.height, 0.0)
+        assertEquals(814.0, nested1.height, 0.0)
+        assertEquals(163.0, nested2.height, 0.0)
     }
 
     @Test
