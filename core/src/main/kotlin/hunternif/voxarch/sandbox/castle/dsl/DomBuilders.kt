@@ -1,9 +1,7 @@
 package hunternif.voxarch.sandbox.castle.dsl
 
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.vector.Vec3
 
 @DslMarker
 annotation class CastleDsl
@@ -35,11 +33,31 @@ class DomRoot(
     }
 }
 
+/** Represents abstract empty [Node].*/
+private class NodeDomBuilder(
+    private val styleClass: Array<out String>,
+    override val parent: DomBuilder,
+    override val seed: Long,
+    private val createNode: DomBuilder.() -> Node
+) : DomBuilder() {
+
+    override val root: DomRoot by lazy { parent.root }
+    override var node: Node? = null
+    override fun build(): Node {
+        val node = createNode()
+        this.node = node
+        findParentNode().addChild(node)
+        root.stylesheet.apply(this, styleClass)
+        children.forEach { it.build() }
+        return node
+    }
+}
+
 /**
  * Finds the most immediate (lowest) non-null parent [Node].
  * Non-null because root has a non-null node.
  */
-internal fun DomBuilder.findParentNode(): Node {
+private fun DomBuilder.findParentNode(): Node {
     var domBuilder = this.parent
     while (domBuilder != root)
     {
@@ -50,49 +68,13 @@ internal fun DomBuilder.findParentNode(): Node {
     return root.node
 }
 
-/** Represents abstract empty [Node].*/
-open class NodeDomBuilder(
-    private val styleClass: Array<out String>,
-    override val parent: DomBuilder,
-    override val seed: Long
-) : DomBuilder() {
-    override val root: DomRoot by lazy { parent.root }
-    override var node: Node? = null
-    override fun build(): Node {
-        val node = buildNode()
-        this.node = node
-        findParentNode().addChild(node)
-        root.stylesheet.apply(this, styleClass)
-        children.forEach { it.build() }
-        return node
-    }
-    internal open fun buildNode(): Node = Node(Vec3.ZERO)
-}
-
-open class RoomDomBuilder(
+/** Creates a child [DomBuilder], adds it to parent and returns. */
+internal fun DomBuilder.createChild(
     styleClass: Array<out String>,
-    parent: DomBuilder,
-    seed: Long
-) : NodeDomBuilder(styleClass, parent, seed) {
-    override fun buildNode(): Node = Room(Vec3.ZERO, Vec3.ZERO)
-}
-
-fun DomBuilder.node(
-    vararg styleClass: String,
-    block: DomBuilder.() -> Unit = {}
-) {
+    createNode: DomBuilder.() -> Node
+): DomBuilder {
     val childSeed = seed + children.size + 1
-    children.add(
-        NodeDomBuilder(styleClass, this, childSeed).apply(block)
-    )
-}
-
-fun DomBuilder.room(
-    vararg styleClass: String,
-    block: DomBuilder.() -> Unit = {}
-) {
-    val childSeed = seed + children.size + 1
-    children.add(
-        RoomDomBuilder(styleClass, this, childSeed).apply(block)
-    )
+    val child = NodeDomBuilder(styleClass, this, childSeed, createNode)
+    children.add(child)
+    return child
 }
