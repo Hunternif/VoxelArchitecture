@@ -32,6 +32,7 @@ class DomRoot(
     override val node: Node = Structure()
     override val root get() = this
 
+    /** Builds the entire DOM tree. */
     public override fun build(): Node {
         children.forEach { it.build() }
         return node
@@ -45,7 +46,6 @@ private class NodeDomBuilder(
     override val seed: Long,
     private val createNode: DomBuilder.() -> Node
 ) : DomBuilder() {
-
     override val root: DomRoot by lazy { parent.root }
     override var node: Node? = null
     override fun build(): Node {
