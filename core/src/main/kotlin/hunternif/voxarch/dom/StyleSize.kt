@@ -1,4 +1,4 @@
-package hunternif.voxarch.sandbox.castle.dsl
+package hunternif.voxarch.dom
 
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall

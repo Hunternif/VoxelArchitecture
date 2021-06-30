@@ -1,4 +1,4 @@
-package hunternif.voxarch.sandbox.castle.dsl
+package hunternif.voxarch.dom
 
 
 // Castle DSL could look like this.

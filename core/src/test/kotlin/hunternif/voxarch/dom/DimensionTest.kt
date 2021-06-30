@@ -1,6 +1,5 @@
-package hunternif.voxarch.sandbox.catle.dsl
+package hunternif.voxarch.dom
 
-import hunternif.voxarch.sandbox.castle.dsl.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

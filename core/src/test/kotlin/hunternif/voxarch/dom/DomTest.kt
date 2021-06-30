@@ -1,7 +1,6 @@
-package hunternif.voxarch.sandbox.catle.dsl
+package hunternif.voxarch.dom
 
 import hunternif.voxarch.plan.Room
-import hunternif.voxarch.sandbox.castle.dsl.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
