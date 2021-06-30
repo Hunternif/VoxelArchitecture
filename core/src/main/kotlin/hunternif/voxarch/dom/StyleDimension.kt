@@ -46,3 +46,16 @@ operator fun Dimension.div(value: Int): Dimension {
     return {base, seed -> this(base, seed) / value }
 }
 
+fun Dimension.clamp(min: Dimension, max: Dimension): Dimension {
+    return {base, seed ->
+        val minVal = min(base, seed)
+        val maxVal = max(base, seed)
+        val thisVal = this(base, seed)
+        when {
+            thisVal < minVal -> minVal
+            thisVal > maxVal -> maxVal
+            else -> thisVal
+        }
+    }
+}
+

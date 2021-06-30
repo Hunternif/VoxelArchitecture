@@ -20,6 +20,15 @@ class DimensionTest {
         assertEquals(3500.vx, 1000.vx * 3.5)
     }
 
+    @Test
+    fun `dimension clamp`() {
+        assertEquals(5.vx, 10.vx.clamp(1.vx, 5.vx))
+        assertEquals(1.vx, 1.vx.clamp(1.vx, 10.vx))
+        assertEquals(10.vx, 10.vx.clamp(1.vx, 10.vx))
+        assertEquals(20.vx, 10.vx.clamp(20.vx, 25.vx))
+        assertEquals(200.vx, 100.vx.clamp(20.pct, 75.pct))
+    }
+
     companion object {
         private const val base = 1000.0
         private const val seed = 0L
