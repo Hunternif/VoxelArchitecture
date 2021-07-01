@@ -46,6 +46,7 @@ fun StyledNode.length(block: StyleSize.() -> Dimension) {
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {
         is Room -> parent.length
+        is Wall -> parent.length
         else -> 0.0
     }
     val newValue = style.block()
