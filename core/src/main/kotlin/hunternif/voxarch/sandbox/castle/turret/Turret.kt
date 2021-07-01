@@ -1,5 +1,6 @@
 package hunternif.voxarch.sandbox.castle.turret
 
+import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 
@@ -20,7 +21,7 @@ class Turret(
     /** Level in a hierarchy of nested turrets.
      * Usually equal to recursion depth, but not always. */
     val level: Int = 0
-) : Room(origin, size) {
+) : PolygonRoom(origin, size) {
     val roofWidth: Double get() = width + style.roofOffset * 2
     constructor() : this(Vec3.ZERO, Vec3.ZERO)
 }

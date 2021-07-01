@@ -2,6 +2,8 @@ package hunternif.voxarch.sandbox.castle.turret
 
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.*
+import hunternif.voxarch.util.circle
+import hunternif.voxarch.util.square
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.ceil
 
@@ -127,6 +129,7 @@ fun createTurret(
     }
 }
 
+@Deprecated("Use PolygonRoom")
 private fun Room.createTowerWalls(bodyShape: BodyShape) {
     when (bodyShape) {
         BodyShape.SQUARE -> createFourWalls()
@@ -135,4 +138,15 @@ private fun Room.createTowerWalls(bodyShape: BodyShape) {
             createRoundWalls(sideCount)
         }
     }
+}
+
+private fun PolygonRoom.createTowerWalls(bodyShape: BodyShape) {
+    when (bodyShape) {
+        BodyShape.SQUARE -> polygon.square(width)
+        BodyShape.ROUND -> {
+            val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
+            polygon.circle(width, sideCount)
+        }
+    }
+    createWalls()
 }
