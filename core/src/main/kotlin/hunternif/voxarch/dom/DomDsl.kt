@@ -1,8 +1,8 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
-import hunternif.voxarch.vector.Vec3
 
 /**
  * Adds child empty [Node].
@@ -12,17 +12,25 @@ import hunternif.voxarch.vector.Vec3
  *
  * @param styleClass names of style classes (like in CSS).
  */
-fun DomBuilder.node(
+fun DomBuilder<Node>.node(
     vararg styleClass: String,
-    block: DomBuilder.() -> Unit = {}
+    block: DomBuilder<Node>.() -> Unit = {}
 ) {
-    createChild(styleClass) { Node() }.block()
+    createChild<Node>(styleClass) { Node() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
-fun DomBuilder.room(
+fun DomBuilder<Node>.room(
     vararg styleClass: String,
-    block: DomBuilder.() -> Unit = {}
+    block: DomBuilder<Room>.() -> Unit = {}
 ) {
-    createChild(styleClass) { Room() }.block()
+    createChild<Room>(styleClass) { Room() }.block()
+}
+
+/** Adds child [Floor]. See [node]. */
+fun DomBuilder<Node>.floor(
+    vararg styleClass: String,
+    block: DomBuilder<Floor>.() -> Unit = {}
+) {
+    createChild<Floor>(styleClass) { Floor() }.block()
 }

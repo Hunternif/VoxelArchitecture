@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
 
@@ -9,7 +10,7 @@ class StyleSize(
     var max: Dimension = Int.MAX_VALUE.vx
 )
 
-fun StyledNode.height(block: StyleSize.() -> Dimension) {
+fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
     val node = domBuilder.node ?: return
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {
@@ -26,7 +27,7 @@ fun StyledNode.height(block: StyleSize.() -> Dimension) {
     }
 }
 
-fun StyledNode.width(block: StyleSize.() -> Dimension) {
+fun StyledNode<Node>.width(block: StyleSize.() -> Dimension) {
     val node = domBuilder.node ?: return
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {
@@ -41,7 +42,7 @@ fun StyledNode.width(block: StyleSize.() -> Dimension) {
     }
 }
 
-fun StyledNode.length(block: StyleSize.() -> Dimension) {
+fun StyledNode<Node>.length(block: StyleSize.() -> Dimension) {
     val node = domBuilder.node ?: return
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {

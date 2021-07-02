@@ -8,15 +8,15 @@ annotation class CastleDsl
 
 /** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
-abstract class DomBuilder {
-    internal abstract val root: DomRoot
-    internal abstract val parent: DomBuilder
+abstract class DomBuilder<out N: Node> {
+    internal open val root: DomRoot by lazy { parent.root }
+    internal abstract val parent: DomBuilder<Node>
     internal abstract val seed: Long
     /** Can be null for logical parts of DOM that don't correspond to a Node*/
-    internal abstract val node: Node?
-    internal val children = mutableListOf<DomBuilder>()
+    internal abstract val node: N?
+    internal val children = mutableListOf<DomBuilder<Node>>()
     /** Recursively invokes this method on children. */
-    internal abstract fun build(): Node?
+    internal abstract fun build(): N?
 }
 
 /** Root of the DOM.
@@ -27,30 +27,27 @@ abstract class DomBuilder {
 class DomRoot(
     internal val stylesheet: Stylesheet = Stylesheet(),
     override val seed: Long = 0
-) : DomBuilder() {
-    override val parent: DomBuilder = this
-    override val node: Node = Structure()
+) : DomBuilder<Structure>() {
+    override val parent: DomBuilder<Node> = this
+    override val node = Structure()
     override val root get() = this
 
     /** Builds the entire DOM tree. */
-    public override fun build(): Node {
+    public override fun build(): Structure {
         children.forEach { it.build() }
         return node
     }
 }
 
 /** Represents any nodes below the root. */
-private class NodeDomBuilder(
-    private val styleClass: Array<out String>,
-    override val parent: DomBuilder,
+open class NodeDomBuilder<out N: Node>(
+    internal val styleClass: Array<out String>,
+    override val parent: DomBuilder<Node>,
     override val seed: Long,
-    private val createNode: DomBuilder.() -> Node
-) : DomBuilder() {
-    override val root: DomRoot by lazy { parent.root }
-    override var node: Node? = null
-    override fun build(): Node {
-        val node = createNode()
-        this.node = node
+    private val createNode: DomBuilder<N>.() -> N
+) : DomBuilder<N>() {
+    override val node: N by lazy { createNode() }
+    override fun build(): N {
         findParentNode().addChild(node)
         root.stylesheet.apply(this, styleClass)
         children.forEach { it.build() }
@@ -62,7 +59,7 @@ private class NodeDomBuilder(
  * Finds the most immediate (lowest) non-null parent [Node].
  * Non-null because root has a non-null node.
  */
-private fun DomBuilder.findParentNode(): Node {
+internal fun DomBuilder<Node>.findParentNode(): Node {
     var domBuilder = this.parent
     while (domBuilder != root)
     {
@@ -73,13 +70,14 @@ private fun DomBuilder.findParentNode(): Node {
     return root.node
 }
 
+internal fun DomBuilder<Node>.nextChildSeed() = seed + children.size + 1
+
 /** Creates a child [DomBuilder], adds it to parent and returns. */
-internal fun DomBuilder.createChild(
+internal fun <N: Node> DomBuilder<Node>.createChild(
     styleClass: Array<out String>,
-    createNode: DomBuilder.() -> Node
-): DomBuilder {
-    val childSeed = seed + children.size + 1
-    val child = NodeDomBuilder(styleClass, this, childSeed, createNode)
+    createNode: DomBuilder<N>.() -> N
+): DomBuilder<N> {
+    val child = NodeDomBuilder(styleClass, this, nextChildSeed(), createNode)
     children.add(child)
     return child
 }

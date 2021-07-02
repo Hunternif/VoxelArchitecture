@@ -1,5 +1,7 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.plan.Floor
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
@@ -131,8 +133,7 @@ class DomTest {
     }
 
     @Test
-    fun `multiple classes`() {
-        val seed = 3L
+    fun `dom element with multiple classes`() {
         val style = Stylesheet().apply {
             style("height_100") {
                 height { 100.vx }
@@ -141,12 +142,55 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = DomRoot(style, seed).apply {
+        val dom = DomRoot(style).apply {
             room("height_100", "width_200")
         }.build()
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
         assertEquals(200.0, room.width, 0.0)
+    }
+
+    @Test
+    fun `multiple styles with the same name`() {
+        val style = Stylesheet().apply {
+            style("my_style") {
+                height { 100.vx }
+            }
+            style("my_style") {
+                width { 200.vx }
+            }
+        }
+        val dom = DomRoot(style).apply {
+            room("my_style")
+        }.build()
+
+        val room = dom.children.first() as Room
+        assertEquals(100.0, room.height, 0.0)
+        assertEquals(200.0, room.width, 0.0)
+    }
+
+    @Test
+    fun `inherit styles from superclasses`() {
+        val style = Stylesheet().apply {
+            styleFor<Node>("my_style") {
+                height { 100.vx }
+            }
+            styleFor<Room>("my_style") {
+                width { 200.vx }
+            }
+            styleFor<Floor>("my_style") {
+                length { 300.vx }
+            }
+        }
+        val dom = DomRoot(style).apply {
+            room("my_style")
+            floor("my_style")
+        }.build()
+
+        val room = dom.children[0] as Room
+        val floor = dom.children[1] as Floor
+        assertEquals(Vec3(200, 100, 0), room.size)
+        assertEquals(Vec3(200, 100, 300), floor.size)
     }
 }
