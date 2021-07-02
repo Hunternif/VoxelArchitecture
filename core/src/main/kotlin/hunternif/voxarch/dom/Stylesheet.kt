@@ -38,6 +38,15 @@ class Stylesheet {
         styleFor(N::class.java, styleClass, block)
     }
 
+    /**
+     * Register a style for for all subclasses.
+     */
+    inline fun <reified N: Node> styleFor(
+        noinline block: StyleRule<N>
+    ) {
+        styleFor(N::class.java, GLOBAL_STYLE, block)
+    }
+
     /** Register a style for the given class name for all [Node] subclasses. */
     fun style(styleClass: String, block: StyleRule<Node>) {
         styleFor(Node::class.java, styleClass, block)
@@ -57,7 +66,7 @@ class Stylesheet {
     ) {
         val styled = StyledNode(domBuilder, domBuilder.seed)
         val nodeClass = domBuilder.node?.javaClass ?: Node::class.java
-        styleClass
+        (styleClass.toMutableList() + GLOBAL_STYLE)
             .flatMap { styleMap[it] }
             .filter { it.nodeClass.isAssignableFrom(nodeClass) }
             .forEach {
@@ -67,9 +76,13 @@ class Stylesheet {
             }
     }
 
-    private data class TypedStyleRule<N: Node>(
-        val nodeClass: Class<N>,
-        val rule: StyleRule<N>
-    )
+    companion object {
+        const val GLOBAL_STYLE = "__global_style__"
+
+        private data class TypedStyleRule<N: Node>(
+            val nodeClass: Class<N>,
+            val rule: StyleRule<N>
+        )
+    }
 }
 

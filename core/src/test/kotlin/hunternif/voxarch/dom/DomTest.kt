@@ -154,15 +154,15 @@ class DomTest {
     @Test
     fun `multiple styles with the same name`() {
         val style = Stylesheet().apply {
-            style("my_style") {
+            styleFor<Room> {
                 height { 100.vx }
             }
-            style("my_style") {
+            styleFor<Room> {
                 width { 200.vx }
             }
         }
         val dom = DomRoot(style).apply {
-            room("my_style")
+            room()
         }.build()
 
         val room = dom.children.first() as Room
@@ -173,19 +173,19 @@ class DomTest {
     @Test
     fun `inherit styles from superclasses`() {
         val style = Stylesheet().apply {
-            styleFor<Node>("my_style") {
+            styleFor<Node> {
                 height { 100.vx }
             }
-            styleFor<Room>("my_style") {
+            styleFor<Room> {
                 width { 200.vx }
             }
-            styleFor<Floor>("my_style") {
+            styleFor<Floor> {
                 length { 300.vx }
             }
         }
         val dom = DomRoot(style).apply {
-            room("my_style")
-            floor("my_style")
+            room()
+            floor()
         }.build()
 
         val room = dom.children[0] as Room
