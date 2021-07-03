@@ -154,18 +154,6 @@ fun outerWard(keep: Turret, seed: Long): Turret {
     }
 }
 
-private enum class WallCurtainShape {
-    /** axis-aligned walls, 4 towers in corners */
-    SQUARE,
-    /** rectangular sections project in each axis direction */
-//    CROSS,
-    /** N towers spread evenly in a circle */
-    POLYGON,
-    /** N towers spread evenly in a circle,
-     * and then moved by random distance from center */
-//    JITTERY_POLYGON
-}
-
 private class BuildOption(
     override val probability: Double,
     val build: (Turret) -> Turret

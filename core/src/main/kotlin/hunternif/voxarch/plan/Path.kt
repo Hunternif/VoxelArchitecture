@@ -35,7 +35,9 @@ open class Path(origin: Vec3) : Node(origin) {
                 it, point, point.distanceTo(it), distance
             ))
         }
-        _points.add(point)
+        if (point != points.firstOrNull()) { // Don't add the looping point
+            _points.add(point)
+        }
     }
 
     /** Connects the end of the path to the start */

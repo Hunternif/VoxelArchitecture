@@ -52,7 +52,7 @@ style(styleClass = "ward") {
     width { 30.vx to 50.vx } // random size, get seed from parent
     // parent is a built turret instance
     if (parent.width > 6) {
-        shape = randomBody()
+        shape { randomBody() }
     } else {
         shape = SQUARE
     }
@@ -75,7 +75,7 @@ style("ward_turret") {
     if (level < 1) {
         bottomShape = FOUNDATION
     } else {
-        bottomShape = random(TAPERED, FOUNDATION)
+        bottomShape { random(TAPERED, FOUNDATION) }
     }
 }
 style("ward_wall") {

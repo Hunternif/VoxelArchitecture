@@ -3,6 +3,7 @@ package hunternif.voxarch.dom
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
@@ -192,5 +193,46 @@ class DomTest {
         val floor = dom.children[1] as Floor
         assertEquals(Vec3(200, 100, 0), room.size)
         assertEquals(Vec3(200, 100, 300), floor.size)
+    }
+
+    @Test
+    fun `find parent node`() {
+        var root: Structure
+        var mid: Node
+        DomRoot().apply {
+            root = node
+            empty {
+                assertEquals(root, findParentNode())
+                node {
+                    assertEquals(root, findParentNode())
+                    mid = node
+                    room {
+                        assertEquals(mid, findParentNode())
+                    }
+                }
+            }
+        }
+    }
+
+    companion object {
+        /** Creates empty logic element for testing. */
+        private fun DomBuilder<Node?>.empty(
+            block: DomBuilder<Node?>.() -> Unit = {}
+        ) {
+            val bld = EmptyLogicBuilder(this)
+            children.add(bld)
+            bld.block()
+        }
+
+        class EmptyLogicBuilder(
+            override val parent: DomBuilder<Node?>
+        ): DomLogicBuilder(parent, 0) {
+            override fun build(): Node? {
+                children.forEach {
+                    it.build()
+                }
+                return null
+            }
+        }
     }
 }

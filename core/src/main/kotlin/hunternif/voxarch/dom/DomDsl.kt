@@ -34,3 +34,20 @@ fun DomBuilder<Node?>.floor(
 ) {
     createChild<Floor>(styleClass) { Floor() }.block()
 }
+
+/** Adds child [Ward] with a perimeter of walls and towers. */
+fun DomBuilder<Node?>.ward(
+    vararg styleClass: String,
+    block: DomWardBuilder.() -> Unit = {}
+) {
+    val bld = DomWardBuilder(styleClass, this, nextChildSeed())
+    children.add(bld)
+    bld.block()
+}
+
+/** Runs [block] in every corner of this [Ward]. */
+fun DomWardBuilder.allCorners(
+    block: DomBuilder<Node?>.() -> Unit = {}
+) {
+    allCornerBuild = block
+}
