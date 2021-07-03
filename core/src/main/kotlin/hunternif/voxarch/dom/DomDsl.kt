@@ -12,7 +12,7 @@ import hunternif.voxarch.plan.Room
  *
  * @param styleClass names of style classes (like in CSS).
  */
-fun DomBuilder<Node>.node(
+fun DomBuilder<Node?>.node(
     vararg styleClass: String,
     block: DomBuilder<Node>.() -> Unit = {}
 ) {
@@ -20,7 +20,7 @@ fun DomBuilder<Node>.node(
 }
 
 /** Adds child [Room]. See [node]. */
-fun DomBuilder<Node>.room(
+fun DomBuilder<Node?>.room(
     vararg styleClass: String,
     block: DomBuilder<Room>.() -> Unit = {}
 ) {
@@ -28,7 +28,7 @@ fun DomBuilder<Node>.room(
 }
 
 /** Adds child [Floor]. See [node]. */
-fun DomBuilder<Node>.floor(
+fun DomBuilder<Node?>.floor(
     vararg styleClass: String,
     block: DomBuilder<Floor>.() -> Unit = {}
 ) {

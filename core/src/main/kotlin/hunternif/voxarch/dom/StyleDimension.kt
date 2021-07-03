@@ -3,6 +3,7 @@ package hunternif.voxarch.dom
 import hunternif.voxarch.util.round
 import kotlin.random.Random
 
+/** For styling [Double]-typed properties */
 typealias Dimension = (base: Double, seed: Long) -> Double
 
 /** voxels (blocks) */

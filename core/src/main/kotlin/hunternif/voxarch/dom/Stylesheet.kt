@@ -12,6 +12,7 @@ class StyledNode<out N: Node>(
     internal val domBuilder: DomBuilder<N>,
     internal var seed: Long = domBuilder.seed
 ) {
+    val node: N get() = domBuilder.node
     /**
      * Use the seed of the parent [DomBuilder] to calculate random values.
      * This makes the _immediate_ children appear identical, but the children's
