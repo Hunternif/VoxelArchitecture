@@ -23,6 +23,9 @@ class StyledNode<out N: Node>(
     }
 }
 
+@CastleDsl
+interface StyleParameter
+
 /** Container for all styles in a DOM. */
 @CastleDsl
 class Stylesheet {

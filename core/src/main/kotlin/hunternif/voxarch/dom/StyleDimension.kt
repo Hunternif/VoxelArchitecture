@@ -4,7 +4,7 @@ import hunternif.voxarch.util.round
 import kotlin.random.Random
 
 /** For styling [Double]-typed properties */
-typealias Dimension = (base: Double, seed: Long) -> Double
+typealias Dimension = Option<Double>
 
 /** voxels (blocks) */
 val Int.vx: Dimension get() = { _, _ -> this.toDouble() }

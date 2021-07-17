@@ -8,7 +8,7 @@ import hunternif.voxarch.plan.Wall
 class StyleSize(
     var min: Dimension = 0.vx,
     var max: Dimension = Int.MAX_VALUE.vx
-)
+) : StyleParameter
 
 fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
     val node = domBuilder.node ?: return

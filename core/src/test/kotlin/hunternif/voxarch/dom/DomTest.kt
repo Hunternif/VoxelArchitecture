@@ -214,6 +214,28 @@ class DomTest {
         }
     }
 
+    @Test
+    fun `inherit style value from parent node`() {
+        val style = Stylesheet().apply {
+            style("parent") {
+                height { 100.vx }
+            }
+            style("child") {
+                height { inherit() }
+            }
+        }
+        val dom = DomRoot(style).apply {
+            room("parent") {
+                room("child")
+            }
+        }.build()
+
+        val parent = dom.children.first() as Room
+        val child = parent.children.first() as Room
+        assertEquals(100.0, parent.height, 0.0)
+        assertEquals(100.0, child.height, 0.0)
+    }
+
     companion object {
         /** Creates empty logic element for testing. */
         private fun DomBuilder<Node?>.empty(

@@ -4,11 +4,14 @@ import hunternif.voxarch.util.next
 import kotlin.random.Random
 
 /** For styling properties that take on a set of predefined values. */
-typealias Option<T> = (seed: Long) -> T
+typealias Option<T> = (base: T, seed: Long) -> T
 
-fun <T> set(value: T): Option<T> = { _ -> value }
+fun <T> set(value: T): Option<T> = { _, _ -> value }
 
 fun <T> random(vararg options: T): Option<T> {
     require(options.isNotEmpty()) { "options are empty" }
-    return { seed -> Random(seed).next(*options) }
+    return { _, seed -> Random(seed).next(*options) }
 }
+
+/** Inherit the value from the parent node. */
+fun <T> StyleParameter.inherit(): Option<T> = { base, _ -> base }
