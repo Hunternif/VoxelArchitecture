@@ -11,7 +11,7 @@ class StyleSize(
 ) : StyleParameter
 
 fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
-    val node = domBuilder.node ?: return
+    val node = domBuilder.node
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {
         is Room -> parent.height
@@ -28,7 +28,7 @@ fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
 }
 
 fun StyledNode<Node>.width(block: StyleSize.() -> Dimension) {
-    val node = domBuilder.node ?: return
+    val node = domBuilder.node
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {
         is Room -> parent.width
@@ -43,7 +43,7 @@ fun StyledNode<Node>.width(block: StyleSize.() -> Dimension) {
 }
 
 fun StyledNode<Node>.length(block: StyleSize.() -> Dimension) {
-    val node = domBuilder.node ?: return
+    val node = domBuilder.node
     val style = StyleSize()
     val baseValue = when(val parent = node.parent) {
         is Room -> parent.length

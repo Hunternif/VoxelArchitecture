@@ -66,11 +66,11 @@ class Stylesheet {
 
     internal fun <N: Node> apply(
         domBuilder: DomBuilder<N>,
-        styleClass: Array<out String>
+        styleClass: Collection<String>
     ) {
         val styled = StyledNode(domBuilder, domBuilder.seed)
-        val nodeClass = domBuilder.node?.javaClass ?: Node::class.java
-        (styleClass.toMutableList() + GLOBAL_STYLE)
+        val nodeClass = domBuilder.node.javaClass
+        (styleClass + GLOBAL_STYLE)
             .flatMap { styleMap[it] }
             .filter { it.nodeClass.isAssignableFrom(nodeClass) }
             .forEach {

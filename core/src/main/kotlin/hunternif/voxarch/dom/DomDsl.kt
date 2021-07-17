@@ -40,7 +40,7 @@ fun DomBuilder<Node?>.ward(
     vararg styleClass: String,
     block: DomWardBuilder.() -> Unit = {}
 ) {
-    val bld = DomWardBuilder(styleClass, this, nextChildSeed())
+    val bld = DomWardBuilder(styleClass.toList(), this, nextChildSeed())
     children.add(bld)
     bld.block()
 }

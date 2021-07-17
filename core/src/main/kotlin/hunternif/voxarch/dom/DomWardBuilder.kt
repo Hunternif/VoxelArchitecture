@@ -13,7 +13,7 @@ import kotlin.math.PI
 class Ward : PolygonRoom()
 
 class DomWardBuilder(
-    styleClass: Array<out String>,
+    styleClass: Collection<String>,
     parent: DomBuilder<Node?>,
     seed: Long
 ) : DomNodeBuilder<Ward>(styleClass, parent, seed, { Ward() }) {
@@ -22,7 +22,7 @@ class DomWardBuilder(
 
     override fun build(): Ward {
         findParentNode().addChild(node)
-        root.stylesheet.apply(this, styleClass)
+        stylesheet.apply(this, styleClass)
         createPolygon()
         buildCorners()
         children.forEach { it.build() }
