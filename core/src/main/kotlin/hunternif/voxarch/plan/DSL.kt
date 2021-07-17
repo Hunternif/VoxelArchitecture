@@ -23,6 +23,27 @@ inline fun Node.centeredRoom(
     action.invoke(it)
 }
 
+/** Adds a child [PolygonRoom], measured from corner */
+inline fun Node.polygonRoom(
+    start: Vec3,
+    end: Vec3,
+    crossinline action: PolygonRoom.() -> Unit = {}
+): PolygonRoom = centeredPolygonRoom(
+    Vec3((start.x + end.x)/2, start.y, (start.z + end.z)/2),
+    end.subtract(start),
+    action
+)
+
+/** Adds a child [PolygonRoom], measured from center at floor level */
+inline fun Node.centeredPolygonRoom(
+    center: Vec3,
+    size: Vec3,
+    crossinline action: PolygonRoom.() -> Unit = {}
+): PolygonRoom = PolygonRoom(center, size).also {
+    this.addChild(it)
+    action.invoke(it)
+}
+
 /** Adds a child [Floor], measured from corner */
 inline fun Node.floor(
     start: Vec3,

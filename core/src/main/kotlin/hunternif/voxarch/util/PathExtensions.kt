@@ -37,17 +37,14 @@ fun Path.ellipse(width: Double, length: Double, count: Int) {
     val a = width / 2
     val b = length / 2
     val angleStep = 360.0 / count
-    // Add half a step to maximize polygon area
-    val radiusX = a / MathUtil.cosDeg(angleStep / 2)
-    val radiusZ = b / a * radiusX
     // Going counterclockwise:
     var angle = -angleStep / 2
     while (angle < 360 - angleStep / 2) {
         addPoint(
             Vec3(
-                round(radiusX * MathUtil.cosDeg(angle)),
+                a * MathUtil.cosDeg(angle),
                 0.0,
-                round(-radiusZ * MathUtil.sinDeg(angle))
+                -b * MathUtil.sinDeg(angle)
             )
         )
         angle += angleStep

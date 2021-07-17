@@ -88,18 +88,18 @@ fun createTurret(
             floor { type = BLD_FOUNDATION }
         }
         if (hasTaperedBottom) {
-            centeredRoom(
+            centeredPolygonRoom(
                 innerFloorCenter.addY(-taperedBottomHeight),
                 taperedBottomSize
             ) {
-                createTowerWalls(bodyShape)
-                walls.forEach { it.transparent = true }
+                createPolygon(bodyShape)
                 type = BLD_TURRET_BOTTOM
             }
         }
         type = BLD_TOWER_BODY
         floor()
-        createTowerWalls(bodyShape)
+        createPolygon(bodyShape)
+        createWalls()
 
         // corbels
         walls.forEach {
@@ -111,36 +111,25 @@ fun createTurret(
 
         // spire:
         if (hasSpire) {
-            centeredRoom(spireOrigin, spireSize) {
-                createTowerWalls(bodyShape)
-                walls.forEach { it.transparent = true }
+            centeredPolygonRoom(spireOrigin, spireSize) {
+                createPolygon(bodyShape)
                 type = BLD_TOWER_SPIRE
             }
         }
 
         // overhanging roof:
         if (withCrenellation) {
-            centeredRoom(roofOrigin, roofSize) {
+            centeredPolygonRoom(roofOrigin, roofSize) {
                 type = BLD_TOWER_ROOF
                 ceiling()
-                createTowerWalls(bodyShape)
+                createPolygon(bodyShape)
+                createWalls()
             }
         }
     }
 }
 
-@Deprecated("Use PolygonRoom")
-private fun Room.createTowerWalls(bodyShape: BodyShape) {
-    when (bodyShape) {
-        BodyShape.SQUARE -> createFourWalls()
-        BodyShape.ROUND -> {
-            val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
-            createRoundWalls(sideCount)
-        }
-    }
-}
-
-private fun PolygonRoom.createTowerWalls(bodyShape: BodyShape) {
+private fun PolygonRoom.createPolygon(bodyShape: BodyShape) {
     when (bodyShape) {
         BodyShape.SQUARE -> polygon.square(width)
         BodyShape.ROUND -> {
@@ -148,5 +137,4 @@ private fun PolygonRoom.createTowerWalls(bodyShape: BodyShape) {
             polygon.circle(width, sideCount)
         }
     }
-    createWalls()
 }
