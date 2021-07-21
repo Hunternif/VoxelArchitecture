@@ -1,5 +1,6 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.*

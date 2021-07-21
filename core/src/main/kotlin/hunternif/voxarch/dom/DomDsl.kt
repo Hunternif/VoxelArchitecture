@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.Turret
 
@@ -77,4 +78,18 @@ fun DomWardBuilder.allCorners(
     block: DomBuilder<Node?>.() -> Unit = {}
 ) {
     allCornerBuild = block
+}
+
+///////////////////////////// Utility /////////////////////////////
+@DslMarker
+annotation class CastleDsl
+
+/** Creates a child [DomBuilder], adds it to parent and returns. */
+private fun <N: Node> DomBuilder<Node?>.createChild(
+    styleClass: Array<out String>,
+    createNode: DomBuilder<N>.() -> N
+) : DomBuilder<N> {
+    val child = DomNodeBuilder(createNode).apply{ +styleClass }
+    addChild(child)
+    return child
 }

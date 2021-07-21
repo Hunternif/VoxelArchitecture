@@ -2,7 +2,7 @@ package hunternif.voxarch.dom.style
 
 import com.google.common.collect.ArrayListMultimap
 import hunternif.voxarch.dom.CastleDsl
-import hunternif.voxarch.dom.DomBuilder
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.plan.Node
 
 /** Defines a sequence of cosmetic modifications to a DOM element. */

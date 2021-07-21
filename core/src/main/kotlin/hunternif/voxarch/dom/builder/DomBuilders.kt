@@ -1,11 +1,9 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
-
-@DslMarker
-annotation class CastleDsl
 
 /** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
@@ -96,13 +94,3 @@ internal fun DomBuilder<Node?>.findParentNode(): Node {
 }
 
 internal fun DomBuilder<Node?>.nextChildSeed() = seed + children.size + 1
-
-/** Creates a child [DomBuilder], adds it to parent and returns. */
-internal fun <N: Node> DomBuilder<Node?>.createChild(
-    styleClass: Array<out String>,
-    createNode: DomBuilder<N>.() -> N
-) : DomBuilder<N> {
-    val child = DomNodeBuilder(createNode).apply{ +styleClass }
-    addChild(child)
-    return child
-}

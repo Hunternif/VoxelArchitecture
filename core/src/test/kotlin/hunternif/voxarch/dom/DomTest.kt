@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Node

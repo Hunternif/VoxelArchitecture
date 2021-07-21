@@ -1,4 +1,4 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
