@@ -39,12 +39,8 @@ fun DomBuilder<Node?>.polygonRoom(
     vararg styleClass: String,
     block: DomBuilder<PolygonRoom>.() -> Unit = {}
 ) {
-    val bld =  DomPolygonRoomBuilder(
-        styleClass.toList(),
-        this,
-        nextChildSeed()
-    )
-    children.add(bld)
+    val bld = DomPolygonRoomBuilder().apply{ +styleClass }
+    addChild(bld)
     bld.block()
 }
 
@@ -61,8 +57,8 @@ fun DomBuilder<Node?>.turret(
     vararg styleClass: String,
     block: DomTurretBuilder.() -> Unit = {}
 ) {
-    val bld =  DomTurretBuilder(styleClass.toList(), this, nextChildSeed())
-    children.add(bld)
+    val bld =  DomTurretBuilder().apply{ +styleClass }
+    addChild(bld)
     bld.block()
 }
 
@@ -71,8 +67,8 @@ fun DomBuilder<Node?>.ward(
     vararg styleClass: String,
     block: DomWardBuilder.() -> Unit = {}
 ) {
-    val bld = DomWardBuilder(styleClass.toList(), this, nextChildSeed())
-    children.add(bld)
+    val bld = DomWardBuilder().apply{ +styleClass }
+    addChild(bld)
     bld.block()
 }
 

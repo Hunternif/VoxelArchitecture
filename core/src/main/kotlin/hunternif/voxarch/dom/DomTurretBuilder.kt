@@ -4,25 +4,15 @@ import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.turret.Turret
 
-class DomTurretBuilder(
-    styleClass: Collection<String>,
-    parent: DomBuilder<Node?>,
-    seed: Long
-) : DomNodeBuilder<Turret>(
-    styleClass + BLD_TOWER_BODY,
-    parent,
-    seed,
-    { Turret() }
-) {
+class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
+    init {
+        +BLD_TOWER_BODY
+    }
     override val stylesheet by lazy { super.stylesheet + turretStyle }
 
-    override fun build(): Turret {
-        findParentNode().addChild(node)
-        stylesheet.apply(this, styleClass)
+    override fun buildNode() {
         addTurretParts()
         addCorbels()
-        children.forEach { it.build() }
-        return node
     }
 
     private fun addCorbels() = node.run {

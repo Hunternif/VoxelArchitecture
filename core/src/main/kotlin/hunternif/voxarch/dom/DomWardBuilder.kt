@@ -12,21 +12,13 @@ import kotlin.math.PI
 /** Castle ward. */
 class Ward : PolygonRoom()
 
-class DomWardBuilder(
-    styleClass: Collection<String>,
-    parent: DomBuilder<Node?>,
-    seed: Long
-) : DomNodeBuilder<Ward>(styleClass, parent, seed, { Ward() }) {
+class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
 
     internal var allCornerBuild: DomBuilder<Node?>.() -> Unit = {}
 
-    override fun build(): Ward {
-        findParentNode().addChild(node)
-        stylesheet.apply(this, styleClass)
+    override fun buildNode() {
         createPolygon()
         buildCorners()
-        children.forEach { it.build() }
-        return node
     }
 
     private fun createPolygon() = node.run {
@@ -38,8 +30,8 @@ class DomWardBuilder(
 
     private fun buildCorners() {
         node.polygon.points.forEachIndexed { i, offset ->
-            val bld = DomTranslateBuilder(offset, this, seed + 10000 + i)
-            children.add(bld)
+            val bld = DomTranslateBuilder(offset)
+            addChild(bld, seed + 10000 + i)
             bld.allCornerBuild()
         }
     }

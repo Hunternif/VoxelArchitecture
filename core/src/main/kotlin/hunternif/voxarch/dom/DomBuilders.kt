@@ -10,16 +10,31 @@ annotation class CastleDsl
 @CastleDsl
 abstract class DomBuilder<out N: Node?> {
     internal open val stylesheet: Stylesheet by lazy { parent.stylesheet }
-    internal abstract val parent: DomBuilder<Node?>
-    internal abstract val seed: Long
+    internal var parent: DomBuilder<Node?> = DetachedRoot
+        private set
+    internal var seed: Long = 0
     /** Can be null for logical parts of DOM that don't correspond to a Node*/
     internal abstract val node: N
+    /** Don't manually add children, use [addChild] instead.*/
     internal val children = mutableListOf<DomBuilder<Node?>>()
     /** Recursively invokes this method on children. */
     internal open fun build(): N {
         children.forEach { it.build() }
         return node
     }
+    internal fun addChild(
+        child: DomBuilder<Node?>,
+        childSeed: Long = nextChildSeed()
+    ) {
+        child.parent = this
+        child.seed = childSeed
+        children.add(child)
+    }
+}
+
+/** Placeholder for parent when a builder is not yet added as a child. */
+internal object DetachedRoot : DomBuilder<Node?>() {
+    override val node: Node? = null
 }
 
 /** Root of the DOM.
@@ -29,28 +44,38 @@ abstract class DomBuilder<out N: Node?> {
  */
 class DomRoot(
     override val stylesheet: Stylesheet = Stylesheet(),
-    override val seed: Long = 0
+    seed: Long = 0
 ) : DomBuilder<Structure>() {
-    override val parent: DomBuilder<Node> = this
     override val node = Structure()
-
+    init {
+        this.seed = seed
+    }
     /** Builds the entire DOM tree. */
     public override fun build(): Structure = super.build()
 }
 
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<out N: Node>(
-    internal val styleClass: Collection<String>,
-    override val parent: DomBuilder<Node?>,
-    override val seed: Long,
     private val createNode: DomBuilder<N>.() -> N
 ) : DomBuilder<N>() {
+    private val styleClass = mutableListOf<String>()
     override val node: N by lazy { createNode() }
     override fun build(): N {
         findParentNode().addChild(node)
         stylesheet.apply(this, styleClass)
+        buildNode()
         children.forEach { it.build() }
         return node
+    }
+    /** Any custom code for adding more nodes inside this node. */
+    open fun buildNode() {}
+    /** Add given style class name to this builder. */
+    operator fun String.unaryPlus() {
+        styleClass.add(this)
+    }
+    /** Add given style class names to this builder. */
+    operator fun Array<out String>.unaryPlus() {
+        styleClass.addAll(this)
     }
 }
 
@@ -76,12 +101,7 @@ internal fun <N: Node> DomBuilder<Node?>.createChild(
     styleClass: Array<out String>,
     createNode: DomBuilder<N>.() -> N
 ) : DomBuilder<N> {
-    val child = DomNodeBuilder(
-        styleClass.toList(),
-        this,
-        nextChildSeed(),
-        createNode
-    )
-    children.add(child)
+    val child = DomNodeBuilder(createNode).apply{ +styleClass }
+    addChild(child)
     return child
 }

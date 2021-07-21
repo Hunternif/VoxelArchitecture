@@ -241,20 +241,11 @@ class DomTest {
         private fun DomBuilder<Node?>.empty(
             block: DomBuilder<Node?>.() -> Unit = {}
         ) {
-            val bld = EmptyLogicBuilder(this)
-            children.add(bld)
+            val bld = EmptyLogicBuilder()
+            addChild(bld)
             bld.block()
         }
 
-        class EmptyLogicBuilder(
-            override val parent: DomBuilder<Node?>
-        ): DomLogicBuilder(parent, 0) {
-            override fun build(): Node? {
-                children.forEach {
-                    it.build()
-                }
-                return null
-            }
-        }
+        class EmptyLogicBuilder: DomLogicBuilder()
     }
 }

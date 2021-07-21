@@ -1,26 +1,13 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.util.circle
 import hunternif.voxarch.util.square
 import kotlin.math.ceil
 
-class DomPolygonRoomBuilder(
-    styleClass: Collection<String>,
-    parent: DomBuilder<Node?>,
-    seed: Long
-) : DomNodeBuilder<PolygonRoom>(styleClass, parent, seed, { PolygonRoom() }) {
-    override fun build(): PolygonRoom {
-        findParentNode().addChild(node)
-        stylesheet.apply(this, styleClass)
-        createPolygon()
-        children.forEach { it.build() }
-        return node
-    }
-
-    private fun createPolygon() = node.run {
+class DomPolygonRoomBuilder : DomNodeBuilder<PolygonRoom>({ PolygonRoom() }) {
+    override fun buildNode() = node.run {
         when (shape) {
             PolygonShape.SQUARE -> polygon.square(width)
             PolygonShape.ROUND -> {
