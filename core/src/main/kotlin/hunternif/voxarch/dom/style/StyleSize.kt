@@ -1,10 +1,9 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
 
-@CastleDsl
 class StyleSize(
     var min: Dimension = 0.vx,
     var max: Dimension = Int.MAX_VALUE.vx

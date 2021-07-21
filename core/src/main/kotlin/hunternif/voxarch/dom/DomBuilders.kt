@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 

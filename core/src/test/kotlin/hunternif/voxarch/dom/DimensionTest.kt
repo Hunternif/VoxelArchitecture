@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.dom.style.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

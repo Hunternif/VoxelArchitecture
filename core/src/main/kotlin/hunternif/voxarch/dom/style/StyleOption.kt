@@ -1,4 +1,4 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.util.next
 import kotlin.random.Random

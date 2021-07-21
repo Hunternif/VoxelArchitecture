@@ -1,9 +1,8 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
 
-@CastleDsl
 class StyleShape : StyleParameter
 
 fun StyledNode<PolygonRoom>.shape(block: StyleShape.() -> Option<PolygonShape>) {

@@ -1,4 +1,4 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
@@ -30,8 +30,7 @@ var StyledNode<Turret>.turretTaperRatio: Double
     get() = node.turretTaperRatio
     set(value) { node.turretTaperRatio = value }
 
-@CastleDsl
-class StyleTurretShape
+class StyleTurretShape : StyleParameter
 
 fun StyledNode<Turret>.roofShape(block: StyleTurretShape.() -> Option<RoofShape>) {
     val base = when (val parent = node.parent) {
@@ -63,7 +62,7 @@ fun StyledNode<Turret>.bottomShape(block: StyleTurretShape.() -> Option<BottomSh
     node.bottomShape = StyleTurretShape().block().invoke(base, seed + 10000009)
 }
 
-fun StyleTurretShape.randomRoof():  Option<RoofShape> = { _, seed ->
+fun StyleTurretShape.randomRoof(): Option<RoofShape> = { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, RoofShape.FLAT_BORDERED),
         RandomOption(0.5, RoofShape.SPIRE),
@@ -71,7 +70,7 @@ fun StyleTurretShape.randomRoof():  Option<RoofShape> = { _, seed ->
     ).value
 }
 
-fun StyleTurretShape.randomBody():  Option<BodyShape> = { _, seed ->
+fun StyleTurretShape.randomBody(): Option<BodyShape> = { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, BodyShape.SQUARE),
         RandomOption(1.0, BodyShape.ROUND)
