@@ -1,8 +1,7 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.plan.Floor
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.*
+import hunternif.voxarch.sandbox.castle.turret.Turret
 
 /**
  * Adds child empty [Node].
@@ -33,6 +32,38 @@ fun DomBuilder<Node?>.floor(
     block: DomBuilder<Floor>.() -> Unit = {}
 ) {
     createChild<Floor>(styleClass) { Floor() }.block()
+}
+
+/** Adds child [PolygonRoom]. See [node]. */
+fun DomBuilder<Node?>.polygonRoom(
+    vararg styleClass: String,
+    block: DomBuilder<PolygonRoom>.() -> Unit = {}
+) {
+    val bld =  DomPolygonRoomBuilder(
+        styleClass.toList(),
+        this,
+        nextChildSeed()
+    )
+    children.add(bld)
+    bld.block()
+}
+
+/** Creates walls along the polygon. See [node]. */
+fun DomBuilder<PolygonRoom>.walls(
+    vararg styleClass: String,
+    block: DomBuilder<Wall>.() -> Unit = {}
+) {
+    //TODO: wall DOM builder
+}
+
+/** Adds child [Turret]. See [node]. */
+fun DomBuilder<Node?>.turret(
+    vararg styleClass: String,
+    block: DomTurretBuilder.() -> Unit = {}
+) {
+    val bld =  DomTurretBuilder(styleClass.toList(), this, nextChildSeed())
+    children.add(bld)
+    bld.block()
 }
 
 /** Adds child [Ward] with a perimeter of walls and towers. */

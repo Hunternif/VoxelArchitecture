@@ -13,6 +13,7 @@ class Turret(
     var bottomShape: BottomShape = BottomShape.FLAT,
     /** position of this turret in relation to parent turret */
     var positionType: TurretPosition = TurretPosition.NONE,
+    @Deprecated("Use DOM styles")
     var style: TowerStyle = TowerStyle(),
 
     /** Angle vs parent turret. Usually facing away from the center. */
@@ -22,7 +23,14 @@ class Turret(
      * Usually equal to recursion depth, but not always. */
     val level: Int = 0
 ) : PolygonRoom(origin, size) {
-    val roofWidth: Double get() = width + style.roofOffset * 2
+
+    /** Offset for borders and spires in all child turrets. */
+    var roofOffset: Int = 1
+    /** Y/X ratio of spires for all child turrets. */
+    var spireRatio: Double = 1.5
+    /** Y/X ratio of tapered bottoms of turrets. */
+    var turretTaperRatio: Double = 0.75
+
     constructor() : this(Vec3.ZERO, Vec3.ZERO)
 }
 
@@ -68,6 +76,7 @@ enum class TurretPosition {
 /**
  * Parameters that affect geometry, that should apply to all child turrets.
  */
+@Deprecated("Use DOM styles")
 data class TowerStyle(
     /** Offset for borders and spires in all child turrets. */
     val roofOffset: Int = 1,

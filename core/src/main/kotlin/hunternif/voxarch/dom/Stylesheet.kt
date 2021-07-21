@@ -28,7 +28,7 @@ interface StyleParameter
 
 /** Container for all styles in a DOM. */
 @CastleDsl
-class Stylesheet {
+open class Stylesheet {
     private val styleMap = ArrayListMultimap.create<String, TypedStyleRule<*>>()
 
     /**
@@ -64,7 +64,7 @@ class Stylesheet {
         styleMap.put(styleClass, TypedStyleRule(nodeClass, block))
     }
 
-    internal fun <N: Node> apply(
+    internal open fun <N: Node> apply(
         domBuilder: DomBuilder<N>,
         styleClass: Collection<String>
     ) {
@@ -90,3 +90,14 @@ class Stylesheet {
     }
 }
 
+class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>): Stylesheet() {
+    override fun <N : Node> apply(
+        domBuilder: DomBuilder<N>,
+        styleClass: Collection<String>
+    ) {
+        stylesheets.forEach { it.apply(domBuilder, styleClass) }
+    }
+}
+
+operator fun Stylesheet.plus(other: Stylesheet): Stylesheet =
+    CombinedStylesheet(listOf(this, other))
