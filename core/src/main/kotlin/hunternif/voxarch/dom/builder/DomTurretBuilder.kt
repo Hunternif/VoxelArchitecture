@@ -31,11 +31,11 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         floor(BLD_FOUNDATION)
         polygonRoom(BLD_TURRET_BOTTOM)
         floor()
-        walls()
+        allWalls { wall() }
         polygonRoom(BLD_TOWER_SPIRE)
         polygonRoom(BLD_TOWER_ROOF) {
             floor()
-            walls()
+            allWalls { wall() }
             //TODO: implement material inheritance from classes, or set 'type'
         }
     }

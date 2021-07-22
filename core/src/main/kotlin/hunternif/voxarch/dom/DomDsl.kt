@@ -45,14 +45,6 @@ fun DomBuilder<Node?>.polygonRoom(
     bld.block()
 }
 
-/** Creates walls along the polygon. See [node]. */
-fun DomBuilder<PolygonRoom>.walls(
-    vararg styleClass: String,
-    block: DomBuilder<Wall>.() -> Unit = {}
-) {
-    //TODO: wall DOM builder
-}
-
 /** Adds child [Turret]. See [node]. */
 fun DomBuilder<Node?>.turret(
     vararg styleClass: String,
@@ -78,6 +70,22 @@ fun DomWardBuilder.allCorners(
     block: DomBuilder<Node?>.() -> Unit = {}
 ) {
     allCornerBuild = block
+}
+
+/** Runs [block] on every section of this node. */
+fun DomBuilder<PolygonRoom>.allWalls(
+    block: DomLineSegmentBuilder.() -> Unit = {}
+) {
+    val bld = DomPolygonSegmentBuilder(block)
+    addChild(bld)
+}
+
+/** Creates a [Wall] on the line segment. */
+fun DomLineSegmentBuilder.wall(
+    vararg styleClass: String,
+    block: DomBuilder<Wall>.() -> Unit = {}
+) {
+    createChild(styleClass) { Wall(p1, p2) }.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////
