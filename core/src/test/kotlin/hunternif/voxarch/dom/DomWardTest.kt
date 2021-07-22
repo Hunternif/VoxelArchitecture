@@ -3,7 +3,6 @@ package hunternif.voxarch.dom
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape.ROUND
 import hunternif.voxarch.plan.PolygonShape.SQUARE
 import hunternif.voxarch.vector.Vec3
@@ -33,30 +32,6 @@ class DomWardTest {
         assertEquals(Vec3(1, 0, -1), ward.children[1].origin)
         assertEquals(Vec3(-1, 0, -1), ward.children[2].origin)
         assertEquals(Vec3(-1, 0, 1), ward.children[3].origin)
-    }
-
-    @Test
-    fun `square polygon room`() {
-        val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape = SQUARE
-                width { 2.vx }
-            }
-        }
-        val dom = DomRoot(style).apply {
-            polygonRoom {
-                allCorners {
-                    room()
-                }
-            }
-        }.build()
-
-        val room = dom.children[0]
-        assertEquals(4, room.children.size)
-        assertEquals(Vec3(1, 0, 1), room.children[0].origin)
-        assertEquals(Vec3(1, 0, -1), room.children[1].origin)
-        assertEquals(Vec3(-1, 0, -1), room.children[2].origin)
-        assertEquals(Vec3(-1, 0, 1), room.children[3].origin)
     }
 
     @Test

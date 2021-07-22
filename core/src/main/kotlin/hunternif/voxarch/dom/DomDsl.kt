@@ -69,7 +69,15 @@ fun DomBuilder<Node?>.ward(
 fun DomBuilder<PolygonRoom>.allCorners(
     block: DomBuilder<Node?>.() -> Unit = {}
 ) {
-    val bld = DomLogicCornerBuilder(block)
+    val bld = DomLogicPolygonCornerBuilder(block)
+    addChild(bld)
+}
+
+/** Runs [block] in the 4 corners of this [Room]'s bounding box. */
+fun DomBuilder<Room>.fourCorners(
+    block: DomBuilder<Node?>.() -> Unit = {}
+) {
+    val bld = DomLogicFourCornerBuilder(block)
     addChild(bld)
 }
 

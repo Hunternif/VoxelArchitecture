@@ -42,7 +42,7 @@ open class DomPolygonSegmentBuilder(
  * Will work when added as a child to a [DomBuilder]<[Room]>.
  */
 class DomFourWallsBuilder(
-    private val childBlock: DomLineSegmentBuilder.() -> Unit
+    childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolygonSegmentBuilder(childBlock) {
     override fun build(): Node? {
         val room = parent.node
