@@ -80,6 +80,14 @@ fun DomBuilder<PolygonRoom>.allWalls(
     addChild(bld)
 }
 
+/** Runs [block] on every side of this room. */
+fun DomBuilder<Room>.fourWalls(
+    block: DomLineSegmentBuilder.() -> Unit = {}
+) {
+    val bld = DomFourWallsBuilder(block)
+    addChild(bld)
+}
+
 /** Creates a [Wall] on the line segment. */
 fun DomLineSegmentBuilder.wall(
     vararg styleClass: String,
