@@ -16,7 +16,7 @@ fun DomBuilder<Node?>.node(
     vararg styleClass: String,
     block: DomBuilder<Node>.() -> Unit = {}
 ) {
-    createChild<Node>(styleClass) { Node() }.block()
+    createChild(styleClass) { Node() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
@@ -24,7 +24,7 @@ fun DomBuilder<Node?>.room(
     vararg styleClass: String,
     block: DomBuilder<Room>.() -> Unit = {}
 ) {
-    createChild<Room>(styleClass) { Room() }.block()
+    createChild(styleClass) { Room() }.block()
 }
 
 /** Adds child [Floor]. See [node]. */
@@ -32,7 +32,7 @@ fun DomBuilder<Node?>.floor(
     vararg styleClass: String,
     block: DomBuilder<Floor>.() -> Unit = {}
 ) {
-    createChild<Floor>(styleClass) { Floor() }.block()
+    createChild(styleClass) { Floor() }.block()
 }
 
 /** Adds child [PolygonRoom]. See [node]. */
@@ -87,7 +87,7 @@ annotation class CastleDsl
 /** Creates a child [DomBuilder], adds it to parent and returns. */
 private fun <N: Node> DomBuilder<Node?>.createChild(
     styleClass: Array<out String>,
-    createNode: DomBuilder<N>.() -> N
+    createNode: () -> N
 ) : DomBuilder<N> {
     val child = DomNodeBuilder(createNode).apply{ +styleClass }
     addChild(child)

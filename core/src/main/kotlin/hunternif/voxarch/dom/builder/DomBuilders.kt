@@ -55,7 +55,7 @@ class DomRoot(
 
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<out N: Node>(
-    private val createNode: DomBuilder<N>.() -> N
+    private val createNode: () -> N
 ) : DomBuilder<N>() {
     private val styleClass = mutableListOf<String>()
     override val node: N by lazy { createNode() }
