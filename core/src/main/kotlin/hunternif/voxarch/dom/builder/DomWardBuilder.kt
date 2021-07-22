@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom.builder
 
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.util.circle
@@ -13,26 +12,10 @@ import kotlin.math.PI
 class Ward : PolygonRoom()
 
 class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
-
-    internal var allCornerBuild: DomBuilder<Node?>.() -> Unit = {}
-
-    override fun buildNode() {
-        createPolygon()
-        buildCorners()
-    }
-
-    private fun createPolygon() = node.run {
+    override fun buildNode() = node.run {
         when (shape) {
             PolygonShape.SQUARE -> polygon.square(width)
             PolygonShape.ROUND -> polygon.circle(width, edgeCount)
-        }
-    }
-
-    private fun buildCorners() {
-        node.polygon.points.forEachIndexed { i, offset ->
-            val bld = DomTranslateBuilder(offset)
-            addChild(bld, seed + 10000 + i)
-            bld.allCornerBuild()
         }
     }
 

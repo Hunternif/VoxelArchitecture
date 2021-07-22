@@ -65,11 +65,12 @@ fun DomBuilder<Node?>.ward(
     bld.block()
 }
 
-/** Runs [block] in every corner of this [Ward]. */
-fun DomWardBuilder.allCorners(
+/** Runs [block] in every corner of this [PolygonRoom]. */
+fun DomBuilder<PolygonRoom>.allCorners(
     block: DomBuilder<Node?>.() -> Unit = {}
 ) {
-    allCornerBuild = block
+    val bld = DomLogicCornerBuilder(block)
+    addChild(bld)
 }
 
 /** Runs [block] on every section of this node. */
