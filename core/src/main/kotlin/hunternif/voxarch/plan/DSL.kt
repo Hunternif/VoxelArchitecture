@@ -44,31 +44,11 @@ inline fun Node.centeredPolygonRoom(
     action.invoke(it)
 }
 
-/** Adds a child [Floor], measured from corner */
-inline fun Node.floor(
-    start: Vec3,
-    size: Vec3,
-    crossinline action: Floor.() -> Unit = {}
-): Floor = Floor(start, size).also {
-    this.addChild(it)
-    action.invoke(it)
-}
-
-/** Adds a child [Floor], measured from center at floor level */
-inline fun Node.centeredFloor(
-    center: Vec3,
-    size: Vec3,
-    crossinline action: Floor.() -> Unit = {}
-): Floor = floor(
-    center.add(-size.x/2, 0.0, -size.z/2),
-    size,
-    action
-)
-
-/** Adds a room-bound [Floor] at floor level, matching its size. */
+/** Adds a child [Floor] */
 inline fun Room.floor(
+    height: Double = 0.0,
     crossinline action: Floor.() -> Unit = {}
-): Floor = Floor(start, Vec3(width, 0.0, length)).also {
+): Floor = Floor(height).also {
     this.addChild(it)
     action.invoke(it)
 }
@@ -76,7 +56,7 @@ inline fun Room.floor(
 /** Adds a room-bound [Floor] at ceiling level, matching room size. */
 inline fun Room.ceiling(
     crossinline action: Floor.() -> Unit = {}
-): Floor = Floor(start.addY(height),  Vec3(width, 0.0, length)).also {
+): Floor = Floor(height).also {
     this.addChild(it)
     action.invoke(it)
 }

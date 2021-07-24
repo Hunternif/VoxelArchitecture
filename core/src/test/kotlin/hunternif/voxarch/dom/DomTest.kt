@@ -2,10 +2,7 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.Floor
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
@@ -182,19 +179,19 @@ class DomTest {
             styleFor<Room> {
                 width { 200.vx }
             }
-            styleFor<Floor> {
+            styleFor<PolygonRoom> {
                 length { 300.vx }
             }
         }
         val dom = DomRoot(style).apply {
             room()
-            floor()
+            polygonRoom()
         }.build()
 
         val room = dom.children[0] as Room
-        val floor = dom.children[1] as Floor
+        val polyRoom = dom.children[1] as PolygonRoom
         assertEquals(Vec3(200, 100, 0), room.size)
-        assertEquals(Vec3(200, 100, 300), floor.size)
+        assertEquals(Vec3(200, 100, 300), polyRoom.size)
     }
 
     @Test

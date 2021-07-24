@@ -1,8 +1,7 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.BaseBuilderTest
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.floor
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.IFixedBlockStorage
 import hunternif.voxarch.util.Slice
 import hunternif.voxarch.util.XSlice
@@ -55,8 +54,10 @@ abstract class BaseSnapshotTest(
     }
 
     fun Node.ground() {
-        floor(Vec3.ZERO, Vec3(width - 1, 0, length - 1)).apply {
-            type = TYPE_FLOOR
+        room(Vec3.ZERO, Vec3(width - 1, 0, length - 1)) {
+            floor {
+                type = TYPE_FLOOR
+            }
         }
     }
 

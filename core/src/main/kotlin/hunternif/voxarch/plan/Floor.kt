@@ -3,22 +3,10 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.vector.Vec3
 
 /**
- * ```
- * Y
- *  +------------> X (East)
- *  | start --+
- *  | |       |
- *  | +---- (start + size)
- *  V
- *  Z
- * ```
- * Horizontal surface. Potentially it can be uneven, so `end` can have higher Y.
- * @param start aka `origin`, will be copied
- * @param size
+ * A horizontal surface that fills an entire room.
+ *
+ * Should only be added as a child to a [Room].
+ *
+ * The floor's origin is at parent's (0, [height], 0).
  */
-open class Floor(
-    start: Vec3,
-    size: Vec3
-): Room(start, size, Vec3.ZERO) {
-    constructor() : this(Vec3.ZERO, Vec3.ZERO)
-}
+open class Floor(val height: Double = 0.0): Node(Vec3(0.0, height, 0.0))

@@ -55,7 +55,7 @@ open class Room(
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
 
-    val rooms get() = children.filterIsInstance<Room>().subtract(floors)
+    val rooms get() = children.filterIsInstance<Room>()
     val floors get() = children.filterIsInstance<Floor>()
     val walls get() = children.filterIsInstance<Wall>()
     val props get() = children.filterIsInstance<Prop>()

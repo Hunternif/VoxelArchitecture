@@ -10,18 +10,8 @@ open class SimpleFloorBuilder(
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
 
-        // A floor will usually have a parent room
-        val room = (node.parent as? Room) ?: node
-
-        val usingParent = room === node.parent
-        if (usingParent) {
-            // Discard current transform so that we are at parent origin
-            transformer.run {
-                popTransformation()
-                pushTransformation()
-                translate(0.0, node.origin.y, 0.0)
-            }
-        }
+        // A floor must have a parent room
+        val room = (node.parent as? Room) ?: return
 
         // Fill space inside the room, starting from the corner
         transformer.translate(room.start)
@@ -29,13 +19,8 @@ open class SimpleFloorBuilder(
             val block = context.materials.get(material)
             transformer.setBlock(x, 0.0, z, block)
         }
+        transformer.translate(-room.start)
 
-        if (usingParent) {
-            transformer.run {
-                translate(node.origin)
-                rotateY(node.rotationY)
-            }
-        }
         super.build(node, world, context)
     }
 }

@@ -12,38 +12,23 @@ class FloorFoundationBuilder(
     override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
         val transformer = world.transformer()
 
-        // A floor will usually have a parent room
-        val room = (node.parent as? Room) ?: node
-
-        val usingParent = room === node.parent
-        if (usingParent) {
-            // Discard current transform so that we are at parent origin
-            transformer.run {
-                popTransformation()
-                pushTransformation()
-                translate(0.0, node.origin.y, 0.0)
-            }
-        }
+        // A floor must have a parent room
+        val room = (node.parent as? Room) ?: return
 
         // 1. Fill space inside the room, starting from the corner
         transformer.translate(room.start)
         world.fillXZ(room) { x, z ->
             buildDownToGround(x, z, transformer, context)
         }
+        transformer.translate(-room.start)
+
         // 2. Fill walls too, because at odd room sizes they can be 1 block away
-        // Start at parent origin
-        transformer.popTransformation()
         room.walls.forEach { wall ->
             line(wall.bottomStart, wall.bottomEnd) { p ->
                 buildDownToGround(p.x, p.z, transformer, context)
             }
         }
 
-        transformer.run {
-            pushTransformation()
-            translate(node.origin)
-            rotateY(node.rotationY)
-        }
         super.build(node, world, context)
     }
 

@@ -133,11 +133,13 @@ class CastleBlueprint(
         wallSide: Int = 4,
         wallHeight: Int = 6
     ) = Structure().apply {
-        centeredFloor(
+        centeredRoom(
             Vec3(0, foundationHeight, 0),
             Vec3(foundationSide, 0, foundationSide)
         ) {
-            type = BLD_FOUNDATION
+            floor {
+                type = BLD_FOUNDATION
+            }
         }
         centeredRoom(
             Vec3(0, foundationHeight, 0),

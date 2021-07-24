@@ -35,7 +35,7 @@ class RoomBuilderTest {
             builders.set(null to builder)
         }
         room = spy(Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO))
-        floor = spy(Floor(Vec3.ZERO, Vec3.ZERO))
+        floor = spy(Floor())
         wall = spy(Wall(Vec3.ZERO, Vec3.ZERO))
         childRoom = spy(Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO))
         prop = spy(Prop(Vec3.ZERO, "prop1"))
