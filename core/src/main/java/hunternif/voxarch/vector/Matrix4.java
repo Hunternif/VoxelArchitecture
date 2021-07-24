@@ -118,6 +118,27 @@ public class Matrix4 {
 		this.m33 = n33;
 		return this;
 	}
+
+	/** Multiplies all values in this matrix by value. */
+	public Matrix4 multiplyLocal(double value) {
+		this.m00 *= value;
+		this.m01 *= value;
+		this.m02 *= value;
+		this.m03 *= value;
+		this.m10 *= value;
+		this.m11 *= value;
+		this.m12 *= value;
+		this.m13 *= value;
+		this.m20 *= value;
+		this.m21 *= value;
+		this.m22 *= value;
+		this.m23 *= value;
+		this.m30 *= value;
+		this.m31 *= value;
+		this.m32 *= value;
+		this.m33 *= value;
+		return this;
+	}
 	
 	/**
 	 * Modifies <em>the specified matrix</em> to be the product (this * mat).
@@ -202,5 +223,71 @@ public class Matrix4 {
 				m10 + " " + m11 + " " + m12 + " " + m13 + "\n" +
 				m20 + " " + m21 + " " + m22 + " " + m23 + "\n" +
 				m30 + " " + m31 + " " + m32 + " " + m33 + "\n";
+	}
+
+	private double adjugateAndDet() {
+		double f = m00 * m11 - m01 * m10;
+		double f1 = m00 * m12 - m02 * m10;
+		double f2 = m00 * m13 - m03 * m10;
+		double f3 = m01 * m12 - m02 * m11;
+		double f4 = m01 * m13 - m03 * m11;
+		double f5 = m02 * m13 - m03 * m12;
+		double f6 = m20 * m31 - m21 * m30;
+		double f7 = m20 * m32 - m22 * m30;
+		double f8 = m20 * m33 - m23 * m30;
+		double f9 = m21 * m32 - m22 * m31;
+		double f10 = m21 * m33 - m23 * m31;
+		double f11 = m22 * m33 - m23 * m32;
+		double f12 = m11 * f11 - m12 * f10 + m13 * f9;
+		double f13 = -m10 * f11 + m12 * f8 - m13 * f7;
+		double f14 = m10 * f10 - m11 * f8 + m13 * f6;
+		double f15 = -m10 * f9 + m11 * f7 - m12 * f6;
+		double f16 = -m01 * f11 + m02 * f10 - m03 * f9;
+		double f17 = m00 * f11 - m02 * f8 + m03 * f7;
+		double f18 = -m00 * f10 + m01 * f8 - m03 * f6;
+		double f19 = m00 * f9 - m01 * f7 + m02 * f6;
+		double f20 = m31 * f5 - m32 * f4 + m33 * f3;
+		double f21 = -m30 * f5 + m32 * f2 - m33 * f1;
+		double f22 = m30 * f4 - m31 * f2 + m33 * f;
+		double f23 = -m30 * f3 + m31 * f1 - m32 * f;
+		double f24 = -m21 * f5 + m22 * f4 - m23 * f3;
+		double f25 = m20 * f5 - m22 * f2 + m23 * f1;
+		double f26 = -m20 * f4 + m21 * f2 - m23 * f;
+		double f27 = m20 * f3 - m21 * f1 + m22 * f;
+		this.m00 = f12;
+		this.m10 = f13;
+		this.m20 = f14;
+		this.m30 = f15;
+		this.m01 = f16;
+		this.m11 = f17;
+		this.m21 = f18;
+		this.m31 = f19;
+		this.m02 = f20;
+		this.m12 = f21;
+		this.m22 = f22;
+		this.m32 = f23;
+		this.m03 = f24;
+		this.m13 = f25;
+		this.m23 = f26;
+		this.m33 = f27;
+		return f * f11 - f1 * f10 + f2 * f9 + f3 * f8 - f4 * f7 + f5 * f6;
+	}
+
+	/** Converts this matrix to its inverse. Returns true if successful. */
+	public boolean invertLocal() {
+		double f = this.adjugateAndDet();
+		if (Math.abs(f) > 1.0E-6F) {
+			this.multiplyLocal(f);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/** Returns a new matrix that is the inverse of the current one. */
+	public Matrix4 invert() {
+		Matrix4 mat = this.clone();
+		mat.invertLocal();
+		return mat;
 	}
 }

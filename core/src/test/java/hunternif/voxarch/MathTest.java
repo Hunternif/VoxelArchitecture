@@ -142,4 +142,13 @@ public class MathTest {
 		Vec4 vec = new Vec4(1.5, 0.5, 0, 0);
 		assertEquals(new Vec4(-0.5, 1.5, 0, 0), mat.multiplyLocal(vec));
 	}
+
+	@Test
+	public void testMatrixInverse() {
+		Matrix4 mat = Matrix4.rotationY(90);
+		Vec4 vec = new Vec4(1.5, 0, 0.5, 0);
+		assertEquals(new Vec4(0.5, 0, -1.5, 0), mat.multiplyLocal(vec));
+		mat.invertLocal();
+		assertEquals(new Vec4(1.5, 0, 0.5, 0), mat.multiplyLocal(vec));
+	}
 }
