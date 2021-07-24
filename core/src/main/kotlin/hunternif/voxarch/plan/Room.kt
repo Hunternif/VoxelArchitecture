@@ -3,6 +3,8 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.util.Box
 import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.vector.Vec3
+import kotlin.properties.ReadWriteProperty
+import kotlin.reflect.KProperty
 
 /**
  * ```
@@ -18,19 +20,16 @@ import hunternif.voxarch.vector.Vec3
  *            from this origin.
  * @param size size in centric coordinates,
  * see [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
- * @param start internal offset of the low-XZ corner of the room.
- *            By default it's set so that origin is at the center of the floor.
  */
 open class Room(
     origin: Vec3,
-    size: Vec3,
-    start: Vec3 = Vec3(-size.x/2, 0.0, -size.z/2)
+    size: Vec3
 ) : Node(origin) {
     /**
      * Internal offset of the low-XZ corner of the room.
      * By default it's set so that origin is at the center of the floor.
      */
-    var start: Vec3 = start.clone()
+    var start: Vec3 by CenteredStartDelegate()
 
     var width: Double
         get() = size.x
@@ -131,9 +130,6 @@ open class Room(
         this.rotationY = rotationY
     }
 
-    /** Origin is set in the center of the floor */
-    constructor(origin: Vec3, size: Vec3): this(origin, size, Vec3(-size.x/2, 0.0, -size.z/2))
-
     constructor() : this(Vec3.ZERO, Vec3.ZERO)
 
     // LEGACY
@@ -149,4 +145,17 @@ open class Room(
             field = value
             if (value) floor()
         }
+
+    companion object {
+        private class CenteredStartDelegate: ReadWriteProperty<Room, Vec3> {
+            private var value: Vec3? = null
+            override fun getValue(thisRef: Room, property: KProperty<*>): Vec3 =
+                value ?: Vec3(-thisRef.width / 2, 0.0, -thisRef.length / 2)
+
+            override fun setValue(thisRef: Room, property: KProperty<*>, value: Vec3) {
+                this.value = value
+            }
+
+        }
+    }
 }

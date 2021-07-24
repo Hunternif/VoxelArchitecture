@@ -34,10 +34,10 @@ class RoomBuilderTest {
         buildContext = BuildContext(mock()).apply{
             builders.set(null to builder)
         }
-        room = spy(Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO))
+        room = spy(Room(Vec3.ZERO, Vec3.ZERO))
         floor = spy(Floor())
         wall = spy(Wall(Vec3.ZERO, Vec3.ZERO))
-        childRoom = spy(Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO))
+        childRoom = spy(Room(Vec3.ZERO, Vec3.ZERO))
         prop = spy(Prop(Vec3.ZERO, "prop1"))
         gate = spy(Gate(Vec3.ZERO, Vec2.ZERO))
         hatch = spy(Hatch(Vec3.ZERO, Vec2.ZERO))

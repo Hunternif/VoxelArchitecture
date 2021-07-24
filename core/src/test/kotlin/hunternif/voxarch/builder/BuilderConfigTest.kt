@@ -32,7 +32,7 @@ class BuilderConfigTest {
 
     @Test
     fun `get exact class and type`() {
-        val node = Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO).apply {
+        val node = Room(Vec3.ZERO, Vec3.ZERO).apply {
             type = "room type"
         }
         assertEquals(specialRoomBuilder, config.get(node))
@@ -40,13 +40,13 @@ class BuilderConfigTest {
 
     @Test
     fun `get exact class and default type`() {
-        val node = Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO)
+        val node = Room(Vec3.ZERO, Vec3.ZERO)
         assertEquals(roomBuilder, config.get(node))
     }
 
     @Test
     fun `get superclass`() {
-        val room = Room(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO)
+        val room = Room(Vec3.ZERO, Vec3.ZERO)
         val node = room.floor()
         assertEquals(floorBuilder, config.get(node))
     }
