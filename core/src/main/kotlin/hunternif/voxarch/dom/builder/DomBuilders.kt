@@ -62,6 +62,7 @@ open class DomNodeBuilder<out N: Node>(
     private val styleClass = mutableListOf<String>()
     override val node: N by lazy { createNode() }
     override fun build(): N {
+        node.type = styleClass.firstOrNull()
         findParentNode().addChild(node)
         stylesheet.apply(this, styleClass)
         if (visibility == Visibility.VISIBLE) {

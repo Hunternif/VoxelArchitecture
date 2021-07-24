@@ -40,7 +40,6 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         polygonRoom(BLD_TOWER_ROOF) {
             floor()
             allWalls { wall() }
-            //TODO: implement material inheritance from classes, or set 'type'
         }
     }
 

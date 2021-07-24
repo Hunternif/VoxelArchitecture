@@ -11,6 +11,7 @@ import hunternif.voxarch.sandbox.castle.turret.Turret
  * to the [Node] in the given order.
  *
  * @param styleClass names of style classes (like in CSS).
+ * The first class name will be used as the node type.
  */
 fun DomBuilder<Node?>.node(
     vararg styleClass: String,

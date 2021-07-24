@@ -235,6 +235,34 @@ class DomTest {
         assertEquals(100.0, child.height, 0.0)
     }
 
+    @Test
+    fun `inherit node type from style class`() {
+        val dom = DomRoot().apply {
+            node("parent") {
+                node("child", "extra class") {
+                    node("inner")
+                    node {
+                        node()
+                        node("innermost")
+                    }
+                }
+            }
+        }.build()
+
+        val parent = dom.children.first()
+        val child = parent.children.first()
+        val inner = child.children[0]
+        val noclass = child.children[1]
+        val noclass2 = noclass.children[0]
+        val innermost = noclass.children[1]
+        assertEquals("parent", parent.type)
+        assertEquals("child", child.type)
+        assertEquals("inner", inner.type)
+        assertEquals("child", noclass.type)
+        assertEquals("child", noclass2.type)
+        assertEquals("innermost", innermost.type)
+    }
+
     companion object {
         /** Creates empty logic element for testing. */
         private fun DomBuilder<Node?>.empty(
