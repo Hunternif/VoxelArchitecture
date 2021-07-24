@@ -56,3 +56,9 @@ fun StyledNode<Node>.length(block: StyleSize.() -> Dimension) {
         is Room -> node.length = newValue
     }
 }
+
+/** Applies to both width and length. */
+fun StyledNode<Node>.diameter(block: StyleSize.() -> Dimension) {
+    length(block)
+    width(block)
+}

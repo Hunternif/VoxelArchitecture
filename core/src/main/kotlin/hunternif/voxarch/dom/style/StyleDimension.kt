@@ -8,9 +8,13 @@ typealias Dimension = Option<Double>
 
 /** voxels (blocks) */
 val Int.vx: Dimension get() = { _, _ -> this.toDouble() }
+/** voxels (blocks) */
+val Double.vx: Dimension get() = { _, _ -> this }
 
 /** percent vs parent size */
 val Int.pct: Dimension get() = { base, _ -> base * 0.01 * this.toDouble() }
+/** percent vs parent size */
+val Double.pct: Dimension get() = { base, _ -> base * 0.01 * this }
 
 /** random value between given min and max, based on seed */
 infix fun Dimension.to(upperBound: Dimension): Dimension = { base, seed ->
@@ -37,6 +41,14 @@ operator fun Dimension.times(value: Double): Dimension {
 
 operator fun Dimension.times(value: Int): Dimension {
     return {base, seed -> this(base, seed) * value }
+}
+
+operator fun Double.times(value: Dimension): Dimension {
+    return {base, seed -> this * value(base, seed) }
+}
+
+operator fun Int.times(value: Dimension): Dimension {
+    return {base, seed -> this * value(base, seed) }
 }
 
 operator fun Dimension.div(value: Double): Dimension {

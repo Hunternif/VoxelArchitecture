@@ -37,17 +37,27 @@ fun StyledNode<Turret>.roofShape(block: StyleTurretShape.() -> Option<RoofShape>
         is Turret -> parent.roofShape
         else -> RoofShape.FLAT_BORDERED
     }
-    node.roofShape = StyleTurretShape().block().invoke(base, seed + 10000007)
+    roofShape = StyleTurretShape().block().invoke(base, seed + 10000007)
 }
+
+var StyledNode<Turret>.roofShape: RoofShape
+    get() = node.roofShape
+    set(value) { node.roofShape = value }
 
 fun StyledNode<Turret>.bodyShape(block: StyleTurretShape.() -> Option<BodyShape>) {
     val base = when (val parent = node.parent) {
         is Turret -> parent.bodyShape
         else -> BodyShape.SQUARE
     }
-    node.bodyShape = StyleTurretShape().block().invoke(base, seed + 10000008)
-    node.shape = node.bodyShape.toPolygonShape()
+    bodyShape = StyleTurretShape().block().invoke(base, seed + 10000008)
 }
+
+var StyledNode<Turret>.bodyShape: BodyShape
+    get() = node.bodyShape
+    set(value) {
+        node.bodyShape = value
+        node.shape = node.bodyShape.toPolygonShape()
+    }
 
 private fun BodyShape.toPolygonShape(): PolygonShape = when(this) {
     BodyShape.SQUARE -> PolygonShape.SQUARE
@@ -59,8 +69,12 @@ fun StyledNode<Turret>.bottomShape(block: StyleTurretShape.() -> Option<BottomSh
         is Turret -> parent.bottomShape
         else -> BottomShape.FLAT
     }
-    node.bottomShape = StyleTurretShape().block().invoke(base, seed + 10000009)
+    bottomShape = StyleTurretShape().block().invoke(base, seed + 10000009)
 }
+
+var StyledNode<Turret>.bottomShape: BottomShape
+    get() = node.bottomShape
+    set(value) { node.bottomShape = value }
 
 fun StyleTurretShape.randomRoof(): Option<RoofShape> = { _, seed ->
     Random(seed).nextWeighted(

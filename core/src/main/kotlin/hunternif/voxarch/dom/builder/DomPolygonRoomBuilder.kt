@@ -6,14 +6,16 @@ import hunternif.voxarch.util.circle
 import hunternif.voxarch.util.square
 import kotlin.math.ceil
 
-class DomPolygonRoomBuilder : DomNodeBuilder<PolygonRoom>({ PolygonRoom() }) {
-    override fun buildNode() = node.run {
-        when (shape) {
-            PolygonShape.SQUARE -> polygon.square(width)
-            PolygonShape.ROUND -> {
-                val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
-                polygon.circle(width, sideCount)
-            }
+open class DomPolygonRoomBuilder : DomNodeBuilder<PolygonRoom>({ PolygonRoom() }) {
+    override fun buildNode() = node.createPolygon()
+}
+
+internal fun PolygonRoom.createPolygon() {
+    when (shape) {
+        PolygonShape.SQUARE -> polygon.square(width)
+        PolygonShape.ROUND -> {
+            val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
+            polygon.circle(width, sideCount)
         }
     }
 }

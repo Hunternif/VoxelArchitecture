@@ -13,29 +13,25 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         +BLD_TOWER_BODY
     }
     override val stylesheet by lazy {
-        super.stylesheet + turretStyle(node)
+        // Order matters! First apply the default styles, then the custom ones.
+        defaultStyle + super.stylesheet + turretStyle
     }
+    private val turret = node
 
     override fun buildNode() {
+        node.createPolygon()
         addTurretParts()
-        addCorbels()
-    }
-
-    private fun addCorbels() = node.run {
-        // corbels
-        walls.forEach {
-            it.path(size.y) {
-                type = BLD_TOWER_CORBEL
-            }
-        }
-        // TODO: place corbels as separate nodes
     }
 
     private fun addTurretParts() {
         floor(BLD_FOUNDATION)
         polygonRoom(BLD_TURRET_BOTTOM)
         floor()
-        allWalls { wall() }
+        allWalls {
+            wall()
+            path(BLD_TOWER_CORBEL)
+            // TODO: place corbels as separate nodes
+        }
         polygonRoom(BLD_TOWER_SPIRE)
         polygonRoom(BLD_TOWER_ROOF) {
             floor()
@@ -43,34 +39,45 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         }
     }
 
-    private fun turretStyle(turret: Turret) = Stylesheet().apply {
-        fun hasFoundation() = turret.bottomShape == FOUNDATION
-        fun hasTaperedBottom() = turret.bottomShape == TAPERED
-        fun hasSpire() = when (turret.roofShape) {
-            SPIRE, SPIRE_BORDERED -> true
-            else -> false
-        }
-        fun hasCrenellation() = when (turret.roofShape) {
-            FLAT_BORDERED, SPIRE_BORDERED -> true
-            else -> false
-        }
-
-        styleFor<Floor>(BLD_FOUNDATION) {
-            visibleIf { hasFoundation() }
+    private val turretStyle = Stylesheet().apply {
+        val t = this@DomTurretBuilder
+        style(BLD_FOUNDATION) {
+            visibleIf { t.hasFoundation() }
         }
         styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
             shape { inherit() }
-            visibleIf { hasTaperedBottom() }
+            visibleIf { t.hasTaperedBottom() }
         }
         styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
             shape { inherit() }
-            visibleIf { hasSpire() }
+            visibleIf { t.hasSpire() }
+            y { 100.pct + 1.vx }
+            diameter { 100.pct + 2 * t.roofOffset() }
+            height { 2 * (t.avgRadius() + t.roofOffset()) * t.spireRatio() }
         }
         styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
             shape { inherit() }
-            visibleIf { hasCrenellation() }
+            visibleIf { t.hasCrenellation() }
             y { 100.pct + 1.vx } // 1 block above parent
+            diameter { 100.pct + 2 * t.roofOffset() }
+            height { 0.vx }
         }
-        return this
+        style(BLD_TOWER_CORBEL) {
+            y { 100.pct }
+        }
     }
+
+    private fun hasFoundation() = turret.bottomShape == FOUNDATION
+    private fun hasTaperedBottom() = turret.bottomShape == TAPERED
+    private fun hasSpire() = when (turret.roofShape) {
+        SPIRE, SPIRE_BORDERED -> true
+        else -> false
+    }
+    private fun hasCrenellation() = when (turret.roofShape) {
+        FLAT_BORDERED, SPIRE_BORDERED -> true
+        else -> false
+    }
+    private fun avgRadius() = ((turret.size.x + turret.size.z) / 4).vx
+    private fun roofOffset() = turret.roofOffset.vx
+    private fun spireRatio() = turret.spireRatio
 }

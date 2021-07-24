@@ -19,6 +19,8 @@ class DimensionTest {
         assertEquals(500.vx, 1000.vx / 2)
         assertEquals(3000.vx, 1000.vx * 3)
         assertEquals(3500.vx, 1000.vx * 3.5)
+        assertEquals(3000.vx, 3 * 1000.vx)
+        assertEquals(3500.vx, 3.5 * 1000.vx)
     }
 
     @Test

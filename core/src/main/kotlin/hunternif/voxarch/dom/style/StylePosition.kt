@@ -45,6 +45,8 @@ fun StyledNode<Node>.z(block: StylePosition.() -> Dimension) {
     node.origin.z += newValue
 }
 
-fun StyledNode<Node>.position(x: Int, y: Int, z: Int) {
-    node.origin.set(x.toDouble(), y.toDouble(), z.toDouble())
+fun StyledNode<Node>.position(x: Dimension, y: Dimension, z: Dimension) {
+    this.x { x }
+    this.y { y }
+    this.z { z }
 }

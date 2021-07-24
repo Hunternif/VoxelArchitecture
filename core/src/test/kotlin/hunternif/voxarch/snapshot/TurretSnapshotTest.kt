@@ -1,9 +1,11 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.turret
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
-import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
 class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
@@ -62,20 +64,23 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     }
 
     companion object {
-        private fun turret(width: Int) = Structure().apply {
-            turret(
-                origin = Vec3(5, 0, 5),
-                size = Vec3(width, 5, width),
-                roofShape = RoofShape.SPIRE_BORDERED,
-                bodyShape = BodyShape.SQUARE,
-                bottomShape = BottomShape.FLAT,
-                positionType = TurretPosition.NONE,
-                style = TowerStyle(
-                    roofOffset = 1,
-                    spireRatio = 1.5,
+        private fun turret(width: Int): Structure {
+            val style = Stylesheet().apply {
+                styleFor<Turret> {
+                    position(5.vx, 0.vx, 5.vx)
+                    diameter { width.vx }
+                    height { 5.vx }
+                    roofShape = RoofShape.SPIRE_BORDERED
+                    bodyShape = BodyShape.SQUARE
+                    bottomShape = BottomShape.FLAT
+                    roofOffset { 1.vx }
+                    spireRatio = 1.5
                     turretTaperRatio = 0.75
-                )
-            )
+                }
+            }
+            return DomRoot(style).apply {
+                turret()
+            }.build()
         }
     }
 }

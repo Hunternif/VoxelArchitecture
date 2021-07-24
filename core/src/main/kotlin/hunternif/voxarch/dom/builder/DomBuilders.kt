@@ -2,6 +2,7 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 
@@ -44,7 +45,7 @@ internal object DetachedRoot : DomBuilder<Node?>() {
  *             from this root seed value by a deterministic arithmetic.
  */
 class DomRoot(
-    override val stylesheet: Stylesheet = Stylesheet(),
+    override val stylesheet: Stylesheet = defaultStyle,
     seed: Long = 0
 ) : DomBuilder<Structure>() {
     override val node = Structure()
