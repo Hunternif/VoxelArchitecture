@@ -29,9 +29,9 @@ class PathTest {
 
     @Test
     fun `map x to segment`() {
-        val path = Path(Vec3.ZERO, listOf(
+        val path = Path(Vec3.ZERO,
             Vec3(0, 0, 0), Vec3(1, 0, 0), Vec3(1, 0, 2)
-        ))
+        )
 
         assertEquals(null, path.mapX(-1.0))
         assertEquals(path.segments[0], path.mapX(0.0))

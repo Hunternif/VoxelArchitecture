@@ -22,7 +22,7 @@ open class Path(origin: Vec3) : Node(origin) {
         get() = _segments
 
     /** Alternative constructor to add */
-    constructor(origin: Vec3, points: List<Vec3>) : this(origin) {
+    constructor(origin: Vec3, vararg points: Vec3) : this(origin) {
         points.forEach { addPoint(it) }
     }
 

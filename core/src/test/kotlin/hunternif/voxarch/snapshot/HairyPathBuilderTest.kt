@@ -61,13 +61,13 @@ class HairyPathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     }
 
     companion object {
-        fun smallSquare45Path() = Path(Vec3.ZERO, listOf(
+        fun smallSquare45Path() = Path(Vec3.ZERO,
             Vec3(7, 0, 4),
             Vec3(4, 0, 1),
             Vec3(1, 0, 4),
             Vec3(4, 0, 7),
             Vec3(7, 0, 4)
-        ))
+        )
     }
 }
 

@@ -3,6 +3,7 @@ package hunternif.voxarch.dom
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.Turret
+import hunternif.voxarch.vector.Vec3
 
 /**
  * Adds child empty [Node].
@@ -104,6 +105,14 @@ fun DomLineSegmentBuilder.wall(
     block: DomBuilder<Wall>.() -> Unit = {}
 ) {
     createChild(styleClass) { Wall(p1, p2) }.block()
+}
+
+/** Creates a [Path] on the line segment. */
+fun DomLineSegmentBuilder.path(
+    vararg styleClass: String,
+    block: DomBuilder<Path>.() -> Unit = {}
+) {
+    createChild(styleClass) { Path(Vec3.ZERO, p1, p2) }.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////

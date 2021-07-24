@@ -57,21 +57,21 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     }
 
     companion object {
-        fun squarePath() = Path(Vec3.ZERO, listOf(
+        fun squarePath() = Path(Vec3.ZERO,
             Vec3(8, 0, 8),
             Vec3(8, 0, 1),
             Vec3(1, 0, 1),
             Vec3(1, 0, 8),
             Vec3(8, 0, 8)
-        ))
+        )
 
-        fun square45Path() = Path(Vec3.ZERO, listOf(
+        fun square45Path() = Path(Vec3.ZERO,
             Vec3(8, 0, 4),
             Vec3(4, 0, 0),
             Vec3(0, 0, 4),
             Vec3(4, 0, 8),
             Vec3(8, 0, 4)
-        ))
+        )
     }
 
 }
