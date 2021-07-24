@@ -26,6 +26,10 @@ open class Room(
     size: Vec3,
     start: Vec3 = Vec3(-size.x/2, 0.0, -size.z/2)
 ) : Node(origin) {
+    /**
+     * Internal offset of the low-XZ corner of the room.
+     * By default it's set so that origin is at the center of the floor.
+     */
     var start: Vec3 = start.clone()
 
     var width: Double
