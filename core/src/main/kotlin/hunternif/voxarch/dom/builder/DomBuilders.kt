@@ -16,6 +16,8 @@ abstract class DomBuilder<out N: Node?> {
     internal abstract val node: N
     /** Don't manually add children, use [addChild] instead.*/
     internal val children = mutableListOf<DomBuilder<Node?>>()
+    /** Whether the node and its children will be built or ignored. */
+    internal var visibility: Visibility = Visibility.VISIBLE
     /** Recursively invokes this method on children. */
     internal open fun build(): N {
         children.forEach { it.build() }
@@ -62,8 +64,14 @@ open class DomNodeBuilder<out N: Node>(
     override fun build(): N {
         findParentNode().addChild(node)
         stylesheet.apply(this, styleClass)
-        buildNode()
-        children.forEach { it.build() }
+        if (visibility == Visibility.VISIBLE) {
+            buildNode()
+            children.forEach { it.build() }
+        } else {
+            // add and then remove the node, because it needs a parent to
+            // calculate styles including visibility.
+            node.parent?.removeChild(node)
+        }
         return node
     }
     /** Any custom code for adding more nodes inside this node. */
@@ -94,3 +102,9 @@ internal fun DomBuilder<Node?>.findParentNode(): Node {
 }
 
 internal fun DomBuilder<Node?>.nextChildSeed() = seed + children.size + 1
+
+enum class Visibility {
+    VISIBLE,
+    /** The node's children will not be created. */
+    GONE
+}

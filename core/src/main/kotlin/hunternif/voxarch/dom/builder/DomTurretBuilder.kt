@@ -4,13 +4,17 @@ import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.*
+import hunternif.voxarch.sandbox.castle.turret.BottomShape.*
+import hunternif.voxarch.sandbox.castle.turret.RoofShape.*
 import hunternif.voxarch.sandbox.castle.turret.Turret
 
 class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
     init {
         +BLD_TOWER_BODY
     }
-    override val stylesheet by lazy { super.stylesheet + turretStyle }
+    override val stylesheet by lazy {
+        super.stylesheet + turretStyle(node)
+    }
 
     override fun buildNode() {
         addTurretParts()
@@ -40,12 +44,33 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         }
     }
 
-    companion object {
-        val turretStyle = Stylesheet().apply {
-            styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
-                shape { inherit() }
-            }
-            //TODO: hide elements in style
+    private fun turretStyle(turret: Turret) = Stylesheet().apply {
+        fun hasFoundation() = turret.bottomShape == FOUNDATION
+        fun hasTaperedBottom() = turret.bottomShape == TAPERED
+        fun hasSpire() = when (turret.roofShape) {
+            SPIRE, SPIRE_BORDERED -> true
+            else -> false
         }
+        fun hasCrenellation() = when (turret.roofShape) {
+            FLAT_BORDERED, SPIRE_BORDERED -> true
+            else -> false
+        }
+
+        styleFor<Floor>(BLD_FOUNDATION) {
+            visibleIf { hasFoundation() }
+        }
+        styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
+            shape { inherit() }
+            visibleIf { hasTaperedBottom() }
+        }
+        styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
+            shape { inherit() }
+            visibleIf { hasSpire() }
+        }
+        styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
+            shape { inherit() }
+            visibleIf { hasCrenellation() }
+        }
+        return this
     }
 }
