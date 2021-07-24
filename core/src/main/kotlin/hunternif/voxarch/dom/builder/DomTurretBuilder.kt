@@ -70,6 +70,7 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
             shape { inherit() }
             visibleIf { hasCrenellation() }
+            y { 100.pct + 1.vx } // 1 block above parent
         }
         return this
     }
