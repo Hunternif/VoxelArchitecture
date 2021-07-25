@@ -14,9 +14,9 @@ class RoomClearingTest: BaseSnapshotTest(10, 1, 10) {
         context.builders.setDefault(RoomBuilder())
 
         val fillBlock = context.materials.get(MAT_FLOOR)
-        for (x in 0 until width) {
-            for (z in 0 until length) {
-                for (y in 0 until height) {
+        for (x in 0 until outWidth) {
+            for (z in 0 until outLength) {
+                for (y in 0 until outHeight) {
                     out.setBlock(x, y, z, fillBlock)
                 }
             }

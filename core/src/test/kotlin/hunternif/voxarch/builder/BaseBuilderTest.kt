@@ -12,9 +12,9 @@ import hunternif.voxarch.world.Environment
 import org.junit.Before
 
 abstract class BaseBuilderTest(
-    internal val width: Int,
-    internal val height: Int,
-    internal val length: Int
+    internal val outWidth: Int,
+    internal val outHeight: Int,
+    internal val outLength: Int
 ) {
     lateinit var out: MultiDimArrayBlockStorage
     lateinit var context: BuildContext
@@ -22,7 +22,7 @@ abstract class BaseBuilderTest(
 
     @Before
     open fun setup() {
-        out = MultiDimArrayBlockStorage(width, height, length)
+        out = MultiDimArrayBlockStorage(outWidth, outHeight, outLength)
         context = BuildContext(DEFAULT_ENV)
         builder = Builder()
         setupDefaultMaterials()

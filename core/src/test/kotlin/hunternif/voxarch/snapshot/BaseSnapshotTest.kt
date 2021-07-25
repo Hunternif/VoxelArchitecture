@@ -23,11 +23,11 @@ import javax.imageio.ImageIO
  * @param blockColorMap maps block id to RGB pixel color
  */
 abstract class BaseSnapshotTest(
-    width: Int,
-    height: Int,
-    length: Int,
+    outWidth: Int,
+    outHeight: Int,
+    outLength: Int,
     private val blockColorMap: Map<String, Int> = DEFAULT_COLORMAP
-) : BaseBuilderTest(width, height, length) {
+) : BaseBuilderTest(outWidth, outHeight, outLength) {
     @get:Rule
     val name = TestName()
 
@@ -54,7 +54,7 @@ abstract class BaseSnapshotTest(
     }
 
     fun Node.ground() {
-        room(Vec3.ZERO, Vec3(width - 1, 0, length - 1)) {
+        room(Vec3.ZERO, Vec3(outWidth - 1, 0, outLength - 1)) {
             floor {
                 type = TYPE_FLOOR
             }

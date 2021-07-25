@@ -12,7 +12,7 @@ class FloorTest : BaseSnapshotTest(10, 1, 10) {
     @Test
     fun `simple floor`() {
         val structure = Structure().apply {
-            room(Vec3(2, 0, 2), Vec3(width - 3, 0, length - 3)) {
+            room(Vec3(2, 0, 2), Vec3(outWidth - 3, 0, outLength - 3)) {
                 floor()
             }
         }
