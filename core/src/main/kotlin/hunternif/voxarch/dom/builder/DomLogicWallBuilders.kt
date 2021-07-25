@@ -4,7 +4,6 @@ import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.util.rotateY
-import hunternif.voxarch.util.round
 import hunternif.voxarch.vector.Vec3
 import kotlin.random.Random
 
@@ -21,7 +20,7 @@ class DomLineSegmentBuilder(val p1: Vec3, val p2: Vec3): DomLogicBuilder() {
             it.build()?.apply {
                 //TODO: add node rotation?
                 val angle = MathUtil.atan2Deg(-end.z, end.x)
-                origin = p1.add(origin.rotateY(angle)).round()
+                origin = p1.add(origin.rotateY(angle))
             }
         }
         return null

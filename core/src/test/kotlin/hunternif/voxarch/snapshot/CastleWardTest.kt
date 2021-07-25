@@ -19,10 +19,16 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
     }
 
     @Test
-    fun `castle ward top 1`() {
+    fun `castle ward top 0`() {
         //TODO: tapered bottom has an uneven round shape. fix it!
         build(castleWard())
         record(out.sliceY(0))
+    }
+
+    @Test
+    fun `castle ward top 1`() {
+        build(castleWard())
+        record(out.sliceY(1))
     }
 
     @Test

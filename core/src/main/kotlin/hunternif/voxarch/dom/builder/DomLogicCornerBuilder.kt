@@ -5,6 +5,7 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.util.rectangle
+import hunternif.voxarch.util.round
 
 /**
  * Calls [block] in every corner of the [PolygonRoom]
@@ -25,7 +26,7 @@ open class DomLogicPolygonCornerBuilder(
 
     protected fun addCornerBuilders(polygon: Path) {
         polygon.points.forEachIndexed { i, offset ->
-            val bld = DomTranslateBuilder(offset)
+            val bld = DomTranslateBuilder(offset.round())
             addChild(bld, seed + 10000 + i)
             bld.block()
         }
