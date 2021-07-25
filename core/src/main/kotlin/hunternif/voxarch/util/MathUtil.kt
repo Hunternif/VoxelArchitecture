@@ -70,6 +70,8 @@ fun Vec3.rotateY(angle: Double): Vec3 {
     return Vec3.from(vec4)
 }
 
+fun Vec3.round() = Vec3(round(x), round(y), round(z))
+
 /** Angle in degrees of a line segment [start]-[end] vs X axis. */
 fun segmentAngleY(start: Vec3, end: Vec3) =
     atan2(-end.z + start.z, end.x - start.x) * 180 / Math.PI

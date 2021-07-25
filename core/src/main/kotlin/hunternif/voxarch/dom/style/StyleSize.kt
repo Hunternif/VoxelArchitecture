@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.util.round
 
 class StyleSize(
     var min: Dimension = 0.vx,
@@ -20,6 +21,7 @@ fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
     val newValue = style.block()
         .clamp(style.min, style.max)
         .invoke(baseValue, seed + 10000001)
+        .round()
     when (node) {
         is Room -> node.height = newValue
         is Wall -> node.height = newValue
@@ -36,6 +38,7 @@ fun StyledNode<Node>.width(block: StyleSize.() -> Dimension) {
     val newValue = style.block()
         .clamp(style.min, style.max)
         .invoke(baseValue, seed + 10000002)
+        .round()
     when (node) {
         is Room -> node.width = newValue
     }
@@ -52,6 +55,7 @@ fun StyledNode<Node>.length(block: StyleSize.() -> Dimension) {
     val newValue = style.block()
         .clamp(style.min, style.max)
         .invoke(baseValue, seed + 10000003)
+        .round()
     when (node) {
         is Room -> node.length = newValue
     }
@@ -61,4 +65,10 @@ fun StyledNode<Node>.length(block: StyleSize.() -> Dimension) {
 fun StyledNode<Node>.diameter(block: StyleSize.() -> Dimension) {
     length(block)
     width(block)
+}
+
+fun StyledNode<Node>.size(x: Dimension, y: Dimension, z: Dimension) {
+    width { x }
+    height { y }
+    length { z }
 }

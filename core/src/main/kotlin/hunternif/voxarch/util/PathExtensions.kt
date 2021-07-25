@@ -38,8 +38,8 @@ fun Path.ellipse(width: Double, length: Double, count: Int) {
     val b = length / 2
     val angleStep = 360.0 / count
     // Going counterclockwise:
-    var angle = -angleStep / 2
-    while (angle < 360 - angleStep / 2) {
+    var angle = angleStep / 2
+    while (angle < 360) {
         addPoint(
             Vec3(
                 a * MathUtil.cosDeg(angle),

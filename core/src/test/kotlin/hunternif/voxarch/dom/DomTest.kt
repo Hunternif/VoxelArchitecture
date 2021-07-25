@@ -48,7 +48,7 @@ class DomTest {
         assertEquals(10.0, parent.height, 0.0)
         assertEquals(20.0, parent.width, 0.0)
         assertEquals(30.0, parent.length, 0.0)
-        assertEquals(7.5, child.height, 0.0)
+        assertEquals(8.0, child.height, 0.0) // rounded
         assertEquals(24.0, child.width, 0.0)
         assertEquals(30.0, child.length, 0.0)
     }

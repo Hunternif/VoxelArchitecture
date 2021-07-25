@@ -72,7 +72,7 @@ open class Stylesheet {
     ) {
         val styled = StyledNode(domBuilder, domBuilder.seed)
         val nodeClass = domBuilder.node.javaClass
-        (styleClass + GLOBAL_STYLE)
+        (listOf(GLOBAL_STYLE) + styleClass)
             .flatMap { styleMap[it] }
             .filter { it.nodeClass.isAssignableFrom(nodeClass) }
             .forEach {
