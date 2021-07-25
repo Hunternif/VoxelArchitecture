@@ -65,7 +65,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
         val style = defaultStyle.apply {
             styleFor<Turret>("turret") {
                 size(6.vx, 4.vx, 6.vx)
-                x { 50.pct } // TODO introduce 'align'
+                align { center() }
                 y { 15.vx }
                 roofShape = RoofShape.FLAT_BORDERED
                 bodyShape = BodyShape.SQUARE

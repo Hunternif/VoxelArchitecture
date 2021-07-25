@@ -47,25 +47,27 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
             shape { inherit() }
             visibleIf { t.hasTaperedBottom() }
-            y { -2 * t.avgRadius() * t.taperRatio() } // TODO: use node's own size as base
             height { 2 * t.avgRadius() * t.taperRatio() }
+            align { below() }
         }
         styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
             shape { inherit() }
             visibleIf { t.hasSpire() }
-            y { 100.pct + 1.vx }
             diameter { 100.pct + 2 * t.roofOffset() }
             height { 2 * (t.avgRadius() + t.roofOffset()) * t.spireRatio() }
+            align { above() }
+            y { 1.vx } // 1 block above
         }
         styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
             shape { inherit() }
             visibleIf { t.hasCrenellation() }
-            y { 100.pct + 1.vx } // 1 block above parent
             diameter { 100.pct + 2 * t.roofOffset() }
             height { 0.vx }
+            align { above() }
+            y { 1.vx } // 1 block above parent
         }
         style(BLD_TOWER_CORBEL) {
-            y { 100.pct }
+            align { above() }
         }
     }
 
