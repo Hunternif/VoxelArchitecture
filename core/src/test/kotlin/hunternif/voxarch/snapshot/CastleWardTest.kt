@@ -65,8 +65,10 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
         val style = defaultStyle.apply {
             styleFor<Turret>("turret") {
                 size(6.vx, 4.vx, 6.vx)
-                align { center() }
-                y { 15.vx }
+                align {
+                    center()
+                    bottom(15.vx)
+                }
                 roofShape = RoofShape.FLAT_BORDERED
                 bodyShape = BodyShape.SQUARE
                 bottomShape = BottomShape.FOUNDATION
@@ -80,7 +82,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
             styleFor<Ward>("inner_ward") {
                 shape = PolygonShape.SQUARE
                 size(16.vx, 8.vx, 16.vx)
-                y { 4.vx }
+                align { bottom(4.vx) }
             }
             styleFor<Turret>("outer_ward_turret") {
                 bodyShape = BodyShape.ROUND

@@ -15,41 +15,53 @@ fun StyledNode<Node>.align(block: StyleAlignment.() -> Unit) {
 //TODO: currently the current node's size must be set before alignment;
 // Fix it so that styles can be set in any order and then sorted by priority.
 /** Hugs the top of parent from outside. */
-fun StyleAlignment.above() {
+fun StyleAlignment.above(margin: Dimension = 0.vx) {
+    val marginValue = styled.run {
+        margin(node.height, seed + 10000014)
+    }
     styled.node.run {
         when (val p = parent) {
-            is Room -> origin.y = p.start.y + p.height
-            is Node -> origin.y = p.height
+            is Room -> origin.y = p.start.y + p.height + marginValue
+            is Node -> origin.y = p.height + marginValue
         }
     }
 }
 
 /** Hugs the top of parent from within. */
-fun StyleAlignment.top() {
+fun StyleAlignment.top(margin: Dimension = 0.vx) {
+    val marginValue = styled.run {
+        margin(node.height, seed + 10000015)
+    }
     styled.node.run {
         when (val p = parent) {
-            is Room -> origin.y = p.start.y + p.height - this.height
-            is Node -> origin.y = p.height - this.height
+            is Room -> origin.y = p.start.y + p.height - this.height - marginValue
+            is Node -> origin.y = p.height - this.height - marginValue
         }
     }
 }
 
 /** Hugs the bottom of parent from within. */
-fun StyleAlignment.bottom() {
+fun StyleAlignment.bottom(margin: Dimension = 0.vx) {
+    val marginValue = styled.run {
+        margin(node.height, seed + 10000016)
+    }
     styled.node.run {
         when (val p = parent) {
-            is Room -> origin.y = p.start.y
-            is Node -> origin.y = 0.0
+            is Room -> origin.y = p.start.y + marginValue
+            is Node -> origin.y = marginValue
         }
     }
 }
 
 /** Hugs the bottom of parent from outside. */
-fun StyleAlignment.below() {
+fun StyleAlignment.below(margin: Dimension = 0.vx) {
+    val marginValue = styled.run {
+        margin(node.height, seed + 10000017)
+    }
     styled.node.run {
         when (val p = parent) {
-            is Room -> origin.y = p.start.y - this.height
-            is Node -> origin.y = -this.height
+            is Room -> origin.y = p.start.y - this.height - marginValue
+            is Node -> origin.y = -this.height - marginValue
         }
     }
 }

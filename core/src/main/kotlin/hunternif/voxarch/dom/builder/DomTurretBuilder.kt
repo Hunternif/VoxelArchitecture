@@ -32,8 +32,8 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
             path(BLD_TOWER_CORBEL)
             // TODO: place corbels as separate nodes
         }
-        polygonRoom(BLD_TOWER_SPIRE)
-        polygonRoom(BLD_TOWER_ROOF) {
+        polygonRoom(BLD_TOWER_SPIRE, "roof")
+        polygonRoom(BLD_TOWER_ROOF, "roof") {
             floor()
             allWalls { wall() }
         }
@@ -50,21 +50,18 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
             height { 2 * t.avgRadius() * t.taperRatio() }
             align { below() }
         }
-        styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
+        styleFor<PolygonRoom>("roof") {
             shape { inherit() }
-            visibleIf { t.hasSpire() }
             diameter { 100.pct + 2 * t.roofOffset() }
+            align { above(1.vx) } // 1 block above parent
+        }
+        styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
+            visibleIf { t.hasSpire() }
             height { 2 * (t.avgRadius() + t.roofOffset()) * t.spireRatio() }
-            align { above() }
-            y { 1.vx } // 1 block above
         }
         styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
-            shape { inherit() }
             visibleIf { t.hasCrenellation() }
-            diameter { 100.pct + 2 * t.roofOffset() }
             height { 0.vx }
-            align { above() }
-            y { 1.vx } // 1 block above parent
         }
         style(BLD_TOWER_CORBEL) {
             align { above() }
