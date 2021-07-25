@@ -263,6 +263,39 @@ class DomTest {
         assertEquals("innermost", innermost.type)
     }
 
+//    @Test
+//    fun `inherit style class`() {
+//        val style = Stylesheet().apply {
+//            style("parent") {
+//                height { 100.vx }
+//            }
+//            style("child") {
+//                height { 50.pct }
+//            }
+//        }
+//        val dom = DomRoot(style).apply {
+//            room("parent") {
+//                room()
+//                room("child", "extra class") {
+//                    room()
+//                }
+//            }
+//        }.build()
+//
+//        val parent = dom.children.first() as Room
+//        val child1 = parent.children[0] as Room
+//        val child2 = parent.children[1] as Room
+//        val child3 = child2.children[0] as Room
+//        assertEquals("parent", parent.type)
+//        assertEquals(100.0, parent.height, 0.0)
+//        assertEquals("parent", child1.type)
+//        assertEquals(100.0, child1.height, 0.0)
+//        assertEquals("child", child2.type)
+//        assertEquals(50.0, child2.height, 0.0)
+//        assertEquals("child", child3.type)
+//        assertEquals(25.0, child3.height, 0.0)
+//    }
+
     companion object {
         /** Creates empty logic element for testing. */
         private fun DomBuilder<Node?>.empty(

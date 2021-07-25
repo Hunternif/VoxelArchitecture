@@ -83,11 +83,19 @@ fun DomBuilder<Room>.fourCorners(
     addChild(bld)
 }
 
-/** Runs [block] on every section of this node. */
+/** Runs [block] on every section of this polygon. */
 fun DomBuilder<PolygonRoom>.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomPolygonSegmentBuilder(block)
+    addChild(bld)
+}
+
+/** Runs [block] on one random section of this polygon. */
+fun DomBuilder<PolygonRoom>.randomWall(
+    block: DomLineSegmentBuilder.() -> Unit = {}
+) {
+    val bld = DomRandomSegmentBuilder(block)
     addChild(bld)
 }
 
@@ -104,7 +112,7 @@ fun DomLineSegmentBuilder.wall(
     vararg styleClass: String,
     block: DomBuilder<Wall>.() -> Unit = {}
 ) {
-    createChild(styleClass) { Wall(p1, p2) }.block()
+    createChild(styleClass) { Wall(Vec3.ZERO, p2) }.block()
 }
 
 /** Creates a [Path] on the line segment. */
@@ -112,7 +120,7 @@ fun DomLineSegmentBuilder.path(
     vararg styleClass: String,
     block: DomBuilder<Path>.() -> Unit = {}
 ) {
-    createChild(styleClass) { Path(Vec3.ZERO, p1, p2) }.block()
+    createChild(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////

@@ -47,6 +47,8 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
             shape { inherit() }
             visibleIf { t.hasTaperedBottom() }
+            y { -2 * t.avgRadius() * t.taperRatio() } // TODO: use node's own size as base
+            height { 2 * t.avgRadius() * t.taperRatio() }
         }
         styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
             shape { inherit() }
@@ -80,4 +82,5 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
     private fun avgRadius() = ((turret.size.x + turret.size.z) / 4).vx
     private fun roofOffset() = turret.roofOffset.vx
     private fun spireRatio() = turret.spireRatio
+    private fun taperRatio() = turret.taperRatio
 }

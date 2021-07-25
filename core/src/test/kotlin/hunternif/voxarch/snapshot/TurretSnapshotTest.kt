@@ -75,7 +75,7 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                     bottomShape = BottomShape.FLAT
                     roofOffset { 1.vx }
                     spireRatio = 1.5
-                    turretTaperRatio = 0.75
+                    taperRatio = 0.75
                 }
             }
             return DomRoot(style).apply {

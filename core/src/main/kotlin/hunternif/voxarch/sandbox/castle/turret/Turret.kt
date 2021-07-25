@@ -29,7 +29,7 @@ class Turret(
     /** Y/X ratio of spires for all child turrets. */
     var spireRatio: Double = 1.5
     /** Y/X ratio of tapered bottoms of turrets. */
-    var turretTaperRatio: Double = 0.75
+    var taperRatio: Double = 0.75
 
     constructor() : this(Vec3.ZERO, Vec3.ZERO)
 }

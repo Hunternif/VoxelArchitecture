@@ -26,9 +26,9 @@ var StyledNode<Turret>.spireRatio: Double
     set(value) { node.spireRatio = value }
 
 /** Y/X ratio of tapered bottoms of turrets. */
-var StyledNode<Turret>.turretTaperRatio: Double
-    get() = node.turretTaperRatio
-    set(value) { node.turretTaperRatio = value }
+var StyledNode<Turret>.taperRatio: Double
+    get() = node.taperRatio
+    set(value) { node.taperRatio = value }
 
 class StyleTurretShape : StyleParameter
 
