@@ -1,11 +1,11 @@
 package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.sandbox.castle.turret.Turret
 
 val defaultStyle get() = Stylesheet().apply {
-    styleFor<Node> {
+    styleFor<Room> {
         diameter { 100.pct }
         height { 100.pct }
     }

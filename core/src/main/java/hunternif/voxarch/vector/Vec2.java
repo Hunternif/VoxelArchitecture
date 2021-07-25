@@ -102,7 +102,9 @@ public class Vec2 {
 		if (!(obj instanceof Vec2))
 			return false;
 		Vec2 vec = (Vec2) obj;
-		return vec.x == x && vec.y == y;
+		double epsilon = 0.0000000001;
+		return Math.abs(vec.x - x) < epsilon &&
+				Math.abs(vec.y - y) < epsilon;
 	}
 	
 	public double dotProduct(Vec2 vec) {

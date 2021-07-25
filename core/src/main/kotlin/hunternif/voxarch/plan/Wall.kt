@@ -26,19 +26,33 @@ open class Wall(
 ) : Node(start) {
     val bottomStart: Vec3 get() = origin
     val bottomEnd: Vec3 get() = Vec3(end.x, 0.0, end.z)
-    var end: Vec3 = end.clone()
+
+    /** Top far point relative to origin */
+    private val innerEnd: Vec3 = end.subtract(start)
+    /** Top far point relative to parent origin */
+    val end: Vec3 get() = origin.add(innerEnd)
 
     override var rotationY: Double
-        get() = atan2(-end.z + origin.z, end.x - origin.x) * 180 / Math.PI
+        get() = atan2(-innerEnd.z, innerEnd.x) * 180 / Math.PI
         set(value) {}
 
     val p1: Vec2 get() = Vec2.fromXZ(origin)
     val p2: Vec2 get() = Vec2.fromXZ(end)
 
-    val length: Double get() = p2.distanceTo(p1)
+    var length: Double
+        get() = bottomEnd.distanceTo(bottomStart)
+        set(value) {
+            if (length == 0.0) {
+                innerEnd.x = length
+            } else {
+                val ratio = value / length
+                innerEnd.x *= ratio
+                innerEnd.z *= ratio
+            }
+        }
     var height: Double
-        get() = end.y - origin.y
-        set(value) { end.y = origin.y + value}
+        get() = innerEnd.y
+        set(value) { innerEnd.y = value }
 
 
     /** Legacy constructor */
