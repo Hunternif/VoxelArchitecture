@@ -89,7 +89,7 @@ fun outerWard(keep: Turret, seed: Long): Turret {
         .clamp(minWidth, maxWidth)
         .roundToEven()
 
-    val keepElevation = Random(seed + 1009).nextDouble(4.0, 20.0)
+    val keepElevation = Random(seed + 1009).nextDouble(4.0, 20.0).round()
 
     val turretHeightRatio = Random(seed + 1004).nextDouble(0.5, 0.9)
     val turretHeight = round((keep.height + keepElevation) * turretHeightRatio)
@@ -112,7 +112,7 @@ fun outerWard(keep: Turret, seed: Long): Turret {
     } else FOUNDATION
 
     val angleStep = 360.0 / turretCount
-    val radius = wardWidth / 2 / MathUtil.cosDeg(angleStep / 2)
+    val radius = wardWidth / 2
 
     return Turret(
         origin = keep.origin,
