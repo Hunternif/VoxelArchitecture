@@ -27,28 +27,46 @@ import kotlin.random.Random
 // Imagine a cross-section of a castle corridor, with walls on the left and right.
 // It would be composed of 2 tiles, each with a wall in the middle.
 
+/**
+ * This tile represents a possible final state of a slot in the wave's 3d grid.
+ * Each slot will collapse into one of these tiles.
+ */
+class WfcTile(init: (x: Int, y: Int, z: Int) -> WfcVoxel) :
+    Array3D<WfcVoxel>(3, 3, 3, init) {
+    constructor(vx: WfcVoxel): this({ _, _, _ -> vx })
+}
+/** Voxels inside a tile for Wang-style tile matching. */
+enum class WfcVoxel {
+    AIR, WALL, FLOOR
+}
+
+/** A single cell in the wave's 3d grid. */
+private class WfSlot(
+    val possibleStates: MutableSet<WfcTile>
+) {
+    /** Final collapsed state of this slot */
+    var state: WfcTile? = null
+        private set
+    fun setState(state: WfcTile) {
+        this.state = state
+        possibleStates.clear()
+        possibleStates.add(state)
+    }
+    fun entropy(): Float =
+        if (possibleStates.size <= 1) 0f
+        else -log(1f/possibleStates.size.toFloat(), 2f)
+}
+
 class WfcGrid(
-    val width: Int, val height: Int, val length: Int,
+    private val width: Int,
+    private val height: Int,
+    private val length: Int,
     private val tileset: List<WfcTile>,
-    private val seed: Long = 0
+    seed: Long = 0L
 ) {
     private val rand = Random(seed)
-    private class WfSlot(
-        val possibleStates: MutableSet<WfcTile>
-    ) {
-        var state: WfcTile? = null
-            private set
-        fun set(state: WfcTile) {
-            this.state = state
-            possibleStates.clear()
-            possibleStates.add(state)
-        }
-    }
-    private data class EntropyAt(
-        val pos: IntVec3,
-        val entropy: Float
-    )
-    private val entropyQueue = PriorityQueue<EntropyAt> { e1, e2 -> e1.entropy.compareTo(e2.entropy)}
+    private var collapsedCount = 0
+    private val totalCount = width * height * length
     private val wave by lazy {
         Array3D(width, height, length) {_, _, _ ->
             WfSlot(tileset.toMutableSet())
@@ -56,74 +74,96 @@ class WfcGrid(
     }
 
     /** Collapse tiles at the edge of the grid to be "air". */
-    fun setAirBorder() {
+    fun setAirBoundary() {
         for (p in wave) {
             if (p.x <= 0 || p.x >= width-1 ||
                 p.y <= 0 || p.y >= height-1 ||
                 p.z <= 0 || p.z >= length-1) {
-                wave[p].set(air)
+                setState(p, air)
             }
         }
         propagate(IntVec3(1, 0, 1))
     }
 
+    private fun setState(p: IntVec3, tile: WfcTile) {
+        wave[p].setState(tile)
+        collapsedCount++
+    }
+
     fun getCollapsedTiles(): Array3D<WfcTile?> = Array3D(width, height, length)
         { x, y, z -> wave[x, y, z].state }
 
-    val isCollapsed: Boolean get() = entropyQueue.isEmpty()
+    val isCollapsed: Boolean get() = collapsedCount >= totalCount
+    var isContradicted: Boolean = false
+        private set
 
-    fun collapse() {
-        if (entropyQueue.isEmpty()) {
+    /**
+     * Performs 1 step of the Wave Function Collapse algo:
+     * - picks a slot with the lowest entropy and collapses it
+     * - propagates constraints resulting from this collapse
+     */
+    fun collapseStep() {
+        if (isCollapsed) {
             println("Nothing to collapse!")
-        } else {
-            collapseStepAt(entropyQueue.remove().pos)
+            return
         }
+        val pos = findLowestEntropyPos()
+        if (pos == null) {
+            isContradicted = true
+            println("Contradiction!")
+            return
+        }
+        setState(pos, wave[pos].possibleStates.random(rand))
+        propagate(pos)
     }
 
-    private fun collapseStepAt(p: IntVec3) {
-        require(p in wave)
-        if (wave[p].state != null) return
-        wave[p].set(wave[p].possibleStates.random(rand))
-        propagate(p)
+    /** Returns the position of the slot with the lowest non-zero entropy. */
+    private fun findLowestEntropyPos(): IntVec3? {
+        var min = Float.MAX_VALUE
+        var argMin: IntVec3? = null
+        for (p in wave) {
+            val entropy = wave[p].entropy()
+            if (entropy > 0 && entropy < min) {
+                argMin = p
+                min = entropy
+            }
+        }
+        return argMin
     }
 
+    /**
+     * Propagates constraints to the entire grid after the given slot collapsed.
+     */
     private fun propagate(from: IntVec3) {
-        entropyQueue.clear()
         val propagationQueue = LinkedList<IntVec3>().apply { add(from) }
-        val visited = mutableSetOf<IntVec3>().apply { add(from) }
         while (propagationQueue.isNotEmpty()) {
             val pos = propagationQueue.pop()
             for (p in pos.allDirections()) {
-                if (p !in wave || p in visited || wave[p].state != null) continue
-                visited.add(p)
-                constrainStates(p)
-                //TODO check if the state of this tile is unchanged and we can stop propagation
-                entropyQueue.add(EntropyAt(p, wave[p].entropy()))
-                propagationQueue.add(p)
+                if (p !in wave || wave[p].state != null) continue
+                if (constrainStates(p)) {
+                    propagationQueue.add(p)
+                }
             }
         }
     }
-    /** Removes from "possibleStates" any states that can't be matched to its neighbors */
-    private fun constrainStates(pos: IntVec3) {
+    /**
+     * Removes from "possibleStates" any states that can't be matched to its
+     * neighbors. Returns true if at least 1 state was removed.
+     */
+    private fun constrainStates(pos: IntVec3): Boolean {
         val directions = Direction.values()
             .sortedBy { wave[pos.add(it.vec)].possibleStates.size }
+        val originalCount = wave[pos].possibleStates.size
         for (dir in directions) {
             val adjSlot = wave[pos.add(dir.vec)]
             wave[pos].possibleStates.removeIf { state ->
                 adjSlot.possibleStates.none { state.matchesSide(it, dir) }
             }
         }
+        val newCount = wave[pos].possibleStates.size
+        if (newCount == 1) setState(pos, wave[pos].possibleStates.first())
+        return newCount < originalCount
     }
-    private fun WfSlot.entropy() = -log(1f/possibleStates.size.toFloat(), 2f)
-}
-
-class WfcTile(init: (x: Int, y: Int, z: Int) -> WfcVoxel) :
-    Array3D<WfcVoxel>(3, 3, 3, init) {
-    constructor(vx: WfcVoxel): this({ _, _, _ -> vx })
-}
-
-enum class WfcVoxel {
-    AIR, WALL, FLOOR
 }
 
 internal enum class Direction(val vec: IntVec3) {

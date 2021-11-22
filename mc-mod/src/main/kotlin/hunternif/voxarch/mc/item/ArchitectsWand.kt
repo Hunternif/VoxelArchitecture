@@ -23,7 +23,6 @@ import net.minecraft.util.ActionResult
 import net.minecraft.util.Hand
 import net.minecraft.util.text.ITextComponent
 import net.minecraft.util.text.StringTextComponent
-import net.minecraftforge.common.MinecraftForge
 import kotlin.math.floor
 
 class ArchitectsWand(properties: Properties) : Item(properties) {
@@ -171,26 +170,28 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
                 generateValidTiles(),
                 System.currentTimeMillis()
             ).apply {
-                setAirBorder()
-                while (!isCollapsed) collapse()
+                setAirBoundary()
+                while (!isCollapsed && !isContradicted) collapseStep()
             }
             val tiles = wfc.getCollapsedTiles()
-            pos.addLocal(Vec3(-tiles.width/2, 1, -tiles.length/2))
+            pos.addLocal(Vec3(-tiles.width*1.5, 1.0, -tiles.length*1.5))
             for (p in tiles) {
                 val tile = tiles[p] ?: continue
                 for (v in tile) {
                     val voxel = tile[v]
                     val blockPos = pos.add(v).add(Vec3(p).multiply(3.0)).toBlockPos()
-                    val blockState = voxel.mapToBlock().defaultBlockState()
-                    world.setBlock(blockPos, blockState, 2)
+                    voxel.mapToBlock()?.let {
+                        val blockState = it.defaultBlockState()
+                        world.setBlock(blockPos, blockState, 2)
+                    }
                 }
             }
         }
         return ActionResult.pass(player.getItemInHand(hand))
     }
 
-    private fun WfcVoxel.mapToBlock(): Block = when(this) {
-        WfcVoxel.AIR -> Blocks.AIR
+    private fun WfcVoxel.mapToBlock(): Block? = when(this) {
+        WfcVoxel.AIR -> null
         WfcVoxel.WALL -> Blocks.COBBLESTONE
         WfcVoxel.FLOOR -> Blocks.OAK_PLANKS
     }
