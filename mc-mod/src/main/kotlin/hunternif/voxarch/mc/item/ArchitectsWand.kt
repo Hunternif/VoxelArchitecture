@@ -1,6 +1,5 @@
 package hunternif.voxarch.mc.item
 
-import hunternif.voxarch.builder.MainBuilder
 import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.vector.Vec3
@@ -13,6 +12,10 @@ import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
+import hunternif.voxarch.sandbox.castle.wfc.WfcVoxel
+import hunternif.voxarch.sandbox.castle.wfc.generateValidTiles
+import net.minecraft.block.Block
+import net.minecraft.block.Blocks
 import net.minecraft.client.util.ITooltipFlag
 import net.minecraft.entity.player.PlayerEntity
 import net.minecraft.util.ActionResult
@@ -127,13 +130,48 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //                origin = pos,
 //                seed = System.currentTimeMillis()
 //            )
-            val plan = createCastleTopDown(
-                origin = pos,
-                seed = System.currentTimeMillis()
-            )
-            MainBuilder().build(plan, animationWorld, context)
+//            val plan = createCastleTopDown(
+//                origin = pos,
+//                seed = System.currentTimeMillis()
+//            )
+//            val turret = createTurret(
+//                origin = Vec3.ZERO,
+//                size = Vec3(6, 4, 6),
+//                roofShape = RoofShape.FLAT_BORDERED,
+//                bodyShape = BodyShape.SQUARE,
+//                bottomShape = BottomShape.FOUNDATION,
+//                style = TowerStyle(),
+//                level = 4
+//            )
+//            val innerWard = innerWard(turret, 1)
+//            val outerWard = outerWard(innerWard, 2)
+//            val plan = Structure().apply {
+//                origin = pos
+//                addChild(outerWard, Vec3(30, 0, 30))
+//            }
+//            MainBuilder().build(plan, animationWorld, context)
+
+            // test all generated WFC tiles
+            val wfcTiles = generateValidTiles()
+            pos.y += 1
+            var tileOffset = 0
+            for (tile in wfcTiles) {
+                for (p in tile) {
+                    val voxel = tile[p]
+                    val blockPos = pos.add(p).addX(tileOffset).toBlockPos()
+                    val blockState = voxel.mapToBlock().defaultBlockState()
+                    world.setBlock(blockPos, blockState, 2)
+                }
+                tileOffset += 4
+            }
         }
         return ActionResult.pass(player.getItemInHand(hand))
+    }
+
+    private fun WfcVoxel.mapToBlock(): Block = when(this) {
+        WfcVoxel.AIR -> Blocks.AIR
+        WfcVoxel.WALL -> Blocks.COBBLESTONE
+        WfcVoxel.FLOOR -> Blocks.OAK_PLANKS
     }
 
 }
