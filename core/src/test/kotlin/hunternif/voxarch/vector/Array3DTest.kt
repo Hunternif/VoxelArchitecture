@@ -64,4 +64,24 @@ class Array3DTest {
         assertEquals(IntVec3(1, 1, 0), out[6])
         assertEquals(IntVec3(1, 1, 1), out[7])
     }
+
+    @Test
+    fun `check symmetry X`() {
+        val a = Array3D(4, 2, 3, 0)
+        assertTrue(a.isSymmetricX())
+        assertTrue(a.isSymmetricZ())
+
+        a[0, 0, 0] = 1
+        assertFalse(a.isSymmetricX())
+        assertFalse(a.isSymmetricZ())
+
+        a[3, 0, 0] = 1
+        assertTrue(a.isSymmetricX())
+        assertFalse(a.isSymmetricZ())
+
+        a[0, 0, 2] = 1
+        a[3, 0, 2] = 1
+        assertTrue(a.isSymmetricX())
+        assertTrue(a.isSymmetricZ())
+    }
 }

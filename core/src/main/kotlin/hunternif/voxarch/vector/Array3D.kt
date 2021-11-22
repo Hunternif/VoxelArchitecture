@@ -37,4 +37,32 @@ open class Array3D<T>(
             }
         }
     }
+
+    /** Checks if this array has mirror symmetry vs the YZ plane */
+    fun isSymmetricX(): Boolean {
+        for (x in 0 until width/2) {
+            for (y in 0 until height) {
+                for (z in 0 until length) {
+                    if (this[x, y, z] != this[width-1-x, y, z]) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
+
+    /** Checks if this array has mirror symmetry vs the XY plane */
+    fun isSymmetricZ(): Boolean {
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                for (z in 0 until length/2) {
+                    if (this[x, y, z] != this[x, y, length-1-z]) {
+                        return false
+                    }
+                }
+            }
+        }
+        return true
+    }
 }
