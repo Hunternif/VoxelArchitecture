@@ -73,6 +73,10 @@ public class Vec3 {
 		return add(vec.x, vec.y, vec.z);
 	}
 	/** Returns a new vector. */
+	public Vec3 add(IntVec3 vec) {
+		return add(vec.x, vec.y, vec.z);
+	}
+	/** Returns a new vector. */
 	public Vec3 add(double dx, double dy, double dz) {
 		return new Vec3(x + dx, y + dy, z + dz);
 	}
