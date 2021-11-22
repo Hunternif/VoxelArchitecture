@@ -12,6 +12,7 @@ import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
+import hunternif.voxarch.sandbox.castle.wfc.WfcGrid
 import hunternif.voxarch.sandbox.castle.wfc.WfcVoxel
 import hunternif.voxarch.sandbox.castle.wfc.generateValidTiles
 import net.minecraft.block.Block
@@ -103,8 +104,8 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
             context.builders.setCastleBuilders()
 
             // animating the building
-            val animationWorld = MCWorldAnimation(mcWorld, 200)
-            MinecraftForge.EVENT_BUS.register(animationWorld)
+//            val animationWorld = MCWorldAnimation(mcWorld, 200)
+//            MinecraftForge.EVENT_BUS.register(animationWorld)
 
             // fancy tower
             val pos = Vec3(posX, mcWorld.getTerrainHeight(posX, posZ), posZ)
@@ -152,17 +153,37 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //            MainBuilder().build(plan, animationWorld, context)
 
             // test all generated WFC tiles
-            val wfcTiles = generateValidTiles()
-            pos.y += 1
-            var tileOffset = 0
-            for (tile in wfcTiles) {
-                for (p in tile) {
-                    val voxel = tile[p]
-                    val blockPos = pos.add(p).addX(tileOffset).toBlockPos()
+//            val wfcTiles = generateValidTiles()
+//            pos.y += 1
+//            var tileOffset = 0
+//            for (tile in wfcTiles) {
+//                for (p in tile) {
+//                    val voxel = tile[p]
+//                    val blockPos = pos.add(p).addX(tileOffset).toBlockPos()
+//                    val blockState = voxel.mapToBlock().defaultBlockState()
+//                    world.setBlock(blockPos, blockState, 2)
+//                }
+//                tileOffset += 4
+//            }
+
+            // WFC!!!
+            val wfc = WfcGrid(10, 8, 10,
+                generateValidTiles(),
+                System.currentTimeMillis()
+            ).apply {
+                setAirBorder()
+                while (!isCollapsed) collapse()
+            }
+            val tiles = wfc.getCollapsedTiles()
+            pos.addLocal(Vec3(-tiles.width/2, 1, -tiles.length/2))
+            for (p in tiles) {
+                val tile = tiles[p] ?: continue
+                for (v in tile) {
+                    val voxel = tile[v]
+                    val blockPos = pos.add(v).add(Vec3(p).multiply(3.0)).toBlockPos()
                     val blockState = voxel.mapToBlock().defaultBlockState()
                     world.setBlock(blockPos, blockState, 2)
                 }
-                tileOffset += 4
             }
         }
         return ActionResult.pass(player.getItemInHand(hand))

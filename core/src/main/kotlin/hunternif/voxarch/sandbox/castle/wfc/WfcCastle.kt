@@ -1,6 +1,11 @@
 package hunternif.voxarch.sandbox.castle.wfc
 
+import hunternif.voxarch.sandbox.castle.wfc.Direction.*
 import hunternif.voxarch.vector.Array3D
+import hunternif.voxarch.vector.IntVec3
+import java.util.*
+import kotlin.math.log
+import kotlin.random.Random
 
 // Famous demos by Marian42 and Oskar Stalberg use 3d tiles of static size.
 // Since I want my structures style-able via "CSS", I'll use abstract
@@ -22,8 +27,95 @@ import hunternif.voxarch.vector.Array3D
 // Imagine a cross-section of a castle corridor, with walls on the left and right.
 // It would be composed of 2 tiles, each with a wall in the middle.
 
-class WfcGrid(width: Int, height: Int, length: Int):
-    Array3D<WfcTile>(width, length, height, air)
+class WfcGrid(
+    val width: Int, val height: Int, val length: Int,
+    private val tileset: List<WfcTile>,
+    private val seed: Long = 0
+) {
+    private val rand = Random(seed)
+    private class WfSlot(
+        val possibleStates: MutableSet<WfcTile>
+    ) {
+        var state: WfcTile? = null
+            private set
+        fun set(state: WfcTile) {
+            this.state = state
+            possibleStates.clear()
+            possibleStates.add(state)
+        }
+    }
+    private data class EntropyAt(
+        val pos: IntVec3,
+        val entropy: Float
+    )
+    private val entropyQueue = PriorityQueue<EntropyAt> { e1, e2 -> e1.entropy.compareTo(e2.entropy)}
+    private val wave by lazy {
+        Array3D(width, height, length) {_, _, _ ->
+            WfSlot(tileset.toMutableSet())
+        }
+    }
+
+    /** Collapse tiles at the edge of the grid to be "air". */
+    fun setAirBorder() {
+        for (p in wave) {
+            if (p.x <= 0 || p.x >= width-1 ||
+                p.y <= 0 || p.y >= height-1 ||
+                p.z <= 0 || p.z >= length-1) {
+                wave[p].set(air)
+            }
+        }
+        propagate(IntVec3(1, 0, 1))
+    }
+
+    fun getCollapsedTiles(): Array3D<WfcTile?> = Array3D(width, height, length)
+        { x, y, z -> wave[x, y, z].state }
+
+    val isCollapsed: Boolean get() = entropyQueue.isEmpty()
+
+    fun collapse() {
+        if (entropyQueue.isEmpty()) {
+            println("Nothing to collapse!")
+        } else {
+            collapseStepAt(entropyQueue.remove().pos)
+        }
+    }
+
+    private fun collapseStepAt(p: IntVec3) {
+        require(p in wave)
+        if (wave[p].state != null) return
+        wave[p].set(wave[p].possibleStates.random(rand))
+        propagate(p)
+    }
+
+    private fun propagate(from: IntVec3) {
+        entropyQueue.clear()
+        val propagationQueue = LinkedList<IntVec3>().apply { add(from) }
+        val visited = mutableSetOf<IntVec3>().apply { add(from) }
+        while (propagationQueue.isNotEmpty()) {
+            val pos = propagationQueue.pop()
+            for (p in pos.allDirections()) {
+                if (p !in wave || p in visited || wave[p].state != null) continue
+                visited.add(p)
+                constrainStates(p)
+                //TODO check if the state of this tile is unchanged and we can stop propagation
+                entropyQueue.add(EntropyAt(p, wave[p].entropy()))
+                propagationQueue.add(p)
+            }
+        }
+    }
+    /** Removes from "possibleStates" any states that can't be matched to its neighbors */
+    private fun constrainStates(pos: IntVec3) {
+        val directions = Direction.values()
+            .sortedBy { wave[pos.add(it.vec)].possibleStates.size }
+        for (dir in directions) {
+            val adjSlot = wave[pos.add(dir.vec)]
+            wave[pos].possibleStates.removeIf { state ->
+                adjSlot.possibleStates.none { state.matchesSide(it, dir) }
+            }
+        }
+    }
+    private fun WfSlot.entropy() = -log(1f/possibleStates.size.toFloat(), 2f)
+}
 
 class WfcTile(init: (x: Int, y: Int, z: Int) -> WfcVoxel) :
     Array3D<WfcVoxel>(3, 3, 3, init) {
@@ -32,4 +124,75 @@ class WfcTile(init: (x: Int, y: Int, z: Int) -> WfcVoxel) :
 
 enum class WfcVoxel {
     AIR, WALL, FLOOR
+}
+
+internal enum class Direction(val vec: IntVec3) {
+    UP(IntVec3(0, 1, 0)),
+    DOWN(IntVec3(0, -1, 0)),
+    EAST(IntVec3(1, 0, 0)),
+    SOUTH(IntVec3(0, 0, 1)),
+    WEST(IntVec3(-1, 0, 0)),
+    NORTH(IntVec3(0, 0, -1))
+}
+
+private fun IntVec3.allDirections(): Sequence<IntVec3> = sequence {
+    yield(add(DOWN.vec))
+    yield(add(UP.vec))
+    yield(add(NORTH.vec))
+    yield(add(EAST.vec))
+    yield(add(SOUTH.vec))
+    yield(add(WEST.vec))
+}
+
+internal fun WfcTile.matchesSide(other: WfcTile, dir: Direction): Boolean {
+    when(dir) {
+        UP -> {
+            for (x in 0 until width) {
+                for (z in 0 until length) {
+                    if (this[x, height-1, z] != other[x, 0, z]) return false
+                }
+            }
+            return true
+        }
+        DOWN -> {
+            for (x in 0 until width) {
+                for (z in 0 until length) {
+                    if (this[x, 0, z] != other[x, other.height-1, z]) return false
+                }
+            }
+            return true
+        }
+        EAST -> {
+            for (y in 0 until height) {
+                for (z in 0 until length) {
+                    if (this[width-1, y, z] != other[0, y, z]) return false
+                }
+            }
+            return true
+        }
+        SOUTH -> {
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    if (this[x, y, length-1] != other[x, y, 0]) return false
+                }
+            }
+            return true
+        }
+        WEST -> {
+            for (y in 0 until height) {
+                for (z in 0 until length) {
+                    if (this[0, y, z] != other[other.width-1, y, z]) return false
+                }
+            }
+            return true
+        }
+        NORTH -> {
+            for (x in 0 until width) {
+                for (y in 0 until height) {
+                    if (this[x, y, 0] != other[x, y, other.length-1]) return false
+                }
+            }
+            return true
+        }
+    }
 }

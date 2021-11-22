@@ -16,7 +16,7 @@ open class Array2D<T>(
         }
     }
 
-    private val data = Array(width) { x -> Array(length) { y -> init(x, y) as Any } }
+    private val data = Array(width) { x -> Array(length) { y -> init(x, y) as Any? } }
 
     @Suppress("UNCHECKED_CAST")
     open operator fun get(x: Int, y: Int): T = data[x][y] as T

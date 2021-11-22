@@ -12,7 +12,7 @@ open class Array3D<T>(
     private val data = Array(width) {
         x -> Array(height) {
             y -> Array(length) {
-                z-> init(x, y, z) as Any
+                z-> init(x, y, z) as Any?
             }
         }
     }

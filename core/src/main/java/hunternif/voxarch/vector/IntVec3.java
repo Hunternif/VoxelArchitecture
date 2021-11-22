@@ -33,6 +33,10 @@ public class IntVec3 {
 		this.z = z;
 		return this;
 	}
+
+	public IntVec3 add(IntVec3 p) {
+		return new IntVec3(x + p.x, y + p.y, z + p.z);
+	}
 	
 	@Override
 	public String toString() {
