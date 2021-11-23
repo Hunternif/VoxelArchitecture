@@ -12,9 +12,10 @@ import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
-import hunternif.voxarch.sandbox.castle.wfc.WfcGrid
-import hunternif.voxarch.sandbox.castle.wfc.WfcVoxel
-import hunternif.voxarch.sandbox.castle.wfc.generateValidTiles
+import hunternif.voxarch.wfc.WfcGrid
+import hunternif.voxarch.wfc.WangVoxel
+import hunternif.voxarch.wfc.wang3x3x3.air
+import hunternif.voxarch.wfc.wang3x3x3.generateValidTiles
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.client.util.ITooltipFlag
@@ -170,7 +171,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
                 generateValidTiles(),
                 System.currentTimeMillis()
             ).apply {
-                setAirBoundary()
+                setAirBoundary(air)
                 while (!isCollapsed && !isContradicted) collapseStep()
             }
             val tiles = wfc.getCollapsedTiles()
@@ -190,10 +191,10 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
         return ActionResult.pass(player.getItemInHand(hand))
     }
 
-    private fun WfcVoxel.mapToBlock(): Block? = when(this) {
-        WfcVoxel.AIR -> null
-        WfcVoxel.WALL -> Blocks.COBBLESTONE
-        WfcVoxel.FLOOR -> Blocks.OAK_PLANKS
+    private fun WangVoxel.mapToBlock(): Block? = when(this) {
+        WangVoxel.AIR -> null
+        WangVoxel.WALL -> Blocks.COBBLESTONE
+        WangVoxel.FLOOR -> Blocks.OAK_PLANKS
     }
 
 }

@@ -1,6 +1,6 @@
-package hunternif.voxarch.sandbox.castle.wfc
+package hunternif.voxarch.wfc
 
-import hunternif.voxarch.sandbox.castle.wfc.Direction.*
+import hunternif.voxarch.wfc.Direction.*
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 import java.util.*
@@ -31,23 +31,22 @@ import kotlin.random.Random
  * This tile represents a possible final state of a slot in the wave's 3d grid.
  * Each slot will collapse into one of these tiles.
  */
-class WfcTile(init: (x: Int, y: Int, z: Int) -> WfcVoxel) :
-    Array3D<WfcVoxel>(3, 3, 3, init) {
-    constructor(vx: WfcVoxel): this({ _, _, _ -> vx })
-}
-/** Voxels inside a tile for Wang-style tile matching. */
-enum class WfcVoxel {
-    AIR, WALL, FLOOR
+interface WfcTile {
+    /**
+     * Returns true if this tile matches to [other] tile that is placed adjacent
+     * to it from direction [dir].
+     */
+    fun matchesSide(other: WfcTile, dir: Direction): Boolean
 }
 
 /** A single cell in the wave's 3d grid. */
-private class WfSlot(
-    val possibleStates: MutableSet<WfcTile>
+private class WfSlot<T: WfcTile>(
+    val possibleStates: MutableSet<T>
 ) {
     /** Final collapsed state of this slot */
-    var state: WfcTile? = null
+    var state: T? = null
         private set
-    fun setState(state: WfcTile) {
+    fun setState(state: T) {
         this.state = state
         possibleStates.clear()
         possibleStates.add(state)
@@ -57,11 +56,11 @@ private class WfSlot(
         else -log(1f/possibleStates.size.toFloat(), 2f)
 }
 
-class WfcGrid(
+class WfcGrid<T: WfcTile>(
     private val width: Int,
     private val height: Int,
     private val length: Int,
-    private val tileset: List<WfcTile>,
+    private val tileset: List<T>,
     seed: Long = 0L
 ) {
     private val rand = Random(seed)
@@ -74,7 +73,7 @@ class WfcGrid(
     }
 
     /** Collapse tiles at the edge of the grid to be "air". */
-    fun setAirBoundary() {
+    fun setAirBoundary(air: T) {
         for (p in wave) {
             if (p.x <= 0 || p.x >= width-1 ||
                 p.y <= 0 || p.y >= height-1 ||
@@ -85,12 +84,12 @@ class WfcGrid(
         propagate(IntVec3(1, 0, 1))
     }
 
-    private fun setState(p: IntVec3, tile: WfcTile) {
+    private fun setState(p: IntVec3, tile: T) {
         wave[p].setState(tile)
         collapsedCount++
     }
 
-    fun getCollapsedTiles(): Array3D<WfcTile?> = Array3D(width, height, length)
+    fun getCollapsedTiles(): Array3D<T?> = Array3D(width, height, length)
         { x, y, z -> wave[x, y, z].state }
 
     val isCollapsed: Boolean get() = collapsedCount >= totalCount
@@ -166,7 +165,7 @@ class WfcGrid(
     }
 }
 
-internal enum class Direction(val vec: IntVec3) {
+enum class Direction(val vec: IntVec3) {
     UP(IntVec3(0, 1, 0)),
     DOWN(IntVec3(0, -1, 0)),
     EAST(IntVec3(1, 0, 0)),
@@ -182,57 +181,4 @@ private fun IntVec3.allDirections(): Sequence<IntVec3> = sequence {
     yield(add(EAST.vec))
     yield(add(SOUTH.vec))
     yield(add(WEST.vec))
-}
-
-internal fun WfcTile.matchesSide(other: WfcTile, dir: Direction): Boolean {
-    when(dir) {
-        UP -> {
-            for (x in 0 until width) {
-                for (z in 0 until length) {
-                    if (this[x, height-1, z] != other[x, 0, z]) return false
-                }
-            }
-            return true
-        }
-        DOWN -> {
-            for (x in 0 until width) {
-                for (z in 0 until length) {
-                    if (this[x, 0, z] != other[x, other.height-1, z]) return false
-                }
-            }
-            return true
-        }
-        EAST -> {
-            for (y in 0 until height) {
-                for (z in 0 until length) {
-                    if (this[width-1, y, z] != other[0, y, z]) return false
-                }
-            }
-            return true
-        }
-        SOUTH -> {
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    if (this[x, y, length-1] != other[x, y, 0]) return false
-                }
-            }
-            return true
-        }
-        WEST -> {
-            for (y in 0 until height) {
-                for (z in 0 until length) {
-                    if (this[0, y, z] != other[other.width-1, y, z]) return false
-                }
-            }
-            return true
-        }
-        NORTH -> {
-            for (x in 0 until width) {
-                for (y in 0 until height) {
-                    if (this[x, y, 0] != other[x, y, other.length-1]) return false
-                }
-            }
-            return true
-        }
-    }
 }

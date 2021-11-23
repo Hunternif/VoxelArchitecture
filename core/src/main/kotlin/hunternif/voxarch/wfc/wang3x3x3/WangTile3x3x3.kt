@@ -1,10 +1,17 @@
-package hunternif.voxarch.sandbox.castle.wfc
+package hunternif.voxarch.wfc.wang3x3x3
 
-import hunternif.voxarch.sandbox.castle.wfc.WfcVoxel.*
+import hunternif.voxarch.wfc.WangTile
+import hunternif.voxarch.wfc.WangVoxel
+import hunternif.voxarch.wfc.WangVoxel.*
 
-val air = WfcTile(AIR)
+class WangTile3x3x3(init: (x: Int, y: Int, z: Int) -> WangVoxel) :
+    WangTile(3, 3, 3, init) {
+    constructor(vx: WangVoxel): this({ _, _, _ -> vx })
+}
+
+val air = WangTile3x3x3(AIR)
 // floor runs through the middle to allow connections from below
-val floor = WfcTile { _, y, _ -> if (y == 1) FLOOR else AIR }
+val floor = WangTile3x3x3 { _, y, _ -> if (y == 1) FLOOR else AIR }
 
 /**
  * ```
@@ -17,7 +24,7 @@ val floor = WfcTile { _, y, _ -> if (y == 1) FLOOR else AIR }
  *  Z
  * ```
  */
-val wallOnWallStraight = WfcTile(AIR).apply {
+val wallOnWallStraight = WangTile3x3x3(AIR).apply {
     for (x in 0 until 3) {
         for (y in 0 until 3) {
             this[x, y, 0] = AIR // inside
@@ -37,7 +44,7 @@ val wallOnWallStraight = WfcTile(AIR).apply {
  * Z
  * ```
  */
-val wallOnFloorStraight = WfcTile(AIR).apply {
+val wallOnFloorStraight = WangTile3x3x3(AIR).apply {
     this[0, 2, 0] = AIR // inside
     this[1, 2, 0] = WALL
     this[0, 1, 0] = FLOOR
@@ -68,7 +75,7 @@ val wallUnderCeilingStraight = wallOnFloorStraight.mirrorY()
  * Z
  * ```
  */
-val wallTipStraight = WfcTile(AIR).apply {
+val wallTipStraight = WangTile3x3x3(AIR).apply {
     this[1, 0, 0] = WALL
     this[1, 1, 0] = WALL
     copyAlongZ()
@@ -85,14 +92,14 @@ val wallTipStraight = WfcTile(AIR).apply {
  *  Z
  * ```
  */
-val wallOnWallCorner = WfcTile(AIR).apply {
+val wallOnWallCorner = WangTile3x3x3(AIR).apply {
     this[0, 0, 0] = AIR // inside
     this[0, 0, 1] = WALL
     this[1, 0, 0] = WALL
     this[1, 0, 1] = WALL
     copyAlongY()
 }
-val wallOnFloorCorner = WfcTile(AIR).apply {
+val wallOnFloorCorner = WangTile3x3x3(AIR).apply {
     this[0, 1, 0] = FLOOR
     this[0, 1, 1] = FLOOR
     this[1, 1, 0] = FLOOR
@@ -104,7 +111,7 @@ val wallOnFloorCorner = WfcTile(AIR).apply {
     this[1, 2, 1] = WALL
 }
 val wallUnderCeilingCorner = wallOnFloorCorner.mirrorY()
-val wallTipCorner = WfcTile(AIR).apply {
+val wallTipCorner = WangTile3x3x3(AIR).apply {
     this[0, 0, 0] = AIR // inside
     this[0, 0, 1] = WALL
     this[1, 0, 0] = WALL
@@ -116,7 +123,7 @@ val wallTipCorner = WfcTile(AIR).apply {
     this[1, 1, 1] = WALL
 }
 
-fun generateValidTiles(): List<WfcTile> = mutableListOf(
+fun generateValidTiles(): List<WangTile3x3x3> = mutableListOf(
     air,
     floor
 ).apply {
@@ -132,7 +139,7 @@ fun generateValidTiles(): List<WfcTile> = mutableListOf(
 
 
 /** Copy voxels from the layer Z=0 along the Z axis **/
-private fun WfcTile.copyAlongZ() {
+private fun WangTile3x3x3.copyAlongZ() {
     for (z in 1 until 3)
         for (x in 0 until 3)
             for (y in 0 until 3)
@@ -140,20 +147,20 @@ private fun WfcTile.copyAlongZ() {
 }
 
 /** Copy voxels from the layer Y=0 along the Y axis **/
-private fun WfcTile.copyAlongY() {
+private fun WangTile3x3x3.copyAlongY() {
     for (y in 1 until 3)
         for (x in 0 until 3)
             for (z in 0 until 3)
                 this[x, y, z] = this[x, 0, z]
 }
 
-private fun WfcTile.mirrorY(): WfcTile = WfcTile { x, y, z -> this[x, 2-y, z] }
+private fun WangTile3x3x3.mirrorY(): WangTile3x3x3 = WangTile3x3x3 { x, y, z -> this[x, 2 - y, z] }
 
 /** Creates a new tile by rotating this tile 90 degrees clockwise around the Y axis */
-private fun WfcTile.rotateY90CW(): WfcTile = WfcTile { x, y, z -> this[z, y, 2-x] }
+private fun WangTile3x3x3.rotateY90CW(): WangTile3x3x3 = WangTile3x3x3 { x, y, z -> this[z, y, 2 - x] }
 
 /** Returns 4 rotations of this tile around the Y axis */
-private fun WfcTile.generateRotationsY(): List<WfcTile> {
+private fun WangTile3x3x3.generateRotationsY(): List<WangTile3x3x3> {
     if (isSymmetricX() && isSymmetricZ()) {
         return listOf(this, this.rotateY90CW())
     }
