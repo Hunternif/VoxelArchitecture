@@ -1,5 +1,7 @@
 package hunternif.voxarch.wfc
 
+import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.*
 import hunternif.voxarch.wfc.Direction.*
 import hunternif.voxarch.vector.Array3D
 
@@ -9,15 +11,35 @@ enum class WangVoxel {
 }
 
 /** These tiles are matched voxel-for-voxel. */
-open class WangTile(
-    width: Int,
-    height: Int,
-    length: Int,
-    init: (x: Int, y: Int, z: Int) -> WangVoxel
-) : Array3D<WangVoxel>(width, height, length, init),
-    WfcTile {
+class WangTile(
+    internal val data: Array3D<WangVoxel>
+): WfcTile, IStorage3D<WangVoxel> by data {
+    constructor (
+        width: Int,
+        height: Int,
+        length: Int,
+        init: (x: Int, y: Int, z: Int) -> WangVoxel
+    ) : this(Array3D(width, height, length, init))
+
     constructor(width: Int, height: Int, length: Int, vx: WangVoxel):
         this(width, height, length, { _, _, _ -> vx })
+
+    fun mirrorX() = WangTile(data.mirrorX())
+    fun mirrorY() = WangTile(data.mirrorY())
+    fun mirrorZ() = WangTile(data.mirrorZ())
+    fun rotateY90CW() = WangTile(data.rotateY90CW())
+
+    /** Returns 4 rotations of this tile around the Y axis */
+    fun generateRotationsY(): List<WangTile> {
+        if (isSymmetricX() && isSymmetricZ()) {
+            return listOf(this, this.rotateY90CW())
+        }
+        val t1 = this
+        val t2 = t1.rotateY90CW()
+        val t3 = t2.rotateY90CW()
+        val t4 = t3.rotateY90CW()
+        return listOf(t1, t2, t3, t4)
+    }
 
     override fun matchesSide(other: WfcTile, dir: Direction): Boolean {
         if (other !is WangTile) return false
