@@ -120,7 +120,7 @@ val wallTipCorner = wangTile3x3x3(AIR).apply {
     this[1, 1, 1] = WALL
 }
 
-fun generateValidTiles(): List<WangTile> = mutableListOf(
+fun generateValidTiles3x3x3(): List<WangTile> = mutableListOf(
     air,
     floor
 ).apply {

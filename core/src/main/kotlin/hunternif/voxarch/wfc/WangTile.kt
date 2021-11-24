@@ -7,7 +7,7 @@ import hunternif.voxarch.vector.Array3D
 
 /** Voxels inside a tile for Wang-style tile matching. */
 enum class WangVoxel {
-    AIR, WALL, FLOOR
+    AIR, GROUND, WALL, FLOOR
 }
 
 /** These tiles are matched voxel-for-voxel. */

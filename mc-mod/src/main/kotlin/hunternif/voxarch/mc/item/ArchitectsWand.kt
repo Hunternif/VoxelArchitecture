@@ -14,8 +14,7 @@ import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
 import hunternif.voxarch.wfc.WfcGrid
 import hunternif.voxarch.wfc.WangVoxel
-import hunternif.voxarch.wfc.wang3x3x3.air
-import hunternif.voxarch.wfc.wang3x3x3.generateValidTiles
+import hunternif.voxarch.wfc.wang7x3x7.*
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.client.util.ITooltipFlag
@@ -153,34 +152,45 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //            MainBuilder().build(plan, animationWorld, context)
 
             // test all generated WFC tiles
-//            val wfcTiles = generateValidTiles()
+//            val wfcTiles = generateValidTiles7x3x7()
 //            pos.y += 1
 //            var tileOffset = 0
 //            for (tile in wfcTiles) {
 //                for (p in tile) {
 //                    val voxel = tile[p]
 //                    val blockPos = pos.add(p).addX(tileOffset).toBlockPos()
-//                    val blockState = voxel.mapToBlock().defaultBlockState()
-//                    world.setBlock(blockPos, blockState, 2)
+//                    voxel.mapToBlock()?.let {
+//                        val blockState = it.defaultBlockState()
+//                        world.setBlock(blockPos, blockState, 2)
+//                    }
 //                }
-//                tileOffset += 4
+//                tileOffset += 8
 //            }
 
             // WFC!!!
             val wfc = WfcGrid(10, 8, 10,
-                generateValidTiles(),
+                generateValidTiles7x3x7(),
                 System.currentTimeMillis()
             ).apply {
-                setAirBoundary(air)
+                setAirAndGroundBoundary(air, groundedAir, ground)
                 while (!isCollapsed && !isContradicted) collapseStep()
             }
             val tiles = wfc.getCollapsedTiles()
-            pos.addLocal(Vec3(-tiles.width*1.5, 1.0, -tiles.length*1.5))
+            pos.addLocal(-tiles.width*air.width/2, -air.height, -tiles.length*air.length/2)
             for (p in tiles) {
                 val tile = tiles[p] ?: continue
                 for (v in tile) {
                     val voxel = tile[v]
-                    val blockPos = pos.add(v).add(Vec3(p).multiply(3.0)).toBlockPos()
+                    val blockPos = pos
+                        .add(v)
+                        .add(
+                            Vec3(p).apply {
+                                x *= air.width
+                                y *= air.height
+                                z *= air.length
+                            }
+                        )
+                        .toBlockPos()
                     voxel.mapToBlock()?.let {
                         val blockState = it.defaultBlockState()
                         world.setBlock(blockPos, blockState, 2)
@@ -195,6 +205,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
         WangVoxel.AIR -> null
         WangVoxel.WALL -> Blocks.COBBLESTONE
         WangVoxel.FLOOR -> Blocks.OAK_PLANKS
+        WangVoxel.GROUND -> null
     }
 
 }
