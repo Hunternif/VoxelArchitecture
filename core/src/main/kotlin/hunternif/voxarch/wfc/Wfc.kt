@@ -72,13 +72,23 @@ class WfcGrid<T: WfcTile>(
         }
     }
 
-    /** Collapse tiles at the edge of the grid to be "air". */
-    fun setAirBoundary(air: T) {
+    /** Collapse tiles at the edge of the grid to be [air]. */
+    fun setAirBoundary(air: T) = setAirAndGroundBoundary(air, air, air)
+
+    /**
+     * Collapse tiles at the edge of the grid to be [air],
+     * on the bottom Y layer to be [ground],
+     * and on the perimeter at y=1 to be [groundedAir].
+     * "Grounded air" means "ground below + air above".
+     */
+    fun setAirAndGroundBoundary(air: T, groundedAir: T, ground: T) {
         for (p in wave) {
-            if (p.x <= 0 || p.x >= width-1 ||
-                p.y <= 0 || p.y >= height-1 ||
+            if (p.y >= height-1) setState(p, air)
+            else if (p.y <= 0) setState(p, ground)
+            else if (p.x <= 0 || p.x >= width-1 ||
                 p.z <= 0 || p.z >= length-1) {
-                setState(p, air)
+                if (p.y <= 1) setState(p, groundedAir)
+                else setState(p, air)
             }
         }
         propagate(IntVec3(1, 0, 1))
@@ -150,11 +160,11 @@ class WfcGrid<T: WfcTile>(
      * neighbors. Returns true if at least 1 state was removed.
      */
     private fun constrainStates(pos: IntVec3): Boolean {
-        val directions = Direction.values()
-            .sortedBy { wave[pos.add(it.vec)].possibleStates.size }
         val originalCount = wave[pos].possibleStates.size
-        for (dir in directions) {
-            val adjSlot = wave[pos.add(dir.vec)]
+        for (dir in Direction.values()) {
+            val adjPos = pos.add(dir.vec)
+            if (adjPos !in wave) continue
+            val adjSlot = wave[adjPos]
             wave[pos].possibleStates.removeIf { state ->
                 adjSlot.possibleStates.none { state.matchesSide(it, dir) }
             }
