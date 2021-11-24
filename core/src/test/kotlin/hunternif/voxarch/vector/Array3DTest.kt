@@ -64,4 +64,16 @@ class Array3DTest {
         assertEquals(IntVec3(1, 1, 0), out[6])
         assertEquals(IntVec3(1, 1, 1), out[7])
     }
+
+    @Test
+    fun copy() {
+        val a = Array3D(3, 4, 5)
+        { x, y, z -> x*100 + y*10 + z }
+
+        val b = a.copy()
+        a[1, 2, 3] = -1
+        assertEquals(0, b[0, 0, 0])
+        assertEquals(123, b[1, 2, 3])
+        assertEquals(234, b[2, 3, 4])
+    }
 }

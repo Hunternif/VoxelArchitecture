@@ -28,6 +28,7 @@ class WangTile(
     fun mirrorY() = WangTile(data.mirrorY())
     fun mirrorZ() = WangTile(data.mirrorZ())
     fun rotateY90CW() = WangTile(data.rotateY90CW())
+    fun copy() = WangTile(data.copy())
 
     /** Returns 4 rotations of this tile around the Y axis */
     fun generateRotationsY(): List<WangTile> {
