@@ -67,6 +67,13 @@ public class Vec3 {
 		this.z += dz;
 		return this;
 	}
+	/** Modifies and returns itself. */
+	public Vec3 addLocal(int dx, int dy, int dz) {
+		this.x += dx;
+		this.y += dy;
+		this.z += dz;
+		return this;
+	}
 	
 	/** Returns a new vector. */
 	public Vec3 add(Vec3 vec) {
