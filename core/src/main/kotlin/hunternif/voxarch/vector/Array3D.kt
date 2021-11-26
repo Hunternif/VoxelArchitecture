@@ -32,7 +32,7 @@ class Array3D<T>(
         x, y, z -> this[x, y, z]
     }
 
-    operator fun contains(p: IntVec2) = p.x in 0 until width && p.y in 0 until length
+    operator fun contains(p: IntVec3) = p.x in 0 until width && p.y in 0 until height && p.z in 0 until length
 
     override operator fun iterator(): Iterator<IntVec3> = iterator {
         for (x in 0 until width) {
