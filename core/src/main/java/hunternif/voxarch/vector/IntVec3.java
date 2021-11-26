@@ -37,6 +37,10 @@ public class IntVec3 {
 	public IntVec3 add(IntVec3 p) {
 		return new IntVec3(x + p.x, y + p.y, z + p.z);
 	}
+
+	public IntVec3 add(int dx, int dy, int dz) {
+		return new IntVec3(x + dx, y + dy, z + dz);
+	}
 	
 	@Override
 	public String toString() {
