@@ -48,7 +48,7 @@ fun generateValidTiles7x3x7(): List<WangTile> = listOf(
     air,
     floor,
     groundedAir, // this is necessary to build on the ground
-    //ground, // we don't want any more ground on top
+    ground,
     tower,
 //    towerOnGround,
     towerTop,

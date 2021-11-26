@@ -1,6 +1,7 @@
 package hunternif.voxarch.wfc
 
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.vector.Array2D
 import hunternif.voxarch.wfc.Direction.*
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -123,8 +124,8 @@ class WfcGrid<T: WfcTile>(
     }
 
     /**
-     * This should be called after any state is reset to null. This resets
-     * all sets reachable from [relaxQueue].
+     * This should be called after any state is reset to null. This relaxes
+     * constraints on all slots reachable from [relaxQueue].
      * Any states that had been previously removed may become possible again.
      */
     private fun propagateRelaxation() {
@@ -166,10 +167,11 @@ class WfcGrid<T: WfcTile>(
      */
     private fun constrainStates(pos: IntVec3): Boolean {
         val originalCount = wave[pos].possibleStates.size
-        for (dir in Direction.values()) {
-            val adjPos = pos.add(dir.vec)
-            if (adjPos !in wave) continue
-            val adjSlot = wave[adjPos]
+        val directions = Direction.values()
+            .filter { pos.facing(it) in wave }
+            .sortedBy { wave[pos.facing(it)].possibleStates.size }
+        for (dir in directions) {
+            val adjSlot = wave[pos.facing(dir)]
             wave[pos].possibleStates.removeIf { state ->
                 adjSlot.possibleStates.none { state.matchesSide(it, dir) }
             }
@@ -218,10 +220,12 @@ enum class Direction(val vec: IntVec3) {
 }
 
 private fun IntVec3.allDirections(): Sequence<IntVec3> = sequence {
-    yield(add(DOWN.vec))
-    yield(add(UP.vec))
-    yield(add(NORTH.vec))
-    yield(add(EAST.vec))
-    yield(add(SOUTH.vec))
-    yield(add(WEST.vec))
+    yield(facing(DOWN))
+    yield(facing(UP))
+    yield(facing(NORTH))
+    yield(facing(EAST))
+    yield(facing(SOUTH))
+    yield(facing(WEST))
 }
+
+private fun IntVec3.facing(dir: Direction) = add(dir.vec)
