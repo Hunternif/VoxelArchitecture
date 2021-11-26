@@ -14,6 +14,7 @@ import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
 import hunternif.voxarch.wfc.WfcGrid
 import hunternif.voxarch.wfc.WangVoxel
+import hunternif.voxarch.wfc.setAirAndGroundBoundary
 import hunternif.voxarch.wfc.wang7x3x7.*
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
@@ -173,12 +174,11 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
                 System.currentTimeMillis()
             ).apply {
                 setAirAndGroundBoundary(air, groundedAir, ground)
-                while (!isCollapsed && !isContradicted) collapseStep()
+                collapse()
             }
-            val tiles = wfc.getCollapsedTiles()
-            pos.addLocal(-tiles.width*air.width/2, -air.height, -tiles.length*air.length/2)
-            for (p in tiles) {
-                val tile = tiles[p] ?: continue
+            pos.addLocal(-wfc.width*air.width/2, -air.height, -wfc.length*air.length/2)
+            for (p in wfc) {
+                val tile = wfc[p] ?: continue
                 for (v in tile) {
                     val voxel = tile[v]
                     val blockPos = pos

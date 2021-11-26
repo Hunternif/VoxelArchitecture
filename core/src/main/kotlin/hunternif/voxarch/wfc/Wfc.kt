@@ -1,5 +1,6 @@
 package hunternif.voxarch.wfc
 
+import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.wfc.Direction.*
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -44,67 +45,40 @@ private class WfSlot<T: WfcTile>(
     val possibleStates: MutableSet<T>
 ) {
     /** Final collapsed state of this slot */
-    var state: T? = null
-        private set
-    fun setState(state: T) {
-        this.state = state
-        possibleStates.clear()
-        possibleStates.add(state)
-    }
+    internal var state: T? = null
     fun entropy(): Float =
         if (possibleStates.size <= 1) 0f
         else -log(1f/possibleStates.size.toFloat(), 2f)
 }
 
 class WfcGrid<T: WfcTile>(
-    private val width: Int,
-    private val height: Int,
-    private val length: Int,
+    override val width: Int,
+    override val height: Int,
+    override val length: Int,
     private val tileset: List<T>,
     seed: Long = 0L
-) {
+): IStorage3D<T?> {
     private val rand = Random(seed)
-    private var collapsedCount = 0
+    internal var collapsedCount = 0
     private val totalCount = width * height * length
     private val wave by lazy {
         Array3D(width, height, length) {_, _, _ ->
             WfSlot(tileset.toMutableSet())
         }
     }
-
-    /** Collapse tiles at the edge of the grid to be [air]. */
-    fun setAirBoundary(air: T) = setAirAndGroundBoundary(air, air, air)
-
-    /**
-     * Collapse tiles at the edge of the grid to be [air],
-     * on the bottom Y layer to be [ground],
-     * and on the perimeter at y=1 to be [groundedAir].
-     * "Grounded air" means "ground below + air above".
-     */
-    fun setAirAndGroundBoundary(air: T, groundedAir: T, ground: T) {
-        for (p in wave) {
-            if (p.y >= height-1) setState(p, air)
-            else if (p.y <= 0) setState(p, ground)
-            else if (p.x <= 0 || p.x >= width-1 ||
-                p.z <= 0 || p.z >= length-1) {
-                if (p.y <= 1) setState(p, groundedAir)
-                else setState(p, air)
-            }
-        }
-        propagate(IntVec3(1, 0, 1))
-    }
-
-    private fun setState(p: IntVec3, tile: T) {
-        wave[p].setState(tile)
-        collapsedCount++
-    }
-
-    fun getCollapsedTiles(): Array3D<T?> = Array3D(width, height, length)
-        { x, y, z -> wave[x, y, z].state }
+    /** Queue for propagating collapsed state (as opposed to null state). */
+    private val constrainQueue = LinkedList<IntVec3>()
+    /** Queue for propagating null state, i.e. removed tiles that had been
+     * previously collapsed. */
+    private val relaxQueue = LinkedList<IntVec3>()
 
     val isCollapsed: Boolean get() = collapsedCount >= totalCount
     var isContradicted: Boolean = false
         private set
+
+    fun collapse() {
+        while (!isCollapsed && !isContradicted) collapseStep()
+    }
 
     /**
      * Performs 1 step of the Wave Function Collapse algo:
@@ -122,8 +96,8 @@ class WfcGrid<T: WfcTile>(
             println("Contradiction!")
             return
         }
-        setState(pos, wave[pos].possibleStates.random(rand))
-        propagate(pos)
+        this[pos] = wave[pos].possibleStates.random(rand)
+        propagate()
     }
 
     /** Returns the position of the slot with the lowest non-zero entropy. */
@@ -141,20 +115,51 @@ class WfcGrid<T: WfcTile>(
     }
 
     /**
-     * Propagates constraints to the entire grid after the given slot collapsed.
+     * Propagates constraints to the entire grid from all collapsed points.
      */
-    private fun propagate(from: IntVec3) {
-        val propagationQueue = LinkedList<IntVec3>().apply { add(from) }
-        while (propagationQueue.isNotEmpty()) {
-            val pos = propagationQueue.pop()
+    fun propagate() {
+        propagateRelaxation()
+        propagateConstraints()
+    }
+
+    /**
+     * This should be called after any state is reset to null. This resets
+     * all sets reachable from [relaxQueue].
+     * Any states that had been previously removed may become possible again.
+     */
+    private fun propagateRelaxation() {
+        while (relaxQueue.isNotEmpty()) {
+            val pos = relaxQueue.pop()
             for (p in pos.allDirections()) {
-                if (p !in wave || wave[p].state != null) continue
-                if (constrainStates(p)) {
-                    propagationQueue.add(p)
+                if (p !in wave) continue
+                if (wave[p].state == null) {
+                    if (wave[p].possibleStates.addAll(tileset)) {
+                        relaxQueue.add(p)
+                    }
+                } else {
+                    // will propagate back from here
+                    constrainQueue.add(p)
                 }
             }
         }
     }
+
+    /**
+     * Propagates constraints from collapsed slots.
+     * If any slot has only 1 possible state left, collapses it.
+     */
+    private fun propagateConstraints() {
+        while (constrainQueue.isNotEmpty()) {
+            val pos = constrainQueue.pop()
+            for (p in pos.allDirections()) {
+                if (p !in wave || wave[p].state != null) continue
+                if (constrainStates(p)) {
+                    constrainQueue.add(p)
+                }
+            }
+        }
+    }
+
     /**
      * Removes from "possibleStates" any states that can't be matched to its
      * neighbors. Returns true if at least 1 state was removed.
@@ -170,9 +175,37 @@ class WfcGrid<T: WfcTile>(
             }
         }
         val newCount = wave[pos].possibleStates.size
-        if (newCount == 1) setState(pos, wave[pos].possibleStates.first())
+        if (newCount == 1) this[pos] = wave[pos].possibleStates.first()
         return newCount < originalCount
     }
+
+    override operator fun iterator(): Iterator<IntVec3> = wave.iterator()
+    override fun get(x: Int, y: Int, z: Int): T? = wave[x, y, z].state
+    override fun get(p: IntVec3): T? = get(p.x, p.y, p.z)
+    override fun set(x: Int, y: Int, z: Int, value: T?) = set(IntVec3(x, y, z), value)
+    override fun set(p: IntVec3, v: T?) {
+        val slot = wave[p]
+        if (v == null) {
+            // reset (undo collapse)
+            // (this potentially resets other partially-constrained slots)
+            if (slot.state != null) {
+                slot.possibleStates.addAll(tileset)
+                slot.state = null
+                collapsedCount--
+                relaxQueue.add(p)
+            }
+        } else {
+            // collapse
+            // (this potentially inserts an incompatible tile)
+            if (slot.state == null) collapsedCount++
+            slot.state = v
+            slot.possibleStates.clear()
+            slot.possibleStates.add(v)
+            constrainQueue.add(p)
+        }
+    }
+    fun getPossibleStates(p: IntVec3): Set<T> = getPossibleStates(p.x, p.y, p.z)
+    fun getPossibleStates(x: Int, y: Int, z: Int): Set<T> = wave[x, y, z].possibleStates
 }
 
 enum class Direction(val vec: IntVec3) {
