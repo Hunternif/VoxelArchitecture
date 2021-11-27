@@ -43,4 +43,18 @@ class Array3D<T>(
             }
         }
     }
+
+    fun forEachIndexed(action: (IntVec3, T) -> Unit) {
+        for (x in 0 until width) {
+            val dataX = data[x]
+            for (y in 0 until height) {
+                val dataY = dataX[y]
+                for (z in 0 until length) {
+                    val v = dataY[z]
+                    @Suppress("UNCHECKED_CAST")
+                    action(IntVec3(x, y, z), v as T)
+                }
+            }
+        }
+    }
 }

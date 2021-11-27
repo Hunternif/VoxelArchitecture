@@ -105,8 +105,8 @@ class WfcGrid<T: WfcTile>(
     private fun findLowestEntropyPos(): IntVec3? {
         var min = Float.MAX_VALUE
         var argMin: IntVec3? = null
-        for (p in wave) {
-            val entropy = wave[p].entropy()
+        wave.forEachIndexed { p, slot ->
+            val entropy = slot.entropy()
             if (entropy > 0 && entropy < min) {
                 argMin = p
                 min = entropy
