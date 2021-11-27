@@ -1,5 +1,6 @@
 package hunternif.voxarch.wfc
 
+import hunternif.voxarch.util.Direction3D
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -201,7 +202,7 @@ class WfcCollapseTest {
     }
 
     class PixelTile(private val name: String): WfcTile {
-        override fun matchesSide(other: WfcTile, dir: Direction) =
+        override fun matchesSide(other: WfcTile, dir: Direction3D) =
             matchMap[this]?.contains(other) ?: false
         override fun toString() = name
     }

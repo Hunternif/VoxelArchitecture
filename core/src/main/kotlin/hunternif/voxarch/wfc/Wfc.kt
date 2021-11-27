@@ -1,8 +1,9 @@
 package hunternif.voxarch.wfc
 
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.vector.Array2D
-import hunternif.voxarch.wfc.Direction.*
+import hunternif.voxarch.util.Direction3D
+import hunternif.voxarch.util.allDirections
+import hunternif.voxarch.util.facing
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 import java.util.*
@@ -38,7 +39,7 @@ interface WfcTile {
      * Returns true if this tile matches to [other] tile that is placed adjacent
      * to it from direction [dir].
      */
-    fun matchesSide(other: WfcTile, dir: Direction): Boolean
+    fun matchesSide(other: WfcTile, dir: Direction3D): Boolean
 }
 
 /** A single cell in the wave's 3d grid. */
@@ -167,7 +168,7 @@ class WfcGrid<T: WfcTile>(
      */
     private fun constrainStates(pos: IntVec3): Boolean {
         val originalCount = wave[pos].possibleStates.size
-        val directions = Direction.values()
+        val directions = Direction3D.values()
             .filter { pos.facing(it) in wave }
             .sortedBy { wave[pos.facing(it)].possibleStates.size }
         for (dir in directions) {
@@ -209,23 +210,3 @@ class WfcGrid<T: WfcTile>(
     fun getPossibleStates(p: IntVec3): Set<T> = getPossibleStates(p.x, p.y, p.z)
     fun getPossibleStates(x: Int, y: Int, z: Int): Set<T> = wave[x, y, z].possibleStates
 }
-
-enum class Direction(val vec: IntVec3) {
-    UP(IntVec3(0, 1, 0)),
-    DOWN(IntVec3(0, -1, 0)),
-    EAST(IntVec3(1, 0, 0)),
-    SOUTH(IntVec3(0, 0, 1)),
-    WEST(IntVec3(-1, 0, 0)),
-    NORTH(IntVec3(0, 0, -1))
-}
-
-private fun IntVec3.allDirections(): Sequence<IntVec3> = sequence {
-    yield(facing(DOWN))
-    yield(facing(UP))
-    yield(facing(NORTH))
-    yield(facing(EAST))
-    yield(facing(SOUTH))
-    yield(facing(WEST))
-}
-
-private fun IntVec3.facing(dir: Direction) = add(dir.vec)

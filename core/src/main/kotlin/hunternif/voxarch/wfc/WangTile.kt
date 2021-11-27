@@ -2,7 +2,7 @@ package hunternif.voxarch.wfc
 
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.*
-import hunternif.voxarch.wfc.Direction.*
+import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.vector.Array3D
 
 /** Voxels inside a tile for Wang-style tile matching. */
@@ -42,7 +42,7 @@ class WangTile(
         return listOf(t1, t2, t3, t4)
     }
 
-    override fun matchesSide(other: WfcTile, dir: Direction): Boolean {
+    override fun matchesSide(other: WfcTile, dir: Direction3D): Boolean {
         if (other !is WangTile) return false
         when(dir) {
             UP -> {

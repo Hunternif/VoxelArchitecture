@@ -1,5 +1,6 @@
 package hunternif.voxarch.wfc
 
+import hunternif.voxarch.util.Direction3D
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -35,7 +36,7 @@ class WfcBoundaryTest {
     }
 
     class DummyTile: WfcTile {
-        override fun matchesSide(other: WfcTile, dir: Direction) = false
+        override fun matchesSide(other: WfcTile, dir: Direction3D) = false
     }
 
     companion object {
