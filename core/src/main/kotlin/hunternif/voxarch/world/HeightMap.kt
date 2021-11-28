@@ -1,11 +1,14 @@
 package hunternif.voxarch.world
 
+import hunternif.voxarch.storage.IStorage2D
 import hunternif.voxarch.vector.Array2D
 import hunternif.voxarch.vector.IntVec2
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.abs
 
-class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
+class HeightMap private constructor(
+    private val array: Array2D<Int>
+): IStorage2D<Int> by array {
     var minHeight = 0
     var maxHeight = 256
     /** Relative to the world*/
@@ -17,14 +20,16 @@ class HeightMap(width: Int, length: Int): Array2D<Int>(width, length, 0) {
     /** Internal middle point of the map, i.e. between (0,0) and (width, length) */
     private val middle: IntVec2 get() = IntVec2((width-1)/2, (length-1)/2)
 
-    /** [list] must be a valid 2d list. */
-    internal constructor(list: List<List<Int>>): this(list[0].size, list.size) {
-        for (p in this) {
-            this[p] = list[p.y][p.x]
-        }
-    }
+    constructor(width: Int, length: Int): this(Array2D(width, length, 0))
 
-    override operator fun get(x: Int, y: Int): Int = super.get(x, y).let {
+    /** [list] must be a valid 2d list. */
+    internal constructor(list: List<List<Int>>): this(
+        Array2D(list[0].size, list.size) { x, y -> list[y][x] }
+    )
+
+    fun at(x: Int, y: Int): Int = get(x, y)
+    fun at(p: IntVec2): Int = get(p)
+    override operator fun get(x: Int, y: Int): Int = array[x, y].let {
         if (it > maxHeight) return maxHeight
         if (it < minHeight) return minHeight
         return it

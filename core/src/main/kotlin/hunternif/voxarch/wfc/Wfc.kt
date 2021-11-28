@@ -185,7 +185,7 @@ class WfcGrid<T: WfcTile>(
     override operator fun iterator(): Iterator<IntVec3> = wave.iterator()
     override fun get(x: Int, y: Int, z: Int): T? = wave[x, y, z].state
     override fun get(p: IntVec3): T? = get(p.x, p.y, p.z)
-    override fun set(x: Int, y: Int, z: Int, value: T?) = set(IntVec3(x, y, z), value)
+    override fun set(x: Int, y: Int, z: Int, v: T?) = set(IntVec3(x, y, z), v)
     override fun set(p: IntVec3, v: T?) {
         val slot = wave[p]
         if (v == null) {

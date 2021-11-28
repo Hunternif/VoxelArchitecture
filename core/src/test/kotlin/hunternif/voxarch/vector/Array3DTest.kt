@@ -1,5 +1,6 @@
 package hunternif.voxarch.vector
 
+import hunternif.voxarch.util.copy
 import org.junit.Assert.*
 import org.junit.Test
 

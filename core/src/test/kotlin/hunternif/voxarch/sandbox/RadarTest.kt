@@ -7,7 +7,7 @@ import org.junit.Test
 class RadarTest {
     @Test
     fun getColor() {
-        val heightMap = HeightMap(0, 0).apply {
+        val heightMap = HeightMap(1, 1).apply {
             minHeight = 0
             maxHeight = 2
         }

@@ -3,34 +3,42 @@ package hunternif.voxarch.vector
 import hunternif.voxarch.storage.IStorage3D
 
 class Array3D<T>(
-    override val width : Int,
-    override val height: Int,
-    override val length: Int,
-    init: (x: Int, y: Int, z: Int) -> T
+    private val data: Array<Array<Array<T>>>
 ) : IStorage3D<T> {
-    constructor(width: Int, height: Int, length: Int, init: T):
-        this(width, height, length, {_,_, _ -> init})
 
-    private val data = Array(width) {
-        x -> Array(height) {
-            y -> Array(length) {
-                z-> init(x, y, z) as Any?
+    override val width : Int = data.size
+    override val height: Int = data[0].size
+    override val length: Int = data[0][0].size
+
+    companion object {
+        inline operator fun <reified T> invoke(
+            width: Int,
+            height: Int,
+            length: Int,
+            init: (x: Int, y: Int, z: Int) -> T
+        ) = Array3D(Array(width) {
+            x -> Array(height) {
+                y -> Array(length) {
+                    z-> init(x, y, z)
+                }
             }
-        }
+        })
+
+        inline operator fun <reified T> invoke(
+            width: Int,
+            height: Int,
+            length: Int,
+            init: T
+        ) = invoke(width, height, length) { _, _, _ -> init }
     }
 
-    @Suppress("UNCHECKED_CAST")
-    override operator fun get(x: Int, y: Int, z: Int): T = data[x][y][z] as T
-    override operator fun get(p: IntVec3): T = get(p.x, p.y, p.z)
-    fun at(x: Int, y: Int, z: Int): T = get(x, y, z)
-    fun at(p: IntVec3): T = get(p)
+    override operator fun get(x: Int, y: Int, z: Int): T = data[x][y][z]
+    override operator fun get(p: IntVec3): T = data[p.x][p.y][p.z]
+    fun at(x: Int, y: Int, z: Int): T = data[x][y][z]
+    fun at(p: IntVec3): T = data[p.x][p.y][p.z]
 
-    override operator fun set(x: Int, y: Int, z: Int,  value: T) { data[x][y][z] = value!! }
-    override operator fun set(p: IntVec3, v: T) = set(p.x, p.y, p.z, v)
-
-    fun copy(): Array3D<T> = Array3D(width, height, length) {
-        x, y, z -> this[x, y, z]
-    }
+    override operator fun set(x: Int, y: Int, z: Int, v: T) { data[x][y][z] = v }
+    override operator fun set(p: IntVec3, v: T) { data[p.x][p.y][p.z] = v }
 
     operator fun contains(p: IntVec3) = p.x in 0 until width && p.y in 0 until height && p.z in 0 until length
 
@@ -51,8 +59,7 @@ class Array3D<T>(
                 val dataY = dataX[y]
                 for (z in 0 until length) {
                     val v = dataY[z]
-                    @Suppress("UNCHECKED_CAST")
-                    action(IntVec3(x, y, z), v as T)
+                    action(IntVec3(x, y, z), v)
                 }
             }
         }

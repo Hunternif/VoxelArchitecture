@@ -31,25 +31,34 @@ fun <T> IStorage3D<T>.isSymmetricZ(): Boolean {
     return true
 }
 
-fun <T> Array3D<T>.mirrorX(): Array3D<T> = Array3D(width, height, length) {
-    x, y, z -> this[width-1-x, y, z]
-}
+inline fun <reified T> Array3D<T>.mirrorX(): Array3D<T> =
+    Array3D(width, height, length) {
+        x, y, z -> this[width-1-x, y, z]
+    }
 
-fun <T> Array3D<T>.mirrorY(): Array3D<T> = Array3D(width, height, length) {
-    x, y, z -> this[x, height-1-y, z]
-}
+inline fun <reified T> Array3D<T>.mirrorY(): Array3D<T> =
+    Array3D(width, height, length) {
+        x, y, z -> this[x, height-1-y, z]
+    }
 
-fun <T> Array3D<T>.mirrorZ(): Array3D<T> = Array3D(width, height, length) {
-    x, y, z -> this[x, y, length-1-z]
-}
+inline fun <reified T> Array3D<T>.mirrorZ(): Array3D<T> =
+    Array3D(width, height, length) {
+        x, y, z -> this[x, y, length-1-z]
+    }
 
 /**
  * Creates a new array by rotating this 90 degrees clockwise around the Y axis.
  * Will throw if length < width.
  */
-fun <T> Array3D<T>.rotateY90CW(): Array3D<T> = Array3D(width, height, length) {
-    x, y, z -> this[z, y, length-1-x]
-}
+inline fun <reified T> Array3D<T>.rotateY90CW(): Array3D<T> =
+    Array3D(width, height, length) {
+        x, y, z -> this[z, y, length-1-x]
+    }
+
+inline fun <reified T> Array3D<T>.copy(): Array3D<T> =
+    Array3D(width, height, length) {
+        x, y, z -> this[x, y, z]
+    }
 
 /** Copy data from a given layer along the X axis towards positive numbers. */
 fun <T> IStorage3D<T>.copyUpXLocal(from: Int = 0) {

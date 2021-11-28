@@ -1,31 +1,40 @@
 package hunternif.voxarch.vector
 
-open class Array2D<T>(
-    val width : Int,
-    val length: Int,
-    init: (Int, Int) -> T
-) : Iterable<IntVec2> {
-    constructor(width: Int, length: Int, init: T): this(width, length, {_,_ -> init})
+import hunternif.voxarch.storage.IStorage2D
 
-    /** [list] must be a valid 2d list. */
-    internal constructor(list: List<List<T>>): this(list[0].size, list.size, list[0][0]) {
-        for (y in list.indices) {
-            for (x in list[0].indices) {
-                set(x, y, list[y][x])
+open class Array2D<T>(
+    private val data: Array<Array<T>>
+) : IStorage2D<T> {
+
+    override val width : Int = data.size
+    override val length: Int = data[0].size
+
+    companion object {
+        inline operator fun <reified T> invoke(
+            width: Int,
+            length: Int,
+            init: (x: Int, y: Int) -> T
+        ) = Array2D(Array(width) {
+            x -> Array(length) {
+                y -> init(x, y)
             }
-        }
+        })
+
+        inline operator fun <reified T> invoke(
+            width: Int,
+            length: Int,
+            init: T
+        ) = invoke(width, length) { _, _ -> init }
+
+        /** [list] must be a valid 2d list. */
+        internal inline operator fun <reified T> invoke(list: List<List<T>>) =
+            invoke(list[0].size, list.size) { x, y -> list[y][x] }
     }
 
-    private val data = Array(width) { x -> Array(length) { y -> init(x, y) as Any? } }
-
-    @Suppress("UNCHECKED_CAST")
-    open operator fun get(x: Int, y: Int): T = data[x][y] as T
-    operator fun get(p: IntVec2): T = get(p.x, p.y)
-    fun at(x: Int, y: Int): T = get(x, y)
-    fun at(p: IntVec2): T = get(p)
-
-    operator fun set(x: Int, y: Int, value: T) { data[x][y] = value!! }
-    operator fun set(p: IntVec2, v: T) = set(p.x, p.y, v)
+    override operator fun get(x: Int, y: Int): T = data[x][y]
+    override operator fun get(p: IntVec2): T = get(p.x, p.y)
+    override operator fun set(x: Int, y: Int, value: T) { data[x][y] = value }
+    override operator fun set(p: IntVec2, v: T) = set(p.x, p.y, v)
 
     open operator fun contains(p: IntVec2) = p.x in 0 until width && p.y in 0 until length
 
