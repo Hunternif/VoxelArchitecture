@@ -13,7 +13,7 @@ enum class WangVoxel {
 /** These tiles are matched voxel-for-voxel. */
 class WangTile(
     internal val data: Array3D<WangVoxel>
-): WfcTile, IStorage3D<WangVoxel> by data {
+): WfcCachingTile(), IStorage3D<WangVoxel> by data {
     constructor (
         width: Int,
         height: Int,
@@ -42,7 +42,7 @@ class WangTile(
         return listOf(t1, t2, t3, t4)
     }
 
-    override fun matchesSide(other: WfcTile, dir: Direction3D): Boolean {
+    override fun calculateMatch(other: WfcTile, dir: Direction3D): Boolean {
         if (other !is WangTile) return false
         when(dir) {
             UP -> {
