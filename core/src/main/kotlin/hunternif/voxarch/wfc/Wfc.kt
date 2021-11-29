@@ -238,4 +238,8 @@ class WfcGrid<T: WfcTile>(
             if (x > 0) yield(wave[x-1, y, z])
         }
     }
+
+    /** This is an optimization cheat, to clear the constraint queue
+     * when you know you will only need to propagate from 1 point. */
+    internal fun resetPropagation() { constrainQueue.clear() }
 }

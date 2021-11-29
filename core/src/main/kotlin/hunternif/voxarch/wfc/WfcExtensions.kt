@@ -20,5 +20,7 @@ fun <T: WfcTile> WfcGrid<T>.setAirAndGroundBoundary(air: T, groundedAir: T, grou
             else this[p] = air
         }
     }
+    resetPropagation()
+    this[1, 0, 1] = ground
     propagate()
 }
