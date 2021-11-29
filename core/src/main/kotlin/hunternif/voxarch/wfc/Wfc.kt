@@ -67,8 +67,8 @@ class WfcGrid<T: WfcTile>(
     private val rand = Random(seed)
     private val totalCount = width * height * length
     private val wave by lazy {
+        val initialEntropy = calculateEntropy(tileset)
         Array3D(width, height, length) { x, y, z ->
-            val initialEntropy = calculateEntropy(tileset)
             WfSlot(IntVec3(x, y, z), tileset.toMutableSet()).also {
                 it.entropy = initialEntropy
                 uncollapsedSet.add(it)
@@ -80,8 +80,13 @@ class WfcGrid<T: WfcTile>(
     /** Queue for propagating null state, i.e. removed tiles that had been
      * previously collapsed. */
     private val relaxQueue = LinkedList<WfSlot<T>>()
-    /** List of slots that haven't collapsed yet. */
-    private val uncollapsedSet = LinkedHashSet<WfSlot<T>>(totalCount)
+    /** Contains slots that haven't collapsed yet, sorted by entropy */
+    private val uncollapsedSet = TreeSet<WfSlot<T>> { t1, t2 ->
+        val entropyDiff = t1.entropy.compareTo(t2.entropy)
+        // Distinguish between slots with equal entropy values
+        if (entropyDiff == 0) t1.hashCode().compareTo(t2.hashCode())
+        else entropyDiff
+    }
 
     internal val collapsedCount: Int get() = totalCount - uncollapsedSet.size
     val isCollapsed: Boolean get() = uncollapsedSet.size <= 0
@@ -102,28 +107,14 @@ class WfcGrid<T: WfcTile>(
             println("Nothing to collapse!")
             return
         }
-        val slot = findLowestEntropySlot()
-        if (slot == null) {
+        val slot = uncollapsedSet.first()
+        if (slot.entropy <= 0f) {
             isContradicted = true
             println("Contradiction!")
             return
         }
         slot.setState(slot.possibleStates.random(rand))
         propagate()
-    }
-
-    /** Returns the position of the slot with the lowest non-zero entropy. */
-    private fun findLowestEntropySlot(): WfSlot<T>? {
-        var min = Float.MAX_VALUE
-        var argMin: WfSlot<T>? = null
-        uncollapsedSet.forEach { slot ->
-            val entropy = slot.entropy
-            if (entropy > 0 && entropy < min) {
-                argMin = slot
-                min = entropy
-            }
-        }
-        return argMin
     }
 
     /**
@@ -187,9 +178,9 @@ class WfcGrid<T: WfcTile>(
             }
         }
         val newCount = slot.possibleStates.size
-        if (newCount == 1) slot.setState(slot.possibleStates.first())
         if (newCount < originalCount) {
-            slot.updateEntropy()
+            if (newCount == 1) slot.setState(slot.possibleStates.first())
+            else slot.updateEntropy()
             return true
         }
         return false
@@ -212,13 +203,11 @@ class WfcGrid<T: WfcTile>(
                 possibleStates.addAll(tileset)
                 state = null
                 updateEntropy()
-                uncollapsedSet.add(this)
                 relaxQueue.add(this)
             }
         } else {
             // collapse
             // (this potentially inserts an incompatible tile)
-            if (state == null) uncollapsedSet.remove(this)
             state = newState
             possibleStates.clear()
             possibleStates.add(newState)
@@ -232,7 +221,10 @@ class WfcGrid<T: WfcTile>(
         else -log(1f / possibleStates.size.toFloat(), 2f)
 
     private fun WfSlot<T>.updateEntropy() {
+        uncollapsedSet.remove(this)
+        // update entropy after removal, because it defines position in TreeSet
         entropy = calculateEntropy(possibleStates)
+        if (state == null) uncollapsedSet.add(this)
     }
 
     /** Guaranteed to be contained inside [wave] */
