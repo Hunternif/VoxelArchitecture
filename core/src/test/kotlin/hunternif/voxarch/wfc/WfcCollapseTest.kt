@@ -5,6 +5,16 @@ import org.junit.Assert.*
 import org.junit.Test
 
 class WfcCollapseTest {
+    /**
+     * ```
+     * Y
+     *  +------> X
+     *  | ad
+     *  | a?
+     *  V
+     *  Z
+     * ```
+     */
     @Test
     fun contradiction() {
         val d = PixelTile("d")
@@ -28,8 +38,8 @@ class WfcCollapseTest {
      * ```
      * Y
      *  +------> X
-     *  | aa
-     *  | c?
+     *  | ac
+     *  | a?
      *  V
      *  Z
      * ```
