@@ -191,6 +191,8 @@ class WfcGrid<T: WfcTile>(
     override fun get(p: IntVec3): T? = get(p.x, p.y, p.z)
     override fun set(x: Int, y: Int, z: Int, v: T?) { wave[x, y, z].setState(v) }
     override fun set(p: IntVec3, v: T?) { wave[p].setState(v) }
+    override operator fun contains(p: IntVec3) = wave.contains(p)
+    override fun contains(x: Int, y: Int, z: Int) = wave.contains(x, y, z)
 
     fun getPossibleStates(p: IntVec3): Set<T> = getPossibleStates(p.x, p.y, p.z)
     fun getPossibleStates(x: Int, y: Int, z: Int): Set<T> = wave[x, y, z].possibleStates

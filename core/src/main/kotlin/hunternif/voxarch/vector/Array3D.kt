@@ -40,7 +40,8 @@ class Array3D<T>(
     override operator fun set(x: Int, y: Int, z: Int, v: T) { data[x][y][z] = v }
     override operator fun set(p: IntVec3, v: T) { data[p.x][p.y][p.z] = v }
 
-    operator fun contains(p: IntVec3) = p.x in 0 until width && p.y in 0 until height && p.z in 0 until length
+    override operator fun contains(p: IntVec3) = p.x in 0 until width && p.y in 0 until height && p.z in 0 until length
+    override fun contains(x: Int, y: Int, z: Int) = x in 0 until width && y in 0 until height && z in 0 until length
 
     override operator fun iterator(): Iterator<IntVec3> = iterator {
         for (x in 0 until width) {
