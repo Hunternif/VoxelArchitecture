@@ -76,10 +76,10 @@ class WfcGrid<T: WfcTile>(
         }
     }
     /** Queue for propagating collapsed state (as opposed to null state). */
-    private val constrainQueue = LinkedList<WfSlot<T>>()
+    private val constrainQueue = LinkedHashSet<WfSlot<T>>()
     /** Queue for propagating null state, i.e. removed tiles that had been
      * previously collapsed. */
-    private val relaxQueue = LinkedList<WfSlot<T>>()
+    private val relaxQueue = LinkedHashSet<WfSlot<T>>()
     /** Contains slots that haven't collapsed yet, sorted by entropy */
     private val uncollapsedSet = TreeSet<WfSlot<T>> { t1, t2 ->
         val entropyDiff = t1.entropy.compareTo(t2.entropy)
@@ -132,7 +132,7 @@ class WfcGrid<T: WfcTile>(
      */
     private fun propagateRelaxation() {
         while (relaxQueue.isNotEmpty()) {
-            val slot = relaxQueue.pop()
+            val slot = relaxQueue.first().also { relaxQueue.remove(it) }
             for (nextSlot in slot.allDirections()) {
                 if (nextSlot.state == null) {
                     if (nextSlot.possibleStates.addAll(tileset)) {
@@ -153,7 +153,7 @@ class WfcGrid<T: WfcTile>(
      */
     private fun propagateConstraints() {
         while (constrainQueue.isNotEmpty()) {
-            val slot = constrainQueue.pop()
+            val slot = constrainQueue.first().also { constrainQueue.remove(it) }
             for (nextSlot in slot.allDirections()) {
                 if (nextSlot.state == null && constrainStates(nextSlot)) {
                     constrainQueue.add(nextSlot)
