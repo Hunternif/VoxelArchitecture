@@ -110,7 +110,7 @@ processResources {
 jar.finalizedBy('reobfJar')
 
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.5.10'
     repositories {
         mavenCentral()
     }

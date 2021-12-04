@@ -195,4 +195,4 @@ enum class AroundDirection(
 private fun IntVec2.stepTo(dir: AroundDirection) =
     IntVec2(x + dir.dx, y + dir.dy)
 
-fun Area.topLeft(): IntVec2 = minBy { it.x + it.y }!!
+fun Area.topLeft(): IntVec2 = minByOrNull { it.x + it.y }!!

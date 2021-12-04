@@ -160,7 +160,7 @@ fun HeightMap.gradient(): Array2D<Slope> {
         gradient[p] =
             mapOf(EAST to dx, WEST to -dx, SOUTH to dz, NORTH to -dz)
                 .map { Slope(it.key, it.value) }
-                .maxBy { it.height }!!
+                .maxByOrNull { it.height }!!
     }
     return gradient
 }

@@ -14,7 +14,7 @@ sourceSets {
     main.java.srcDirs += 'src/main/kotlin'
 }
 buildscript {
-    ext.kotlin_version = '1.3.50'
+    ext.kotlin_version = '1.5.10'
     repositories {
         mavenCentral()
     }

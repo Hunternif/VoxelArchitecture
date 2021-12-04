@@ -54,7 +54,7 @@ class CastleBlueprint(
             towers.add(towerFromBox(box, config.wallTowerHeight, terrain))
         }
         // elevate all towers to the same height
-        val maxElevation = towers.map { it.origin.y }.max() ?: 0.0
+        val maxElevation = towers.map { it.origin.y }.maxOrNull() ?: 0.0
         towers.forEach { it.origin.y = maxElevation }
         buildWallsBetween(towers, m.top)
     }

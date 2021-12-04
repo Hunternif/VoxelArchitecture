@@ -35,7 +35,7 @@ fun HeightMap.findBiggestMountain(): Mountain? =
         // minimum allowed area
         .filter { it.top.size > towerWidth * towerWidth *2 }
         // find widest * tallest mountain
-        .maxBy { it.top.size * averageIn(it.top) }
+        .maxByOrNull { it.top.size * averageIn(it.top) }
 
 /** Puts 4 towers a bitoff the center of the map. */
 fun defaultCastle(terrain: HeightMap, seed:Long): Node {
