@@ -1,10 +1,8 @@
 package hunternif.voxarch.wfc
 
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.util.Direction3D
+import hunternif.voxarch.util.*
 import hunternif.voxarch.util.Direction3D.*
-import hunternif.voxarch.util.allDirections
-import hunternif.voxarch.util.facing
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 import java.util.*
@@ -36,7 +34,7 @@ import kotlin.random.Random
  * This tile represents a possible final state of a slot in the wave's 3d grid.
  * Each slot will collapse into one of these tiles.
  */
-interface WfcTile {
+interface WfcTile : IRandomOption {
     /**
      * Returns true if this tile matches to [other] tile that is placed adjacent
      * to it from direction [dir].
@@ -113,7 +111,7 @@ class WfcGrid<T: WfcTile>(
             println("Contradiction!")
             return
         }
-        slot.setState(slot.possibleStates.random(rand))
+        slot.setState(rand.nextWeighted(slot.possibleStates))
         propagate()
     }
 

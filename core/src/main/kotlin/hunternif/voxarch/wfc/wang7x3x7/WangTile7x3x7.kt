@@ -29,30 +29,30 @@ val floor = wangTile7x3x7 { _, y, _ -> if (y == 1) FLOOR else AIR }
 //
 
 fun generateValidTiles7x3x7(): List<WangTile> = listOf(
-    corridorStraight,
-    corridorOnGroundStraight,
-    corridorTopStraight,
-    towerOneCorridor,
-//    towerOneCorridorOnGround,
-    towerOneCorridorTop,
+    corridorStraight         % 2,
+    corridorOnGroundStraight % 1,
+    corridorTopStraight      % 1,
+    towerOneCorridor         % 0.01,
+    towerOneCorridorOnGround % 0.01,
+    towerOneCorridorTop      % 0.01,
     towerL,
     towerLOnGround,
     towerLCorridorTop,
-    towerI,
-    towerIOnGround,
-    towerICorridorTop,
-    towerT,
-    towerTOnGround,
-    towerTCorridorTop
+    towerI                  % 0.7,
+    towerIOnGround          % 0.7,
+    towerICorridorTop       % 0.7,
+    towerT                  % 1,
+    towerTOnGround          % 1,
+    towerTCorridorTop       % 1
 ).flatMap { it.generateRotationsY() } + listOf(
-    air,
+    air             % 15,
     floor,
     groundedAir, // this is necessary to build on the ground
     ground,
-    tower,
-//    towerOnGround,
+    tower           % 8,
+    towerOnGround   % 0.1,
     towerTop,
-    towerX,
-    towerXOnGround,
-    towerXCorridorTop
+    towerX          % 1,
+    towerXOnGround  % 1,
+    towerXCorridorTop % 1
 )

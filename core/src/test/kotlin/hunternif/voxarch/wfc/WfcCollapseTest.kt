@@ -212,6 +212,7 @@ class WfcCollapseTest {
     }
 
     class PixelTile(private val name: String): WfcTile {
+        override val probability: Double = 1.0
         override fun matchesSide(other: WfcTile, dir: Direction3D) =
             matchMap[this]?.contains(other) ?: false
         override fun toString() = name

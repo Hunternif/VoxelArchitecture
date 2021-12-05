@@ -12,7 +12,8 @@ enum class WangVoxel {
 
 /** These tiles are matched voxel-for-voxel. */
 class WangTile(
-    internal val data: Array3D<WangVoxel>
+    internal val data: Array3D<WangVoxel>,
+    override var probability: Double = 1.0
 ): WfcCachingTile(), IStorage3D<WangVoxel> by data {
     constructor (
         width: Int,
@@ -29,13 +30,16 @@ class WangTile(
     fun mirrorZ() = WangTile(data.mirrorZ())
     fun rotateY90CW() = WangTile(data.rotateY90CW())
     fun copy() = WangTile(data.copy())
+    /** Creates a tile with the same data and the given probability. */
+    operator fun rem(probability: Number) = WangTile(data, probability.toDouble())
 
     /** Returns 4 rotations of this tile around the Y axis */
     fun generateRotationsY(): List<WangTile> {
         if (isSymmetricX() && isSymmetricZ()) {
-            return listOf(this, this.rotateY90CW())
+            val t1 = this % (probability / 2f)
+            return listOf(t1, t1.rotateY90CW())
         }
-        val t1 = this
+        val t1 = this % (probability / 4f)
         val t2 = t1.rotateY90CW()
         val t3 = t2.rotateY90CW()
         val t4 = t3.rotateY90CW()

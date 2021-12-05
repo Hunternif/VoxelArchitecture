@@ -36,6 +36,7 @@ class WfcBoundaryTest {
     }
 
     class DummyTile: WfcTile {
+        override val probability: Double = 1.0
         override fun matchesSide(other: WfcTile, dir: Direction3D) = false
     }
 

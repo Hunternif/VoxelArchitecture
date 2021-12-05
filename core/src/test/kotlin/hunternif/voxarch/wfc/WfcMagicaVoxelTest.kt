@@ -23,18 +23,22 @@ class WfcMagicaVoxelTest {
 
     @Test
     fun `output to Magica Voxel`() {
-        val wave = WfcGrid(10, 5, 10,
-            generateValidTiles7x3x7(), 1
+        val wave = WfcGrid(10, 10, 10,
+            generateValidTiles7x3x7(), 2
         )
         wave.setAirAndGroundBoundary(air, groundedAir, ground)
         wave.collapse()
         println("WFC complete!")
 
-        val path = Paths.get("./out/voxarch-wfc-${today()}.vox")
+        val path = Paths.get(
+            "./out/voxarch-wfc-" +
+            "${wave.width}x${wave.height}x${wave.length}-" +
+            "${today()}.vox"
+        )
         wave.writeToVoxFile(path, colorMap)
     }
 
     private fun today() =
-        DateTimeFormatter.ofPattern("YYY-MM-dd_HH_mm")
+        DateTimeFormatter.ofPattern("YYY-MM-dd_HH_mm_ss")
             .format(LocalDateTime.now())
 }

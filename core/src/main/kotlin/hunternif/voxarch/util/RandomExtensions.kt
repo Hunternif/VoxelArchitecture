@@ -47,9 +47,17 @@ class RandomOption<T>(
  * Probabilities should be >= 0, but need not add up to 1.
  * At least one option should have probability > 0.
  */
-fun <O : IRandomOption> Random.nextWeighted(vararg options: O): O {
+fun <O : IRandomOption> Random.nextWeighted(vararg options: O): O =
+    nextWeighted(options.toList())
+
+/**
+ * Selects one from the given options with _unequal_ probability.
+ * Probabilities should be >= 0, but need not add up to 1.
+ * At least one option should have probability > 0.
+ */
+fun <O : IRandomOption> Random.nextWeighted(options: Collection<O>): O {
     require(options.isNotEmpty()) { "options are empty" }
-    val sumTotal = options.sumByDouble { it.probability }
+    val sumTotal = options.sumOf { it.probability }
     var toss = this.nextDouble() * sumTotal
     for (opt in options) {
         if (opt.probability <= 0) continue
@@ -57,7 +65,7 @@ fun <O : IRandomOption> Random.nextWeighted(vararg options: O): O {
         if (toss <= 0) return opt
     }
     // This should never occur
-    return options[0]
+    return options.first()
 }
 
 
