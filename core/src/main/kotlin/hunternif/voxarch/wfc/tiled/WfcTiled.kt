@@ -1,12 +1,8 @@
 package hunternif.voxarch.wfc.tiled
 
-import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.*
-import hunternif.voxarch.vector.Array3D
-import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.wfc.WfcSlot
 import hunternif.voxarch.wfc.WfcModel
-import kotlin.math.log
 
 // Famous demos by Marian42 and Oskar Stalberg use 3d tiles of static size.
 // Since I want my structures style-able via "CSS", I'll use abstract
@@ -40,92 +36,46 @@ interface WfcTile : IRandomOption {
     fun matchesSide(other: WfcTile, dir: Direction3D): Boolean
 }
 
-/** A single cell in the wave's 3d grid. */
-class WfcTileSlot<T: WfcTile>(
-    pos: IntVec3,
-    val possibleStates: MutableSet<T>
-) : WfcSlot<T>(pos)
-
 class WfcTiledModel<T: WfcTile>(
     width: Int,
     height: Int,
     length: Int,
-    private val tileset: List<T>,
+    tileset: Collection<T>,
     seed: Long = 0L
-) : WfcModel<T, WfcTileSlot<T>>(width, height, length, seed), IStorage3D<T?> {
+) : WfcModel<T, T>(width, height, length, tileset, seed) {
 
-    override val wave: Array3D<WfcTileSlot<T>> by lazy {
-        val initialEntropy = calculateEntropy(tileset)
-        Array3D(width, height, length) { x, y, z ->
-            WfcTileSlot(IntVec3(x, y, z), tileset.toMutableSet()).also {
-                it.entropy = initialEntropy
-                unobservedSet.add(it)
-            }
-        }
-    }
+    override fun WfcSlot<T, T>.selectDefiniteState(): T =
+        rand.nextWeighted(possiblePatterns)
 
-    override fun WfcTileSlot<T>.selectDefiniteState(): T =
-        rand.nextWeighted(possibleStates)
-
-    override fun WfcTileSlot<T>.setDefiniteState(newState: T) {
+    override fun WfcSlot<T, T>.setDefiniteState(newState: T): Boolean {
+        if (state == newState) return false
         state = newState
-        possibleStates.clear()
-        possibleStates.add(newState)
-        updateEntropy()
+        possiblePatterns.clear()
+        possiblePatterns.add(newState)
+        return true
     }
 
-    override fun WfcTileSlot<T>.relaxConstraints(): Boolean {
+    override fun WfcSlot<T, T>.resetState(): Boolean {
         state = null
-        if (possibleStates.addAll(tileset)) {
-            updateEntropy()
-            return true
-        }
-        return false
+        return possiblePatterns.addAll(patternSet)
     }
 
-    override fun WfcTileSlot<T>.constrainStates(): Boolean {
-        val originalCount = possibleStates.size
+    override fun WfcSlot<T, T>.constrainPatterns(): Boolean {
+        val originalCount = possiblePatterns.size
         val directions = Direction3D.values()
             .filter { pos.facing(it) in wave }
-            .sortedBy { wave[pos.facing(it)].possibleStates.size }
+            .sortedBy { wave[pos.facing(it)].possiblePatterns.size }
         for (dir in directions) {
             val adjSlot = wave[pos.facing(dir)]
-            possibleStates.removeIf { state ->
-                adjSlot.possibleStates.none { state.matchesSide(it, dir) }
+            possiblePatterns.removeIf { state ->
+                adjSlot.possiblePatterns.none { state.matchesSide(it, dir) }
             }
         }
-        val newCount = possibleStates.size
+        val newCount = possiblePatterns.size
         if (newCount < originalCount) {
-            if (newCount == 1) setState(possibleStates.first())
-            else updateEntropy()
+            if (newCount == 1) setState(possiblePatterns.first())
             return true
         }
         return false
-    }
-
-    override operator fun iterator(): Iterator<IntVec3> = wave.iterator()
-    override fun get(x: Int, y: Int, z: Int): T? = wave[x, y, z].state
-    override fun get(p: IntVec3): T? = get(p.x, p.y, p.z)
-    override fun set(x: Int, y: Int, z: Int, v: T?) { wave[x, y, z].setState(v) }
-    override fun set(p: IntVec3, v: T?) { wave[p].setState(v) }
-    override operator fun contains(p: IntVec3) = wave.contains(p)
-    override fun contains(x: Int, y: Int, z: Int) = wave.contains(x, y, z)
-
-    fun getPossibleStates(p: IntVec3): Set<T> = getPossibleStates(p.x, p.y, p.z)
-    fun getPossibleStates(x: Int, y: Int, z: Int): Set<T> = wave[x, y, z].possibleStates
-
-    private fun calculateEntropy(possibleStates: Collection<WfcTile>): Double {
-        val sumTotal = possibleStates.sumOf { it.probability }
-        return if (possibleStates.size <= 1) 0.0
-        else possibleStates.sumOf {
-            -it.probability * log(it.probability/sumTotal, 2.0)
-        }
-    }
-
-    private fun WfcTileSlot<T>.updateEntropy() {
-        unobservedSet.remove(this)
-        // update entropy after removal, because it defines position in TreeSet
-        entropy = calculateEntropy(possibleStates)
-        if (state == null) unobservedSet.add(this)
     }
 }

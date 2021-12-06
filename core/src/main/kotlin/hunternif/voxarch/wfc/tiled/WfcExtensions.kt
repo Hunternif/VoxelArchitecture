@@ -20,7 +20,6 @@ fun <T: WfcTile> WfcTiledModel<T>.setAirAndGroundBoundary(air: T, groundedAir: T
             else this[p] = air
         }
     }
-    resetPropagation()
-    this[1, 0, 1] = ground
+    resetPropagationTo(1, 0, 1)
     propagate()
 }

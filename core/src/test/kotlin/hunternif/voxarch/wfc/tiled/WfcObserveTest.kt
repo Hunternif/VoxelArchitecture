@@ -232,5 +232,5 @@ class WfcObserveTest {
 }
 
 fun <T: WfcTile> WfcTiledModel<T>.assertState(x: Int, y: Int, z: Int, vararg states: T) {
-    assertEquals(states.toSet(), getPossibleStates(x, y, z))
+    assertEquals(states.toSet(), getPossiblePatterns(x, y, z))
 }
