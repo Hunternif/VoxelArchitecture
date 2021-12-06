@@ -1,8 +1,8 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
-import hunternif.voxarch.wfc.Match.*
+import hunternif.voxarch.wfc.tiled.Match.*
 import org.junit.Assert.*
 import org.junit.Test
 

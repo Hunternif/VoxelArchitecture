@@ -1,12 +1,12 @@
-package hunternif.voxarch.wfc.wang3x3x3
+package hunternif.voxarch.wfc.tiled.wang3x3x3
 
 import hunternif.voxarch.util.*
-import hunternif.voxarch.wfc.WangTile
-import hunternif.voxarch.wfc.WangVoxel
-import hunternif.voxarch.wfc.WangVoxel.*
+import hunternif.voxarch.wfc.tiled.WangTile
+import hunternif.voxarch.wfc.WfcColor
+import hunternif.voxarch.wfc.WfcColor.*
 
-private fun wangTile3x3x3(init: (x: Int, y: Int, z: Int) -> WangVoxel) = WangTile(3, 3, 3, init)
-private fun wangTile3x3x3(vx: WangVoxel) = wangTile3x3x3 { _, _, _ -> vx }
+private fun wangTile3x3x3(init: (x: Int, y: Int, z: Int) -> WfcColor) = WangTile(3, 3, 3, init)
+private fun wangTile3x3x3(vx: WfcColor) = wangTile3x3x3 { _, _, _ -> vx }
 
 val air = wangTile3x3x3(AIR)
 // floor runs through the middle to allow connections from below

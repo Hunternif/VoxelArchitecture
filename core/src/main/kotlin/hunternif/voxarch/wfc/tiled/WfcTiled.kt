@@ -1,4 +1,4 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.*
@@ -55,7 +55,7 @@ private data class WfSlot<T: WfcTile>(
         other is WfSlot<*> && pos == other.pos
 }
 
-class WfcGrid<T: WfcTile>(
+class WfcTiledModel<T: WfcTile>(
     override val width: Int,
     override val height: Int,
     override val length: Int,
@@ -69,7 +69,7 @@ class WfcGrid<T: WfcTile>(
         Array3D(width, height, length) { x, y, z ->
             WfSlot(IntVec3(x, y, z), tileset.toMutableSet()).also {
                 it.entropy = initialEntropy
-                uncollapsedSet.add(it)
+                unobservedSet.add(it)
             }
         }
     }
@@ -79,20 +79,20 @@ class WfcGrid<T: WfcTile>(
      * previously collapsed. */
     private val relaxQueue = LinkedHashSet<WfSlot<T>>()
     /** Contains slots that haven't collapsed yet, sorted by entropy */
-    private val uncollapsedSet = TreeSet<WfSlot<T>> { t1, t2 ->
+    private val unobservedSet = TreeSet<WfSlot<T>> { t1, t2 ->
         val entropyDiff = t1.entropy.compareTo(t2.entropy)
         // Distinguish between slots with equal entropy values
         if (entropyDiff == 0) t1.hashCode().compareTo(t2.hashCode())
         else entropyDiff
     }
 
-    internal val collapsedCount: Int get() = totalCount - uncollapsedSet.size
-    val isCollapsed: Boolean get() = uncollapsedSet.size <= 0
+    internal val collapsedCount: Int get() = totalCount - unobservedSet.size
+    val isCollapsed: Boolean get() = unobservedSet.size <= 0
     var isContradicted: Boolean = false
         private set
 
-    fun collapse() {
-        while (!isCollapsed && !isContradicted) collapseStep()
+    fun observe() {
+        while (!isCollapsed && !isContradicted) observeStep()
     }
 
     /**
@@ -100,12 +100,12 @@ class WfcGrid<T: WfcTile>(
      * - picks a slot with the lowest entropy and collapses it
      * - propagates constraints resulting from this collapse
      */
-    fun collapseStep() {
+    fun observeStep() {
         if (isCollapsed) {
             println("Nothing to collapse!")
             return
         }
-        val slot = uncollapsedSet.first()
+        val slot = unobservedSet.first()
         if (slot.entropy <= 0f) {
             isContradicted = true
             println("Contradiction!")
@@ -225,10 +225,10 @@ class WfcGrid<T: WfcTile>(
     }
 
     private fun WfSlot<T>.updateEntropy() {
-        uncollapsedSet.remove(this)
+        unobservedSet.remove(this)
         // update entropy after removal, because it defines position in TreeSet
         entropy = calculateEntropy(possibleStates)
-        if (state == null) uncollapsedSet.add(this)
+        if (state == null) unobservedSet.add(this)
     }
 
     /** Guaranteed to be contained inside [wave] */

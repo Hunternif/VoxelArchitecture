@@ -1,4 +1,4 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.util.Direction3D
 import org.junit.Assert.*
@@ -7,7 +7,7 @@ import org.junit.Test
 class WfcBoundaryTest {
     @Test
     fun `air boundary 3x3x3`() {
-        val wave = WfcGrid(3,3, 3, emptyList())
+        val wave = WfcTiledModel(3,3, 3, emptyList())
         wave.setAirBoundary(air)
         assertEquals(air, wave[0, 0, 0])
         assertEquals(air, wave[0, 0, 1])
@@ -21,7 +21,7 @@ class WfcBoundaryTest {
 
     @Test
     fun `air & ground boundary 3x3x3`() {
-        val wave = WfcGrid(3,3, 3, emptyList())
+        val wave = WfcTiledModel(3,3, 3, emptyList())
         wave.setAirAndGroundBoundary(air, groundedAir, ground)
         assertEquals(ground, wave[0, 0, 0])
         assertEquals(ground, wave[0, 0, 1])

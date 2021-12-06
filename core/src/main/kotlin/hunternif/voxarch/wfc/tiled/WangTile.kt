@@ -1,28 +1,24 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.*
 import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.vector.Array3D
-
-/** Voxels inside a tile for Wang-style tile matching. */
-enum class WangVoxel {
-    AIR, GROUND, WALL, FLOOR
-}
+import hunternif.voxarch.wfc.WfcColor
 
 /** These tiles are matched voxel-for-voxel. */
 class WangTile(
-    internal val data: Array3D<WangVoxel>,
+    internal val data: Array3D<WfcColor>,
     override var probability: Double = 1.0
-): WfcCachingTile(), IStorage3D<WangVoxel> by data {
+): WfcCachingTile(), IStorage3D<WfcColor> by data {
     constructor (
         width: Int,
         height: Int,
         length: Int,
-        init: (x: Int, y: Int, z: Int) -> WangVoxel
+        init: (x: Int, y: Int, z: Int) -> WfcColor
     ) : this(Array3D(width, height, length, init))
 
-    constructor(width: Int, height: Int, length: Int, vx: WangVoxel):
+    constructor(width: Int, height: Int, length: Int, vx: WfcColor):
         this(width, height, length, { _, _, _ -> vx })
 
     fun mirrorX() = WangTile(data.mirrorX())

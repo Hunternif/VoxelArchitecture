@@ -1,12 +1,12 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.writeToVoxFile
-import hunternif.voxarch.wfc.WangVoxel.*
-import hunternif.voxarch.wfc.wang7x3x7.air
-import hunternif.voxarch.wfc.wang7x3x7.generateValidTiles7x3x7
-import hunternif.voxarch.wfc.wang7x3x7.ground
-import hunternif.voxarch.wfc.wang7x3x7.groundedAir
+import hunternif.voxarch.wfc.WfcColor.*
+import hunternif.voxarch.wfc.tiled.wang7x3x7.air
+import hunternif.voxarch.wfc.tiled.wang7x3x7.generateValidTiles7x3x7
+import hunternif.voxarch.wfc.tiled.wang7x3x7.ground
+import hunternif.voxarch.wfc.tiled.wang7x3x7.groundedAir
 import org.junit.Test
 import java.nio.file.Paths
 import java.time.LocalDateTime
@@ -23,11 +23,11 @@ class WfcMagicaVoxelTest {
 
     @Test
     fun `output to Magica Voxel`() {
-        val wave = WfcGrid(10, 10, 10,
+        val wave = WfcTiledModel(10, 10, 10,
             generateValidTiles7x3x7(), 2
         )
         wave.setAirAndGroundBoundary(air, groundedAir, ground)
-        wave.collapse()
+        wave.observe()
         println("WFC complete!")
 
         val path = Paths.get(

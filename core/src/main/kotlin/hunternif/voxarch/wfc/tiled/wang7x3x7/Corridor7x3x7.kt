@@ -1,6 +1,6 @@
-package hunternif.voxarch.wfc.wang7x3x7
+package hunternif.voxarch.wfc.tiled.wang7x3x7
 
-import hunternif.voxarch.wfc.WangVoxel.*
+import hunternif.voxarch.wfc.WfcColor.*
 
 /**
  * ```

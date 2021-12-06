@@ -1,19 +1,19 @@
 package hunternif.voxarch.magicavoxel
 
 import com.scs.voxlib.VoxWriter
-import hunternif.voxarch.wfc.WangTile
-import hunternif.voxarch.wfc.WangVoxel
-import hunternif.voxarch.wfc.WfcGrid
+import hunternif.voxarch.wfc.tiled.WangTile
+import hunternif.voxarch.wfc.WfcColor
+import hunternif.voxarch.wfc.tiled.WfcTiledModel
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption
 
 /**
- * Writes from [WfcGrid] to a .vox file
+ * Writes from [WfcTiledModel] to a .vox file
  */
-fun WfcGrid<WangTile>.writeToVoxFile(
+fun WfcTiledModel<WangTile>.writeToVoxFile(
     path: Path,
-    colorMap: Map<WangVoxel, VoxColor?>
+    colorMap: Map<WfcColor, VoxColor?>
 ) {
     // Assuming all tiles are of equal size, fetch one to gauge grid size
     val samplePos = this.firstOrNull { this[it] != null }

@@ -1,10 +1,10 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.util.Direction3D
 import org.junit.Assert.*
 import org.junit.Test
 
-class WfcCollapseTest {
+class WfcObserveTest {
     /**
      * ```
      * Y
@@ -18,7 +18,7 @@ class WfcCollapseTest {
     @Test
     fun contradiction() {
         val d = PixelTile("d")
-        val wave = WfcGrid(2, 1, 2, listOf(a, d))
+        val wave = WfcTiledModel(2, 1, 2, listOf(a, d))
         wave[0, 0, 0] = a
         wave[0, 0, 1] = a
         wave[1, 0, 0] = d
@@ -28,7 +28,7 @@ class WfcCollapseTest {
 
         assertEquals(3, wave.collapsedCount)
         wave.assertState(1, 0, 1)
-        wave.collapseStep()
+        wave.observeStep()
         assertFalse(wave.isCollapsed)
         assertTrue(wave.isContradicted)
         assertEquals(null, wave[1, 0, 1])
@@ -46,7 +46,7 @@ class WfcCollapseTest {
      */
     @Test
     fun `propagate collapses slot with 1 state in 2D grid`() {
-        val wave = WfcGrid(2, 1, 2, listOf(a, b, c))
+        val wave = WfcTiledModel(2, 1, 2, listOf(a, b, c))
         wave[0, 0, 0] = a
         wave[0, 0, 1] = a
         wave[1, 0, 0] = c
@@ -74,7 +74,7 @@ class WfcCollapseTest {
      */
     @Test
     fun `collapse lowest entropy point in 2D grid`() {
-        val wave = WfcGrid(3, 1, 3, listOf(a, b, c), 0)
+        val wave = WfcTiledModel(3, 1, 3, listOf(a, b, c), 0)
         wave[0, 0, 0] = a
         wave[1, 0, 0] = b
         wave[2, 0, 0] = b
@@ -93,7 +93,7 @@ class WfcCollapseTest {
         wave.assertState(1, 0, 2, b, c)
         wave.assertState(2, 0, 2, a, b, c)
 
-        wave.collapseStep()
+        wave.observeStep()
         // abb
         // b??
         // cc?
@@ -118,7 +118,7 @@ class WfcCollapseTest {
      */
     @Test
     fun `propagate collapses slot in 3D grid`() {
-        val wave = WfcGrid(2, 2, 2, listOf(a, b, c), 0)
+        val wave = WfcTiledModel(2, 2, 2, listOf(a, b, c), 0)
         wave[0, 0, 0] = a
         wave[1, 0, 0] = a
         wave[1, 1, 1] = c
@@ -151,7 +151,7 @@ class WfcCollapseTest {
      */
     @Test
     fun `propagate back & forth in 3D grid`() {
-        val wave = WfcGrid(3,3, 3, listOf(a, b, c))
+        val wave = WfcTiledModel(3,3, 3, listOf(a, b, c))
 
         wave[0, 0, 0] = a
         wave[1, 0, 0] = null // this does nothing
@@ -231,6 +231,6 @@ class WfcCollapseTest {
     }
 }
 
-fun <T: WfcTile> WfcGrid<T>.assertState(x: Int, y: Int, z: Int, vararg states: T) {
+fun <T: WfcTile> WfcTiledModel<T>.assertState(x: Int, y: Int, z: Int, vararg states: T) {
     assertEquals(states.toSet(), getPossibleStates(x, y, z))
 }

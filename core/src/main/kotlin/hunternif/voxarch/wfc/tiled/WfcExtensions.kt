@@ -1,8 +1,8 @@
-package hunternif.voxarch.wfc
+package hunternif.voxarch.wfc.tiled
 
 
 /** Collapse tiles at the edge of the grid to be [air]. */
-fun <T: WfcTile> WfcGrid<T>.setAirBoundary(air: T) = setAirAndGroundBoundary(air, air, air)
+fun <T: WfcTile> WfcTiledModel<T>.setAirBoundary(air: T) = setAirAndGroundBoundary(air, air, air)
 
 /**
  * Collapse tiles at the edge of the grid to be [air],
@@ -10,7 +10,7 @@ fun <T: WfcTile> WfcGrid<T>.setAirBoundary(air: T) = setAirAndGroundBoundary(air
  * and on the perimeter at y=1 to be [groundedAir].
  * "Grounded air" means "ground below + air above".
  */
-fun <T: WfcTile> WfcGrid<T>.setAirAndGroundBoundary(air: T, groundedAir: T, ground: T) {
+fun <T: WfcTile> WfcTiledModel<T>.setAirAndGroundBoundary(air: T, groundedAir: T, ground: T) {
     for (p in this) {
         if (p.y >= height-1) this[p] = air
         else if (p.y <= 0) this[p] = ground

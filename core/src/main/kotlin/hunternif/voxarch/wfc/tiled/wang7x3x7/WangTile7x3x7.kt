@@ -1,11 +1,11 @@
-package hunternif.voxarch.wfc.wang7x3x7
+package hunternif.voxarch.wfc.tiled.wang7x3x7
 
-import hunternif.voxarch.wfc.WangTile
-import hunternif.voxarch.wfc.WangVoxel
-import hunternif.voxarch.wfc.WangVoxel.*
+import hunternif.voxarch.wfc.tiled.WangTile
+import hunternif.voxarch.wfc.WfcColor
+import hunternif.voxarch.wfc.WfcColor.*
 
-internal fun wangTile7x3x7(init: (x: Int, y: Int, z: Int) -> WangVoxel) = WangTile(7, 3, 7, init)
-internal fun wangTile7x3x7(vx: WangVoxel) = wangTile7x3x7 { _, _, _ -> vx }
+internal fun wangTile7x3x7(init: (x: Int, y: Int, z: Int) -> WfcColor) = WangTile(7, 3, 7, init)
+internal fun wangTile7x3x7(vx: WfcColor) = wangTile7x3x7 { _, _, _ -> vx }
 
 val air = wangTile7x3x7(AIR)
 val ground = wangTile7x3x7(GROUND)

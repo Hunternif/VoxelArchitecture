@@ -12,10 +12,10 @@ import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
-import hunternif.voxarch.wfc.WfcGrid
-import hunternif.voxarch.wfc.WangVoxel
-import hunternif.voxarch.wfc.setAirAndGroundBoundary
-import hunternif.voxarch.wfc.wang7x3x7.*
+import hunternif.voxarch.wfc.tiled.WfcTiledModel
+import hunternif.voxarch.wfc.WfcColor
+import hunternif.voxarch.wfc.tiled.setAirAndGroundBoundary
+import hunternif.voxarch.wfc.tiled.wang7x3x7.*
 import net.minecraft.block.Block
 import net.minecraft.block.Blocks
 import net.minecraft.client.util.ITooltipFlag
@@ -169,14 +169,14 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //            }
 
             // WFC!!!
-            val wfc = WfcGrid(10, 8, 10,
+            val wfc = WfcTiledModel(10, 8, 10,
                 generateValidTiles7x3x7(),
                 System.currentTimeMillis()
             ).apply {
                 setAirAndGroundBoundary(air, groundedAir, ground)
-                collapse()
+                observe()
             }
-            pos.addLocal(-wfc.width*air.width/2, -air.height, -wfc.length*air.length/2)
+            pos.addLocal(-wfc.width* air.width/2, -air.height, -wfc.length* air.length/2)
             for (p in wfc) {
                 val tile = wfc[p] ?: continue
                 for (v in tile) {
@@ -201,11 +201,11 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
         return ActionResult.pass(player.getItemInHand(hand))
     }
 
-    private fun WangVoxel.mapToBlock(): Block? = when(this) {
-        WangVoxel.AIR -> null
-        WangVoxel.WALL -> Blocks.COBBLESTONE
-        WangVoxel.FLOOR -> Blocks.OAK_PLANKS
-        WangVoxel.GROUND -> null
+    private fun WfcColor.mapToBlock(): Block? = when(this) {
+        WfcColor.AIR -> null
+        WfcColor.WALL -> Blocks.COBBLESTONE
+        WfcColor.FLOOR -> Blocks.OAK_PLANKS
+        WfcColor.GROUND -> null
     }
 
 }
