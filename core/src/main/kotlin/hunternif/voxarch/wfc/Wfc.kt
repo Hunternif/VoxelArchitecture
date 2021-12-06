@@ -48,7 +48,7 @@ private data class WfSlot<T: WfcTile>(
     val possibleStates: MutableSet<T>,
     /** Final collapsed state of this slot */
     var state: T? = null,
-    var entropy: Float = 1f
+    var entropy: Double = 1.0
 ) {
     override fun hashCode(): Int = pos.hashCode()
     override fun equals(other: Any?): Boolean =
@@ -216,9 +216,13 @@ class WfcGrid<T: WfcTile>(
         }
     }
 
-    private fun calculateEntropy(possibleStates: Collection<WfcTile>): Float =
-        if (possibleStates.size <= 1) 0f
-        else -log(1f / possibleStates.size.toFloat(), 2f)
+    private fun calculateEntropy(possibleStates: Collection<WfcTile>): Double {
+        val sumTotal = possibleStates.sumOf { it.probability }
+        return if (possibleStates.size <= 1) 0.0
+        else possibleStates.sumOf {
+            -it.probability * log(it.probability/sumTotal, 2.0)
+        }
+    }
 
     private fun WfSlot<T>.updateEntropy() {
         uncollapsedSet.remove(this)
