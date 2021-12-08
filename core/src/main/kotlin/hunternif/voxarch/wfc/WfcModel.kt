@@ -38,7 +38,7 @@ abstract class WfcModel<S, P : IRandomOption>(
     final override val width: Int,
     final override val height: Int,
     final override val length: Int,
-    protected val patternSet: Collection<P>,
+    private val patternSet: Collection<P>,
     seed: Long = 0L
 ) : IStorage3D<S?> {
     protected val rand = Random(seed)
@@ -72,14 +72,6 @@ abstract class WfcModel<S, P : IRandomOption>(
 
     /** Selects a single state based on what is possible at this slot. */
     protected abstract fun WfcSlot<S, P>.selectDefiniteState(): S
-
-    /** Updates any superposition data to match this new definite state.
-     * Returns true if the state changed. */
-    protected abstract fun WfcSlot<S, P>.setDefiniteState(newState: S): Boolean
-
-    /** Resets this slot back to its original superposition of all states.
-     * Returns true if at least 1 state was added. */
-    protected abstract fun WfcSlot<S, P>.resetState(): Boolean
 
     /** Removes from "possiblePatterns" any patterns that can't be matched to
      * its neighbors. Returns true if at least 1 state was removed. */
@@ -130,7 +122,7 @@ abstract class WfcModel<S, P : IRandomOption>(
             val slot = relaxQueue.first().also { relaxQueue.remove(it) }
             for (nextSlot in slot.allDirections()) {
                 if (nextSlot.state == null) {
-                    if (nextSlot.resetState()) {
+                    if (nextSlot.possiblePatterns.addAll(patternSet)) {
                         relaxQueue.add(slot)
                         nextSlot.updateEntropy()
                     }
@@ -150,7 +142,7 @@ abstract class WfcModel<S, P : IRandomOption>(
         while (constrainQueue.isNotEmpty()) {
             val slot = constrainQueue.first().also { constrainQueue.remove(it) }
             for (nextSlot in slot.allDirections()) {
-                if (nextSlot.state == null && nextSlot.constrainStates()) {
+                if (nextSlot.state == null && nextSlot.constrainPatterns()) {
                     constrainQueue.add(nextSlot)
                     nextSlot.updateEntropy()
                 }
@@ -163,15 +155,17 @@ abstract class WfcModel<S, P : IRandomOption>(
             // reset (undo collapse)
             // (this potentially resets other partially-constrained slots)
             if (state != null) {
-                if (resetState()) {
-                    updateEntropy()
-                    relaxQueue.add(this)
-                }
+                state = null
+                possiblePatterns.addAll(patternSet)
+                updateEntropy()
+                relaxQueue.add(this)
             }
         } else {
             // collapse
             // (the new state can be potentially incompatible with neighbors)
-            if (setDefiniteState(newState)) {
+            if (state != newState) {
+                state = newState
+                possiblePatterns.clear()
                 updateEntropy()
                 constrainQueue.add(this)
             }

@@ -47,19 +47,6 @@ class WfcTiledModel<T: WfcTile>(
     override fun WfcSlot<T, T>.selectDefiniteState(): T =
         rand.nextWeighted(possiblePatterns)
 
-    override fun WfcSlot<T, T>.setDefiniteState(newState: T): Boolean {
-        if (state == newState) return false
-        state = newState
-        possiblePatterns.clear()
-        possiblePatterns.add(newState)
-        return true
-    }
-
-    override fun WfcSlot<T, T>.resetState(): Boolean {
-        state = null
-        return possiblePatterns.addAll(patternSet)
-    }
-
     override fun WfcSlot<T, T>.constrainPatterns(): Boolean {
         val originalCount = possiblePatterns.size
         val directions = Direction3D.values()
@@ -68,6 +55,7 @@ class WfcTiledModel<T: WfcTile>(
         for (dir in directions) {
             val adjSlot = wave[pos.facing(dir)]
             possiblePatterns.removeIf { state ->
+                adjSlot.state?.let { !state.matchesSide(it, dir) } ?:
                 adjSlot.possiblePatterns.none { state.matchesSide(it, dir) }
             }
         }

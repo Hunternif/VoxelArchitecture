@@ -87,7 +87,7 @@ class WfcObserveTest {
         // b??
         // c??
         assertEquals(5, wave.collapsedCount)
-        wave.assertState(0, 0, 1, b)
+        wave.assertDefiniteState(0, 0, 1, b)
         wave.assertState(1, 0, 1, a, b, c)
         wave.assertState(2, 0, 1, a, b, c)
         wave.assertState(1, 0, 2, b, c)
@@ -98,7 +98,7 @@ class WfcObserveTest {
         // b??
         // cc?
         assertEquals(6, wave.collapsedCount)
-        wave.assertState(1, 0, 2, c) // seed=0 leads to this
+        wave.assertDefiniteState(1, 0, 2, c) // seed=0 leads to this
         wave.assertState(1, 0, 1, b, c)
         wave.assertState(2, 0, 1, a, b, c)
         wave.assertState(2, 0, 2, b, c)
@@ -130,9 +130,9 @@ class WfcObserveTest {
         // ?b  ?c
         assertEquals(5, wave.collapsedCount)
         wave.assertState(0, 0, 1, a, b)
-        wave.assertState(1, 0, 1, b)
+        wave.assertDefiniteState(1, 0, 1, b)
         wave.assertState(0, 1, 0, a, b)
-        wave.assertState(1, 1, 0, b)
+        wave.assertDefiniteState(1, 1, 0, b)
         wave.assertState(0, 1, 1, b, c)
         assertFalse(wave.isCollapsed)
         assertFalse(wave.isContradicted)
@@ -157,7 +157,7 @@ class WfcObserveTest {
         wave[1, 0, 0] = null // this does nothing
         wave.propagate()
         assertEquals(1, wave.collapsedCount)
-        wave.assertState(0, 0, 0, a)
+        wave.assertDefiniteState(0, 0, 0, a)
         wave.assertState(1, 0, 0, a, b)
         wave.assertState(2, 0, 0, a, b, c)
         wave.assertState(0, 0, 1, a, b)
@@ -178,8 +178,8 @@ class WfcObserveTest {
         // ???  ???  ???
         wave.propagate()
         assertEquals(2, wave.collapsedCount)
-        wave.assertState(0, 0, 0, a)
-        wave.assertState(1, 0, 0, a)
+        wave.assertDefiniteState(0, 0, 0, a)
+        wave.assertDefiniteState(1, 0, 0, a)
         wave.assertState(2, 0, 0, a, b)
         wave.assertState(0, 0, 1, a, b)
         wave.assertState(0, 0, 2, a, b, c)
@@ -198,7 +198,7 @@ class WfcObserveTest {
         wave.propagate()
         assertEquals(1, wave.collapsedCount)
         wave.assertState(0, 0, 0, a, b)
-        wave.assertState(1, 0, 0, a)
+        wave.assertDefiniteState(1, 0, 0, a)
         wave.assertState(2, 0, 0, a, b)
         wave.assertState(0, 0, 1, a, b, c)
         wave.assertState(0, 0, 2, a, b, c)
@@ -229,6 +229,10 @@ class WfcObserveTest {
             c to listOf(b, c)
         )
     }
+}
+
+fun <T: WfcTile> WfcTiledModel<T>.assertDefiniteState(x: Int, y: Int, z: Int, state: T) {
+    assertEquals(state, get(x, y, z))
 }
 
 fun <T: WfcTile> WfcTiledModel<T>.assertState(x: Int, y: Int, z: Int, vararg states: T) {
