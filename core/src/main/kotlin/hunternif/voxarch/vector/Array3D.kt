@@ -15,11 +15,17 @@ class Array3D<T>(
             height: Int,
             length: Int,
             init: (x: Int, y: Int, z: Int) -> T
-        ) = invoke(width, height, length, init(0, 0, 0)).apply {
-            for (p in this) {
-                set(p, init(p.x, p.y, p.z))
+        ) = Array3D(
+            width,
+            height,
+            length,
+            Array(width * height * length) { index ->
+                val y = index % height
+                val z = (index - y)/height % length
+                val x = ((index - y)/height - z)/length
+                init(x, y, z)
             }
-        }
+        )
 
         inline operator fun <reified T> invoke(
             width: Int,
