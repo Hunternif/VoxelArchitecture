@@ -1,6 +1,5 @@
 package hunternif.voxarch.wfc
 
-import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.IRandomOption
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -12,16 +11,16 @@ import kotlin.random.Random
 /**
  * A unit on the initial WFC grid in observed or unobserved state.
  */
-class WfcSlot<S, P>(
+open class WfcSlot<P>(
     val pos: IntVec3,
     val possiblePatterns: MutableSet<P>,
     /** Final collapsed state of this slot */
-    var state: S? = null,
+    var state: P? = null,
     var entropy: Double = 1.0
 ) {
     override fun hashCode(): Int = pos.hashCode()
     override fun equals(other: Any?): Boolean =
-        other is WfcSlot<*, *> && pos == other.pos
+        other is WfcSlot<*> && pos == other.pos
 }
 
 /**
@@ -34,31 +33,24 @@ class WfcSlot<S, P>(
  *          For the Tiled model it's a tile again,
  *          for the Overlap model it's a pattern.
  */
-abstract class WfcModel<S, P : IRandomOption>(
-    final override val width: Int,
-    final override val height: Int,
-    final override val length: Int,
-    private val patternSet: Collection<P>,
+abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
+    val width: Int,
+    val height: Int,
+    val length: Int,
+    protected val patternSet: Collection<P>,
     seed: Long = 0L
-) : IStorage3D<S?> {
+) {
     protected val rand = Random(seed)
     private val totalCount = width * height * length
-    protected val wave: Array3D<WfcSlot<S, P>> by lazy {
-        val initialEntropy = calculateEntropy(patternSet)
-        Array3D(width, height, length) { x, y, z ->
-            WfcSlot<S, P>(IntVec3(x, y, z), patternSet.toMutableSet()).also {
-                it.entropy = initialEntropy
-                unobservedSet.add(it)
-            }
-        }
-    }
+    protected val initialEntropy = calculateEntropy(patternSet)
+    protected abstract val wave: Array3D<Slot>
 
     /** Queue for propagating collapsed state (as opposed to null state). */
-    private val constrainQueue = LinkedHashSet<WfcSlot<S, P>>()
+    protected val constrainQueue = LinkedHashSet<Slot>()
     /** Queue for propagating null state, i.e. slots that have been reset. */
-    private val relaxQueue = LinkedHashSet<WfcSlot<S, P>>()
+    protected val relaxQueue = LinkedHashSet<Slot>()
     /** Contains slots that haven't collapsed yet, sorted by entropy */
-    private val unobservedSet = TreeSet<WfcSlot<S, P>> { t1, t2 ->
+    protected val unobservedSet = TreeSet<Slot> { t1, t2 ->
         val entropyDiff = t1.entropy.compareTo(t2.entropy)
         // Distinguish between patterns with equal entropy values
         if (entropyDiff == 0) t1.hashCode().compareTo(t2.hashCode())
@@ -70,12 +62,16 @@ abstract class WfcModel<S, P : IRandomOption>(
     var isContradicted: Boolean = false
         private set
 
-    /** Selects a single state based on what is possible at this slot. */
-    protected abstract fun WfcSlot<S, P>.selectDefiniteState(): S
+    /** Selects and applies a definite state to this slot. */
+    protected abstract fun Slot.observe()
 
-    /** Removes from "possiblePatterns" any patterns that can't be matched to
-     * its neighbors. Returns true if at least 1 state was removed. */
-    protected abstract fun WfcSlot<S, P>.constrainPatterns(): Boolean
+    /** Finds all affected neighbors and adds them to the appropriate queue
+     * when propagating relaxation. */
+    protected abstract fun Slot.relaxNeighbors()
+
+    /** Finds all affected neighbors and adds them to the appropriate queue
+     * when propagating constraints.. */
+    protected abstract fun Slot.constrainNeighbors()
 
     /**
      * Performs WFC until the entire grid is collapsed or until contradiction.
@@ -100,7 +96,7 @@ abstract class WfcModel<S, P : IRandomOption>(
             println("Contradiction!")
             return
         }
-        slot.setState(slot.selectDefiniteState())
+        slot.observe()
         propagate()
     }
 
@@ -119,17 +115,9 @@ abstract class WfcModel<S, P : IRandomOption>(
      */
     private fun propagateRelaxation() {
         while (relaxQueue.isNotEmpty()) {
-            val slot = relaxQueue.first().also { relaxQueue.remove(it) }
-            for (nextSlot in slot.allDirections()) {
-                if (nextSlot.state == null) {
-                    if (nextSlot.possiblePatterns.addAll(patternSet)) {
-                        relaxQueue.add(slot)
-                        nextSlot.updateEntropy()
-                    }
-                } else {
-                    // will propagate back from here
-                    constrainQueue.add(nextSlot)
-                }
+            relaxQueue.first().also {
+                relaxQueue.remove(it)
+                it.relaxNeighbors()
             }
         }
     }
@@ -140,34 +128,9 @@ abstract class WfcModel<S, P : IRandomOption>(
      */
     private fun propagateConstraints() {
         while (constrainQueue.isNotEmpty()) {
-            val slot = constrainQueue.first().also { constrainQueue.remove(it) }
-            for (nextSlot in slot.allDirections()) {
-                if (nextSlot.state == null && nextSlot.constrainPatterns()) {
-                    constrainQueue.add(nextSlot)
-                    nextSlot.updateEntropy()
-                }
-            }
-        }
-    }
-
-    protected fun WfcSlot<S, P>.setState(newState: S?) {
-        if (newState == null) {
-            // reset (undo collapse)
-            // (this potentially resets other partially-constrained slots)
-            if (state != null) {
-                state = null
-                possiblePatterns.addAll(patternSet)
-                updateEntropy()
-                relaxQueue.add(this)
-            }
-        } else {
-            // collapse
-            // (the new state can be potentially incompatible with neighbors)
-            if (state != newState) {
-                state = newState
-                possiblePatterns.clear()
-                updateEntropy()
-                constrainQueue.add(this)
+            constrainQueue.first().also {
+                constrainQueue.remove(it)
+                it.constrainNeighbors()
             }
         }
     }
@@ -180,23 +143,11 @@ abstract class WfcModel<S, P : IRandomOption>(
         }
     }
 
-    private fun WfcSlot<S, P>.updateEntropy() {
+    protected fun Slot.updateEntropy() {
         unobservedSet.remove(this)
         // update entropy after removal, because it defines position in TreeSet
         entropy = calculateEntropy(possiblePatterns)
         if (state == null) unobservedSet.add(this)
-    }
-
-    /** Guaranteed to be contained inside [wave] */
-    private fun WfcSlot<S, P>.allDirections(): Sequence<WfcSlot<S, P>> = sequence {
-        pos.run {
-            if (y > 0) yield(wave[x, y-1, z])
-            if (y < height-1) yield(wave[x, y+1, z])
-            if (z > 0) yield(wave[x, y, z-1])
-            if (x < width-1) yield(wave[x+1, y, z])
-            if (z < length-1) yield(wave[x, y, z+1])
-            if (x > 0) yield(wave[x-1, y, z])
-        }
     }
 
     /** This is an optimization cheat, to clear the constraint queue
@@ -205,14 +156,6 @@ abstract class WfcModel<S, P : IRandomOption>(
         constrainQueue.clear()
         constrainQueue.add(wave[x, y, z])
     }
-
-    override operator fun iterator(): Iterator<IntVec3> = wave.iterator()
-    override fun get(x: Int, y: Int, z: Int): S? = wave[x, y, z].state
-    override fun get(p: IntVec3): S? = get(p.x, p.y, p.z)
-    override fun set(x: Int, y: Int, z: Int, v: S?) { wave[x, y, z].setState(v) }
-    override fun set(p: IntVec3, v: S?) { wave[p].setState(v) }
-    override operator fun contains(p: IntVec3) = wave.contains(p)
-    override fun contains(x: Int, y: Int, z: Int) = wave.contains(x, y, z)
 
     fun getPossiblePatterns(p: IntVec3): Set<P> = getPossiblePatterns(p.x, p.y, p.z)
     fun getPossiblePatterns(x: Int, y: Int, z: Int): Set<P> = wave[x, y, z].possiblePatterns
