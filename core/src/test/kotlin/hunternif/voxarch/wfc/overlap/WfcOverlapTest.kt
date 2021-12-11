@@ -99,6 +99,33 @@ class WfcOverlapTest {
         wave.assertPatterns(3, 0, 0, bb)
     }
 
+    /**
+     * ```
+     * Y
+     *  +------> X
+     *  | ???
+     *  V
+     *  Z
+     *
+     *  tiles: aa, bb
+     * ```
+     */
+    @Test
+    fun `observe 1d wave from empty`() {
+        val aa = Pattern1D("aa")
+        val bb = Pattern1D("bb")
+        val wave = WfcOverlapModel(3, 1, 1, listOf(aa, bb), 1)
+
+        wave.observeStep()
+        // aaa <- seed=1
+        assertEquals('a', wave[0, 0, 0])
+        assertEquals('a', wave[1, 0, 0])
+        assertEquals('a', wave[2, 0, 0])
+        wave.assertPatterns(0, 0, 0, aa)
+        wave.assertPatterns(1, 0, 0, aa)
+        wave.assertPatterns(2, 0, 0, aa)
+    }
+
     class Pattern1D(private val s: String) : WfcPattern<Char>(
         Array3D(s.length, 1, 1, s.toList().toTypedArray())
     ) {

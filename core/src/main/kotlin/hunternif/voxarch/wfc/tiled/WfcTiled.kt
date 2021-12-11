@@ -48,14 +48,14 @@ class WfcTiledModel<T: WfcTile>(
 ) : WfcModel<T, T, WfcSlot<T>>(width, height, length, tileset, seed),
     IStorage3D<T?>
 {
-    override val wave: Array3D<WfcSlot<T>> by lazy {
-        Array3D(width, height, length) { x, y, z ->
+    override val wave: Array3D<WfcSlot<T>> =
+        Array3D(width, height, length) {
+            x, y, z ->
             WfcSlot(IntVec3(x, y, z), patternSet.toMutableSet()).also {
                 it.entropy = initialEntropy
                 unobservedSet.add(it)
             }
         }
-    }
 
     override fun WfcSlot<T>.observe() {
         setState(rand.nextWeighted(possiblePatterns))

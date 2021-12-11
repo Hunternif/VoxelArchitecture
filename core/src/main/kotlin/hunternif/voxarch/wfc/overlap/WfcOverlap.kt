@@ -70,14 +70,14 @@ class WfcOverlapModel<C>(
     //TODO: set edge conditions. We can't have patterns on voxels on the edge,
     // because the pattern wouldn't fit in the output.
     // But in the beginning this is fine, it just leads to extra processing.
-    override val wave: Array3D<WfcVoxel<C>> by lazy {
+    override val wave: Array3D<WfcVoxel<C>> =
         Array3D(width, height, length) { x, y, z ->
             WfcVoxel(IntVec3(x, y, z), patternSet.toMutableSet()).also {
                 it.entropy = initialEntropy
                 unobservedSet.add(it)
             }
         }
-    }
+
     // [wave] contains slots of patterns, and each slot collapses into a pattern.
 
     // This is still a tiled model, but for patterns!
