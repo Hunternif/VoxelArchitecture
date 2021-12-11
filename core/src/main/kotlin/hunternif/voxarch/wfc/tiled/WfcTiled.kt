@@ -57,6 +57,8 @@ class WfcTiledModel<T: WfcTile>(
             }
         }
 
+    override fun WfcSlot<T>.isObserved() = state != null
+
     override fun WfcSlot<T>.observe() {
         setState(rand.nextWeighted(possiblePatterns))
     }

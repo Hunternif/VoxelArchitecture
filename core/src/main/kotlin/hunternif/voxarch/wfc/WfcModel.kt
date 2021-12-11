@@ -62,6 +62,9 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
     var isContradicted: Boolean = false
         private set
 
+    /** Returns true if this slot is in its final definite state. */
+    protected abstract fun Slot.isObserved(): Boolean
+
     /** Selects and applies a definite state to this slot. */
     protected abstract fun Slot.observe()
 
@@ -70,7 +73,7 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
     protected abstract fun Slot.relaxNeighbors()
 
     /** Finds all affected neighbors and adds them to the appropriate queue
-     * when propagating constraints.. */
+     * when propagating constraints. */
     protected abstract fun Slot.constrainNeighbors()
 
     /**
@@ -91,7 +94,7 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
             return
         }
         val slot = unobservedSet.first()
-        if (slot.entropy <= 0f) {
+        if (slot.possiblePatterns.size == 0) {
             isContradicted = true
             println("Contradiction!")
             return
@@ -147,7 +150,7 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
         unobservedSet.remove(this)
         // update entropy after removal, because it defines position in TreeSet
         entropy = calculateEntropy(possiblePatterns)
-        if (state == null) unobservedSet.add(this)
+        if (!isObserved()) unobservedSet.add(this)
     }
 
     /** This is an optimization cheat, to clear the constraint queue

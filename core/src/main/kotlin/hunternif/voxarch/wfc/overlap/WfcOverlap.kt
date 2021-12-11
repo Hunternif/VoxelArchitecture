@@ -85,6 +85,8 @@ class WfcOverlapModel<C>(
     // Collapse the lowest entropy voxel.
     // Patterns get collapsed as a result.
 
+    override fun WfcVoxel<C>.isObserved() = color != null
+
     override fun WfcVoxel<C>.observe() {
         // sets only the color of the randomly chosen pattern
         setColor(rand.nextWeighted(possiblePatterns)[0, 0, 0])
@@ -176,18 +178,6 @@ class WfcOverlapModel<C>(
 
     override operator fun iterator(): Iterator<IntVec3> = wave.iterator()
     override fun get(x: Int, y: Int, z: Int): C? = wave[x, y, z].color
-//        if (x >= wave.width || y >= wave.height || z >= wave.length) {
-//            // this happens in case of a pattern on the edge
-//            val waveX = min(x, wave.width - 1)
-//            val waveY = min(y, wave.height - 1)
-//            val waveZ = min(z, wave.length - 1)
-//            val dx = x - waveX
-//            val dy = y - waveY
-//            val dz = z - waveZ
-//            return wave[waveX, waveY, waveZ].state?.get(dx, dy, dz)
-//        }
-//        return wave[x, y, z].color
-//    }
     override fun get(p: IntVec3): C? = get(p.x, p.y, p.z)
     override fun set(x: Int, y: Int, z: Int, v: C?) { wave[x, y, z].setColor(v) }
     override fun set(p: IntVec3, v: C?) { wave[p].setColor(v) }
