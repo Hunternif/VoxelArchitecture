@@ -63,14 +63,4 @@ class Array3D<T>(
             }
         }
     }
-
-    fun forEachIndexed(action: (IntVec3, T) -> Unit) {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                for (z in 0 until length) {
-                    action(IntVec3(x, y, z), get(x, y, z))
-                }
-            }
-        }
-    }
 }

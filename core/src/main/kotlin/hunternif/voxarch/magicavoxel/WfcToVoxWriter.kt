@@ -1,12 +1,9 @@
 package hunternif.voxarch.magicavoxel
 
-import com.scs.voxlib.VoxWriter
-import hunternif.voxarch.wfc.tiled.WangTile
 import hunternif.voxarch.wfc.WfcColor
+import hunternif.voxarch.wfc.tiled.WangTile
 import hunternif.voxarch.wfc.tiled.WfcTiledModel
-import java.nio.file.Files
 import java.nio.file.Path
-import java.nio.file.StandardOpenOption
 
 /**
  * Writes from [WfcTiledModel] to a .vox file
@@ -42,10 +39,4 @@ fun WfcTiledModel<WangTile>.writeToVoxFile(
 
     println("writing WFC to $path")
     voxStorage.writeToFile(path)
-}
-
-fun VoxFileStorage.writeToFile(path: Path) {
-    val voxFile = this.serialize()
-    val stream = Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)
-    VoxWriter(stream).use { it.write(voxFile) }
 }

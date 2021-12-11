@@ -6,6 +6,7 @@ import com.scs.voxlib.VoxWriter
 import com.scs.voxlib.Voxel
 import com.scs.voxlib.chunk.*
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.forEachIndexed
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 
