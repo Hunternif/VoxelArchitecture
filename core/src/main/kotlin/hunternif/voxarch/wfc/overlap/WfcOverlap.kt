@@ -29,7 +29,7 @@ import hunternif.voxarch.wfc.WfcSlot
  * Using potentially different size for Y because patterns will be rotated only
  * around the Y axis, i.e. we don't want upside-down houses.
  */
-class WfcPattern<C>(
+open class WfcPattern<C>(
     private val data: Array3D<C>,
     override var probability: Double = 1.0
 ) : IRandomOption, IStorage3D<C> by data {
