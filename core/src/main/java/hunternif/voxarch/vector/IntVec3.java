@@ -41,6 +41,10 @@ public class IntVec3 {
 	public IntVec3 add(int dx, int dy, int dz) {
 		return new IntVec3(x + dx, y + dy, z + dz);
 	}
+
+	public IntVec3 subtract(IntVec3 p) {
+		return new IntVec3(x - p.x, y - p.y, z - p.z);
+	}
 	
 	@Override
 	public String toString() {
