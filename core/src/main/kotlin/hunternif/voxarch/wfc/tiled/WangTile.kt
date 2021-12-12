@@ -21,11 +21,11 @@ class WangTile(
     constructor(width: Int, height: Int, length: Int, vx: WfcColor):
         this(width, height, length, { _, _, _ -> vx })
 
-    fun mirrorX() = WangTile(data.mirrorX())
-    fun mirrorY() = WangTile(data.mirrorY())
-    fun mirrorZ() = WangTile(data.mirrorZ())
-    fun rotateY90CW() = WangTile(data.rotateY90CW())
-    fun copy() = WangTile(data.copy())
+    fun mirrorX() = WangTile(data.mirrorX(), probability)
+    fun mirrorY() = WangTile(data.mirrorY(), probability)
+    fun mirrorZ() = WangTile(data.mirrorZ(), probability)
+    fun rotateY90CW() = WangTile(data.rotateY90CW(), probability)
+    fun copy() = WangTile(data.copy(), probability)
     /** Creates a tile with the same data and the given probability. */
     operator fun rem(probability: Number) = WangTile(data, probability.toDouble())
 
