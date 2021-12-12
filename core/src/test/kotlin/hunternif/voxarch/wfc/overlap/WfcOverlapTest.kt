@@ -126,6 +126,67 @@ class WfcOverlapTest {
         wave.assertPatterns(2, 0, 0, aa)
     }
 
+    /**
+     * ```
+     * Y
+     *  +------> X
+     *  | ?????
+     *  V
+     *  Z
+     *
+     *  tiles: bab
+     * ```
+     */
+    @Test
+    fun `observe 1d wave with single long pattern`() {
+        val bab = Pattern1D("bab")
+        val wave = WfcOverlapModel(5, 1, 1, listOf(bab))
+
+        wave.observeStep()
+        // bab??
+        assertEquals('b', wave[0, 0, 0])
+        assertEquals('a', wave[1, 0, 0])
+        assertEquals('b', wave[2, 0, 0])
+        assertEquals('a', wave[3, 0, 0])
+        assertEquals('b', wave[4, 0, 0])
+        wave.assertPatterns(0, 0, 0, bab)
+        wave.assertPatterns(1, 0, 0)
+        wave.assertPatterns(2, 0, 0, bab)
+        wave.assertPatterns(3, 0, 0)
+        wave.assertPatterns(4, 0, 0, bab)
+    }
+
+    /**
+     * ```
+     * Y
+     *  +------> X
+     *  | ?????
+     *  V
+     *  Z
+     *
+     *  tiles: aba, bab
+     * ```
+     */
+    @Test
+    fun `observe 1d wave with long patterns`() {
+        val aba = Pattern1D("aba")
+        val bab = Pattern1D("bab")
+        val wave = WfcOverlapModel(5, 1, 1, listOf(aba, bab), 1)
+
+        wave.observeStep()
+        // ababa
+        assertEquals('a', wave[0, 0, 0])
+        assertEquals('b', wave[1, 0, 0])
+        assertEquals('a', wave[2, 0, 0])
+        assertEquals('b', wave[3, 0, 0])
+        assertEquals('a', wave[4, 0, 0])
+        wave.assertPatterns(0, 0, 0, aba)
+        wave.assertPatterns(1, 0, 0, bab)
+        wave.assertPatterns(2, 0, 0, aba)
+        wave.assertPatterns(3, 0, 0, bab)
+        wave.assertPatterns(4, 0, 0, aba)
+    }
+
     class Pattern1D(private val s: String) : WfcPattern<Char>(
         Array3D(s.length, 1, 1, s.toList().toTypedArray())
     ) {

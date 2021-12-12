@@ -34,7 +34,12 @@ class WfcMagicaVoxelOverlapTest {
     }
 
     private val patterns = listOf(
-        WfcPattern(3, 1, 3, GROUND)
+        WfcPattern(3, 1, 3) { x, y, z ->
+            when {
+                x == 0 || x == 2 -> GROUND
+                else -> AIR
+            }
+        }
     )
 
     private fun today() =

@@ -40,6 +40,12 @@ open class WfcPattern<C>(
             length: Int,
             init: C
         ) = WfcPattern(Array3D(width, height, length, init))
+        inline operator fun <reified C> invoke(
+            width: Int,
+            height: Int,
+            length: Int,
+            init: (x: Int, y: Int, z: Int) -> C
+        ) = WfcPattern(Array3D(width, height, length, init))
     }
 }
 
@@ -127,11 +133,8 @@ class WfcOverlapModel<C>(
         }
         // TODO optimize: update colors on overlapping voxels when possible.
         val newCount = possiblePatterns.size
-        if (newCount < originalCount) {
-            if (newCount == 1) setPattern(possiblePatterns.first())
-            return true
-        }
-        return false
+        if (newCount == 1) setPattern(possiblePatterns.first())
+        return newCount < originalCount
     }
 
     /** Returns all voxels that have patterns that overlap with this voxel. */
