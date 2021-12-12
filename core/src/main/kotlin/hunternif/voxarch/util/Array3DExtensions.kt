@@ -85,6 +85,18 @@ inline fun <reified T> Array3D<T>.copy(): Array3D<T> =
         x, y, z -> this[x, y, z]
     }
 
+/** Carves a subarray from this array and returns it.
+ * @param from starting point, inclusive.
+ * @param size size of the subarray.
+ * @return a new array of size `(until-from)`*/
+inline fun <reified T> IStorage3D<T>.copySection(
+    from: IntVec3,
+    size: IntVec3
+): Array3D<T> =
+    Array3D(size.x, size.y, size.z) {
+        x, y, z -> this[from.x + x, from.y + y, from.z + z]
+    }
+
 /** Copy data from a given layer along the X axis towards positive numbers. */
 fun <T> IStorage3D<T>.copyUpXLocal(from: Int = 0) {
     for (x in from + 1 until width)
