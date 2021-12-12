@@ -1,12 +1,10 @@
 package hunternif.voxarch.wfc.overlap
 
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.util.IRandomOption
 import hunternif.voxarch.util.nextWeighted
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.wfc.WfcModel
-import hunternif.voxarch.wfc.WfcSlot
 
 // Implements the Overlapping Model
 
@@ -23,38 +21,6 @@ import hunternif.voxarch.wfc.WfcSlot
 //
 // Input analyzer will be a separate class
 
-
-/**
- * NxKxN pattern.
- * Using potentially different size for Y because patterns will be rotated only
- * around the Y axis, i.e. we don't want upside-down houses.
- */
-open class WfcPattern<C>(
-    private val data: Array3D<C>,
-    override var probability: Double = 1.0
-) : IRandomOption, IStorage3D<C> by data {
-    companion object {
-        inline operator fun <reified C> invoke(
-            width: Int,
-            height: Int,
-            length: Int,
-            init: C
-        ) = WfcPattern(Array3D(width, height, length, init))
-        inline operator fun <reified C> invoke(
-            width: Int,
-            height: Int,
-            length: Int,
-            init: (x: Int, y: Int, z: Int) -> C
-        ) = WfcPattern(Array3D(width, height, length, init))
-    }
-}
-
-class WfcVoxel<C>(
-    pos: IntVec3,
-    possiblePatterns: MutableSet<WfcPattern<C>>,
-    /** Color at this position. Can be definite even when the pattern is not. */
-    internal var color: C? = null
-) : WfcSlot<WfcPattern<C>>(pos, possiblePatterns)
 
 /**
  * @param patternSet all elements are assumed to be of the same size NxKxN

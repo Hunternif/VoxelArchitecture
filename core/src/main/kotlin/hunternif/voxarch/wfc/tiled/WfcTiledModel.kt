@@ -27,18 +27,6 @@ import hunternif.voxarch.wfc.WfcModel
 // Imagine a cross-section of a castle corridor, with walls on the left and right.
 // It would be composed of 2 tiles, each with a wall in the middle.
 
-/**
- * This tile represents a possible final state of a slot in the wave's 3d grid.
- * Each slot will collapse into one of these tiles.
- */
-interface WfcTile : IRandomOption {
-    /**
-     * Returns true if this tile matches to [other] tile that is placed adjacent
-     * to it from direction [dir].
-     */
-    fun matchesSide(other: WfcTile, dir: Direction3D): Boolean
-}
-
 class WfcTiledModel<T: WfcTile>(
     width: Int,
     height: Int,
