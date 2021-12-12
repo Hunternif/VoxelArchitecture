@@ -1,6 +1,7 @@
 package hunternif.voxarch.wfc.overlap
 
 import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.wfc.WfcColor.*
 import org.junit.Test
@@ -16,9 +17,18 @@ class WfcMagicaVoxelOverlapTest {
         WALL to VoxColor(0xD7CAB5),
         FLOOR to VoxColor(0x4F6FD7)
     )
+    private val reverseColorMap = colorMap.toList()
+        .associate { it.second to it.first }
 
     @Test
-    fun `output to Magica Voxel`() {
+    fun `read VOX input and write VOX output`() {
+        val input = readVoxFile(
+            Paths.get("./out/voxarch-wfc-overlap-input.vox"),
+            reverseColorMap
+        )
+        val patterns = input.findPatterns(3, 1)
+        println("${patterns.size} patterns read")
+
         val wave = WfcOverlapModel(10, 1, 10,
             patterns
         )
@@ -32,15 +42,6 @@ class WfcMagicaVoxelOverlapTest {
         )
         wave.writeToVoxFile(path, colorMap)
     }
-
-    private val patterns = listOf(
-        WfcPattern(3, 1, 3) { x, y, z ->
-            when {
-                x == 0 || x == 2 -> GROUND
-                else -> AIR
-            }
-        }
-    )
 
     private fun today() =
         DateTimeFormatter.ofPattern("YYY-MM-dd_HH_mm_ss")

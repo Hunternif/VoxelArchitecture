@@ -23,6 +23,16 @@ fun <T> IStorage3D<T?>.writeToVoxFile(
     voxStorage.writeToFile(path)
 }
 
+fun IStorage3D<VoxColor?>.writeToVoxFile(path: Path) {
+    val voxStorage = VoxFileStorage(width, height, length)
+    forEachPos { x, y, z, color ->
+        if (color != null)
+            voxStorage[x, y, z] = color
+    }
+    println("writing to $path")
+    voxStorage.writeToFile(path)
+}
+
 fun VoxFileStorage.writeToFile(path: Path) {
     val voxFile = this.serialize()
     val stream = Files.newOutputStream(path, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING)

@@ -13,13 +13,22 @@ import hunternif.voxarch.vector.IntVec3
 
 // I don't plan to support materials, only colors for now.
 
-data class VoxColor(val color: Int)
+data class VoxColor(val color: Int) {
+    override fun equals(other: Any?): Boolean {
+        if (this === other) return true
+        if (other !is VoxColor) return false
+        return color == other.color
+    }
+    override fun hashCode(): Int = color
+}
 
 class VoxFileStorage private constructor(
     private val array: Array3D<VoxColor?>
 ) : IStorage3D<VoxColor?> by array {
 
     private val palette = LinkedHashSet<VoxColor>()
+        // add the 0 color to shift the index. MagicaVoxel uses indices 1+.
+        .also { it.add(VoxColor(0)) }
     private val colorIndex = mutableMapOf<VoxColor, Byte>()
     private var voxelCount = 0
 
@@ -69,8 +78,7 @@ class VoxFileStorage private constructor(
     private fun refreshColorIndex() {
         colorIndex.clear()
         palette.forEachIndexed { i, color ->
-            // + 1 because Magica Voxel colors start with index 1
-            colorIndex[color] = (i + 1).toByte()
+            colorIndex[color] = i.toByte()
         }
     }
 
@@ -104,12 +112,34 @@ class VoxFileStorage private constructor(
     private fun makePaletteChunk(): VoxRGBAChunk {
         val chunk = VoxRGBAChunk()
         palette.forEachIndexed { i, color ->
-            // + 1 because Magica Voxel colors start with index 1
-            chunk.palette[(i + 1) % 256] = color.color
+            chunk.palette[i % 256] = color.color
         }
         return chunk
     }
-}
 
-fun IntVec3.toGridPoint3() = GridPoint3(z, x, y)
-fun gridPoint3(x: Int, y: Int, z: Int) = GridPoint3(z, x, y)
+    companion object {
+        private fun GridPoint3.toIntVec3() = IntVec3(y, z, x)
+        private fun IntVec3.toGridPoint3() = GridPoint3(z, x, y)
+        private fun gridPoint3(x: Int, y: Int, z: Int) = GridPoint3(z, x, y)
+
+        /** Only reads 1 model */
+        fun fromFile(file: VoxFile): VoxFileStorage {
+            val model = file.modelInstances.first().model
+            val width = model.size.y
+            val height = model.size.z
+            val length = model.size.x
+            val storage = VoxFileStorage(width, height, length)
+            file.palette.forEach {
+                //TODO check if VoxFileParser stores colors correctly
+                val unsignedColor = it and 0xffffff
+                storage.palette.add(VoxColor(unsignedColor))
+            }
+            model.voxels.forEach {
+                val pos = it.position.toIntVec3()
+                val color = file.palette[it.colourIndex] and 0xffffff
+                storage.array[pos] = VoxColor(color)
+            }
+            return storage
+        }
+    }
+}

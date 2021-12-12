@@ -24,8 +24,10 @@ import hunternif.voxarch.wfc.WfcModel
 
 /**
  * @param patternSet all elements are assumed to be of the same size NxKxN
+ * @param C is the voxel color in the final state.
+ *          Must be non-null to distinguish observed empty state.
  */
-class WfcOverlapModel<C>(
+class WfcOverlapModel<C: Any>(
     width: Int,
     height: Int,
     length: Int,
