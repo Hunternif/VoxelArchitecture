@@ -41,7 +41,8 @@ class Array3D<T>(
 
     }
 
-    private inline fun index(x: Int, y: Int, z: Int): Int = (x*length + z)*height + y
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun index(x: Int, y: Int, z: Int) = (x*length + z)*height + y
 
     override operator fun get(x: Int, y: Int, z: Int): T = data[index(x, y, z)]
     override operator fun get(p: IntVec3): T = data[index(p.x, p.y, p.z)]
@@ -53,14 +54,4 @@ class Array3D<T>(
 
     override operator fun contains(p: IntVec3) = p.x in 0 until width && p.y in 0 until height && p.z in 0 until length
     override fun contains(x: Int, y: Int, z: Int) = x in 0 until width && y in 0 until height && z in 0 until length
-
-    override operator fun iterator(): Iterator<IntVec3> = iterator {
-        for (x in 0 until width) {
-            for (y in 0 until height) {
-                for (z in 0 until length) {
-                    yield(IntVec3(x, y, z))
-                }
-            }
-        }
-    }
 }

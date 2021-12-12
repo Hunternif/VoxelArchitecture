@@ -6,7 +6,7 @@ import com.scs.voxlib.VoxWriter
 import com.scs.voxlib.Voxel
 import com.scs.voxlib.chunk.*
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.util.forEachIndexed
+import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 
@@ -79,10 +79,10 @@ class VoxFileStorage private constructor(
     )
     private fun makeVoxelChunk() = VoxXYZIChunk(voxelCount).apply {
         var i = 0
-        array.forEachIndexed { pos, color ->
+        array.forEachPos { x, y, z, color ->
             val index = colorIndex[color]
             if (index != null) {
-                voxels[i] = Voxel(pos.toGridPoint3(), index)
+                voxels[i] = Voxel(gridPoint3(x, y, z), index)
                 i++
             }
         }
@@ -112,3 +112,4 @@ class VoxFileStorage private constructor(
 }
 
 fun IntVec3.toGridPoint3() = GridPoint3(z, x, y)
+fun gridPoint3(x: Int, y: Int, z: Int) = GridPoint3(z, x, y)

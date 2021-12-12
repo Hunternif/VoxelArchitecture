@@ -4,11 +4,25 @@ import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 
-fun <T> IStorage3D<T>.forEachIndexed(action: (IntVec3, T) -> Unit) {
+inline fun <T> IStorage3D<T>.forEachPos(
+    crossinline action: (IntVec3, T) -> Unit
+) {
     for (x in 0 until width) {
         for (y in 0 until height) {
             for (z in 0 until length) {
                 action(IntVec3(x, y, z), get(x, y, z))
+            }
+        }
+    }
+}
+
+inline fun <T> IStorage3D<T>.forEachPos(
+    crossinline action: (x: Int, y: Int, z: Int, T) -> Unit
+) {
+    for (x in 0 until width) {
+        for (y in 0 until height) {
+            for (z in 0 until length) {
+                action(x, y, z, get(x, y, z))
             }
         }
     }

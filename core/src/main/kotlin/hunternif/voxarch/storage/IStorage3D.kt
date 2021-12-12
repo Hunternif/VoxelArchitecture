@@ -12,4 +12,14 @@ interface IStorage3D<T> : Iterable<IntVec3> {
     operator fun set(p: IntVec3, v: T)
     operator fun contains(p: IntVec3): Boolean
     fun contains(x: Int, y: Int, z: Int): Boolean
+
+    override operator fun iterator(): Iterator<IntVec3> = iterator {
+        for (x in 0 until width) {
+            for (y in 0 until height) {
+                for (z in 0 until length) {
+                    yield(IntVec3(x, y, z))
+                }
+            }
+        }
+    }
 }
