@@ -60,7 +60,7 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
     internal val collapsedCount: Int get() = totalCount - unobservedSet.size
     val isCollapsed: Boolean get() = unobservedSet.size <= 0
     var isContradicted: Boolean = false
-        private set
+        protected set
 
     /** Returns true if this slot is in its final definite state. */
     protected abstract fun Slot.isObserved(): Boolean
@@ -96,11 +96,13 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
         val slot = unobservedSet.first()
         if (slot.possiblePatterns.size == 0) {
             isContradicted = true
-            println("Contradiction!")
-            return
+        } else {
+            slot.observe()
+            propagate()
         }
-        slot.observe()
-        propagate()
+        if (isContradicted) {
+            println("Contradiction!")
+        }
     }
 
     /**

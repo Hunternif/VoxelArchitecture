@@ -4,6 +4,7 @@ import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.wfc.WfcColor.*
+import org.junit.Ignore
 import org.junit.Test
 import java.nio.file.Paths
 import java.time.LocalDateTime
@@ -20,6 +21,7 @@ class WfcMagicaVoxelOverlapTest {
     private val reverseColorMap = colorMap.toList()
         .associate { it.second to it.first }
 
+    @Ignore
     @Test
     fun `read VOX input and write VOX output`() {
         val input = readVoxFile(
@@ -30,7 +32,7 @@ class WfcMagicaVoxelOverlapTest {
         println("${patterns.size} patterns read")
 
         val wave = WfcOverlapModel(10, 1, 10,
-            patterns
+            patterns, System.currentTimeMillis()
         )
         wave.observe()
         println("WFC complete!")
