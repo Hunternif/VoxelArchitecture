@@ -2,13 +2,13 @@ package hunternif.voxarch.wfc.overlap
 
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
-import hunternif.voxarch.magicavoxel.writeToVoxFile
+import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.wfc.WfcColor.*
-import org.junit.Ignore
+import org.junit.Assert.assertEquals
 import org.junit.Test
+import java.nio.file.Path
 import java.nio.file.Paths
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class WfcMagicaVoxelOverlapTest {
 
@@ -21,31 +21,75 @@ class WfcMagicaVoxelOverlapTest {
     private val reverseColorMap = colorMap.toList()
         .associate { it.second to it.first }
 
-    @Ignore
     @Test
-    fun `read VOX input and write VOX output`() {
+    fun `lattice pattern with 2 attempts`() {
         val input = readVoxFile(
-            Paths.get("./out/voxarch-wfc-overlap-input.vox"),
+            REFERENCES_DIR.resolve("lattice-sample.vox"),
             reverseColorMap
         )
-        val patterns = input.findPatterns(3, 1)
+        val patterns = input.findPatterns(3, 3)
         println("${patterns.size} patterns read")
 
-        val wave = WfcOverlapModel(10, 1, 10,
-            patterns, System.currentTimeMillis()
+        val wave = WfcOverlapModel(8, 8, 8, patterns, 1)
+        wave.observe()
+        println("WFC 1 complete!")
+        val lattice1Ref = readVoxFile(
+            REFERENCES_DIR.resolve("lattice-1.vox"),
+            reverseColorMap
         )
+        assertStorageEquals(lattice1Ref, wave)
+
+        wave.reset(2)
+        wave.observe()
+        println("WFC 2 complete!")
+        val lattice2Ref = readVoxFile(
+            REFERENCES_DIR.resolve("lattice-2.vox"),
+            reverseColorMap
+        )
+        assertStorageEquals(lattice2Ref, wave)
+    }
+
+    @Test
+    fun `stripe pattern`() {
+        val wave = WfcOverlapModel(8, 1, 8, patterns)
         wave.observe()
         println("WFC complete!")
 
-        val path = Paths.get(
-            "./out/voxarch-wfc-overlap-" +
-            "${wave.width}x${wave.height}x${wave.length}-" +
-            "${today()}.vox"
+        val stripesRef = readVoxFile(
+            REFERENCES_DIR.resolve("stripes.vox"),
+            reverseColorMap
         )
-        wave.writeToVoxFile(path, colorMap)
+        assertStorageEquals(stripesRef, wave)
     }
 
-    private fun today() =
-        DateTimeFormatter.ofPattern("YYY-MM-dd_HH_mm_ss")
-            .format(LocalDateTime.now())
+    private val patterns = listOf(
+        WfcPattern(3, 1, 3) { x, y, z ->
+            when {
+                z == 0 || z == 2 -> GROUND
+                else -> AIR
+            }
+        },
+        WfcPattern(3, 1, 3) { x, y, z ->
+            when {
+                z == 1 -> GROUND
+                else -> AIR
+            }
+        }
+    )
+
+    companion object {
+        val REFERENCES_DIR: Path = Paths.get("./src/test/resources/wfc")
+
+        private fun <T> assertStorageEquals(
+            expected: IStorage3D<in T>,
+            actual: IStorage3D<in T>
+        ) {
+            assertEquals(expected.width, actual.width)
+            assertEquals(expected.height, actual.height)
+            assertEquals(expected.length, actual.length)
+            expected.forEachPos { x, y, z, t ->
+                assertEquals(t, actual[x, y, z])
+            }
+        }
+    }
 }

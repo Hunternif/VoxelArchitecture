@@ -6,6 +6,7 @@ import hunternif.voxarch.util.nextWeighted
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.wfc.WfcModel
+import kotlin.random.Random
 
 // Implements the Overlapping Model
 
@@ -128,6 +129,7 @@ class WfcOverlapModel<C: Any>(
         if (newColor == null) {
             if (color != null) {
                 color = null
+                state = null
                 if (possiblePatterns.addAll(patternSet)) {
                     updateEntropy()
                     relaxQueue.add(this)
@@ -160,6 +162,12 @@ class WfcOverlapModel<C: Any>(
             }
         }
         updateEntropy()
+    }
+
+    fun reset(seed: Long = 0L) {
+        for (p in this) this[p] = null
+        isContradicted = false
+        rand = Random(seed)
     }
 
     override operator fun iterator(): Iterator<IntVec3> = wave.iterator()

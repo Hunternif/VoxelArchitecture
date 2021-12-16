@@ -40,7 +40,7 @@ abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
     protected val patternSet: Collection<P>,
     seed: Long = 0L
 ) {
-    protected val rand = Random(seed)
+    protected var rand = Random(seed)
     private val totalCount = width * height * length
     protected val initialEntropy = calculateEntropy(patternSet)
     protected abstract val wave: Array3D<Slot>
