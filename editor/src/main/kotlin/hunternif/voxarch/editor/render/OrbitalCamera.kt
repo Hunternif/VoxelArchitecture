@@ -1,6 +1,5 @@
 package hunternif.voxarch.editor.render
 
-import hunternif.voxarch.editor.render.Viewport
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -10,10 +9,10 @@ class OrbitalCamera {
     private val translation: Vector3f = Vector3f()
     val projectionMatrix: Matrix4f = Matrix4f()
     private val viewMatrix: Matrix4f = Matrix4f()
+    private var viewMatrixDirty = true
 
     /** For un-projecting mouse cursor to world coordinates */
     private val vpMat: Matrix4f = Matrix4f()
-
     private var mouseX = 0
     private var mouseY = 0
     private var dragging = false
@@ -29,22 +28,28 @@ class OrbitalCamera {
     private var radius = 5f
 
     fun setViewport(viewport: Viewport) {
+        if (vp.width != viewport.width || vp.height != viewport.height) {
+            // adjust projection matrix
+            projectionMatrix.setPerspective(
+                Math.toRadians(60.0).toFloat(),
+                viewport.width.toFloat() / viewport.height,
+                0.1f,
+                1000.0f
+            )
+            viewMatrixDirty = true
+        }
         vp.set(viewport)
-        // adjust projection matrix
-        projectionMatrix.setPerspective(
-            Math.toRadians(60.0).toFloat(),
-            vp.width.toFloat() / vp.height,
-            0.1f,
-            1000.0f
-        )
     }
 
     fun getViewMatrix(): Matrix4f {
-        viewMatrix.translation(0f, 0f, -radius)
-            .rotateX(xAngle)
-            .rotateY(yAngle)
-            .translate(translation)
-        projectionMatrix.mul(viewMatrix, vpMat)
+        if (viewMatrixDirty) {
+            viewMatrixDirty = false
+            viewMatrix.translation(0f, 0f, -radius)
+                .rotateX(xAngle)
+                .rotateY(yAngle)
+                .translate(translation)
+            projectionMatrix.mul(viewMatrix, vpMat)
+        }
         return viewMatrix
     }
 
@@ -65,6 +70,7 @@ class OrbitalCamera {
 
     fun onScroll(window: Long, xoffset: Double, yoffset: Double) {
         radius *= if (yoffset > 0) 1f / 1.1f else 1.1f
+        viewMatrixDirty = true
     }
 
     // ======================== DRAGGING ========================
@@ -96,6 +102,7 @@ class OrbitalCamera {
         val t = radius * 10f
         val dragWorldPosition = Vector3f(dragRayDir).mul(t).add(dragRayOrigin)
         translation.add(dragWorldPosition.sub(dragStartWorldPos))
+        viewMatrixDirty = true
     }
 
     private fun dragEnd() {
@@ -113,6 +120,7 @@ class OrbitalCamera {
         val deltaY = ypos.toFloat() - mouseY
         xAngle += deltaY * 0.01f
         yAngle += deltaX * 0.01f
+        viewMatrixDirty = true
     }
 
     private fun rotateEnd() {
