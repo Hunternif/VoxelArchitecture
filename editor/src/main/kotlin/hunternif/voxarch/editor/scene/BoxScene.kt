@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL32.*
 class BoxScene {
     private val vp = Viewport(0, 0, 0, 0)
     private val modelMatrix = Matrix4f().identity()
-    private val box = BoxMesh()
+    private val mesh = BoxMeshInstanced()
     private val camera = OrbitalCamera()
 
     private val shader = Shader(
@@ -35,7 +35,7 @@ class BoxScene {
 
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
-        box.init()
+        mesh.init()
         shader.init()
         glEnable(GL_DEPTH_TEST)
         GLFW.glfwSetCursorPosCallback(window, camera::onMouseMove)
@@ -72,7 +72,7 @@ class BoxScene {
 
         shader.uploadVec3f("uObjectColor", boxColor)
 
-        box.render()
+        mesh.render()
 
         shader.detach()
     }
