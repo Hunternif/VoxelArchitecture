@@ -3,6 +3,8 @@ package hunternif.voxarch.editor
 import hunternif.voxarch.editor.scene.BoxScene
 import hunternif.voxarch.editor.gui.DockedGui
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.magicavoxel.readVoxFile
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
@@ -45,6 +47,8 @@ class RealSimpleFbo {
         gui.init(window, vp)
         scene.init(window, vp)
         GLFW.glfwShowWindow(window)
+        val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
+        scene.setVoxelData(file)
     }
 
     private fun registerWindowEventHandler() {

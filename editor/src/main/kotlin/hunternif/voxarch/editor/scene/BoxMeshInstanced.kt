@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
+import org.lwjgl.system.MemoryUtil
 
 class BoxMeshInstanced {
     /** Borrowed from LearnOpenGL.com */
@@ -82,7 +83,17 @@ class BoxMeshInstanced {
 
 
         // Create VBO for the instances of this model
-        val instanceVertexBuffer = stack.mallocFloat(offsets.size * 3)
+        instanceVboID = glGenBuffers()
+        uploadInstanceData()
+    }
+
+    fun setInstances(offsets: List<Vector3f>) {
+        this.offsets = offsets
+        uploadInstanceData()
+    }
+
+    private fun uploadInstanceData() {
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(offsets.size * 3)
         instanceVertexBuffer.run {
             offsets.forEach {
                 put(it.x)
@@ -91,7 +102,6 @@ class BoxMeshInstanced {
             }
             flip()
         }
-        instanceVboID = glGenBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
 
@@ -102,10 +112,6 @@ class BoxMeshInstanced {
         glVertexAttribPointer(2, 3, GL_FLOAT, false, instanceStride, 0)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glVertexAttribDivisor(2, 1)
-    }
-
-    fun setInstances(offsets: List<Vector3f>) {
-        this.offsets = offsets
     }
 
     fun render() {

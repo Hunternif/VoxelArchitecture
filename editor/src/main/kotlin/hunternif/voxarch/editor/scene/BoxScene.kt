@@ -1,10 +1,12 @@
 package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.render.ColorRGBa
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.render.Viewport
-import hunternif.voxarch.editor.resourcePath
+import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.forEachPos
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW
@@ -46,6 +48,15 @@ class BoxScene {
     fun setViewport(viewport: Viewport) {
         vp.set(viewport)
         camera.setViewport(vp)
+    }
+
+    fun setVoxelData(data: IStorage3D<*>) {
+        val result = mutableListOf<Vector3f>()
+        data.forEachPos { x, y, z, v ->
+            if (v != null)
+                result.add(Vector3f(x.toFloat(), y.toFloat(), z.toFloat()))
+        }
+        mesh.setInstances(result)
     }
 
     fun render() {

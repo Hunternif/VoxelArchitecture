@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.render
+package hunternif.voxarch.editor.util
 
 import org.joml.Vector3f
 
