@@ -57,6 +57,8 @@ class BoxMeshInstanced {
     private  var vboID = 0
     private  var instanceVboID = 0
 
+    var debug = true
+
     fun init() = MemoryStack.stackPush().use { stack ->
         vaoID = glGenVertexArrays()
         glBindVertexArray(vaoID)
@@ -71,8 +73,6 @@ class BoxMeshInstanced {
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
-
-        // 1. Regular vertex attributes
         val stride = 6 * Float.SIZE_BYTES // vec3 pos, vec3 normal
         // position attribute
         glEnableVertexAttribArray(0)
@@ -80,7 +80,6 @@ class BoxMeshInstanced {
         // normal attribute
         glEnableVertexAttribArray(1)
         glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, 3L * Float.SIZE_BYTES)
-
 
         // Create VBO for the instances of this model
         instanceVboID = glGenBuffers()
@@ -104,8 +103,13 @@ class BoxMeshInstanced {
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
+        if (debug) {
+            val size = IntArray(1)
+            glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, size)
+            println("Vertex buffer size: ${size[0]}")
+        }
 
-        // 2. The instanced offset attribute comes from a different vertex buffer
+        // The instanced offset attribute comes from a separate vertex buffer
         val instanceStride = 3 * Float.SIZE_BYTES // vec3 offset
         glEnableVertexAttribArray(2)
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
