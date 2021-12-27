@@ -1,1 +1,1 @@
-include ':mc-mod', ':core'
+include ':mc-mod', ':core', ':editor'
