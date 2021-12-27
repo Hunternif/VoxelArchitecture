@@ -1,57 +1,47 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.Viewport
 import imgui.ImGui
-import imgui.flag.ImGuiConfigFlags
 import imgui.flag.ImGuiDir
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
-import imgui.gl3.ImGuiImplGl3
-import imgui.glfw.ImGuiImplGlfw
 import imgui.internal.flag.ImGuiDockNodeFlags
 import imgui.type.ImInt
-import org.lwjgl.glfw.GLFW
 import imgui.internal.ImGui as DockImGui
 
-class DockedGui {
-    val vp = Viewport(0, 0, 0, 0)
-    val imGuiGlfw = ImGuiImplGlfw()
-    val imGuiGl3 = ImGuiImplGl3()
-    var firstTime = true
+class DockedGui : GuiBase() {
+    @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
+    @PublishedApi internal val mainWindowFbo = FrameBuffer()
+
+    private var firstTime = true
 
     fun init(windowHandle: Long, viewport: Viewport) {
-        setViewport(viewport)
-        ImGui.createContext()
-        val io = ImGui.getIO()
-        io.configFlags = io.configFlags or ImGuiConfigFlags.DockingEnable
-        io.iniFilename = null // This prevents "imgui.ini" from saving
-        imGuiGlfw.init(windowHandle, true)
-        imGuiGl3.init("#version 130")
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3)
-        GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 0)
-    }
-
-    fun setViewport(viewport: Viewport) {
+        super.init(windowHandle)
         vp.set(viewport)
+        mainWindowFbo.init(viewport)
     }
 
-    inline fun render(
-        textureId: Int,
-        crossinline renderMainWindow: (Viewport) -> Unit
+    inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
+        horizontalDockspace(0.20f, "main window", "right panel")
+        mainWindow("main window", renderMainWindow)
+        rightPanel("right panel") {
+            ImGui.text("Node tree explorer goes here")
+        }
+    }
+
+    @PublishedApi
+    internal inline fun mainWindow(
+        title: String,
+        crossinline renderWindow: (Viewport) -> Unit
     ) {
-        imGuiGlfw.newFrame()
-        ImGui.newFrame()
-
-        horizontalDockspace(0.20f, "docked left", "docked right")
-
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
         val mainWindowFlags = 0 or
             ImGuiWindowFlags.NoMove or
             ImGuiWindowFlags.NoScrollbar
-        if (ImGui.begin("docked left", mainWindowFlags)) {
-            ImGui.setCursorPos(ImGui.getCursorPosX(), ImGui.getCursorPosY())
+        if (ImGui.begin(title, mainWindowFlags)) {
             val pos = ImGui.getWindowPos()
             val vMin = ImGui.getWindowContentRegionMin()
             val vMax = ImGui.getWindowContentRegionMax()
@@ -61,22 +51,30 @@ class DockedGui {
                 vMax.x - vMin.x,
                 vMax.y - vMin.y
             )
-            renderMainWindow(vp)
-            ImGui.image(textureId, vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
+            mainWindowFbo.setViewport(vp)
+            mainWindowFbo.render {
+                renderWindow(vp)
+                ImGui.image(mainWindowFbo.texture.texID,
+                    vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
+            }
         }
         ImGui.end()
         ImGui.popStyleVar(3)
-        if (ImGui.begin("docked right", ImGuiWindowFlags.NoMove)) {
-            ImGui.text("Node tree explorer goes here")
-        }
-        ImGui.end()
-
-        ImGui.render()
-        imGuiGl3.renderDrawData(ImGui.getDrawData())
     }
 
     @PublishedApi
-    internal inline fun horizontalDockspace(
+    internal inline fun rightPanel(
+        title: String,
+        crossinline renderWindow: () -> Unit
+    ) {
+        if (ImGui.begin(title, ImGuiWindowFlags.NoMove)) {
+            renderWindow()
+        }
+        ImGui.end()
+    }
+
+    @PublishedApi
+    internal fun horizontalDockspace(
         rightWindowRatio: Float,
         leftWindow: String,
         rightWindow: String

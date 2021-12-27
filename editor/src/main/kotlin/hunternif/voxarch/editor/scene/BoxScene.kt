@@ -34,7 +34,7 @@ class BoxScene {
     private val boxColor = ColorRGBa.fromHex(0xff9966).toVector3f()
 
     fun init(window: Long, viewport: Viewport) {
-        setViewport(vp)
+        setViewport(viewport)
         box.init()
         shader.init()
         glEnable(GL_DEPTH_TEST)
@@ -49,6 +49,10 @@ class BoxScene {
     }
 
     fun render() {
+        glViewport(0, 0, vp.width, vp.height)
+        glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
+        glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
+
         shader.use()
 
         shader.uploadMat4f("uProjection", camera.projectionMatrix)

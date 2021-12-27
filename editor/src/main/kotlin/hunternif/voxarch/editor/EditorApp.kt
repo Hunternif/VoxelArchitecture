@@ -2,7 +2,6 @@ package hunternif.voxarch.editor
 
 import hunternif.voxarch.editor.scene.BoxScene
 import hunternif.voxarch.editor.gui.DockedGui
-import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.Viewport
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
@@ -16,7 +15,6 @@ class RealSimpleFbo {
     private var window: Long = 0
     private var width: Int = 800
     private var height: Int = 600
-    private val fbo = FrameBuffer()
     private val gui = DockedGui()
     private val scene = BoxScene()
 
@@ -30,15 +28,9 @@ class RealSimpleFbo {
     private fun runFrame() {
         GLFW.glfwPollEvents()
         glViewport(0, 0, width, height)
-        gui.render(fbo.texture.texID) { vp ->
-            fbo.setViewport(vp)
-            fbo.render {
-                glViewport(0, 0, vp.width, vp.height)
-                scene.setViewport(vp)
-                glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
-                glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
-                scene.render()
-            }
+        gui.render { vp ->
+            scene.setViewport(vp)
+            scene.render()
         }
         GLFW.glfwSwapBuffers(window)
     }
@@ -51,7 +43,6 @@ class RealSimpleFbo {
         val vp = Viewport(0, 0, width, height)
         registerWindowEventHandler()
         gui.init(window, vp)
-        fbo.init(vp)
         scene.init(window, vp)
         GLFW.glfwShowWindow(window)
     }
