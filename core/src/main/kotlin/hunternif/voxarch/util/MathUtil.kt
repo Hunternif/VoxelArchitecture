@@ -90,6 +90,13 @@ fun Double.clamp(min: Double, max: Double): Double {
 fun Double.clamp(min: Int, max: Int): Double =
     clamp(min.toDouble(), max.toDouble())
 fun Double.clampMin(min: Double): Double = max(min, this)
+fun Float.clamp(min: Float, max: Float): Float {
+    return when {
+        this < min -> min
+        this > max -> max
+        else -> this
+    }
+}
 
 fun Double.round() = round(this)
 fun Double.roundToEven() = round(this / 2)*2

@@ -1,8 +1,7 @@
 package hunternif.voxarch.editor.render
 
-import org.joml.Math.sin
-import org.joml.Math.cos
-import org.joml.Math.tan
+import hunternif.voxarch.util.clamp
+import org.joml.Math.*
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -164,12 +163,17 @@ class OrbitalCamera {
     private fun rotate(xpos: Double, ypos: Double) {
         val deltaX = xpos.toFloat() - mouseX
         val deltaY = ypos.toFloat() - mouseY
-        xAngle += deltaY * 0.01f
+        xAngle = (xAngle + deltaY * 0.01f).clamp(MIN_X_ANGLE, MAX_X_ANGLE)
         yAngle += deltaX * 0.01f
         viewMatrixDirty = true
     }
 
     private fun rotateEnd() {
         rotating = false
+    }
+
+    companion object {
+        private const val MIN_X_ANGLE: Float = -PI.toFloat() / 2f
+        private const val MAX_X_ANGLE: Float = PI.toFloat() / 2f
     }
 }
