@@ -9,6 +9,7 @@ import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.forEachPos
 import org.joml.Matrix4f
 import org.joml.Vector3f
+import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL32.*
 
@@ -53,10 +54,10 @@ class BoxScene {
 
     fun setVoxelData(data: IStorage3D<*>) {
         this.data = data
-        val offsets = mutableListOf<Vector3f>()
+        val offsets = mutableListOf<Vector3i>()
         data.forEachPos { x, y, z, v ->
             if (v != null)
-                offsets.add(Vector3f(x.toFloat(), y.toFloat(), z.toFloat()))
+                offsets.add(Vector3i(x, y, z))
         }
         mesh.setInstances(offsets)
     }

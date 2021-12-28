@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.scene
 
 import org.joml.Vector3f
+import org.joml.Vector3i
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -57,11 +58,11 @@ class BoxMeshInstanced {
          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
     )
-    private var offsets: List<Vector3f> = listOf(Vector3f(0f, 0f, 0f))
+    private var offsets: List<Vector3i> = listOf(Vector3i(0, 0, 0))
 
     private var vaoID = 0
-    private  var vboID = 0
-    private  var instanceVboID = 0
+    private var vboID = 0
+    private var instanceVboID = 0
 
     var debug = true
 
@@ -92,13 +93,13 @@ class BoxMeshInstanced {
         uploadInstanceData()
     }
 
-    fun setInstances(offsets: List<Vector3f>) {
+    fun setInstances(offsets: List<Vector3i>) {
         this.offsets = offsets
         uploadInstanceData()
     }
 
     private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(offsets.size * 3)
+        val instanceVertexBuffer = MemoryUtil.memAllocInt(offsets.size * 3)
         instanceVertexBuffer.run {
             offsets.forEach {
                 put(it.x)
@@ -116,10 +117,10 @@ class BoxMeshInstanced {
         }
 
         // The instanced offset attribute comes from a separate vertex buffer
-        val instanceStride = 3 * Float.SIZE_BYTES // vec3 offset
+        val instanceStride = 3 * Int.SIZE_BYTES // vec3 offset
         glEnableVertexAttribArray(2)
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glVertexAttribPointer(2, 3, GL_FLOAT, false, instanceStride, 0)
+        glVertexAttribPointer(2, 3, GL_INT, false, instanceStride, 0)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
         glVertexAttribDivisor(2, 1)
     }
