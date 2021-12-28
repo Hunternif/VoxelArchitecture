@@ -16,11 +16,16 @@ import org.lwjgl.opengl.GL32.*
 class BoxScene {
     private val vp = Viewport(0, 0, 0, 0)
     private val modelMatrix = Matrix4f().identity()
-    private val mesh = BoxMeshInstanced()
+    private val boxMesh = BoxMeshInstanced()
+    private val gridMesh = FloorGridMesh()
     private val camera = OrbitalCamera()
     private var data: IStorage3D<*>? = null
 
-    private val shader = Shader(
+    private val gridShader = Shader(
+        resourcePath("shaders/floor-grid.vert.glsl"),
+        resourcePath("shaders/floor-grid.frag.glsl"),
+    )
+    private val boxShader = Shader(
         resourcePath("shaders/magica-voxel.vert.glsl"),
         resourcePath("shaders/magica-voxel.frag.glsl"),
     )
@@ -36,15 +41,37 @@ class BoxScene {
     private val ambientColor = ColorRGBa.fromHex(0x353444).toVector3f()
     private val ambientPower = 1.0f
     private val boxColor = ColorRGBa.fromHex(0xff9966).toVector3f()
+    private val gridColor = ColorRGBa.fromHex(0x333333).toVector3f()
 
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
-        mesh.init()
-        shader.init()
+        boxMesh.init()
+        gridMesh.init()
+        gridMesh.setSize(0, 0, 100, 100)
+        initShaders()
         glEnable(GL_DEPTH_TEST)
         GLFW.glfwSetCursorPosCallback(window, camera::onMouseMove)
         GLFW.glfwSetMouseButtonCallback(window, camera::onMouseButton)
         GLFW.glfwSetScrollCallback(window, camera::onScroll)
+    }
+
+    private fun initShaders() {
+        boxShader.init()
+        boxShader.uploadVec3f("uSkylightDir", skylightDir)
+        boxShader.uploadVec3f("uSkylightColor", skylightColor)
+        boxShader.uploadFloat("uSkylightPower", skylightPower)
+
+        boxShader.uploadVec3f("uBacklightDir", backlightDir)
+        boxShader.uploadVec3f("uBacklightColor", backlightColor)
+        boxShader.uploadFloat("uBacklightPower", backlightPower)
+
+        boxShader.uploadVec3f("uAmbientColor", ambientColor)
+        boxShader.uploadFloat("uAmbientPower", ambientPower)
+
+        boxShader.uploadVec3f("uObjectColor", boxColor)
+
+        gridShader.init()
+        gridShader.uploadVec3f("uGridColor", gridColor)
     }
 
     fun setViewport(viewport: Viewport) {
@@ -59,7 +86,7 @@ class BoxScene {
             if (v != null)
                 offsets.add(Vector3i(x, y, z))
         }
-        mesh.setInstances(offsets)
+        boxMesh.setInstances(offsets)
     }
 
     fun centerCamera() {
@@ -81,27 +108,20 @@ class BoxScene {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
 
-        shader.use()
+        gridShader.use()
+        gridShader.uploadMat4f("uProjection", camera.projectionMatrix)
+        gridShader.uploadMat4f("uView", camera.getViewMatrix())
+        gridMesh.render()
+        gridShader.detach()
 
-        shader.uploadMat4f("uProjection", camera.projectionMatrix)
-        shader.uploadMat4f("uView", camera.getViewMatrix())
-        shader.uploadMat4f("uModel", modelMatrix)
+        boxShader.use()
 
-        shader.uploadVec3f("uSkylightDir", skylightDir)
-        shader.uploadVec3f("uSkylightColor", skylightColor)
-        shader.uploadFloat("uSkylightPower", skylightPower)
+        boxShader.uploadMat4f("uProjection", camera.projectionMatrix)
+        boxShader.uploadMat4f("uView", camera.getViewMatrix())
+        boxShader.uploadMat4f("uModel", modelMatrix)
 
-        shader.uploadVec3f("uBacklightDir", backlightDir)
-        shader.uploadVec3f("uBacklightColor", backlightColor)
-        shader.uploadFloat("uBacklightPower", backlightPower)
+        boxMesh.render()
 
-        shader.uploadVec3f("uAmbientColor", ambientColor)
-        shader.uploadFloat("uAmbientPower", ambientPower)
-
-        shader.uploadVec3f("uObjectColor", boxColor)
-
-        mesh.render()
-
-        shader.detach()
+        boxShader.detach()
     }
 }
