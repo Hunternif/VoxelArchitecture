@@ -24,11 +24,11 @@ class BoxScene {
     )
 
     /** Skylight falls uniformly in this direction */
-    private val skylightDir = Vector3f(0.77f, -1.0f, -0.9f).normalize()
+    private val skylightDir = Vector3f(-0.77f, -1.0f, -0.9f).normalize()
     private val skylightColor = ColorRGBa.fromHex(0xffffff).toVector3f()
     private val skylightPower = 1.25f
     /** Highlights the bottom of the model */
-    private val backlightDir = Vector3f(-0.77f, 1.0f, 0.9f).normalize()
+    private val backlightDir = Vector3f(0.77f, 1.0f, 0.9f).normalize()
     private val backlightColor = ColorRGBa.fromHex(0xffffff).toVector3f()
     private val backlightPower = 1.0f
     private val ambientColor = ColorRGBa.fromHex(0x353444).toVector3f()
