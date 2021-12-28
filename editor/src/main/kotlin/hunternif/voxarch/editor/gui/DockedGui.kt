@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.Viewport
 import imgui.ImGui
+import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiDir
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
@@ -87,7 +88,7 @@ class DockedGui : GuiBase() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
-        val flags = 0 or
+        val windowFlags = 0 or
             ImGuiWindowFlags.NoDocking or
             ImGuiWindowFlags.NoTitleBar or
             ImGuiWindowFlags.NoCollapse or
@@ -95,8 +96,10 @@ class DockedGui : GuiBase() {
             ImGuiWindowFlags.NoMove or
             ImGuiWindowFlags.NoBringToFrontOnFocus or
             ImGuiWindowFlags.NoNavFocus
-        ImGui.begin("dockspace", flags)
-        ImGui.dockSpace(dockspaceId)
+        val dockFlags = 0 or
+            ImGuiDockNodeFlags.NoWindowMenuButton // hide button to hide tab bar
+        ImGui.begin("dockspace", windowFlags)
+        ImGui.dockSpace(dockspaceId, vp.workSizeX, vp.workSizeY, dockFlags)
         if (firstTime) {
             firstTime = false
 
@@ -108,6 +111,12 @@ class DockedGui : GuiBase() {
             val rightId = ImInt(0)
             DockImGui.dockBuilderSplitNode(
                 dockspaceId, ImGuiDir.Right, rightWindowRatio, rightId, leftId
+            )
+            // hide tab bar for the main window
+            ImGui.setNextWindowClass(
+                ImGuiWindowClass().apply {
+                    dockNodeFlagsOverrideSet = ImGuiDockNodeFlags.NoTabBar
+                }
             )
             DockImGui.dockBuilderDockWindow(leftWindow, leftId.get())
             DockImGui.dockBuilderDockWindow(rightWindow, rightId.get())
