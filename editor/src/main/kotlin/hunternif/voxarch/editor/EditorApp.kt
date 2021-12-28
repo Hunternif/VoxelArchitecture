@@ -5,15 +5,14 @@ import hunternif.voxarch.editor.gui.DockedGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.resourcePath
 import hunternif.voxarch.magicavoxel.readVoxFile
-import hunternif.voxarch.vector.Array3D
-import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryUtil
 
-fun main() = RealSimpleFbo().run()
+fun main() = EditorApp().run()
 
-class RealSimpleFbo {
+class EditorApp {
     private val title = "Voxel Architecture Editor"
     private var window: Long = 0
     private var width: Int = 800
@@ -23,31 +22,31 @@ class RealSimpleFbo {
 
     fun run() {
         init()
-        while (!GLFW.glfwWindowShouldClose(window)) {
+        while (!glfwWindowShouldClose(window)) {
             runFrame()
         }
     }
 
     private fun runFrame() {
-        GLFW.glfwPollEvents()
+        glfwPollEvents()
         glViewport(0, 0, width, height)
         gui.render { vp ->
             scene.setViewport(vp)
             scene.render()
         }
-        GLFW.glfwSwapBuffers(window)
+        glfwSwapBuffers(window)
     }
 
     //==================== INIT CODE =======================
 
     private fun init() {
-        GLFW.glfwInit()
+        glfwInit()
         window = createWindow(width, height, title)
         val vp = Viewport(0, 0, width, height)
         registerWindowEventHandler()
         gui.init(window, vp)
         scene.init(window, vp)
-        GLFW.glfwShowWindow(window)
+        glfwShowWindow(window)
         val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
         scene.setVoxelData(file)
 //        scene.setVoxelData(Array3D(1, 1, 1, "lol"))
@@ -55,8 +54,8 @@ class RealSimpleFbo {
     }
 
     private fun registerWindowEventHandler() {
-        GLFW.glfwSetFramebufferSizeCallback(window, ::onFramebufferSize)
-        GLFW.glfwSetWindowSizeCallback(window, ::onWindowSize)
+        glfwSetFramebufferSizeCallback(window, ::onFramebufferSize)
+        glfwSetWindowSizeCallback(window, ::onWindowSize)
     }
 
     @Suppress("UNUSED_PARAMETER")
@@ -73,10 +72,10 @@ class RealSimpleFbo {
 
 
 private fun createWindow(width: Int, height: Int, title: String): Long {
-    GLFW.glfwWindowHint(GLFW.GLFW_VISIBLE, GLFW.GLFW_FALSE)
-    GLFW.glfwWindowHint(GLFW.GLFW_RESIZABLE, GLFW.GLFW_TRUE)
-    val window = GLFW.glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL)
-    GLFW.glfwMakeContextCurrent(window)
+    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
+    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
+    val window = glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL)
+    glfwMakeContextCurrent(window)
     GL.createCapabilities()
     return window
 }
