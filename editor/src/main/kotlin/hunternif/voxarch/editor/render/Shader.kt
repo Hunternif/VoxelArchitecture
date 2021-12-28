@@ -10,29 +10,23 @@ class Shader(
     private val vertex: Path,
     private val fragment: Path
 ) {
-    private var shaderProgramID = 0
+    @PublishedApi
+    internal var shaderProgramID = 0
     private var beingUsed = false
 
-    fun init() {
+    fun init(action: Shader.() -> Unit = {}) {
         shaderProgramID = loadShaderProgram(vertex, fragment)
+        use(action)
     }
 
-    fun use() {
-        if (!beingUsed) {
-            // Bind shader program
-            glUseProgram(shaderProgramID)
-            beingUsed = true
-        }
-    }
-
-    fun detach() {
+    inline fun use(crossinline action: Shader.() -> Unit) {
+        glUseProgram(shaderProgramID)
+        this.action()
         glUseProgram(0)
-        beingUsed = false
     }
 
     fun uploadMat4f(varName: String, mat4: Matrix4f) = MemoryStack.stackPush().use { stack ->
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         val matBuffer = stack.mallocFloat(16)
         mat4[matBuffer]
         glUniformMatrix4fv(varLocation, false, matBuffer)
@@ -40,7 +34,6 @@ class Shader(
 
     fun uploadMat3f(varName: String, mat3: Matrix3f) = MemoryStack.stackPush().use { stack ->
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         val matBuffer = stack.mallocFloat(9)
         mat3[matBuffer]
         glUniformMatrix3fv(varLocation, false, matBuffer)
@@ -48,31 +41,26 @@ class Shader(
 
     fun uploadVec4f(varName: String, vec: Vector4f) {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         glUniform4f(varLocation, vec.x, vec.y, vec.z, vec.w)
     }
 
     fun uploadVec3f(varName: String, vec: Vector3f) {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         glUniform3f(varLocation, vec.x, vec.y, vec.z)
     }
 
     fun uploadVec2f(varName: String, vec: Vector2f) {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         glUniform2f(varLocation, vec.x, vec.y)
     }
 
     fun uploadFloat(varName: String, value: Float) {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         glUniform1f(varLocation, value)
     }
 
     fun uploadTexture(varName: String, slot: Int) {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
-        use()
         glUniform1i(varLocation, slot)
     }
 }

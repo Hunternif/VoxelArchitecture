@@ -15,7 +15,6 @@ import org.lwjgl.opengl.GL32.*
 
 class BoxScene {
     private val vp = Viewport(0, 0, 0, 0)
-    private val modelMatrix = Matrix4f().identity()
     private val boxMesh = BoxMeshInstanced()
     private val gridMesh = FloorGridMesh()
     private val camera = OrbitalCamera()
@@ -56,22 +55,24 @@ class BoxScene {
     }
 
     private fun initShaders() {
-        boxShader.init()
-        boxShader.uploadVec3f("uSkylightDir", skylightDir)
-        boxShader.uploadVec3f("uSkylightColor", skylightColor)
-        boxShader.uploadFloat("uSkylightPower", skylightPower)
+        boxShader.init {
+            uploadVec3f("uSkylightDir", skylightDir)
+            uploadVec3f("uSkylightColor", skylightColor)
+            uploadFloat("uSkylightPower", skylightPower)
 
-        boxShader.uploadVec3f("uBacklightDir", backlightDir)
-        boxShader.uploadVec3f("uBacklightColor", backlightColor)
-        boxShader.uploadFloat("uBacklightPower", backlightPower)
+            uploadVec3f("uBacklightDir", backlightDir)
+            uploadVec3f("uBacklightColor", backlightColor)
+            uploadFloat("uBacklightPower", backlightPower)
 
-        boxShader.uploadVec3f("uAmbientColor", ambientColor)
-        boxShader.uploadFloat("uAmbientPower", ambientPower)
+            uploadVec3f("uAmbientColor", ambientColor)
+            uploadFloat("uAmbientPower", ambientPower)
 
-        boxShader.uploadVec3f("uObjectColor", boxColor)
+            uploadVec3f("uObjectColor", boxColor)
+        }
 
-        gridShader.init()
-        gridShader.uploadVec3f("uGridColor", gridColor)
+        gridShader.init {
+            uploadVec3f("uGridColor", gridColor)
+        }
     }
 
     fun setViewport(viewport: Viewport) {
@@ -108,20 +109,16 @@ class BoxScene {
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
 
-        gridShader.use()
-        gridShader.uploadMat4f("uProjection", camera.projectionMatrix)
-        gridShader.uploadMat4f("uView", camera.getViewMatrix())
-        gridMesh.render()
-        gridShader.detach()
+        gridShader.use {
+            uploadMat4f("uProjection", camera.projectionMatrix)
+            uploadMat4f("uView", camera.getViewMatrix())
+            gridMesh.render()
+        }
 
-        boxShader.use()
-
-        boxShader.uploadMat4f("uProjection", camera.projectionMatrix)
-        boxShader.uploadMat4f("uView", camera.getViewMatrix())
-        boxShader.uploadMat4f("uModel", modelMatrix)
-
-        boxMesh.render()
-
-        boxShader.detach()
+        boxShader.use {
+            uploadMat4f("uProjection", camera.projectionMatrix)
+            uploadMat4f("uView", camera.getViewMatrix())
+            boxMesh.render()
+        }
     }
 }
