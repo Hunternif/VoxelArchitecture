@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.render.FrameBuffer
+import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
 import imgui.ImGui
 import imgui.ImGuiWindowClass
@@ -13,13 +14,14 @@ import imgui.internal.ImGui as DockImGui
 
 class DockedGui : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
-    @PublishedApi internal val mainWindowFbo = FrameBuffer()
+    @PublishedApi internal var mainWindowFbo = FrameBuffer()
 
     private var firstTime = true
 
-    fun init(windowHandle: Long, viewport: Viewport) {
+    fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
         vp.set(viewport)
+        if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA()
         mainWindowFbo.init(viewport)
     }
 

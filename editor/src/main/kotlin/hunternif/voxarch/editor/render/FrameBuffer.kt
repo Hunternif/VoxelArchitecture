@@ -2,13 +2,13 @@ package hunternif.voxarch.editor.render
 
 import org.lwjgl.opengl.GL32.*
 
-class FrameBuffer {
+open class FrameBuffer {
     private val vp = Viewport(0, 0, 0, 0)
     var fboID: Int = 0
     var rboID: Int = 0
     val texture = Texture("generated")
 
-    fun init(viewport: Viewport) {
+    open fun init(viewport: Viewport) {
         setViewport(viewport)
         texture.generate(vp.width, vp.height)
 
@@ -34,7 +34,7 @@ class FrameBuffer {
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
     }
 
-    fun setViewport(viewport: Viewport) {
+    open fun setViewport(viewport: Viewport) {
         if (vp.width != viewport.width || vp.height != viewport.height) {
             texture.resize(viewport.width, viewport.height)
             glBindRenderbuffer(GL_RENDERBUFFER, rboID)
@@ -43,7 +43,7 @@ class FrameBuffer {
         vp.set(viewport)
     }
 
-    inline fun render(crossinline renderCall: () -> Unit) {
+    open fun render(renderCall: () -> Unit) {
         glBindFramebuffer(GL_FRAMEBUFFER, fboID)
         renderCall()
         glBindFramebuffer(GL_FRAMEBUFFER, 0)

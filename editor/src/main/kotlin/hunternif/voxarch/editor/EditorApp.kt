@@ -44,7 +44,7 @@ class EditorApp {
         window = createWindow(width, height, title)
         val vp = Viewport(0, 0, width, height)
         registerWindowEventHandler()
-        gui.init(window, vp)
+        gui.init(window, vp, 4)
         scene.init(window, vp)
         glfwShowWindow(window)
         val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
