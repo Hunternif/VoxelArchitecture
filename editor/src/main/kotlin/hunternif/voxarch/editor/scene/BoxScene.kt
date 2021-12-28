@@ -17,6 +17,7 @@ class BoxScene {
     private val modelMatrix = Matrix4f().identity()
     private val mesh = BoxMeshInstanced()
     private val camera = OrbitalCamera()
+    private var data: IStorage3D<*>? = null
 
     private val shader = Shader(
         resourcePath("shaders/magica-voxel.vert.glsl"),
@@ -51,12 +52,27 @@ class BoxScene {
     }
 
     fun setVoxelData(data: IStorage3D<*>) {
-        val result = mutableListOf<Vector3f>()
+        this.data = data
+        val offsets = mutableListOf<Vector3f>()
         data.forEachPos { x, y, z, v ->
             if (v != null)
-                result.add(Vector3f(x.toFloat(), y.toFloat(), z.toFloat()))
+                offsets.add(Vector3f(x.toFloat(), y.toFloat(), z.toFloat()))
         }
-        mesh.setInstances(result)
+        mesh.setInstances(offsets)
+    }
+
+    fun centerCamera() {
+        data?.run {
+            camera.setPosition(
+                width / 2f - 0.5f,
+                height / 2f - 0.5f,
+                length / 2f - 0.5f
+            )
+            camera.zoomToFitBox(
+                Vector3f(0f, 0f, 0f),
+                Vector3f(width.toFloat(), height.toFloat(), length.toFloat())
+            )
+        }
     }
 
     fun render() {

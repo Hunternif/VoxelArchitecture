@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.render
 
+import kotlin.math.sqrt
+
 data class Viewport(
     var x: Int,
     var y: Int,
@@ -31,4 +33,20 @@ data class Viewport(
     fun contains(xpos: Int, ypos: Int): Boolean =
         xpos >= x && xpos <= x + width &&
             ypos >= y && ypos <= y + width
+
+    /** Distance to the closest edge of the viewport, if ([x], [y]) is outside.
+     * If ([x], [y]) is inside, returns 0. */
+    fun distanceToPoint(x: Float, y: Float): Float {
+        val dx: Float = when {
+            x < this.x -> this.x.toFloat() - x
+            x > this.x + width -> x - this.x - width
+            else -> 0f
+        }
+        val dy: Float = when {
+            y < this.y -> this.y.toFloat() - y
+            y > this.y + height -> x - this.y - height
+            else -> 0f
+        }
+        return sqrt(dx*dx + dy*dy)
+    }
 }

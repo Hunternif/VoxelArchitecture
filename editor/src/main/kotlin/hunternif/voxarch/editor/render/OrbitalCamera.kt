@@ -1,17 +1,23 @@
 package hunternif.voxarch.editor.render
 
+import org.joml.Math.sin
+import org.joml.Math.cos
+import org.joml.Math.tan
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 
 class OrbitalCamera {
+    private val fov = 60.0
     private val vp = Viewport(0, 0, 0, 0)
+    /** Camera is looking at (0, 0, 0) - [translation]. */
     private val translation: Vector3f = Vector3f()
     val projectionMatrix: Matrix4f = Matrix4f()
     private val viewMatrix: Matrix4f = Matrix4f()
     private var viewMatrixDirty = true
 
-    /** For un-projecting mouse cursor to world coordinates */
+    /** Combined projection & view transform matrix, used for un-projecting
+     * mouse cursor to world coordinates */
     private val vpMat: Matrix4f = Matrix4f()
     private var mouseX = 0
     private var mouseY = 0
@@ -19,7 +25,6 @@ class OrbitalCamera {
     private var rotating = false
 
     private val dragStartWorldPos: Vector3f = Vector3f()
-    private val dragCamNormal: Vector3f = Vector3f()
     private val dragRayOrigin: Vector3f = Vector3f()
     private val dragRayDir: Vector3f = Vector3f()
 
@@ -31,7 +36,7 @@ class OrbitalCamera {
         if (vp.width != viewport.width || vp.height != viewport.height) {
             // adjust projection matrix
             projectionMatrix.setPerspective(
-                Math.toRadians(60.0).toFloat(),
+                Math.toRadians(fov).toFloat(),
                 viewport.width.toFloat() / viewport.height,
                 0.1f,
                 1000.0f
@@ -39,6 +44,48 @@ class OrbitalCamera {
             viewMatrixDirty = true
         }
         vp.set(viewport)
+    }
+
+    fun setPosition(x: Float, y: Float, z: Float) {
+        this.translation.set(-x, -y, -z)
+        viewMatrixDirty = true
+    }
+
+    /** Adjusts camera radius so the given points are visible*/
+    fun zoomToFit(vararg points: Vector3f) {
+        val radii = points.map { p ->
+            // vector from camera's focus point to the given point.
+            // [translation] stores the translation value, i.e. minus focus point.
+            val d = Vector3f()
+            p.add(translation, d)
+
+            // find angle between camera normal and vector d, in radians
+            val camNormal = Vector3f()
+            getViewMatrix().positiveZ(camNormal)
+            val angle = d.angle(camNormal)
+
+            val focalLength = 1f / tan(Math.toRadians(fov).toFloat() / 2f)
+            d.length() * (cos(angle) + sin(angle) * focalLength)
+        }
+        radii.maxOrNull()?.let { maxRadius ->
+            radius = maxRadius
+            viewMatrixDirty = true
+        }
+    }
+
+    /** Adjusts camera radius to fit all corners of this box.
+     * [start] and [end] are opposite corners. */
+    fun zoomToFitBox(start: Vector3f, end: Vector3f) {
+        zoomToFit(
+            Vector3f(start.x, start.y, start.z),
+            Vector3f(start.x, start.y, end.z),
+            Vector3f(start.x, end.y, start.z),
+            Vector3f(start.x, end.y, end.z),
+            Vector3f(end.x, start.y, start.z),
+            Vector3f(end.x, start.y, end.z),
+            Vector3f(end.x, end.y, start.z),
+            Vector3f(end.x, end.y, end.z),
+        )
     }
 
     fun getViewMatrix(): Matrix4f {
@@ -87,7 +134,6 @@ class OrbitalCamera {
         )
         val t = radius * 10f
         dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)
-        viewMatrix.positiveZ(dragCamNormal)
     }
 
     private fun drag(xpos: Double, ypos: Double) {

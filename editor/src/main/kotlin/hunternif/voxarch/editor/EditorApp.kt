@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.gui.DockedGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.resourcePath
 import hunternif.voxarch.magicavoxel.readVoxFile
+import hunternif.voxarch.vector.Array3D
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
@@ -49,6 +50,8 @@ class RealSimpleFbo {
         GLFW.glfwShowWindow(window)
         val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
         scene.setVoxelData(file)
+//        scene.setVoxelData(Array3D(1, 1, 1, "lol"))
+        scene.centerCamera()
     }
 
     private fun registerWindowEventHandler() {
