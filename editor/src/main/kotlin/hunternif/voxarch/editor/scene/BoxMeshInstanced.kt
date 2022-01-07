@@ -1,7 +1,10 @@
 package hunternif.voxarch.editor.scene
 
-import org.joml.Vector3f
-import org.joml.Vector3i
+import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.forEachPos
+import hunternif.voxarch.vector.Array3D
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -58,7 +61,7 @@ class BoxMeshInstanced {
          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
     )
-    private var offsets: List<Vector3i> = listOf(Vector3i(0, 0, 0))
+    private var voxels: IStorage3D<VoxColor?> = Array3D(0, 0, 0, null)
 
     private var vaoID = 0
     private var vboID = 0
@@ -93,18 +96,24 @@ class BoxMeshInstanced {
         uploadInstanceData()
     }
 
-    fun setInstances(offsets: List<Vector3i>) {
-        this.offsets = offsets
+    fun setVoxels(voxels: IStorage3D<VoxColor?>) {
+        this.voxels = voxels
         uploadInstanceData()
     }
 
     private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocInt(offsets.size * 3)
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(voxels.size * 6)
         instanceVertexBuffer.run {
-            offsets.forEach {
-                put(it.x)
-                put(it.y)
-                put(it.z)
+            voxels.forEachPos { x, y, z, v ->
+                if (v != null) {
+                    put(x.toFloat())
+                    put(y.toFloat())
+                    put(z.toFloat())
+                    val color = ColorRGBa.fromHex(v.color)
+                    put(color.r)
+                    put(color.g)
+                    put(color.b)
+                }
             }
             flip()
         }
@@ -116,13 +125,22 @@ class BoxMeshInstanced {
             println("Vertex buffer size: ${size[0]}")
         }
 
-        // The instanced offset attribute comes from a separate vertex buffer
-        val instanceStride = 3 * Int.SIZE_BYTES // vec3 offset
-        glEnableVertexAttribArray(ATTR_OFFSET)
+        // The instanced attributes come from a separate vertex buffer
+        val stride = 6 * Float.SIZE_BYTES // vec3 offset, vec3 color
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glVertexAttribPointer(ATTR_OFFSET, 3, GL_INT, false, instanceStride, 0)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
+
+        // offsets
+        glEnableVertexAttribArray(ATTR_OFFSET)
+        glVertexAttribPointer(ATTR_OFFSET, 3, GL_FLOAT, false, stride, 0)
         glVertexAttribDivisor(ATTR_OFFSET, 1)
+
+        // color
+        glEnableVertexAttribArray(ATTR_COLOR)
+        glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, false, stride, 3L * Float.SIZE_BYTES)
+        glVertexAttribDivisor(ATTR_COLOR, 1)
+
+        // unbind
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
     fun render() {
@@ -131,22 +149,25 @@ class BoxMeshInstanced {
         glEnableVertexAttribArray(ATTR_POS)
         glEnableVertexAttribArray(ATTR_NORMAL)
         glEnableVertexAttribArray(ATTR_OFFSET)
+        glEnableVertexAttribArray(ATTR_COLOR)
 
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
         glFrontFace(GL_CCW)
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, offsets.size)
+        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, voxels.size)
 
         // Unbind everything
         glBindVertexArray(0)
         glDisableVertexAttribArray(ATTR_POS)
         glDisableVertexAttribArray(ATTR_NORMAL)
         glDisableVertexAttribArray(ATTR_OFFSET)
+        glDisableVertexAttribArray(ATTR_COLOR)
     }
 
     companion object {
         private const val ATTR_POS = 0
         private const val ATTR_NORMAL = 1
         private const val ATTR_OFFSET = 2
+        private const val ATTR_COLOR = 3
     }
 }

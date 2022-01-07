@@ -3,6 +3,7 @@ out vec4 FragColor;
 
 in vec3 Normal;
 in vec3 FragPos;
+in vec3 VoxColor;
 
 
 uniform vec3 uSkylightDir;
@@ -15,8 +16,6 @@ uniform float uBacklightPower;
 
 uniform vec3 uAmbientColor;
 uniform float uAmbientPower;
-
-uniform vec3 uObjectColor;
 
 
 void main()
@@ -35,6 +34,6 @@ void main()
 
     // sum up everything
     vec3 totalLight = ambientLight + skyDiffLight + backDiffLight;
-    vec3 result = totalLight * uObjectColor;
+    vec3 result = totalLight * VoxColor;
     FragColor = vec4(result, 1.0);
 }

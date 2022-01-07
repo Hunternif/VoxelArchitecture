@@ -5,9 +5,9 @@ import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.forEachPos
-import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW
@@ -18,7 +18,7 @@ class BoxScene {
     private val boxMesh = BoxMeshInstanced()
     private val gridMesh = FloorGridMesh()
     private val camera = OrbitalCamera()
-    private var data: IStorage3D<*>? = null
+    private var data: IStorage3D<VoxColor?>? = null
 
     private var gridMargin = 9
 
@@ -41,7 +41,6 @@ class BoxScene {
     private val backlightPower = 1.0f
     private val ambientColor = ColorRGBa.fromHex(0x353444).toVector3f()
     private val ambientPower = 1.0f
-    private val boxColor = ColorRGBa.fromHex(0xff9966).toVector3f()
     private val gridColor = ColorRGBa.fromHex(0x333333).toVector3f()
 
     fun init(window: Long, viewport: Viewport) {
@@ -67,8 +66,6 @@ class BoxScene {
 
             uploadVec3f("uAmbientColor", ambientColor)
             uploadFloat("uAmbientPower", ambientPower)
-
-            uploadVec3f("uObjectColor", boxColor)
         }
 
         gridShader.init {
@@ -81,14 +78,14 @@ class BoxScene {
         camera.setViewport(vp)
     }
 
-    fun setVoxelData(data: IStorage3D<*>) {
+    fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
         val offsets = mutableListOf<Vector3i>()
         data.forEachPos { x, y, z, v ->
             if (v != null)
                 offsets.add(Vector3i(x, y, z))
         }
-        boxMesh.setInstances(offsets)
+        boxMesh.setVoxels(data)
         gridMesh.setSize(
             -gridMargin, -gridMargin,
             data.width + gridMargin, data.length + gridMargin
