@@ -82,11 +82,11 @@ class BoxMeshInstanced {
 
         val stride = 6 * Float.SIZE_BYTES // vec3 pos, vec3 normal
         // position attribute
-        glEnableVertexAttribArray(0)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0)
+        glEnableVertexAttribArray(ATTR_POS)
+        glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, false, stride, 0)
         // normal attribute
-        glEnableVertexAttribArray(1)
-        glVertexAttribPointer(1, 3, GL_FLOAT, false, stride, 3L * Float.SIZE_BYTES)
+        glEnableVertexAttribArray(ATTR_NORMAL)
+        glVertexAttribPointer(ATTR_NORMAL, 3, GL_FLOAT, false, stride, 3L * Float.SIZE_BYTES)
 
         // Create VBO for the instances of this model
         instanceVboID = glGenBuffers()
@@ -118,19 +118,19 @@ class BoxMeshInstanced {
 
         // The instanced offset attribute comes from a separate vertex buffer
         val instanceStride = 3 * Int.SIZE_BYTES // vec3 offset
-        glEnableVertexAttribArray(2)
+        glEnableVertexAttribArray(ATTR_OFFSET)
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glVertexAttribPointer(2, 3, GL_INT, false, instanceStride, 0)
+        glVertexAttribPointer(ATTR_OFFSET, 3, GL_INT, false, instanceStride, 0)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
-        glVertexAttribDivisor(2, 1)
+        glVertexAttribDivisor(ATTR_OFFSET, 1)
     }
 
     fun render() {
         // Bind vertex array and attributes
         glBindVertexArray(vaoID)
-        glEnableVertexAttribArray(0)
-        glEnableVertexAttribArray(1)
-        glEnableVertexAttribArray(2)
+        glEnableVertexAttribArray(ATTR_POS)
+        glEnableVertexAttribArray(ATTR_NORMAL)
+        glEnableVertexAttribArray(ATTR_OFFSET)
 
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
@@ -139,8 +139,14 @@ class BoxMeshInstanced {
 
         // Unbind everything
         glBindVertexArray(0)
-        glDisableVertexAttribArray(0)
-        glDisableVertexAttribArray(1)
-        glDisableVertexAttribArray(2)
+        glDisableVertexAttribArray(ATTR_POS)
+        glDisableVertexAttribArray(ATTR_NORMAL)
+        glDisableVertexAttribArray(ATTR_OFFSET)
+    }
+
+    companion object {
+        private const val ATTR_POS = 0
+        private const val ATTR_NORMAL = 1
+        private const val ATTR_OFFSET = 2
     }
 }
