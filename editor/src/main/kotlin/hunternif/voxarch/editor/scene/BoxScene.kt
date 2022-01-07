@@ -20,6 +20,8 @@ class BoxScene {
     private val camera = OrbitalCamera()
     private var data: IStorage3D<*>? = null
 
+    private var gridMargin = 9
+
     private val gridShader = Shader(
         resourcePath("shaders/floor-grid.vert.glsl"),
         resourcePath("shaders/floor-grid.frag.glsl"),
@@ -46,7 +48,6 @@ class BoxScene {
         setViewport(viewport)
         boxMesh.init()
         gridMesh.init()
-        gridMesh.setSize(0, 0, 100, 100)
         initShaders()
         glEnable(GL_DEPTH_TEST)
         GLFW.glfwSetCursorPosCallback(window, camera::onMouseMove)
@@ -88,6 +89,10 @@ class BoxScene {
                 offsets.add(Vector3i(x, y, z))
         }
         boxMesh.setInstances(offsets)
+        gridMesh.setSize(
+            -gridMargin, -gridMargin,
+            data.width + gridMargin, data.length + gridMargin
+        )
     }
 
     fun centerCamera() {
