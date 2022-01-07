@@ -26,7 +26,7 @@ class DockedGui : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
-        horizontalDockspace(0.20f, "main window", "right panel")
+        horizontalDockspace(0.25f, "main window", "right panel")
         mainWindow("main window", renderMainWindow)
         rightPanel("right panel") {
             ImGui.text("Node tree explorer goes here")
