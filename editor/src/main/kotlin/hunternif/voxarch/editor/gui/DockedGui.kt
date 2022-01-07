@@ -27,7 +27,12 @@ class DockedGui : GuiBase() {
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
         horizontalDockspace(0.25f, "main window", "right panel")
-        mainWindow("main window", renderMainWindow)
+        mainWindow("main window") { vp ->
+            renderMainWindow(vp)
+            overlay(Corner.TOP_RIGHT) {
+                ImGui.text("overlay")
+            }
+        }
         rightPanel("right panel") {
             ImGui.text("Node tree explorer goes here")
         }
@@ -45,6 +50,7 @@ class DockedGui : GuiBase() {
             ImGuiWindowFlags.NoMove or
             ImGuiWindowFlags.NoScrollbar
         if (ImGui.begin(title, mainWindowFlags)) {
+            ImGui.popStyleVar(3)
             val pos = ImGui.getWindowPos()
             val vMin = ImGui.getWindowContentRegionMin()
             val vMax = ImGui.getWindowContentRegionMax()
@@ -62,7 +68,6 @@ class DockedGui : GuiBase() {
             }
         }
         ImGui.end()
-        ImGui.popStyleVar(3)
     }
 
     @PublishedApi

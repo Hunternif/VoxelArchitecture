@@ -8,6 +8,11 @@ data class Viewport(
     var width: Int,
     var height: Int,
 ) {
+    inline val left get() = x
+    inline val right get() = x + width
+    inline val bottom get() = y + height
+    inline val top get() = y
+
     private val array = intArrayOf(x, y, width, height)
 
     fun set(x: Int, y: Int, width: Int, height: Int) {
