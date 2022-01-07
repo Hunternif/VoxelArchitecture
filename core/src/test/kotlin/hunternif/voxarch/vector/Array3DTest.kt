@@ -94,4 +94,32 @@ class Array3DTest {
         assertEquals(112, b[1, 0, 1])
         assertEquals(113, b[1, 0, 2])
     }
+
+    @Test
+    fun size() {
+        val a = Array3D<Char?>(2, 2, 2, null)
+        assertEquals(0, a.size)
+
+        a[0, 0, 1] = 'a'
+        assertEquals(1, a.size)
+
+        a[0, 0, 2] = 'b'
+        assertEquals(2, a.size)
+
+        a[0, 0, 1] = 'A'
+        assertEquals(2, a.size)
+
+        a[0, 0, 1] = null
+        assertEquals(1, a.size)
+
+        a[0, 0, 2] = null
+        assertEquals(0, a.size)
+
+        val b = Array3D<Char?>(2, 2, 2, 'b')
+        assertEquals(8, b.size)
+
+        val c = Array3D<Char?>(2, 2, 2)
+        { x, y, z -> if (y > 0) 'a' else null }
+        assertEquals(4, c.size)
+    }
 }

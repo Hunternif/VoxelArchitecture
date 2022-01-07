@@ -177,4 +177,5 @@ class WfcOverlapModel<C: Any>(
     override fun set(p: IntVec3, v: C?) { wave[p].setColor(v) }
     override operator fun contains(p: IntVec3) = wave.contains(p)
     override fun contains(x: Int, y: Int, z: Int) = wave.contains(x, y, z)
+    override val size: Int get() = wave.size
 }

@@ -137,4 +137,5 @@ class WfcTiledModel<T: WfcTile>(
     override fun set(p: IntVec3, v: T?) { wave[p].setState(v) }
     override operator fun contains(p: IntVec3) = wave.contains(p)
     override fun contains(x: Int, y: Int, z: Int) = wave.contains(x, y, z)
+    override val size: Int get() = wave.size
 }
