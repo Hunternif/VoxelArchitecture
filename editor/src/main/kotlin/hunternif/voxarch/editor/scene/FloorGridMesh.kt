@@ -1,91 +1,73 @@
 package hunternif.voxarch.editor.scene
 
-import org.joml.Vector2i
 import org.lwjgl.opengl.GL33.*
-import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
 class FloorGridMesh {
-    private val vertexArray = floatArrayOf(
-        -0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f, -0.5f,
-         0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f,  0.5f,
-        -0.5f, -0.5f, -0.5f,
-    )
+    private var fromX = 0
+    private var fromZ = 0
+    private var toX = 0
+    private var toZ = 0
 
-    private var offsets: List<Vector2i> = listOf(Vector2i(0, 0))
+    private var bufferSize = 0
 
     private var vaoID = 0
     private var vboID = 0
-    private var instanceVboID = 0
 
-    fun init() = MemoryStack.stackPush().use { stack ->
+    fun init() {
         vaoID = glGenVertexArrays()
         glBindVertexArray(vaoID)
 
-        // Create a float buffer of vertices
-        val vertexBuffer = stack.mallocFloat(vertexArray.size)
-        vertexBuffer.put(vertexArray).flip()
-
-        // Create VBO & upload the vertex buffer
         vboID = glGenBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
         // position attribute
         val stride = 3 * Float.SIZE_BYTES // vec3 pos
         glEnableVertexAttribArray(0)
         glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0)
-
-        // Create VBO for the instances of this model
-        instanceVboID = glGenBuffers()
-        uploadInstanceData()
+        setSize(0, 0, 0, 0)
     }
 
-    fun setSize(fromX: Int, fromY: Int, toX: Int, toY: Int) {
-        val offsets = mutableListOf<Vector2i>()
+    fun setSize(fromX: Int, fromZ: Int, toX: Int, toZ: Int) {
+        this.fromX = fromX
+        this.fromZ = fromZ
+        this.toX = toX
+        this.toZ = toZ
+        val width = toX - fromX
+        val length = toZ - fromZ
+        val vertexCount = (width + 1)*2 + (length + 1)*2
+        bufferSize = vertexCount * 3
+
+        val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
+
+        // Store line positions in the vertex buffer
         for (x in fromX .. toX) {
-            for (y in fromY .. toY) {
-                offsets.add(Vector2i(x, y))
-            }
+            vertexBuffer
+                .put(-0.5f + x).put(-0.5f).put(-0.5f + fromZ)
+                .put(-0.5f + x).put(-0.5f).put(-0.5f + toZ)
         }
-        this.offsets = offsets
-        uploadInstanceData()
-    }
-
-    private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocInt(offsets.size * 2)
-        instanceVertexBuffer.run {
-            offsets.forEach {
-                put(it.x)
-                put(it.y)
-            }
-            flip()
+        for (z in fromZ .. toZ) {
+            vertexBuffer
+                .put(-0.5f + fromX).put(-0.5f).put(-0.5f + z)
+                .put(-0.5f + toX).put(-0.5f).put(-0.5f + z)
         }
-        glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
+        vertexBuffer.flip() // rewind
 
-        // The instanced offset attribute comes from a separate vertex buffer
-        val instanceStride = 2 * Int.SIZE_BYTES // vec2 offset
-        glEnableVertexAttribArray(1)
-        glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glVertexAttribPointer(1, 2, GL_INT, false, instanceStride, 0)
-        glBindBuffer(GL_ARRAY_BUFFER, 0)
-        glVertexAttribDivisor(1, 1)
+        // Upload the vertex buffer
+        glBindVertexArray(vaoID)
+        glBindBuffer(GL_ARRAY_BUFFER, vboID)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
     }
 
     fun render() {
         // Bind vertex array and attributes
         glBindVertexArray(vaoID)
         glEnableVertexAttribArray(0)
-        glEnableVertexAttribArray(1)
 
-        glDrawArraysInstanced(GL_LINE_STRIP, 0, 5, offsets.size)
+        glDrawArrays(GL_LINES, 0, bufferSize)
 
         // Unbind everything
         glBindVertexArray(0)
         glDisableVertexAttribArray(0)
-        glDisableVertexAttribArray(1)
     }
 }
