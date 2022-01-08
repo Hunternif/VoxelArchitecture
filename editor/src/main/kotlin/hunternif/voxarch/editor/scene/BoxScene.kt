@@ -6,7 +6,6 @@ import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.emptyArray3D
-import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.Array3D
 import org.joml.AABBf
 import org.joml.Vector3f
@@ -15,7 +14,7 @@ import org.lwjgl.opengl.GL32.*
 class BoxScene {
     private val vp = Viewport(0, 0, 0, 0)
     private val boxMesh = BoxMeshInstanced()
-    private val selectionMesh = BoxMeshInstanced()
+    private val selectionMesh = SelectionFrameMesh()
     private val gridMesh = FloorGridMesh()
     private val camera = OrbitalCamera()
     private var data: IStorage3D<VoxColor?>? = null
@@ -24,7 +23,7 @@ class BoxScene {
 
     private val editArea = AABBf()
     private var editAreaVoxels = emptyArray3D<VoxColor?>()
-    private var selection: Selection? = null
+    private var selection: SelectionFrame? = null
 
     private val gridShader = Shader(
         resourcePath("shaders/floor-grid.vert.glsl"),
@@ -46,6 +45,7 @@ class BoxScene {
     private val ambientColor = ColorRGBa.fromHex(0x353444).toVector3f()
     private val ambientPower = 1.0f
     private val gridColor = ColorRGBa.fromHex(0x333333).toVector3f()
+    private val selectionFrameColor = ColorRGBa.fromHex(0xcccccc).toVector3f()
 
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
@@ -127,6 +127,7 @@ class BoxScene {
 
         gridShader.use {
             uploadMat4f("uViewProj", viewProj)
+            uploadVec3f("uGridColor", gridColor)
             gridMesh.runFrame()
         }
 
@@ -135,8 +136,9 @@ class BoxScene {
             boxMesh.runFrame()
         }
 
-        boxShader.use {
+        gridShader.use {
             uploadMat4f("uViewProj", viewProj)
+            uploadVec3f("uGridColor", selectionFrameColor)
             selectionMesh.runFrame()
         }
     }
@@ -147,8 +149,9 @@ class BoxScene {
         if (selection == null) {
             val posOnFloor = camera.projectToFloor(posX, posY)
             if (editArea.testPoint(posOnFloor)) {
-                selection = Selection(posOnFloor.toVoxCoords(), posOnFloor.toVoxCoords())
-                updateSelectionMesh()
+                val voxPos = posOnFloor.fromFloorToVoxCoords()
+                selection = SelectionFrame(voxPos, voxPos)
+                selectionMesh.setSelection(selection)
             }
         }
     }
@@ -156,24 +159,15 @@ class BoxScene {
     private fun onMouseDrag(posX: Float, posY: Float) {
         selection?.let {
             val posOnFloor = camera.projectToFloor(posX, posY)
-            it.end = posOnFloor.toVoxCoords()
-            updateSelectionMesh()
+            it.end = posOnFloor.fromFloorToVoxCoords()
+            selectionMesh.updateEdges()
         }
     }
 
     private fun onMouseUp(posX: Float, posY: Float) {
         selection?.let {
-            selectionMesh.setVoxels(emptyArray3D())
+            selectionMesh.setSelection(null)
             selection = null
         }
-    }
-
-    private fun updateSelectionMesh() {
-        editAreaVoxels.forEachPos { x, y, z, _ ->
-            editAreaVoxels[x, y, z] = selection?.let {
-                if (it.testPoint(x, y, z)) VoxColor(0xff9966) else null
-            }
-        }
-        selectionMesh.setVoxels(editAreaVoxels)
     }
 }
