@@ -5,7 +5,7 @@ import com.scs.voxlib.VoxFile
 import com.scs.voxlib.VoxWriter
 import com.scs.voxlib.Voxel
 import com.scs.voxlib.chunk.*
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -24,7 +24,7 @@ data class VoxColor(val color: Int) {
 
 class VoxFileStorage private constructor(
     private val array: Array3D<VoxColor?>
-) : IStorage3D<VoxColor?> by array {
+) : IArray3D<VoxColor?> by array {
 
     private val palette = LinkedHashSet<VoxColor>()
         // add the 0 color to shift the index. MagicaVoxel uses indices 1+.

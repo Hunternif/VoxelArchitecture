@@ -1,5 +1,6 @@
 package hunternif.voxarch.util
 
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -9,9 +10,9 @@ inline fun <reified T> emptyArray3D() = Array3D<T>(0, 0, 0, emptyArray())
 inline fun <T> IStorage3D<T>.forEachPos(
     crossinline action: (IntVec3, T) -> Unit
 ) {
-    for (x in 0 until width) {
-        for (y in 0 until height) {
-            for (z in 0 until length) {
+    for (x in minX .. maxX) {
+        for (y in minY .. maxY) {
+            for (z in minZ .. maxZ) {
                 action(IntVec3(x, y, z), get(x, y, z))
             }
         }
@@ -21,9 +22,9 @@ inline fun <T> IStorage3D<T>.forEachPos(
 inline fun <T> IStorage3D<T>.forEachPos(
     crossinline action: (x: Int, y: Int, z: Int, T) -> Unit
 ) {
-    for (x in 0 until width) {
-        for (y in 0 until height) {
-            for (z in 0 until length) {
+    for (x in minX .. maxX) {
+        for (y in minY .. maxY) {
+            for (z in minZ .. maxZ) {
                 action(x, y, z, get(x, y, z))
             }
         }
@@ -31,7 +32,7 @@ inline fun <T> IStorage3D<T>.forEachPos(
 }
 
 /** Checks if this array has mirror symmetry vs the YZ plane */
-fun <T> IStorage3D<T>.isSymmetricX(): Boolean {
+fun <T> IArray3D<T>.isSymmetricX(): Boolean {
     for (x in 0 until width/2) {
         for (y in 0 until height) {
             for (z in 0 until length) {
@@ -45,7 +46,7 @@ fun <T> IStorage3D<T>.isSymmetricX(): Boolean {
 }
 
 /** Checks if this array has mirror symmetry vs the XY plane */
-fun <T> IStorage3D<T>.isSymmetricZ(): Boolean {
+fun <T> IArray3D<T>.isSymmetricZ(): Boolean {
     for (x in 0 until width) {
         for (y in 0 until height) {
             for (z in 0 until length/2) {
@@ -100,49 +101,49 @@ inline fun <reified T> IStorage3D<T>.copySection(
     }
 
 /** Copy data from a given layer along the X axis towards positive numbers. */
-fun <T> IStorage3D<T>.copyUpXLocal(from: Int = 0) {
-    for (x in from + 1 until width)
-        for (y in 0 until height)
-            for (z in 0 until length)
+fun <T> IStorage3D<T>.copyUpXLocal(from: Int = minX) {
+    for (x in from + 1 .. maxX)
+        for (y in minY .. maxY)
+            for (z in minZ .. maxZ)
                 this[x, y, z] = this[from, y, z]
 }
 
 /** Copy data from a given layer along the X axis towards 0. */
-fun <T> IStorage3D<T>.copyDownXLocal(from: Int = width - 1) {
-    for (x in 0 until from)
-        for (y in 0 until height)
-            for (z in 0 until length)
+fun <T> IStorage3D<T>.copyDownXLocal(from: Int = maxX) {
+    for (x in minX until from)
+        for (y in minY .. maxY)
+            for (z in minZ .. maxZ)
                 this[x, y, z] = this[from, y, z]
 }
 
 /** Copy data from a given layer along the Y axis towards positive numbers. */
-fun <T> IStorage3D<T>.copyUpYLocal(from: Int = 0) {
-    for (x in 0 until width)
-        for (y in from + 1 until height)
-            for (z in 0 until length)
+fun <T> IStorage3D<T>.copyUpYLocal(from: Int = minY) {
+    for (x in minX .. maxX)
+        for (y in from + 1 .. maxY)
+            for (z in minZ .. maxZ)
                 this[x, y, z] = this[x, from, z]
 }
 
 /** Copy data from a given layer along the Y axis towards 0. */
-fun <T> IStorage3D<T>.copyDownYLocal(from: Int = height - 1) {
-    for (x in 0 until width)
-        for (y in 0 until from)
-            for (z in 0 until length)
+fun <T> IStorage3D<T>.copyDownYLocal(from: Int = maxY) {
+    for (x in minX .. maxX)
+        for (y in minY until from)
+            for (z in minZ .. maxZ)
                 this[x, y, z] = this[x, from, z]
 }
 
 /** Copy data from a given layer along the Z axis towards positive numbers. */
-fun <T> IStorage3D<T>.copyUpZLocal(from: Int = 0) {
-    for (x in 0 until width)
-        for (y in 0 until height)
-            for (z in from + 1 until length)
+fun <T> IStorage3D<T>.copyUpZLocal(from: Int = minZ) {
+    for (x in minX .. maxX)
+        for (y in minY .. maxY)
+            for (z in from + 1 .. maxZ)
                 this[x, y, z] = this[x, y, from]
 }
 
 /** Copy data from a given layer along the Z axis towards 0. */
-fun <T> IStorage3D<T>.copyDownZLocal(from: Int = length - 1) {
-    for (x in 0 until width)
-        for (y in 0 until height)
-            for (z in 0 until from)
+fun <T> IStorage3D<T>.copyDownZLocal(from: Int = maxZ) {
+    for (x in minX .. maxX)
+        for (y in minY .. maxY)
+            for (z in minZ until from)
                 this[x, y, z] = this[x, y, from]
 }

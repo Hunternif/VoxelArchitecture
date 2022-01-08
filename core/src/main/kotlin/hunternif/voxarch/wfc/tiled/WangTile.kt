@@ -1,6 +1,6 @@
 package hunternif.voxarch.wfc.tiled
 
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.util.*
 import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.vector.Array3D
@@ -10,7 +10,7 @@ import hunternif.voxarch.wfc.WfcColor
 class WangTile(
     internal val data: Array3D<WfcColor>,
     override var probability: Double = 1.0
-): WfcCachingTile(), IStorage3D<WfcColor> by data {
+): WfcCachingTile(), IArray3D<WfcColor> by data {
     constructor (
         width: Int,
         height: Int,
@@ -31,7 +31,7 @@ class WangTile(
 
     /** Returns 4 rotations of this tile around the Y axis */
     fun generateRotationsY(): List<WangTile> {
-        if (isSymmetricX() && isSymmetricZ()) {
+        if (data.isSymmetricX() && data.isSymmetricZ()) {
             val t1 = this % (probability / 2f)
             return listOf(t1, t1.rotateY90CW())
         }

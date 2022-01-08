@@ -1,6 +1,6 @@
 package hunternif.voxarch.wfc.overlap
 
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.util.nextWeighted
 import hunternif.voxarch.vector.Array3D
@@ -37,7 +37,7 @@ class WfcOverlapModel<C: Any>(
     seed: Long = 0L
 ) : WfcModel<WfcPattern<C>, WfcPattern<C>, WfcVoxel<C>>(
     width, height, length, patternSet, seed
-), IStorage3D<C?> {
+), IArray3D<C?> {
 
     private val patternSize = patternSet.first().let {
         IntVec3(it.width, it.height, it.length)

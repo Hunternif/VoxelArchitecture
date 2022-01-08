@@ -90,18 +90,23 @@ class BoxScene {
         this.data = data
         boxMesh.setVoxels(data)
         gridMesh.setSize(
-            -gridMargin, -gridMargin,
-            data.width + gridMargin, data.length + gridMargin
+            data.minX - gridMargin, data.minZ - gridMargin,
+            data.maxX + gridMargin, data.maxZ + gridMargin
         )
         editArea.run {
-            setMin(-0.5f - gridMargin, -0.5f, -0.5f - gridMargin)
-            setMax(0.5f + data.width + gridMargin, 0.5f, 0.5f + data.length + gridMargin)
+            setMin(-0.5f + data.minX - gridMargin, -0.5f, -0.5f + data.minZ - gridMargin)
+            setMax(0.5f + data.maxX + gridMargin, 0.5f, 0.5f + data.maxZ + gridMargin)
         }
-        editAreaVoxels = editArea.run { Array3D(data.width, 1, data.length, null) }
+        val width = data.maxX - data.minX + 1
+        val length = data.maxZ - data.minZ + 1
+        editAreaVoxels = editArea.run { Array3D(width, 1, length, null) }
     }
 
     fun centerCamera() {
         data?.run {
+            val width = maxX - minX + 1
+            val height = maxY - minY + 1
+            val length = maxZ - minZ + 1
             camera.setPosition(
                 width / 2f - 0.5f,
                 height / 2f - 0.5f,

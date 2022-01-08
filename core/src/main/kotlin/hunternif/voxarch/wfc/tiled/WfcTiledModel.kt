@@ -1,6 +1,6 @@
 package hunternif.voxarch.wfc.tiled
 
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.util.*
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -34,7 +34,7 @@ class WfcTiledModel<T: WfcTile>(
     tileset: Collection<T>,
     seed: Long = 0L
 ) : WfcModel<T, T, WfcSlot<T>>(width, height, length, tileset, seed),
-    IStorage3D<T?>
+    IArray3D<T?>
 {
     override val wave: Array3D<WfcSlot<T>> =
         Array3D(width, height, length) {

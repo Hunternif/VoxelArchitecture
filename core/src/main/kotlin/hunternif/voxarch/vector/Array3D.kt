@@ -1,13 +1,13 @@
 package hunternif.voxarch.vector
 
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 
 class Array3D<T>(
     override val width : Int,
     override val height: Int,
     override val length: Int,
     private val data: Array<T>
-) : IStorage3D<T> {
+) : IArray3D<T> {
 
     @PublishedApi internal var _size = 0
     override val size: Int get() = _size
@@ -69,8 +69,4 @@ class Array3D<T>(
         if (v == null && prevVal != null) _size--
         if (v != null && prevVal == null) _size++
     }
-    override operator fun set(p: IntVec3, v: T) { set(p.x, p.y, p.z, v) }
-
-    override operator fun contains(p: IntVec3) = p.x in 0 until width && p.y in 0 until height && p.z in 0 until length
-    override fun contains(x: Int, y: Int, z: Int) = x in 0 until width && y in 0 until height && z in 0 until length
 }

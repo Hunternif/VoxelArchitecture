@@ -1,6 +1,6 @@
 package hunternif.voxarch.wfc.overlap
 
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.util.IRandomOption
 import hunternif.voxarch.vector.Array3D
 
@@ -12,7 +12,7 @@ import hunternif.voxarch.vector.Array3D
 open class WfcPattern<C>(
     internal val data: Array3D<C>,
     override var probability: Double = 1.0
-) : IRandomOption, IStorage3D<C> by data {
+) : IRandomOption, IArray3D<C> by data {
     companion object {
         inline operator fun <reified C> invoke(
             width: Int,

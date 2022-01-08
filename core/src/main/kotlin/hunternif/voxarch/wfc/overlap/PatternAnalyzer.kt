@@ -1,6 +1,6 @@
 package hunternif.voxarch.wfc.overlap
 
-import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.util.*
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -9,7 +9,7 @@ import hunternif.voxarch.vector.IntVec3
  * @param patternWidth width N of a NxKxN pattern.
  * @param patternHeight height K of a NxKxN pattern.
  */
-inline fun <reified C> IStorage3D<C>.findPatterns(
+inline fun <reified C> IArray3D<C>.findPatterns(
     patternWidth: Int,
     patternHeight: Int
 ): List<WfcPattern<C>> {
@@ -41,7 +41,7 @@ inline fun <reified C> IStorage3D<C>.findPatterns(
 internal class PatternData<C>(
     val data: Array3D<C>,
     var probability: Double = 1.0
-) : IStorage3D<C> by data {
+) : IArray3D<C> by data {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is PatternData<*>) return false
@@ -72,8 +72,8 @@ internal class PatternData<C>(
 @PublishedApi
 internal inline fun <reified C> PatternData<C>.generateVariations()
 : List<PatternData<C>> {
-    val symmetricX = isSymmetricX()
-    val symmetricZ = isSymmetricZ()
+    val symmetricX = data.isSymmetricX()
+    val symmetricZ = data.isSymmetricZ()
     return if (symmetricX && symmetricZ) {
         val t1 = this % (probability / 2f)
         listOf(t1, t1.rotateY90CW())
