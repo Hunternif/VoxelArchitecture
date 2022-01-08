@@ -9,7 +9,6 @@ import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
 import org.joml.Vector3f
-import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL32.*
 
 class BoxScene {
@@ -48,9 +47,7 @@ class BoxScene {
         gridMesh.init()
         initShaders()
         glEnable(GL_DEPTH_TEST)
-        GLFW.glfwSetCursorPosCallback(window, camera::onMouseMove)
-        GLFW.glfwSetMouseButtonCallback(window, camera::onMouseButton)
-        GLFW.glfwSetScrollCallback(window, camera::onScroll)
+        camera.init(window)
         // Initial empty area to show grid
         setVoxelData(Array3D(16, 2, 16, null))
     }

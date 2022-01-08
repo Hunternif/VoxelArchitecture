@@ -35,9 +35,13 @@ data class Viewport(
         return array
     }
 
-    fun contains(xpos: Int, ypos: Int): Boolean =
-        xpos >= x && xpos <= x + width &&
-            ypos >= y && ypos <= y + width
+    fun contains(posX: Int, posY: Int): Boolean =
+        posX >= x && posX <= x + width &&
+            posY >= y && posY <= y + width
+
+    fun contains(posX: Float, posY: Float): Boolean =
+        posX >= x && posX <= x + width &&
+            posY >= y && posY <= y + width
 
     /** Distance to the closest edge of the viewport, if ([x], [y]) is outside.
      * If ([x], [y]) is inside, returns 0. */
