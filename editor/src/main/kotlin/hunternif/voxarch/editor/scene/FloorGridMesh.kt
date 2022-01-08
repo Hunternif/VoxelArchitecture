@@ -52,6 +52,7 @@ class FloorGridMesh : BaseMesh() {
     }
 
     override fun render() {
+        glEnable(GL_DEPTH_TEST)
         glLineWidth(1f)
         glDrawArrays(GL_LINES, 0, bufferSize)
     }

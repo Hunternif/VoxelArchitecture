@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.vector.Array3D
 import org.joml.AABBf
 import org.joml.Vector3f
@@ -13,17 +12,17 @@ import org.lwjgl.opengl.GL32.*
 
 class BoxScene {
     private val vp = Viewport(0, 0, 0, 0)
+    private val inputController = InputController()
     private val boxMesh = BoxMeshInstanced()
-    private val selectionMesh = SelectionFrameMesh()
     private val gridMesh = FloorGridMesh()
     private val camera = OrbitalCamera()
+
     private var data: IStorage3D<VoxColor?>? = null
 
     private var gridMargin = 9
 
     private val editArea = AABBf()
-    private var editAreaVoxels = emptyArray3D<VoxColor?>()
-    private var selection: SelectionFrame? = null
+    private var selectionController = SelectionController(camera, editArea)
 
     private val solidColorShader = Shader(
         resourcePath("shaders/solid-color.vert.glsl"),
@@ -50,14 +49,14 @@ class BoxScene {
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
         boxMesh.init()
-        selectionMesh.init()
         gridMesh.init()
         initShaders()
-        glEnable(GL_DEPTH_TEST)
-        camera.init(window)
-        camera.onMouseDown = ::onMouseDown
-        camera.onMouseDrag = ::onMouseDrag
-        camera.onMouseUp = ::onMouseUp
+        selectionController.init()
+        inputController.run {
+            init(window)
+            addListener(camera)
+            addListener(selectionController)
+        }
         // Initial empty area to show grid
         setVoxelData(Array3D(16, 2, 16, null))
     }
@@ -94,9 +93,6 @@ class BoxScene {
             setMin(-0.5f + data.minX - gridMargin, -0.5f, -0.5f + data.minZ - gridMargin)
             setMax(0.5f + data.maxX + gridMargin, 0.5f, 0.5f + data.maxZ + gridMargin)
         }
-        val width = data.maxX - data.minX + 1
-        val length = data.maxZ - data.minZ + 1
-        editAreaVoxels = editArea.run { Array3D(width, 1, length, null) }
     }
 
     fun centerCamera() {
@@ -136,35 +132,7 @@ class BoxScene {
         solidColorShader.use {
             uploadMat4f("uViewProj", viewProj)
             uploadVec3f("uColor", selectionFrameColor)
-            selectionMesh.runFrame()
-        }
-    }
-
-    // ======================== MOUSE CLICKS ========================
-
-    private fun onMouseDown(posX: Float, posY: Float) {
-        if (selection == null) {
-            val posOnFloor = camera.projectToFloor(posX, posY)
-            if (editArea.testPoint(posOnFloor)) {
-                val voxPos = posOnFloor.fromFloorToVoxCoords()
-                selection = SelectionFrame(voxPos, voxPos)
-                selectionMesh.setSelection(selection)
-            }
-        }
-    }
-
-    private fun onMouseDrag(posX: Float, posY: Float) {
-        selection?.let {
-            val posOnFloor = camera.projectToFloor(posX, posY)
-            it.end = posOnFloor.fromFloorToVoxCoords()
-            selectionMesh.updateEdges()
-        }
-    }
-
-    private fun onMouseUp(posX: Float, posY: Float) {
-        selection?.let {
-            selectionMesh.setSelection(null)
-            selection = null
+            selectionController.mesh.runFrame()
         }
     }
 }

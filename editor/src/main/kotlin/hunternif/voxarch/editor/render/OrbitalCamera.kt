@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.render
 
+import hunternif.voxarch.editor.scene.MouseListener
 import hunternif.voxarch.util.clamp
 import org.joml.Intersectionf
 import org.joml.Math.*
@@ -7,9 +8,9 @@ import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 
-class OrbitalCamera {
+class OrbitalCamera : MouseListener {
     private val fov = 60.0
-    private val vp = Viewport(0, 0, 0, 0)
+    val vp = Viewport(0, 0, 0, 0)
     /** Camera is looking at (0, 0, 0) - [translation]. */
     private val translation: Vector3f = Vector3f()
     private val projectionMatrix: Matrix4f = Matrix4f()
@@ -24,7 +25,6 @@ class OrbitalCamera {
     private var mouseY = 0f
     private var panning = false
     private var rotating = false
-    private var dragging = false
 
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val dragRayOrigin: Vector3f = Vector3f()
@@ -34,15 +34,6 @@ class OrbitalCamera {
     private var yAngle = 0.3f
     private var radius = 5f
 
-    var onMouseDown: (posX: Float, posY: Float) -> Unit = { _, _ -> }
-    var onMouseUp: (posX: Float, posY: Float) -> Unit = { _, _ -> }
-    var onMouseDrag: (posX: Float, posY: Float) -> Unit = { _, _ -> }
-
-    fun init(window: Long) {
-        glfwSetCursorPosCallback(window, ::onMouseMove)
-        glfwSetMouseButtonCallback(window, ::onMouseButton)
-        glfwSetScrollCallback(window, ::onScroll)
-    }
 
     fun setViewport(viewport: Viewport) {
         if (vp.width != viewport.width || vp.height != viewport.height) {
@@ -120,26 +111,23 @@ class OrbitalCamera {
     // ======================== MOUSE CALLBACKS ========================
 
     @Suppress("UNUSED_PARAMETER")
-    private fun onMouseMove(window: Long, posX: Double, posY: Double) {
+    override fun onMouseMove(posX: Double, posY: Double) {
         if (panning) pan(posX, posY)
         else if (rotating) rotate(posX, posY)
-        else if (dragging) drag(posX, posY)
         mouseX = posX.toFloat()
         mouseY = posY.toFloat()
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun onMouseButton(window: Long, button: Int, action: Int, mods: Int) {
+    override fun onMouseButton(button: Int, action: Int, mods: Int) {
         if (button == GLFW_MOUSE_BUTTON_3 && action == GLFW_PRESS && vp.contains(mouseX, mouseY)) panBegin()
         else if (button == GLFW_MOUSE_BUTTON_3 && action == GLFW_RELEASE) panEnd()
         else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_PRESS && vp.contains(mouseX, mouseY)) rotateBegin()
         else if (button == GLFW_MOUSE_BUTTON_2 && action == GLFW_RELEASE) rotateEnd()
-        else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS && vp.contains(mouseX, mouseY)) dragBegin()
-        else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE) dragEnd()
     }
 
     @Suppress("UNUSED_PARAMETER")
-    private fun onScroll(window: Long, offsetX: Double, offsetY: Double) {
+    override fun onScroll(offsetX: Double, offsetY: Double) {
         radius *= if (offsetY > 0) 1f / 1.1f else 1.1f
         viewMatrixDirty = true
     }
@@ -202,21 +190,7 @@ class OrbitalCamera {
         private const val MAX_X_ANGLE: Float = PI.toFloat() / 2f
     }
 
-    // ======================== DRAGGING (left-click) ========================
-
-    private fun dragBegin() {
-        dragging = true
-        onMouseDown(mouseX, mouseY)
-    }
-
-    private fun drag(posX: Double, posY: Double) {
-        onMouseDrag(posX.toFloat(), posY.toFloat())
-    }
-
-    private fun dragEnd() {
-        dragging = false
-        onMouseUp(mouseX, mouseY)
-    }
+    // ======================== PROJECTIONS ========================
 
     /** Projects screen coordinates to world coordinates at Y=-0.5 */
     fun projectToFloor(posX: Float, posY: Float): Vector3f {
