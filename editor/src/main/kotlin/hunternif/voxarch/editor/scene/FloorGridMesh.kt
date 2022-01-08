@@ -1,9 +1,10 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.render.BaseMesh
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
-class FloorGridMesh {
+class FloorGridMesh : BaseMesh() {
     private var fromX = 0
     private var fromZ = 0
     private var toX = 0
@@ -11,20 +12,11 @@ class FloorGridMesh {
 
     private var bufferSize = 0
 
-    private var vaoID = 0
-    private var vboID = 0
-
-    fun init() {
-        vaoID = glGenVertexArrays()
-        glBindVertexArray(vaoID)
-
-        vboID = glGenBuffers()
-        glBindBuffer(GL_ARRAY_BUFFER, vboID)
-
-        // position attribute
-        val stride = 3 * Float.SIZE_BYTES // vec3 pos
-        glEnableVertexAttribArray(0)
-        glVertexAttribPointer(0, 3, GL_FLOAT, false, stride, 0)
+    override fun init() {
+        super.init()
+        initVertexAttributes {
+            vector3f(0) // position attribute
+        }
         setSize(0, 0, 0, 0)
     }
 
@@ -59,15 +51,7 @@ class FloorGridMesh {
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
     }
 
-    fun render() {
-        // Bind vertex array and attributes
-        glBindVertexArray(vaoID)
-        glEnableVertexAttribArray(0)
-
+    override fun render() {
         glDrawArrays(GL_LINES, 0, bufferSize)
-
-        // Unbind everything
-        glBindVertexArray(0)
-        glDisableVertexAttribArray(0)
     }
 }

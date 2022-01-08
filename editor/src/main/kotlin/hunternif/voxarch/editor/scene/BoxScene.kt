@@ -127,17 +127,17 @@ class BoxScene {
 
         gridShader.use {
             uploadMat4f("uViewProj", viewProj)
-            gridMesh.render()
+            gridMesh.runFrame()
         }
 
         boxShader.use {
             uploadMat4f("uViewProj", viewProj)
-            boxMesh.render()
+            boxMesh.runFrame()
         }
 
         boxShader.use {
             uploadMat4f("uViewProj", viewProj)
-            selectionMesh.render()
+            selectionMesh.runFrame()
         }
     }
 

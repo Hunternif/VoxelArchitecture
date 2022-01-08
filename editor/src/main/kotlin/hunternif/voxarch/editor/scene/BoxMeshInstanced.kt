@@ -1,15 +1,16 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.render.BaseMesh
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.util.forEachPos
-import hunternif.voxarch.vector.Array3D
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
-class BoxMeshInstanced {
+class BoxMeshInstanced : BaseMesh() {
     /** Borrowed from LearnOpenGL.com */
     private val vertexArray = floatArrayOf(
         // coordinates        // normals
@@ -61,35 +62,26 @@ class BoxMeshInstanced {
          0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
         -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
     )
-    private var voxels: IStorage3D<VoxColor?> = Array3D(0, 0, 0, null)
+    private var voxels: IStorage3D<VoxColor?> = emptyArray3D()
 
-    private var vaoID = 0
-    private var vboID = 0
     private var instanceVboID = 0
 
     var debug = true
 
-    fun init() = MemoryStack.stackPush().use { stack ->
-        vaoID = glGenVertexArrays()
-        glBindVertexArray(vaoID)
-
+    override fun init() = MemoryStack.stackPush().use { stack ->
+        super.init()
 
         // Create a float buffer of vertices
         val vertexBuffer = stack.mallocFloat(vertexArray.size)
         vertexBuffer.put(vertexArray).flip()
 
-        // Create VBO & upload the vertex buffer
-        vboID = glGenBuffers()
-        glBindBuffer(GL_ARRAY_BUFFER, vboID)
+        // Upload the vertex buffer
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
-        val stride = 6 * Float.SIZE_BYTES // vec3 pos, vec3 normal
-        // position attribute
-        glEnableVertexAttribArray(ATTR_POS)
-        glVertexAttribPointer(ATTR_POS, 3, GL_FLOAT, false, stride, 0)
-        // normal attribute
-        glEnableVertexAttribArray(ATTR_NORMAL)
-        glVertexAttribPointer(ATTR_NORMAL, 3, GL_FLOAT, false, stride, 3L * Float.SIZE_BYTES)
+        initVertexAttributes {
+            vector3f(ATTR_POS) // position attribute
+            vector3f(ATTR_NORMAL) // normal attribute
+        }
 
         // Create VBO for the instances of this model
         instanceVboID = glGenBuffers()
@@ -126,42 +118,20 @@ class BoxMeshInstanced {
         }
 
         // The instanced attributes come from a separate vertex buffer
-        val stride = 6 * Float.SIZE_BYTES // vec3 offset, vec3 color
-        glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-
-        // offsets
-        glEnableVertexAttribArray(ATTR_OFFSET)
-        glVertexAttribPointer(ATTR_OFFSET, 3, GL_FLOAT, false, stride, 0)
-        glVertexAttribDivisor(ATTR_OFFSET, 1)
-
-        // color
-        glEnableVertexAttribArray(ATTR_COLOR)
-        glVertexAttribPointer(ATTR_COLOR, 3, GL_FLOAT, false, stride, 3L * Float.SIZE_BYTES)
-        glVertexAttribDivisor(ATTR_COLOR, 1)
+        initInstanceAttributes {
+            vector3f(ATTR_OFFSET)
+            vector3f(ATTR_COLOR)
+        }
 
         // unbind
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
-    fun render() {
-        // Bind vertex array and attributes
-        glBindVertexArray(vaoID)
-        glEnableVertexAttribArray(ATTR_POS)
-        glEnableVertexAttribArray(ATTR_NORMAL)
-        glEnableVertexAttribArray(ATTR_OFFSET)
-        glEnableVertexAttribArray(ATTR_COLOR)
-
+    override fun render() {
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
         glFrontFace(GL_CCW)
         glDrawArraysInstanced(GL_TRIANGLES, 0, 36, voxels.size)
-
-        // Unbind everything
-        glBindVertexArray(0)
-        glDisableVertexAttribArray(ATTR_POS)
-        glDisableVertexAttribArray(ATTR_NORMAL)
-        glDisableVertexAttribArray(ATTR_OFFSET)
-        glDisableVertexAttribArray(ATTR_COLOR)
     }
 
     companion object {
