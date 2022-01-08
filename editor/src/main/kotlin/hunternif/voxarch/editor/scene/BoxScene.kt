@@ -1,24 +1,30 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.render.Shader
-import hunternif.voxarch.editor.render.Viewport
-import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.editor.render.*
+import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.emptyArray3D
+import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.Array3D
+import org.joml.AABBf
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL32.*
 
 class BoxScene {
     private val vp = Viewport(0, 0, 0, 0)
     private val boxMesh = BoxMeshInstanced()
+    private val selectionMesh = BoxMeshInstanced()
     private val gridMesh = FloorGridMesh()
     private val camera = OrbitalCamera()
     private var data: IStorage3D<VoxColor?>? = null
 
     private var gridMargin = 9
+
+    private val editArea = AABBf()
+    private var editAreaVoxels = emptyArray3D<VoxColor?>()
+    private var selection: Selection? = null
 
     private val gridShader = Shader(
         resourcePath("shaders/floor-grid.vert.glsl"),
@@ -44,10 +50,14 @@ class BoxScene {
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
         boxMesh.init()
+        selectionMesh.init()
         gridMesh.init()
         initShaders()
         glEnable(GL_DEPTH_TEST)
         camera.init(window)
+        camera.onMouseDown = ::onMouseDown
+        camera.onMouseDrag = ::onMouseDrag
+        camera.onMouseUp = ::onMouseUp
         // Initial empty area to show grid
         setVoxelData(Array3D(16, 2, 16, null))
     }
@@ -83,6 +93,11 @@ class BoxScene {
             -gridMargin, -gridMargin,
             data.width + gridMargin, data.length + gridMargin
         )
+        editArea.run {
+            setMin(-0.5f - gridMargin, -0.5f, -0.5f - gridMargin)
+            setMax(0.5f + data.width + gridMargin, 0.5f, 0.5f + data.length + gridMargin)
+        }
+        editAreaVoxels = editArea.run { Array3D(data.width, 1, data.length, null) }
     }
 
     fun centerCamera() {
@@ -103,17 +118,57 @@ class BoxScene {
         glViewport(0, 0, vp.width, vp.height)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
+        val viewProj = camera.getViewProjectionMatrix()
 
         gridShader.use {
-            uploadMat4f("uProjection", camera.projectionMatrix)
-            uploadMat4f("uView", camera.getViewMatrix())
+            uploadMat4f("uViewProj", viewProj)
             gridMesh.render()
         }
 
         boxShader.use {
-            uploadMat4f("uProjection", camera.projectionMatrix)
-            uploadMat4f("uView", camera.getViewMatrix())
+            uploadMat4f("uViewProj", viewProj)
             boxMesh.render()
         }
+
+        boxShader.use {
+            uploadMat4f("uViewProj", viewProj)
+            selectionMesh.render()
+        }
+    }
+
+    // ======================== MOUSE CLICKS ========================
+
+    private fun onMouseDown(posX: Float, posY: Float) {
+        if (selection == null) {
+            val posOnFloor = camera.projectToFloor(posX, posY)
+            if (editArea.testPoint(posOnFloor)) {
+                selection = Selection(posOnFloor.toVoxCoords(), posOnFloor.toVoxCoords())
+                updateSelectionMesh()
+            }
+        }
+    }
+
+    private fun onMouseDrag(posX: Float, posY: Float) {
+        selection?.let {
+            val posOnFloor = camera.projectToFloor(posX, posY)
+            it.end = posOnFloor.toVoxCoords()
+            updateSelectionMesh()
+        }
+    }
+
+    private fun onMouseUp(posX: Float, posY: Float) {
+        selection?.let {
+            selectionMesh.setVoxels(emptyArray3D())
+            selection = null
+        }
+    }
+
+    private fun updateSelectionMesh() {
+        editAreaVoxels.forEachPos { x, y, z, _ ->
+            editAreaVoxels[x, y, z] = selection?.let {
+                if (it.testPoint(x, y, z)) VoxColor(0xff9966) else null
+            }
+        }
+        selectionMesh.setVoxels(editAreaVoxels)
     }
 }

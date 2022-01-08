@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.render
 
 import hunternif.voxarch.util.clamp
+import org.joml.Intersectionf
 import org.joml.Math.*
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -11,13 +12,14 @@ class OrbitalCamera {
     private val vp = Viewport(0, 0, 0, 0)
     /** Camera is looking at (0, 0, 0) - [translation]. */
     private val translation: Vector3f = Vector3f()
-    val projectionMatrix: Matrix4f = Matrix4f()
+    private val projectionMatrix: Matrix4f = Matrix4f()
     private val viewMatrix: Matrix4f = Matrix4f()
     private var viewMatrixDirty = true
 
     /** Combined projection & view transform matrix, used for un-projecting
      * mouse cursor to world coordinates */
     private val vpMat: Matrix4f = Matrix4f()
+
     private var mouseX = 0f
     private var mouseY = 0f
     private var panning = false
@@ -108,6 +110,11 @@ class OrbitalCamera {
             projectionMatrix.mul(viewMatrix, vpMat)
         }
         return viewMatrix
+    }
+
+    fun getViewProjectionMatrix(): Matrix4f {
+        getViewMatrix()
+        return vpMat
     }
 
     // ======================== MOUSE CALLBACKS ========================
@@ -209,5 +216,25 @@ class OrbitalCamera {
     private fun dragEnd() {
         dragging = false
         onMouseUp(mouseX, mouseY)
+    }
+
+    /** Projects screen coordinates to world coordinates at Y=-0.5 */
+    fun projectToFloor(posX: Float, posY: Float): Vector3f {
+        vpMat.unprojectRay(
+            posX,
+            vp.height - posY,
+            vp.toArray(),
+            dragRayOrigin,
+            dragRayDir
+        )
+        val t = Intersectionf.intersectRayPlane(
+            dragRayOrigin,
+            dragRayDir,
+            Vector3f(0f, -0.5f, 0f),
+            Vector3f(0f, if (dragRayOrigin.y > 0) 1f else -1f, 0f),
+            1E-5f
+        )
+        dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)
+        return dragStartWorldPos
     }
 }

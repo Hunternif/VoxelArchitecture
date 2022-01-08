@@ -4,6 +4,8 @@ import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 
+inline fun <reified T> emptyArray3D() = Array3D<T>(0, 0, 0, emptyArray())
+
 inline fun <T> IStorage3D<T>.forEachPos(
     crossinline action: (IntVec3, T) -> Unit
 ) {
