@@ -7,9 +7,8 @@ import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.resourcePath
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.util.forEachPos
+import hunternif.voxarch.vector.Array3D
 import org.joml.Vector3f
-import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW
 import org.lwjgl.opengl.GL32.*
 
@@ -52,6 +51,8 @@ class BoxScene {
         GLFW.glfwSetCursorPosCallback(window, camera::onMouseMove)
         GLFW.glfwSetMouseButtonCallback(window, camera::onMouseButton)
         GLFW.glfwSetScrollCallback(window, camera::onScroll)
+        // Initial empty area to show grid
+        setVoxelData(Array3D(16, 2, 16, null))
     }
 
     private fun initShaders() {
@@ -80,11 +81,6 @@ class BoxScene {
 
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
-        val offsets = mutableListOf<Vector3i>()
-        data.forEachPos { x, y, z, v ->
-            if (v != null)
-                offsets.add(Vector3i(x, y, z))
-        }
         boxMesh.setVoxels(data)
         gridMesh.setSize(
             -gridMargin, -gridMargin,

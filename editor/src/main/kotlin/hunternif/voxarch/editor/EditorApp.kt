@@ -4,7 +4,9 @@ import hunternif.voxarch.editor.scene.BoxScene
 import hunternif.voxarch.editor.gui.DockedGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
+import hunternif.voxarch.vector.Array3D
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
@@ -47,9 +49,9 @@ class EditorApp {
         gui.init(window, vp, 4)
         scene.init(window, vp)
         glfwShowWindow(window)
-        val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
-        scene.setVoxelData(file)
-//        scene.setVoxelData(Array3D(1, 1, 1, "lol"))
+//        val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
+//        scene.setVoxelData(file)
+//        scene.setVoxelData(Array3D(1, 1, 1, VoxColor(0xff9966)))
         scene.centerCamera()
     }
 
