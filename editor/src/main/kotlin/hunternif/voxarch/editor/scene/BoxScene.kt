@@ -25,9 +25,9 @@ class BoxScene {
     private var editAreaVoxels = emptyArray3D<VoxColor?>()
     private var selection: SelectionFrame? = null
 
-    private val gridShader = Shader(
-        resourcePath("shaders/floor-grid.vert.glsl"),
-        resourcePath("shaders/floor-grid.frag.glsl"),
+    private val solidColorShader = Shader(
+        resourcePath("shaders/solid-color.vert.glsl"),
+        resourcePath("shaders/solid-color.frag.glsl"),
     )
     private val boxShader = Shader(
         resourcePath("shaders/magica-voxel.vert.glsl"),
@@ -75,10 +75,7 @@ class BoxScene {
             uploadVec3f("uAmbientColor", ambientColor)
             uploadFloat("uAmbientPower", ambientPower)
         }
-
-        gridShader.init {
-            uploadVec3f("uGridColor", gridColor)
-        }
+        solidColorShader.init()
     }
 
     fun setViewport(viewport: Viewport) {
@@ -125,9 +122,9 @@ class BoxScene {
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
         val viewProj = camera.getViewProjectionMatrix()
 
-        gridShader.use {
+        solidColorShader.use {
             uploadMat4f("uViewProj", viewProj)
-            uploadVec3f("uGridColor", gridColor)
+            uploadVec3f("uColor", gridColor)
             gridMesh.runFrame()
         }
 
@@ -136,9 +133,9 @@ class BoxScene {
             boxMesh.runFrame()
         }
 
-        gridShader.use {
+        solidColorShader.use {
             uploadMat4f("uViewProj", viewProj)
-            uploadVec3f("uGridColor", selectionFrameColor)
+            uploadVec3f("uColor", selectionFrameColor)
             selectionMesh.runFrame()
         }
     }
