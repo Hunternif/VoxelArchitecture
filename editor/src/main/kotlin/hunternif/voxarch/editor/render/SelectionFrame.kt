@@ -20,6 +20,11 @@ class SelectionFrame(
     }
     var state: State = CHOOSING_BASE
 
+    /** Offset from the center of the voxel to the edge of the frame.
+     * 0 makes the frame run through the middle of a voxel.
+     * 0.5 makes it run on the edge of a voxel. */
+    private val voxCenterOffset = 0.4f
+
     var start: Vector3i = start
         set(value) {
             field = value
@@ -43,12 +48,12 @@ class SelectionFrame(
         maxY = end.y.toFloat()
         maxZ = end.z.toFloat()
         super.correctBounds()
-        minX -= 0.5f
-        minY -= 0.5f
-        minZ -= 0.5f
-        maxX += 0.5f
-        maxY += 0.5f
-        maxZ += 0.5f
+        minX -= voxCenterOffset
+        minY -= 0.5f // bottom is always at floor level
+        minZ -= voxCenterOffset
+        maxX += voxCenterOffset
+        maxY += voxCenterOffset
+        maxZ += voxCenterOffset
         return this
     }
 
