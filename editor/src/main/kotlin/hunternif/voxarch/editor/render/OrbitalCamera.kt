@@ -1,13 +1,13 @@
 package hunternif.voxarch.editor.render
 
-import hunternif.voxarch.editor.scene.MouseListener
+import hunternif.voxarch.editor.scene.InputListener
 import hunternif.voxarch.util.clamp
 import org.joml.*
 import org.joml.Math.*
 import org.lwjgl.glfw.GLFW.*
 import java.lang.Math
 
-class OrbitalCamera : MouseListener {
+class OrbitalCamera : InputListener {
     private val fov = 60.0
     val vp = Viewport(0, 0, 0, 0)
     /** Camera is looking at (0, 0, 0) - [translation]. */

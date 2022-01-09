@@ -2,22 +2,24 @@ package hunternif.voxarch.editor.scene
 
 import org.lwjgl.glfw.GLFW.*
 
-interface MouseListener {
+interface InputListener {
     fun onMouseMove(posX: Double, posY: Double) {}
     fun onMouseButton(button: Int, action: Int, mods: Int) {}
     fun onScroll(offsetX: Double, offsetY: Double) {}
+    fun onKeyPress(key: Int, action: Int, mods: Int) {}
 }
 
 class InputController {
-    private val listeners = mutableListOf<MouseListener>()
+    private val listeners = mutableListOf<InputListener>()
 
     fun init(window: Long) {
         glfwSetCursorPosCallback(window, ::onMouseMove)
         glfwSetMouseButtonCallback(window, ::onMouseButton)
         glfwSetScrollCallback(window, ::onScroll)
+        glfwSetKeyCallback(window, ::onKeyPress)
     }
 
-    fun addListener(listener: MouseListener) {
+    fun addListener(listener: InputListener) {
         listeners.add(listener)
     }
 
@@ -37,5 +39,11 @@ class InputController {
     private fun onScroll(window: Long, offsetX: Double, offsetY: Double) {
         for (listener in listeners)
             listener.onScroll(offsetX, offsetY)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onKeyPress(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
+        for (listener in listeners)
+            listener.onKeyPress(key, action, mods)
     }
 }

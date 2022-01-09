@@ -14,7 +14,7 @@ import kotlin.math.round
 class SelectionController(
     private val camera: OrbitalCamera,
     private val editArea: AABBf,
-) : MouseListener {
+) : InputListener {
     val selection = SelectionFrame()
     val mesh = SelectionFrameMesh(selection)
 
@@ -108,6 +108,13 @@ class SelectionController(
                 CHOOSING_HEIGHT -> setState(COMPLETE)
                 COMPLETE -> {}
             }
+        }
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    override fun onKeyPress(key: Int, action: Int, mods: Int) {
+        if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE) {
+            setState(EMPTY)
         }
     }
 }
