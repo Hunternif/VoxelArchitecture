@@ -35,6 +35,7 @@ class SelectionController(
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS && camera.vp.contains(mouseX, mouseY)) dragBegin()
         else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE) dragEnd()
+        else dragEnd()
     }
 
     private fun dragBegin() {
