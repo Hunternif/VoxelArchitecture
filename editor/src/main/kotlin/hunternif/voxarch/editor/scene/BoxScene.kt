@@ -90,8 +90,8 @@ class BoxScene {
             data.maxX + gridMargin, data.maxZ + gridMargin
         )
         editArea.run {
-            setMin(-0.5f + data.minX - gridMargin, -0.5f, -0.5f + data.minZ - gridMargin)
-            setMax(0.5f + data.maxX + gridMargin, 0.5f, 0.5f + data.maxZ + gridMargin)
+            setMin(-0.5f + data.minX - gridMargin, -1f, -0.5f + data.minZ - gridMargin)
+            setMax(0.5f + data.maxX + gridMargin, 0f, 0.5f + data.maxZ + gridMargin)
         }
     }
 
