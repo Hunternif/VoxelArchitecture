@@ -8,6 +8,7 @@ import org.joml.AABBf
 import org.joml.Vector3f
 import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW.*
+import kotlin.math.max
 import kotlin.math.round
 
 class SelectionController(
@@ -41,7 +42,8 @@ class SelectionController(
                     val posOnWall = camera.projectToVertical(
                         posX.toFloat(), posY.toFloat(), endBeforeComplete
                     )
-                    end.y = round(posOnWall.y).toInt()
+                    // must have Y >= 0
+                    end.y = round(max(0f, posOnWall.y)).toInt()
                     correctBounds()
                     mesh.updateEdges()
                 }
