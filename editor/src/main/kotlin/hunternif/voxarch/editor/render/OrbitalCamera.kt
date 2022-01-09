@@ -2,11 +2,10 @@ package hunternif.voxarch.editor.render
 
 import hunternif.voxarch.editor.scene.MouseListener
 import hunternif.voxarch.util.clamp
-import org.joml.Intersectionf
+import org.joml.*
 import org.joml.Math.*
-import org.joml.Matrix4f
-import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
+import java.lang.Math
 
 class OrbitalCamera : MouseListener {
     private val fov = 60.0
@@ -26,9 +25,11 @@ class OrbitalCamera : MouseListener {
     private var panning = false
     private var rotating = false
 
-    private val dragStartWorldPos: Vector3f = Vector3f()
     private val dragRayOrigin: Vector3f = Vector3f()
+    // temporary vectors
+    private val dragStartWorldPos: Vector3f = Vector3f()
     private val dragRayDir: Vector3f = Vector3f()
+    private val verticalPlaneNormal: Vector3f = Vector3f()
 
     private var xAngle = 0.5f
     private var yAngle = 0.3f
@@ -206,6 +207,35 @@ class OrbitalCamera : MouseListener {
             dragRayDir,
             Vector3f(0f, -0.5f, 0f),
             Vector3f(0f, if (dragRayOrigin.y > 0) 1f else -1f, 0f),
+            1E-5f
+        )
+        dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)
+        return dragStartWorldPos
+    }
+
+    /** Projects screen coordinates to world coordinates on a vertical plane
+     * running through [point] and away from the camera.
+     * Used for dragging voxels vertically. */
+    fun projectToVertical(posX: Float, posY: Float, point: Vector3f): Vector3f {
+        vpMat.unprojectRay(
+            posX,
+            vp.height - posY,
+            vp.toArray(),
+            dragRayOrigin,
+            dragRayDir
+        )
+        // create the plane normal
+        verticalPlaneNormal.apply {
+            set(dragRayDir)
+            y = 0f
+            normalize()
+            negate()
+        }
+        val t = Intersectionf.intersectRayPlane(
+            dragRayOrigin,
+            dragRayDir,
+            point,
+            verticalPlaneNormal,
             1E-5f
         )
         dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)

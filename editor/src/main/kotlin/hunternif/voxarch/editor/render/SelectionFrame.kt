@@ -11,26 +11,23 @@ import org.joml.Vector3i
  * [start] and [end] are in centric voxel coordinates.
  * [minX] and the rest follow the actual outline of those voxels.
  */
-class SelectionFrame(
-    start: Vector3i,
-    end: Vector3i,
-) : AABBi() {
+class SelectionFrame : AABBi() {
     enum class State {
-        CHOOSING_BASE, CHOOSING_HEIGHT, COMPLETE
+        EMPTY, CHOOSING_BASE, CHOOSING_HEIGHT, COMPLETE
     }
-    var state: State = CHOOSING_BASE
+    var state: State = EMPTY
 
     /** Offset from the center of the voxel to the edge of the frame.
      * 0 makes the frame run through the middle of a voxel.
      * 0.5 makes it run on the edge of a voxel. */
     private val voxCenterOffset = 0.4f
 
-    var start: Vector3i = start
+    var start: Vector3i = Vector3i()
         set(value) {
             field = value
             correctBounds()
         }
-    var end: Vector3i = end
+    var end: Vector3i = Vector3i()
         set(value) {
             field = value
             correctBounds()
@@ -58,6 +55,8 @@ class SelectionFrame(
     }
 
     fun getEdges(): List<Edge> {
+        if (state == EMPTY) return emptyList()
+
         val result = mutableListOf<Edge>()
 
         val v1 = Vector3f(minX, minY, minZ)

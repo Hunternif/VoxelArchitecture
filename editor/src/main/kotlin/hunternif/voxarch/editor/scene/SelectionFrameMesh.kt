@@ -5,8 +5,9 @@ import hunternif.voxarch.editor.render.SelectionFrame
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
-class SelectionFrameMesh : BaseMesh() {
-    private var selection: SelectionFrame? = null
+class SelectionFrameMesh(
+    private val selection: SelectionFrame
+) : BaseMesh() {
     private var bufferSize = 0
 
     override fun init() {
@@ -16,13 +17,8 @@ class SelectionFrameMesh : BaseMesh() {
         }
     }
 
-    fun setSelection(selection: SelectionFrame?) {
-        this.selection = selection
-        updateEdges()
-    }
-
     fun updateEdges() {
-        val edges = selection?.getEdges() ?: emptyList()
+        val edges = selection.getEdges()
         bufferSize = edges.size * 2 * 3
 
         val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
