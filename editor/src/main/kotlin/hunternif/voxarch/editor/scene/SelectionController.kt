@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.render.SelectionFrame
 import hunternif.voxarch.editor.render.SelectionFrame.State.*
 import hunternif.voxarch.editor.util.fromFloorToVoxCoords
+import imgui.internal.ImGui
 import org.joml.AABBf
 import org.joml.Vector3f
 import org.joml.Vector3i
@@ -56,6 +57,7 @@ class SelectionController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
+        if (ImGui.isAnyItemHovered()) return
         if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS && camera.vp.contains(mouseX, mouseY)) onMouseDown()
         else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE) onMouseUp()
         // cancel current selection operation if any other mouse button is pressed:
