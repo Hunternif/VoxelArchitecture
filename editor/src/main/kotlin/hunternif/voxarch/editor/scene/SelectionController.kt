@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.createNode
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.render.SelectionFrame
 import hunternif.voxarch.editor.render.SelectionFrame.State.*
@@ -14,6 +16,7 @@ import kotlin.math.max
 import kotlin.math.round
 
 class SelectionController(
+    private val app: EditorApp,
     private val camera: OrbitalCamera,
     private val editArea: AABBf,
 ) : InputListener {
@@ -116,8 +119,14 @@ class SelectionController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onKeyPress(key: Int, action: Int, mods: Int) {
-        if (action == GLFW_PRESS && key == GLFW_KEY_ESCAPE) {
-            setState(EMPTY)
+        if (action == GLFW_PRESS) {
+            when (key) {
+                GLFW_KEY_ESCAPE -> setState(EMPTY)
+                GLFW_KEY_SPACE -> {
+                    setState(EMPTY)
+                    app.createNode(selection.start, selection.end)
+                }
+            }
         }
     }
 }

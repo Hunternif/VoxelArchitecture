@@ -12,11 +12,11 @@ data class ColorRGBa(
     fun toVector3f() = Vector3f(r, g, b)
 
     companion object {
-        fun fromHex(hex: Int): ColorRGBa {
+        fun fromHex(hex: Int, alpha: Float = 1f): ColorRGBa {
             val r = hex and (0xff0000) shr 16
             val g = hex and (0x00ff00) shr 8
             val b = hex and (0x0000ff)
-            return ColorRGBa(r / 255f, g / 255f, b / 255f, 1f)
+            return ColorRGBa(r / 255f, g / 255f, b / 255f, alpha)
         }
     }
 }

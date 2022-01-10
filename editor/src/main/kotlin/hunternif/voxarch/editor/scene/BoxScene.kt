@@ -1,22 +1,29 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.meshes.BoxMeshInstanced
 import hunternif.voxarch.editor.scene.meshes.FloorGridMesh
+import hunternif.voxarch.editor.scene.meshes.NodeMesh
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
 import org.joml.AABBf
 import org.joml.Vector3f
+import org.joml.Vector3i
 import org.lwjgl.opengl.GL32.*
 
-class BoxScene {
+class BoxScene(app: EditorApp) {
     private val vp = Viewport(0, 0, 0, 0)
+
     private val inputController = InputController()
     private val boxMesh = BoxMeshInstanced()
     private val gridMesh = FloorGridMesh()
+    private val nodeMeshes = mutableListOf<NodeMesh>()
+
     private val camera = OrbitalCamera()
 
     private var data: IStorage3D<VoxColor?>? = null
@@ -24,7 +31,7 @@ class BoxScene {
     private var gridMargin = 9
 
     private val editArea = AABBf()
-    private var selectionController = SelectionController(camera, editArea)
+    private var selectionController = SelectionController(app, camera, editArea)
 
     private val boxShader = MagicaVoxelShader()
     private val gridShader = SolidColorShader(0x333333)
@@ -32,8 +39,7 @@ class BoxScene {
 
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
-        boxMesh.init()
-        gridMesh.init()
+        initMeshes()
         initShaders()
         selectionController.init()
         inputController.run {
@@ -43,6 +49,11 @@ class BoxScene {
         }
         // Initial empty area to show grid
         setVoxelData(Array3D(16, 2, 16, null))
+    }
+
+    private fun initMeshes() {
+        boxMesh.init()
+        gridMesh.init()
     }
 
     private fun initShaders() {
@@ -86,6 +97,14 @@ class BoxScene {
         }
     }
 
+    fun createNode(start: Vector3i, end: Vector3i) {
+        NodeMesh(ColorRGBa.fromHex(0x8dc63f, 0.3f)).apply {
+            init()
+            setPosition(start, end)
+            nodeMeshes.add(this)
+        }
+    }
+
     fun render() {
         glViewport(0, 0, vp.width, vp.height)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -98,6 +117,7 @@ class BoxScene {
 
         boxShader.render(viewProj) {
             boxMesh.runFrame()
+            nodeMeshes.forEach { it.runFrame() }
         }
 
         selectionShader.render(viewProj) {

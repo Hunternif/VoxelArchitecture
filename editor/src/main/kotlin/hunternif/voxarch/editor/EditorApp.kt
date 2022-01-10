@@ -22,7 +22,7 @@ class EditorApp {
     private var width: Int = 1000
     private var height: Int = 600
     private val gui = DockedGui(this)
-    val scene = BoxScene()
+    val scene = BoxScene(this)
 
     fun run() {
         init()

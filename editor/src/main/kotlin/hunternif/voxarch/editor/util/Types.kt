@@ -19,6 +19,20 @@ fun Vector3f.fromFloorToVoxCoords() = Vector3i(
     round(z).toInt()
 )
 
+data class Vertex(
+    val pos: Vector3f,
+    val normal: Vector3f,
+) {
+    constructor(
+        posX: Float,
+        posY: Float,
+        posZ: Float,
+        normalX: Float,
+        normalY: Float,
+        normalZ: Float
+    ) : this(Vector3f(posX, posY, posZ), Vector3f(normalX, normalY, normalZ))
+}
+
 data class Edge(
     val start: Vector3f,
     val end: Vector3f,
