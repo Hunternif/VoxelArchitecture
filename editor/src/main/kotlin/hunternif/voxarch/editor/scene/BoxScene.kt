@@ -22,7 +22,7 @@ class BoxScene(app: EditorApp) {
     private val inputController = InputController()
     private val boxMesh = BoxMeshInstanced()
     private val gridMesh = FloorGridMesh()
-    private val nodeMeshes = mutableListOf<NodeMesh>()
+    private val nodeMesh = NodeMesh()
 
     private val camera = OrbitalCamera()
 
@@ -54,6 +54,7 @@ class BoxScene(app: EditorApp) {
     private fun initMeshes() {
         boxMesh.init()
         gridMesh.init()
+        nodeMesh.init()
     }
 
     private fun initShaders() {
@@ -98,11 +99,7 @@ class BoxScene(app: EditorApp) {
     }
 
     fun createNode(start: Vector3i, end: Vector3i) {
-        NodeMesh(ColorRGBa.fromHex(0x8dc63f, 0.3f)).apply {
-            init()
-            setPosition(start, end)
-            nodeMeshes.add(this)
-        }
+        nodeMesh.addNode(start, end, ColorRGBa.fromHex(0x8dc63f, 0.3f))
     }
 
     fun render() {
@@ -117,7 +114,7 @@ class BoxScene(app: EditorApp) {
 
         boxShader.render(viewProj) {
             boxMesh.runFrame()
-            nodeMeshes.forEach { it.runFrame() }
+            nodeMesh.runFrame()
         }
 
         selectionShader.render(viewProj) {
