@@ -1,7 +1,8 @@
 package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.render.*
+import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
+import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
@@ -24,27 +25,9 @@ class BoxScene {
     private val editArea = AABBf()
     private var selectionController = SelectionController(camera, editArea)
 
-    private val solidColorShader = Shader(
-        resourcePath("shaders/solid-color.vert.glsl"),
-        resourcePath("shaders/solid-color.frag.glsl"),
-    )
-    private val boxShader = Shader(
-        resourcePath("shaders/magica-voxel.vert.glsl"),
-        resourcePath("shaders/magica-voxel.frag.glsl"),
-    )
-
-    /** Skylight falls uniformly in this direction */
-    private val skylightDir = Vector3f(-0.77f, -1.0f, -0.9f).normalize()
-    private val skylightColor = ColorRGBa.fromHex(0xffffff).toVector3f()
-    private val skylightPower = 1.25f
-    /** Highlights the bottom of the model */
-    private val backlightDir = Vector3f(0.77f, 1.0f, 0.9f).normalize()
-    private val backlightColor = ColorRGBa.fromHex(0xffffff).toVector3f()
-    private val backlightPower = 1.0f
-    private val ambientColor = ColorRGBa.fromHex(0x353444).toVector3f()
-    private val ambientPower = 1.0f
-    private val gridColor = ColorRGBa.fromHex(0x333333).toVector3f()
-    private val selectionFrameColor = ColorRGBa.fromHex(0xcccccc).toVector3f()
+    private val boxShader = MagicaVoxelShader()
+    private val gridShader = SolidColorShader(0x333333)
+    private val selectionShader = SolidColorShader(0xcccccc)
 
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
@@ -62,19 +45,9 @@ class BoxScene {
     }
 
     private fun initShaders() {
-        boxShader.init {
-            uploadVec3f("uSkylightDir", skylightDir)
-            uploadVec3f("uSkylightColor", skylightColor)
-            uploadFloat("uSkylightPower", skylightPower)
-
-            uploadVec3f("uBacklightDir", backlightDir)
-            uploadVec3f("uBacklightColor", backlightColor)
-            uploadFloat("uBacklightPower", backlightPower)
-
-            uploadVec3f("uAmbientColor", ambientColor)
-            uploadFloat("uAmbientPower", ambientPower)
-        }
-        solidColorShader.init()
+        boxShader.init()
+        gridShader.init()
+        selectionShader.init()
     }
 
     fun setViewport(viewport: Viewport) {
@@ -118,20 +91,15 @@ class BoxScene {
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
         val viewProj = camera.getViewProjectionMatrix()
 
-        solidColorShader.use {
-            uploadMat4f("uViewProj", viewProj)
-            uploadVec3f("uColor", gridColor)
+        gridShader.render(viewProj) {
             gridMesh.runFrame()
         }
 
-        boxShader.use {
-            uploadMat4f("uViewProj", viewProj)
+        boxShader.render(viewProj) {
             boxMesh.runFrame()
         }
 
-        solidColorShader.use {
-            uploadMat4f("uViewProj", viewProj)
-            uploadVec3f("uColor", selectionFrameColor)
+        selectionShader.render(viewProj) {
             selectionController.mesh.runFrame()
         }
     }

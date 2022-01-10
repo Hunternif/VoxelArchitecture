@@ -6,15 +6,15 @@ import org.lwjgl.system.MemoryStack
 import java.nio.file.Files
 import java.nio.file.Path
 
-class Shader(
-    private val vertex: Path,
-    private val fragment: Path
-) {
+open class Shader {
     @PublishedApi
     internal var shaderProgramID = 0
-    private var beingUsed = false
 
-    fun init(action: Shader.() -> Unit = {}) {
+    fun init(
+        vertex: Path,
+        fragment: Path,
+        action: Shader.() -> Unit = {}
+    ) {
         shaderProgramID = loadShaderProgram(vertex, fragment)
         use(action)
     }
