@@ -1,7 +1,8 @@
-package hunternif.voxarch.editor.scene.meshes
+package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.DEBUG
-import hunternif.voxarch.editor.render.BaseMesh
+import hunternif.voxarch.editor.render.BaseModel
+import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
@@ -11,7 +12,7 @@ import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
-class BoxMeshInstanced : BaseMesh() {
+class VoxelModelInstanced : BaseModel() {
     /** Borrowed from LearnOpenGL.com */
     private val vertexArray = floatArrayOf(
         // coordinates        // normals
@@ -66,6 +67,8 @@ class BoxMeshInstanced : BaseMesh() {
     private var voxels: IStorage3D<VoxColor?> = emptyArray3D()
 
     private var instanceVboID = 0
+
+    override val shader = MagicaVoxelShader()
 
     override fun init() = MemoryStack.stackPush().use { stack ->
         super.init()

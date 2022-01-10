@@ -1,14 +1,17 @@
-package hunternif.voxarch.editor.scene.meshes
+package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.render.BaseMesh
+import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.render.SelectionFrame
+import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
-class SelectionFrameMesh(
+class SelectionFrameModel(
     private val selection: SelectionFrame
-) : BaseMesh() {
+) : BaseModel() {
     private var bufferSize = 0
+
+    override val shader = SolidColorShader(0xcccccc)
 
     override fun init() {
         super.init()

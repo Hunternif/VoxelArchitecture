@@ -1,6 +1,8 @@
-package hunternif.voxarch.editor.scene.meshes
+package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.render.BaseMesh
+import hunternif.voxarch.editor.render.BaseModel
+import hunternif.voxarch.editor.scene.meshes.boxVertices
+import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Vector3f
 import org.joml.Vector3i
@@ -10,7 +12,7 @@ import org.lwjgl.system.MemoryUtil
 import kotlin.math.max
 import kotlin.math.min
 
-class NodeMesh : BaseMesh() {
+class NodeModel : BaseModel() {
     data class NodeData(
         val start: Vector3f,
         val end: Vector3f,
@@ -23,6 +25,8 @@ class NodeMesh : BaseMesh() {
 
     private var instanceVboID = 0
     private val nodes = mutableListOf<NodeData>()
+
+    override val shader = MagicaVoxelShader()
 
     override fun init() = MemoryStack.stackPush().use { stack ->
         super.init()

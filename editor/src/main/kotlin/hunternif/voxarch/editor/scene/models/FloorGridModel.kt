@@ -1,16 +1,19 @@
-package hunternif.voxarch.editor.scene.meshes
+package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.render.BaseMesh
+import hunternif.voxarch.editor.render.BaseModel
+import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
-class FloorGridMesh : BaseMesh() {
+class FloorGridModel : BaseModel() {
     private var fromX = 0
     private var fromZ = 0
     private var toX = 0
     private var toZ = 0
 
     private var bufferSize = 0
+
+    override val shader = SolidColorShader(0x333333)
 
     override fun init() {
         super.init()

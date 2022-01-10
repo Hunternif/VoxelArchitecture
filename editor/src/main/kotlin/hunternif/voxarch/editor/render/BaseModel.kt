@@ -1,15 +1,19 @@
 package hunternif.voxarch.editor.render
 
+import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 
-abstract class BaseMesh {
+abstract class BaseModel {
     protected var vaoID = 0
     protected var vboID = 0
 
     protected val vertexAttribList = VertexAttribList()
     protected val instanceAttribList = VertexAttribList()
 
+    protected abstract val shader: Shader
+
     open fun init() {
+        shader.init()
         vaoID = glGenVertexArrays()
         glBindVertexArray(vaoID)
 
@@ -34,10 +38,12 @@ abstract class BaseMesh {
         }
     }
 
-    fun runFrame() {
-        startFrame()
-        render()
-        endFrame()
+    fun runFrame(viewProj: Matrix4f) {
+        shader.render(viewProj) {
+            startFrame()
+            render()
+            endFrame()
+        }
     }
 
     abstract protected fun render()

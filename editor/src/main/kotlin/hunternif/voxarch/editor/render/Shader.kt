@@ -6,9 +6,11 @@ import org.lwjgl.system.MemoryStack
 import java.nio.file.Files
 import java.nio.file.Path
 
-open class Shader {
+abstract class Shader {
     @PublishedApi
     internal var shaderProgramID = 0
+
+    abstract fun init()
 
     fun init(
         vertex: Path,
@@ -17,6 +19,13 @@ open class Shader {
     ) {
         shaderProgramID = loadShaderProgram(vertex, fragment)
         use(action)
+    }
+
+    inline fun render(viewProj: Matrix4f, crossinline action: () -> Unit) {
+        use {
+            uploadMat4f("uViewProj", viewProj)
+            action()
+        }
     }
 
     inline fun use(crossinline action: Shader.() -> Unit) {

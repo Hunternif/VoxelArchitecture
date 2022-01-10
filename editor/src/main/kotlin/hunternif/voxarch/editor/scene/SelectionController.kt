@@ -5,7 +5,7 @@ import hunternif.voxarch.editor.createNode
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.render.SelectionFrame
 import hunternif.voxarch.editor.render.SelectionFrame.State.*
-import hunternif.voxarch.editor.scene.meshes.SelectionFrameMesh
+import hunternif.voxarch.editor.scene.models.SelectionFrameModel
 import hunternif.voxarch.editor.util.fromFloorToVoxCoords
 import imgui.internal.ImGui
 import org.joml.AABBf
@@ -21,17 +21,13 @@ class SelectionController(
     private val editArea: AABBf,
 ) : InputListener {
     val selection = SelectionFrame()
-    val mesh = SelectionFrameMesh(selection)
+    val model = SelectionFrameModel(selection)
 
     /** Used to store the end position while choosing height */
     private var endBeforeComplete = Vector3f()
 
     private var mouseX = 0f
     private var mouseY = 0f
-
-    fun init() {
-        mesh.init()
-    }
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
@@ -41,7 +37,7 @@ class SelectionController(
                 CHOOSING_BASE -> {
                     val posOnFloor = camera.projectToFloor(posX.toFloat(), posY.toFloat())
                     end = posOnFloor.fromFloorToVoxCoords()
-                    mesh.updateEdges()
+                    model.updateEdges()
                 }
                 CHOOSING_HEIGHT -> {
                     val posOnWall = camera.projectToVertical(
@@ -50,7 +46,7 @@ class SelectionController(
                     // must have Y >= 0
                     end.y = round(max(0f, posOnWall.y)).toInt()
                     correctBounds()
-                    mesh.updateEdges()
+                    model.updateEdges()
                 }
                 COMPLETE -> {}
             }
@@ -103,7 +99,7 @@ class SelectionController(
 
     private fun setState(state: SelectionFrame.State) {
         selection.state = state
-        mesh.updateEdges()
+        model.updateEdges()
     }
 
     private fun cancelOperation() {
