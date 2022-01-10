@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.centerCamera
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
@@ -13,7 +15,7 @@ import imgui.internal.flag.ImGuiDockNodeFlags
 import imgui.type.ImInt
 import imgui.internal.ImGui as DockImGui
 
-class DockedGui : GuiBase() {
+class DockedGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
 
@@ -35,7 +37,9 @@ class DockedGui : GuiBase() {
             }
             overlay("bottom right overlay", Corner.BOTTOM_RIGHT,
                 innerPadding=0f, bgAlpha=1f) {
-                iconButton(FontAwesomeIcons.Compress, "Recenter camera")
+                iconButton(FontAwesomeIcons.Compress, "Recenter camera") {
+                    app.centerCamera()
+                }
             }
         }
         rightPanel("right panel") {

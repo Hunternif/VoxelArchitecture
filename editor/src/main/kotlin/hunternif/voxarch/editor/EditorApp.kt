@@ -19,8 +19,8 @@ class EditorApp {
     private var window: Long = 0
     private var width: Int = 1000
     private var height: Int = 600
-    private val gui = DockedGui()
-    private val scene = BoxScene()
+    private val gui = DockedGui(this)
+    val scene = BoxScene()
 
     fun run() {
         init()
@@ -52,7 +52,7 @@ class EditorApp {
 //        val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
 //        scene.setVoxelData(file)
 //        scene.setVoxelData(Array3D(1, 1, 1, VoxColor(0xff9966)))
-        scene.centerCamera()
+        centerCamera()
     }
 
     private fun registerWindowEventHandler() {
