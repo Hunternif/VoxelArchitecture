@@ -18,25 +18,22 @@ class NodeMesh(
 
     override fun init() = MemoryStack.stackPush().use { stack ->
         super.init()
-        setPosition(Vector3i(), Vector3i())
+        uploadVertexData()
         initVertexAttributes {
             vector3f(0) // position attribute
             vector3f(1) // normal attribute
         }
 
-        // I'm reusing the instanced Magica Voxel shader, but with only 1 instance
+        // Create VBO for the instances of this model
         instanceVboID = glGenBuffers()
-        val instanceVertexBuffer = stack.mallocFloat(7).run {
-            put(0f).put(0f).put(0f) // single instance
-            put(color.r).put(color.g).put(color.b).put(color.a)
-            flip()
-        }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
+
         initInstanceAttributes {
             vector3f(2) // offset instance attribute
-            vector4f(3) // color instance attribute
+            vector3f(3) // scale instance attribute
+            vector4f(4) // color instance attribute
         }
+        uploadInstanceData()
     }
 
     fun setPosition(start: Vector3i, end: Vector3i) {
@@ -50,24 +47,16 @@ class NodeMesh(
             0.5f + max(start.y, end.y),
             0.5f + max(start.z, end.z)
         )
-        uploadVertexData()
+        uploadInstanceData()
     }
 
     private fun uploadVertexData() = MemoryStack.stackPush().use { stack ->
-        val width = end.x - start.x
-        val height = end.y - start.y
-        val length = end.z - start.z
-
         // Create a float buffer of vertices
         val vertexBuffer = stack.mallocFloat(boxVertices.size * 6)
         vertexBuffer.run {
             for (v in boxVertices) {
-                put(start.x + v.pos.x * width)
-                put(start.y + v.pos.y * height)
-                put(start.z + v.pos.z * length)
-                put(v.normal.x)
-                put(v.normal.y)
-                put(v.normal.z)
+                put(v.pos.x).put(v.pos.y).put(v.pos.z)
+                put(v.normal.x).put(v.normal.y).put(v.normal.z)
             }
             flip()
         }
@@ -76,6 +65,21 @@ class NodeMesh(
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
+    }
+
+    private fun uploadInstanceData() = MemoryStack.stackPush().use { stack ->
+        val width = end.x - start.x
+        val height = end.y - start.y
+        val length = end.z - start.z
+        val instanceVertexBuffer = stack.mallocFloat(10).run {
+            put(start.x).put(start.y).put(start.z)
+            put(width).put(height).put(length)
+            put(color.r).put(color.g).put(color.b).put(color.a)
+            flip()
+        }
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
+        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
+        glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
     override fun render() {

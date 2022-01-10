@@ -78,8 +78,8 @@ class BoxMeshInstanced : BaseMesh() {
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
         initVertexAttributes {
-            vector3f(ATTR_POS) // position attribute
-            vector3f(ATTR_NORMAL) // normal attribute
+            vector3f(0) // position attribute
+            vector3f(1) // normal attribute
         }
 
         // Create VBO for the instances of this model
@@ -88,8 +88,9 @@ class BoxMeshInstanced : BaseMesh() {
 
         // The instanced attributes come from a separate vertex buffer
         initInstanceAttributes {
-            vector3f(ATTR_OFFSET)
-            vector4f(ATTR_COLOR)
+            vector3f(2) // offset instance attribute
+            vector3f(3) // scale instance attribute
+            vector4f(4) // color instance attribute
         }
 
         uploadInstanceData()
@@ -101,13 +102,14 @@ class BoxMeshInstanced : BaseMesh() {
     }
 
     private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(voxels.size * 7)
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(voxels.size * 10)
         instanceVertexBuffer.run {
             voxels.forEachPos { x, y, z, v ->
                 if (v != null) {
                     put(x.toFloat())
                     put(y.toFloat())
                     put(z.toFloat())
+                    put(1f).put(1f).put(1f) // 100% scale
                     val color = ColorRGBa.fromHex(v.color)
                     put(color.r)
                     put(color.g)
@@ -136,12 +138,5 @@ class BoxMeshInstanced : BaseMesh() {
         glCullFace(GL_BACK)
         glFrontFace(GL_CCW)
         glDrawArraysInstanced(GL_TRIANGLES, 0, 36, voxels.size)
-    }
-
-    companion object {
-        private const val ATTR_POS = 0
-        private const val ATTR_NORMAL = 1
-        private const val ATTR_OFFSET = 2
-        private const val ATTR_COLOR = 3
     }
 }
