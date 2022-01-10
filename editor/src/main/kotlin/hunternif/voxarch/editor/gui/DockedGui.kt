@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
 import imgui.ImGui
 import imgui.ImGuiWindowClass
+import imgui.ImVec2
 import imgui.flag.ImGuiDir
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
@@ -29,8 +30,12 @@ class DockedGui : GuiBase() {
         horizontalDockspace(0.25f, "main window", "right panel")
         mainWindow("main window") { vp ->
             renderMainWindow(vp)
-            overlay(Corner.TOP_RIGHT) {
+            overlay("top right overlay", Corner.TOP_RIGHT) {
                 ImGui.text("overlay")
+            }
+            overlay("bottom right overlay", Corner.BOTTOM_RIGHT,
+                innerPadding=0f, bgAlpha=1f) {
+                iconButton(FontAwesomeIcons.Compress, "Recenter camera")
             }
         }
         rightPanel("right panel") {

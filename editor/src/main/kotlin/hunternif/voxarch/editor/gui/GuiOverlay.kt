@@ -14,8 +14,11 @@ enum class Corner {
 }
 
 inline fun overlay(
+    title: String,
     corner: Corner,
     padding: Float = 10f,
+    innerPadding: Float = 6f,
+    bgAlpha: Float = 0.35f,
     crossinline content: () -> Unit
 ) {
     val flags = 0 or
@@ -26,7 +29,7 @@ inline fun overlay(
         ImGuiWindowFlags.NoMove or
         ImGuiWindowFlags.NoScrollbar or
         ImGuiWindowFlags.NoDocking
-    ImGui.setNextWindowBgAlpha(0.35f)
+    ImGui.setNextWindowBgAlpha(bgAlpha)
 
     val size = ImGui.getWindowSize()
     val pos = ImGui.getWindowPos()
@@ -52,10 +55,10 @@ inline fun overlay(
     ImGui.setNextWindowPos(posX, posY, ImGuiCond.Always, pivotX, pivotY)
 
     ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
-    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 6f, 6f)
+    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, innerPadding, innerPadding)
     ImGui.pushStyleVar(ImGuiStyleVar.WindowMinSize, 10f, 10f)
 
-    if (ImGui.begin("overlay", flags)) {
+    if (ImGui.begin(title, flags)) {
         ImGui.popStyleVar(3)
         content()
     }
