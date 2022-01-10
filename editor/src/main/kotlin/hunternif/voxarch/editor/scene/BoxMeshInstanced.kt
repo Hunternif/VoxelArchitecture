@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.DEBUG
 import hunternif.voxarch.editor.render.BaseMesh
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -66,8 +67,6 @@ class BoxMeshInstanced : BaseMesh() {
 
     private var instanceVboID = 0
 
-    var debug = true
-
     override fun init() = MemoryStack.stackPush().use { stack ->
         super.init()
 
@@ -111,7 +110,8 @@ class BoxMeshInstanced : BaseMesh() {
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
-        if (debug) {
+
+        if (DEBUG) {
             val size = IntArray(1)
             glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, size)
             println("Vertex buffer size: ${size[0]}")

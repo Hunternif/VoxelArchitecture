@@ -14,6 +14,8 @@ import org.lwjgl.system.MemoryUtil
 
 fun main() = EditorApp().run()
 
+const val DEBUG = true
+
 class EditorApp {
     private val title = "Voxel Architecture Editor"
     private var window: Long = 0

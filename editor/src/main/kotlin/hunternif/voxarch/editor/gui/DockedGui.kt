@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.editor.DEBUG
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.centerCamera
 import hunternif.voxarch.editor.render.FrameBuffer
@@ -18,6 +19,7 @@ import imgui.internal.ImGui as DockImGui
 class DockedGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
+    @PublishedApi internal val fpsCounter = FpsCounter()
 
     private var firstTime = true
 
@@ -29,13 +31,15 @@ class DockedGui(val app: EditorApp) : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
+        fpsCounter.run()
         horizontalDockspace(0.25f, "main window", "right panel")
         mainWindow("main window") { vp ->
             renderMainWindow(vp)
-            overlay("top right overlay", Corner.TOP_RIGHT) {
-                ImGui.text("overlay")
+            if (DEBUG) overlay("debug overlay", Corner.TOP_RIGHT,
+                padding = 0f) {
+                ImGui.text("%.0f fps".format(fpsCounter.fps))
             }
-            overlay("bottom right overlay", Corner.BOTTOM_RIGHT,
+            overlay("camera controls", Corner.BOTTOM_RIGHT,
                 innerPadding=0f, bgAlpha=1f) {
                 iconButton(FontAwesomeIcons.Compress, "Recenter camera") {
                     app.centerCamera()
