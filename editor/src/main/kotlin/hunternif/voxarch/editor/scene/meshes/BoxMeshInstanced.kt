@@ -84,6 +84,14 @@ class BoxMeshInstanced : BaseMesh() {
 
         // Create VBO for the instances of this model
         instanceVboID = glGenBuffers()
+        glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
+
+        // The instanced attributes come from a separate vertex buffer
+        initInstanceAttributes {
+            vector3f(ATTR_OFFSET)
+            vector4f(ATTR_COLOR)
+        }
+
         uploadInstanceData()
     }
 
@@ -93,7 +101,7 @@ class BoxMeshInstanced : BaseMesh() {
     }
 
     private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(voxels.size * 6)
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(voxels.size * 7)
         instanceVertexBuffer.run {
             voxels.forEachPos { x, y, z, v ->
                 if (v != null) {
@@ -104,6 +112,7 @@ class BoxMeshInstanced : BaseMesh() {
                     put(color.r)
                     put(color.g)
                     put(color.b)
+                    put(color.a)
                 }
             }
             flip()
@@ -115,12 +124,6 @@ class BoxMeshInstanced : BaseMesh() {
             val size = IntArray(1)
             glGetBufferParameteriv(GL_ARRAY_BUFFER, GL_BUFFER_SIZE, size)
             println("Vertex buffer size: ${size[0]}")
-        }
-
-        // The instanced attributes come from a separate vertex buffer
-        initInstanceAttributes {
-            vector3f(ATTR_OFFSET)
-            vector3f(ATTR_COLOR)
         }
 
         // unbind

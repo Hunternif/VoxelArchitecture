@@ -16,6 +16,10 @@ class VertexAttribList {
         list.add(VertexAttribData(id, 3, GL_FLOAT, 3 * Float.SIZE_BYTES))
     }
 
+    fun vector4f(id: Int) {
+        list.add(VertexAttribData(id, 4, GL_FLOAT, 4 * Float.SIZE_BYTES))
+    }
+
     fun upload() {
         val stride = list.fold(0) { s, attr -> s + attr.sizeBytes }
         var offset = 0L
