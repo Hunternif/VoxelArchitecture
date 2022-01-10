@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.render.SelectionFrame
 import hunternif.voxarch.editor.render.SelectionFrame.State.*
+import hunternif.voxarch.editor.scene.meshes.SelectionFrameMesh
 import hunternif.voxarch.editor.util.fromFloorToVoxCoords
 import imgui.internal.ImGui
 import org.joml.AABBf

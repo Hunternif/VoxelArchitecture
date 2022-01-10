@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.scene
+package hunternif.voxarch.editor.scene.meshes
 
 import hunternif.voxarch.editor.render.BaseMesh
 import hunternif.voxarch.editor.render.SelectionFrame
