@@ -97,9 +97,7 @@ class NodeModel : BaseModel() {
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
-        glEnable(GL_CULL_FACE)
-        glCullFace(GL_BACK)
-        glFrontFace(GL_CCW)
+        glDisable(GL_CULL_FACE)
 
         glDrawArraysInstanced(GL_TRIANGLES, 0, 36, nodes.size)
     }
