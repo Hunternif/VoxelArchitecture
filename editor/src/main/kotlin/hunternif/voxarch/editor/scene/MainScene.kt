@@ -4,9 +4,9 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
-import org.joml.AABBf
 import org.joml.Vector3f
 import org.joml.Vector3i
 import org.lwjgl.opengl.GL32.*
@@ -26,7 +26,7 @@ class MainScene(app: EditorApp) {
 
     private var gridMargin = 9
 
-    private val editArea = AABBf()
+    private val editArea = VoxelAABBf()
     private var selectionController = SelectionController(app, camera, editArea)
 
     private val models = listOf(
@@ -59,28 +59,27 @@ class MainScene(app: EditorApp) {
     }
 
     fun setEditArea(minX: Int, minZ: Int, maxX: Int, maxZ: Int) {
-        editArea.let {
-            it.minX = -0.5f + minX - gridMargin
-            it.minY = -1f
-            it.minZ = -0.5f + minZ - gridMargin
-            it.maxX = 0.5f + maxX + gridMargin
-            it.maxY = 0f
-            it.maxZ = 0.5f + maxZ + gridMargin
+        editArea.run {
+            setMin(minX - gridMargin, 0, minZ - gridMargin)
+            setMax(maxX + gridMargin, 0, maxZ + gridMargin)
+            correctBounds()
         }
-        gridModel.setSize(
-            minX - gridMargin, minZ - gridMargin,
-            maxX + gridMargin, maxZ + gridMargin
-        )
+        updateGrid()
+    }
+
+    /** Make the grid area match edit area */
+    private fun updateGrid() {
+        editArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
     fun centerCamera() {
         // assuming the content is within [gridMargin]
         val minX = editArea.minX + gridMargin
         val minZ = editArea.minZ + gridMargin
-        val minY = 0f
+        val minY = 0
         val maxX = editArea.maxX - gridMargin
         val maxZ = editArea.maxZ - gridMargin
-        val maxY = data?.maxY?.toFloat() ?: 0f
+        val maxY = data?.maxY ?: 0
         val width = maxX - minX + 1
         val height = maxY - minY + 1
         val length = maxZ - minZ + 1
@@ -90,8 +89,8 @@ class MainScene(app: EditorApp) {
             length / 2f - 0.5f + minZ,
         )
         camera.zoomToFitBox(
-            Vector3f(minX, minY, minZ),
-            Vector3f(maxX, maxY, maxZ),
+            Vector3f(minX.toFloat(), minY.toFloat(), minZ.toFloat()),
+            Vector3f(maxX.toFloat(), maxY.toFloat(), maxZ.toFloat()),
         )
     }
 

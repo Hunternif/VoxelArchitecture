@@ -5,9 +5,9 @@ import hunternif.voxarch.editor.createNode
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectionFrame.State.*
 import hunternif.voxarch.editor.scene.models.SelectionFrameModel
+import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.fromFloorToVoxCoords
 import imgui.internal.ImGui
-import org.joml.AABBf
 import org.joml.Vector3f
 import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW.*
@@ -17,7 +17,7 @@ import kotlin.math.round
 class SelectionController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-    private val editArea: AABBf,
+    private val editArea: VoxelAABBf,
 ) : InputListener {
     val selection = SelectionFrame()
     val model = SelectionFrameModel(selection)
@@ -68,7 +68,7 @@ class SelectionController(
             when (state) {
                 EMPTY -> {
                     val posOnFloor = camera.projectToFloor(mouseX, mouseY)
-                    if (editArea.testPoint(posOnFloor)) {
+                    if (editArea.testPointXZ(posOnFloor)) {
                         val voxPos = posOnFloor.fromFloorToVoxCoords()
                         selection.start = Vector3i(voxPos)
                         selection.end = Vector3i(voxPos)
