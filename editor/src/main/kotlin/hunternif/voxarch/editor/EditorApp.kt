@@ -1,12 +1,10 @@
 package hunternif.voxarch.editor
 
-import hunternif.voxarch.editor.scene.BoxScene
+import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.DockedGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.resourcePath
-import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
-import hunternif.voxarch.vector.Array3D
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
@@ -22,7 +20,7 @@ class EditorApp {
     private var width: Int = 1000
     private var height: Int = 600
     private val gui = DockedGui(this)
-    val scene = BoxScene(this)
+    val scene = MainScene(this)
 
     fun run() {
         init()

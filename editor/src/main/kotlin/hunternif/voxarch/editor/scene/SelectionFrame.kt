@@ -1,6 +1,6 @@
-package hunternif.voxarch.editor.render
+package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.render.SelectionFrame.State.*
+import hunternif.voxarch.editor.scene.SelectionFrame.State.*
 import hunternif.voxarch.editor.util.AABBi
 import hunternif.voxarch.editor.util.Edge
 import org.joml.AABBf

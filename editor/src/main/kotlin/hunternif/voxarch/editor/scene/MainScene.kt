@@ -12,7 +12,7 @@ import org.joml.Vector3f
 import org.joml.Vector3i
 import org.lwjgl.opengl.GL32.*
 
-class BoxScene(app: EditorApp) {
+class MainScene(app: EditorApp) {
     private val vp = Viewport(0, 0, 0, 0)
 
     private val inputController = InputController()
