@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.scene.meshes
+package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.util.Vertex
 

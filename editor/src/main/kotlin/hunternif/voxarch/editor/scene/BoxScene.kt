@@ -2,9 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.render.*
-import hunternif.voxarch.editor.scene.models.VoxelModelInstanced
-import hunternif.voxarch.editor.scene.models.FloorGridModel
-import hunternif.voxarch.editor.scene.models.NodeModel
+import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
@@ -19,7 +17,7 @@ class BoxScene(app: EditorApp) {
 
     private val inputController = InputController()
 
-    private val voxelModel = VoxelModelInstanced()
+    private val voxelModel = VoxelModel()
     private val gridModel = FloorGridModel()
     private val nodeModel = NodeModel()
 
