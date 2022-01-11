@@ -58,12 +58,18 @@ class MainScene(app: EditorApp) {
         setEditArea(data.minX, data.minZ, data.maxX, data.maxZ)
     }
 
-    fun setEditArea(minX: Int, minZ: Int, maxX: Int, maxZ: Int) {
+    private fun setEditArea(minX: Int, minZ: Int, maxX: Int, maxZ: Int) {
         editArea.run {
             setMin(minX - gridMargin, 0, minZ - gridMargin)
             setMax(maxX + gridMargin, 0, maxZ + gridMargin)
             correctBounds()
         }
+        updateGrid()
+    }
+
+    fun expandEditArea(x: Int, y: Int, z: Int) {
+        editArea.union(x - gridMargin, y, z - gridMargin)
+        editArea.union(x + gridMargin, y, z + gridMargin)
         updateGrid()
     }
 
@@ -76,10 +82,10 @@ class MainScene(app: EditorApp) {
         // assuming the content is within [gridMargin]
         val minX = editArea.minX + gridMargin
         val minZ = editArea.minZ + gridMargin
-        val minY = 0
+        val minY = editArea.minY
         val maxX = editArea.maxX - gridMargin
         val maxZ = editArea.maxZ - gridMargin
-        val maxY = data?.maxY ?: 0
+        val maxY = editArea.maxY
         val width = maxX - minX + 1
         val height = maxY - minY + 1
         val length = maxZ - minZ + 1

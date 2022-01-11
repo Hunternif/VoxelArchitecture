@@ -13,4 +13,6 @@ fun EditorApp.centerCamera() {
 
 fun EditorApp.createNode(start: Vector3i, end: Vector3i) {
     scene.createNode(start, end)
+    scene.expandEditArea(start.x, start.y, start.z)
+    scene.expandEditArea(end.x, end.y, end.z)
 }
