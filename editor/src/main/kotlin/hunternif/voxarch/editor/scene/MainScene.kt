@@ -6,7 +6,6 @@ import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.vector.Array3D
 import org.joml.AABBf
 import org.joml.Vector3f
 import org.joml.Vector3i
@@ -45,8 +44,7 @@ class MainScene(app: EditorApp) {
             addListener(camera)
             addListener(selectionController)
         }
-        // Initial empty area to show grid
-        setVoxelData(Array3D(16, 2, 16, null))
+        setEditArea(0, 0, 16, 16)
     }
 
     fun setViewport(viewport: Viewport) {
@@ -57,31 +55,44 @@ class MainScene(app: EditorApp) {
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
         voxelModel.setVoxels(data)
-        gridModel.setSize(
-            data.minX - gridMargin, data.minZ - gridMargin,
-            data.maxX + gridMargin, data.maxZ + gridMargin
-        )
-        editArea.run {
-            setMin(-0.5f + data.minX - gridMargin, -1f, -0.5f + data.minZ - gridMargin)
-            setMax(0.5f + data.maxX + gridMargin, 0f, 0.5f + data.maxZ + gridMargin)
+        setEditArea(data.minX, data.minZ, data.maxX, data.maxZ)
+    }
+
+    fun setEditArea(minX: Int, minZ: Int, maxX: Int, maxZ: Int) {
+        editArea.let {
+            it.minX = -0.5f + minX - gridMargin
+            it.minY = -1f
+            it.minZ = -0.5f + minZ - gridMargin
+            it.maxX = 0.5f + maxX + gridMargin
+            it.maxY = 0f
+            it.maxZ = 0.5f + maxZ + gridMargin
         }
+        gridModel.setSize(
+            minX - gridMargin, minZ - gridMargin,
+            maxX + gridMargin, maxZ + gridMargin
+        )
     }
 
     fun centerCamera() {
-        data?.run {
-            val width = maxX - minX + 1
-            val height = maxY - minY + 1
-            val length = maxZ - minZ + 1
-            camera.setPosition(
-                width / 2f - 0.5f,
-                height / 2f - 0.5f,
-                length / 2f - 0.5f
-            )
-            camera.zoomToFitBox(
-                Vector3f(0f, 0f, 0f),
-                Vector3f(width.toFloat(), height.toFloat(), length.toFloat())
-            )
-        }
+        // assuming the content is within [gridMargin]
+        val minX = editArea.minX + gridMargin
+        val minZ = editArea.minZ + gridMargin
+        val minY = 0f
+        val maxX = editArea.maxX - gridMargin
+        val maxZ = editArea.maxZ - gridMargin
+        val maxY = data?.maxY?.toFloat() ?: 0f
+        val width = maxX - minX + 1
+        val height = maxY - minY + 1
+        val length = maxZ - minZ + 1
+        camera.setPosition(
+            width / 2f - 0.5f + minX,
+            height / 2f - 0.5f + minY,
+            length / 2f - 0.5f + minZ,
+        )
+        camera.zoomToFitBox(
+            Vector3f(minX, minY, minZ),
+            Vector3f(maxX, maxY, maxZ),
+        )
     }
 
     fun createNode(start: Vector3i, end: Vector3i) {
