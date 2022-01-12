@@ -6,13 +6,13 @@ import imgui.ImGui
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiTreeNodeFlags
 
-fun DockedGui.nodeTree() {
+fun MainGui.nodeTree() {
     ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
     addTreeNodeRecursive(app.rootNode)
     ImGui.popStyleVar(1)
 }
 
-private fun DockedGui.addTreeNodeRecursive(node: Node) {
+private fun MainGui.addTreeNodeRecursive(node: Node) {
     var flags = 0 or
         ImGuiTreeNodeFlags.OpenOnArrow or
         ImGuiTreeNodeFlags.SpanAvailWidth or

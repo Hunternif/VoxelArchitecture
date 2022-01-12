@@ -1,10 +1,8 @@
 package hunternif.voxarch.editor
 
 import hunternif.voxarch.editor.scene.MainScene
-import hunternif.voxarch.editor.gui.DockedGui
+import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
-import hunternif.voxarch.editor.util.resourcePath
-import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 import org.lwjgl.glfw.GLFW.*
@@ -21,7 +19,7 @@ class EditorApp {
     private var window: Long = 0
     private var width: Int = 1000
     private var height: Int = 600
-    private val gui = DockedGui(this)
+    private val gui = MainGui(this)
     val scene = MainScene(this)
 
     /** Root node containing everything in the editor */

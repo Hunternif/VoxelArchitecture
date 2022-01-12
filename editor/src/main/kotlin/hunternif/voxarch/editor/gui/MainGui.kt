@@ -7,21 +7,13 @@ import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
 import imgui.ImGui
-import imgui.ImGuiWindowClass
-import imgui.ImVec2
-import imgui.flag.ImGuiDir
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
-import imgui.internal.flag.ImGuiDockNodeFlags
-import imgui.type.ImInt
-import imgui.internal.ImGui as DockImGui
 
-class DockedGui(val app: EditorApp) : GuiBase() {
+class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
-
-    private var firstTime = true
 
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
@@ -32,7 +24,13 @@ class DockedGui(val app: EditorApp) : GuiBase() {
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
         fpsCounter.run()
-        horizontalDockspace(0.25f, "main window", "Node tree")
+        dockspace(
+            HorizontalSplit(
+                rightRatio = 0.25f,
+                right = Window("Node tree"),
+                left = Window("main window", showTabBar = false)
+            )
+        )
         mainWindow("main window") { vp ->
             renderMainWindow(vp)
             if (DEBUG) overlay("debug overlay", Corner.TOP_RIGHT,
@@ -96,58 +94,5 @@ class DockedGui(val app: EditorApp) : GuiBase() {
             renderWindow()
         }
         ImGui.end()
-    }
-
-    @PublishedApi
-    internal fun horizontalDockspace(
-        rightWindowRatio: Float,
-        leftWindow: String,
-        rightWindow: String
-    ) {
-        val dockspaceId = ImGui.getID("MyDockSpace")
-        val vp = ImGui.getMainViewport()
-        ImGui.setNextWindowPos(vp.workPosX, vp.workPosY)
-        ImGui.setNextWindowSize(vp.workSizeX, vp.workSizeY)
-        ImGui.setNextWindowViewport(vp.id)
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f)
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
-        val windowFlags = 0 or
-            ImGuiWindowFlags.NoDocking or
-            ImGuiWindowFlags.NoTitleBar or
-            ImGuiWindowFlags.NoCollapse or
-            ImGuiWindowFlags.NoResize or
-            ImGuiWindowFlags.NoMove or
-            ImGuiWindowFlags.NoBringToFrontOnFocus or
-            ImGuiWindowFlags.NoNavFocus
-        val dockFlags = 0 or
-            ImGuiDockNodeFlags.NoWindowMenuButton // hide button to hide tab bar
-        ImGui.begin("dockspace", windowFlags)
-        ImGui.dockSpace(dockspaceId, vp.workSizeX, vp.workSizeY, dockFlags)
-        if (firstTime) {
-            firstTime = false
-
-            DockImGui.dockBuilderRemoveNode(dockspaceId)
-            DockImGui.dockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags.DockSpace)
-            DockImGui.dockBuilderSetNodeSize(dockspaceId, vp.workSizeX, vp.workSizeY)
-
-            val leftId = ImInt(0)
-            val rightId = ImInt(0)
-            DockImGui.dockBuilderSplitNode(
-                dockspaceId, ImGuiDir.Right, rightWindowRatio, rightId, leftId
-            )
-            // hide tab bar for the main window
-            ImGui.setNextWindowClass(
-                ImGuiWindowClass().apply {
-                    dockNodeFlagsOverrideSet = ImGuiDockNodeFlags.NoTabBar
-                }
-            )
-            DockImGui.dockBuilderDockWindow(leftWindow, leftId.get())
-            DockImGui.dockBuilderDockWindow(rightWindow, rightId.get())
-
-            DockImGui.dockBuilderFinish(dockspaceId)
-        }
-        ImGui.end()
-        ImGui.popStyleVar(3)
     }
 }
