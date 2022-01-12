@@ -32,7 +32,7 @@ class DockedGui(val app: EditorApp) : GuiBase() {
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
         fpsCounter.run()
-        horizontalDockspace(0.25f, "main window", "right panel")
+        horizontalDockspace(0.25f, "main window", "Node tree")
         mainWindow("main window") { vp ->
             renderMainWindow(vp)
             if (DEBUG) overlay("debug overlay", Corner.TOP_RIGHT,
@@ -46,8 +46,8 @@ class DockedGui(val app: EditorApp) : GuiBase() {
                 }
             }
         }
-        rightPanel("right panel") {
-            ImGui.text("Node tree explorer goes here")
+        rightPanel("Node tree") {
+            nodeTree()
         }
     }
 
@@ -88,7 +88,11 @@ class DockedGui(val app: EditorApp) : GuiBase() {
         title: String,
         crossinline renderWindow: () -> Unit
     ) {
-        if (ImGui.begin(title, ImGuiWindowFlags.NoMove)) {
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f)
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
+        if (ImGui.begin(title, 0)) {
+            ImGui.popStyleVar(3)
             renderWindow()
         }
         ImGui.end()

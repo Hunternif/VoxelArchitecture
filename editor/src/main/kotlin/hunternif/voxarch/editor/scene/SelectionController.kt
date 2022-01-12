@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.createNode
+import hunternif.voxarch.editor.createRoom
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectionFrame.State.*
 import hunternif.voxarch.editor.scene.models.SelectionFrameModel
@@ -119,7 +119,7 @@ class SelectionController(
                 GLFW_KEY_ESCAPE -> setState(EMPTY)
                 GLFW_KEY_SPACE -> {
                     setState(EMPTY)
-                    app.createNode(selection.start, selection.end)
+                    app.createRoom(selection.start, selection.end)
                 }
             }
         }
