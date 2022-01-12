@@ -1,6 +1,6 @@
 package hunternif.voxarch.vector;
 
-import org.jetbrains.annotations.Nullable;
+import java.util.Objects;
 
 /**
  * 3D vector of doubles.
@@ -162,7 +162,12 @@ public class Vec3 {
 		Vec3 vec = (Vec3) obj;
 		return vec.x == x && vec.y == y && vec.z == z;
 	}
-	
+
+	@Override
+	public int hashCode() {
+		return Objects.hash(x, y, z);
+	}
+
 	public double dotProduct(Vec3 vec) {
 		return x*vec.x + y*vec.y + z*vec.z;
 	}
@@ -207,4 +212,20 @@ public class Vec3 {
     public Vec3 unaryMinus() {
         return multiply(-1);
     }
+
+	public Vec3 plus(Vec3 vec) {
+		return add(vec);
+	}
+
+	public Vec3 minus(Vec3 vec) {
+		return subtract(vec);
+	}
+
+	public Vec3 times(Double t) {
+		return new Vec3(x * t, y * t, z * t);
+	}
+
+	public Vec3 div(Double t) {
+		return new Vec3(x / t, y / t, z / t);
+	}
 }
