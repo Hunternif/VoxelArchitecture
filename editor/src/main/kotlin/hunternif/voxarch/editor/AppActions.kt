@@ -22,6 +22,10 @@ fun EditorApp.centerCamera() {
     }
 }
 
+fun EditorApp.setTool(tool: Tool) {
+    currentTool = tool
+}
+
 fun EditorApp.selectNode(node: Node) {
     currentNode = node
 }

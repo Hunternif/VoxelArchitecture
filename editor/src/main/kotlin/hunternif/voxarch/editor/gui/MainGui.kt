@@ -1,8 +1,6 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.editor.DEBUG
-import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.centerCamera
+import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
@@ -30,30 +28,26 @@ class MainGui(val app: EditorApp) : GuiBase() {
             HorizontalSplit(
                 rightRatio = 0.25f,
                 right = Window("Node tree"),
-                left = HorizontalSplit(
-                    leftSize = 32,
-                    left = Window("left_toolbar"),
-                    right = VerticalSplit(
-                        bottomSize = 32,
-                        bottom = Window("bottom_toolbar"),
-                        top = Window("main_window"),
-                    ),
-                ),
+                left = Window("main_window"),
             )
         )
-        toolbar("left_toolbar")
-        toolbar("bottom_toolbar")
         mainWindow("main_window") { vp ->
             renderMainWindow(vp)
-            if (DEBUG) overlay("debug overlay", Corner.TOP_RIGHT,
+            if (DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
+                ImGui.text("Tool: ${app.currentTool.description}")
                 ImGui.text("%.0f fps".format(fpsCounter.fps))
             }
-            overlay("camera controls", Corner.BOTTOM_RIGHT,
+            overlay("camera_controls", Corner.BOTTOM_RIGHT,
                 innerPadding=0f, bgAlpha=1f) {
                 iconButton(FontAwesomeIcons.Compress, "Recenter camera") {
                     app.centerCamera()
                 }
+            }
+            overlay("left_toolbar", Corner.TOP_LEFT,
+                padding = 0f, bgAlpha=1f) {
+                toolButton(Tool.SELECT)
+                toolButton(Tool.ADD_NODE)
             }
         }
         rightPanel("Node tree") {

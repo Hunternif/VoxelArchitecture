@@ -26,6 +26,8 @@ class EditorApp {
     val rootNode = Structure()
     var currentNode: Node = rootNode
 
+    var currentTool: Tool = Tool.SELECT
+
     fun run() {
         init()
         while (!glfwWindowShouldClose(window)) {
