@@ -43,12 +43,17 @@ class HorizontalSplit(
     private val right: DockspaceLayoutBuilder,
 ) : DockspaceLayoutBuilder {
     override fun build(dockNodeID: Int) {
-        val leftRatio = leftRatio ?: rightRatio?.let{1-it} ?: 0.5f
         val leftId = ImInt(0)
         val rightId = ImInt(0)
-        DockImGui.dockBuilderSplitNode(
-            dockNodeID, ImGuiDir.Left, leftRatio, leftId, rightId
-        )
+        if (leftRatio != null || leftSize != null) {
+            val ratio = leftRatio ?: 0.5f
+            DockImGui.dockBuilderSplitNode(
+                dockNodeID, ImGuiDir.Left, ratio, leftId, rightId)
+        } else {
+            val ratio = rightRatio ?: 0.5f
+            DockImGui.dockBuilderSplitNode(
+                dockNodeID, ImGuiDir.Right, ratio, rightId, leftId)
+        }
         leftSize?.let {
             DockImGui.dockBuilderSetNodeSize(leftId.get(), it.toFloat(), 1f)
         }
@@ -69,12 +74,17 @@ class VerticalSplit(
     private val bottom: DockspaceLayoutBuilder,
 ) : DockspaceLayoutBuilder {
     override fun build(dockNodeID: Int) {
-        val topRatio = topRatio ?: bottomRatio?.let{1-it} ?: 0.5f
         val topId = ImInt(0)
         val bottomId = ImInt(0)
-        DockImGui.dockBuilderSplitNode(
-            dockNodeID, ImGuiDir.Up, topRatio, topId, bottomId
-        )
+        if (topRatio != null || topSize != null) {
+            val ratio = topRatio ?: 0.5f
+            DockImGui.dockBuilderSplitNode(
+                dockNodeID, ImGuiDir.Up, ratio, topId, bottomId)
+        } else {
+            val ratio = bottomRatio ?: 0.5f
+            DockImGui.dockBuilderSplitNode(
+                dockNodeID, ImGuiDir.Down, ratio, bottomId, topId)
+        }
         topSize?.let {
             DockImGui.dockBuilderSetNodeSize(topId.get(), 1f, it.toFloat())
         }
