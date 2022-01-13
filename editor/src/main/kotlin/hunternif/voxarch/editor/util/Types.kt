@@ -11,6 +11,7 @@ import kotlin.math.round
 fun IntVec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
 fun Vector3i.toVec3() = Vec3(x, y, z)
+fun Vec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
 fun Vector3f.toIntFloor() = Vector3i(floor(x).toInt(), floor(y).toInt(), floor(z).toInt())
 fun Vector3f.toIntCeil() = Vector3i(ceil(x).toInt(), ceil(y).toInt(), ceil(z).toInt())

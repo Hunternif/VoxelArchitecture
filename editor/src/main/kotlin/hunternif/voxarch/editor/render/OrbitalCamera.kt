@@ -50,6 +50,10 @@ class OrbitalCamera : InputListener {
         vp.set(viewport)
     }
 
+    fun setPosition(pos: Vector3f) {
+        setPosition(pos.x, pos.y, pos.z)
+    }
+
     fun setPosition(x: Float, y: Float, z: Float) {
         this.translation.set(-x, -y, -z)
         viewMatrixDirty = true

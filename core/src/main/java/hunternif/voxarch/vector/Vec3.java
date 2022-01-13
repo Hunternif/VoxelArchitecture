@@ -221,11 +221,19 @@ public class Vec3 {
 		return subtract(vec);
 	}
 
-	public Vec3 times(Double t) {
+	public Vec3 times(double t) {
 		return new Vec3(x * t, y * t, z * t);
 	}
 
-	public Vec3 div(Double t) {
+	public Vec3 div(double t) {
+		return new Vec3(x / t, y / t, z / t);
+	}
+
+	public Vec3 times(int t) {
+		return new Vec3(x * t, y * t, z * t);
+	}
+
+	public Vec3 div(int t) {
 		return new Vec3(x / t, y / t, z / t);
 	}
 }

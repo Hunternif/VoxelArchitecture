@@ -5,7 +5,11 @@ import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.VoxelAABBf
+import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.IStorage3D
 import org.joml.Vector3f
 import org.joml.Vector3i
@@ -79,7 +83,7 @@ class MainScene(app: EditorApp) {
         editArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
-    fun centerCamera() {
+    fun centerCameraAroundGrid() {
         // assuming the content is within [gridMargin]
         val minX = editArea.minX + gridMargin
         val minZ = editArea.minZ + gridMargin
@@ -99,6 +103,19 @@ class MainScene(app: EditorApp) {
             Vector3f(minX.toFloat(), minY.toFloat(), minZ.toFloat()),
             Vector3f(maxX.toFloat(), maxY.toFloat(), maxZ.toFloat()),
         )
+    }
+
+    fun centerCameraAroundNode(node: Node) {
+        val origin = node.findGlobalPosition()
+        if (node is Room) {
+            val start = origin + node.start
+            val end = start + node.size
+            val center = start + node.size / 2
+            camera.setPosition(center.toVector3f())
+            camera.zoomToFitBox(start.toVector3f(), end.toVector3f())
+        } else {
+            camera.setPosition(origin.toVector3f())
+        }
     }
 
     fun createNode(start: Vector3i, end: Vector3i) {
