@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.editor.centerCamera
 import hunternif.voxarch.editor.selectNode
 import hunternif.voxarch.plan.Node
 import imgui.ImGui
@@ -31,6 +32,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node) {
     if (ImGui.treeNodeEx(text, flags)) {
         if (ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(0)) {
             app.selectNode(node)
+            app.centerCamera()
         }
         if (node.children.isNotEmpty()) {
             node.children.forEach { addTreeNodeRecursive(it) }

@@ -36,7 +36,7 @@ fun EditorApp.createRoom(start: Vector3i, end: Vector3i) {
         val globalPos = findGlobalPosition()
         room(start.toVec3() - globalPos, end.toVec3() - globalPos)
     }
-    scene.createNode(start, end)
+    scene.updateNodeModel()
     scene.expandEditArea(start.x, start.y, start.z)
     scene.expandEditArea(end.x, end.y, end.z)
 }

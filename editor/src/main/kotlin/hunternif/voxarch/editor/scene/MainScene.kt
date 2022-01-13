@@ -11,11 +11,11 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
-import org.joml.Vector3i
 import org.lwjgl.opengl.GL32.*
 
-class MainScene(app: EditorApp) {
+class MainScene(private val app: EditorApp) {
     private val vp = Viewport(0, 0, 0, 0)
 
     private val inputController = InputController()
@@ -118,8 +118,25 @@ class MainScene(app: EditorApp) {
         }
     }
 
-    fun createNode(start: Vector3i, end: Vector3i) {
-        nodeModel.addNode(start, end, ColorRGBa.fromHex(0x8dc63f, 0.3f))
+    fun updateNodeModel() {
+        nodeModel.clear()
+        addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
+    }
+
+    private fun addNodeModelsRecursive(node: Node, offset: Vec3) {
+        for (child in node.children) {
+            if (child is Room) {
+                val origin = offset + child.origin
+                val start = origin + child.start
+                val end = start + child.size
+                nodeModel.addNode(
+                    start.toVector3f(),
+                    end.toVector3f(),
+                    ColorRGBa.fromHex(0x8dc63f, 0.3f)
+                )
+                addNodeModelsRecursive(child, origin)
+            }
+        }
     }
 
     fun render() {
