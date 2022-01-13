@@ -26,6 +26,7 @@ class MainScene(app: EditorApp) {
 
     private var gridMargin = 9
 
+    /** Area where you are allowed to place new voxels. The grid matches it. */
     private val editArea = VoxelAABBf()
     private var selectionController = SelectionController(app, camera, editArea)
 

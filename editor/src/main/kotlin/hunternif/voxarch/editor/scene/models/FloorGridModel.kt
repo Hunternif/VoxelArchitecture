@@ -4,6 +4,8 @@ import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
+import java.lang.Integer.min
+import kotlin.math.max
 
 class FloorGridModel : BaseModel() {
     private var fromX = 0
@@ -20,14 +22,20 @@ class FloorGridModel : BaseModel() {
         initVertexAttributes {
             vector3f(0) // position attribute
         }
-        setSize(0, 0, 0, 0)
+        uploadVertexData()
     }
 
     fun setSize(fromX: Int, fromZ: Int, toX: Int, toZ: Int) {
-        this.fromX = fromX
-        this.fromZ = fromZ
-        this.toX = toX
-        this.toZ = toZ
+        this.fromX = min(fromX, toX)
+        this.fromZ = min(fromZ, toX)
+        // + 1 because we need to draw 1 more line than there are voxels,
+        // i.e. start _before_ the 1st voxel and finish _after_ the last voxel.
+        this.toX = max(fromX, toX) + 1
+        this.toZ = max(fromZ, toZ) + 1
+        uploadVertexData()
+    }
+
+    private fun uploadVertexData() {
         val width = toX - fromX
         val length = toZ - fromZ
         val vertexCount = (width + 1)*2 + (length + 1)*2
