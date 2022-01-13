@@ -108,11 +108,11 @@ class MainScene(private val app: EditorApp) {
     fun centerCameraAroundNode(node: Node) {
         val origin = node.findGlobalPosition()
         if (node is Room) {
-            val start = origin + node.start
-            val end = start + node.size
-            val center = start + node.size / 2
+            val center = origin + node.start + node.size / 2
+            val min = origin + node.start - Vec3(0.5, 0.5, 0.5)
+            val max = min + node.size + Vec3(1, 1, 1)
             camera.setPosition(center.toVector3f())
-            camera.zoomToFitBox(start.toVector3f(), end.toVector3f())
+            camera.zoomToFitBox(min.toVector3f(), max.toVector3f())
         } else {
             camera.setPosition(origin.toVector3f())
         }
