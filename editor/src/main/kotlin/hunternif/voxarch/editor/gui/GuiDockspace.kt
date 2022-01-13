@@ -98,16 +98,8 @@ class VerticalSplit(
 
 class Window(
     private val name: String,
-    private val showTabBar: Boolean = true
 ): DockspaceLayoutBuilder {
     override fun build(dockNodeID: Int) {
-        if (!showTabBar) {
-            ImGui.setNextWindowClass(
-                ImGuiWindowClass().apply {
-                    dockNodeFlagsOverrideSet = ImGuiDockNodeFlags.NoTabBar
-                }
-            )
-        }
         DockImGui.dockBuilderDockWindow(name, dockNodeID)
     }
 

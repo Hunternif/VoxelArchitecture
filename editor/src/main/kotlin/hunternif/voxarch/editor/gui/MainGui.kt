@@ -7,8 +7,10 @@ import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
 import imgui.ImGui
+import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
+import imgui.internal.flag.ImGuiDockNodeFlags
 
 class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
@@ -28,10 +30,20 @@ class MainGui(val app: EditorApp) : GuiBase() {
             HorizontalSplit(
                 rightRatio = 0.25f,
                 right = Window("Node tree"),
-                left = Window("main window", showTabBar = false)
+                left = HorizontalSplit(
+                    leftSize = 32,
+                    left = Window("left_toolbar"),
+                    right = VerticalSplit(
+                        bottomSize = 32,
+                        bottom = Window("bottom_toolbar"),
+                        top = Window("main_window"),
+                    ),
+                ),
             )
         )
-        mainWindow("main window") { vp ->
+        toolbar("left_toolbar")
+        toolbar("bottom_toolbar")
+        mainWindow("main_window") { vp ->
             renderMainWindow(vp)
             if (DEBUG) overlay("debug overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
@@ -54,6 +66,13 @@ class MainGui(val app: EditorApp) : GuiBase() {
         title: String,
         crossinline renderWindow: (Viewport) -> Unit
     ) {
+        ImGui.setNextWindowClass(
+            ImGuiWindowClass().apply {
+                dockNodeFlagsOverrideSet = 0 or
+                    ImGuiDockNodeFlags.NoTabBar or
+                    ImGuiDockNodeFlags.NoDocking
+            }
+        )
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
