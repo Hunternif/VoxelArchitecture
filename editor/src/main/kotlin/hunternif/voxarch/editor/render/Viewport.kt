@@ -13,7 +13,7 @@ data class Viewport(
     inline val bottom get() = y + height
     inline val top get() = y
 
-    private val array = intArrayOf(x, y, width, height)
+    private val array = intArrayOf(0, 0, width, height)
 
     fun set(x: Int, y: Int, width: Int, height: Int) {
         this.x = x
@@ -27,9 +27,10 @@ data class Viewport(
 
     fun set(vp: Viewport) = set(vp.x, vp.y, vp.width, vp.height)
 
-    fun toArray(): IntArray {
-        array[0] = x
-        array[1] = y
+    /** Sets only width & height, i.e. coordinates are (0, 0) */
+    fun getSizeArray(): IntArray {
+        array[0] = 0
+        array[1] = 0
         array[2] = width
         array[3] = height
         return array
@@ -41,7 +42,7 @@ data class Viewport(
 
     fun contains(posX: Float, posY: Float): Boolean =
         posX >= x && posX <= x + width &&
-            posY >= y && posY <= y + width
+            posY >= y && posY <= y + height
 
     /** Distance to the closest edge of the viewport, if ([x], [y]) is outside.
      * If ([x], [y]) is inside, returns 0. */
@@ -58,4 +59,6 @@ data class Viewport(
         }
         return sqrt(dx*dx + dy*dy)
     }
+
+    override fun toString() = "Viewport($x, $y, $width, $height)"
 }

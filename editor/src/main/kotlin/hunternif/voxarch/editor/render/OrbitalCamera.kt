@@ -139,9 +139,9 @@ class OrbitalCamera : InputListener {
         panning = true
         // find mouse position in world coordinates
         vpMat.unprojectRay(
-            mouseX,
-            vp.height - mouseY,
-            vp.toArray(),
+            mouseX - vp.x,
+            vp.height - mouseY + vp.y,
+            vp.getSizeArray(),
             dragRayOrigin,
             dragRayDir
         )
@@ -152,9 +152,9 @@ class OrbitalCamera : InputListener {
     private fun pan(posX: Double, posY: Double) {
         // find mouse position in world coordinates
         vpMat.unprojectRay(
-            posX.toFloat(),
-            vp.height - posY.toFloat(),
-            vp.toArray(),
+            posX.toFloat() - vp.x,
+            vp.height - posY.toFloat() + vp.y,
+            vp.getSizeArray(),
             dragRayOrigin,
             dragRayDir
         )
@@ -196,9 +196,9 @@ class OrbitalCamera : InputListener {
     /** Projects screen coordinates to world coordinates at Y=-0.5 */
     fun projectToFloor(posX: Float, posY: Float): Vector3f {
         vpMat.unprojectRay(
-            posX,
-            vp.height - posY,
-            vp.toArray(),
+            posX - vp.x,
+            vp.height - posY + vp.y,
+            vp.getSizeArray(),
             dragRayOrigin,
             dragRayDir
         )
@@ -218,9 +218,9 @@ class OrbitalCamera : InputListener {
      * Used for dragging voxels vertically. */
     fun projectToVertical(posX: Float, posY: Float, point: Vector3f): Vector3f {
         vpMat.unprojectRay(
-            posX,
-            vp.height - posY,
-            vp.toArray(),
+            posX - vp.x,
+            vp.height - posY + vp.y,
+            vp.getSizeArray(),
             dragRayOrigin,
             dragRayDir
         )
