@@ -1,13 +1,13 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.scene.SelectionFrame
+import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
-class SelectionFrameModel(
-    private val selection: SelectionFrame
+class NewNodeFrameModel(
+    private val selection: NewNodeFrame
 ) : BaseModel() {
     private var bufferSize = 0
 

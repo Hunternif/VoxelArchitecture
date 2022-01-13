@@ -1,10 +1,11 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.createRoom
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.SelectionFrame.State.*
-import hunternif.voxarch.editor.scene.models.SelectionFrameModel
+import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
+import hunternif.voxarch.editor.scene.models.NewNodeFrameModel
 import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.fromFloorToVoxCoords
 import imgui.internal.ImGui
@@ -14,13 +15,13 @@ import org.lwjgl.glfw.GLFW.*
 import kotlin.math.max
 import kotlin.math.round
 
-class SelectionController(
+class NewNodeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
     private val editArea: VoxelAABBf,
 ) : InputListener {
-    val selection = SelectionFrame()
-    val model = SelectionFrameModel(selection)
+    private val frame = NewNodeFrame()
+    val model = NewNodeFrameModel(frame)
 
     /** Used to store the end position while choosing height */
     private var endBeforeComplete = Vector3f()
@@ -30,7 +31,7 @@ class SelectionController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
-        selection.run {
+        frame.run {
             when (state) {
                 EMPTY -> {}
                 CHOOSING_BASE -> {
@@ -57,21 +58,29 @@ class SelectionController(
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
         if (ImGui.isAnyItemHovered()) return
-        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS && camera.vp.contains(mouseX, mouseY)) onMouseDown()
-        else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE) onMouseUp()
-        // cancel current selection operation if any other mouse button is pressed:
-        else cancelOperation()
+        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS &&
+            camera.vp.contains(mouseX, mouseY) && app.currentTool == Tool.ADD_NODE
+        ) {
+            onMouseDown()
+        } else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE &&
+            app.currentTool == Tool.ADD_NODE
+        ) {
+            onMouseUp()
+        } else {
+            // cancel current selection operation if any other mouse button is pressed:
+            cancelOperation()
+        }
     }
 
     private fun onMouseDown() {
-        selection.run {
+        frame.run {
             when (state) {
                 EMPTY -> {
                     val posOnFloor = camera.projectToFloor(mouseX, mouseY)
                     if (editArea.testPointXZ(posOnFloor)) {
                         val voxPos = posOnFloor.fromFloorToVoxCoords()
-                        selection.start = Vector3i(voxPos)
-                        selection.end = Vector3i(voxPos)
+                        frame.start = Vector3i(voxPos)
+                        frame.end = Vector3i(voxPos)
                         setState(CHOOSING_BASE)
                     }
                 }
@@ -83,7 +92,7 @@ class SelectionController(
     }
 
     private fun onMouseUp() {
-        selection.run {
+        frame.run {
             when (state) {
                 EMPTY -> {}
                 CHOOSING_BASE -> {
@@ -96,13 +105,13 @@ class SelectionController(
         }
     }
 
-    private fun setState(state: SelectionFrame.State) {
-        selection.state = state
+    private fun setState(state: NewNodeFrame.State) {
+        frame.state = state
         model.updateEdges()
     }
 
     private fun cancelOperation() {
-        selection.run {
+        frame.run {
             when (state) {
                 EMPTY -> {}
                 CHOOSING_BASE -> setState(EMPTY)
@@ -119,7 +128,7 @@ class SelectionController(
                 GLFW_KEY_ESCAPE -> setState(EMPTY)
                 GLFW_KEY_SPACE -> {
                     setState(EMPTY)
-                    app.createRoom(selection.start, selection.end)
+                    app.createRoom(frame.start, frame.end)
                 }
             }
         }

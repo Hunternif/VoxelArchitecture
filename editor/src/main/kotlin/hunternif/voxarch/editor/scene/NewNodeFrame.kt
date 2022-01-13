@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.scene.SelectionFrame.State.*
+import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
 import hunternif.voxarch.editor.util.Edge
 import org.joml.AABBf
 import org.joml.Vector3f
@@ -10,7 +10,7 @@ import org.joml.Vector3i
  * [start] and [end] are in centric voxel coordinates.
  * [minX] and the rest follow the actual outline of those voxels.
  */
-class SelectionFrame : AABBf() {
+class NewNodeFrame : AABBf() {
     enum class State {
         EMPTY, CHOOSING_BASE, CHOOSING_HEIGHT, COMPLETE
     }
