@@ -127,8 +127,10 @@ class NewNodeController(
             when (key) {
                 GLFW_KEY_ESCAPE -> setState(EMPTY)
                 GLFW_KEY_SPACE -> {
-                    setState(EMPTY)
-                    app.createRoom(frame.start, frame.end)
+                    if (frame.state != EMPTY) {
+                        setState(EMPTY)
+                        app.createRoom(frame.start, frame.end)
+                    }
                 }
             }
         }
