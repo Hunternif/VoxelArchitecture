@@ -120,11 +120,13 @@ class MainScene(private val app: EditorApp) {
 
     fun updateNodeModel() {
         nodeModel.clear()
-        addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
+        if (!app.isNodeHidden(app.rootNode))
+            addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
     }
 
     private fun addNodeModelsRecursive(node: Node, offset: Vec3) {
         for (child in node.children) {
+            if (app.isNodeHidden(child)) continue
             if (child is Room) {
                 val origin = offset + child.origin
                 val start = origin + child.start

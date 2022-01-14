@@ -38,10 +38,12 @@ fun EditorApp.showNode(node: Node) {
         hiddenNodes.remove(parent)
         parent = parent.parent
     }
+    scene.updateNodeModel()
 }
 
 fun EditorApp.hideNode(node: Node) {
     hiddenNodes.add(node)
+    scene.updateNodeModel()
 }
 
 /**
