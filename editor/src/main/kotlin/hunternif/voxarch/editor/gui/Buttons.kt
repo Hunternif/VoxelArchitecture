@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.setTool
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImFont
 import imgui.ImGui
 import imgui.flag.ImGuiCol
@@ -21,14 +22,7 @@ inline fun GuiBase.iconButton(
     crossinline onClick: () -> Unit = {}
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0f, 0f)
-    if (selected)
-        ImGui.pushStyleColor(
-            ImGuiCol.Button,
-            accentColor.r,
-            accentColor.g,
-            accentColor.b,
-            accentColor.a
-        )
+    if (selected) pushStyleColor(ImGuiCol.Button, accentColor)
     else if (transparent)
         ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0)
     ImGui.pushFont(font)

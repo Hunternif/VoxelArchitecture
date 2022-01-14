@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.util
 
+import imgui.ImGui
 import org.joml.Vector3f
 
 /** Borrowed from OpenRNDR */
@@ -19,4 +20,9 @@ data class ColorRGBa(
             return ColorRGBa(r / 255f, g / 255f, b / 255f, alpha)
         }
     }
+}
+
+@Suppress("NOTHING_TO_INLINE")
+fun pushStyleColor(imGuiCol: Int, color: ColorRGBa) {
+    color.run { ImGui.pushStyleColor(imGuiCol, r, g, b, a) }
 }

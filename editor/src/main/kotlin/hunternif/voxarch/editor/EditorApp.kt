@@ -26,6 +26,9 @@ class EditorApp {
     val rootNode = Structure()
     var currentNode: Node = rootNode
 
+    val hiddenNodes = mutableSetOf<Node>()
+    fun isNodeHidden(node: Node) = hiddenNodes.contains(node)
+
     var currentTool: Tool = Tool.ADD_NODE
 
     fun run() {

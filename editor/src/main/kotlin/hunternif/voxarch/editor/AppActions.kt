@@ -30,6 +30,20 @@ fun EditorApp.selectNode(node: Node) {
     currentNode = node
 }
 
+fun EditorApp.showNode(node: Node) {
+    // This node may have been hidden by one of its parents
+    // To make it visible, we must un-hide all parents.
+    var parent: Node? = node
+    while (parent != null) {
+        hiddenNodes.remove(parent)
+        parent = parent.parent
+    }
+}
+
+fun EditorApp.hideNode(node: Node) {
+    hiddenNodes.add(node)
+}
+
 /**
  * Add child room to the currently active node.
  * [start] and [end] are in global coordinates!
