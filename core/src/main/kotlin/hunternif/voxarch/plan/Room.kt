@@ -25,11 +25,14 @@ open class Room(
     origin: Vec3,
     size: Vec3
 ) : Node(origin) {
+
+    private val startDelegate = CenteredStartDelegate()
     /**
      * Internal offset of the low-XZ corner of the room.
      * By default it's set so that origin is at the center of the floor.
      */
-    var start: Vec3 by CenteredStartDelegate()
+    var start: Vec3 by startDelegate
+    fun isCentered() = startDelegate.innerValue == null
 
     var width: Double
         get() = size.x
@@ -148,12 +151,12 @@ open class Room(
 
     companion object {
         private class CenteredStartDelegate: ReadWriteProperty<Room, Vec3> {
-            private var value: Vec3? = null
+            var innerValue: Vec3? = null
             override fun getValue(thisRef: Room, property: KProperty<*>): Vec3 =
-                value ?: Vec3(-thisRef.width / 2, 0.0, -thisRef.length / 2)
+                innerValue ?: Vec3(-thisRef.width / 2, 0.0, -thisRef.length / 2)
 
             override fun setValue(thisRef: Room, property: KProperty<*>, value: Vec3) {
-                this.value = value
+                this.innerValue = value
             }
 
         }

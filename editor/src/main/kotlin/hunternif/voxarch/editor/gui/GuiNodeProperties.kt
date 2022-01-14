@@ -2,12 +2,15 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.updateNode
+import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.pushStyleColor
 import hunternif.voxarch.editor.util.readFromFloatArray
 import hunternif.voxarch.editor.util.writeToFloatArray
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 import imgui.ImGui
+import imgui.flag.ImGuiCol
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -45,9 +48,16 @@ class GuiNodeProperties(private val app: EditorApp) {
         updateIfNeeded()
         ImGui.text(className)
         ImGui.dragFloat3("origin", originArray, 1f)
+        val node = node
         if (node is Room) {
-            ImGui.dragFloat3("start", roomStartArray, 1f)
             ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)
+            if (node.isCentered()) {
+                pushStyleColor(ImGuiCol.Text, dynamicTextColor)
+                ImGui.dragFloat3("start (centered)", roomStartArray, 1f)
+                ImGui.popStyleColor()
+            } else {
+                ImGui.dragFloat3("start", roomStartArray, 1f)
+            }
         }
     }
 
@@ -71,5 +81,9 @@ class GuiNodeProperties(private val app: EditorApp) {
 
             app.updateNode(node)
         }
+    }
+
+    companion object {
+        private val dynamicTextColor = ColorRGBa.fromHex(0xffffff, 0.5f)
     }
 }
