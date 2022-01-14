@@ -46,6 +46,12 @@ fun EditorApp.hideNode(node: Node) {
     scene.updateNodeModel()
 }
 
+/** The given [node] is assumed to already exist in the scene, and to contain
+ * the updated data. In the future the update might need to happen here... */
+fun EditorApp.updateNode(node: Node) {
+    scene.updateNodeModel()
+}
+
 /**
  * Add child room to the currently active node.
  * [start] and [end] are in global coordinates!

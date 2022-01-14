@@ -14,6 +14,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
+    @PublishedApi internal val nodeProperties = GuiNodeProperties(app)
 
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
@@ -27,8 +28,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
         dockspace(
             HorizontalSplit(
                 rightRatio = 0.25f,
-                right = Window("Node tree"),
                 left = Window("main_window"),
+                right = VerticalSplit(
+                    bottomRatio = 0.25f,
+                    top = Window("Node tree"),
+                    bottom = Window("Properties"),
+                ),
             )
         )
         mainWindow("main_window") { vp ->
@@ -50,8 +55,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 toolButton(Tool.ADD_NODE)
             }
         }
-        rightPanel("Node tree") {
+        rightPanel("Node tree", hasPadding = false) {
             nodeTree()
+        }
+        rightPanel("Properties") {
+            nodeProperties.node = app.currentNode
+            nodeProperties.render()
         }
     }
 
@@ -97,15 +106,18 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi
     internal inline fun rightPanel(
         title: String,
+        hasPadding: Boolean = true,
         crossinline renderWindow: () -> Unit
     ) {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowRounding, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
-        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
+        if (!hasPadding)
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
         if (ImGui.begin(title, 0)) {
             renderWindow()
         }
         ImGui.end()
-        ImGui.popStyleVar(3)
+        ImGui.popStyleVar(2)
+        if (!hasPadding) ImGui.popStyleVar()
     }
 }

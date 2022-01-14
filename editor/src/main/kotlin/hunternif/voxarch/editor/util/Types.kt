@@ -14,6 +14,18 @@ fun Vector3i.toVec3() = Vec3(x, y, z)
 fun Vec3.toVector3i() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 fun Vec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
+fun Vec3.writeToFloatArray(array: FloatArray) {
+    array[0] = x.toFloat()
+    array[1] = y.toFloat()
+    array[2] = z.toFloat()
+}
+
+fun Vec3.readFromFloatArray(array: FloatArray) {
+    x = array[0].toDouble()
+    y = array[1].toDouble()
+    z = array[2].toDouble()
+}
+
 fun Vector3f.toIntFloor() = Vector3i(floor(x).toInt(), floor(y).toInt(), floor(z).toInt())
 fun Vector3f.toIntCeil() = Vector3i(ceil(x).toInt(), ceil(y).toInt(), ceil(z).toInt())
 /** Assuming that voxels are rendered at (x-0.5, y-0.5, z-0.5), and that
