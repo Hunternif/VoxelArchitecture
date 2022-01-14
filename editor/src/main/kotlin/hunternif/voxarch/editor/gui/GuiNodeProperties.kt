@@ -15,6 +15,7 @@ import org.lwjgl.glfw.GLFW
 
 /**
  * Displays properties of a node, and updates them at an interval.
+ * TODO: unit test GuiNodeProperties
  */
 class GuiNodeProperties(private val app: EditorApp) {
     private var className = ""
@@ -26,7 +27,15 @@ class GuiNodeProperties(private val app: EditorApp) {
     private val updatedStart = Vec3(0, 0, 0)
 
 
-    // Update logic
+    // Origin values
+    private val origOrigin = Vec3(0, 0, 0)
+    private val origRoomSize = Vec3(0, 0, 0)
+    private val origRoomStart = Vec3(0, 0, 0)
+    private var origCentered = false
+    private var dirty = false
+
+
+    // Update timer
     private var lastUpdateTime: Double = GLFW.glfwGetTime()
     private val updateIntervalSeconds: Double = 0.02
 
@@ -36,34 +45,69 @@ class GuiNodeProperties(private val app: EditorApp) {
             if (field != value) {
                 field = value
                 className = value.javaClass.simpleName
-                node.origin.writeToFloatArray(originArray)
-                if (value is Room) {
-                    value.start.writeToFloatArray(roomStartArray)
-                    value.size.writeToFloatArray(roomSizeArray)
-                }
+                updateFloatArrays()
+                updateOriginalValues()
             }
         }
+
+    private fun updateFloatArrays() {
+        node.origin.writeToFloatArray(originArray)
+        val node = node
+        if (node is Room) {
+            node.start.writeToFloatArray(roomStartArray)
+            node.size.writeToFloatArray(roomSizeArray)
+        }
+    }
+
+    private fun updateOriginalValues() {
+        origOrigin.set(node.origin)
+        (node as? Room)?.let {
+            origRoomSize.set(it.size)
+            origRoomStart.set(it.start)
+            origCentered = it.isCentered()
+        }
+        dirty = false
+    }
+
+    private fun revertToOriginalValues() {
+        node.origin.set(origOrigin)
+        (node as? Room)?.let {
+            it.size.set(origRoomSize)
+            if (origCentered) it.recenter()
+            else it.start.set(origRoomStart)
+        }
+        updateFloatArrays()
+        dirty = false
+        app.updateNode(node)
+    }
+
+    private fun markDirty() { dirty = true }
 
     fun render() {
         updateIfNeeded()
         ImGui.text(className)
-        ImGui.dragFloat3("origin", originArray, 1f)
+        if (ImGui.dragFloat3("origin", originArray, 1f)) markDirty()
         val node = node
         if (node is Room) {
-            ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)
+            if (ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)) markDirty()
             if (node.isCentered()) {
                 pushStyleColor(ImGuiCol.Text, dynamicTextColor)
-                ImGui.dragFloat3("start (centered)", roomStartArray, 1f)
+                if (ImGui.dragFloat3("start (centered)", roomStartArray, 1f)) markDirty()
                 ImGui.popStyleColor()
             } else {
-                ImGui.dragFloat3("start", roomStartArray, 1f)
+                if (ImGui.dragFloat3("start", roomStartArray, 1f)) markDirty()
             }
+        }
+        if (dirty) {
+            if (ImGui.button("Apply")) updateOriginalValues()
+            ImGui.sameLine()
+            if (ImGui.button("Revert")) revertToOriginalValues()
         }
     }
 
     private fun updateIfNeeded() {
         val currentTime = GLFW.glfwGetTime()
-        if (currentTime - lastUpdateTime > updateIntervalSeconds) {
+        if (dirty && currentTime - lastUpdateTime > updateIntervalSeconds) {
             lastUpdateTime = currentTime
 
             // Perform update
@@ -74,7 +118,7 @@ class GuiNodeProperties(private val app: EditorApp) {
                 // Room's start is initially unset and calculated dynamically.
                 // We need check if we need to update it:
                 updatedStart.readFromFloatArray(roomStartArray)
-                if (node.start != updatedStart) {
+                if (origRoomStart != updatedStart) {
                     node.start = updatedStart
                 }
             }
