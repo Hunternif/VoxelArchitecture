@@ -40,19 +40,19 @@ class GuiNodeProperties(private val app: EditorApp) {
     private val updateIntervalSeconds: Double = 0.02
 
 
-    var node: Node = Node()
+    var node: Node? = Node()
         set(value) {
             if (field != value) {
                 field = value
-                className = value.javaClass.simpleName
+                className = value?.javaClass?.simpleName ?: "-"
                 updateFloatArrays()
                 updateOriginalValues()
             }
         }
 
     private fun updateFloatArrays() {
+        val node = node ?: return
         node.origin.writeToFloatArray(originArray)
-        val node = node
         if (node is Room) {
             node.start.writeToFloatArray(roomStartArray)
             node.size.writeToFloatArray(roomSizeArray)
@@ -60,21 +60,23 @@ class GuiNodeProperties(private val app: EditorApp) {
     }
 
     private fun updateOriginalValues() {
+        val node = node ?: return
         origOrigin.set(node.origin)
-        (node as? Room)?.let {
-            origRoomSize.set(it.size)
-            origRoomStart.set(it.start)
-            origCentered = it.isCentered()
+        if (node is Room) {
+            origRoomSize.set(node.size)
+            origRoomStart.set(node.start)
+            origCentered = node.isCentered()
         }
         dirty = false
     }
 
     private fun revertToOriginalValues() {
+        val node = node ?: return
         node.origin.set(origOrigin)
-        (node as? Room)?.let {
-            it.size.set(origRoomSize)
-            if (origCentered) it.recenter()
-            else it.start.set(origRoomStart)
+        if (node is Room) {
+            node.size.set(origRoomSize)
+            if (origCentered) node.recenter()
+            else node.start.set(origRoomStart)
         }
         updateFloatArrays()
         dirty = false
@@ -86,8 +88,8 @@ class GuiNodeProperties(private val app: EditorApp) {
     fun render() {
         updateIfNeeded()
         ImGui.text(className)
+        val node = node ?: return
         if (ImGui.dragFloat3("origin", originArray, 1f)) markDirty()
-        val node = node
         if (node is Room) {
             if (ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)) markDirty()
             if (node.isCentered()) {
@@ -111,7 +113,7 @@ class GuiNodeProperties(private val app: EditorApp) {
             lastUpdateTime = currentTime
 
             // Perform update
-            val node = node
+            val node = node ?: return
             node.origin.readFromFloatArray(originArray)
             if (node is Room) {
                 node.size.readFromFloatArray(roomSizeArray)

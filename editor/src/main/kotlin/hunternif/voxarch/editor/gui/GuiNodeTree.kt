@@ -1,9 +1,6 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.editor.centerCamera
-import hunternif.voxarch.editor.hideNode
-import hunternif.voxarch.editor.selectNode
-import hunternif.voxarch.editor.showNode
+import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.pushStyleColor
 import hunternif.voxarch.plan.Node
@@ -55,12 +52,22 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
             ImGuiTreeNodeFlags.Bullet or
             ImGuiTreeNodeFlags.NoTreePushOnOpen
     }
-    if (app.currentNode == node) {
+    val isParentNode = node == app.parentNode
+    val isSelected = app.selectedNodes.contains(node)
+    if (isSelected) {
         flags = flags or ImGuiTreeNodeFlags.Selected
+    }
+    if (isParentNode) {
+        flags = flags or ImGuiTreeNodeFlags.Selected
+        pushStyleColor(ImGuiCol.Header, accentColorBg)
+        pushStyleColor(ImGuiCol.HeaderHovered, accentColorHovered)
+        pushStyleColor(ImGuiCol.HeaderActive, accentColorActive)
     }
     val text = node.javaClass.simpleName
     ImGui.alignTextToFramePadding()
     if (updatedHidden) pushStyleColor(ImGuiCol.Text, hiddenTextColor)
+
+
 
     // Create fake indents to make the tree work in the 2nd column.
     for (x in 1..depth) ImGui.indent()
@@ -68,10 +75,16 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     for (x in 1..depth) ImGui.unindent()
 
     if (updatedHidden) ImGui.popStyleColor()
+    if (isParentNode) ImGui.popStyleColor(3)
 
-    if (ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(0)) {
-        app.selectNode(node)
-        app.centerCamera()
+    if (ImGui.isItemHovered()) {
+        if (ImGui.isMouseClicked(0)) {
+            app.setSelectedNode(node)
+        }
+        if (ImGui.isMouseDoubleClicked(0)) {
+            app.setParentNode(node)
+            app.centerCamera()
+        }
     }
 
     if (open && node.children.isNotEmpty()) {

@@ -9,7 +9,9 @@ import imgui.ImGui
 import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
 
-val accentColor = ColorRGBa.fromHex(0xD27626)
+val accentColorActive = ColorRGBa.fromHex(0xD27626)
+val accentColorHovered = ColorRGBa.fromHex(0xD27626, 0.8f)
+val accentColorBg = ColorRGBa.fromHex(0xD27626, 0.5f)
 
 /** Draws a square button with an icon from FontAwesome */
 inline fun GuiBase.iconButton(
@@ -22,7 +24,7 @@ inline fun GuiBase.iconButton(
     crossinline onClick: () -> Unit = {}
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0f, 0f)
-    if (selected) pushStyleColor(ImGuiCol.Button, accentColor)
+    if (selected) pushStyleColor(ImGuiCol.Button, accentColorActive)
     else if (transparent)
         ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0)
     ImGui.pushFont(font)

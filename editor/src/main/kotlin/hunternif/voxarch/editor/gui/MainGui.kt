@@ -59,7 +59,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             nodeTree()
         }
         rightPanel("Properties") {
-            nodeProperties.node = app.currentNode
+            nodeProperties.node = app.selectedNodes.firstOrNull()
             nodeProperties.render()
         }
     }

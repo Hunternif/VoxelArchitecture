@@ -15,8 +15,8 @@ import org.joml.Vector3i
 // EditorApp must be injected into all classes that call these actions.
 
 fun EditorApp.centerCamera() {
-    if (currentNode != rootNode) {
-        scene.centerCameraAroundNode(currentNode)
+    if (parentNode != rootNode) {
+        scene.centerCameraAroundNode(parentNode)
     } else {
         scene.centerCameraAroundGrid()
     }
@@ -26,8 +26,13 @@ fun EditorApp.setTool(tool: Tool) {
     currentTool = tool
 }
 
-fun EditorApp.selectNode(node: Node) {
-    currentNode = node
+fun EditorApp.setSelectedNode(node: Node) {
+    selectedNodes.clear()
+    selectedNodes.add(node)
+}
+
+fun EditorApp.setParentNode(node: Node) {
+    parentNode = node
 }
 
 fun EditorApp.showNode(node: Node) {
@@ -57,8 +62,8 @@ fun EditorApp.updateNode(node: Node) {
  * [start] and [end] are in global coordinates!
  */
 fun EditorApp.createRoom(start: Vector3i, end: Vector3i) {
-    currentNode.findGlobalPosition()
-    currentNode.run {
+    parentNode.findGlobalPosition()
+    parentNode.run {
         val globalPos = findGlobalPosition()
         room(start.toVec3() - globalPos, end.toVec3() - globalPos)
     }
