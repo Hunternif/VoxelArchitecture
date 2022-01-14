@@ -59,8 +59,8 @@ inline fun overlay(
     ImGui.pushStyleVar(ImGuiStyleVar.WindowMinSize, 10f, 10f)
 
     if (ImGui.begin(title, flags)) {
-        ImGui.popStyleVar(3)
         content()
     }
+    ImGui.popStyleVar(3)
     ImGui.end()
 }

@@ -74,7 +74,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
             ImGuiWindowFlags.NoMove or
             ImGuiWindowFlags.NoScrollbar
         if (ImGui.begin(title, mainWindowFlags)) {
-            ImGui.popStyleVar(3)
             val pos = ImGui.getWindowPos()
             val vMin = ImGui.getWindowContentRegionMin()
             val vMax = ImGui.getWindowContentRegionMax()
@@ -92,6 +91,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
         }
         ImGui.end()
+        ImGui.popStyleVar(3)
     }
 
     @PublishedApi
@@ -103,9 +103,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
         if (ImGui.begin(title, 0)) {
-            ImGui.popStyleVar(3)
             renderWindow()
         }
         ImGui.end()
+        ImGui.popStyleVar(3)
     }
 }
