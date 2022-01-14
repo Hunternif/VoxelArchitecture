@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.util.loadFromResources
+import imgui.ImFont
 import imgui.ImFontConfig
 import imgui.ImFontGlyphRangesBuilder
 import imgui.ImGui
@@ -25,29 +26,42 @@ abstract class GuiBase {
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 0)
     }
 
-    fun initFonts() {
+    lateinit var fontDefault: ImFont
+    lateinit var fontSmallIcons: ImFont
+    lateinit var fontBigIcons: ImFont
+
+    private fun initFonts() {
         val io = ImGui.getIO()
-        io.fonts.addFontDefault()
-        val fontConfig = ImFontConfig().apply {
-            mergeMode = true
-            rasterizerMultiply = 1.5f // this makes fonts crisper
-        }
-        val glyphRanges = ImFontGlyphRangesBuilder().apply {
-            addRanges(io.fonts.glyphRangesDefault)
+        fontDefault = io.fonts.addFontDefault()
+
+        val fontConfigNewFont = ImFontConfig().apply { mergeMode = false }
+        // config to merge solid & regular icons together
+        val fontConfigMergeFont = ImFontConfig().apply { mergeMode = true }
+        val iconRanges = ImFontGlyphRangesBuilder().apply {
             addRanges(FontAwesomeIcons._IconRange)
         }.buildRanges()
+
         io.fonts.apply {
-            addFontFromMemoryTTF(
+            fontSmallIcons = addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-regular-400.ttf"),
-                14f, fontConfig, glyphRanges
+                11f, fontConfigNewFont, iconRanges
             )
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-solid-900.ttf"),
-                14f, fontConfig, glyphRanges
+                11f, fontConfigMergeFont, iconRanges
+            )
+
+            fontBigIcons = addFontFromMemoryTTF(
+                loadFromResources("fonts/fa-regular-400.ttf"),
+                14f, fontConfigNewFont, iconRanges
+            )
+            addFontFromMemoryTTF(
+                loadFromResources("fonts/fa-solid-900.ttf"),
+                14f, fontConfigMergeFont, iconRanges
             )
             build()
         }
-        fontConfig.destroy()
+        fontConfigNewFont.destroy()
     }
 
     inline fun runFrame(

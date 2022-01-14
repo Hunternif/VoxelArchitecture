@@ -40,7 +40,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
             overlay("camera_controls", Corner.BOTTOM_RIGHT,
                 innerPadding=0f, bgAlpha=1f) {
-                iconButton(FontAwesomeIcons.Compress, "Recenter camera") {
+                bigIconButton(FontAwesomeIcons.Compress, "Recenter camera") {
                     app.centerCamera()
                 }
             }

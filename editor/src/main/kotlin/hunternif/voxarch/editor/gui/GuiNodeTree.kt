@@ -9,6 +9,7 @@ import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTreeNodeFlags
 
 fun MainGui.nodeTree() {
+    // CellPadding = 0 makes tree rows appear next to each other without breaks
     ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
     if (ImGui.beginTable("node_tree_table", 2)) {
         ImGui.tableSetupColumn("tree")
@@ -45,11 +46,9 @@ private fun MainGui.addTreeNodeRecursive(node: Node) {
     }
 
     ImGui.tableNextColumn()
-    ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 6f)
-    ImGui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, 0.5f, 0.5f)
-    ImGui.alignTextToFramePadding()
-    ImGui.selectable(FontAwesomeIcons.Eye)
-    ImGui.popStyleVar(2)
+    // Selectable would make more sense, but its size & position is bugged.
+    // Button maintains the size & pos well, regardless of font.
+    smallIconButton(FontAwesomeIcons.Eye)
 
     if (open && node.children.isNotEmpty()) {
         node.children.forEach { addTreeNodeRecursive(it) }
