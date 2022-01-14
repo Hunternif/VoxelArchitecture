@@ -12,17 +12,22 @@ fun MainGui.nodeTree() {
     // CellPadding = 0 makes tree rows appear next to each other without breaks
     ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
     if (ImGui.beginTable("node_tree_table", 2)) {
-        ImGui.tableSetupColumn("tree")
         ImGui.tableSetupColumn("visibility",
-            ImGuiTableColumnFlags.WidthFixed, 20f)
-        addTreeNodeRecursive(app.rootNode)
+            ImGuiTableColumnFlags.WidthFixed, 19f)
+        ImGui.tableSetupColumn("tree")
+        addTreeNodeRecursive(app.rootNode, 0)
         ImGui.endTable()
     }
     ImGui.popStyleVar(1)
 }
 
-private fun MainGui.addTreeNodeRecursive(node: Node) {
+private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int) {
     ImGui.tableNextRow()
+    ImGui.tableNextColumn()
+    // Selectable would make more sense, but its size & position is bugged.
+    // Button maintains the size & pos well, regardless of font.
+    smallIconButton(FontAwesomeIcons.Eye)
+
     ImGui.tableNextColumn()
     var flags = 0 or
         ImGuiTreeNodeFlags.OpenOnArrow or
@@ -39,20 +44,21 @@ private fun MainGui.addTreeNodeRecursive(node: Node) {
     }
     val text = node.javaClass.simpleName
     ImGui.alignTextToFramePadding()
+
+    // Create fake indents to make the tree work in the 2nd column.
+    for (x in 1..depth) ImGui.indent()
     val open = ImGui.treeNodeEx(text, flags)
+    for (x in 1..depth) ImGui.unindent()
+
     if (ImGui.isItemHovered() && ImGui.isMouseDoubleClicked(0)) {
         app.selectNode(node)
         app.centerCamera()
     }
 
-    ImGui.tableNextColumn()
-    // Selectable would make more sense, but its size & position is bugged.
-    // Button maintains the size & pos well, regardless of font.
-    smallIconButton(FontAwesomeIcons.Eye)
-
     if (open && node.children.isNotEmpty()) {
-        node.children.forEach { addTreeNodeRecursive(it) }
+        // Immediately pop the tree because we are faking indents
         ImGui.treePop()
+        node.children.forEach { addTreeNodeRecursive(it, depth + 1) }
     }
 
 }
