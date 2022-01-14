@@ -26,7 +26,7 @@ class EditorApp {
     val rootNode = Structure()
     var currentNode: Node = rootNode
 
-    var currentTool: Tool = Tool.SELECT
+    var currentTool: Tool = Tool.ADD_NODE
 
     fun run() {
         init()

@@ -14,9 +14,10 @@ inline fun iconButton(
     icon: String,
     tooltip: String = "",
     selected: Boolean = false,
+    size: Float = 21f,
     crossinline onClick: () -> Unit = {}
 ) {
-    ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 1f, 1f)
+    ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0f, 0f)
     ImGui.pushStyleVar(ImGuiStyleVar.ButtonTextAlign, 0.5f, 0.85f)
     if (selected)
         ImGui.pushStyleColor(
@@ -26,7 +27,7 @@ inline fun iconButton(
             accentColor.b,
             accentColor.a
         )
-    if (ImGui.button(icon, 21f, 21f)) onClick()
+    if (ImGui.button(icon, size, size)) onClick()
     if (tooltip.isNotEmpty() && ImGui.isItemHovered()) ImGui.setTooltip(tooltip)
     ImGui.popStyleVar(2)
     if (selected) ImGui.popStyleColor()
