@@ -44,11 +44,11 @@ abstract class GuiBase {
         io.fonts.apply {
             fontSmallIcons = addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-regular-400.ttf"),
-                11f, fontConfigNewFont, iconRanges
+                10f, fontConfigNewFont, iconRanges
             )
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-solid-900.ttf"),
-                11f, fontConfigMergeFont, iconRanges
+                10f, fontConfigMergeFont, iconRanges
             )
 
             fontBigIcons = addFontFromMemoryTTF(

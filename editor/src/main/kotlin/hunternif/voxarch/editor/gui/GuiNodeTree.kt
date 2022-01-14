@@ -26,7 +26,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int) {
     ImGui.tableNextColumn()
     // Selectable would make more sense, but its size & position is bugged.
     // Button maintains the size & pos well, regardless of font.
-    smallIconButton(FontAwesomeIcons.Eye)
+    smallIconButton(FontAwesomeIcons.Eye, transparent = true)
 
     ImGui.tableNextColumn()
     var flags = 0 or
