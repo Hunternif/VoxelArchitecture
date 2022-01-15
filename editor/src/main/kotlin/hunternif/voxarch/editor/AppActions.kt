@@ -29,6 +29,7 @@ fun EditorApp.setTool(tool: Tool) {
 fun EditorApp.setSelectedNode(node: Node) {
     selectedNodes.clear()
     selectedNodes.add(node)
+    scene.updateSelectedNodeModel()
 }
 
 fun EditorApp.setParentNode(node: Node) {

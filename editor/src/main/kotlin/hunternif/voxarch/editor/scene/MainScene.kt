@@ -23,6 +23,7 @@ class MainScene(private val app: EditorApp) {
     private val voxelModel = VoxelModel()
     private val gridModel = FloorGridModel()
     private val nodeModel = NodeModel()
+    private val selectedNodeModel = SelectedNodeFrameModel()
 
     private val camera = OrbitalCamera()
 
@@ -38,6 +39,7 @@ class MainScene(private val app: EditorApp) {
         gridModel,
         voxelModel,
         nodeModel,
+        selectedNodeModel,
         newNodeController.model,
     )
 
@@ -138,6 +140,14 @@ class MainScene(private val app: EditorApp) {
                 )
                 addNodeModelsRecursive(child, origin)
             }
+        }
+    }
+
+    fun updateSelectedNodeModel() {
+        selectedNodeModel.clear()
+        for (node in app.selectedNodes) {
+            if (node != app.rootNode)
+                selectedNodeModel.addNode(node)
         }
     }
 

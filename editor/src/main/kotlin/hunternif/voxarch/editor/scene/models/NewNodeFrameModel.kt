@@ -27,12 +27,10 @@ class NewNodeFrameModel(
         val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
 
         // Store line positions in the vertex buffer
-        selection.run {
-            for (e in edges) {
-                vertexBuffer
-                    .put(e.start.x).put(e.start.y).put(e.start.z)
-                    .put(e.end.x).put(e.end.y).put(e.end.z)
-            }
+        for (e in edges) {
+            vertexBuffer
+                .put(e.start.x).put(e.start.y).put(e.start.z)
+                .put(e.end.x).put(e.end.y).put(e.end.z)
         }
         vertexBuffer.flip() // rewind
 
