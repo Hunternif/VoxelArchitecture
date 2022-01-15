@@ -28,7 +28,7 @@ fun EditorApp.setTool(tool: Tool) {
 
 fun EditorApp.setSelectedNode(node: Node?) {
     selectedNodes.clear()
-    node?.let { selectedNodes.add(it) }
+    if (node != null && node != rootNode) selectedNodes.add(node)
     scene.updateSelectedNodeModel()
 }
 

@@ -26,7 +26,8 @@ class EditorApp {
     val rootNode = Structure()
     /** The node under which new child nodes would be added */
     var parentNode: Node = rootNode
-    /** Nodes currently selected by cursor, for batch modification or inspection. */
+    /** Nodes currently selected by cursor, for batch modification or inspection.
+     * Should not contain [rootNode]. */
     val selectedNodes = LinkedHashSet<Node>()
 
     val hiddenNodes = mutableSetOf<Node>()

@@ -18,8 +18,6 @@ import org.lwjgl.glfw.GLFW
  * TODO: unit test GuiNodeProperties
  */
 class GuiNodeProperties(private val app: EditorApp) {
-    private var className = ""
-
     private val originArray = FloatArray(3)
 
     private val roomStartArray = FloatArray(3)
@@ -44,7 +42,6 @@ class GuiNodeProperties(private val app: EditorApp) {
         set(value) {
             if (field != value) {
                 field = value
-                className = value?.javaClass?.simpleName ?: "-"
                 updateFloatArrays()
                 updateOriginalValues()
             }
@@ -86,9 +83,9 @@ class GuiNodeProperties(private val app: EditorApp) {
     private fun markDirty() { dirty = true }
 
     fun render() {
-        updateIfNeeded()
-        ImGui.text(className)
         val node = node ?: return
+        updateIfNeeded()
+        ImGui.text(node.javaClass.simpleName)
         if (ImGui.dragFloat3("origin", originArray, 1f)) markDirty()
         if (node is Room) {
             if (ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)) markDirty()
