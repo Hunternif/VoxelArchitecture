@@ -72,3 +72,21 @@ fun EditorApp.createRoom(start: Vector3i, end: Vector3i) {
     scene.expandEditArea(start.x, start.y, start.z)
     scene.expandEditArea(end.x, end.y, end.z)
 }
+
+fun EditorApp.deleteSelectedNodes() {
+    for (node in selectedNodes) {
+        if (node == rootNode) continue
+        hiddenNodes.remove(node)
+        node.parent?.removeChild(node)
+    }
+    selectedNodes.clear()
+    scene.updateNodeModel()
+}
+
+fun EditorApp.deleteNode(node: Node) {
+    if (node == rootNode) return
+    selectedNodes.remove(node)
+    hiddenNodes.remove(node)
+    node.parent?.removeChild(node)
+    scene.updateNodeModel()
+}

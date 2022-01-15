@@ -126,6 +126,7 @@ class MainScene(private val app: EditorApp) {
         nodeModel.clear()
         if (!app.isNodeHidden(app.rootNode))
             addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
+        updateSelectedNodeModel()
     }
 
     private fun addNodeModelsRecursive(node: Node, offset: Vec3) {

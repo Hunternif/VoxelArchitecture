@@ -1,10 +1,8 @@
 package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.NodeModel
-import hunternif.voxarch.editor.setSelectedNode
 import hunternif.voxarch.plan.Node
 import imgui.internal.ImGui
 import org.joml.Vector2f
@@ -49,5 +47,16 @@ class SelectionController(
             }
         }
         app.setSelectedNode(hitNode)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    override fun onKeyPress(key: Int, action: Int, mods: Int) {
+        if (action == GLFW_PRESS) {
+            when (key) {
+                GLFW_KEY_DELETE -> {
+                    app.deleteSelectedNodes()
+                }
+            }
+        }
     }
 }
