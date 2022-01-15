@@ -12,7 +12,13 @@ import imgui.flag.ImGuiTreeNodeFlags
 
 private val hiddenTextColor = ColorRGBa.fromHex(0xffffff, 0.6f)
 
+/** Used to detect click outside the tree, which resets selection */
+private var isAnyTreeNodeClicked = false
+var isThisPanelClicked = false
+
 fun MainGui.nodeTree() {
+    isAnyTreeNodeClicked = false
+    isThisPanelClicked = isMouseHoveringCurrentWindow() && ImGui.isMouseClicked(0)
     // CellPadding = 0 makes tree rows appear next to each other without breaks
     ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
     if (ImGui.beginTable("node_tree_table", 2)) {
@@ -23,6 +29,9 @@ fun MainGui.nodeTree() {
         ImGui.endTable()
     }
     ImGui.popStyleVar(1)
+    if (isThisPanelClicked && !isAnyTreeNodeClicked) {
+        app.setSelectedNode(null)
+    }
 }
 
 private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean) {
@@ -80,10 +89,12 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     if (ImGui.isItemHovered()) {
         if (ImGui.isMouseClicked(0)) {
             app.setSelectedNode(node)
+            isAnyTreeNodeClicked = true
         }
         if (ImGui.isMouseDoubleClicked(0)) {
             app.setParentNode(node)
             app.centerCamera()
+            isAnyTreeNodeClicked = true
         }
     }
 

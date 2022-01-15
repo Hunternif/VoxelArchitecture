@@ -26,9 +26,9 @@ fun EditorApp.setTool(tool: Tool) {
     currentTool = tool
 }
 
-fun EditorApp.setSelectedNode(node: Node) {
+fun EditorApp.setSelectedNode(node: Node?) {
     selectedNodes.clear()
-    selectedNodes.add(node)
+    node?.let { selectedNodes.add(it) }
     scene.updateSelectedNodeModel()
 }
 
