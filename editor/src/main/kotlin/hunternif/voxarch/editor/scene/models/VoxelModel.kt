@@ -7,7 +7,7 @@ import hunternif.voxarch.util.forEachPos
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 
-class VoxelModel : BoxInstancedModel() {
+class VoxelModel : BoxInstancedModel<Any?>() {
     fun setVoxels(voxels: IStorage3D<VoxColor?>) {
         instances.clear()
         voxels.forEachPos { x, y, z, v ->
@@ -16,7 +16,8 @@ class VoxelModel : BoxInstancedModel() {
                     InstanceData(
                         Vector3f(-0.5f + x, -0.5f + y, -0.5f + z),
                         Vector3f(1f, 1f, 1f),
-                        ColorRGBa.fromHex(v.color)
+                        ColorRGBa.fromHex(v.color),
+                        null,
                     )
                 )
             }

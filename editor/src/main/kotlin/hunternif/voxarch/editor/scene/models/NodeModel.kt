@@ -1,13 +1,14 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.plan.Node
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import kotlin.math.abs
 import kotlin.math.min
 
-class NodeModel : BoxInstancedModel() {
-    fun addNode(start: Vector3f, end: Vector3f, color: ColorRGBa) {
+class NodeModel : BoxInstancedModel<Node>() {
+    fun addNode(node: Node, start: Vector3f, end: Vector3f, color: ColorRGBa) {
         instances.add(
             InstanceData(
                 Vector3f(
@@ -20,7 +21,8 @@ class NodeModel : BoxInstancedModel() {
                     1f + abs(end.y - start.y),
                     1f + abs(end.z - start.z),
                 ),
-                color
+                color,
+                node,
             )
         )
         uploadInstanceData()

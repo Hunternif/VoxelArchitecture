@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
-import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -35,6 +34,7 @@ class MainScene(private val app: EditorApp) {
     /** Area where you are allowed to place new voxels. The grid matches it. */
     private val editArea = VoxelAABBf()
     val newNodeController = NewNodeController(app, camera, editArea)
+    private val selectionController = SelectionController(app, camera, nodeModel)
 
     private val models = listOf(
         gridModel,
@@ -51,6 +51,7 @@ class MainScene(private val app: EditorApp) {
             init(window)
             addListener(camera)
             addListener(newNodeController)
+            addListener(selectionController)
         }
         setEditArea(0, 0, 16, 16)
     }
@@ -135,6 +136,7 @@ class MainScene(private val app: EditorApp) {
                 val start = origin + child.start
                 val end = start + child.size
                 nodeModel.addNode(
+                    child,
                     start.toVector3f(),
                     end.toVector3f(),
                     Colors.defaultNodeBox

@@ -25,10 +25,11 @@ class OrbitalCamera : InputListener {
     private var panning = false
     private var rotating = false
 
-    private val dragRayOrigin: Vector3f = Vector3f()
     // temporary vectors
+    private val pointRayOrigin: Vector3f = Vector3f()
+    private val pointRayDir: Vector3f = Vector3f()
     private val dragStartWorldPos: Vector3f = Vector3f()
-    private val dragRayDir: Vector3f = Vector3f()
+    private val projectedWorldPos: Vector3f = Vector3f()
     private val verticalPlaneNormal: Vector3f = Vector3f()
 
     private var xAngle = 0.5f
@@ -142,28 +143,16 @@ class OrbitalCamera : InputListener {
     private fun panBegin() {
         panning = true
         // find mouse position in world coordinates
-        vpMat.unprojectRay(
-            mouseX - vp.x,
-            vp.height - mouseY + vp.y,
-            vp.getSizeArray(),
-            dragRayOrigin,
-            dragRayDir
-        )
+        unprojectPoint(mouseX, mouseY)
         val t = radius * 10f
-        dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)
+        dragStartWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
     }
 
     private fun pan(posX: Double, posY: Double) {
         // find mouse position in world coordinates
-        vpMat.unprojectRay(
-            posX.toFloat() - vp.x,
-            vp.height - posY.toFloat() + vp.y,
-            vp.getSizeArray(),
-            dragRayOrigin,
-            dragRayDir
-        )
+        unprojectPoint(posX.toFloat(), posY.toFloat())
         val t = radius * 10f
-        val dragWorldPosition = Vector3f(dragRayDir).mul(t).add(dragRayOrigin)
+        val dragWorldPosition = Vector3f(pointRayDir).mul(t).add(pointRayOrigin)
         translation.add(dragWorldPosition.sub(dragStartWorldPos))
         viewMatrixDirty = true
     }
@@ -199,50 +188,76 @@ class OrbitalCamera : InputListener {
 
     /** Projects screen coordinates to world coordinates at Y=-0.5 */
     fun projectToFloor(posX: Float, posY: Float): Vector3f {
-        vpMat.unprojectRay(
-            posX - vp.x,
-            vp.height - posY + vp.y,
-            vp.getSizeArray(),
-            dragRayOrigin,
-            dragRayDir
-        )
+        unprojectPoint(posX, posY)
         val t = Intersectionf.intersectRayPlane(
-            dragRayOrigin,
-            dragRayDir,
+            pointRayOrigin,
+            pointRayDir,
             Vector3f(0f, -0.5f, 0f),
-            Vector3f(0f, if (dragRayOrigin.y > 0) 1f else -1f, 0f),
+            Vector3f(0f, if (pointRayOrigin.y > 0) 1f else -1f, 0f),
             1E-5f
         )
-        dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)
-        return dragStartWorldPos
+        projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
+        return projectedWorldPos
     }
 
     /** Projects screen coordinates to world coordinates on a vertical plane
      * running through [point] and away from the camera.
      * Used for dragging voxels vertically. */
     fun projectToVertical(posX: Float, posY: Float, point: Vector3f): Vector3f {
-        vpMat.unprojectRay(
-            posX - vp.x,
-            vp.height - posY + vp.y,
-            vp.getSizeArray(),
-            dragRayOrigin,
-            dragRayDir
-        )
+        unprojectPoint(posX, posY)
         // create the plane normal
         verticalPlaneNormal.apply {
-            set(dragRayDir)
+            set(pointRayDir)
             y = 0f
             normalize()
             negate()
         }
         val t = Intersectionf.intersectRayPlane(
-            dragRayOrigin,
-            dragRayDir,
+            pointRayOrigin,
+            pointRayDir,
             point,
             verticalPlaneNormal,
             1E-5f
         )
-        dragStartWorldPos.set(dragRayDir).mul(t).add(dragRayOrigin)
-        return dragStartWorldPos
+        projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
+        return projectedWorldPos
+    }
+
+    /**
+     * Projects point onto an AAB. Returns true if the point hits the AAB.
+     * [min], [max] define the corners of the AAB.
+     * [result] stores the distances to the near and far points of intersection.
+     */
+    fun projectToBox(
+        posX: Float,
+        posY: Float,
+        min: Vector3f,
+        max: Vector3f,
+        result: Vector2f
+    ): Boolean {
+        unprojectPoint(posX, posY)
+        return Intersectionf.intersectRayAab(
+            pointRayOrigin,
+            pointRayDir,
+            min,
+            max,
+            result
+        )
+    }
+
+    /**
+     * Unproject the given screen coordinates to world coordinates.
+     * Screen coordinates are assumed to be global, e.g. not accounting for
+     * the viewport.
+     * The result will be stored in [pointRayOrigin] and [pointRayDir]
+     */
+    private fun unprojectPoint(posX: Float, posY: Float) {
+        vpMat.unprojectRay(
+            posX - vp.x,
+            vp.height - posY + vp.y,
+            vp.getSizeArray(),
+            pointRayOrigin,
+            pointRayDir
+        )
     }
 }
