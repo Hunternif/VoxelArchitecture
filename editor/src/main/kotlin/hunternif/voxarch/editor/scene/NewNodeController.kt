@@ -20,7 +20,7 @@ class NewNodeController(
     private val camera: OrbitalCamera,
     private val editArea: VoxelAABBf,
 ) : InputListener {
-    private val frame = NewNodeFrame()
+    val frame = NewNodeFrame()
     val model = NewNodeFrameModel(frame)
 
     /** Used to store the end position while choosing height */
@@ -105,7 +105,7 @@ class NewNodeController(
         }
     }
 
-    private fun setState(state: NewNodeFrame.State) {
+    fun setState(state: NewNodeFrame.State) {
         frame.state = state
         model.updateEdges()
     }

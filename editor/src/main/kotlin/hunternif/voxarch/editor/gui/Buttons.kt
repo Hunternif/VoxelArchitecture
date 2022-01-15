@@ -13,6 +13,15 @@ val accentColorActive = ColorRGBa.fromHex(0xD27626)
 val accentColorHovered = ColorRGBa.fromHex(0xD27626, 0.8f)
 val accentColorBg = ColorRGBa.fromHex(0xD27626, 0.5f)
 
+inline fun button(
+    text: String,
+    tooltip: String = "",
+    crossinline onClick: () -> Unit = {}
+) {
+    if (ImGui.button(text)) onClick()
+    if (tooltip.isNotEmpty() && ImGui.isItemHovered()) ImGui.setTooltip(tooltip)
+}
+
 /** Draws a square button with an icon from FontAwesome */
 inline fun GuiBase.iconButton(
     icon: String,

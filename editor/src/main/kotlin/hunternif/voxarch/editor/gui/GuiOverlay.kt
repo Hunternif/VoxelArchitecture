@@ -18,6 +18,8 @@ inline fun overlay(
     corner: Corner,
     padding: Float = 10f,
     innerPadding: Float = 6f,
+    offsetX: Float = 0f,
+    offsetY: Float = 0f,
     bgAlpha: Float = 0.35f,
     crossinline content: () -> Unit
 ) {
@@ -37,11 +39,11 @@ inline fun overlay(
     val posX = when (corner) {
         TOP_LEFT, BOTTOM_LEFT -> pos.x + padding
         TOP_RIGHT, BOTTOM_RIGHT -> pos.x + size.x - padding
-    }
+    } + offsetX
     val posY = when (corner) {
         TOP_LEFT, TOP_RIGHT -> pos.y + padding
         BOTTOM_LEFT, BOTTOM_RIGHT -> pos.y + size.y - padding
-    }
+    } + offsetY
 
     val pivotX = when (corner) {
         TOP_LEFT, BOTTOM_LEFT -> 0f

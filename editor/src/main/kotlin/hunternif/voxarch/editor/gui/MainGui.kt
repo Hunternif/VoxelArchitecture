@@ -54,6 +54,10 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 toolButton(Tool.SELECT)
                 toolButton(Tool.ADD_NODE)
             }
+            overlay("top_toolbar", Corner.TOP_LEFT,
+                padding = 0f, bgAlpha=0f, offsetX = 32f) {
+                topPanel()
+            }
         }
         rightPanel("Node tree", hasPadding = false) {
             nodeTree()

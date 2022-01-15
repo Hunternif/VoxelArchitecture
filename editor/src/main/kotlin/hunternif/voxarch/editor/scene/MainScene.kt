@@ -32,7 +32,7 @@ class MainScene(private val app: EditorApp) {
 
     /** Area where you are allowed to place new voxels. The grid matches it. */
     private val editArea = VoxelAABBf()
-    private var newNodeController = NewNodeController(app, camera, editArea)
+    val newNodeController = NewNodeController(app, camera, editArea)
 
     private val models = listOf(
         gridModel,
