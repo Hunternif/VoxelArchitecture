@@ -2,16 +2,11 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.setTool
-import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImFont
 import imgui.ImGui
 import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
-
-val accentColorActive = ColorRGBa.fromHex(0xD27626)
-val accentColorHovered = ColorRGBa.fromHex(0xD27626, 0.8f)
-val accentColorBg = ColorRGBa.fromHex(0xD27626, 0.5f)
 
 inline fun button(
     text: String,
@@ -33,7 +28,7 @@ inline fun GuiBase.iconButton(
     crossinline onClick: () -> Unit = {}
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0f, 0f)
-    if (selected) pushStyleColor(ImGuiCol.Button, accentColorActive)
+    if (selected) pushStyleColor(ImGuiCol.Button, Colors.accentActive)
     else if (transparent)
         ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0)
     ImGui.pushFont(font)

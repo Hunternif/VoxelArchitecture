@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -136,7 +137,7 @@ class MainScene(private val app: EditorApp) {
                 nodeModel.addNode(
                     start.toVector3f(),
                     end.toVector3f(),
-                    ColorRGBa.fromHex(0x8dc63f, 0.3f)
+                    Colors.defaultNodeBox
                 )
                 addNodeModelsRecursive(child, origin)
             }

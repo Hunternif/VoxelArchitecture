@@ -59,9 +59,9 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     }
     if (isParentNode) {
         flags = flags or ImGuiTreeNodeFlags.Selected
-        pushStyleColor(ImGuiCol.Header, accentColorBg)
-        pushStyleColor(ImGuiCol.HeaderHovered, accentColorHovered)
-        pushStyleColor(ImGuiCol.HeaderActive, accentColorActive)
+        pushStyleColor(ImGuiCol.Header, Colors.accentBg)
+        pushStyleColor(ImGuiCol.HeaderHovered, Colors.accentHovered)
+        pushStyleColor(ImGuiCol.HeaderActive, Colors.accentActive)
     }
     val text = node.javaClass.simpleName
     ImGui.alignTextToFramePadding()
