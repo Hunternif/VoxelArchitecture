@@ -9,6 +9,7 @@ import kotlin.math.*
 fun IntVec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
 fun Vector3i.toVec3() = Vec3(x, y, z)
+fun Vector3f.toVec3() = Vec3(x, y, z)
 fun Vec3.toVector3i() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 fun Vec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 

@@ -4,6 +4,8 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
+import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
+import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -37,6 +39,9 @@ class MainScene(private val app: EditorApp) {
     private val editArea = VoxelAABBf()
     val newNodeController = NewNodeController(app, camera, editArea)
     private val selectionController = SelectionController(app, camera, nodeModel)
+    private val moveController = MoveController(app, camera)
+
+    val nodeToInstanceMap = mutableMapOf<Node, InstanceData<NodeData>>()
 
     private val models3d = listOf(
         gridModel,
@@ -60,6 +65,7 @@ class MainScene(private val app: EditorApp) {
             addListener(camera)
             addListener(newNodeController)
             addListener(selectionController)
+            addListener(moveController)
         }
         setEditArea(0, 0, 16, 16)
     }
@@ -133,8 +139,10 @@ class MainScene(private val app: EditorApp) {
 
     fun updateNodeModel() {
         nodeModel.clear()
+        nodeToInstanceMap.clear()
         if (!app.isNodeHidden(app.rootNode))
             addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
+        nodeModel.update()
         updateSelectedNodeModel()
     }
 
@@ -145,12 +153,13 @@ class MainScene(private val app: EditorApp) {
                 val origin = offset + child.origin
                 val start = origin + child.start
                 val end = start + child.size
-                nodeModel.addNode(
+                val inst = nodeModel.addNode(
                     child,
                     start.toVector3f(),
                     end.toVector3f(),
                     Colors.defaultNodeBox
                 )
+                nodeToInstanceMap.put(child, inst)
                 addNodeModelsRecursive(child, origin)
             }
         }

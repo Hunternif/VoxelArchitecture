@@ -50,7 +50,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             renderMainWindow(vp)
             if (DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
-                ImGui.text("Tool: ${app.currentTool.description}")
+                ImGui.text("Tool: ${app.currentTool.toolName}")
                 ImGui.text("%.0f fps".format(fpsCounter.fps))
             }
             overlay("camera_controls", Corner.BOTTOM_RIGHT,
@@ -63,6 +63,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 padding = 0f, bgAlpha=1f) {
                 toolButton(Tool.SELECT)
                 toolButton(Tool.ADD_NODE)
+                toolButton(Tool.MOVE)
             }
             overlay("top_toolbar", Corner.TOP_LEFT,
                 padding = 0f, bgAlpha=0f, offsetX = 32f) {

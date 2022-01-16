@@ -17,23 +17,31 @@ class NodeModel : BoxInstancedModel<NodeData>() {
         var screenAABB: AABB2Df = AABB2Df()
     )
 
-    fun addNode(node: Node, start: Vector3f, end: Vector3f, color: ColorRGBa) {
-        instances.add(
-            InstanceData(
-                Vector3f(
-                    -0.5f + min(start.x, end.x),
-                    -0.5f + min(start.y, end.y),
-                    -0.5f + min(start.z, end.z)
-                ),
-                Vector3f(
-                    0.5f + max(start.x, end.x),
-                    0.5f + max(start.y, end.y),
-                    0.5f + max(start.z, end.z)
-                ),
-                color,
-                NodeData(node),
-            )
+    fun addNode(
+        node: Node,
+        start: Vector3f,
+        end: Vector3f,
+        color: ColorRGBa
+    ): InstanceData<NodeData> {
+        val instance = InstanceData(
+            Vector3f(
+                -0.5f + min(start.x, end.x),
+                -0.5f + min(start.y, end.y),
+                -0.5f + min(start.z, end.z)
+            ),
+            Vector3f(
+                0.5f + max(start.x, end.x),
+                0.5f + max(start.y, end.y),
+                0.5f + max(start.z, end.z)
+            ),
+            color,
+            NodeData(node),
         )
+        instances.add(instance)
+        return instance
+    }
+
+    fun update() {
         uploadInstanceData()
     }
 

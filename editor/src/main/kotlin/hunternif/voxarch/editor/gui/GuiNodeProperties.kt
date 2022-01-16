@@ -108,23 +108,27 @@ class GuiNodeProperties(private val app: EditorApp) {
 
     private fun updateIfNeeded() {
         val currentTime = GLFW.glfwGetTime()
-        if (dirty && currentTime - lastUpdateTime > updateIntervalSeconds) {
+        if (currentTime - lastUpdateTime > updateIntervalSeconds) {
             lastUpdateTime = currentTime
 
-            // Perform update
-            val node = node ?: return
-            node.origin.readFromFloatArray(originArray)
-            if (node is Room) {
-                node.size.readFromFloatArray(roomSizeArray)
-                // Room's start is initially unset and calculated dynamically.
-                // We need check if we need to update it:
-                updatedStart.readFromFloatArray(roomStartArray)
-                if (origRoomStart != updatedStart) {
-                    node.start = updatedStart
+            if (dirty) {
+                // Update values on the actual node
+                val node = node ?: return
+                node.origin.readFromFloatArray(originArray)
+                if (node is Room) {
+                    node.size.readFromFloatArray(roomSizeArray)
+                    // Room's start is initially unset and calculated dynamically.
+                    // We need check if we need to update it:
+                    updatedStart.readFromFloatArray(roomStartArray)
+                    if (origRoomStart != updatedStart) {
+                        node.start = updatedStart
+                    }
                 }
+                app.updateNode(node)
+            } else {
+                // Update values in case the node was modified elsewhere
+                updateFloatArrays()
             }
-
-            app.updateNode(node)
         }
     }
 

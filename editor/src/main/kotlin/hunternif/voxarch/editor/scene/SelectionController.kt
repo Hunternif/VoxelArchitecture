@@ -154,8 +154,7 @@ class SelectionController(
         var minDistance = Float.MAX_VALUE
         var hitNode: Node? = null
         for (inst in nodeModel.instances) {
-            val end = Vector3f(inst.start).add(inst.size)
-            val hit = camera.projectToBox(mouseX, mouseY, inst.start, end, result)
+            val hit = camera.projectToBox(mouseX, mouseY, inst.start, inst.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 hitNode = inst.data.node

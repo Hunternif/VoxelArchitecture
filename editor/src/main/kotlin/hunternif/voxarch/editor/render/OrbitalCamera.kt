@@ -189,15 +189,15 @@ class OrbitalCamera : InputListener {
     // ======================== PROJECTIONS ========================
 
     /**
-     * Projects screen coordinates to world coordinates at Y=-0.5.
+     * Projects screen coordinates to world coordinates at the given Y level.
      * [posX], [posY] are screen coordinates relative to window (not viewport).
      */
-    fun projectToFloor(posX: Float, posY: Float): Vector3f {
+    fun projectToFloor(posX: Float, posY: Float, floorY: Float = -0.5f): Vector3f {
         unprojectPoint(posX, posY)
         val t = Intersectionf.intersectRayPlane(
             pointRayOrigin,
             pointRayDir,
-            Vector3f(0f, -0.5f, 0f),
+            Vector3f(0f, floorY, 0f),
             Vector3f(0f, if (pointRayOrigin.y > 0) 1f else -1f, 0f),
             1E-5f
         )
