@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor
 
+import hunternif.voxarch.editor.util.max
+import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.findGlobalPosition
@@ -63,10 +65,13 @@ fun EditorApp.updateNode(node: Node) {
  * [start] and [end] are in global coordinates!
  */
 fun EditorApp.createRoom(start: Vector3i, end: Vector3i) {
+    // ensure size is positive
+    val min = min(start, end)
+    val max = max(start, end)
     parentNode.findGlobalPosition()
     parentNode.run {
         val globalPos = findGlobalPosition()
-        room(start.toVec3() - globalPos, end.toVec3() - globalPos)
+        room(min.toVec3() - globalPos, max.toVec3() - globalPos)
     }
     scene.updateNodeModel()
     scene.expandEditArea(start.x, start.y, start.z)

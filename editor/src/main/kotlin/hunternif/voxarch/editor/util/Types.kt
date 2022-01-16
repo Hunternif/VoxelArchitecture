@@ -4,9 +4,7 @@ import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 import org.joml.Vector3i
-import kotlin.math.floor
-import kotlin.math.ceil
-import kotlin.math.round
+import kotlin.math.*
 
 fun IntVec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
@@ -25,6 +23,18 @@ fun Vec3.readFromFloatArray(array: FloatArray) {
     y = array[1].toDouble()
     z = array[2].toDouble()
 }
+
+fun min(a: Vector3i, b: Vector3i) = Vector3i(
+    min(a.x, b.x),
+    min(a.y, b.y),
+    min(a.z, b.z),
+)
+
+fun max(a: Vector3i, b: Vector3i) = Vector3i(
+    max(a.x, b.x),
+    max(a.y, b.y),
+    max(a.z, b.z),
+)
 
 fun Vector3f.toIntFloor() = Vector3i(floor(x).toInt(), floor(y).toInt(), floor(z).toInt())
 fun Vector3f.toIntCeil() = Vector3i(ceil(x).toInt(), ceil(y).toInt(), ceil(z).toInt())
