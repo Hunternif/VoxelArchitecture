@@ -37,11 +37,13 @@ class GuiNodeProperties(private val app: EditorApp) {
     private var lastUpdateTime: Double = GLFW.glfwGetTime()
     private val updateIntervalSeconds: Double = 0.02
 
+    var text: String = ""
 
     var node: Node? = Node()
         set(value) {
             if (field != value) {
                 field = value
+                text = field?.javaClass?.simpleName ?: ""
                 updateFloatArrays()
                 updateOriginalValues()
             }
@@ -83,9 +85,9 @@ class GuiNodeProperties(private val app: EditorApp) {
     private fun markDirty() { dirty = true }
 
     fun render() {
+        ImGui.text(text)
         val node = node ?: return
         updateIfNeeded()
-        ImGui.text(node.javaClass.simpleName)
         if (ImGui.dragFloat3("origin", originArray, 1f)) markDirty()
         if (node is Room) {
             if (ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)) markDirty()

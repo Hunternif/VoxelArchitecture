@@ -28,6 +28,21 @@ fun EditorApp.setTool(tool: Tool) {
     currentTool = tool
 }
 
+/** Add the given node to selection. */
+fun EditorApp.selectNode(node: Node) {
+    if (selectedNodes.add(node)) {
+        scene.updateSelectedNodeModel()
+    }
+}
+
+/** Remove the given node from selection. */
+fun EditorApp.unselectNode(node: Node) {
+    if (selectedNodes.remove(node)) {
+        scene.updateSelectedNodeModel()
+    }
+}
+
+/** Select a single node */
 fun EditorApp.setSelectedNode(node: Node?) {
     selectedNodes.clear()
     if (node != null && node != rootNode) selectedNodes.add(node)

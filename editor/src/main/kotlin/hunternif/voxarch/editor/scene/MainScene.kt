@@ -26,6 +26,8 @@ class MainScene(private val app: EditorApp) {
     private val selectedNodeModel = SelectedNodeFrameModel()
 
     private val camera = OrbitalCamera()
+    /** For drawing overlays on screen */
+    private val orthoCamera = OrthoCamera()
 
     private var data: IStorage3D<VoxColor?>? = null
 
@@ -36,17 +38,22 @@ class MainScene(private val app: EditorApp) {
     val newNodeController = NewNodeController(app, camera, editArea)
     private val selectionController = SelectionController(app, camera, nodeModel)
 
-    private val models = listOf(
+    private val models3d = listOf(
         gridModel,
         voxelModel,
         nodeModel,
         selectedNodeModel,
         newNodeController.model,
     )
+    /** Overlaid on top in ortho camera*/
+    private val models2d = listOf(
+        selectionController.model,
+    )
 
     fun init(window: Long, viewport: Viewport) {
         setViewport(viewport)
-        models.forEach { it.init() }
+        models3d.forEach { it.init() }
+        models2d.forEach { it.init() }
         inputController.run {
             init(window)
             addListener(camera)
@@ -59,6 +66,7 @@ class MainScene(private val app: EditorApp) {
     fun setViewport(viewport: Viewport) {
         vp.set(viewport)
         camera.setViewport(vp)
+        orthoCamera.setViewport(vp)
     }
 
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
@@ -159,7 +167,9 @@ class MainScene(private val app: EditorApp) {
         glViewport(0, 0, vp.width, vp.height)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
-        val viewProj = camera.getViewProjectionMatrix()
-        models.forEach { it.runFrame(viewProj) }
+        val viewProj3d = camera.getViewProjectionMatrix()
+        models3d.forEach { it.runFrame(viewProj3d) }
+        val viewProj2d = orthoCamera.getViewProjectionMatrix()
+        models2d.forEach { it.runFrame(viewProj2d) }
     }
 }

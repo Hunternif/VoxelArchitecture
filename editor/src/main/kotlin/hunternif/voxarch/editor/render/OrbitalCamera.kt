@@ -31,6 +31,8 @@ class OrbitalCamera : InputListener {
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val projectedWorldPos: Vector3f = Vector3f()
     private val verticalPlaneNormal: Vector3f = Vector3f()
+    private val pos4: Vector4f = Vector4f()
+    private val screenPos: Vector2f = Vector2f()
 
     private var xAngle = 0.5f
     private var yAngle = 0.3f
@@ -225,22 +227,22 @@ class OrbitalCamera : InputListener {
 
     /**
      * Projects point onto an AAB. Returns true if the point hits the AAB.
-     * [min], [max] define the corners of the AAB.
+     * [aabMin], [aabMax] define the corners of the AAB.
      * [result] stores the distances to the near and far points of intersection.
      */
     fun projectToBox(
         posX: Float,
         posY: Float,
-        min: Vector3f,
-        max: Vector3f,
-        result: Vector2f
+        aabMin: Vector3f,
+        aabMax: Vector3f,
+        result: Vector2f = screenPos,
     ): Boolean {
         unprojectPoint(posX, posY)
         return Intersectionf.intersectRayAab(
             pointRayOrigin,
             pointRayDir,
-            min,
-            max,
+            aabMin,
+            aabMax,
             result
         )
     }
@@ -259,5 +261,13 @@ class OrbitalCamera : InputListener {
             pointRayOrigin,
             pointRayDir
         )
+    }
+
+    /** Returns screen coordinates of the given point */
+    fun projectToScreen(point: Vector3f): Vector2f {
+        pos4.set(point, 1f)
+        pos4.mul(vpMat)
+        screenPos.set(pos4.x, pos4.y)
+        return screenPos
     }
 }
