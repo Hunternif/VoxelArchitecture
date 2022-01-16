@@ -28,9 +28,16 @@ class SelectionController(
      * within the marquee rectangle. */
     private val marqueeTestStep = 4
 
+    // mouse coordinates are relative to window
     private var mouseX = 0f
     private var mouseY = 0f
     private var dragging = false
+
+    // corners of the marquee, relative to viewport
+    private var minX = 0
+    private var minY = 0
+    private var maxX = 0
+    private var maxY = 0
 
     // temp variables
     private val selectedNodes = LinkedHashSet<InstanceData<Node>>()
@@ -59,8 +66,8 @@ class SelectionController(
         dragging = true
         model.run {
             visible = true
-            start.set(mouseX, mouseY)
-            end.set(mouseX, mouseY)
+            start.set(mouseX - camera.vp.x, mouseY - camera.vp.y)
+            end.set(start)
             update()
         }
         selectedNodes.clear()
@@ -77,12 +84,12 @@ class SelectionController(
     }
 
     private fun drag(posX: Double, posY: Double) {
-        model.end.set(posX.toFloat(), posY.toFloat())
+        model.end.set(posX.toFloat() - camera.vp.x, posY.toFloat() - camera.vp.y)
         model.update()
-        val minX = min(model.start.x, model.end.x).toInt()
-        val minY = min(model.start.y, model.end.y).toInt()
-        val maxX = max(model.start.x, model.end.x).toInt()
-        val maxY = max(model.start.y, model.end.y).toInt()
+        minX = min(model.start.x, model.end.x).toInt()
+        minY = min(model.start.y, model.end.y).toInt()
+        maxX = max(model.start.x, model.end.x).toInt()
+        maxY = max(model.start.y, model.end.y).toInt()
 
         //TODO: throttle or optimize space partition if necessary
 
@@ -95,7 +102,7 @@ class SelectionController(
                 for (inst in nodeModel.instances) {
                     if (selectedNodes.contains(inst)) continue
                     val end = Vector3f(inst.start).add(inst.size)
-                    if (camera.projectToBox(x.toFloat(), y.toFloat(), inst.start, end)) {
+                    if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, inst.start, end)) {
                         selectedNodes.add(inst)
                         app.selectNode(inst.data)
                     } else {

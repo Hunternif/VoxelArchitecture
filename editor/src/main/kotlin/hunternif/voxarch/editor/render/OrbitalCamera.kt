@@ -188,7 +188,10 @@ class OrbitalCamera : InputListener {
 
     // ======================== PROJECTIONS ========================
 
-    /** Projects screen coordinates to world coordinates at Y=-0.5 */
+    /**
+     * Projects screen coordinates to world coordinates at Y=-0.5.
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
+     */
     fun projectToFloor(posX: Float, posY: Float): Vector3f {
         unprojectPoint(posX, posY)
         val t = Intersectionf.intersectRayPlane(
@@ -202,9 +205,12 @@ class OrbitalCamera : InputListener {
         return projectedWorldPos
     }
 
-    /** Projects screen coordinates to world coordinates on a vertical plane
+    /**
+     * Projects screen coordinates to world coordinates on a vertical plane
      * running through [point] and away from the camera.
-     * Used for dragging voxels vertically. */
+     * Used for dragging voxels vertically.
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
+     */
     fun projectToVertical(posX: Float, posY: Float, point: Vector3f): Vector3f {
         unprojectPoint(posX, posY)
         // create the plane normal
@@ -227,6 +233,7 @@ class OrbitalCamera : InputListener {
 
     /**
      * Projects point onto an AAB. Returns true if the point hits the AAB.
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
      * [aabMin], [aabMax] define the corners of the AAB.
      * [result] stores the distances to the near and far points of intersection.
      */
@@ -247,11 +254,21 @@ class OrbitalCamera : InputListener {
         )
     }
 
+    /** @see [projectToBox] */
+    fun projectToBox(
+        posX: Int,
+        posY: Int,
+        aabMin: Vector3f,
+        aabMax: Vector3f,
+        result: Vector2f = screenPos,
+    ) = projectToBox(posX.toFloat(), posY.toFloat(), aabMin, aabMax, result)
+
     /**
      * Unproject the given screen coordinates to world coordinates.
      * Screen coordinates are assumed to be global, e.g. not accounting for
      * the viewport.
-     * The result will be stored in [pointRayOrigin] and [pointRayDir]
+     * The result will be stored in [pointRayOrigin] and [pointRayDir].
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
      */
     private fun unprojectPoint(posX: Float, posY: Float) {
         vpMat.unprojectRay(
@@ -263,11 +280,11 @@ class OrbitalCamera : InputListener {
         )
     }
 
-    /** Returns screen coordinates of the given point */
+    /** Returns screen coordinates of the given point, relative to window. */
     fun projectToScreen(point: Vector3f): Vector2f {
         pos4.set(point, 1f)
         pos4.mul(vpMat)
-        screenPos.set(pos4.x, pos4.y)
+        screenPos.set(pos4.x + vp.x, pos4.y + vp.y)
         return screenPos
     }
 }
