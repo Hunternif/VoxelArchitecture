@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
+import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Vector3f
@@ -8,19 +9,17 @@ import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
-abstract class BoxInstancedModel<T> : BaseModel() {
-    /** [data] is used to identify each instance, and it's not uploaded. */
-    data class InstanceData<T>(
+abstract class BoxInstancedModel<T : InstanceData> : BaseModel() {
+    open class InstanceData(
         val start: Vector3f,
         val end: Vector3f,
         val color: ColorRGBa,
-        val data: T,
     ) {
         val size: Vector3f = Vector3f(end).sub(start)
     }
 
     private var instanceVboID = 0
-    val instances = mutableListOf<InstanceData<T>>()
+    val instances = mutableListOf<T>()
 
     override val shader = MagicaVoxelShader()
 

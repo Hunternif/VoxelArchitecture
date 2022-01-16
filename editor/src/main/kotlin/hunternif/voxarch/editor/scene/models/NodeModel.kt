@@ -10,20 +10,24 @@ import kotlin.math.max
 import kotlin.math.min
 
 class NodeModel : BoxInstancedModel<NodeData>() {
-    data class NodeData(
+    class NodeData(
+        start: Vector3f,
+        end: Vector3f,
+        color: ColorRGBa,
         val node: Node,
+    ) : InstanceData(start, end, color) {
         /** AABB in screen coordinates relative to viewport.
          * Can be updated at any time. */
-        var screenAABB: AABB2Df = AABB2Df()
-    )
+        val screenAABB: AABB2Df = AABB2Df()
+    }
 
     fun addNode(
         node: Node,
         start: Vector3f,
         end: Vector3f,
         color: ColorRGBa
-    ): InstanceData<NodeData> {
-        val instance = InstanceData(
+    ): NodeData {
+        val instance = NodeData(
             Vector3f(
                 -0.5f + min(start.x, end.x),
                 -0.5f + min(start.y, end.y),
@@ -35,7 +39,7 @@ class NodeModel : BoxInstancedModel<NodeData>() {
                 0.5f + max(start.z, end.z)
             ),
             color,
-            NodeData(node),
+            node,
         )
         instances.add(instance)
         return instance

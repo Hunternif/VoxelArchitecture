@@ -43,7 +43,7 @@ class SelectionController(
 
     /** This contains the nodes currently intersecting with the marquee.
      * It's updated every frame when drawing the marquee. */
-    private val selectedNodes = LinkedHashSet<InstanceData<NodeData>>()
+    private val selectedNodes = LinkedHashSet<NodeData>()
 
     // Update timer
     private var lastUpdateTime: Double = glfwGetTime()
@@ -110,19 +110,19 @@ class SelectionController(
 
         for (inst in nodeModel.instances) {
             if (selectedNodes.contains(inst)) continue
-            inst.data.screenAABB.run {
+            inst.screenAABB.run {
                 debugPoint(minX, minY)
                 debugPoint(maxX, minY)
                 debugPoint(minX, maxY)
                 debugPoint(maxX, maxY)
             }
             if (isAABBOutsideMarquee(inst)) {
-                app.unselectNode(inst.data.node)
+                app.unselectNode(inst.node)
                 continue
             }
             if (isAABBInsideMarquee(inst)) {
                 selectedNodes.add(inst)
-                app.selectNode(inst.data.node)
+                app.selectNode(inst.node)
                 continue
             }
             hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
@@ -131,10 +131,10 @@ class SelectionController(
                     val end = Vector3f(inst.start).add(inst.size)
                     if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, inst.start, end)) {
                         selectedNodes.add(inst)
-                        app.selectNode(inst.data.node)
+                        app.selectNode(inst.node)
                         break@hitTestLoop
                     } else {
-                        app.unselectNode(inst.data.node)
+                        app.unselectNode(inst.node)
                     }
                 }
             }
@@ -157,30 +157,30 @@ class SelectionController(
             val hit = camera.projectToBox(mouseX, mouseY, inst.start, inst.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
-                hitNode = inst.data.node
+                hitNode = inst.node
             }
         }
         app.setSelectedNode(hitNode)
     }
 
     /** Returns true if the screen AABB is completely outside the marquee. */
-    private fun isAABBOutsideMarquee(inst: InstanceData<NodeData>) =
-        inst.data.screenAABB.maxX < minX ||
-        inst.data.screenAABB.maxY < minY ||
-        inst.data.screenAABB.minX > maxX ||
-        inst.data.screenAABB.minY > maxY
+    private fun isAABBOutsideMarquee(inst: NodeData) =
+        inst.screenAABB.maxX < minX ||
+        inst.screenAABB.maxY < minY ||
+        inst.screenAABB.minX > maxX ||
+        inst.screenAABB.minY > maxY
 
     /** Returns true if the screen AABB is entirely contain inside the marquee. */
-    private fun isAABBInsideMarquee(inst: InstanceData<NodeData>) =
-        inst.data.screenAABB.minX >= minX &&
-        inst.data.screenAABB.minY >= minY &&
-        inst.data.screenAABB.maxX <= maxX &&
-        inst.data.screenAABB.maxY <= maxY
+    private fun isAABBInsideMarquee(inst: NodeData) =
+        inst.screenAABB.minX >= minX &&
+        inst.screenAABB.minY >= minY &&
+        inst.screenAABB.maxX <= maxX &&
+        inst.screenAABB.maxY <= maxY
 
     /** Updates AABBs of nodes in [nodeModel] */
     private fun updateAABBs() {
         nodeModel.instances.forEach {
-            it.data.screenAABB.run {
+            it.screenAABB.run {
                 setMin(camera.projectToViewport(it.start))
                 setMax(camera.projectToViewport(it.end))
                 correctBounds()

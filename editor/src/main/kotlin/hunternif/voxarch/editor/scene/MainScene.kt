@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
-import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.toVector3f
@@ -41,7 +40,7 @@ class MainScene(private val app: EditorApp) {
     private val selectionController = SelectionController(app, camera, nodeModel)
     private val moveController = MoveController(app, camera)
 
-    val nodeToInstanceMap = mutableMapOf<Node, InstanceData<NodeData>>()
+    val nodeToInstanceMap = mutableMapOf<Node, NodeData>()
 
     private val models3d = listOf(
         gridModel,
@@ -159,7 +158,7 @@ class MainScene(private val app: EditorApp) {
                     end.toVector3f(),
                     Colors.defaultNodeBox
                 )
-                nodeToInstanceMap.put(child, inst)
+                nodeToInstanceMap[child] = inst
                 addNodeModelsRecursive(child, origin)
             }
         }

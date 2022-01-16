@@ -94,7 +94,7 @@ class MoveController(
             val hit = camera.projectToBox(mouseX, mouseY, inst.start, inst.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
-                hitNode = inst.data.node
+                hitNode = inst.node
             }
         }
         return hitNode
