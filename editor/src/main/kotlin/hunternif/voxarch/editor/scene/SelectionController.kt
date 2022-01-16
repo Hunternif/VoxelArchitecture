@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
 import hunternif.voxarch.editor.scene.models.NodeModel
+import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
 import hunternif.voxarch.plan.Node
 import imgui.internal.ImGui
@@ -19,6 +20,9 @@ class SelectionController(
     private val nodeModel: NodeModel,
 ) : InputListener {
     val model = SelectionMarqueeModel()
+    val pointsDebugModel = Points2DModel()
+
+    private val DEBUG_SELECT = true
 
     /** Optimization: size of step in pixels when testing whether a node falls
      * within the marquee rectangle. */
@@ -68,6 +72,8 @@ class SelectionController(
         if (selectedNodes.isEmpty() || model.end == model.start) {
             selectSingleNode()
         }
+        if (DEBUG_SELECT) pointsDebugModel.points.clear()
+        if (DEBUG_SELECT) pointsDebugModel.update()
     }
 
     private fun drag(posX: Double, posY: Double) {
@@ -81,9 +87,11 @@ class SelectionController(
         //TODO: throttle or optimize space partition if necessary
 
         selectedNodes.clear()
+        if (DEBUG_SELECT) pointsDebugModel.points.clear()
 
         for (x in minX..maxX step marqueeTestStep) {
             for (y in minY..maxY step marqueeTestStep) {
+                if (DEBUG_SELECT) pointsDebugModel.points.add(Vector2f(x.toFloat(), y.toFloat()))
                 for (inst in nodeModel.instances) {
                     if (selectedNodes.contains(inst)) continue
                     val end = Vector3f(inst.start).add(inst.size)
@@ -96,6 +104,7 @@ class SelectionController(
                 }
             }
         }
+        if (DEBUG_SELECT) pointsDebugModel.update()
     }
 
     private fun selectSingleNode() {
