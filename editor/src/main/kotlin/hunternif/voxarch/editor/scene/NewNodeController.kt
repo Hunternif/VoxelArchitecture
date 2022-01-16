@@ -31,6 +31,7 @@ class NewNodeController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
+        if (app.currentTool != Tool.ADD_NODE) return
         frame.run {
             when (state) {
                 EMPTY -> {}

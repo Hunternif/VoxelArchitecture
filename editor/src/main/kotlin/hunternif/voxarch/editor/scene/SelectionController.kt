@@ -51,6 +51,7 @@ class SelectionController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
+        if (app.currentTool != Tool.SELECT) return
         if (dragging) drag(posX, posY)
         mouseX = posX.toFloat()
         mouseY = posY.toFloat()
