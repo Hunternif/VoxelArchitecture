@@ -15,7 +15,7 @@ class VoxelModel : BoxInstancedModel<Any?>() {
                 instances.add(
                     InstanceData(
                         Vector3f(-0.5f + x, -0.5f + y, -0.5f + z),
-                        Vector3f(1f, 1f, 1f),
+                        Vector3f(0.5f + x, 0.5f + y, 0.5f + z),
                         ColorRGBa.fromHex(v.color),
                         null,
                     )

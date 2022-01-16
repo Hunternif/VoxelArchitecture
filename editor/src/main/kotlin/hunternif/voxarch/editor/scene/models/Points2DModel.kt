@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import org.joml.Vector2f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
+import kotlin.math.round
 
 class Points2DModel : BaseModel() {
     private var bufferSize = 0
@@ -27,7 +28,8 @@ class Points2DModel : BaseModel() {
 
         vertexBuffer.run {
             for (p in points) {
-                put(p.x + 0.5f).put(p.y + 0.5f).put(0f)
+                // round() + 0.5 to make it snap exactly to pixel position
+                put(round(p.x) + 0.5f).put(round(p.y) + 0.5f).put(0f)
             }
             flip()
         }

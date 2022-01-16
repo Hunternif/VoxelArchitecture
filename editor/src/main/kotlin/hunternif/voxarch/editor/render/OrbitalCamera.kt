@@ -280,11 +280,21 @@ class OrbitalCamera : InputListener {
         )
     }
 
-    /** Returns screen coordinates of the given point, relative to window. */
-    fun projectToScreen(point: Vector3f): Vector2f {
-        pos4.set(point, 1f)
+    /** Returns screen coordinates of the given point, relative to viewport. */
+    fun projectToViewport(x: Float, y: Float, z: Float): Vector2f {
+        pos4.set(x, y, z, 1f)
+        // apply view-projection transformation:
         pos4.mul(vpMat)
-        screenPos.set(pos4.x + vp.x, pos4.y + vp.y)
+        // apply perspective projection from "homogeneous space":
+        pos4.div(pos4.w)
+        // apply viewport transformation:
+        screenPos.set(
+            (1f + pos4.x) / 2f * vp.width.toFloat(),
+            (1f - pos4.y) / 2f * vp.height.toFloat()
+        )
         return screenPos
     }
+    /** @see [projectToViewport] */
+    fun projectToViewport(point: Vector3f): Vector2f =
+        projectToViewport(point.x, point.y, point.z)
 }

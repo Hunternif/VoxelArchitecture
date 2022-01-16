@@ -47,7 +47,7 @@ class MainScene(private val app: EditorApp) {
     )
     /** Overlaid on top in ortho camera*/
     private val models2d = listOf(
-        selectionController.model,
+        selectionController.marqueeModel,
         selectionController.pointsDebugModel,
     )
 
