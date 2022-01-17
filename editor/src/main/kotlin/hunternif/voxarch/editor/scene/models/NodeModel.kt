@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.util.AABB2Df
+import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Node
 import org.joml.Vector3f
@@ -19,6 +20,7 @@ class NodeModel : BoxInstancedModel<NodeData>() {
         /** AABB in screen coordinates relative to viewport.
          * Can be updated at any time. */
         val screenAABB: AABB2Df = AABB2Df()
+        val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.5f) }
     }
 
     fun addNode(

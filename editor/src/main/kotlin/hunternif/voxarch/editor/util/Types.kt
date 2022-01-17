@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.util
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
+import org.joml.Vector3fc
 import org.joml.Vector3i
 import kotlin.math.*
 
@@ -39,6 +40,7 @@ fun max(a: Vector3i, b: Vector3i) = Vector3i(
 
 fun Vector3f.toIntFloor() = Vector3i(floor(x).toInt(), floor(y).toInt(), floor(z).toInt())
 fun Vector3f.toIntCeil() = Vector3i(ceil(x).toInt(), ceil(y).toInt(), ceil(z).toInt())
+
 /** Assuming that voxels are rendered at (x-0.5, y-0.5, z-0.5), and that
  * the current vector is at voxel floor level (y=-0.5) */
 fun Vector3f.fromFloorToVoxCoords() = Vector3i(
@@ -65,3 +67,40 @@ data class Edge(
     val start: Vector3f,
     val end: Vector3f,
 )
+
+enum class AADirection3D(val vec: Vector3fc) {
+    POS_X(Vector3f(1f, 0f, 0f)),
+    POS_Y(Vector3f(0f, 1f, 0f)),
+    POS_Z(Vector3f(0f, 0f, 1f)),
+    NEG_X(Vector3f(-1f, 0f, 0f)),
+    NEG_Y(Vector3f(0f, -1f, 0f)),
+    NEG_Z(Vector3f(0f, 0f, -1f))
+}
+
+/**
+ * Quad face of an AABB.
+ * [min] & [max] define the AABB with additional width to allow hit-testing.
+ * [vertices] are the 4 vertices in corners of the flat face.
+ */
+class AABBFace(
+    val dir: AADirection3D,
+    val min: Vector3f,
+    val max: Vector3f,
+    val vertices: Array<out Vector3f>,
+) {
+    constructor(
+        dir: AADirection3D,
+        minX: Float,
+        minY: Float,
+        minZ: Float,
+        maxX: Float,
+        maxY: Float,
+        maxZ: Float,
+        vararg vertices: Vector3f,
+    ) : this(
+        dir,
+        Vector3f(minX, minY, minZ),
+        Vector3f(maxX, maxY, maxZ),
+        vertices,
+    )
+}

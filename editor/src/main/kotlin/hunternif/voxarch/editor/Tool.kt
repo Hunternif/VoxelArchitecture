@@ -11,4 +11,6 @@ enum class Tool(
     ADD_NODE(FontAwesomeIcons.Plus, "Add nodes"),
     MOVE(FontAwesomeIcons.ArrowsAlt, "Move",
     "Move selected nodes horizontally"),
+    RESIZE(FontAwesomeIcons.ExpandAlt, "Resize",
+        "Resize selected nodes"),
 }

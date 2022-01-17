@@ -64,6 +64,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 toolButton(Tool.SELECT)
                 toolButton(Tool.ADD_NODE)
                 toolButton(Tool.MOVE)
+                toolButton(Tool.RESIZE)
             }
             overlay("top_toolbar", Corner.TOP_LEFT,
                 padding = 0f, bgAlpha=0f, offsetX = 32f) {
