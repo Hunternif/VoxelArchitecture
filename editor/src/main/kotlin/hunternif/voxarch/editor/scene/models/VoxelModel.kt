@@ -8,6 +8,7 @@ import hunternif.voxarch.util.forEachPos
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 
+/** For rendering final world voxels */
 class VoxelModel : BoxInstancedModel<InstanceData>() {
     fun setVoxels(voxels: IStorage3D<VoxColor?>) {
         instances.clear()

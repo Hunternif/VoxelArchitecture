@@ -33,13 +33,9 @@ class MainScene(private val app: EditorApp) {
     private val gridModel = FloorGridModel()
     private val nodeModel = NodeModel()
     private val selectedNodeModel = SelectedNodeFrameModel()
+    private val originsModel = VoxelGizmoModel()
 
     // 2d models
-    private val originSprite = Sprite2DModel("textures/point.png")
-        .apply {
-            centered = true
-            visible = false
-        }
 
 
     // core controllers
@@ -61,11 +57,11 @@ class MainScene(private val app: EditorApp) {
         nodeModel,
         resizeController.model,
         selectedNodeModel,
+        originsModel,
         newNodeController.model,
     )
     /** Overlaid on top in ortho camera*/
     private val models2d = listOf(
-        originSprite,
         selectionController.marqueeModel,
         selectionController.pointsDebugModel,
     )
@@ -191,18 +187,15 @@ class MainScene(private val app: EditorApp) {
 
     fun updateSelectedNodeModel() {
         selectedNodeModel.clear()
-        originSprite.visible = false
+        originsModel.clear()
         for (node in app.selectedNodes) {
             if (node != app.rootNode) {
                 selectedNodeModel.addNode(node)
                 val origin = node.findGlobalPosition().toVector3f()
-                originSprite.apply {
-                    visible = true
-                    pos = camera.projectToViewport(origin)
-                    update()
-                }
+                originsModel.addPos(origin)
             }
         }
+        originsModel.update()
     }
 
     fun render() {
