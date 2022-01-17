@@ -28,15 +28,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         dockspace(
             HorizontalSplit(
                 rightRatio = 0.25f,
-                left = HorizontalSplit(
-                    leftSize = 100,
-                    left = Window("dummy"),
-                    right = VerticalSplit(
-                        topSize = 100,
-                        top = Window("dummy2"),
-                        bottom = Window("main_window"),
-                    ),
-                ),
+                left = Window("main_window"),
                 right = VerticalSplit(
                     bottomRatio = 0.25f,
                     top = Window("Node tree"),
@@ -44,8 +36,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 ),
             )
         )
-        toolbar("dummy")
-        toolbar("dummy2")
         mainWindow("main_window") { vp ->
             renderMainWindow(vp)
             if (DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
