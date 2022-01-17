@@ -3,22 +3,18 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scene.models.NodeModel
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
-import imgui.internal.ImGui
 import org.joml.Vector2f
 import org.joml.Vector3f
-import org.lwjgl.glfw.GLFW.*
 
 class MoveController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-) : InputListener {
-    // mouse coordinates are relative to window
-    private var mouseX = 0f
-    private var mouseY = 0f
-    private var dragging = false
+    nodeModel: NodeModel,
+) : BaseSelectionController(app, camera, nodeModel, Tool.MOVE) {
 
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val translation: Vector3f = Vector3f()
@@ -30,28 +26,7 @@ class MoveController(
     /** Origins before translation */
     private val origins = mutableMapOf<Node, Vec3>()
 
-    @Suppress("UNUSED_PARAMETER")
-    override fun onMouseMove(posX: Double, posY: Double) {
-        if (app.currentTool != Tool.MOVE) return
-        if (dragging) drag(posX.toFloat(), posY.toFloat())
-        mouseX = posX.toFloat()
-        mouseY = posY.toFloat()
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    override fun onMouseButton(button: Int, action: Int, mods: Int) {
-        if (ImGui.isAnyItemHovered()) return
-        if (app.currentTool == Tool.MOVE && button == GLFW_MOUSE_BUTTON_1) {
-            if (action == GLFW_PRESS && camera.vp.contains(mouseX, mouseY)
-            ) {
-                onMouseDown()
-            } else if (action == GLFW_RELEASE) {
-                onMouseUp()
-            }
-        }
-    }
-
-    private fun onMouseDown() {
+    override fun onMouseDown() {
         dragging = true
 
         movingNodes.clear()
@@ -60,7 +35,10 @@ class MoveController(
             origins[it] = it.origin.clone()
         }
         
-        if (movingNodes.isEmpty()) return
+        if (movingNodes.isEmpty()) {
+            selectNodeIfEmpty()
+            return
+        }
         var pickedNode = pickClickedNode()
         if (pickedNode == null) {
             movingNodes.sortBy { it.origin.y }
@@ -71,11 +49,11 @@ class MoveController(
         dragStartWorldPos.set(camera.projectToFloor(mouseX, mouseY, floorY)).round()
     }
 
-    private fun onMouseUp() {
+    override fun onMouseUp() {
         dragging = false
     }
 
-    private fun drag(posX: Float, posY: Float) {
+    override fun drag(posX: Float, posY: Float) {
         // round() so that it snaps to grid
         val floorPos = camera.projectToFloor(posX, posY, floorY).round()
         translation.set(floorPos.sub(dragStartWorldPos))

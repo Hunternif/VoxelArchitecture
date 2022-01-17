@@ -43,8 +43,8 @@ class MainScene(private val app: EditorApp) {
     // Tool controllers
     val newNodeController = NewNodeController(app, camera, editArea)
     private val selectionController = SelectionController(app, camera, nodeModel)
-    private val moveController = MoveController(app, camera)
-    private val resizeController = ResizeController(app, camera)
+    private val moveController = MoveController(app, camera, nodeModel)
+    private val resizeController = ResizeController(app, camera, nodeModel)
 
     private var window = 0L
     private var cursorResizeHor = 0L

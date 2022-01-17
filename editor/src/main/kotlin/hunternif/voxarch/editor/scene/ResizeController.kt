@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scene.models.NodeModel
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.ResizeNodeModel
 import hunternif.voxarch.editor.util.AABBFace
@@ -11,21 +12,15 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.util.max
 import hunternif.voxarch.vector.Vec3
-import imgui.internal.ImGui
 import org.joml.Vector2f
 import org.joml.Vector3f
-import org.lwjgl.glfw.GLFW.*
 
 class ResizeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-) : InputListener {
+    nodeModel: NodeModel,
+) : BaseSelectionController(app, camera, nodeModel, Tool.RESIZE) {
     val model = ResizeNodeModel()
-
-    // mouse coordinates are relative to window
-    private var mouseX = 0f
-    private var mouseY = 0f
-    private var dragging = false
 
     /** Selected nodes that can be resized */
     private val resizingRooms = mutableListOf<Room>()
@@ -44,27 +39,11 @@ class ResizeController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
-        if (app.currentTool != Tool.RESIZE) return
-        if (dragging) drag(posX.toFloat(), posY.toFloat())
-        else hitTest(posX.toFloat(), posY.toFloat())
-        mouseX = posX.toFloat()
-        mouseY = posY.toFloat()
+        super.onMouseMove(posX, posY)
+        if (app.currentTool == Tool.RESIZE && !dragging) hitTest(mouseX, mouseY)
     }
 
-    @Suppress("UNUSED_PARAMETER")
-    override fun onMouseButton(button: Int, action: Int, mods: Int) {
-        if (ImGui.isAnyItemHovered()) return
-        if (app.currentTool == Tool.RESIZE && button == GLFW_MOUSE_BUTTON_1) {
-            if (action == GLFW_PRESS && camera.vp.contains(mouseX, mouseY)
-            ) {
-                onMouseDown()
-            } else if (action == GLFW_RELEASE) {
-                onMouseUp()
-            }
-        }
-    }
-
-    private fun onMouseDown() {
+    override fun onMouseDown() {
         resizingRooms.clear()
         app.selectedNodes.filterIsInstance<Room>().forEach {
             resizingRooms.add(it)
@@ -72,7 +51,10 @@ class ResizeController(
             origStarts[it] = it.start.clone()
         }
 
-        if (resizingRooms.isEmpty()) return
+        if (resizingRooms.isEmpty()) {
+            selectNodeIfEmpty()
+            return
+        }
 
         pickedFace?.let {
             dragging = true
@@ -83,7 +65,7 @@ class ResizeController(
         }
     }
 
-    private fun onMouseUp() {
+    override fun onMouseUp() {
         dragging = false
     }
 
@@ -118,7 +100,7 @@ class ResizeController(
             pickedFace = null
     }
 
-    private fun drag(posX: Float, posY: Float) {
+    override fun drag(posX: Float, posY: Float) {
         pickedFace?.let { face ->
             // round() so that it snaps to grid
             when (face.dir) {
