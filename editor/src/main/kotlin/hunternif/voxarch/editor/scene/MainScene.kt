@@ -1,10 +1,12 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
+import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -14,6 +16,7 @@ import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
+import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
 
 class MainScene(private val app: EditorApp) {
@@ -43,6 +46,10 @@ class MainScene(private val app: EditorApp) {
     private val moveController = MoveController(app, camera)
     private val resizeController = ResizeController(app, camera)
 
+    private var window = 0L
+    private var cursorResizeHor = 0L
+    private var cursorResizeVer = 0L
+
     val nodeToInstanceMap = mutableMapOf<Node, NodeData>()
 
     private val models3d = listOf(
@@ -60,6 +67,9 @@ class MainScene(private val app: EditorApp) {
     )
 
     fun init(window: Long, viewport: Viewport) {
+        this.window = window
+        cursorResizeHor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR)
+        cursorResizeVer = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR)
         setViewport(viewport)
         models3d.forEach { it.init() }
         models2d.forEach { it.init() }
@@ -178,6 +188,7 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun render() {
+        updateCursor()
         glViewport(0, 0, vp.width, vp.height)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
@@ -185,5 +196,16 @@ class MainScene(private val app: EditorApp) {
         models3d.forEach { it.runFrame(viewProj3d) }
         val viewProj2d = orthoCamera.getViewProjectionMatrix()
         models2d.forEach { it.runFrame(viewProj2d) }
+    }
+
+    private fun updateCursor() {
+        if (app.currentTool == Tool.RESIZE && camera.isMouseInViewport()) {
+            val cursor = when (resizeController.pickedFace?.dir) {
+                POS_X, POS_Z, NEG_X, NEG_Z -> cursorResizeHor
+                POS_Y, NEG_Y -> cursorResizeVer
+                null -> 0L
+            }
+            glfwSetCursor(window, cursor)
+        }
     }
 }

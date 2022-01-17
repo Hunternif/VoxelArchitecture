@@ -297,4 +297,7 @@ class OrbitalCamera : InputListener {
     /** @see [projectToViewport] */
     fun projectToViewport(point: Vector3f): Vector2f =
         projectToViewport(point.x, point.y, point.z)
+
+    fun isMouseInViewport() = vp.contains(mouseX, mouseY)
+
 }
