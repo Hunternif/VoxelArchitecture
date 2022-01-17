@@ -20,25 +20,29 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
 
 class MainScene(private val app: EditorApp) {
+    // data
     private val vp = Viewport(0, 0, 0, 0)
+    private var data: IStorage3D<VoxColor?>? = null
+    /** Area where you are allowed to place new voxels. The grid matches it. */
+    private val editArea = VoxelAABBf()
+    private var gridMargin = 9
+    val nodeToInstanceMap = mutableMapOf<Node, NodeData>()
 
-    private val inputController = InputController()
-
+    // 3d models
     private val voxelModel = VoxelModel()
     private val gridModel = FloorGridModel()
     private val nodeModel = NodeModel()
     private val selectedNodeModel = SelectedNodeFrameModel()
 
+    // 2d models
+
+
+
+    // core controllers
+    private val inputController = InputController()
     private val camera = OrbitalCamera()
     /** For drawing overlays on screen */
     private val orthoCamera = OrthoCamera()
-
-    private var data: IStorage3D<VoxColor?>? = null
-
-    private var gridMargin = 9
-
-    /** Area where you are allowed to place new voxels. The grid matches it. */
-    private val editArea = VoxelAABBf()
 
     // Tool controllers
     val newNodeController = NewNodeController(app, camera, editArea)
@@ -46,11 +50,6 @@ class MainScene(private val app: EditorApp) {
     private val moveController = MoveController(app, camera, nodeModel)
     private val resizeController = ResizeController(app, camera, nodeModel)
 
-    private var window = 0L
-    private var cursorResizeHor = 0L
-    private var cursorResizeVer = 0L
-
-    val nodeToInstanceMap = mutableMapOf<Node, NodeData>()
 
     private val models3d = listOf(
         gridModel,
@@ -65,6 +64,12 @@ class MainScene(private val app: EditorApp) {
         selectionController.marqueeModel,
         selectionController.pointsDebugModel,
     )
+
+    // misc technical fields
+    private var window = 0L
+    private var cursorResizeHor = 0L
+    private var cursorResizeVer = 0L
+
 
     fun init(window: Long, viewport: Viewport) {
         this.window = window
