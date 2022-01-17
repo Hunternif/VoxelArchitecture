@@ -127,6 +127,7 @@ class GuiNodeProperties(private val app: EditorApp) {
                 app.updateNode(node)
             } else {
                 // Update values in case the node was modified elsewhere
+                //TODO: ensure that node size etc can be updated outside this window
                 updateFloatArrays()
             }
         }

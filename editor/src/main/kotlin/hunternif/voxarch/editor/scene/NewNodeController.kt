@@ -41,7 +41,7 @@ class NewNodeController(
                     model.updateEdges()
                 }
                 CHOOSING_HEIGHT -> {
-                    val posOnWall = camera.projectToVertical(
+                    val posOnWall = camera.projectToY(
                         posX.toFloat(), posY.toFloat(), endBeforeComplete
                     )
                     // must have Y >= 0

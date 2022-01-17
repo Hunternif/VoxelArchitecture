@@ -71,6 +71,7 @@ fun Vec3.rotateY(angle: Double): Vec3 {
 }
 
 fun Vec3.round() = Vec3(round(x), round(y), round(z))
+fun max(a: Vec3, b: Vec3) = Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
 
 /** Angle in degrees of a line segment [start]-[end] vs X axis. */
 fun segmentAngleY(start: Vec3, end: Vec3) =

@@ -30,7 +30,7 @@ class OrbitalCamera : InputListener {
     private val pointRayDir: Vector3f = Vector3f()
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val projectedWorldPos: Vector3f = Vector3f()
-    private val verticalPlaneNormal: Vector3f = Vector3f()
+    private val planeNormal: Vector3f = Vector3f()
     private val pos4: Vector4f = Vector4f()
     private val screenPos: Vector2f = Vector2f()
 
@@ -211,10 +211,10 @@ class OrbitalCamera : InputListener {
      * Used for dragging voxels vertically.
      * [posX], [posY] are screen coordinates relative to window (not viewport).
      */
-    fun projectToVertical(posX: Float, posY: Float, point: Vector3f): Vector3f {
+    fun projectToY(posX: Float, posY: Float, point: Vector3f): Vector3f {
         unprojectPoint(posX, posY)
         // create the plane normal
-        verticalPlaneNormal.apply {
+        planeNormal.apply {
             set(pointRayDir)
             y = 0f
             normalize()
@@ -224,7 +224,59 @@ class OrbitalCamera : InputListener {
             pointRayOrigin,
             pointRayDir,
             point,
-            verticalPlaneNormal,
+            planeNormal,
+            1E-5f
+        )
+        projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
+        return projectedWorldPos
+    }
+
+    /**
+     * Projects screen coordinates to world coordinates on a horizontal plane
+     * running through [point] and away from the camera along the X axis.
+     * Used for dragging voxels horizontally.
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
+     */
+    fun projectToX(posX: Float, posY: Float, point: Vector3f): Vector3f {
+        unprojectPoint(posX, posY)
+        // create the plane normal
+        planeNormal.apply {
+            set(pointRayDir)
+            x = 0f
+            normalize()
+            negate()
+        }
+        val t = Intersectionf.intersectRayPlane(
+            pointRayOrigin,
+            pointRayDir,
+            point,
+            planeNormal,
+            1E-5f
+        )
+        projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
+        return projectedWorldPos
+    }
+
+    /**
+     * Projects screen coordinates to world coordinates on a horizontal plane
+     * running through [point] and away from the camera along the Z axis.
+     * Used for dragging voxels horizontally.
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
+     */
+    fun projectToZ(posX: Float, posY: Float, point: Vector3f): Vector3f {
+        unprojectPoint(posX, posY)
+        // create the plane normal
+        planeNormal.apply {
+            set(pointRayDir)
+            z = 0f
+            normalize()
+            negate()
+        }
+        val t = Intersectionf.intersectRayPlane(
+            pointRayOrigin,
+            pointRayDir,
+            point,
+            planeNormal,
             1E-5f
         )
         projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
@@ -235,23 +287,32 @@ class OrbitalCamera : InputListener {
      * Projects point onto an AAB. Returns true if the point hits the AAB.
      * [posX], [posY] are screen coordinates relative to window (not viewport).
      * [aabMin], [aabMax] define the corners of the AAB.
-     * [result] stores the distances to the near and far points of intersection.
+     * [resultDistance] stores the distances to the near and far intersection
+     *      points.
+     * Optional [resultNearPoint] stores the near intersection point.
      */
     fun projectToBox(
         posX: Float,
         posY: Float,
         aabMin: Vector3f,
         aabMax: Vector3f,
-        result: Vector2f = screenPos,
+        resultDistance: Vector2f = screenPos,
+        resultNearPoint: Vector3f? = null,
     ): Boolean {
         unprojectPoint(posX, posY)
-        return Intersectionf.intersectRayAab(
+        val hit = Intersectionf.intersectRayAab(
             pointRayOrigin,
             pointRayDir,
             aabMin,
             aabMax,
-            result
+            resultDistance
         )
+        if (hit) {
+            resultNearPoint?.apply {
+                set(pointRayDir).mul(resultDistance.x).add(pointRayOrigin)
+            }
+        }
+        return hit
     }
 
     /** @see [projectToBox] */
@@ -260,8 +321,16 @@ class OrbitalCamera : InputListener {
         posY: Int,
         aabMin: Vector3f,
         aabMax: Vector3f,
-        result: Vector2f = screenPos,
-    ) = projectToBox(posX.toFloat(), posY.toFloat(), aabMin, aabMax, result)
+        resultDistance: Vector2f = screenPos,
+        resultNearPoint: Vector3f? = null,
+    ) = projectToBox(
+        posX.toFloat(),
+        posY.toFloat(),
+        aabMin,
+        aabMax,
+        resultDistance,
+        resultNearPoint,
+    )
 
     /**
      * Unproject the given screen coordinates to world coordinates.
