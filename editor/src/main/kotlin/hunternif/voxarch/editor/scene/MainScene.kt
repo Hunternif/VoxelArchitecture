@@ -35,7 +35,11 @@ class MainScene(private val app: EditorApp) {
     private val selectedNodeModel = SelectedNodeFrameModel()
 
     // 2d models
-
+    private val originSprite = Sprite2DModel("textures/point.png")
+        .apply {
+            centered = true
+            visible = false
+        }
 
 
     // core controllers
@@ -61,6 +65,7 @@ class MainScene(private val app: EditorApp) {
     )
     /** Overlaid on top in ortho camera*/
     private val models2d = listOf(
+        originSprite,
         selectionController.marqueeModel,
         selectionController.pointsDebugModel,
     )
@@ -186,9 +191,17 @@ class MainScene(private val app: EditorApp) {
 
     fun updateSelectedNodeModel() {
         selectedNodeModel.clear()
+        originSprite.visible = false
         for (node in app.selectedNodes) {
-            if (node != app.rootNode)
+            if (node != app.rootNode) {
                 selectedNodeModel.addNode(node)
+                val origin = node.findGlobalPosition().toVector3f()
+                originSprite.apply {
+                    visible = true
+                    pos = camera.projectToViewport(origin)
+                    update()
+                }
+            }
         }
     }
 

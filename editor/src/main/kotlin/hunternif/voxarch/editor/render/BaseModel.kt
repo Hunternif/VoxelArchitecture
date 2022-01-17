@@ -46,9 +46,9 @@ abstract class BaseModel {
         }
     }
 
-    abstract protected fun render()
+    protected abstract fun render()
 
-    protected fun startFrame() {
+    private fun startFrame() {
         // Bind vertex array and attributes
         glBindVertexArray(vaoID)
         for (attr in vertexAttribList.list) {
@@ -59,7 +59,7 @@ abstract class BaseModel {
         }
     }
 
-    protected fun endFrame() {
+    private fun endFrame() {
         // Unbind everything
         glBindVertexArray(0)
         for (attr in vertexAttribList.list) {

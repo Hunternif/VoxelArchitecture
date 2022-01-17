@@ -7,8 +7,17 @@ import org.lwjgl.system.MemoryStack
 
 class Texture(private val filepath: String) {
     var texID = 0
+    var isLoaded = false
+        private set
+
+    var width: Int = 0
+        private set
+    var height: Int = 0
+        private set
 
     fun generate(width: Int, height: Int) {
+        this.width = width
+        this.height = height
         // Generate texture on GPU
         texID = glGenTextures()
         glBindTexture(GL_TEXTURE_2D, texID)
@@ -18,6 +27,7 @@ class Texture(private val filepath: String) {
             GL_TEXTURE_2D, 0, GL_RGB, width, height,
             0, GL_RGB, GL_UNSIGNED_BYTE, 0
         )
+        isLoaded = true
     }
 
     fun resize(width: Int, height: Int) {
@@ -46,6 +56,8 @@ class Texture(private val filepath: String) {
         val channels = stack.mallocInt(1)
         val image = stbi_load(filepath, width, height, channels, 0)
         if (image != null) {
+            this.width = width[0]
+            this.height = height[0]
             if (channels[0] == 3) {
                 glTexImage2D(
                     GL_TEXTURE_2D, 0, GL_RGB,
@@ -65,6 +77,7 @@ class Texture(private val filepath: String) {
             throw RuntimeException("Error: (Texture) Could not load image '$filepath'")
         }
         stbi_image_free(image)
+        isLoaded = true
     }
 
     fun bind() {

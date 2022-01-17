@@ -12,6 +12,10 @@ class VertexAttribList {
 
     val list = mutableListOf<VertexAttribData>()
 
+    fun vector2f(id: Int) {
+        list.add(VertexAttribData(id, 2, GL_FLOAT, 2 * Float.SIZE_BYTES))
+    }
+
     fun vector3f(id: Int) {
         list.add(VertexAttribData(id, 3, GL_FLOAT, 3 * Float.SIZE_BYTES))
     }

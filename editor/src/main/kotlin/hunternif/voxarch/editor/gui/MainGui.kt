@@ -19,7 +19,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
         vp.set(viewport)
-        if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA()
+        if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA(samplesMSAA)
         mainWindowFbo.init(viewport)
     }
 
