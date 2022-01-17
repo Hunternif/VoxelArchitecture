@@ -7,11 +7,11 @@ inline fun Node.room(
     start: Vec3,
     end: Vec3,
     crossinline action: Room.() -> Unit = {}
-): Room = centeredRoom(
-    Vec3((start.x + end.x)/2, start.y, (start.z + end.z)/2),
-    end.subtract(start),
-    action
-)
+): Room = Room(start, end - start).also {
+    it.start = Vec3(0, 0, 0)
+    this.addChild(it)
+    action.invoke(it)
+}
 
 /** Adds a child [Room], measured from center at floor level */
 inline fun Node.centeredRoom(

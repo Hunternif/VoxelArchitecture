@@ -2,6 +2,7 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.RoomBuilder
 import hunternif.voxarch.plan.Structure
+import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.room
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.vector.Vec3
@@ -50,7 +51,7 @@ class RoomClearingTest: BaseSnapshotTest(10, 1, 10) {
     @Test
     fun `rotated 3x5 by 45`() {
         val plan = Structure().apply {
-            room(Vec3(2, 0, 2), Vec3(5, 0, 7)) {
+            centeredRoom(Vec3(3.5, 0.0, 4.5), Vec3(3, 0, 5)) {
                 createFourWalls()
                 walls.forEach { it.transparent = true }
                 rotationY = 45.0
