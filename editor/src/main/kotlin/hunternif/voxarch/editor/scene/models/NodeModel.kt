@@ -20,7 +20,7 @@ class NodeModel : BoxInstancedModel<NodeData>() {
         /** AABB in screen coordinates relative to viewport.
          * Can be updated at any time. */
         val screenAABB: AABB2Df = AABB2Df()
-        val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.5f) }
+        val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.1f) }
     }
 
     fun addNode(

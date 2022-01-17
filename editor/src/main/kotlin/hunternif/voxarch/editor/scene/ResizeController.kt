@@ -106,7 +106,7 @@ class ResizeController(
     }
 
     private fun NodeData.updateFaces() {
-        val newFaces = boxFaces(start, end, 0.5f)
+        val newFaces = boxFaces(start, end, 0.1f)
         newFaces.forEachIndexed { i, face -> faces[i] = face }
     }
 }
