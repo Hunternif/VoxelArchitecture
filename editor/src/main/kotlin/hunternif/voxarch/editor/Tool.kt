@@ -7,7 +7,7 @@ enum class Tool(
     val toolName: String,
     val description: String = toolName,
 ) {
-    SELECT(FontAwesomeIcons.VectorSquare, "Select"),
+    SELECT(FontAwesomeIcons.Expand, "Select"),
     ADD_NODE(FontAwesomeIcons.Plus, "Add nodes"),
     MOVE(FontAwesomeIcons.ArrowsAlt, "Move",
     "Move selected nodes horizontally"),
