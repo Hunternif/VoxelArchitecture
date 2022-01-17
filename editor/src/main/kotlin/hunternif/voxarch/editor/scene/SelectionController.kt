@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.scene.models.NodeModel
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
+import hunternif.voxarch.plan.Node
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -36,12 +37,15 @@ class SelectionController(
     /** This contains the nodes currently intersecting with the marquee.
      * It's updated every frame when drawing the marquee. */
     private val selectedNodes = LinkedHashSet<NodeData>()
+    /** Stores a copy of the original selection when shift-selecting. */
+    private val origSelectedNodes = LinkedHashSet<Node>()
+    private var shift = false
 
     // Update timer
     private var lastUpdateTime: Double = glfwGetTime()
     private val updateIntervalSeconds: Double = 0.1
 
-    override fun onMouseDown() {
+    override fun onMouseDown(mods: Int) {
         dragging = true
         marqueeModel.run {
             visible = true
@@ -50,17 +54,31 @@ class SelectionController(
             update()
         }
         updateAABBs()
+        if (mods and GLFW_MOD_SHIFT != 0) {
+            shift = true
+            origSelectedNodes.clear()
+            origSelectedNodes.addAll(app.selectedNodes)
+        }
         selectedNodes.clear()
     }
 
-    override fun onMouseUp() {
+    override fun onMouseUp(mods: Int) {
         dragging = false
         marqueeModel.visible = false
         if (selectedNodes.isEmpty() || marqueeModel.end == marqueeModel.start) {
-            app.setSelectedNode(hitTestNode())
+            val hitNode = hitTestNode()
+            if (shift) {
+                hitNode?.let {
+                    if (it in origSelectedNodes) app.unselectNode(it)
+                    else app.selectNode(it)
+                }
+            } else {
+                app.setSelectedNode(hitNode)
+            }
         }
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
         if (DEBUG_SELECT) pointsDebugModel.update()
+        shift = false
     }
 
     override fun drag(posX: Float, posY: Float) {
@@ -88,7 +106,8 @@ class SelectionController(
                 debugPoint(maxX, maxY)
             }
             if (isAABBOutsideMarquee(inst)) {
-                app.unselectNode(inst.node)
+                if (!shift || inst.node !in origSelectedNodes)
+                    app.unselectNode(inst.node)
                 continue
             }
             if (isAABBInsideMarquee(inst)) {
@@ -105,7 +124,8 @@ class SelectionController(
                         app.selectNode(inst.node)
                         break@hitTestLoop
                     } else {
-                        app.unselectNode(inst.node)
+                        if (!shift || inst.node !in origSelectedNodes)
+                            app.unselectNode(inst.node)
                     }
                 }
             }

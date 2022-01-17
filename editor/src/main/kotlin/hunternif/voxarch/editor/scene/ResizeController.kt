@@ -43,7 +43,7 @@ class ResizeController(
         if (app.currentTool == Tool.RESIZE && !dragging) hitTest(mouseX, mouseY)
     }
 
-    override fun onMouseDown() {
+    override fun onMouseDown(mods: Int) {
         resizingRooms.clear()
         app.selectedNodes.filterIsInstance<Room>().forEach {
             resizingRooms.add(it)
@@ -65,7 +65,7 @@ class ResizeController(
         }
     }
 
-    override fun onMouseUp() {
+    override fun onMouseUp(mods: Int) {
         dragging = false
     }
 

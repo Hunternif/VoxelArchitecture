@@ -26,7 +26,7 @@ class MoveController(
     /** Origins before translation */
     private val origins = mutableMapOf<Node, Vec3>()
 
-    override fun onMouseDown() {
+    override fun onMouseDown(mods: Int) {
         dragging = true
 
         movingNodes.clear()
@@ -49,7 +49,7 @@ class MoveController(
         dragStartWorldPos.set(camera.projectToFloor(mouseX, mouseY, floorY)).round()
     }
 
-    override fun onMouseUp() {
+    override fun onMouseUp(mods: Int) {
         dragging = false
     }
 

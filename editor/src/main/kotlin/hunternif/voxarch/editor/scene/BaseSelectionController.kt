@@ -39,17 +39,17 @@ abstract class BaseSelectionController(
         if (app.currentTool == tool && button == GLFW.GLFW_MOUSE_BUTTON_1) {
             if (action == GLFW.GLFW_PRESS && camera.vp.contains(mouseX, mouseY)
             ) {
-                onMouseDown()
+                onMouseDown(mods)
             } else if (action == GLFW.GLFW_RELEASE) {
-                onMouseUp()
+                onMouseUp(mods)
             }
         }
     }
 
-    protected open fun onMouseDown() {
+    protected open fun onMouseDown(mods: Int) {
         dragging = true
     }
-    protected open fun onMouseUp() {
+    protected open fun onMouseUp(mods: Int) {
         dragging = false
     }
     protected open fun drag(posX: Float, posY: Float) {}
