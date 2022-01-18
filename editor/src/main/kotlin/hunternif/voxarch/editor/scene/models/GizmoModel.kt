@@ -8,18 +8,22 @@ import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
-/** Renders an RGB 3d gizmo at the centers of voxels. */
-class VoxelGizmoModel : BaseModel() {
+/** Renders an RGB 3d gizmo at the given coordinates. */
+class GizmoModel : BaseModel() {
+    private data class GizmoData(
+        val pos: Vector3f,
+        /** length of axis line */
+        val length: Float,
+    )
+
     private var bufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
 
-    // half-length of axis line
-    private val w = 0.4f
     private val colX = Colors.axisX
     private val colY = Colors.axisY
     private val colZ = Colors.axisZ
 
     private var instanceVboID = 0
-    private val instances = mutableListOf<Vector3f>()
+    private val instances = mutableListOf<GizmoData>()
 
     override val shader = SolidColorInstancedShader()
 
@@ -29,14 +33,15 @@ class VoxelGizmoModel : BaseModel() {
         val vertexBuffer = stack.mallocFloat(bufferSize)
         vertexBuffer.run {
             // X
-            put(-w).put(0f).put(0f).put(colX.r).put(colX.g).put(colX.b).put(colX.a)
-            put( w).put(0f).put(0f).put(colX.r).put(colX.g).put(colX.b).put(colX.a)
+            put(-0.5f).put(0f).put(0f)
+                .put(colX.r).put(colX.g).put(colX.b).put(colX.a)
+            put( 0.5f).put(0f).put(0f).put(colX.r).put(colX.g).put(colX.b).put(colX.a)
             // Y
-            put(0f).put(-w).put(0f).put(colY.r).put(colY.g).put(colY.b).put(colY.a)
-            put(0f).put( w).put(0f).put(colY.r).put(colY.g).put(colY.b).put(colY.a)
+            put(0f).put(-0.5f).put(0f).put(colY.r).put(colY.g).put(colY.b).put(colY.a)
+            put(0f).put( 0.5f).put(0f).put(colY.r).put(colY.g).put(colY.b).put(colY.a)
             // Z
-            put(0f).put(0f).put(-w).put(colZ.r).put(colZ.g).put(colZ.b).put(colZ.a)
-            put(0f).put(0f).put( w).put(colZ.r).put(colZ.g).put(colZ.b).put(colZ.a)
+            put(0f).put(0f).put(-0.5f).put(colZ.r).put(colZ.g).put(colZ.b).put(colZ.a)
+            put(0f).put(0f).put( 0.5f).put(colZ.r).put(colZ.g).put(colZ.b).put(colZ.a)
             flip()
         }
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
@@ -52,12 +57,13 @@ class VoxelGizmoModel : BaseModel() {
 
         initInstanceAttributes {
             vector3f(2) // offset instance attribute
+            vector3f(3) // scale instance attribute
         }
         uploadInstanceData()
     }
 
-    fun addPos(pos: Vector3f) {
-        instances.add(pos)
+    fun addPos(pos: Vector3f, length: Float = 1f) {
+        instances.add(GizmoData(pos, length))
     }
 
     fun clear() {
@@ -69,9 +75,10 @@ class VoxelGizmoModel : BaseModel() {
     }
 
     private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 3).run {
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 6).run {
             instances.forEach { it.run {
-                put(it.x).put(it.y).put(it.z)
+                put(pos.x).put(pos.y).put(pos.z)
+                put(length).put(length).put(length)
             }}
             flip()
         }
@@ -83,7 +90,7 @@ class VoxelGizmoModel : BaseModel() {
     override fun render() {
         glDisable(GL_DEPTH_TEST)
 
-        glLineWidth(3f)
+        glLineWidth(2f)
         glDrawArraysInstanced(GL_LINES, 0, bufferSize, instances.size)
 
         glEnable(GL_DEPTH_TEST)
