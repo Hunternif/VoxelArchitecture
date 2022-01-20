@@ -33,7 +33,7 @@ class MainScene(private val app: EditorApp) {
     private val gridModel = FloorGridModel()
     private val nodeModel = NodeModel()
     private val selectedNodeModel = SelectedNodeFrameModel()
-    private val originsModel = GizmoModel()
+    private val originsModel = PointSpriteModel("textures/point-circle.png")
 
     // 2d models
 
@@ -192,7 +192,7 @@ class MainScene(private val app: EditorApp) {
             if (node != app.rootNode) {
                 selectedNodeModel.addNode(node)
                 val origin = node.findGlobalPosition().toVector3f()
-                originsModel.addPos(origin, 0.8f)
+                originsModel.addPoint(origin)
             }
         }
         originsModel.update()
