@@ -8,7 +8,7 @@ import hunternif.voxarch.editor.setSelectedNode
 import hunternif.voxarch.plan.Node
 import imgui.ImGui
 import org.joml.Vector2f
-import org.lwjgl.glfw.GLFW
+import org.lwjgl.glfw.GLFW.*
 
 /**
  * Contains common methods for controllers of tools operating on selected nodes.
@@ -36,11 +36,12 @@ abstract class BaseSelectionController(
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
         if (ImGui.isAnyItemHovered()) return
-        if (app.currentTool == tool && button == GLFW.GLFW_MOUSE_BUTTON_1) {
-            if (action == GLFW.GLFW_PRESS && camera.vp.contains(mouseX, mouseY)
-            ) {
+        if (app.currentTool == tool && button == GLFW_MOUSE_BUTTON_1 &&
+            camera.vp.contains(mouseX, mouseY)
+        ) {
+            if (action == GLFW_PRESS) {
                 onMouseDown(mods)
-            } else if (action == GLFW.GLFW_RELEASE) {
+            } else if (action == GLFW_RELEASE) {
                 onMouseUp(mods)
             }
         }

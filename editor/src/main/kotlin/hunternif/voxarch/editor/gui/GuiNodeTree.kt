@@ -19,7 +19,10 @@ var isThisPanelClicked = false
 
 fun MainGui.nodeTree() {
     isAnyTreeNodeClicked = false
-    isThisPanelClicked = isMouseHoveringCurrentWindow() && ImGui.isMouseClicked(0)
+    isThisPanelClicked = isMouseHoveringCurrentWindow() &&
+        ImGui.isWindowFocused() &&
+        ImGui.isMouseClicked(0)
+
     // CellPadding = 0 makes tree rows appear next to each other without breaks
     ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
     if (ImGui.beginTable("node_tree_table", 2)) {
