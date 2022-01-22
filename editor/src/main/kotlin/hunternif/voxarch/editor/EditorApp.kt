@@ -3,8 +3,11 @@ package hunternif.voxarch.editor
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
+import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
@@ -30,6 +33,7 @@ class EditorApp {
      * Should not contain [rootNode]. */
     val selectedNodes = LinkedHashSet<Node>()
 
+    /** Nodes marked as hidden in UI, and invisible in 3d viewport. */
     val hiddenNodes = mutableSetOf<Node>()
     fun isNodeHidden(node: Node) = hiddenNodes.contains(node)
 
@@ -40,6 +44,8 @@ class EditorApp {
         while (!glfwWindowShouldClose(window)) {
             runFrame()
         }
+        Callbacks.glfwFreeCallbacks(window)
+        glfwTerminate()
     }
 
     private fun runFrame() {

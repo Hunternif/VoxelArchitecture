@@ -47,4 +47,15 @@ class ChunkedStorage3DTest {
         assertEquals(3, a.size)
         assertEquals(3, a.chunkMap.size)
     }
+
+    @Test
+    fun `reuse map key correctly`() {
+        val a = ChunkedStorage3D<Char>(2, 3, 4)
+        assertEquals(0, a.chunkMap.size)
+        a[0, 0, 1] = 'a'
+        assertEquals(1, a.chunkMap.size)
+        a[0, 0, 2] = 'b'
+        assertEquals(1, a.chunkMap.size)
+        assertEquals('a', a[0, 0, 1])
+    }
 }

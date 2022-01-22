@@ -7,7 +7,7 @@ import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
 class NewNodeFrameModel(
-    private val selection: NewNodeFrame
+    private val frame: NewNodeFrame
 ) : BaseModel() {
     private var bufferSize = 0
 
@@ -21,7 +21,7 @@ class NewNodeFrameModel(
     }
 
     fun updateEdges() {
-        val edges = selection.getEdges()
+        val edges = frame.getEdges()
         bufferSize = edges.size * 2 * 3
 
         val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)

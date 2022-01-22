@@ -95,14 +95,13 @@ class ResizeController(
                 }
             }
         }
-        model.face = pickedFace
         if (pickedNode == null)
             pickedFace = null
+        model.face = pickedFace
     }
 
     override fun drag(posX: Float, posY: Float) {
         pickedFace?.let { face ->
-            // round() so that it snaps to grid
             when (face.dir) {
                 POS_X, NEG_X -> dragWorldPos.set(
                     camera.projectToX(posX, posY, dragStartWorldPos)
@@ -114,6 +113,7 @@ class ResizeController(
                     camera.projectToZ(posX, posY, dragStartWorldPos)
                 )
             }
+            // round() so that it snaps to grid
             translation.set(dragWorldPos).sub(dragStartWorldPos).round()
             for (room in resizingRooms) {
                 val origSize = origSizes[room]!!

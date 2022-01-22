@@ -66,6 +66,7 @@ class SelectionController(
         dragging = false
         marqueeModel.visible = false
         if (selectedNodes.isEmpty() || marqueeModel.end == marqueeModel.start) {
+            // if no node was selected, pick the single node that we clicked on
             val hitNode = hitTestNode()
             if (shift) {
                 hitNode?.let {
@@ -147,7 +148,7 @@ class SelectionController(
         inst.screenAABB.minX > maxX ||
         inst.screenAABB.minY > maxY
 
-    /** Returns true if the screen AABB is entirely contain inside the marquee. */
+    /** Returns true if the screen AABB is entirely contained inside the marquee. */
     private fun isAABBInsideMarquee(inst: NodeData) =
         inst.screenAABB.minX >= minX &&
         inst.screenAABB.minY >= minY &&

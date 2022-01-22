@@ -10,7 +10,8 @@ import hunternif.voxarch.sandbox.castle.turret.Turret
 
 class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
     init {
-        +BLD_TOWER_BODY
+        // The [node] here acts as the tower body, so we apply style to it:
+        addStyle(BLD_TOWER_BODY)
     }
     override val stylesheet by lazy {
         // Order matters! First apply the default styles, then the custom ones.

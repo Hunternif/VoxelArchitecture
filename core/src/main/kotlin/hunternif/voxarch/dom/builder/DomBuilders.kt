@@ -79,8 +79,8 @@ open class DomNodeBuilder<out N: Node>(
     /** Any custom code for adding more nodes inside this node. */
     open fun buildNode() {}
     /** Add given style class name to this builder. */
-    operator fun String.unaryPlus() {
-        styleClass.add(this)
+    fun addStyle(style: String) {
+        styleClass.add(style)
     }
     /** Add given style class names to this builder. */
     operator fun Array<out String>.unaryPlus() {
