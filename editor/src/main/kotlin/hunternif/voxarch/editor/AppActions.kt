@@ -75,6 +75,11 @@ fun EditorApp.updateNode(node: Node) {
     scene.updateNodeModel()
 }
 
+/** Used by UI to show real-time updates that aren't yet written to history. */
+fun EditorApp.redrawNodes() {
+    scene.updateNodeModel()
+}
+
 /**
  * Add child room to the currently active node.
  * [start] and [end] are in global coordinates!

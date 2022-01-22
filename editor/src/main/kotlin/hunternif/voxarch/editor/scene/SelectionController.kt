@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
 import hunternif.voxarch.plan.Node
+import imgui.ImGui
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -63,9 +64,11 @@ class SelectionController(
     }
 
     override fun onMouseUp(mods: Int) {
-        dragging = false
         marqueeModel.visible = false
-        if (selectedNodes.isEmpty() || marqueeModel.end == marqueeModel.start) {
+        if (
+            (selectedNodes.isEmpty() || marqueeModel.end == marqueeModel.start)
+            && dragging
+        ) {
             // if no node was selected, pick the single node that we clicked on
             val hitNode = hitTestNode()
             if (shift) {
@@ -80,6 +83,7 @@ class SelectionController(
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
         if (DEBUG_SELECT) pointsDebugModel.update()
         shift = false
+        dragging = false
     }
 
     override fun drag(posX: Float, posY: Float) {

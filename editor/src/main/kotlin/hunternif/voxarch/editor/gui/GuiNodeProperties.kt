@@ -1,17 +1,14 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.redrawNodes
 import hunternif.voxarch.editor.updateNode
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.pushStyleColor
-import hunternif.voxarch.editor.util.readFromFloatArray
-import hunternif.voxarch.editor.util.writeToFloatArray
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
-import hunternif.voxarch.vector.Vec3
 import imgui.ImGui
 import imgui.flag.ImGuiCol
-import imgui.flag.ImGuiSliderFlags
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -19,123 +16,57 @@ import org.lwjgl.glfw.GLFW
  * TODO: unit test GuiNodeProperties
  */
 class GuiNodeProperties(private val app: EditorApp) {
-    private val originArray = FloatArray(3)
-
-    private val roomStartArray = FloatArray(3)
-    private val roomSizeArray = FloatArray(3)
-    private val updatedStart = Vec3(0, 0, 0)
-
-
-    // Origin values
-    private val origOrigin = Vec3(0, 0, 0)
-    private val origRoomSize = Vec3(0, 0, 0)
-    private val origRoomStart = Vec3(0, 0, 0)
-    private var origCentered = false
-    private var dirty = false
-
+    private val originInput = GuiInputVec3("origin")
+    private val sizeInput = GuiInputVec3("size", min = 0f)
+    private val startInput = GuiInputVec3("start")
 
     // Update timer
     private var lastUpdateTime: Double = GLFW.glfwGetTime()
     private val updateIntervalSeconds: Double = 0.02
 
-    var text: String = ""
+    private var text: String = ""
 
-    var node: Node? = Node()
-        set(value) {
-            if (field != value) {
-                field = value
-                text = field?.javaClass?.simpleName ?: ""
-                updateFloatArrays()
-                updateOriginalValues()
-            }
-        }
+    private var node: Node? = Node()
 
-    private fun updateFloatArrays() {
-        val node = node ?: return
-        node.origin.writeToFloatArray(originArray)
-        if (node is Room) {
-            node.start.writeToFloatArray(roomStartArray)
-            node.size.writeToFloatArray(roomSizeArray)
-        }
-    }
+    /** Whether there is any change that should be reflected in viewport,
+     * even if the user is still dragging the UI. */
+    private var shouldRedraw = false
 
-    private fun updateOriginalValues() {
-        val node = node ?: return
-        origOrigin.set(node.origin)
-        if (node is Room) {
-            origRoomSize.set(node.size)
-            origRoomStart.set(node.start)
-            origCentered = node.isCentered()
-        }
-        dirty = false
-    }
-
-    private fun revertToOriginalValues() {
-        val node = node ?: return
-        node.origin.set(origOrigin)
-        if (node is Room) {
-            node.size.set(origRoomSize)
-            if (origCentered) node.recenter()
-            else node.start.set(origRoomStart)
-        }
-        updateFloatArrays()
-        dirty = false
-        app.updateNode(node)
-    }
-
-    private fun markDirty() { dirty = true }
+    /** Whether to apply this update as an action recorded in history */
+    private var shouldSave = false
 
     fun render() {
         checkSelectedNodes()
         ImGui.text(text)
         val node = node ?: return
-        updateIfNeeded()
-        if (ImGui.dragFloat3(
-                "origin",
-                originArray,
-                0.1f,
-                -999f,
-                999f,
-                "%.0f",
-                ImGuiSliderFlags.NoRoundToFormat
-            )) markDirty()
+        redrawIfNeeded()
+
+        originInput.setInitialValue(node.origin)
+        originInput.render { shouldSave = true }
+
         if (node is Room) {
-            if (ImGui.dragFloat3(
-                    "size",
-                    roomSizeArray,
-                    0.1f,
-                    0f,
-                    999f,
-                    "%.0f"
-                )) markDirty()
+
+            sizeInput.setInitialValue(node.size)
+            sizeInput.render { shouldSave = true }
+
+            startInput.setInitialValue(node.start)
             if (node.isCentered()) {
                 pushStyleColor(ImGuiCol.Text, dynamicTextColor)
-                if (ImGui.dragFloat3(
-                        "start (centered)",
-                        roomStartArray,
-                        0.1f,
-                        -999f,
-                        999f,
-                        "%.0f",
-                        ImGuiSliderFlags.NoRoundToFormat
-                    )) markDirty()
+                startInput.render { shouldSave = true }
                 ImGui.popStyleColor()
             } else {
-                if (ImGui.dragFloat3(
-                        "start",
-                        roomStartArray,
-                        0.1f,
-                        -999f,
-                        999f,
-                        "%.0f",
-                        ImGuiSliderFlags.NoRoundToFormat
-                    )) markDirty()
+                startInput.render { shouldSave = true }
             }
         }
-        if (dirty) {
-            if (ImGui.button("Apply")) updateOriginalValues()
-            ImGui.sameLine()
-            if (ImGui.button("Revert")) revertToOriginalValues()
+
+        if (originInput.dirty || sizeInput.dirty || startInput.dirty) {
+            shouldRedraw = true
+        }
+
+        if (shouldSave) {
+            // Record action in history
+            app.updateNode(node)
+            shouldSave = false
         }
     }
 
@@ -147,7 +78,10 @@ class GuiNodeProperties(private val app: EditorApp) {
                     node = null
                     text = ""
                 }
-                1 -> node = first()
+                1 -> {
+                    node = first()
+                    text = node?.javaClass?.simpleName ?: ""
+                }
                 else -> {
                     node = null
                     text = "$size nodes"
@@ -157,29 +91,14 @@ class GuiNodeProperties(private val app: EditorApp) {
     }
 
     /** Apply the modified values to the node. */
-    private fun updateIfNeeded() {
+    private fun redrawIfNeeded() {
         val currentTime = GLFW.glfwGetTime()
         if (currentTime - lastUpdateTime > updateIntervalSeconds) {
             lastUpdateTime = currentTime
 
-            if (dirty) {
-                // Update values on the actual node
-                val node = node ?: return
-                node.origin.readFromFloatArray(originArray)
-                if (node is Room) {
-                    node.size.readFromFloatArray(roomSizeArray)
-                    // Room's start is initially unset and calculated dynamically.
-                    // We need check if we need to update it:
-                    updatedStart.readFromFloatArray(roomStartArray)
-                    if (origRoomStart != updatedStart) {
-                        node.start = updatedStart
-                    }
-                }
-                app.updateNode(node)
-            } else {
-                // Update values in case the node was modified elsewhere
-                //TODO: ensure that node size etc can be updated outside this window
-                updateFloatArrays()
+            if (shouldRedraw) {
+                app.redrawNodes()
+                shouldRedraw = false
             }
         }
     }
