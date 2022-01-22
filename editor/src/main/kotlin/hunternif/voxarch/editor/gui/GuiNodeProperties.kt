@@ -11,6 +11,7 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 import imgui.ImGui
 import imgui.flag.ImGuiCol
+import imgui.flag.ImGuiSliderFlags
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -85,18 +86,50 @@ class GuiNodeProperties(private val app: EditorApp) {
     private fun markDirty() { dirty = true }
 
     fun render() {
+        checkSelectedNodes()
         ImGui.text(text)
         val node = node ?: return
         updateIfNeeded()
-        if (ImGui.dragFloat3("origin", originArray, 1f)) markDirty()
+        if (ImGui.dragFloat3(
+                "origin",
+                originArray,
+                0.1f,
+                -999f,
+                999f,
+                "%.0f",
+                ImGuiSliderFlags.NoRoundToFormat
+            )) markDirty()
         if (node is Room) {
-            if (ImGui.dragFloat3("size", roomSizeArray, 1f, 0f, 999f)) markDirty()
+            if (ImGui.dragFloat3(
+                    "size",
+                    roomSizeArray,
+                    0.1f,
+                    0f,
+                    999f,
+                    "%.0f"
+                )) markDirty()
             if (node.isCentered()) {
                 pushStyleColor(ImGuiCol.Text, dynamicTextColor)
-                if (ImGui.dragFloat3("start (centered)", roomStartArray, 1f)) markDirty()
+                if (ImGui.dragFloat3(
+                        "start (centered)",
+                        roomStartArray,
+                        0.1f,
+                        -999f,
+                        999f,
+                        "%.0f",
+                        ImGuiSliderFlags.NoRoundToFormat
+                    )) markDirty()
                 ImGui.popStyleColor()
             } else {
-                if (ImGui.dragFloat3("start", roomStartArray, 1f)) markDirty()
+                if (ImGui.dragFloat3(
+                        "start",
+                        roomStartArray,
+                        0.1f,
+                        -999f,
+                        999f,
+                        "%.0f",
+                        ImGuiSliderFlags.NoRoundToFormat
+                    )) markDirty()
             }
         }
         if (dirty) {
@@ -106,6 +139,24 @@ class GuiNodeProperties(private val app: EditorApp) {
         }
     }
 
+    /** Check which nodes are currently selected, and update the state of gui */
+    private fun checkSelectedNodes() {
+        app.selectedNodes.run {
+            when (size) {
+                0 -> {
+                    node = null
+                    text = ""
+                }
+                1 -> node = first()
+                else -> {
+                    node = null
+                    text = "$size nodes"
+                }
+            }
+        }
+    }
+
+    /** Apply the modified values to the node. */
     private fun updateIfNeeded() {
         val currentTime = GLFW.glfwGetTime()
         if (currentTime - lastUpdateTime > updateIntervalSeconds) {

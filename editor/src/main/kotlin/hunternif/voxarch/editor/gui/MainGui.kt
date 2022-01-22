@@ -65,19 +65,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
             nodeTree()
         }
         rightPanel("Properties") {
-            app.selectedNodes.run {
-                when (size) {
-                    0 -> {
-                        nodeProperties.node = null
-                        nodeProperties.text = ""
-                    }
-                    1 -> nodeProperties.node = first()
-                    else -> {
-                        nodeProperties.node = null
-                        nodeProperties.text = "$size nodes"
-                    }
-                }
-            }
             nodeProperties.render()
         }
     }
