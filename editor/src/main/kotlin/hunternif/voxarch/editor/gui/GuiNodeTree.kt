@@ -54,12 +54,12 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     var flags = 0 or
         ImGuiTreeNodeFlags.OpenOnArrow or
         ImGuiTreeNodeFlags.SpanAvailWidth or
+        ImGuiTreeNodeFlags.NoTreePushOnOpen or // we will be faking indents, no need to pop tree
         ImGuiTreeNodeFlags.DefaultOpen
     if (node.children.isEmpty()) {
         flags = flags or
             ImGuiTreeNodeFlags.Leaf or
-            ImGuiTreeNodeFlags.Bullet or
-            ImGuiTreeNodeFlags.NoTreePushOnOpen
+            ImGuiTreeNodeFlags.Bullet
     }
     val isParentNode = node == app.parentNode
     val isSelected = app.selectedNodes.contains(node)
@@ -99,8 +99,6 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     }
 
     if (open && node.children.isNotEmpty()) {
-        // Immediately pop the tree because we are faking indents
-        ImGui.treePop()
         node.children.forEach {
             addTreeNodeRecursive(it, depth + 1, updatedHidden)
         }
