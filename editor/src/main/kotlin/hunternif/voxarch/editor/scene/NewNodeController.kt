@@ -23,11 +23,16 @@ class NewNodeController(
     val frame = NewNodeFrame()
     val model = NewNodeFrameModel(frame)
 
+    private val origStart = Vector3i()
+    private val newEnd = Vector3i()
+
     /** Used to store the end position while choosing height */
     private var endBeforeComplete = Vector3f()
 
     private var mouseX = 0f
     private var mouseY = 0f
+
+    var fromCenter = false
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
@@ -37,7 +42,13 @@ class NewNodeController(
                 EMPTY -> {}
                 CHOOSING_BASE -> {
                     val posOnFloor = camera.projectToFloor(posX.toFloat(), posY.toFloat())
-                    end = posOnFloor.fromFloorToVoxCoords()
+                    newEnd.set(posOnFloor.fromFloorToVoxCoords())
+                    if (fromCenter) {
+                        val halfSize = Vector3i(newEnd).sub(origStart)
+                        start.set(origStart).sub(halfSize)
+                    }
+                    end.set(newEnd)
+                    correctBounds()
                     model.updateEdges()
                 }
                 CHOOSING_HEIGHT -> {
@@ -58,14 +69,15 @@ class NewNodeController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
-        if (ImGui.isAnyItemHovered()) return
-        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS &&
-            camera.vp.contains(mouseX, mouseY) && app.currentTool == Tool.ADD_NODE
+        if (ImGui.isAnyItemHovered() ||
+            app.currentTool != Tool.ADD_NODE ||
+            !camera.vp.contains(mouseX, mouseY)
         ) {
-            onMouseDown()
-        } else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE &&
-            app.currentTool == Tool.ADD_NODE
-        ) {
+            return
+        }
+        if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_PRESS) {
+            onMouseDown(mods)
+        } else if (button == GLFW_MOUSE_BUTTON_1 && action == GLFW_RELEASE) {
             onMouseUp()
         } else {
             // cancel current selection operation if any other mouse button is pressed:
@@ -73,15 +85,18 @@ class NewNodeController(
         }
     }
 
-    private fun onMouseDown() {
+    private fun onMouseDown(mods: Int) {
+        if (frame.state == EMPTY) {
+            fromCenter = mods and GLFW_MOD_ALT != 0
+        }
         frame.run {
             when (state) {
                 EMPTY -> {
                     val posOnFloor = camera.projectToFloor(mouseX, mouseY)
                     if (editArea.testPointXZ(posOnFloor)) {
-                        val voxPos = posOnFloor.fromFloorToVoxCoords()
-                        frame.start = Vector3i(voxPos)
-                        frame.end = Vector3i(voxPos)
+                        origStart.set(posOnFloor.fromFloorToVoxCoords())
+                        frame.start = Vector3i(origStart)
+                        frame.end = Vector3i(origStart)
                         setState(CHOOSING_BASE)
                     }
                 }
@@ -130,7 +145,7 @@ class NewNodeController(
                 GLFW_KEY_SPACE -> {
                     if (frame.state != EMPTY) {
                         setState(EMPTY)
-                        app.createRoom(frame.start, frame.end)
+                        app.createRoom(frame.start, frame.end, fromCenter)
                     }
                 }
             }

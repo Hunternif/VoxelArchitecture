@@ -15,7 +15,7 @@ fun MainGui.topPanel() {
         if (frame.state == State.COMPLETE) {
             button("Create room", "Create room from the 3d frame") {
                 setState(State.EMPTY)
-                app.createRoom(frame.start, frame.end)
+                app.createRoom(frame.start, frame.end, fromCenter)
             }
             ImGui.sameLine()
             button("Cancel", "Remove the 3d frame for new node") {

@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.plan.room
 import org.joml.Vector3i
@@ -84,14 +85,20 @@ fun EditorApp.redrawNodes() {
  * Add child room to the currently active node.
  * [start] and [end] are in global coordinates!
  */
-fun EditorApp.createRoom(start: Vector3i, end: Vector3i) {
+fun EditorApp.createRoom(start: Vector3i, end: Vector3i, centered: Boolean = false) {
     // ensure size is positive
-    val min = min(start, end)
-    val max = max(start, end)
+    val min = min(start, end).toVec3()
+    val max = max(start, end).toVec3()
+    val size = max - min
+    val mid = min.add(size.x / 2 , 0.0, size.z / 2)
     parentNode.findGlobalPosition()
     parentNode.run {
         val globalPos = findGlobalPosition()
-        room(min.toVec3() - globalPos, max.toVec3() - globalPos)
+        if (centered) {
+            centeredRoom(mid - globalPos, size)
+        } else {
+            room(min - globalPos, max - globalPos)
+        }
     }
     scene.updateNodeModel()
     scene.expandEditArea(start.x, start.y, start.z)
