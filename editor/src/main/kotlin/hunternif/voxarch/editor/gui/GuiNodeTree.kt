@@ -9,6 +9,7 @@ import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTreeNodeFlags
+import org.lwjgl.glfw.GLFW.*
 
 private val hiddenTextColor = ColorRGBa.fromHex(0xffffff, 0.6f)
 
@@ -32,6 +33,9 @@ fun MainGui.nodeTree() {
     if (isThisPanelClicked && !isAnyTreeNodeClicked) {
         app.setSelectedNode(null)
     }
+
+    if (ImGui.isWindowFocused() && ImGui.getIO().getKeysDown(GLFW_KEY_DELETE))
+        app.deleteSelectedNodes()
 }
 
 private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean) {

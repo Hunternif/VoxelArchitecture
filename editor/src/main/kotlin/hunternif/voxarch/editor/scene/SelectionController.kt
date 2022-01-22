@@ -7,7 +7,6 @@ import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
 import hunternif.voxarch.plan.Node
-import imgui.ImGui
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -178,7 +177,7 @@ class SelectionController(
         if (action == GLFW_PRESS) {
             when (key) {
                 GLFW_KEY_DELETE -> {
-                    if (!ImGui.isAnyItemActive())
+                    if (app.gui.isMainWindowFocused)
                         app.deleteSelectedNodes()
                 }
             }

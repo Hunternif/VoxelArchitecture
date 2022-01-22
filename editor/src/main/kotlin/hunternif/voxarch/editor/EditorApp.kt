@@ -22,7 +22,7 @@ class EditorApp {
     private var window: Long = 0
     private var width: Int = 1000
     private var height: Int = 600
-    private val gui = MainGui(this)
+    val gui = MainGui(this)
     val scene = MainScene(this)
 
     /** Root node containing everything in the editor */

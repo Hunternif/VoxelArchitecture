@@ -16,6 +16,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val fpsCounter = FpsCounter()
     @PublishedApi internal val nodeProperties = GuiNodeProperties(app)
 
+    var isMainWindowFocused = false
+
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
         vp.set(viewport)
@@ -103,6 +105,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 ImGui.image(mainWindowFbo.texture.texID,
                     vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
             }
+            isMainWindowFocused = ImGui.isWindowFocused()
         }
         ImGui.end()
         ImGui.popStyleVar(3)
