@@ -18,7 +18,7 @@ class NewNodeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
     private val editArea: VoxelAABBf,
-) : InputListener {
+) : MouseListener {
     val frame = NewNodeFrame()
     val model = NewNodeFrameModel(frame)
 

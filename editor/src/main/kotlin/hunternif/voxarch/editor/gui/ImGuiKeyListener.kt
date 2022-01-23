@@ -1,10 +1,10 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.editor.scene.InputListener
+import hunternif.voxarch.editor.scene.KeyListener
 import imgui.ImGui
 import org.lwjgl.glfw.GLFW.*
 
-class ImGuiInputListener : InputListener {
+class ImGuiKeyListener : KeyListener {
     override fun onKeyPress(key: Int, action: Int, mods: Int) {
         val io = ImGui.getIO()
         if (key in 0..511) {

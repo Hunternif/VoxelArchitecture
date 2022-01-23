@@ -19,7 +19,7 @@ abstract class BaseSelectionController(
     private val camera: OrbitalCamera,
     private val nodeModel: NodeModel,
     private val tool: Tool,
-) : InputListener {
+) : MouseListener {
     // mouse coordinates are relative to window
     protected var mouseX = 0f
     protected var mouseY = 0f

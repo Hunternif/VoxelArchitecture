@@ -7,7 +7,7 @@ import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
 import org.lwjgl.glfw.GLFW.*
 
 /** Contains all keyboard shortcuts in the app. */
-class KeyboardController(private val app: EditorApp) : InputListener {
+class KeyController(private val app: EditorApp) : KeyListener {
     @Suppress("UNUSED_PARAMETER")
     override fun onKeyPress(key: Int, action: Int, mods: Int) {
         if (app.gui.isMainWindowFocused && action == GLFW_PRESS) {
