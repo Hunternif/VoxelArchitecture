@@ -16,10 +16,10 @@ import org.joml.Vector3i
 // EditorApp must be injected into all classes that call these actions.
 
 fun EditorApp.centerCamera() {
-    if (parentNode != rootNode) {
-        scene.centerCameraAroundNode(parentNode)
-    } else {
+    if (parentNode == rootNode) {
         scene.centerCameraAroundGrid()
+    } else {
+        scene.centerCameraAroundNode(parentNode)
     }
 }
 

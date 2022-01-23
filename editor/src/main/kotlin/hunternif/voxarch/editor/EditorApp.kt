@@ -35,7 +35,6 @@ class EditorApp {
 
     /** Nodes marked as hidden in UI, and invisible in 3d viewport. */
     val hiddenNodes = mutableSetOf<Node>()
-    fun isNodeHidden(node: Node) = hiddenNodes.contains(node)
 
     var currentTool: Tool = Tool.ADD_NODE
 

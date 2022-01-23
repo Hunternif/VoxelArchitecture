@@ -47,7 +47,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     ImGui.tableNextColumn()
     // Selectable would make more sense, but its size & position is bugged.
     // Button maintains the size & pos well, regardless of font.
-    val updatedHidden = hidden || app.isNodeHidden(node)
+    val updatedHidden = hidden || node in app.hiddenNodes
     if (updatedHidden)
         smallIconButton("${FontAwesomeIcons.EyeSlash}##$i", transparent = true) {
             app.showNode(node)

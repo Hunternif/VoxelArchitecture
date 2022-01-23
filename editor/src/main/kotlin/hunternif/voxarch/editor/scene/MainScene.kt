@@ -92,7 +92,7 @@ class MainScene(private val app: EditorApp) {
             addListener(moveController)
             addListener(resizeController)
         }
-        setEditArea(0, 0, 16, 16)
+        setEditArea(0, 0, 32, 32)
     }
 
     fun setViewport(viewport: Viewport) {
@@ -104,13 +104,18 @@ class MainScene(private val app: EditorApp) {
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
         voxelModel.setVoxels(data)
-        setEditArea(data.minX, data.minZ, data.maxX, data.maxZ)
+        setEditArea(
+            data.minX - gridMargin,
+            data.minZ - gridMargin,
+            data.maxX + gridMargin,
+            data.maxZ + gridMargin,
+        )
     }
 
     private fun setEditArea(minX: Int, minZ: Int, maxX: Int, maxZ: Int) {
         editArea.run {
-            setMin(minX - gridMargin, 0, minZ - gridMargin)
-            setMax(maxX + gridMargin, 0, maxZ + gridMargin)
+            setMin(minX, 0, minZ)
+            setMax(maxX, 0, maxZ)
             correctBounds()
         }
         updateGrid()
@@ -128,7 +133,7 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun centerCameraAroundGrid() {
-        // assuming the content is within [gridMargin]
+        // zoom in to leave the margins outside
         val minX = editArea.minX + gridMargin
         val minZ = editArea.minZ + gridMargin
         val minY = editArea.minY
@@ -165,7 +170,7 @@ class MainScene(private val app: EditorApp) {
     fun updateNodeModel() {
         nodeModel.clear()
         nodeToInstanceMap.clear()
-        if (!app.isNodeHidden(app.rootNode))
+        if (app.rootNode !in app.hiddenNodes)
             addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
         nodeModel.update()
         updateSelectedNodeModel()
@@ -173,7 +178,7 @@ class MainScene(private val app: EditorApp) {
 
     private fun addNodeModelsRecursive(node: Node, offset: Vec3) {
         for (child in node.children) {
-            if (app.isNodeHidden(child)) continue
+            if (child in app.hiddenNodes) continue
             if (child is Room) {
                 val origin = offset + child.origin
                 val start = origin + child.start
