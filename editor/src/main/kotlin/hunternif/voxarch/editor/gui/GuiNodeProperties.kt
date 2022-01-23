@@ -1,14 +1,9 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.redrawNodes
-import hunternif.voxarch.editor.updateNode
-import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.editor.util.pushStyleColor
+import hunternif.voxarch.editor.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import imgui.ImGui
-import imgui.flag.ImGuiCol
 import org.lwjgl.glfw.GLFW
 
 /**
@@ -19,6 +14,7 @@ class GuiNodeProperties(private val app: EditorApp) {
     private val originInput = GuiInputVec3("origin")
     private val sizeInput = GuiInputVec3("size", min = 0f)
     private val startInput = GuiInputVec3("start")
+    private val centeredInput = GuiCheckbox("centered")
 
     // Update timer
     private var lastUpdateTime: Double = GLFW.glfwGetTime()
@@ -39,12 +35,12 @@ class GuiNodeProperties(private val app: EditorApp) {
         if (node is Room) {
             sizeInput.render(node.size) { app.updateNode(node) }
 
-            if (node.isCentered()) {
-                pushStyleColor(ImGuiCol.Text, dynamicTextColor)
-                startInput.render(node.start) { app.updateNode(node) }
-                ImGui.popStyleColor()
-            } else {
-                startInput.render(node.start) { app.updateNode(node) }
+            if (node.isCentered()) ImGui.beginDisabled()
+            startInput.render(node.start) { app.updateNode(node) }
+            if (node.isCentered()) ImGui.endDisabled()
+
+            centeredInput.render(node.isCentered()) {
+                app.modifyNodeCentered(node, it)
             }
         }
     }
@@ -79,9 +75,5 @@ class GuiNodeProperties(private val app: EditorApp) {
                 app.redrawNodes()
             }
         }
-    }
-
-    companion object {
-        private val dynamicTextColor = ColorRGBa.fromHex(0xffffff, 0.5f)
     }
 }

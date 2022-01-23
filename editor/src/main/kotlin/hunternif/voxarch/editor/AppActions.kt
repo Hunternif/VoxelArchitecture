@@ -3,10 +3,8 @@ package hunternif.voxarch.editor
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.centeredRoom
-import hunternif.voxarch.plan.findGlobalPosition
-import hunternif.voxarch.plan.room
+import hunternif.voxarch.plan.*
+import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 
 // This contains all actions that can be performed via UI.
@@ -73,6 +71,23 @@ fun EditorApp.hideNode(node: Node) {
 /** The given [node] is assumed to already exist in the scene, and to contain
  * the updated data. In the future the update might need to happen here... */
 fun EditorApp.updateNode(node: Node) {
+    scene.updateNodeModel()
+}
+
+/** Modify Node.isCentered() to new value. This moves origin so that node's
+ * global position stays the same. */
+fun EditorApp.modifyNodeCentered(node: Node, centered: Boolean) {
+    (node as? Room)?.apply {
+        if (isCentered() == centered) return
+        if (centered) {
+            origin += start + Vec3(size.x/2, 0.0, size.z/ 2)
+            setCentered(true)
+        } else {
+            origin += start
+            setCentered(false)
+            start.set(0, 0, 0)
+        }
+    }
     scene.updateNodeModel()
 }
 

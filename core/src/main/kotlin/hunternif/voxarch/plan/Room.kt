@@ -33,7 +33,9 @@ open class Room(
      */
     var start: Vec3 by startDelegate
     fun isCentered() = startDelegate.innerValue == null
-    fun recenter() { startDelegate.innerValue = null }
+    fun setCentered(value: Boolean) {
+        startDelegate.innerValue = if (value) null else start
+    }
 
     var width: Double
         get() = size.x

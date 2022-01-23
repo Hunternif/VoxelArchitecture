@@ -41,7 +41,13 @@ public class Vec3 {
 		this.y = y;
 		this.z = z;
 	}
-	
+
+	public Vec3 set(int x, int y, int z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
 	public Vec3 set(double x, double y, double z) {
 		this.x = x;
 		this.y = y;
