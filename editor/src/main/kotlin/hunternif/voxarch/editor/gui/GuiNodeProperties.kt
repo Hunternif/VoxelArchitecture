@@ -28,45 +28,24 @@ class GuiNodeProperties(private val app: EditorApp) {
 
     private var node: Node? = Node()
 
-    /** Whether there is any change that should be reflected in viewport,
-     * even if the user is still dragging the UI. */
-    private var shouldRedraw = false
-
-    /** Whether to apply this update as an action recorded in history */
-    private var shouldSave = false
-
     fun render() {
         checkSelectedNodes()
         ImGui.text(text)
         val node = node ?: return
-        redrawIfNeeded()
+        redrawNodesIfNeeded()
 
-        originInput.setInitialValue(node.origin)
-        originInput.render { shouldSave = true }
+        originInput.render(node.origin) { app.updateNode(node) }
 
         if (node is Room) {
+            sizeInput.render(node.size) { app.updateNode(node) }
 
-            sizeInput.setInitialValue(node.size)
-            sizeInput.render { shouldSave = true }
-
-            startInput.setInitialValue(node.start)
             if (node.isCentered()) {
                 pushStyleColor(ImGuiCol.Text, dynamicTextColor)
-                startInput.render { shouldSave = true }
+                startInput.render(node.start) { app.updateNode(node) }
                 ImGui.popStyleColor()
             } else {
-                startInput.render { shouldSave = true }
+                startInput.render(node.start) { app.updateNode(node) }
             }
-        }
-
-        if (originInput.dirty || sizeInput.dirty || startInput.dirty) {
-            shouldRedraw = true
-        }
-
-        if (shouldSave) {
-            // Record action in history
-            app.updateNode(node)
-            shouldSave = false
         }
     }
 
@@ -91,14 +70,13 @@ class GuiNodeProperties(private val app: EditorApp) {
     }
 
     /** Apply the modified values to the node. */
-    private fun redrawIfNeeded() {
+    private fun redrawNodesIfNeeded() {
         val currentTime = GLFW.glfwGetTime()
         if (currentTime - lastUpdateTime > updateIntervalSeconds) {
             lastUpdateTime = currentTime
 
-            if (shouldRedraw) {
+            if (originInput.dirty || sizeInput.dirty || startInput.dirty) {
                 app.redrawNodes()
-                shouldRedraw = false
             }
         }
     }

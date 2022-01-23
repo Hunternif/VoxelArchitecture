@@ -7,7 +7,7 @@ import imgui.ImGui
 
 /** Encapsulates ImGui.dragFloat3 with some convenience methods */
 class GuiInputVec3(
-    val title: String,
+    val label: String,
     val min: Float = -999f,
     val max: Float = 999f,
 ) {
@@ -42,10 +42,12 @@ class GuiInputVec3(
     }
 
     inline fun render(
+        initialValue: Vec3,
         crossinline onUpdate: () -> Unit = {}
     ) {
+        setInitialValue(initialValue)
         updateFormat()
-        if (ImGui.dragFloat3(title, data, 0.1f, min, max, format)) {
+        if (ImGui.dragFloat3(label, data, 0.1f, min, max, format)) {
             dirty = true
         }
         if (isBeingChanged && !ImGui.isItemActive()) {
