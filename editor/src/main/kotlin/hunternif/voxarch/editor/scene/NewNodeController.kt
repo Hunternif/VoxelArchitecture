@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.createRoom
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
 import hunternif.voxarch.editor.scene.models.NewNodeFrameModel
@@ -133,21 +132,6 @@ class NewNodeController(
                 CHOOSING_BASE -> setState(EMPTY)
                 CHOOSING_HEIGHT -> setState(COMPLETE)
                 COMPLETE -> {}
-            }
-        }
-    }
-
-    @Suppress("UNUSED_PARAMETER")
-    override fun onKeyPress(key: Int, action: Int, mods: Int) {
-        if (action == GLFW_PRESS) {
-            when (key) {
-                GLFW_KEY_ESCAPE -> setState(EMPTY)
-                GLFW_KEY_SPACE -> {
-                    if (frame.state != EMPTY) {
-                        setState(EMPTY)
-                        app.createRoom(frame.start, frame.end, fromCenter)
-                    }
-                }
             }
         }
     }

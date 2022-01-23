@@ -42,6 +42,7 @@ class MainScene(private val app: EditorApp) {
     // core controllers
     private val inputController = InputController()
     private val guiInputListener = ImGuiInputListener()
+    private val keyboardController = KeyboardController(app)
     private val camera = OrbitalCamera()
     /** For drawing overlays on screen */
     private val orthoCamera = OrthoCamera()
@@ -84,6 +85,7 @@ class MainScene(private val app: EditorApp) {
         inputController.run {
             init(window)
             addListener(guiInputListener)
+            addListener(keyboardController)
             addListener(camera)
             addListener(newNodeController)
             addListener(selectionController)
