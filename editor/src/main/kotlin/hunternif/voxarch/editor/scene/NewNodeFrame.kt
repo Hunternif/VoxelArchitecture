@@ -16,6 +16,8 @@ class NewNodeFrame : AABBf() {
     }
     var state: State = EMPTY
 
+    var fromCenter = false
+
     /** Offset from the center of the voxel to the edge of the frame.
      * 0 makes the frame run through the middle of a voxel.
      * 0.5 makes it run on the edge of a voxel. */

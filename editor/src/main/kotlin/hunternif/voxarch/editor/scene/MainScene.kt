@@ -1,14 +1,12 @@
 package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
-import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.util.AADirection3D.*
-import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.Node
@@ -24,10 +22,6 @@ class MainScene(private val app: EditorApp) {
     // data
     private val vp = Viewport(0, 0, 0, 0)
     private var data: IStorage3D<VoxColor?>? = null
-    /** Area where you are allowed to place new voxels. The grid matches it. */
-    private val editArea = VoxelAABBf()
-    private var gridMargin = 9
-    val nodeToInstanceMap = mutableMapOf<Node, NodeData>()
 
     // 3d models
     private val voxelModel = VoxelModel()
@@ -48,10 +42,10 @@ class MainScene(private val app: EditorApp) {
     private val orthoCamera = OrthoCamera()
 
     // Tool controllers
-    val newNodeController = NewNodeController(app, camera, editArea)
-    private val selectionController = SelectionController(app, camera, nodeModel)
-    private val moveController = MoveController(app, camera, nodeModel)
-    private val resizeController = ResizeController(app, camera, nodeModel)
+    private val newNodeController = NewNodeController(app, camera)
+    private val selectionController = SelectionController(app, camera)
+    private val moveController = MoveController(app, camera)
+    private val resizeController = ResizeController(app, camera)
 
 
     private val models3d = listOf(
@@ -92,7 +86,7 @@ class MainScene(private val app: EditorApp) {
             addListener(moveController)
             addListener(resizeController)
         }
-        setEditArea(0, 0, 32, 32)
+        app.setEditArea(0, 0, 32, 32)
     }
 
     fun setViewport(viewport: Viewport) {
@@ -104,35 +98,20 @@ class MainScene(private val app: EditorApp) {
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
         voxelModel.setVoxels(data)
-        setEditArea(
-            data.minX - gridMargin,
-            data.minZ - gridMargin,
-            data.maxX + gridMargin,
-            data.maxZ + gridMargin,
+        app.setEditArea(
+            data.minX - app.state.gridMargin,
+            data.minZ - app.state.gridMargin,
+            data.maxX + app.state.gridMargin,
+            data.maxZ + app.state.gridMargin,
         )
     }
 
-    private fun setEditArea(minX: Int, minZ: Int, maxX: Int, maxZ: Int) {
-        editArea.run {
-            setMin(minX, 0, minZ)
-            setMax(maxX, 0, maxZ)
-            correctBounds()
-        }
-        updateGrid()
-    }
-
-    fun expandEditArea(x: Int, y: Int, z: Int) {
-        editArea.union(x - gridMargin, y, z - gridMargin)
-        editArea.union(x + gridMargin, y, z + gridMargin)
-        updateGrid()
-    }
-
     /** Make the grid area match edit area */
-    private fun updateGrid() {
-        editArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
+    fun updateGrid() {
+        app.state.editArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
-    fun centerCameraAroundGrid() {
+    fun centerCameraAroundGrid() = app.state.run {
         // zoom in to leave the margins outside
         val minX = editArea.minX + gridMargin
         val minZ = editArea.minZ + gridMargin
@@ -167,29 +146,28 @@ class MainScene(private val app: EditorApp) {
         }
     }
 
-    fun updateNodeModel() {
+    fun updateNodeModel() = app.state.run {
         nodeModel.clear()
-        nodeToInstanceMap.clear()
-        if (app.rootNode !in app.hiddenNodes)
-            addNodeModelsRecursive(app.rootNode, Vec3.ZERO)
+        if (rootNode !in hiddenNodes)
+            addNodeModelsRecursive(rootNode, Vec3.ZERO)
         nodeModel.update()
         updateSelectedNodeModel()
     }
 
     private fun addNodeModelsRecursive(node: Node, offset: Vec3) {
         for (child in node.children) {
-            if (child in app.hiddenNodes) continue
+            if (child in app.state.hiddenNodes) continue
             if (child is Room) {
                 val origin = offset + child.origin
                 val start = origin + child.start
                 val end = start + child.size
-                val inst = nodeModel.addNode(
-                    child,
+                val inst = app.nodeData(child)
+                nodeModel.addAndUpdateNode(
+                    inst,
                     start.toVector3f(),
                     end.toVector3f(),
                     Colors.defaultNodeBox
                 )
-                nodeToInstanceMap[child] = inst
                 addNodeModelsRecursive(child, origin)
             }
         }
@@ -198,14 +176,18 @@ class MainScene(private val app: EditorApp) {
     fun updateSelectedNodeModel() {
         selectedNodeModel.clear()
         originsModel.clear()
-        for (node in app.selectedNodes) {
-            if (node != app.rootNode) {
+        for (node in app.state.selectedNodes) {
+            if (node != app.state.rootNode) {
                 selectedNodeModel.addNode(node)
                 val origin = node.findGlobalPosition().toVector3f()
                 originsModel.addPoint(origin)
             }
         }
         originsModel.update()
+    }
+
+    fun updateNewNodeFrame() {
+        newNodeController.model.updateEdges(app.state.newNodeFrame)
     }
 
     fun render() {
@@ -220,7 +202,7 @@ class MainScene(private val app: EditorApp) {
     }
 
     private fun updateCursor() {
-        if (app.currentTool == Tool.RESIZE && camera.isMouseInViewport()) {
+        if (app.state.currentTool == Tool.RESIZE && camera.isMouseInViewport()) {
             val cursor = when (resizeController.pickedFace?.dir) {
                 POS_X, POS_Z, NEG_X, NEG_Z -> cursorResizeHor
                 POS_Y, NEG_Y -> cursorResizeVer

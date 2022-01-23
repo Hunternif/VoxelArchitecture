@@ -6,9 +6,7 @@ import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
-class NewNodeFrameModel(
-    private val frame: NewNodeFrame
-) : BaseModel() {
+class NewNodeFrameModel : BaseModel() {
     private var bufferSize = 0
 
     override val shader = SolidColorShader(0xcccccc)
@@ -20,7 +18,7 @@ class NewNodeFrameModel(
         }
     }
 
-    fun updateEdges() {
+    fun updateEdges(frame: NewNodeFrame) {
         val edges = frame.getEdges()
         bufferSize = edges.size * 2 * 3
 

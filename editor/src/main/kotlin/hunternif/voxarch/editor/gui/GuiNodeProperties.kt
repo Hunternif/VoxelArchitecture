@@ -47,7 +47,7 @@ class GuiNodeProperties(private val app: EditorApp) {
 
     /** Check which nodes are currently selected, and update the state of gui */
     private fun checkSelectedNodes() {
-        app.selectedNodes.run {
+        app.state.selectedNodes.run {
             when (size) {
                 0 -> {
                     node = null

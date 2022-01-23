@@ -2,8 +2,8 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.redrawNodes
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.NodeModel
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
@@ -13,8 +13,7 @@ import org.joml.Vector3f
 class MoveController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-    nodeModel: NodeModel,
-) : BaseSelectionController(app, camera, nodeModel, Tool.MOVE) {
+) : BaseSelectionController(app, camera, Tool.MOVE) {
 
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val translation: Vector3f = Vector3f()
@@ -30,7 +29,7 @@ class MoveController(
         dragging = true
 
         movingNodes.clear()
-        app.selectedNodes.filter { !isAnyParentSelected(it) }.forEach {
+        app.state.selectedNodes.filter { !isAnyParentSelected(it) }.forEach {
             movingNodes.add(it)
             origins[it] = it.origin.clone()
         }
@@ -60,7 +59,7 @@ class MoveController(
         for (node in movingNodes) {
             node.origin.set(origins[node]!! + translation.toVec3())
         }
-        app.scene.updateNodeModel()
+        app.redrawNodes()
     }
 
     private fun pickClickedNode(): Node? {
@@ -68,7 +67,7 @@ class MoveController(
         var minDistance = Float.MAX_VALUE
         var hitNode: Node? = null
         for (node in movingNodes) {
-            val inst = app.scene.nodeToInstanceMap[node] ?: continue
+            val inst = app.state.nodeDataMap[node] ?: continue
             val hit = camera.projectToBox(mouseX, mouseY, inst.start, inst.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
@@ -81,7 +80,7 @@ class MoveController(
     private fun isAnyParentSelected(node: Node): Boolean {
         var parent = node.parent
         while (parent != null) {
-            if (app.selectedNodes.contains(parent)) return true
+            if (parent in app.state.selectedNodes) return true
             parent = parent.parent
         }
         return false

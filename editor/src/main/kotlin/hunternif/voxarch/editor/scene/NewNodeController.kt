@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
 import hunternif.voxarch.editor.scene.models.NewNodeFrameModel
-import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.editor.util.fromFloorToVoxCoords
 import imgui.internal.ImGui
 import org.joml.Vector3f
@@ -17,10 +16,9 @@ import kotlin.math.round
 class NewNodeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-    private val editArea: VoxelAABBf,
 ) : MouseListener {
-    val frame = NewNodeFrame()
-    val model = NewNodeFrameModel(frame)
+    private val frame: NewNodeFrame get() = app.state.newNodeFrame
+    val model = NewNodeFrameModel()
 
     private val origStart = Vector3i()
     private val newEnd = Vector3i()
@@ -31,11 +29,9 @@ class NewNodeController(
     private var mouseX = 0f
     private var mouseY = 0f
 
-    var fromCenter = false
-
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
-        if (app.currentTool != Tool.ADD_NODE) return
+        if (app.state.currentTool != Tool.ADD_NODE) return
         frame.run {
             when (state) {
                 EMPTY -> {}
@@ -48,7 +44,7 @@ class NewNodeController(
                     }
                     end.set(newEnd)
                     correctBounds()
-                    model.updateEdges()
+                    model.updateEdges(frame)
                 }
                 CHOOSING_HEIGHT -> {
                     val posOnWall = camera.projectToY(
@@ -57,7 +53,7 @@ class NewNodeController(
                     // must have Y >= 0
                     end.y = round(max(0f, posOnWall.y)).toInt()
                     correctBounds()
-                    model.updateEdges()
+                    model.updateEdges(frame)
                 }
                 COMPLETE -> {}
             }
@@ -69,7 +65,7 @@ class NewNodeController(
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
         if (ImGui.isAnyItemHovered() ||
-            app.currentTool != Tool.ADD_NODE ||
+            app.state.currentTool != Tool.ADD_NODE ||
             !camera.vp.contains(mouseX, mouseY)
         ) {
             return
@@ -86,13 +82,13 @@ class NewNodeController(
 
     private fun onMouseDown(mods: Int) {
         if (frame.state == EMPTY) {
-            fromCenter = mods and GLFW_MOD_ALT != 0
+            frame.fromCenter = mods and GLFW_MOD_ALT != 0
         }
         frame.run {
             when (state) {
                 EMPTY -> {
                     val posOnFloor = camera.projectToFloor(mouseX, mouseY)
-                    if (editArea.testPointXZ(posOnFloor)) {
+                    if (app.state.editArea.testPointXZ(posOnFloor)) {
                         origStart.set(posOnFloor.fromFloorToVoxCoords())
                         frame.start = Vector3i(origStart)
                         frame.end = Vector3i(origStart)
@@ -120,9 +116,9 @@ class NewNodeController(
         }
     }
 
-    fun setState(state: NewNodeFrame.State) {
+    private fun setState(state: NewNodeFrame.State) {
         frame.state = state
-        model.updateEdges()
+        model.updateEdges(frame)
     }
 
     private fun cancelOperation() {

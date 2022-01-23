@@ -21,30 +21,28 @@ class NodeModel : BoxInstancedModel<NodeData>() {
          * Can be updated at any time. */
         val screenAABB: AABB2Df = AABB2Df()
         val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.1f) }
+        fun updateFaces() = boxFaces(start, end, 0.1f).copyInto(faces)
     }
 
-    fun addNode(
-        node: Node,
+    /** Updates render-related data and adds it to instance buffer. */
+    fun addAndUpdateNode(
+        instance: NodeData,
         start: Vector3f,
         end: Vector3f,
         color: ColorRGBa
-    ): NodeData {
-        val instance = NodeData(
-            Vector3f(
-                -0.5f + min(start.x, end.x),
-                -0.5f + min(start.y, end.y),
-                -0.5f + min(start.z, end.z)
-            ),
-            Vector3f(
-                0.5f + max(start.x, end.x),
-                0.5f + max(start.y, end.y),
-                0.5f + max(start.z, end.z)
-            ),
-            color,
-            node,
+    ) {
+        instance.start.set(
+            -0.5f + min(start.x, end.x),
+            -0.5f + min(start.y, end.y),
+            -0.5f + min(start.z, end.z)
         )
+        instance.end.set(
+            0.5f + max(start.x, end.x),
+            0.5f + max(start.y, end.y),
+            0.5f + max(start.z, end.z)
+        )
+        instance.color = color
         instances.add(instance)
-        return instance
     }
 
     fun update() {

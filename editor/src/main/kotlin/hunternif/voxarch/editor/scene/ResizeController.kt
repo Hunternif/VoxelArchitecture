@@ -2,8 +2,8 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.redrawNodes
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.NodeModel
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.ResizeNodeModel
 import hunternif.voxarch.editor.util.AABBFace
@@ -18,8 +18,7 @@ import org.joml.Vector3f
 class ResizeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-    nodeModel: NodeModel,
-) : BaseSelectionController(app, camera, nodeModel, Tool.RESIZE) {
+) : BaseSelectionController(app, camera, Tool.RESIZE) {
     val model = ResizeNodeModel()
 
     /** Selected nodes that can be resized */
@@ -40,12 +39,13 @@ class ResizeController(
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
         super.onMouseMove(posX, posY)
-        if (app.currentTool == Tool.RESIZE && !dragging) hitTest(mouseX, mouseY)
+        if (app.state.currentTool == Tool.RESIZE && !dragging)
+            hitTest(mouseX, mouseY)
     }
 
     override fun onMouseDown(mods: Int) {
         resizingRooms.clear()
-        app.selectedNodes.filterIsInstance<Room>().forEach {
+        app.state.selectedNodes.filterIsInstance<Room>().forEach {
             resizingRooms.add(it)
             origSizes[it] = it.size.clone()
             origStarts[it] = it.start.clone()
@@ -75,8 +75,8 @@ class ResizeController(
         val result = Vector2f()
         var minDistance = Float.MAX_VALUE
         pickedNode = null
-        for (node in app.selectedNodes) {
-            val inst = app.scene.nodeToInstanceMap[node] ?: continue
+        for (node in app.state.selectedNodes) {
+            val inst = app.state.nodeDataMap[node] ?: continue
             val hit = camera.projectToBox(posX, posY, inst.start, inst.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
@@ -141,10 +141,10 @@ class ResizeController(
                 }
 
             }
-            app.scene.updateNodeModel()
+            app.redrawNodes()
             pickedNode?.run {
-                // update node & face instance
-                pickedNode = app.scene.nodeToInstanceMap[node]
+                // update face instance
+                updateFaces()
                 pickedFace = faces[face.dir.ordinal]
                 model.face = pickedFace
             }

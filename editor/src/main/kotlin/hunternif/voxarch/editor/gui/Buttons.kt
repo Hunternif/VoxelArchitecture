@@ -64,7 +64,7 @@ fun MainGui.toolButton(tool: Tool) {
     bigIconButton(
         tool.icon,
         tool.description,
-        selected = app.currentTool == tool
+        selected = app.state.currentTool == tool
     ) {
         app.setTool(tool)
     }

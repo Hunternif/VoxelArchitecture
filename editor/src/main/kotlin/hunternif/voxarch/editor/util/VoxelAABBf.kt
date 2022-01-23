@@ -68,4 +68,8 @@ open class VoxelAABBf {
         maxZ = max(z, maxZ)
         updateEdgeAABB()
     }
+
+    fun union(x: Double, y: Double, z: Double) {
+        union(x.toInt(), y.toInt(), z.toInt())
+    }
 }

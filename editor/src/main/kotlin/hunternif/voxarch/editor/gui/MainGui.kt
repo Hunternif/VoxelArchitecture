@@ -16,8 +16,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val fpsCounter = FpsCounter()
     @PublishedApi internal val nodeProperties = GuiNodeProperties(app)
 
-    var isMainWindowFocused = false
-
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
         vp.set(viewport)
@@ -42,7 +40,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             renderMainWindow(vp)
             if (DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
-                ImGui.text("Tool: ${app.currentTool.toolName}")
+                ImGui.text("Tool: ${app.state.currentTool.toolName}")
                 ImGui.text("%.0f fps".format(fpsCounter.fps))
             }
             overlay("camera_controls", Corner.BOTTOM_RIGHT,
@@ -105,7 +103,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 ImGui.image(mainWindowFbo.texture.texID,
                     vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
             }
-            isMainWindowFocused = ImGui.isWindowFocused()
+            app.focusMainWindow(ImGui.isWindowFocused())
         }
         ImGui.end()
         ImGui.popStyleVar(3)

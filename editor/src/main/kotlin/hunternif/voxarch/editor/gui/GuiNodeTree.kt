@@ -29,7 +29,7 @@ fun MainGui.nodeTree() {
         ImGui.tableSetupColumn("visibility",
             ImGuiTableColumnFlags.WidthFixed, 19f)
         ImGui.tableSetupColumn("tree")
-        addTreeNodeRecursive(app.rootNode, 0, false)
+        addTreeNodeRecursive(app.state.rootNode, 0, false)
         ImGui.endTable()
     }
     ImGui.popStyleVar(1)
@@ -47,7 +47,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
     ImGui.tableNextColumn()
     // Selectable would make more sense, but its size & position is bugged.
     // Button maintains the size & pos well, regardless of font.
-    val updatedHidden = hidden || node in app.hiddenNodes
+    val updatedHidden = hidden || node in app.state.hiddenNodes
     if (updatedHidden)
         smallIconButton("${FontAwesomeIcons.EyeSlash}##$i", transparent = true) {
             app.showNode(node)
@@ -68,8 +68,8 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
             ImGuiTreeNodeFlags.Leaf or
             ImGuiTreeNodeFlags.Bullet
     }
-    val isParentNode = node == app.parentNode
-    val isSelected = app.selectedNodes.contains(node)
+    val isParentNode = node == app.state.parentNode
+    val isSelected = node in app.state.selectedNodes
     if (isSelected) {
         flags = flags or ImGuiTreeNodeFlags.Selected
     }

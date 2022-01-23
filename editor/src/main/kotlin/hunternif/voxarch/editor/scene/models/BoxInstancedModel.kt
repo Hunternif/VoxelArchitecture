@@ -13,9 +13,10 @@ abstract class BoxInstancedModel<T : InstanceData> : BaseModel() {
     open class InstanceData(
         val start: Vector3f,
         val end: Vector3f,
-        val color: ColorRGBa,
+        var color: ColorRGBa,
     ) {
-        val size: Vector3f = Vector3f(end).sub(start)
+        val size: Vector3f = Vector3f()
+            get() = field.set(end).sub(start)
     }
 
     private var instanceVboID = 0

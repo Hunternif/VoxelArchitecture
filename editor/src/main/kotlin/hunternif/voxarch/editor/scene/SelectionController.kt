@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.NodeModel
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
@@ -16,8 +15,7 @@ import kotlin.math.min
 class SelectionController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-    private val nodeModel: NodeModel,
-) : BaseSelectionController(app, camera, nodeModel, Tool.SELECT) {
+) : BaseSelectionController(app, camera, Tool.SELECT) {
     val marqueeModel = SelectionMarqueeModel()
     val pointsDebugModel = Points2DModel()
 
@@ -57,7 +55,7 @@ class SelectionController(
         if (mods and GLFW_MOD_SHIFT != 0) {
             shift = true
             origSelectedNodes.clear()
-            origSelectedNodes.addAll(app.selectedNodes)
+            origSelectedNodes.addAll(app.state.selectedNodes)
         }
         selectedNodes.clear()
     }
@@ -101,7 +99,7 @@ class SelectionController(
         selectedNodes.clear()
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
 
-        for (inst in nodeModel.instances) {
+        for (inst in app.state.nodeDataMap.values) {
             if (selectedNodes.contains(inst)) continue
             inst.screenAABB.run {
                 debugPoint(minX, minY)
@@ -158,9 +156,9 @@ class SelectionController(
         inst.screenAABB.maxX <= maxX &&
         inst.screenAABB.maxY <= maxY
 
-    /** Updates AABBs of nodes in [nodeModel] */
+    /** Updates AABBs of nodes in [AppState.nodeDataMap] */
     private fun updateAABBs() {
-        nodeModel.instances.forEach {
+        app.state.nodeDataMap.values.forEach {
             it.screenAABB.run {
                 setMin(camera.projectToViewport(it.start))
                 setMax(camera.projectToViewport(it.end))

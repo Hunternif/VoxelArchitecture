@@ -3,40 +3,35 @@ package hunternif.voxarch.editor
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
-import hunternif.voxarch.editor.util.resourcePath
-import hunternif.voxarch.magicavoxel.readVoxFile
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Structure
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryUtil
 
-fun main() = EditorApp().run()
+fun main() = EditorAppImpl().run()
 
 const val DEBUG = true
 
-class EditorApp {
+/**
+ * Central control mechanism for the app.
+ * It should be injected into every controller and UI class.
+ * It is used to access state and execute actions.
+ * This interface hides details like GUI, scene etc.
+ */
+interface EditorApp {
+    val state: AppState
+}
+
+class EditorAppImpl : EditorApp {
     private val title = "Voxel Architecture Editor"
     private var window: Long = 0
     private var width: Int = 1000
     private var height: Int = 600
-    val gui = MainGui(this)
-    val scene = MainScene(this)
+    internal val gui = MainGui(this)
+    internal val scene = MainScene(this)
 
-    /** Root node containing everything in the editor */
-    val rootNode = Structure()
-    /** The node under which new child nodes would be added */
-    var parentNode: Node = rootNode
-    /** Nodes currently selected by cursor, for batch modification or inspection.
-     * Should not contain [rootNode]. */
-    val selectedNodes = LinkedHashSet<Node>()
-
-    /** Nodes marked as hidden in UI, and invisible in 3d viewport. */
-    val hiddenNodes = mutableSetOf<Node>()
-
-    var currentTool: Tool = Tool.ADD_NODE
+    override val state: AppStateImpl = AppStateImpl()
 
     fun run() {
         init()
