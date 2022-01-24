@@ -1,6 +1,9 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
+import hunternif.voxarch.editor.actions.selectNode
+import hunternif.voxarch.editor.actions.setSelectedNode
+import hunternif.voxarch.editor.actions.unselectNode
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.Points2DModel

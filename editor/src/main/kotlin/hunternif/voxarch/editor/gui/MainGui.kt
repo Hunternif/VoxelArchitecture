@@ -1,6 +1,8 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
+import hunternif.voxarch.editor.actions.centerCamera
+import hunternif.voxarch.editor.actions.focusMainWindow
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport

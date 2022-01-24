@@ -1,6 +1,9 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
+import hunternif.voxarch.editor.actions.modifyNodeCentered
+import hunternif.voxarch.editor.actions.redrawNodes
+import hunternif.voxarch.editor.actions.updateNode
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import imgui.ImGui

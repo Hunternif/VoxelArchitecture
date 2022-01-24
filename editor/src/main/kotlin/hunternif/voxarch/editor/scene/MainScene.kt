@@ -2,6 +2,8 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.nodeData
+import hunternif.voxarch.editor.actions.setEditArea
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*

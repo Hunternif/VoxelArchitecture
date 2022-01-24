@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.redrawNodes
+import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.Node

@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.setSelectedNode
+import hunternif.voxarch.editor.actions.setSelectedNode
 import hunternif.voxarch.plan.Node
 import imgui.ImGui
 import org.joml.Vector2f

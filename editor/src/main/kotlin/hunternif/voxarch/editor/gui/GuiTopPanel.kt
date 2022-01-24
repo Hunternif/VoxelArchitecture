@@ -1,8 +1,8 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.editor.clearNewNodeFrame
-import hunternif.voxarch.editor.createRoom
-import hunternif.voxarch.editor.deleteSelectedNodes
+import hunternif.voxarch.editor.actions.clearNewNodeFrame
+import hunternif.voxarch.editor.actions.createRoom
+import hunternif.voxarch.editor.actions.deleteSelectedNodes
 import hunternif.voxarch.editor.scene.NewNodeFrame.*
 import imgui.ImGui
 

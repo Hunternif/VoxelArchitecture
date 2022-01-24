@@ -1,37 +1,18 @@
-package hunternif.voxarch.editor
+package hunternif.voxarch.editor.actions
 
-import hunternif.voxarch.editor.gui.Colors
-import hunternif.voxarch.editor.scene.NewNodeFrame
-import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
+import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
-import org.joml.Vector3f
 import org.joml.Vector3i
 
 // This contains all actions that can be performed via UI.
 // Some of them can support keyboard shortcuts, console commands, undo/redo.
-// In order to support history, function arguments should be primitive values,
-// i.e. not object references.
-// TODO: decide how to reference nodes
 
 // EditorApp must be injected into all classes that call these actions.
-
-fun EditorApp.centerCamera() = action {
-    state.run {
-        if (parentNode == rootNode) {
-            scene.centerCameraAroundGrid()
-        } else {
-            scene.centerCameraAroundNode(parentNode)
-        }
-    }
-}
-
-fun EditorApp.setTool(tool: Tool) = action {
-    state.currentTool = tool
-}
 
 /** Add the given node to selection. */
 fun EditorApp.selectNode(node: Node) = action {
@@ -99,11 +80,6 @@ fun EditorApp.modifyNodeCentered(node: Node, centered: Boolean) = action {
     }
 }
 
-/** Used by UI to show real-time updates that aren't yet written to history. */
-fun EditorApp.redrawNodes() = action {
-    scene.updateNodeModel()
-}
-
 /**
  * Add child room to the currently active node.
  * [start] and [end] are in global coordinates!
@@ -166,25 +142,9 @@ fun EditorApp.setEditArea(
     scene.updateGrid()
 }
 
-/** Returns node instance data, i.e. render-related data. */
-fun EditorApp.nodeData(node: Node): NodeData = action {
-    state.nodeDataMap.getOrPut(node) {
-        NodeData(Vector3f(), Vector3f(), Colors.defaultNodeBox, node)
-    }
-}
-
-fun EditorApp.clearNewNodeFrame() = action {
-    state.newNodeFrame.state = NewNodeFrame.State.EMPTY
-    scene.updateNewNodeFrame()
-}
-
-fun EditorApp.focusMainWindow(focused: Boolean) = action {
-    state.isMainWindowFocused = focused
-}
-
 
 /////////////////////////// TECHNICAL ACTIONS ///////////////////////////////
 
-private fun <T> EditorApp.action(execute: EditorAppImpl.() -> T): T {
+fun <T> EditorApp.action(execute: EditorAppImpl.() -> T): T {
     return (this as EditorAppImpl).execute()
 }

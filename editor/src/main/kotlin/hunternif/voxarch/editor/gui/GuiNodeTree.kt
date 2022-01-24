@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.editor.*
+import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.pushStyleColor
 import hunternif.voxarch.plan.Node

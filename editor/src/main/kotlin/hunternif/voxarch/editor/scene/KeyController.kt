@@ -1,9 +1,9 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.clearNewNodeFrame
-import hunternif.voxarch.editor.createRoom
-import hunternif.voxarch.editor.deleteSelectedNodes
+import hunternif.voxarch.editor.actions.clearNewNodeFrame
+import hunternif.voxarch.editor.actions.createRoom
+import hunternif.voxarch.editor.actions.deleteSelectedNodes
 import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
 import org.lwjgl.glfw.GLFW.*
 

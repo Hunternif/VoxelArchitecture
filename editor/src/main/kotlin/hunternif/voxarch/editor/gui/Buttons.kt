@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.setTool
+import hunternif.voxarch.editor.actions.setTool
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImFont
 import imgui.ImGui
