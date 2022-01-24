@@ -32,6 +32,13 @@ open class Node(
     /** For use with incremental building. True means that this node will not be re-built.  */
     var isBuilt = false
 
+
+    /** This id should be unique among all Node instances, with respect to
+     * a registry, e.g. [staticRegistry]. */
+    @Suppress("LeakingThis")
+    var id: Int = staticRegistry.register(this)
+
+
     fun addChild(child: Node) {
         child.parent?.removeChild(child)
         child.parent = this
@@ -49,4 +56,10 @@ open class Node(
     }
 
     constructor() : this(Vec3.ZERO)
+
+    override fun toString(): String = "${javaClass.simpleName}$id"
+
+    companion object {
+        val staticRegistry = NodeRegistry()
+    }
 }
