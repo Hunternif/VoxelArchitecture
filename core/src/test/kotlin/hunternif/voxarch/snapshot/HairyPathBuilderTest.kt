@@ -4,7 +4,6 @@ import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.sandbox.castle.MAT_WALL
-import hunternif.voxarch.snapshot.PathBuilderTest.Companion.squarePath
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
 import hunternif.voxarch.vector.Vec3
@@ -60,15 +59,21 @@ class HairyPathBuilderTest : BaseSnapshotTest(10, 10, 10) {
         record(out.sliceY(0))
     }
 
-    companion object {
-        fun smallSquare45Path() = Path(Vec3.ZERO,
-            Vec3(7, 0, 4),
-            Vec3(4, 0, 1),
-            Vec3(1, 0, 4),
-            Vec3(4, 0, 7),
-            Vec3(7, 0, 4)
-        )
-    }
+    private fun squarePath() = newPath(Vec3.ZERO,
+        Vec3(8, 0, 8),
+        Vec3(8, 0, 1),
+        Vec3(1, 0, 1),
+        Vec3(1, 0, 8),
+        Vec3(8, 0, 8)
+    )
+
+    private fun smallSquare45Path() = newPath(Vec3.ZERO,
+        Vec3(7, 0, 4),
+        Vec3(4, 0, 1),
+        Vec3(1, 0, 4),
+        Vec3(4, 0, 7),
+        Vec3(7, 0, 4)
+    )
 }
 
 internal class HairyPathBuilder(

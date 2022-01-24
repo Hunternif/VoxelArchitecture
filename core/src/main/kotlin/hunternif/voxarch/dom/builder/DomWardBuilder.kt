@@ -9,9 +9,9 @@ import hunternif.voxarch.util.square
 import kotlin.math.PI
 
 /** Castle ward. */
-class Ward : PolygonRoom()
+typealias Ward = PolygonRoom
 
-class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
+class DomWardBuilder : DomNodeBuilder<Ward>({ newPolygonRoom() }) {
     override fun buildNode() = node.run {
         when (shape) {
             PolygonShape.SQUARE -> polygon.square(width)

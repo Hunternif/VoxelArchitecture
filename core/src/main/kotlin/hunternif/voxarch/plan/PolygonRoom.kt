@@ -12,10 +12,14 @@ import hunternif.voxarch.vector.Vec3
  * Some rooms are just rectangular boxes.
  * But some have this cylindrical quality, e.g. castle yard or turret.
  */
-open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
+open class PolygonRoom(
+    origin: Vec3,
+    size: Vec3,
+) : Room(origin, size) {
     /**
      * Describes the perimeter on the XZ plane.
      * It's made of 3d points for convenience, but their Y should be 0.
+     * This is not actually a node.
      */
     val polygon: Path = Path(Vec3.ZERO)
 
@@ -30,8 +34,6 @@ open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
             wall(it.p1, it.p2.addY(height))
         }
     }
-
-    constructor() : this(Vec3.ZERO, Vec3.ZERO)
 
 }
 

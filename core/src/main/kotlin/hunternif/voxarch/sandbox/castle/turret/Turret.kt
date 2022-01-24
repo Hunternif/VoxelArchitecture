@@ -1,7 +1,6 @@
 package hunternif.voxarch.sandbox.castle.turret
 
 import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 
 class Turret(
@@ -17,11 +16,11 @@ class Turret(
     var style: TowerStyle = TowerStyle(),
 
     /** Angle vs parent turret. Usually facing away from the center. */
-    val turretAngle: Double = 0.0,
+    var turretAngle: Double = 0.0,
 
     /** Level in a hierarchy of nested turrets.
      * Usually equal to recursion depth, but not always. */
-    val level: Int = 0
+    var level: Int = 0
 ) : PolygonRoom(origin, size) {
 
     /** Offset for borders and spires in all child turrets. */
@@ -30,8 +29,6 @@ class Turret(
     var spireRatio: Double = 1.5
     /** Y/X ratio of tapered bottoms of turrets. */
     var taperRatio: Double = 0.75
-
-    constructor() : this(Vec3.ZERO, Vec3.ZERO)
 }
 
 enum class RoofShape {

@@ -52,7 +52,7 @@ public class AlignedVerGateFactory {
 		Vec3 position = new Vec3(to.getOrigin().x + rg.x, y, to.getOrigin().z + rg.y);
 		Vec2 size = new Vec2(isn.maxX - isn.minX, isn.maxZ - isn.minZ);
 
-		Hatch gate = new Hatch(to.getParent(), from, to, position, size, to.getRotationY());
+		Hatch gate = to.getFactory().newHatch(position, size, to.getRotationY());
 		return gate;
 	}
 }

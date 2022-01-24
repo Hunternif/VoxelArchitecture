@@ -8,7 +8,7 @@ import hunternif.voxarch.sandbox.castle.turret.BottomShape.*
 import hunternif.voxarch.sandbox.castle.turret.RoofShape.*
 import hunternif.voxarch.sandbox.castle.turret.Turret
 
-class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
+class DomTurretBuilder : DomNodeBuilder<Turret>({ newTurret() }) {
     init {
         // The [node] here acts as the tower body, so we apply style to it:
         addStyle(BLD_TOWER_BODY)
@@ -17,7 +17,7 @@ class DomTurretBuilder : DomNodeBuilder<Turret>({ Turret() }) {
         // Order matters! First apply the default styles, then the custom ones.
         defaultStyle + super.stylesheet + turretStyle
     }
-    private val turret = node
+    private val turret get() = node
 
     override fun buildNode() {
         node.createPolygon()

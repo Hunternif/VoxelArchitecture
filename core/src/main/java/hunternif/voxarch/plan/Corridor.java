@@ -32,8 +32,7 @@ public class Corridor extends Structure {
 	 * 				lying directly on a wall of the starting room (if any).
 	 * @param sectionSize is (width, height) of the corridor's cross-section.
 	 */
-	public Corridor(Node parent, Vec3 origin, Vec2 sectionSize) {
-		this.setParent(parent);
+	public Corridor(Vec3 origin, Vec2 sectionSize) {
 		this.setOrigin(origin);
 		this.sectionSize = sectionSize;
 		// Should we calculate total room size?
@@ -133,17 +132,18 @@ public class Corridor extends Structure {
 			Vec3 origin = new Vec3((e.x + f.x)/2, (e.y + f.y)/2, (e.z + f.z)/2);
 			Vec3 size = new Vec3(0, sectionSize.y, sectionSize.x); // Need to update length later!
 			double angle = Math.atan2(-(f.z - e.z), f.x - e.x) * 180 / Math.PI;
-			Room room = new Room(this, origin, size, angle);
+			Room room = getFactory().newRoom(origin, size, angle);
 			//TODO: insert stairs where the floor has a slope
 			// Insert the walls:
 			Vec2 a2 = Vec2.fromXZ(roomUtil.translateToLocal(room, a));
 			Vec2 b2 = Vec2.fromXZ(roomUtil.translateToLocal(room, b));
 			Vec2 c2 = Vec2.fromXZ(roomUtil.translateToLocal(room, c));
 			Vec2 d2 = Vec2.fromXZ(roomUtil.translateToLocal(room, d));
-			room.addChild(new Wall(room, d2, a2, true));
-			room.addChild(new Wall(room, a2, b2, false));
-			room.addChild(new Wall(room, b2, c2, true));
-			room.addChild(new Wall(room, c2, d2, false));
+			double h = room.getHeight();
+			room.addChild(getFactory().newWall(d2, a2, h, true));
+			room.addChild(getFactory().newWall(a2, b2, h, false));
+			room.addChild(getFactory().newWall(b2, c2, h, true));
+			room.addChild(getFactory().newWall(c2, d2, h, false));
 			// Update length (it's called "width" because it's along the X axis):
 			room.setWidth(Math.max(Math.max(Math.abs(a2.x), Math.abs(b2.x)),
 					Math.max(Math.abs(c2.x), Math.abs(d2.x))) * 2);
@@ -203,7 +203,7 @@ public class Corridor extends Structure {
 			p2 = roomUtil.translateToParent(this, p2);
 			double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 			// Not sure about which way the gate is oriented :/
-			Gate gate = new Gate(this.getParent(), room, this, gateOrigin, sectionSize, angle);
+			Gate gate = getFactory().newGate(gateOrigin, sectionSize, angle);
 			this.getParent().addChild(gate);
 		}
 		return newPoint;

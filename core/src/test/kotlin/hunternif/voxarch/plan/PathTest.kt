@@ -4,10 +4,10 @@ import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
 
-class PathTest {
+class PathTest : NodeFactory() {
     @Test
     fun `path construction`() {
-        val path = Path(Vec3.ZERO)
+        val path = newPath(Vec3.ZERO)
 
         val p0 = Vec3(0, 0, 0)
         path.addPoint(p0)
@@ -29,7 +29,7 @@ class PathTest {
 
     @Test
     fun `map x to segment`() {
-        val path = Path(Vec3.ZERO,
+        val path = newPath(Vec3.ZERO,
             Vec3(0, 0, 0), Vec3(1, 0, 0), Vec3(1, 0, 2)
         )
 

@@ -39,9 +39,6 @@ open class Hatch(
      * @param origin center
      */
     constructor(
-        parent: Node?,
-        room1: Room,
-        room2: Room,
         origin: Vec3,
         size: Vec2,
         rotationY: Double
@@ -55,9 +52,6 @@ open class Hatch(
         ),
         size
     ) {
-        this.parent = parent
         this.rotationY = rotationY
     }
-
-    constructor(): this(Vec3.ZERO, Vec2.ZERO)
 }

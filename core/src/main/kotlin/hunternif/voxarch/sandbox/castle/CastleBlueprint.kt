@@ -9,7 +9,8 @@ import hunternif.voxarch.world.*
 import kotlin.math.max
 
 class CastleBlueprint(
-    private val config: Config = Config()
+    private val config: Config = Config(),
+    private val factory: NodeFactory = NodeFactory.default,
 ) {
     class Config(
         val bigTowerMinWidth: Int = 6,
@@ -26,7 +27,9 @@ class CastleBlueprint(
         val mountains = terrain.detectMountains()
         // set origin at start of heightmap but at Y=0, because
         // all further points will have XZ relative to heightmap, but absolute Y.
-        val structure = Structure(Vec3(terrain.start.x, 0, terrain.start.y))
+        val structure = factory.newStructure(
+            Vec3(terrain.start.x, 0, terrain.start.y)
+        )
         for (m in mountains) {
 //            if (m.rank > 0.7) {
 //                structure.bigTower(m, terrain)
@@ -132,7 +135,7 @@ class CastleBlueprint(
         foundationSide: Int = 6,
         wallSide: Int = 4,
         wallHeight: Int = 6
-    ) = Structure().apply {
+    ) = factory.newStructure().apply {
         centeredRoom(
             Vec3(0, foundationHeight, 0),
             Vec3(foundationSide, 0, foundationSide)

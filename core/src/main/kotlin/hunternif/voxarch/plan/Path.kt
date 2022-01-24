@@ -21,11 +21,6 @@ open class Path(origin: Vec3) : Node(origin) {
     val segments: List<PathSegment>
         get() = _segments
 
-    /** Alternative constructor to add */
-    constructor(origin: Vec3, vararg points: Vec3) : this(origin) {
-        points.forEach { addPoint(it) }
-    }
-
     fun addPoint(point: Vec3) {
         points.lastOrNull()?.let {
             val distance = _segments.lastOrNull()?.run {

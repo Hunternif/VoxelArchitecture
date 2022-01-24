@@ -22,7 +22,7 @@ class GuiNodeProperties(private val app: EditorApp) {
 
     private var text: String = ""
 
-    private var node: Node? = Node()
+    private var node: Node? = null
 
     fun render() {
         checkSelectedNodes()

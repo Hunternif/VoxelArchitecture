@@ -18,7 +18,7 @@ fun DomBuilder<Node?>.node(
     vararg styleClass: String,
     block: DomBuilder<Node>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Node() }.block()
+    this.createChild(styleClass) { newNode() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
@@ -26,7 +26,7 @@ fun DomBuilder<Node?>.room(
     vararg styleClass: String,
     block: DomBuilder<Room>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Room() }.block()
+    this.createChild(styleClass) { newRoom() }.block()
 }
 
 /** Adds child [Floor]. See [node]. */
@@ -34,7 +34,7 @@ fun DomBuilder<Node?>.floor(
     vararg styleClass: String,
     block: DomBuilder<Floor>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Floor() }.block()
+    this.createChild(styleClass) { newFloor() }.block()
 }
 
 /** Adds child [PolygonRoom]. See [node]. */
@@ -112,7 +112,7 @@ fun DomLineSegmentBuilder.wall(
     vararg styleClass: String,
     block: DomBuilder<Wall>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Wall(Vec3.ZERO, end) }.block()
+    this.createChild(styleClass) { newWall(Vec3.ZERO, end) }.block()
 }
 
 /** Creates a [Path] on the line segment. */
@@ -120,7 +120,7 @@ fun DomLineSegmentBuilder.path(
     vararg styleClass: String,
     block: DomBuilder<Path>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
+    this.createChild(styleClass) { newPath(Vec3.ZERO, Vec3.ZERO, end) }.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////
@@ -130,7 +130,7 @@ annotation class CastleDsl
 /** Creates a child [DomBuilder], adds it to parent and returns. */
 private fun <N: Node> DomBuilder<Node?>.createChild(
     styleClass: Array<out String>,
-    createNode: () -> N
+    createNode: NodeFactory.() -> N
 ) : DomBuilder<N> {
     val child = DomNodeBuilder(createNode).apply{ +styleClass }
     addChild(child)

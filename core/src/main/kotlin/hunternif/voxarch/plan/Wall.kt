@@ -53,19 +53,4 @@ open class Wall(
     var height: Double
         get() = innerEnd.y
         set(value) { innerEnd.y = value }
-
-
-    /** Legacy constructor */
-    constructor(room: Room, p1: Vec2, p2: Vec2, transparent: Boolean):
-    this(
-        Vec3(p1.x, 0.0, p1.y),
-        Vec3(p2.x, room.height, p2.y),
-        transparent
-    ) {
-        this.parent = room
-    }
-    /** Legacy constructor */
-    constructor(room: Room, p1: Vec2, p2: Vec2): this(room, p1, p2, false)
-
-    constructor(): this(Vec3.ZERO, Vec3.ZERO)
 }

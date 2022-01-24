@@ -44,6 +44,7 @@ class DomLogicFourCornerBuilder(
     override fun build(): Node? {
         val room = parent.node
         if (room is Room) {
+            // this polygon is not actually a node
             val polygon = Path().apply {
                 rectangle(room.width, room.length)
             }

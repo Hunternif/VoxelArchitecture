@@ -34,7 +34,7 @@ public class WholeWallHorGateFactory implements IGateFactory {
 		Vec3 p2 = roomUtil.translateToParent(to, new Vec3(wall.getP2().x, 0, wall.getP2().y));
 		double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 		
-		Gate gate = new Gate(parent, from, to, origin, size, angle);
+		Gate gate = to.getFactory().newGate(origin, size, angle);
 		return gate;
 	}
 

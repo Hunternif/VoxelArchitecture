@@ -34,9 +34,9 @@ open class Node(
 
 
     /** This id should be unique among all Node instances, with respect to
-     * a registry, e.g. [staticRegistry]. */
-    @Suppress("LeakingThis")
-    var id: Int = staticRegistry.register(this)
+     * a registry. */
+    var id: Int = -1
+    var factory: NodeFactory = NodeFactory.default
 
 
     fun addChild(child: Node) {
@@ -55,11 +55,5 @@ open class Node(
         if (_children.remove(child)) child.parent = null
     }
 
-    constructor() : this(Vec3.ZERO)
-
     override fun toString(): String = "${javaClass.simpleName}$id"
-
-    companion object {
-        val staticRegistry = NodeRegistry()
-    }
 }

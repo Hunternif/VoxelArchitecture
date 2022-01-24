@@ -125,19 +125,6 @@ open class Room(
     }
 
 
-    /** legacy constructor */
-    constructor(
-        parent: Node?,
-        origin: Vec3,
-        size: Vec3,
-        rotationY: Double
-    ) : this(origin, size) {
-        this.parent = parent
-        this.rotationY = rotationY
-    }
-
-    constructor() : this(Vec3.ZERO, Vec3.ZERO)
-
     // LEGACY
     @Deprecated("use child node Floor")
     open var hasCeiling = false

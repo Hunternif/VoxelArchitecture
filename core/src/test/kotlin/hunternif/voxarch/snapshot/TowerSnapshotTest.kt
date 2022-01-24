@@ -1,6 +1,5 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.CastleBlueprint
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.vector.Vec3
@@ -16,7 +15,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun tower_layer1() {
-        val structure = Structure().apply {
+        val structure = newStructure().apply {
             ground()
             addChild(castleBlueprint.squareTower(), Vec3(5, 1, 5))
         }
@@ -26,7 +25,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun tower_layer2() {
-        val structure = Structure().apply {
+        val structure = newStructure().apply {
             ground()
             addChild(castleBlueprint.squareTower(), Vec3(5, 1, 5))
         }
@@ -36,7 +35,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun `odd size`() {
-        val structure = Structure().apply {
+        val structure = newStructure().apply {
             ground()
             addChild(
                 castleBlueprint.squareTower(
@@ -51,7 +50,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun `rotated diagonal view`() {
-        val structure = Structure().apply {
+        val structure = newStructure().apply {
             ground()
             addChild(
                 castleBlueprint.squareTower().apply { rotationY = 45.0 },
@@ -64,7 +63,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
 
     @Test
     fun `rotated top view`() {
-        val structure = Structure().apply {
+        val structure = newStructure().apply {
             ground()
             addChild(
                 castleBlueprint.squareTower(wallSide = 6).apply { rotationY = 45.0 },

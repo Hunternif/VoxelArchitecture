@@ -27,8 +27,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void noWalls() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 3, 3), 0);
-		Room room2 = new Room(null, new Vec3(2, 1, 0), new Vec3(3, 3, 3), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(3, 3, 3), 0);
+		Room room2 = newRoom(new Vec3(2, 1, 0), new Vec3(3, 3, 3), 0);
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(1, 1, 0), gate.getCenter());
 		assertEquals(new Vec2(3, 2), gate.getSize());
@@ -37,8 +37,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void noWallsRotated() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
-		Room room2 = new Room(null, new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
+		Room room2 = newRoom(new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getCenter().y, 0);
 		assertEquals((0.5 + 1.5/Math.sqrt(2))/2, gate.getCenter().x, 0.00001);
@@ -49,8 +49,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void wallsRotated() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
-		Room room2 = new Room(null, new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
+		Room room2 = newRoom(new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
 		room2.createFourWalls();
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getCenter().y, 0);
@@ -62,9 +62,9 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	}
 	@Test
 	public void wallsRotated2() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
 		room1.createFourWalls();
-		Room room2 = new Room(null, new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
+		Room room2 = newRoom(new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getCenter().y, 0);
 		assertEquals((0.5 + 1.5/Math.sqrt(2))/2, gate.getCenter().x, 0.00001);
@@ -76,8 +76,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void largeRoomsNoWallsX() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
-		Room room2 = new Room(null, new Vec3(10, 40, 20), new Vec3(20, 100, 20), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = newRoom(new Vec3(10, 40, 20), new Vec3(20, 100, 20), 0);
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(0, 40, 10), gate.getCenter());
 		assertEquals(new Vec2(20, 60), gate.getSize());
@@ -85,8 +85,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	}
 	@Test
 	public void largeRoomsNoWallsZ() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
-		Room room2 = new Room(null, new Vec3(20, 40, 10), new Vec3(20, 100, 20), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = newRoom(new Vec3(20, 40, 10), new Vec3(20, 100, 20), 0);
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(10, 40, 0), gate.getCenter());
 		assertEquals(new Vec2(20, 60), gate.getSize());
@@ -94,8 +94,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	}
 	@Test
 	public void largeRoomsWallsX() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
-		Room room2 = new Room(null, new Vec3(10, 40, 20), new Vec3(20, 100, 20), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = newRoom(new Vec3(10, 40, 20), new Vec3(20, 100, 20), 0);
 		room2.createFourWalls();
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(0, 40, 10), gate.getCenter());
@@ -104,8 +104,8 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	}
 	@Test
 	public void largeRoomsWallsZ() {
-		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
-		Room room2 = new Room(null, new Vec3(20, 40, 5), new Vec3(20, 100, 20), 0);
+		Room room1 = newRoom(new Vec3(0, 0, 0), new Vec3(20, 100, 20), 0);
+		Room room2 = newRoom(new Vec3(20, 40, 5), new Vec3(20, 100, 20), 0);
 		room2.createFourWalls();
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(new Vec3(10, 40, 0), gate.getCenter());
@@ -117,7 +117,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void diffRoomHeight1b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 4, 2));
 		Room room2 = testRoom(new Vec3(4, 0, 1), new Vec3(2, 6, 2));
 		root.addChild(room1);
@@ -159,7 +159,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void diffFloorHeight1b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 4, 2));
 		Room room2 = testRoom(new Vec3(4, 2, 1), new Vec3(2, 4, 2));
 		root.addChild(room1);
@@ -201,7 +201,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void west1b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
 		Room room2 = testRoom(new Vec3(4, 0, 1), new Vec3(2, 3, 2));
 		root.addChild(room1);
@@ -231,7 +231,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void west2b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1.5), new Vec3(2, 3, 3));
 		Room room2 = testRoom(new Vec3(4, 0, 1.5), new Vec3(2, 3, 3));
 		root.addChild(room1);
@@ -265,7 +265,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void east1b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
 		Room room2 = testRoom(new Vec3(4, 0, 1), new Vec3(2, 3, 2));
 		root.addChild(room1);
@@ -295,7 +295,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void east2b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1.5), new Vec3(2, 3, 3));
 		Room room2 = testRoom(new Vec3(4, 0, 1.5), new Vec3(2, 3, 3));
 		root.addChild(room1);
@@ -329,7 +329,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void north1b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
 		Room room2 = testRoom(new Vec3(1, 0, 4), new Vec3(2, 3, 2));
 		root.addChild(room1);
@@ -371,7 +371,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void north2b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1.5, 0, 1), new Vec3(3, 3, 2));
 		Room room2 = testRoom(new Vec3(1.5, 0, 4), new Vec3(3, 3, 2));
 		root.addChild(room1);
@@ -413,7 +413,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void south1b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1, 0, 1), new Vec3(2, 3, 2));
 		Room room2 = testRoom(new Vec3(1, 0, 4), new Vec3(2, 3, 2));
 		root.addChild(room1);
@@ -455,7 +455,7 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	
 	@Test
 	public void south2b() {
-		Structure root = new Structure();
+		Structure root = newStructure();
 		Room room1 = testRoom(new Vec3(1.5, 0, 1), new Vec3(3, 3, 2));
 		Room room2 = testRoom(new Vec3(1.5, 0, 4), new Vec3(3, 3, 2));
 		root.addChild(room1);

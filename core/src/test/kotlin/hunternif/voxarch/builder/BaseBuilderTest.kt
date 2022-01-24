@@ -1,9 +1,6 @@
 package hunternif.voxarch.builder
 
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.ceiling
-import hunternif.voxarch.plan.floor
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.MultiDimArrayBlockStorage
@@ -15,7 +12,7 @@ abstract class BaseBuilderTest(
     internal val outWidth: Int,
     internal val outHeight: Int,
     internal val outLength: Int
-) {
+) : NodeFactory() {
     lateinit var out: MultiDimArrayBlockStorage
     lateinit var context: BuildContext
     lateinit var builder: Builder<Node>
@@ -55,7 +52,7 @@ abstract class BaseBuilderTest(
     }
 
     fun testRoom(origin: Vec3, size: Vec3) =
-        Room(null, origin, size, 0.0).apply {
+        newRoom(origin, size, 0.0).apply {
             floor { type = TYPE_FLOOR }
             ceiling { type = TYPE_ROOF }
             createFourWalls()

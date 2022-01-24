@@ -4,11 +4,15 @@ import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.NodeFactory
 import hunternif.voxarch.plan.Structure
 
 /** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
 abstract class DomBuilder<out N: Node?> {
+    internal open val factory: NodeFactory by lazy {
+        parent.factory
+    }
     internal open val stylesheet: Stylesheet by lazy { parent.stylesheet }
     internal var parent: DomBuilder<Node?> = DetachedRoot
         private set
@@ -46,9 +50,12 @@ internal object DetachedRoot : DomBuilder<Node?>() {
  */
 class DomRoot(
     override val stylesheet: Stylesheet = defaultStyle,
+    override val factory: NodeFactory = NodeFactory.default,
     seed: Long = 0
 ) : DomBuilder<Structure>() {
-    override val node = Structure()
+    constructor(stylesheet: Stylesheet, seed: Long)
+        : this(stylesheet, NodeFactory.default, seed)
+    override val node = factory.newStructure()
     init {
         this.seed = seed
     }
@@ -58,10 +65,10 @@ class DomRoot(
 
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<out N: Node>(
-    private val createNode: () -> N
+    private val createNode: NodeFactory.() -> N
 ) : DomBuilder<N>() {
     private val styleClass = mutableListOf<String>()
-    override val node: N by lazy { createNode() }
+    override val node: N by lazy { factory.createNode() }
     override fun build(): N {
         node.type = styleClass.firstOrNull()
         findParentNode().addChild(node)

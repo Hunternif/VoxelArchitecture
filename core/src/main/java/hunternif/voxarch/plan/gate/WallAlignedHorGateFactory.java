@@ -81,7 +81,7 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		// The gate can't be taller than any of the rooms' ceilings:
 		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y;
 		
-		Gate gate = new Gate(to.getParent(), from, to, gatePos, size, angle);
+		Gate gate = to.getFactory().newGate(gatePos, size, angle);
 		return gate;
 	}
 

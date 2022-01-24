@@ -3,6 +3,7 @@ package hunternif.voxarch;
 import java.util.Iterator;
 import java.util.LinkedList;
 
+import hunternif.voxarch.plan.NodeFactory;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
@@ -12,12 +13,13 @@ import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
-public class CorridorTest {
+public class CorridorTest extends NodeFactory {
 	//TODO: test corridor attaching to rooms with gates.
 	
 	private static class CorridorForTesting extends Corridor {
 		public CorridorForTesting(Room parent, Vec3 origin, Vec2 sectionSize) {
-			super(parent, origin, sectionSize);
+			super(origin, sectionSize);
+			setParent(parent);
 		}
 		public LinkedList<Vec3> getPath() {
 			return this.path;
@@ -41,9 +43,10 @@ public class CorridorTest {
 	
 	@Test
 	public void endsStraight() {
-		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
-		Room room = new Room(base, Vec3.ZERO, new Vec3(2, 1, 4), 0);
+		Room base = newRoom(Vec3.ZERO, Vec3.ZERO);
+		Room room = newRoom(Vec3.ZERO, new Vec3(2, 1, 4), 0);
 		room.createFourWalls();
+		base.addChild(room);
 		CorridorForTesting cor = new CorridorForTesting(base, new Vec3(1, 0, 0), new Vec2(2, 3));
 		cor.appendPoint(new Vec3(4, 2, 0));
 		Vec3 point = cor.findPointOnNormalToWall(room, cor.getPath().getFirst(), cor.getPath().get(1), true);
@@ -56,8 +59,8 @@ public class CorridorTest {
 	
 	@Test
 	public void endsBent45() {
-		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
-		Room room = new Room(base, Vec3.ZERO, new Vec3(2, 1, 4), 0);
+		Room base = newRoom(Vec3.ZERO, Vec3.ZERO);
+		Room room = newRoom(Vec3.ZERO, new Vec3(2, 1, 4), 0);
 		room.createFourWalls();
 		base.addChild(room);
 		CorridorForTesting cor = new CorridorForTesting(base, new Vec3(1, 0, 0), new Vec2(2, 3));
@@ -68,8 +71,8 @@ public class CorridorTest {
 	
 	@Test
 	public void endsBent90() {
-		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
-		Room room = new Room(base, Vec3.ZERO, new Vec3(2, 1, 4), 0);
+		Room base = newRoom(Vec3.ZERO, Vec3.ZERO);
+		Room room = newRoom(Vec3.ZERO, new Vec3(2, 1, 4), 0);
 		room.createFourWalls();
 		base.addChild(room);
 		CorridorForTesting cor = new CorridorForTesting(base, new Vec3(1, 0, 0), new Vec2(2, 3));
@@ -135,7 +138,7 @@ public class CorridorTest {
 
 	@Test
 	public void complete1Straight() {
-		Corridor cor = new Corridor(null, Vec3.ZERO, new Vec2(4, 3));
+		Corridor cor = newCorridor(Vec3.ZERO, new Vec2(4, 3));
 		cor.appendPoint(new Vec3(2, 0, 0));
 		cor.build();
 		assertEquals(1, cor.getChildren().size());
@@ -155,7 +158,7 @@ public class CorridorTest {
 	
 	@Test
 	public void complete90Turns() {
-		Corridor cor = new Corridor(null, Vec3.ZERO, new Vec2(2, 3));
+		Corridor cor = newCorridor(Vec3.ZERO, new Vec2(2, 3));
 		cor.appendPoint(new Vec3(2, -2, 0));
 		cor.appendPoint(new Vec3(2, 7, 3));
 		cor.appendPoint(new Vec3(4, 0, 3));

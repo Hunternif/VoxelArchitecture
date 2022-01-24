@@ -114,13 +114,13 @@ fun outerWard(keep: Turret, seed: Long): Turret {
     val angleStep = 360.0 / turretCount
     val radius = wardWidth / 2
 
-    return Turret(
+    return keep.factory.newTurret(
         origin = keep.origin,
         size = Vec3(wardWidth, wallHeight, wardWidth),
-        bodyShape = wardShape,
-        style = keep.style,
-        level = keep.level - 1
     ).apply {
+        this.bodyShape = wardShape
+        this.style = keep.style
+        this.level = keep.level - 1
         val turrets = mutableListOf<Turret>()
         var angle = angleStep / 2
         while (angle < 360.0) {

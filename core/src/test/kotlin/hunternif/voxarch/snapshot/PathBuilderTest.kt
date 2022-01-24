@@ -1,7 +1,6 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.SnakePathBuilder
-import hunternif.voxarch.plan.Path
 import hunternif.voxarch.sandbox.castle.MAT_WALL
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
@@ -56,22 +55,20 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
         record(out.sliceY(0))
     }
 
-    companion object {
-        fun squarePath() = Path(Vec3.ZERO,
-            Vec3(8, 0, 8),
-            Vec3(8, 0, 1),
-            Vec3(1, 0, 1),
-            Vec3(1, 0, 8),
-            Vec3(8, 0, 8)
-        )
+    private fun squarePath() = newPath(Vec3.ZERO,
+        Vec3(8, 0, 8),
+        Vec3(8, 0, 1),
+        Vec3(1, 0, 1),
+        Vec3(1, 0, 8),
+        Vec3(8, 0, 8)
+    )
 
-        fun square45Path() = Path(Vec3.ZERO,
-            Vec3(8, 0, 4),
-            Vec3(4, 0, 0),
-            Vec3(0, 0, 4),
-            Vec3(4, 0, 8),
-            Vec3(8, 0, 4)
-        )
-    }
+    private fun square45Path() = newPath(Vec3.ZERO,
+        Vec3(8, 0, 4),
+        Vec3(4, 0, 0),
+        Vec3(0, 0, 4),
+        Vec3(4, 0, 8),
+        Vec3(8, 0, 4)
+    )
 
 }

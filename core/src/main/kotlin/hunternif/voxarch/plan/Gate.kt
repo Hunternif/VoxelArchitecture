@@ -38,10 +38,7 @@ open class Gate(
      * legacy constructor
      * @param origin center at floor level
      */
-    constructor(
-        parent: Node?,
-        room1: Node,
-        room2: Node,
+    internal constructor(
         origin: Vec3,
         size: Vec2,
         rotationY: Double
@@ -55,9 +52,6 @@ open class Gate(
         ),
         size
     ) {
-        this.parent = parent
         this.rotationY = rotationY
     }
-
-    constructor(): this(Vec3.ZERO, Vec2.ZERO)
 }

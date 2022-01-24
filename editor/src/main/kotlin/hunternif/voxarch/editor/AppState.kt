@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.NodeFactory
 import hunternif.voxarch.plan.Structure
 
 /**
@@ -50,7 +51,8 @@ interface AppState {
 }
 
 class AppStateImpl : AppState {
-    override val rootNode: Structure = Structure()
+    private val factory = NodeFactory()
+    override val rootNode: Structure = factory.newStructure()
     override var parentNode: Node = rootNode
     override val selectedNodes: LinkedHashSet<Node> = LinkedHashSet()
     override val hiddenNodes: MutableSet<Node> = mutableSetOf()

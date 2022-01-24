@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc.plan;
 
 import hunternif.voxarch.plan.Corridor;
+import hunternif.voxarch.plan.NodeFactory;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Structure;
 import hunternif.voxarch.plan.gate.IGateFactory;
@@ -13,8 +14,8 @@ import java.util.Random;
 public class RandomPlan {
 	private static IGateFactory gateFactory = new WallAlignedHorGateFactory();
 	
-	public static Structure create() {
-		Structure plan = new Structure();
+	public static Structure create(NodeFactory factory) {
+		Structure plan = factory.newStructure();
 		//randomGrid(plan);
 		//randomBox(plan);
 		randomCorridor(plan);
@@ -23,7 +24,9 @@ public class RandomPlan {
 	
 	/** Simple roundish room **/
 	public static void oneRoundishRoom(Structure plan) {
-		Room room = new Room(null, Vec3.ZERO, new Vec3(16, 5, 16), 0);
+		Room room = plan.getFactory().newRoom(
+			Vec3.ZERO, new Vec3(16, 5, 16), 0
+		);
 		room.setHasCeiling(false);
 		room.createRoundWalls(8);
 		plan.addChild(room);
@@ -33,7 +36,10 @@ public class RandomPlan {
 	public static void randomBox(Structure plan) {
 		int size = 3 + (int)Math.round(10*Math.random());
 		System.out.println("Size: " + size);
-		Room room = new Room(null, Vec3.ZERO, new Vec3(size, 3, size), (new Random()).nextInt(2)*45);
+		Room room = plan.getFactory().newRoom(
+			Vec3.ZERO, new Vec3(size, 3, size),
+			(new Random()).nextInt(2)*45
+		);
 		room.setHasCeiling(false);
 		room.createFourWalls();
 		plan.addChild(room);
@@ -56,7 +62,7 @@ public class RandomPlan {
 				size.x += Math.round(2 * (Math.random() - 0.5) * sizeJitter.x);
 				size.y += Math.round(2 * (Math.random() - 0.5) * sizeJitter.y);
 				size.z += Math.round(2 * (Math.random() - 0.5) * sizeJitter.z);
-				Room room = new Room(curCoords, size);
+				Room room = plan.getFactory().newRoom(curCoords, size);
                 room.setHasCeiling(false);
 				room.createFourWalls();
 				roomArray[i][j] = room;
@@ -80,7 +86,7 @@ public class RandomPlan {
 	}
 	
 	public static void randomCorridor(Structure plan) {
-		Corridor cor = new Corridor(null, Vec3.ZERO, new Vec2(4, 3));
+		Corridor cor = plan.getFactory().newCorridor(Vec3.ZERO, new Vec2(4, 3));
 		cor.setHasCeiling(false);
 		Random rand = new Random();
 		Vec3 lastPoint = new Vec3(Vec3.ZERO);

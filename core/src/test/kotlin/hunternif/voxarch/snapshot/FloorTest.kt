@@ -1,6 +1,5 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.floor
 import hunternif.voxarch.plan.room
 import hunternif.voxarch.sandbox.castle.MAT_FLOOR
@@ -11,7 +10,7 @@ import org.junit.Test
 class FloorTest : BaseSnapshotTest(10, 1, 10) {
     @Test
     fun `simple floor`() {
-        val structure = Structure().apply {
+        val structure = newStructure().apply {
             room(Vec3(2, 0, 2), Vec3(outWidth - 3, 0, outLength - 3)) {
                 floor()
             }

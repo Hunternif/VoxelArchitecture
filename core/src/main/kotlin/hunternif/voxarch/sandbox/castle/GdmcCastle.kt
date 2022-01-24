@@ -1,9 +1,6 @@
 package hunternif.voxarch.sandbox.castle
 
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.plan.wall
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.addGrandCastleTurretsRecursive
 import hunternif.voxarch.sandbox.castle.turret.randomBody
 import hunternif.voxarch.sandbox.castle.turret.randomRoof
@@ -63,10 +60,15 @@ fun mountainCastle(terrain: HeightMap, mnt: Mountain, seed:Long): Node {
     return castleFromBoxes(boxes, terrain, seed)
 }
 
-private fun castleFromBoxes(boxes: List<Box2D>, terrain: HeightMap, seed:Long): Node {
+private fun castleFromBoxes(
+    boxes: List<Box2D>,
+    terrain: HeightMap,
+    seed: Long,
+    factory: NodeFactory = NodeFactory.default,
+): Node {
     // set origin at start of heightmap but at Y=0, because
     // all further points will have XZ relative to heightmap, but absolute Y.
-    val castle = Structure(Vec3(terrain.start.x, 0, terrain.start.y))
+    val castle = factory.newStructure(Vec3(terrain.start.x, 0, terrain.start.y))
     val towers = boxes.mapIndexed { i, box ->
         castle.towerFromBox(box, terrain, seed + 10000000*i)
     }

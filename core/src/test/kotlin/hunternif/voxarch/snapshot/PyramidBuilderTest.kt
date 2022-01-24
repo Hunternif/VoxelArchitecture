@@ -1,6 +1,5 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.polygonRoom
 import hunternif.voxarch.sandbox.castle.MAT_ROOF
 import hunternif.voxarch.sandbox.castle.builder.PyramidBuilder
@@ -87,7 +86,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
 
     @Test
     fun `square 45deg pyramid upside down profile x`() {
-        val pyramid = Structure().apply {
+        val pyramid = newStructure().apply {
             polygonRoom(Vec3(0, 4, 0), Vec3(8, 8, 8)).apply {
                 type = TYPE_PYRAMID_UPSIDE_DOWN
                 polygon.square(8.0)
@@ -98,7 +97,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
         record(out.sliceX(4))
     }
 
-    private fun squarePyramid(height: Int) = Structure().apply {
+    private fun squarePyramid(height: Int) = newStructure().apply {
         polygonRoom(Vec3.ZERO, Vec3(8, height, 8)).apply {
             type = TYPE_PYRAMID
             polygon.square(8.0)
@@ -106,7 +105,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
         }
     }
 
-    private fun roundPyramid(height: Int, sides: Int) = Structure().apply {
+    private fun roundPyramid(height: Int, sides: Int) = newStructure().apply {
         polygonRoom(Vec3.ZERO, Vec3(8, height, 8)).apply {
             type = TYPE_PYRAMID
             polygon.circle(8.0, sides)
