@@ -101,9 +101,10 @@ fun EditorApp.createRoom(
                 room(min - globalPos, max - globalPos)
             }
         }
-        editArea.union(min.x - gridMargin, min.y, min.z - gridMargin)
-        editArea.union(max.x + gridMargin, max.y, max.z + gridMargin)
+        workArea.union(min.x - gridMargin, min.y, min.z - gridMargin)
+        workArea.union(max.x + gridMargin, max.y, max.z + gridMargin)
     }
+    scene.updateGrid()
     scene.updateNodeModel()
 }
 
@@ -129,17 +130,6 @@ fun EditorApp.deleteNode(node: Node) = action {
     }
     node.parent?.removeChild(node)
     scene.updateNodeModel()
-}
-
-fun EditorApp.setEditArea(
-    minX: Int, minZ: Int, maxX: Int, maxZ: Int
-) = action {
-    state.editArea.run {
-        setMin(minX, 0, minZ)
-        setMax(maxX, 0, maxZ)
-        correctBounds()
-    }
-    scene.updateGrid()
 }
 
 

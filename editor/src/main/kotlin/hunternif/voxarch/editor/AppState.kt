@@ -33,7 +33,7 @@ interface AppState {
     val currentTool: Tool
 
     /** Area where you are allowed to place new voxels. The grid matches it. */
-    val editArea: VoxelAABBf
+    val workArea: VoxelAABBf
 
     val newNodeFrame: NewNodeFrame
 
@@ -57,7 +57,7 @@ class AppStateImpl : AppState {
     override val nodeDataMap: LinkedHashMap<Node, NodeData> = LinkedHashMap()
 
     override var currentTool: Tool = Tool.ADD_NODE
-    override val editArea = VoxelAABBf()
+    override val workArea = VoxelAABBf()
     override val newNodeFrame = NewNodeFrame()
 
     override val DEBUG = true

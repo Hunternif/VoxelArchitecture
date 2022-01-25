@@ -88,7 +88,7 @@ class NewNodeController(
             when (state) {
                 EMPTY -> {
                     val posOnFloor = camera.projectToFloor(mouseX, mouseY)
-                    if (app.state.editArea.testPointXZ(posOnFloor)) {
+                    if (app.state.workArea.testPointXZ(posOnFloor)) {
                         origStart.set(posOnFloor.fromFloorToVoxCoords())
                         frame.start = Vector3i(origStart)
                         frame.end = Vector3i(origStart)

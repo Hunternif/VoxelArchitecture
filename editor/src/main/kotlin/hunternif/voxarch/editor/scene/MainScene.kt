@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.nodeData
-import hunternif.voxarch.editor.actions.setEditArea
+import hunternif.voxarch.editor.actions.setWorkArea
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*
@@ -88,7 +88,7 @@ class MainScene(private val app: EditorApp) {
             addListener(moveController)
             addListener(resizeController)
         }
-        app.setEditArea(0, 0, 32, 32)
+        app.setWorkArea(0, 0, 32, 32)
     }
 
     fun setViewport(viewport: Viewport) {
@@ -100,7 +100,7 @@ class MainScene(private val app: EditorApp) {
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
         voxelModel.setVoxels(data)
-        app.setEditArea(
+        app.setWorkArea(
             data.minX - app.state.gridMargin,
             data.minZ - app.state.gridMargin,
             data.maxX + app.state.gridMargin,
@@ -108,19 +108,19 @@ class MainScene(private val app: EditorApp) {
         )
     }
 
-    /** Make the grid area match edit area */
+    /** Make the grid area match work area */
     fun updateGrid() {
-        app.state.editArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
+        app.state.workArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
     fun centerCameraAroundGrid() = app.state.run {
         // zoom in to leave the margins outside
-        val minX = editArea.minX + gridMargin
-        val minZ = editArea.minZ + gridMargin
-        val minY = editArea.minY
-        val maxX = editArea.maxX - gridMargin
-        val maxZ = editArea.maxZ - gridMargin
-        val maxY = editArea.maxY
+        val minX = workArea.minX + gridMargin
+        val minZ = workArea.minZ + gridMargin
+        val minY = workArea.minY
+        val maxX = workArea.maxX - gridMargin
+        val maxZ = workArea.maxZ - gridMargin
+        val maxY = workArea.maxY
         val width = maxX - minX + 1
         val height = maxY - minY + 1
         val length = maxZ - minZ + 1
