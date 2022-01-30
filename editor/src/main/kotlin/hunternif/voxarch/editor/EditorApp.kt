@@ -4,6 +4,8 @@ import hunternif.voxarch.editor.actions.centerCamera
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.magicavoxel.readVoxFile
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL

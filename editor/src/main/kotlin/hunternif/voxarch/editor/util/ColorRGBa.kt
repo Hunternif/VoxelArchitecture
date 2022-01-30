@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.util
 
 import imgui.ImGui
 import org.joml.Vector3f
+import org.joml.Vector4f
 import kotlin.math.round
 
 /** Borrowed from OpenRNDR */
@@ -12,6 +13,7 @@ data class ColorRGBa(
     val a: Float = 1f,
 ) {
     fun toVector3f() = Vector3f(r, g, b)
+    fun toVector4f() = Vector4f(r, g, b, a)
 
     val hex: Int = calculateHexRGB()
 

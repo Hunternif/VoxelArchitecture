@@ -27,7 +27,7 @@ class MainScene(private val app: EditorApp) {
 
     // 3d models
     private val voxelModel = VoxelModel()
-    private val gridModel = FloorGridModel()
+    private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel()
     private val selectedNodeModel = SelectedNodeFrameModel()
     private val originsModel = PointSpriteModel("textures/point-circle.png")
@@ -110,7 +110,7 @@ class MainScene(private val app: EditorApp) {
 
     /** Make the grid area match work area */
     fun updateGrid() {
-        app.state.workArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
+//        app.state.workArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
     fun centerCameraAroundGrid() = app.state.run {
