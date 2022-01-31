@@ -27,6 +27,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
         fpsCounter.run()
+        mainMenu()
         dockspace(
             HorizontalSplit(
                 rightRatio = 0.25f,

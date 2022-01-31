@@ -23,6 +23,9 @@ dependencies {
     implementation "org.lwjgl:lwjgl-stb:$lwjglVersion"
     implementation "org.lwjgl:lwjgl-stb::natives-windows"
 
+    implementation "org.lwjgl:lwjgl-nfd:$lwjglVersion"
+    implementation "org.lwjgl:lwjgl-nfd::natives-windows"
+
     implementation(platform("org.lwjgl:lwjgl-bom:$lwjglVersion"))
 
     ["", "-opengl", "-glfw"].each {
