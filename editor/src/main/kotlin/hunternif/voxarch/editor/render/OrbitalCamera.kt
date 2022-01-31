@@ -36,7 +36,11 @@ class OrbitalCamera : MouseListener {
 
     private var xAngle = 0.5f
     private var yAngle = 0.3f
-    private var radius = 5f
+    var radius = 5f
+        set(value) {
+            field = value
+            viewMatrixDirty = true
+        }
 
 
     fun setViewport(viewport: Viewport) {
@@ -101,11 +105,6 @@ class OrbitalCamera : MouseListener {
             Vector3f(end.x, end.y, start.z),
             Vector3f(end.x, end.y, end.z),
         )
-    }
-
-    fun setZoom(radius: Float) {
-        this.radius = radius
-        viewMatrixDirty = true
     }
 
     fun getViewMatrix(): Matrix4f {

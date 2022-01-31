@@ -89,7 +89,7 @@ class MainScene(private val app: EditorApp) {
             addListener(moveController)
             addListener(resizeController)
         }
-        camera.setZoom(20f)
+        camera.radius = 20f
         lookAtOrigin()
     }
 
