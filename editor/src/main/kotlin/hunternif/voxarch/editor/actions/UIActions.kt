@@ -52,14 +52,3 @@ fun EditorApp.nodeData(node: Node): NodeModel.NodeData = action {
         NodeModel.NodeData(Vector3f(), Vector3f(), Colors.defaultNodeBox, node)
     }
 }
-
-fun EditorApp.setWorkArea(
-    minX: Int, minZ: Int, maxX: Int, maxZ: Int
-) = action {
-    state.workArea.run {
-        setMin(minX, 0, minZ)
-        setMax(maxX, 0, maxZ)
-        correctBounds()
-    }
-    scene.updateGrid()
-}

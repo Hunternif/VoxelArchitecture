@@ -2,7 +2,6 @@ package hunternif.voxarch.editor
 
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
-import hunternif.voxarch.editor.util.VoxelAABBf
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 
@@ -31,10 +30,6 @@ interface AppState {
     //=============================== TOOLS =================================
 
     val currentTool: Tool
-
-    /** Area where you are allowed to place new voxels. The grid matches it. */
-    val workArea: VoxelAABBf
-
     val newNodeFrame: NewNodeFrame
 
 
@@ -57,7 +52,6 @@ class AppStateImpl : AppState {
     override val nodeDataMap: LinkedHashMap<Node, NodeData> = LinkedHashMap()
 
     override var currentTool: Tool = Tool.ADD_NODE
-    override val workArea = VoxelAABBf()
     override val newNodeFrame = NewNodeFrame()
 
     override val DEBUG = true

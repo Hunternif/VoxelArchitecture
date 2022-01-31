@@ -3,7 +3,6 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.nodeData
-import hunternif.voxarch.editor.actions.setWorkArea
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*
@@ -102,17 +101,6 @@ class MainScene(private val app: EditorApp) {
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
         this.data = data
         voxelModel.setVoxels(data)
-        app.setWorkArea(
-            data.minX - app.state.gridMargin,
-            data.minZ - app.state.gridMargin,
-            data.maxX + app.state.gridMargin,
-            data.maxZ + app.state.gridMargin,
-        )
-    }
-
-    /** Make the grid area match work area */
-    fun updateGrid() {
-//        app.state.workArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
     fun lookAtOrigin() {

@@ -101,10 +101,7 @@ fun EditorApp.createRoom(
                 room(min - globalPos, max - globalPos)
             }
         }
-        workArea.union(min.x - gridMargin, min.y, min.z - gridMargin)
-        workArea.union(max.x + gridMargin, max.y, max.z + gridMargin)
     }
-    scene.updateGrid()
     scene.updateNodeModel()
 }
 

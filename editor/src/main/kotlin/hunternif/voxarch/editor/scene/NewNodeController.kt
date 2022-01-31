@@ -88,12 +88,10 @@ class NewNodeController(
             when (state) {
                 EMPTY -> {
                     val posOnFloor = camera.projectToFloor(mouseX, mouseY)
-                    if (app.state.workArea.testPointXZ(posOnFloor)) {
-                        origStart.set(posOnFloor.fromFloorToVoxCoords())
-                        frame.start = Vector3i(origStart)
-                        frame.end = Vector3i(origStart)
-                        setState(CHOOSING_BASE)
-                    }
+                    origStart.set(posOnFloor.fromFloorToVoxCoords())
+                    frame.start = Vector3i(origStart)
+                    frame.end = Vector3i(origStart)
+                    setState(CHOOSING_BASE)
                 }
                 CHOOSING_BASE -> setState(CHOOSING_HEIGHT) // This shouldn't happen!
                 CHOOSING_HEIGHT -> setState(COMPLETE)
