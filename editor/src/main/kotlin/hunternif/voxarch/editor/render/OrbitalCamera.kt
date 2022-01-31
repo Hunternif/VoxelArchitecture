@@ -62,8 +62,10 @@ class OrbitalCamera : MouseListener {
         viewMatrixDirty = true
     }
 
-    /** Adjusts camera radius so the given points are visible*/
-    fun zoomToFit(vararg points: Vector3f) {
+    /** Adjusts camera radius so the given points are visible.
+     * If [zoomOutOnly] is enabled, then camera will only zoom out, i.e. won't
+     * change if all points are already visible. */
+    fun zoomToFit(zoomOutOnly: Boolean = false, vararg points: Vector3f) {
         val radii = points.map { p ->
             // vector from camera's focus point to the given point.
             // [translation] stores the translation value, i.e. minus focus point.
@@ -78,16 +80,18 @@ class OrbitalCamera : MouseListener {
             val focalLength = 1f / tan(Math.toRadians(fov).toFloat() / 2f)
             d.length() * (cos(angle) + sin(angle) * focalLength)
         }
-        radii.maxOrNull()?.let { maxRadius ->
-            radius = maxRadius
-            viewMatrixDirty = true
-        }
+        val maxRadius = radii.maxOrNull() ?: radius
+        radius = (if (zoomOutOnly) max(radius, maxRadius) else maxRadius)
+        viewMatrixDirty = true
     }
 
     /** Adjusts camera radius to fit all corners of this box.
-     * [start] and [end] are opposite corners. */
-    fun zoomToFitBox(start: Vector3f, end: Vector3f) {
+     * [start] and [end] are opposite corners.
+     * If [zoomOutOnly] is enabled, then camera will only zoom out, i.e. won't
+     * change if all points are already visible. */
+    fun zoomToFitBox(start: Vector3f, end: Vector3f, zoomOutOnly: Boolean = false) {
         zoomToFit(
+            zoomOutOnly,
             Vector3f(start.x, start.y, start.z),
             Vector3f(start.x, start.y, end.z),
             Vector3f(start.x, end.y, start.z),
@@ -97,6 +101,11 @@ class OrbitalCamera : MouseListener {
             Vector3f(end.x, end.y, start.z),
             Vector3f(end.x, end.y, end.z),
         )
+    }
+
+    fun setZoom(radius: Float) {
+        this.radius = radius
+        viewMatrixDirty = true
     }
 
     fun getViewMatrix(): Matrix4f {

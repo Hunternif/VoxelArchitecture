@@ -89,6 +89,7 @@ class MainScene(private val app: EditorApp) {
             addListener(moveController)
             addListener(resizeController)
         }
+        camera.setZoom(20f)
         lookAtOrigin()
     }
 
@@ -137,7 +138,7 @@ class MainScene(private val app: EditorApp) {
         }
         val center = (minCorner + maxCorner) / 2
         camera.setPosition(center.toVector3f())
-        camera.zoomToFitBox(minCorner.toVector3f(), maxCorner.toVector3f())
+        camera.zoomToFitBox(minCorner.toVector3f(), maxCorner.toVector3f(), true)
     }
 
     fun updateNodeModel() = app.state.run {
