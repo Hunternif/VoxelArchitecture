@@ -16,6 +16,16 @@ open class VoxelAABBf {
     
     private val edgeAABB = AABBf()
 
+    fun set(other: VoxelAABBf) {
+        minX = other.minX
+        minY = other.minY
+        minZ = other.minZ
+        maxX = other.maxX
+        maxY = other.maxY
+        maxZ = other.maxZ
+        updateEdgeAABB()
+    }
+
     fun setMin(x: Int, y: Int, z: Int) {
         minX = x
         minY = y

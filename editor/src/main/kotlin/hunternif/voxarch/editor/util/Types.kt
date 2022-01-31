@@ -31,8 +31,17 @@ fun min(a: Vector3i, b: Vector3i) = Vector3i(
     min(a.y, b.y),
     min(a.z, b.z),
 )
-
+fun min(a: Vector3f, b: Vector3f) = Vector3f(
+    min(a.x, b.x),
+    min(a.y, b.y),
+    min(a.z, b.z),
+)
 fun max(a: Vector3i, b: Vector3i) = Vector3i(
+    max(a.x, b.x),
+    max(a.y, b.y),
+    max(a.z, b.z),
+)
+fun max(a: Vector3f, b: Vector3f) = Vector3f(
     max(a.x, b.x),
     max(a.y, b.y),
     max(a.z, b.z),

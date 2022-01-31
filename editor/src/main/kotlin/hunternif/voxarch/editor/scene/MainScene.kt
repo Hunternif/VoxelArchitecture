@@ -7,23 +7,24 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
+import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
 import hunternif.voxarch.editor.util.AADirection3D.*
+import hunternif.voxarch.editor.util.max
+import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.util.max
-import hunternif.voxarch.util.min
 import hunternif.voxarch.vector.Vec3
+import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
 
 class MainScene(private val app: EditorApp) {
     // data
     private val vp = Viewport(0, 0, 0, 0)
-    private var data: IStorage3D<VoxColor?>? = null
 
     // 3d models
     private val voxelModel = VoxelModel()
@@ -99,7 +100,6 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun setVoxelData(data: IStorage3D<VoxColor?>) {
-        this.data = data
         voxelModel.setVoxels(data)
     }
 
@@ -107,26 +107,20 @@ class MainScene(private val app: EditorApp) {
         camera.setPosition(-0.5f, -0.5f, -0.5f)
     }
 
-    fun lookAtNodes(vararg nodes: Node) {
-        val minCorner = Vec3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-        val maxCorner = Vec3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
-        for (node in nodes) {
-            val origin = node.findGlobalPosition()
-            if (node is Room) {
-                val min = origin + node.start - Vec3(0.5, 0.5, 0.5)
-                val max = min + node.size + Vec3(1, 1, 1)
-                minCorner.set(min(minCorner, min))
-                maxCorner.set(max(maxCorner, max))
-            } else {
-                val min = origin - Vec3(0.5, 0.5, 0.5)
-                val max = min + Vec3(1, 1, 1)
-                minCorner.set(min(minCorner, min))
-                maxCorner.set(max(maxCorner, max))
-            }
+    fun lookAtNodes(nodes: Collection<Node>) {
+        lookAtBoxes(nodes.map { app.nodeData(it) })
+    }
+
+    fun lookAtBoxes(boxes: Collection<InstanceData>) {
+        val minCorner = Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+        val maxCorner = Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
+        for (box in boxes) {
+            minCorner.set(min(minCorner, box.start))
+            maxCorner.set(max(maxCorner, box.end))
         }
-        val center = (minCorner + maxCorner) / 2
-        camera.setPosition(center.toVector3f())
-        camera.zoomToFitBox(minCorner.toVector3f(), maxCorner.toVector3f(), true)
+        val center = Vector3f(minCorner).add(maxCorner).mul(0.5f)
+        camera.setPosition(center)
+        camera.zoomToFitBox(minCorner, maxCorner, true)
     }
 
     fun updateNodeModel() = app.state.run {

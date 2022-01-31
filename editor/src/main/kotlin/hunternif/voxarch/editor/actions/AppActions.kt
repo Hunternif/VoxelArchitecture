@@ -5,14 +5,22 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
+import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
+import java.nio.file.Path
 
 // This contains all actions that can be performed via UI.
 // Some of them can support keyboard shortcuts, console commands, undo/redo.
 
 // EditorApp must be injected into all classes that call these actions.
+
+fun EditorApp.importVoxFile(path: Path) = action {
+    val file = readVoxFile(path)
+    state.voxels = file
+    scene.setVoxelData(file)
+}
 
 /** Add the given node to selection. */
 fun EditorApp.selectNode(node: Node) = action {

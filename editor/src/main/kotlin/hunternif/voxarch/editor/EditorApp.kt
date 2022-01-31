@@ -65,8 +65,7 @@ class EditorAppImpl : EditorApp {
         gui.init(window, vp, 4)
         scene.init(window, vp)
         glfwShowWindow(window)
-//        val file = readVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
-//        scene.setVoxelData(file)
+//        importVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
 //        scene.setVoxelData(Array3D(1, 1, 1, VoxColor(0xff9966)))
         centerCamera()
     }

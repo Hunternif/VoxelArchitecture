@@ -2,14 +2,22 @@ package hunternif.voxarch.editor
 
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
+import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
+import hunternif.voxarch.storage.ChunkedStorage3D
+import hunternif.voxarch.storage.IStorage3D
 
 /**
  * Contains data that completely defines app state.
  * It should only be modified via AppActions.
  */
 interface AppState {
+    //=============================== VOXELS ================================
+
+    val voxels: IStorage3D<VoxColor?>
+
+
     //=============================== NODES =================================
 
     /** Root node containing everything in the editor */
@@ -45,6 +53,8 @@ interface AppState {
 }
 
 class AppStateImpl : AppState {
+    override var voxels: IStorage3D<VoxColor?> = ChunkedStorage3D()
+
     override val rootNode: Structure = Structure()
     override var parentNode: Node = rootNode
     override val selectedNodes: LinkedHashSet<Node> = LinkedHashSet()

@@ -30,4 +30,7 @@ interface IStorage3D<T> : Iterable<IntVec3> {
                 for (z in minZ .. maxZ)
                     yield(IntVec3(x, y, z))
     }
+
+    fun isEmpty(): Boolean = size == 0
+    fun isNotEmpty(): Boolean = size != 0
 }
