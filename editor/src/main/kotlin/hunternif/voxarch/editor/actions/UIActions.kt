@@ -16,10 +16,18 @@ fun EditorApp.setTool(tool: Tool) = action {
 
 fun EditorApp.centerCamera() = action {
     state.run {
-        if (parentNode == rootNode) {
-            scene.centerCameraAroundGrid()
+        if (selectedNodes.isNotEmpty()) {
+            scene.lookAtNodes(*selectedNodes.toTypedArray())
+        } else if (parentNode != rootNode) {
+            scene.lookAtNodes(parentNode)
         } else {
-            scene.centerCameraAroundNode(parentNode)
+            val visibleNodes = nodeDataMap.keys.subtract(hiddenNodes)
+            if (visibleNodes.isNotEmpty()) {
+                scene.lookAtNodes(*visibleNodes.toTypedArray())
+            } else {
+                // empty scene
+                scene.lookAtOrigin()
+            }
         }
     }
 }

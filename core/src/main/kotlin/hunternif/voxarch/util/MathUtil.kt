@@ -5,6 +5,7 @@ import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.vector.Vec4
 import kotlin.math.atan2
 import kotlin.math.max
+import kotlin.math.min
 import kotlin.math.round
 
 /**
@@ -72,6 +73,7 @@ fun Vec3.rotateY(angle: Double): Vec3 {
 
 fun Vec3.round() = Vec3(round(x), round(y), round(z))
 fun max(a: Vec3, b: Vec3) = Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
+fun min(a: Vec3, b: Vec3) = Vec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
 
 /** Angle in degrees of a line segment [start]-[end] vs X axis. */
 fun segmentAngleY(start: Vec3, end: Vec3) =

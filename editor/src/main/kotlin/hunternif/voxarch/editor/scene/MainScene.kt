@@ -15,8 +15,9 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.max
+import hunternif.voxarch.util.min
 import hunternif.voxarch.vector.Vec3
-import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
 
@@ -88,7 +89,7 @@ class MainScene(private val app: EditorApp) {
             addListener(moveController)
             addListener(resizeController)
         }
-        app.setWorkArea(0, 0, 32, 32)
+        lookAtOrigin()
     }
 
     fun setViewport(viewport: Viewport) {
@@ -113,39 +114,30 @@ class MainScene(private val app: EditorApp) {
 //        app.state.workArea.run { gridModel.setSize(minX, minZ, maxX, maxZ) }
     }
 
-    fun centerCameraAroundGrid() = app.state.run {
-        // zoom in to leave the margins outside
-        val minX = workArea.minX + gridMargin
-        val minZ = workArea.minZ + gridMargin
-        val minY = workArea.minY
-        val maxX = workArea.maxX - gridMargin
-        val maxZ = workArea.maxZ - gridMargin
-        val maxY = workArea.maxY
-        val width = maxX - minX + 1
-        val height = maxY - minY + 1
-        val length = maxZ - minZ + 1
-        camera.setPosition(
-            width / 2f - 0.5f + minX,
-            height / 2f - 0.5f + minY,
-            length / 2f - 0.5f + minZ,
-        )
-        camera.zoomToFitBox(
-            Vector3f(minX.toFloat(), minY.toFloat(), minZ.toFloat()),
-            Vector3f(maxX.toFloat(), maxY.toFloat(), maxZ.toFloat()),
-        )
+    fun lookAtOrigin() {
+        camera.setPosition(-0.5f, -0.5f, -0.5f)
     }
 
-    fun centerCameraAroundNode(node: Node) {
-        val origin = node.findGlobalPosition()
-        if (node is Room) {
-            val center = origin + node.start + node.size / 2
-            val min = origin + node.start - Vec3(0.5, 0.5, 0.5)
-            val max = min + node.size + Vec3(1, 1, 1)
-            camera.setPosition(center.toVector3f())
-            camera.zoomToFitBox(min.toVector3f(), max.toVector3f())
-        } else {
-            camera.setPosition(origin.toVector3f())
+    fun lookAtNodes(vararg nodes: Node) {
+        val minCorner = Vec3(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
+        val maxCorner = Vec3(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
+        for (node in nodes) {
+            val origin = node.findGlobalPosition()
+            if (node is Room) {
+                val min = origin + node.start - Vec3(0.5, 0.5, 0.5)
+                val max = min + node.size + Vec3(1, 1, 1)
+                minCorner.set(min(minCorner, min))
+                maxCorner.set(max(maxCorner, max))
+            } else {
+                val min = origin - Vec3(0.5, 0.5, 0.5)
+                val max = min + Vec3(1, 1, 1)
+                minCorner.set(min(minCorner, min))
+                maxCorner.set(max(maxCorner, max))
+            }
         }
+        val center = (minCorner + maxCorner) / 2
+        camera.setPosition(center.toVector3f())
+        camera.zoomToFitBox(minCorner.toVector3f(), maxCorner.toVector3f())
     }
 
     fun updateNodeModel() = app.state.run {
