@@ -93,10 +93,6 @@ class MainScene(private val app: EditorApp) {
         orthoCamera.setViewport(vp)
     }
 
-    fun setVoxelData(data: IStorage3D<VoxColor?>) {
-        voxelModel.setVoxels(data)
-    }
-
     fun lookAtOrigin() {
         camera.setPosition(-0.5f, -0.5f, -0.5f)
     }
@@ -113,12 +109,27 @@ class MainScene(private val app: EditorApp) {
         camera.zoomToFitBox(minCorner, maxCorner, true)
     }
 
+    fun updateVoxelModel() = app.state.run {
+        voxelModel.clear()
+        if (voxelRoot !in hiddenObjects)
+            addVoxelModelsRecursive(voxelRoot)
+        voxelModel.uploadInstanceData()
+    }
+
+    private fun addVoxelModelsRecursive(node: SceneVoxelGroup) {
+        for (child in node.children) {
+            if (child in app.state.hiddenObjects) continue
+            child.update()
+            voxelModel.addVoxels(child)
+            addVoxelModelsRecursive(child)
+        }
+    }
+
     fun updateNodeModel() = app.state.run {
         nodeModel.clear()
         if (rootNode !in hiddenObjects)
             addNodeModelsRecursive(rootNode)
         nodeModel.uploadInstanceData()
-        updateSelectedNodeModel()
     }
 
     private fun addNodeModelsRecursive(node: SceneNode) {
@@ -134,7 +145,7 @@ class MainScene(private val app: EditorApp) {
         selectedNodeModel.clear()
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
-            if (obj != app.state.rootNode) {
+            if (obj != app.state.rootNode && obj != app.state.voxelRoot) {
                 selectedNodeModel.addNode(obj)
                 if (obj is SceneNode) {
                     val origin = obj.node.findGlobalPosition().toVector3f()

@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.storage.ChunkedStorage3D
+import hunternif.voxarch.util.emptyArray3D
 
 /**
  * Contains data that completely defines app state.
@@ -15,14 +16,16 @@ import hunternif.voxarch.storage.ChunkedStorage3D
 interface AppState {
     //=============================== VOXELS ================================
 
-    val voxels: SceneVoxelGroup
+    /** Root group containing all voxel groups in the scene.
+     * The root itself should stay empty of voxels. */
+    val voxelRoot: SceneVoxelGroup
 
 
     //=========================== SCENE OBJECTS =============================
 
-    /** Root node containing all nodes in the editor */
+    /** Root node containing all nodes in the scene. */
     val rootNode: SceneNode
-    /** The node under which new child nodes would be added */
+    /** The node under which new child nodes would be added. */
     val parentNode: SceneNode
     /** All objects in the scene, including nodes, voxels etc. */
     val sceneObjects: Collection<SceneObject>
@@ -51,7 +54,7 @@ interface AppState {
 }
 
 class AppStateImpl : AppState {
-    override var voxels = SceneVoxelGroup(ChunkedStorage3D())
+    override val voxelRoot = SceneVoxelGroup(emptyArray3D())
 
     override val rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode

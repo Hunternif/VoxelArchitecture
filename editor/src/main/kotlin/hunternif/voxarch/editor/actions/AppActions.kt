@@ -22,11 +22,11 @@ import java.nio.file.Path
 fun EditorApp.importVoxFile(path: Path) = action {
     val file = readVoxFile(path)
     state.run {
-        sceneObjects.remove(voxels)
-        voxels = SceneVoxelGroup(file)
+        val voxels = SceneVoxelGroup(file)
         sceneObjects.add(voxels)
+        voxelRoot.addChild(voxels)
     }
-    scene.setVoxelData(file)
+    scene.updateVoxelModel()
 }
 
 /** Add the given object to selection. */
@@ -60,25 +60,42 @@ fun EditorApp.showObject(obj: SceneObject) = action {
     // This object may have been hidden by one of its parents
     // To make it visible, we must un-hide all parents.
     state.hiddenObjects.remove(obj)
-    if (obj is SceneNode) {
-        var parent: SceneNode? = obj
-        while (parent != null) {
-            state.hiddenObjects.remove(parent)
-            parent = parent.parent
+    when (obj) {
+        is SceneNode -> {
+            var parent: SceneNode? = obj
+            while (parent != null) {
+                state.hiddenObjects.remove(parent)
+                parent = parent.parent
+            }
+            scene.updateNodeModel()
         }
-        scene.updateNodeModel()
+        is SceneVoxelGroup -> {
+            var parent: SceneVoxelGroup? = obj
+            while (parent != null) {
+                state.hiddenObjects.remove(parent)
+                parent = parent.parent
+            }
+            scene.updateVoxelModel()
+        }
     }
 }
 
 fun EditorApp.hideObject(obj: SceneObject) = action {
     state.hiddenObjects.add(obj)
-    scene.updateNodeModel()
+    when (obj) {
+        is SceneNode -> scene.updateNodeModel()
+        is SceneVoxelGroup -> scene.updateVoxelModel()
+    }
 }
 
 /** The given [obj] is assumed to already exist in the scene, and to contain
  * the updated data. In the future the update might need to happen here... */
 fun EditorApp.updateObject(obj: SceneObject) = action {
-    scene.updateNodeModel()
+    when (obj) {
+        is SceneNode -> scene.updateNodeModel()
+        is SceneVoxelGroup -> scene.updateVoxelModel()
+    }
+    scene.updateSelectedNodeModel()
 }
 
 /** Modify Node.isCentered() to new value. This moves origin so that node's
@@ -127,31 +144,34 @@ fun EditorApp.createRoom(
 }
 
 fun EditorApp.deleteSelectedObjects() = action {
+    deleteObjects(state.selectedObjects)
+    state.selectedObjects.clear()
+    scene.updateSelectedNodeModel()
+}
+
+fun EditorApp.deleteObjects(objs: Collection<SceneObject>) = action {
+    var removedNode = false
+    var removedVoxels = false
     state.run {
-        for (obj in selectedObjects) {
+        for (obj in objs) {
             if (obj == rootNode) continue
             sceneObjects.remove(obj)
             hiddenObjects.remove(obj)
-            if (obj is SceneNode) {
-                obj.parent?.removeChild(obj)
+            when (obj) {
+                is SceneNode -> {
+                    obj.parent?.removeChild(obj)
+                    removedNode = true
+                }
+                is SceneVoxelGroup -> {
+                    obj.parent?.removeChild(obj)
+                    removedVoxels = true
+                }
             }
         }
-        selectedObjects.clear()
     }
-    scene.updateNodeModel()
-}
-
-fun EditorApp.deleteObject(obj: SceneObject) = action {
-    state.run {
-        if (obj == rootNode) return@action
-        sceneObjects.remove(obj)
-        selectedObjects.remove(obj)
-        hiddenObjects.remove(obj)
-        if (obj is SceneNode) {
-            obj.parent?.removeChild(obj)
-        }
-    }
-    scene.updateNodeModel()
+    if (removedNode) scene.updateNodeModel()
+    if (removedVoxels) scene.updateVoxelModel()
+    scene.updateSelectedNodeModel()
 }
 
 

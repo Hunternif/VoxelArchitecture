@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.redrawNodes
+import hunternif.voxarch.editor.actions.redrawVoxels
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.set
 import hunternif.voxarch.editor.util.toVec3
@@ -27,16 +28,26 @@ class MoveController(
     /** Origins (starts) before translation */
     private val origins = mutableMapOf<SceneObject, Vec3>()
 
+    private var movingNodes = false
+    private var movingVoxels = false
+
     override fun onMouseDown(mods: Int) {
         dragging = true
-
+        movingNodes = false
+        movingVoxels = false
         movingList.clear()
         app.state.selectedObjects.filter { !isAnyParentSelected(it) }.forEach {
             movingList.add(it)
-            if (it is SceneNode) {
-                origins[it] = it.node.origin.clone()
-            } else {
-                origins[it] = it.start.toVec3()
+            origins[it] = when (it) {
+                is SceneNode -> {
+                    movingNodes = true
+                    it.node.origin.clone()
+                }
+                is SceneVoxelGroup -> {
+                    movingVoxels = true
+                    it.origin.toVec3()
+                }
+                else -> it.start.toVec3()
             }
         }
         
@@ -65,14 +76,14 @@ class MoveController(
         for (obj in movingList) {
             val newOrigin = origins[obj]!! + translation.toVec3()
             // TODO: update origin on the actual Node on mouse-up.
-            if (obj is SceneNode) {
-                obj.node.origin.set(newOrigin)
-                obj.update()
-            } else {
-                obj.start.set(newOrigin)
+            when (obj) {
+                is SceneNode -> obj.node.origin.set(newOrigin)
+                is SceneVoxelGroup -> obj.origin.set(newOrigin)
             }
+            obj.update()
         }
-        app.redrawNodes()
+        if (movingNodes) app.redrawNodes()
+        if (movingVoxels) app.redrawVoxels()
     }
 
     private fun pickClickedObject(): SceneObject? {

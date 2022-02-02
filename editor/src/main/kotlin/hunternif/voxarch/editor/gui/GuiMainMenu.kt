@@ -13,7 +13,7 @@ fun MainGui.mainMenu() {
     ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
     if (ImGui.beginMainMenuBar()) {
         if (ImGui.beginMenu("File")) {
-            if (ImGui.menuItem("Open VOX file...")) {
+            if (ImGui.menuItem("Import VOX file...")) {
                 openFileDialog()
             }
             ImGui.endMenu()

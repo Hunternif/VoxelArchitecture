@@ -3,7 +3,6 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scene.NewNodeFrame
-import hunternif.voxarch.editor.scene.SceneObject
 
 // Actions that update the state of UI and don't contribute to history
 
@@ -21,11 +20,7 @@ fun EditorApp.centerCamera() = action {
             scene.lookAtObjects(listOf(parentNode))
         } else {
             // 3. look at all visible objects
-            val visibleList = mutableListOf<SceneObject>()
-            visibleList.addAll(sceneObjects.subtract(hiddenObjects))
-            if (voxels.data.isNotEmpty()) {
-                visibleList.add(voxels)
-            }
+            val visibleList = sceneObjects.subtract(hiddenObjects)
             if (visibleList.isNotEmpty()) {
                 scene.lookAtObjects(visibleList)
             } else {
@@ -39,6 +34,13 @@ fun EditorApp.centerCamera() = action {
 /** Used by UI to show real-time updates that aren't yet written to history. */
 fun EditorApp.redrawNodes() = action {
     scene.updateNodeModel()
+    scene.updateSelectedNodeModel()
+}
+
+/** Used by UI to show real-time updates that aren't yet written to history. */
+fun EditorApp.redrawVoxels() = action {
+    scene.updateVoxelModel()
+    scene.updateSelectedNodeModel()
 }
 
 fun EditorApp.clearNewNodeFrame() = action {

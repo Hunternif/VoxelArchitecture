@@ -31,6 +31,9 @@ open class SceneObject(
 
     val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.1f) }
     fun updateFaces() = boxFaces(start, end, 0.1f).copyInto(faces)
+
+    /** Recalculate [start] and [size] based on underlying data. */
+    open fun update() {}
 }
 
 class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
@@ -52,7 +55,7 @@ class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
         }
     }
 
-    fun update() {
+    override fun update() {
         val origin = node.findGlobalPosition()
         if (node is Room) {
             start.set(origin).add(node.start).sub(0.5f, 0.5f, 0.5f)
@@ -66,9 +69,27 @@ class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
 
 class SceneVoxelGroup(
     val data: IStorage3D<VoxColor?>,
+    /** Voxel centric coordinates of the lower corner */
+    val origin: Vector3f = Vector3f(),
 ) : SceneObject(color = Colors.transparent) {
+    var parent: SceneVoxelGroup? = null
+    private val _children = LinkedHashSet<SceneVoxelGroup>()
+    val children: List<SceneVoxelGroup> get() = _children.toList()
+
     init { update() }
-    fun update() {
+
+    fun addChild(child: SceneVoxelGroup) {
+        child.parent = this
+        _children.add(child)
+    }
+    fun removeChild(child: SceneVoxelGroup) {
+        if (_children.remove(child)) {
+            child.parent = null
+        }
+    }
+
+    override fun update() {
+        start.set(origin).sub(0.5f, 0.5f, 0.5f)
         size.set(data.width + 1f, data.height + 1f, data.length + 1f)
     }
 }
