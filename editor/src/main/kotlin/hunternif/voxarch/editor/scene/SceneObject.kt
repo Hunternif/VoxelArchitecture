@@ -37,6 +37,8 @@ class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
     private val _children = LinkedHashSet<SceneNode>()
     val children: List<SceneNode> get() = _children.toList()
 
+    init { update() }
+
     fun addChild(child: SceneNode) {
         child.parent = this
         _children.add(child)

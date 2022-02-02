@@ -3,9 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scene.NewNodeFrame
-import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.plan.Node
 
 // Actions that update the state of UI and don't contribute to history
 
@@ -50,13 +48,4 @@ fun EditorApp.clearNewNodeFrame() = action {
 
 fun EditorApp.focusMainWindow(focused: Boolean) = action {
     state.isMainWindowFocused = focused
-}
-
-/** Returns node instance data, i.e. render-related data. */
-fun EditorApp.sceneNode(node: Node): SceneNode = action {
-    state.nodeObjectMap[node] ?:  SceneNode(node).also {
-        it.update()
-        state.nodeObjectMap[node] = it
-        state.sceneObjects.add(it)
-    }
 }

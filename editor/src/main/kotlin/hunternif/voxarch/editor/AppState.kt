@@ -31,8 +31,6 @@ interface AppState {
     val selectedObjects: Set<SceneObject>
     /** Objects marked as hidden in UI, and invisible in 3d viewport. */
     val hiddenObjects: Set<SceneObject>
-    /** Render-related data for each node. */
-    val nodeObjectMap: Map<Node, SceneNode>
 
 
     //=============================== TOOLS =================================
@@ -60,7 +58,6 @@ class AppStateImpl : AppState {
     override val sceneObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val hiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
-    override val nodeObjectMap: LinkedHashMap<Node, SceneNode> = LinkedHashMap()
 
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()

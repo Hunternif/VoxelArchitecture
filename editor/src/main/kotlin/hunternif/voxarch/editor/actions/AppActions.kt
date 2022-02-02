@@ -119,7 +119,9 @@ fun EditorApp.createRoom(
                 room(min - globalPos, max - globalPos)
             }
         }
-        parentNode.addChild(sceneNode(room))
+        val sceneNode = SceneNode(room)
+        sceneObjects.add(sceneNode)
+        parentNode.addChild(sceneNode)
     }
     scene.updateNodeModel()
 }
@@ -132,7 +134,6 @@ fun EditorApp.deleteSelectedObjects() = action {
             hiddenObjects.remove(obj)
             if (obj is SceneNode) {
                 obj.parent?.removeChild(obj)
-                nodeObjectMap.remove(obj.node)
             }
         }
         selectedObjects.clear()
@@ -147,7 +148,6 @@ fun EditorApp.deleteObject(obj: SceneObject) = action {
         selectedObjects.remove(obj)
         hiddenObjects.remove(obj)
         if (obj is SceneNode) {
-            nodeObjectMap.remove(obj.node)
             obj.parent?.removeChild(obj)
         }
     }
