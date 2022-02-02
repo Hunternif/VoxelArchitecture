@@ -12,17 +12,18 @@ import org.joml.Vector3f
 
 /**
  * Base class for objects in the scene.
- * [start], [end] define the corners of its AABB.
+ * ([start], [start]+[size]) define the corners of its AABB.
+ * [size] is in "natural" coordinates (not centric).
  * [color] is the color that is used to render its AABB.
  */
 open class SceneObject(
     val start: Vector3f = Vector3f(),
-    val end: Vector3f = Vector3f(),
+    val size: Vector3f = Vector3f(),
     var color: ColorRGBa,
 ) {
-    /** Size of the AAB in coordinates (not in voxels!) */
-    val size: Vector3f = Vector3f()
-        get() = field.set(end).sub(start)
+    /** Read-only! Corner of the AAB in "natural" coordinates (not in voxels) */
+    val end: Vector3f = Vector3f()
+        get() = field.set(start).add(size)
 
     /** AABB in screen coordinates relative to viewport.
      * Can be updated at any time. */
@@ -55,10 +56,10 @@ class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
         val origin = node.findGlobalPosition()
         if (node is Room) {
             start.set(origin).add(node.start).sub(0.5f, 0.5f, 0.5f)
-            end.set(start).add(node.size).add(1f, 1f, 1f)
+            size.set(node.size).add(1f, 1f, 1f)
         } else {
             start.set(origin).sub(0.5f, 0.5f, 0.5f)
-            end.set(start).add(1f, 1f, 1f)
+            size.set(1f, 1f, 1f)
         }
     }
 }
@@ -68,8 +69,6 @@ class SceneVoxelGroup(
 ) : SceneObject(color = Colors.transparent) {
     init { update() }
     fun update() {
-        data.run {
-            end.set(start).add(width + 1f, height + 1f, length + 1f)
-        }
+        size.set(data.width + 1f, data.height + 1f, data.length + 1f)
     }
 }

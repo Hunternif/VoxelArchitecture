@@ -14,13 +14,9 @@ class VoxelTechnicalModel : BoxInstancedModel<SceneObject>() {
          * At 0.0 it's a dot, at 0.5 it fills the whole cube. */
         w: Float = 0.5f
     ) {
-        instances.add(
-            SceneObject(
-                Vector3f(pos).add(-w, -w, -w),
-                Vector3f(pos).add(w, w, w),
-                color,
-            )
-        )
+        val start = Vector3f(pos).add(-w, -w, -w)
+        val end = Vector3f(pos).add(w, w, w)
+        instances.add(SceneObject(start, end.sub(start), color))
     }
 
     override fun render() {
