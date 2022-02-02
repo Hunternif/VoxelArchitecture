@@ -17,6 +17,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
     @PublishedApi internal val nodeProperties = GuiObjectProperties(app)
+    @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
+    @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
 
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
@@ -34,8 +36,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 left = Window("main_window"),
                 right = VerticalSplit(
                     bottomRatio = 0.25f,
-                    top = Window("Node tree"),
                     bottom = Window("Properties"),
+                    top = VerticalSplit(
+                        bottomRatio = 0.5f,
+                        top = Window("Node tree"),
+                        bottom = Window("Voxel tree"),
+                    ),
                 ),
             )
         )
@@ -65,7 +71,10 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
         }
         rightPanel("Node tree", hasPadding = false) {
-            nodeTree()
+            nodeTree.render()
+        }
+        rightPanel("Voxel tree", hasPadding = false) {
+            voxelTree.render()
         }
         rightPanel("Properties") {
             nodeProperties.render()

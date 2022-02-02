@@ -22,7 +22,7 @@ import java.nio.file.Path
 fun EditorApp.importVoxFile(path: Path) = action {
     val file = readVoxFile(path)
     state.run {
-        val voxels = SceneVoxelGroup(file)
+        val voxels = SceneVoxelGroup(path.fileName.toString(), file)
         sceneObjects.add(voxels)
         voxelRoot.addChild(voxels)
     }

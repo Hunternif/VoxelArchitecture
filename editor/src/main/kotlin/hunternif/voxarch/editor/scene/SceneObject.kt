@@ -36,19 +36,21 @@ open class SceneObject(
     open fun update() {}
 }
 
-class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
-    var parent: SceneNode? = null
+class SceneNode(
+    val node: Node
+) : SceneObject(color = Colors.defaultNodeBox), INested<SceneNode> {
+    override var parent: SceneNode? = null
     private val _children = LinkedHashSet<SceneNode>()
-    val children: List<SceneNode> get() = _children.toList()
+    override val children: List<SceneNode> get() = _children.toList()
 
     init { update() }
 
-    fun addChild(child: SceneNode) {
+    override fun addChild(child: SceneNode) {
         child.parent = this
         _children.add(child)
         node.addChild(child.node)
     }
-    fun removeChild(child: SceneNode) {
+    override fun removeChild(child: SceneNode) {
         if (_children.remove(child)) {
             child.parent = null
             node.removeChild(child.node)
@@ -68,21 +70,22 @@ class SceneNode(val node: Node) : SceneObject(color = Colors.defaultNodeBox) {
 }
 
 class SceneVoxelGroup(
+    val label: String,
     val data: IStorage3D<VoxColor?>,
     /** Voxel centric coordinates of the lower corner */
     val origin: Vector3f = Vector3f(),
-) : SceneObject(color = Colors.transparent) {
-    var parent: SceneVoxelGroup? = null
+) : SceneObject(color = Colors.transparent), INested<SceneVoxelGroup> {
+    override var parent: SceneVoxelGroup? = null
     private val _children = LinkedHashSet<SceneVoxelGroup>()
-    val children: List<SceneVoxelGroup> get() = _children.toList()
+    override val children: List<SceneVoxelGroup> get() = _children.toList()
 
     init { update() }
 
-    fun addChild(child: SceneVoxelGroup) {
+    override fun addChild(child: SceneVoxelGroup) {
         child.parent = this
         _children.add(child)
     }
-    fun removeChild(child: SceneVoxelGroup) {
+    override fun removeChild(child: SceneVoxelGroup) {
         if (_children.remove(child)) {
             child.parent = null
         }
@@ -92,4 +95,11 @@ class SceneVoxelGroup(
         start.set(origin).sub(0.5f, 0.5f, 0.5f)
         size.set(data.width + 1f, data.height + 1f, data.length + 1f)
     }
+}
+
+interface INested<T : INested<T>> {
+    var parent: T?
+    val children: List<T>
+    fun addChild(child: T)
+    fun removeChild(child: T)
 }

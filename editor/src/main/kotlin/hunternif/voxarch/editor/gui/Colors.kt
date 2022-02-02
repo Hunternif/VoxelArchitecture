@@ -14,6 +14,8 @@ class Colors {
         val accentHovered = ColorRGBa.fromHex(0xD27626, 0.8f)
         val accentBg = ColorRGBa.fromHex(0xD27626, 0.5f)
 
+        val hiddenItemLabel = ColorRGBa.fromHex(0xffffff, 0.6f)
+
         val defaultNodeBox = buttonBg.copy(a = 0.2f)
 
         val axisX = ColorRGBa.fromHex(0xD46363)

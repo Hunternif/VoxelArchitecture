@@ -54,7 +54,7 @@ interface AppState {
 }
 
 class AppStateImpl : AppState {
-    override val voxelRoot = SceneVoxelGroup(emptyArray3D())
+    override val voxelRoot = SceneVoxelGroup("Voxel groups", emptyArray3D())
 
     override val rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
