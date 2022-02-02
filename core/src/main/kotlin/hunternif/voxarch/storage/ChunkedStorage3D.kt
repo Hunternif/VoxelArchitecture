@@ -3,7 +3,7 @@ package hunternif.voxarch.storage
 import com.google.common.annotations.VisibleForTesting
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
-import kotlin.math.floor
+import kotlin.math.*
 
 class ChunkedStorage3D<T>(
     private val chunkSize: IntVec3,
@@ -43,10 +43,6 @@ class ChunkedStorage3D<T>(
     /** Reusable instance of coordinates inside a chunk */
     private val arrayCoords = IntVec3(0, 0, 0)
 
-    val width: Int get() = if (size == 0) 0 else maxX - minX + 1
-    val height: Int get() = if (size == 0) 0 else maxY - minY + 1
-    val length: Int get() = if (size == 0) 0 else maxZ - minZ + 1
-
     override fun get(x: Int, y: Int, z: Int): T? {
         val key = getChunkKey(x, y, z)
         return chunkMap[key]?.let { it[getArrayCoords(key, x, y, z)] }
@@ -61,6 +57,13 @@ class ChunkedStorage3D<T>(
         chunk[coords] = v
         if (v == null && prevVal != null) _size--
         if (v != null && prevVal == null) _size++
+        // TODO: shrink bounds when item is removed, un-ignore unit test.
+        minX = min(minX, x)
+        minY = min(minY, y)
+        minZ = min(minZ, z)
+        maxX = max(maxX, x)
+        maxY = max(maxY, y)
+        maxZ = max(maxZ, z)
     }
 
     /** Maps voxel coordinates to the key of the chunk that contains them.

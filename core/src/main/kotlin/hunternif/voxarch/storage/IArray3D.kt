@@ -8,7 +8,7 @@ interface IArray3D<T>: IStorage3D<T> {
     override val maxY: Int get() = height - 1
     override val minZ: Int get() = 0
     override val maxZ: Int get() = length - 1
-    val width: Int
-    val height: Int
-    val length: Int
+    override val width: Int
+    override val height: Int
+    override val length: Int
 }
