@@ -1,24 +1,13 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
+import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
-import hunternif.voxarch.editor.util.ColorRGBa
-import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
 
-abstract class BoxInstancedModel<T : InstanceData> : BaseModel() {
-    open class InstanceData(
-        val start: Vector3f,
-        val end: Vector3f,
-        var color: ColorRGBa,
-    ) {
-        val size: Vector3f = Vector3f()
-            get() = field.set(end).sub(start)
-    }
-
+abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
     private var instanceVboID = 0
     val instances = mutableListOf<T>()
 
@@ -54,7 +43,15 @@ abstract class BoxInstancedModel<T : InstanceData> : BaseModel() {
         uploadInstanceData()
     }
 
-    protected fun uploadInstanceData() {
+    fun add(instance: T) {
+        instances.add(instance)
+    }
+
+    fun clear() {
+        instances.clear()
+    }
+
+    fun uploadInstanceData() {
         val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 10).run {
             instances.forEach { it.run {
                 put(start.x).put(start.y).put(start.z)

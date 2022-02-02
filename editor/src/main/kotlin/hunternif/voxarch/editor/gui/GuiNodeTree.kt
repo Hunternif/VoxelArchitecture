@@ -1,9 +1,9 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.pushStyleColor
-import hunternif.voxarch.plan.Node
 import imgui.ImGui
 import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
@@ -34,27 +34,27 @@ fun MainGui.nodeTree() {
     }
     ImGui.popStyleVar(1)
     if (isThisPanelClicked && !isAnyTreeNodeClicked) {
-        app.setSelectedNode(null)
+        app.setSelectedObject(null)
     }
 
     if (ImGui.isWindowFocused() && ImGui.getIO().getKeysDown(GLFW_KEY_DELETE))
-        app.deleteSelectedNodes()
+        app.deleteSelectedObjects()
 }
 
-private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean) {
+private fun MainGui.addTreeNodeRecursive(node: SceneNode, depth: Int, hidden: Boolean) {
     ImGui.tableNextRow()
     val i = ImGui.tableGetRowIndex()
     ImGui.tableNextColumn()
     // Selectable would make more sense, but its size & position is bugged.
     // Button maintains the size & pos well, regardless of font.
-    val updatedHidden = hidden || node in app.state.hiddenNodes
+    val updatedHidden = hidden || node in app.state.hiddenObjects
     if (updatedHidden)
         smallIconButton("${FontAwesomeIcons.EyeSlash}##$i", transparent = true) {
-            app.showNode(node)
+            app.showObject(node)
         }
     else
         smallIconButton("${FontAwesomeIcons.Eye}##$i", transparent = true) {
-            app.hideNode(node)
+            app.hideObject(node)
         }
 
     ImGui.tableNextColumn()
@@ -63,13 +63,13 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
         ImGuiTreeNodeFlags.SpanAvailWidth or
         ImGuiTreeNodeFlags.NoTreePushOnOpen or // we will be faking indents, no need to pop tree
         ImGuiTreeNodeFlags.DefaultOpen
-    if (node.children.isEmpty()) {
+    if (node.node.children.isEmpty()) {
         flags = flags or
             ImGuiTreeNodeFlags.Leaf or
             ImGuiTreeNodeFlags.Bullet
     }
     val isParentNode = node == app.state.parentNode
-    val isSelected = node in app.state.selectedNodes
+    val isSelected = node in app.state.selectedObjects
     if (isSelected) {
         flags = flags or ImGuiTreeNodeFlags.Selected
     }
@@ -79,7 +79,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
         pushStyleColor(ImGuiCol.HeaderHovered, Colors.accentHovered)
         pushStyleColor(ImGuiCol.HeaderActive, Colors.accentActive)
     }
-    val text = node.javaClass.simpleName
+    val text = node.node.javaClass.simpleName
     ImGui.alignTextToFramePadding()
     if (updatedHidden) pushStyleColor(ImGuiCol.Text, hiddenTextColor)
 
@@ -95,7 +95,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
 
     if (ImGui.isItemHovered()) {
         if (ImGui.isMouseClicked(0)) {
-            app.setSelectedNode(node)
+            app.setSelectedObject(node)
             isAnyTreeNodeClicked = true
         }
         if (ImGui.isMouseDoubleClicked(0)) {
@@ -105,7 +105,7 @@ private fun MainGui.addTreeNodeRecursive(node: Node, depth: Int, hidden: Boolean
         }
     }
 
-    if (open && node.children.isNotEmpty()) {
+    if (open && node.node.children.isNotEmpty()) {
         node.children.forEach {
             addTreeNodeRecursive(it, depth + 1, updatedHidden)
         }

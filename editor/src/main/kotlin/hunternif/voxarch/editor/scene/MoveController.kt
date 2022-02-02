@@ -4,12 +4,14 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.util.set
 import hunternif.voxarch.editor.util.toVec3
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector2f
 import org.joml.Vector3f
+import kotlin.math.round
 
+/** Moves selected objects horizontally. */
 class MoveController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
@@ -18,32 +20,36 @@ class MoveController(
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val translation: Vector3f = Vector3f()
 
-    /** Selected nodes, excluding children of other selected nodes. */
-    private val movingNodes = mutableListOf<Node>()
+    /** Selected objects, excluding children of other selected nodes. */
+    private val movingList = mutableListOf<SceneObject>()
     /** The Y level we use for horizontal moving. */
     private var floorY = -0.5f
-    /** Origins before translation */
-    private val origins = mutableMapOf<Node, Vec3>()
+    /** Origins (starts) before translation */
+    private val origins = mutableMapOf<SceneObject, Vec3>()
 
     override fun onMouseDown(mods: Int) {
         dragging = true
 
-        movingNodes.clear()
-        app.state.selectedNodes.filter { !isAnyParentSelected(it) }.forEach {
-            movingNodes.add(it)
-            origins[it] = it.origin.clone()
+        movingList.clear()
+        app.state.selectedObjects.filter { !isAnyParentSelected(it) }.forEach {
+            movingList.add(it)
+            if (it is SceneNode) {
+                origins[it] = it.node.origin.clone()
+            } else {
+                origins[it] = it.start.toVec3()
+            }
         }
         
-        if (movingNodes.isEmpty()) {
-            selectNodeIfEmpty()
+        if (movingList.isEmpty()) {
+            selectOneObjectIfEmpty()
             return
         }
-        var pickedNode = pickClickedNode()
+        var pickedNode = pickClickedObject()
         if (pickedNode == null) {
-            movingNodes.sortBy { it.origin.y }
-            pickedNode = movingNodes[movingNodes.size / 2]
+            movingList.sortBy { it.start.y }
+            pickedNode = movingList[movingList.size / 2]
         }
-        floorY = pickedNode.origin.y.toFloat()
+        floorY = round(pickedNode.start.y)
         // round() so that it snaps to grid
         dragStartWorldPos.set(camera.projectToFloor(mouseX, mouseY, floorY)).round()
     }
@@ -56,31 +62,38 @@ class MoveController(
         // round() so that it snaps to grid
         val floorPos = camera.projectToFloor(posX, posY, floorY).round()
         translation.set(floorPos.sub(dragStartWorldPos))
-        for (node in movingNodes) {
-            node.origin.set(origins[node]!! + translation.toVec3())
+        for (obj in movingList) {
+            val newOrigin = origins[obj]!! + translation.toVec3()
+            // TODO: update origin on the actual Node on mouse-up.
+            if (obj is SceneNode) {
+                obj.node.origin.set(newOrigin)
+                obj.update()
+            } else {
+                obj.start.set(newOrigin)
+            }
         }
         app.redrawNodes()
     }
 
-    private fun pickClickedNode(): Node? {
+    private fun pickClickedObject(): SceneObject? {
         val result = Vector2f()
         var minDistance = Float.MAX_VALUE
-        var hitNode: Node? = null
-        for (node in movingNodes) {
-            val inst = app.state.nodeDataMap[node] ?: continue
-            val hit = camera.projectToBox(mouseX, mouseY, inst.start, inst.end, result)
+        var hitObj: SceneObject? = null
+        for (obj in movingList) {
+            val hit = camera.projectToBox(mouseX, mouseY, obj.start, obj.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
-                hitNode = inst.node
+                hitObj = obj
             }
         }
-        return hitNode
+        return hitObj
     }
 
-    private fun isAnyParentSelected(node: Node): Boolean {
-        var parent = node.parent
+    private fun isAnyParentSelected(obj: SceneObject): Boolean {
+        if (obj !is SceneNode) return false
+        var parent = obj.parent
         while (parent != null) {
-            if (parent in app.state.selectedNodes) return true
+            if (parent in app.state.selectedObjects) return true
             parent = parent.parent
         }
         return false

@@ -1,12 +1,8 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
+import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
-import hunternif.voxarch.editor.util.toVector3f
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.findGlobalPosition
-import hunternif.voxarch.vector.Vec3
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
@@ -18,15 +14,15 @@ class SelectedNodeFrameModel : BaseModel() {
 
     override val shader = SolidColorShader(0xffffff)
 
-    private val nodes = mutableListOf<Node>()
+    private val sceneObjects = mutableListOf<SceneObject>()
 
-    fun addNode(node: Node) {
-        nodes.add(node)
+    fun addNode(obj: SceneObject) {
+        sceneObjects.add(obj)
         updateEdges()
     }
 
     fun clear() {
-        nodes.clear()
+        sceneObjects.clear()
         updateEdges()
     }
 
@@ -39,19 +35,13 @@ class SelectedNodeFrameModel : BaseModel() {
 
     private fun updateEdges() {
         // 12 edges per node, 2 vertices per edge, 3 floats per vertex
-        bufferSize = nodes.size * 12 * 2 * 3
+        bufferSize = sceneObjects.size * 12 * 2 * 3
 
         val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
 
         // Store line positions in the vertex buffer
-        for (node in nodes) {
-            val start = node.findGlobalPosition() - Vec3(0.5, 0.5, 0.5)
-            val end = start + Vec3(1, 1, 1)
-            if (node is Room) {
-                start.addLocal(node.start)
-                end.addLocal(node.start).addLocal(node.size)
-            }
-            val edges = boxEdges(start.toVector3f(), end.toVector3f())
+        for (obj in sceneObjects) {
+            val edges = boxEdges(obj.start, obj.end)
             for (e in edges) {
                 vertexBuffer
                     .put(e.start.x).put(e.start.y).put(e.start.z)

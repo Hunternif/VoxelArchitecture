@@ -1,12 +1,12 @@
 package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
+import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 
 /** For rendering technical elements that look like voxels, e.g. origin point. */
-class VoxelTechnicalModel : BoxInstancedModel<InstanceData>() {
+class VoxelTechnicalModel : BoxInstancedModel<SceneObject>() {
     fun addVoxel(
         pos: Vector3f,
         color: ColorRGBa,
@@ -15,20 +15,12 @@ class VoxelTechnicalModel : BoxInstancedModel<InstanceData>() {
         w: Float = 0.5f
     ) {
         instances.add(
-            InstanceData(
+            SceneObject(
                 Vector3f(pos).add(-w, -w, -w),
                 Vector3f(pos).add(w, w, w),
                 color,
             )
         )
-    }
-
-    fun update() {
-        uploadInstanceData()
-    }
-
-    fun clear() {
-        instances.clear()
     }
 
     override fun render() {

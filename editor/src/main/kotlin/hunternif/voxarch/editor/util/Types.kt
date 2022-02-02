@@ -14,6 +14,9 @@ fun Vector3f.toVec3() = Vec3(x, y, z)
 fun Vec3.toVector3i() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 fun Vec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
+fun Vector3f.set(v: Vec3): Vector3f = set(v.x, v.y, v.z)
+fun Vector3f.add(v: Vec3): Vector3f = add(v.x.toFloat(), v.y.toFloat(), v.z.toFloat())
+
 fun Vec3.writeToFloatArray(array: FloatArray) {
     array[0] = x.toFloat()
     array[1] = y.toFloat()

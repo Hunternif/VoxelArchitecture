@@ -1,12 +1,12 @@
 package hunternif.voxarch.editor
 
 import hunternif.voxarch.editor.scene.NewNodeFrame
-import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
-import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.storage.ChunkedStorage3D
-import hunternif.voxarch.storage.IStorage3D
 
 /**
  * Contains data that completely defines app state.
@@ -15,24 +15,24 @@ import hunternif.voxarch.storage.IStorage3D
 interface AppState {
     //=============================== VOXELS ================================
 
-    val voxels: IStorage3D<VoxColor?>
+    val voxels: SceneVoxelGroup
 
 
-    //=============================== NODES =================================
+    //=========================== SCENE OBJECTS =============================
 
-    /** Root node containing everything in the editor */
-    val rootNode: Node
+    /** Root node containing all nodes in the editor */
+    val rootNode: SceneNode
     /** The node under which new child nodes would be added */
-    val parentNode: Node
-    /** Nodes currently selected by cursor, for batch modification or inspection.
+    val parentNode: SceneNode
+    /** All objects in the scene, including nodes, voxels etc. */
+    val sceneObjects: Collection<SceneObject>
+    /** Objects currently selected by cursor, for modification or inspection.
      * Should not contain [rootNode]. */
-    val selectedNodes: Set<Node>
-
-    /** Nodes marked as hidden in UI, and invisible in 3d viewport. */
-    val hiddenNodes: Set<Node>
-
+    val selectedObjects: Set<SceneObject>
+    /** Objects marked as hidden in UI, and invisible in 3d viewport. */
+    val hiddenObjects: Set<SceneObject>
     /** Render-related data for each node. */
-    val nodeDataMap: Map<Node, NodeData>
+    val nodeObjectMap: Map<Node, SceneNode>
 
 
     //=============================== TOOLS =================================
@@ -53,13 +53,14 @@ interface AppState {
 }
 
 class AppStateImpl : AppState {
-    override var voxels: IStorage3D<VoxColor?> = ChunkedStorage3D()
+    override var voxels = SceneVoxelGroup(ChunkedStorage3D())
 
-    override val rootNode: Structure = Structure()
-    override var parentNode: Node = rootNode
-    override val selectedNodes: LinkedHashSet<Node> = LinkedHashSet()
-    override val hiddenNodes: MutableSet<Node> = mutableSetOf()
-    override val nodeDataMap: LinkedHashMap<Node, NodeData> = LinkedHashMap()
+    override val rootNode = SceneNode(Structure())
+    override var parentNode: SceneNode = rootNode
+    override val sceneObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
+    override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
+    override val hiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
+    override val nodeObjectMap: LinkedHashMap<Node, SceneNode> = LinkedHashMap()
 
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()

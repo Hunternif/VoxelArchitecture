@@ -1,20 +1,19 @@
 package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
-import hunternif.voxarch.editor.actions.selectNode
-import hunternif.voxarch.editor.actions.setSelectedNode
-import hunternif.voxarch.editor.actions.unselectNode
+import hunternif.voxarch.editor.actions.selectObject
+import hunternif.voxarch.editor.actions.setSelectedObject
+import hunternif.voxarch.editor.actions.unselectObject
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.NodeModel.NodeData
 import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
-import hunternif.voxarch.plan.Node
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import kotlin.math.max
 import kotlin.math.min
 
+/** Draws a 2D rectangular marquee on screen, selecting any objects under it. */
 class SelectionController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
@@ -25,8 +24,8 @@ class SelectionController(
     /** Whether to display debug dots */
     private val DEBUG_SELECT = false
 
-    /** Optimization: size of step in pixels when testing whether a node falls
-     * within the marquee rectangle. */
+    /** Optimization: size of step in pixels when testing whether an object
+     * falls within the marquee rectangle. */
     private val marqueeTestStep = 8
 
     // corners of the marquee, relative to viewport
@@ -35,11 +34,11 @@ class SelectionController(
     private var maxX = 0
     private var maxY = 0
 
-    /** This contains the nodes currently intersecting with the marquee.
+    /** This contains the objects currently intersecting with the marquee.
      * It's updated every frame when drawing the marquee. */
-    private val selectedNodes = LinkedHashSet<NodeData>()
+    private val selectedSet = LinkedHashSet<SceneObject>()
     /** Stores a copy of the original selection when shift-selecting. */
-    private val origSelectedNodes = LinkedHashSet<Node>()
+    private val origSelectedSet = LinkedHashSet<SceneObject>()
     private var shift = false
 
     // Update timer
@@ -57,27 +56,27 @@ class SelectionController(
         updateAABBs()
         if (mods and GLFW_MOD_SHIFT != 0) {
             shift = true
-            origSelectedNodes.clear()
-            origSelectedNodes.addAll(app.state.selectedNodes)
+            origSelectedSet.clear()
+            origSelectedSet.addAll(app.state.selectedObjects)
         }
-        selectedNodes.clear()
+        selectedSet.clear()
     }
 
     override fun onMouseUp(mods: Int) {
         marqueeModel.visible = false
         if (
-            (selectedNodes.isEmpty() || marqueeModel.end == marqueeModel.start)
+            (selectedSet.isEmpty() || marqueeModel.end == marqueeModel.start)
             && dragging
         ) {
             // if no node was selected, pick the single node that we clicked on
-            val hitNode = hitTestNode()
+            val hitNode = hitTest()
             if (shift) {
                 hitNode?.let {
-                    if (it in origSelectedNodes) app.unselectNode(it)
-                    else app.selectNode(it)
+                    if (it in origSelectedSet) app.unselectObject(it)
+                    else app.selectObject(it)
                 }
             } else {
-                app.setSelectedNode(hitNode)
+                app.setSelectedObject(hitNode)
             }
         }
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
@@ -99,38 +98,38 @@ class SelectionController(
         maxX = max(marqueeModel.start.x, marqueeModel.end.x).toInt()
         maxY = max(marqueeModel.start.y, marqueeModel.end.y).toInt()
 
-        selectedNodes.clear()
+        selectedSet.clear()
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
 
-        for (inst in app.state.nodeDataMap.values) {
-            if (selectedNodes.contains(inst)) continue
-            inst.screenAABB.run {
+        for (obj in app.state.sceneObjects) {
+            if (selectedSet.contains(obj)) continue
+            obj.screenAABB.run {
                 debugPoint(minX, minY)
                 debugPoint(maxX, minY)
                 debugPoint(minX, maxY)
                 debugPoint(maxX, maxY)
             }
-            if (isAABBOutsideMarquee(inst)) {
-                if (!shift || inst.node !in origSelectedNodes)
-                    app.unselectNode(inst.node)
+            if (isAABBOutsideMarquee(obj)) {
+                if (!shift || obj !in origSelectedSet)
+                    app.unselectObject(obj)
                 continue
             }
-            if (isAABBInsideMarquee(inst)) {
-                selectedNodes.add(inst)
-                app.selectNode(inst.node)
+            if (isAABBInsideMarquee(obj)) {
+                selectedSet.add(obj)
+                app.selectObject(obj)
                 continue
             }
             hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
                 for (y in minY..maxY step marqueeTestStep) {
                     debugPoint(x, y)
-                    val end = Vector3f(inst.start).add(inst.size)
-                    if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, inst.start, end)) {
-                        selectedNodes.add(inst)
-                        app.selectNode(inst.node)
+                    val end = Vector3f(obj.start).add(obj.size)
+                    if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.start, end)) {
+                        selectedSet.add(obj)
+                        app.selectObject(obj)
                         break@hitTestLoop
                     } else {
-                        if (!shift || inst.node !in origSelectedNodes)
-                            app.unselectNode(inst.node)
+                        if (!shift || obj !in origSelectedSet)
+                            app.unselectObject(obj)
                     }
                 }
             }
@@ -146,22 +145,22 @@ class SelectionController(
     }
 
     /** Returns true if the screen AABB is completely outside the marquee. */
-    private fun isAABBOutsideMarquee(inst: NodeData) =
-        inst.screenAABB.maxX < minX ||
-        inst.screenAABB.maxY < minY ||
-        inst.screenAABB.minX > maxX ||
-        inst.screenAABB.minY > maxY
+    private fun isAABBOutsideMarquee(obj: SceneObject) =
+        obj.screenAABB.maxX < minX ||
+        obj.screenAABB.maxY < minY ||
+        obj.screenAABB.minX > maxX ||
+        obj.screenAABB.minY > maxY
 
     /** Returns true if the screen AABB is entirely contained inside the marquee. */
-    private fun isAABBInsideMarquee(inst: NodeData) =
-        inst.screenAABB.minX >= minX &&
-        inst.screenAABB.minY >= minY &&
-        inst.screenAABB.maxX <= maxX &&
-        inst.screenAABB.maxY <= maxY
+    private fun isAABBInsideMarquee(obj: SceneObject) =
+        obj.screenAABB.minX >= minX &&
+        obj.screenAABB.minY >= minY &&
+        obj.screenAABB.maxX <= maxX &&
+        obj.screenAABB.maxY <= maxY
 
-    /** Updates AABBs of nodes in [AppState.nodeDataMap] */
+    /** Updates AABBs of all objects in the scene. */
     private fun updateAABBs() {
-        app.state.nodeDataMap.values.forEach {
+        app.state.sceneObjects.forEach {
             it.screenAABB.run {
                 setMin(camera.projectToViewport(it.start))
                 setMax(camera.projectToViewport(it.end))

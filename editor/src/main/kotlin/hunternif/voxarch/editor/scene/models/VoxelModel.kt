@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
+import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.IStorage3D
@@ -8,14 +8,15 @@ import hunternif.voxarch.util.forEachPos
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 
-/** For rendering final world voxels */
-class VoxelModel : BoxInstancedModel<InstanceData>() {
+/** For rendering final world voxels.
+ * TODO: voxels shouldn't be treated as SceneObjects */
+class VoxelModel : BoxInstancedModel<SceneObject>() {
     fun setVoxels(voxels: IStorage3D<VoxColor?>) {
         instances.clear()
         voxels.forEachPos { x, y, z, v ->
             if (v != null) {
                 instances.add(
-                    InstanceData(
+                    SceneObject(
                         Vector3f(-0.5f + x, -0.5f + y, -0.5f + z),
                         Vector3f(0.5f + x, 0.5f + y, 0.5f + z),
                         ColorRGBa.fromHex(v.color),

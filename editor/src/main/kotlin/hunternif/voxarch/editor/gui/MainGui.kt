@@ -16,7 +16,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
-    @PublishedApi internal val nodeProperties = GuiNodeProperties(app)
+    @PublishedApi internal val nodeProperties = GuiObjectProperties(app)
 
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)

@@ -2,22 +2,16 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.actions.nodeData
-import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
-import hunternif.voxarch.editor.scene.models.BoxInstancedModel.InstanceData
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.magicavoxel.VoxColor
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.IStorage3D
-import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
@@ -107,16 +101,12 @@ class MainScene(private val app: EditorApp) {
         camera.setPosition(-0.5f, -0.5f, -0.5f)
     }
 
-    fun lookAtNodes(nodes: Collection<Node>) {
-        lookAtBoxes(nodes.map { app.nodeData(it) })
-    }
-
-    fun lookAtBoxes(boxes: Collection<InstanceData>) {
+    fun lookAtObjects(objs: Collection<SceneObject>) {
         val minCorner = Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
         val maxCorner = Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
-        for (box in boxes) {
-            minCorner.set(min(minCorner, box.start))
-            maxCorner.set(max(maxCorner, box.end))
+        for (obj in objs) {
+            minCorner.set(min(minCorner, obj.start))
+            maxCorner.set(max(maxCorner, obj.end))
         }
         val center = Vector3f(minCorner).add(maxCorner).mul(0.5f)
         camera.setPosition(center)
@@ -125,39 +115,31 @@ class MainScene(private val app: EditorApp) {
 
     fun updateNodeModel() = app.state.run {
         nodeModel.clear()
-        if (rootNode !in hiddenNodes)
-            addNodeModelsRecursive(rootNode, Vec3.ZERO)
-        nodeModel.update()
+        if (rootNode !in hiddenObjects)
+            addNodeModelsRecursive(rootNode)
+        nodeModel.uploadInstanceData()
         updateSelectedNodeModel()
     }
 
-    private fun addNodeModelsRecursive(node: Node, offset: Vec3) {
+    private fun addNodeModelsRecursive(node: SceneNode) {
         for (child in node.children) {
-            if (child in app.state.hiddenNodes) continue
-            if (child is Room) {
-                val origin = offset + child.origin
-                val start = origin + child.start
-                val end = start + child.size
-                val inst = app.nodeData(child)
-                nodeModel.addAndUpdateNode(
-                    inst,
-                    start.toVector3f(),
-                    end.toVector3f(),
-                    Colors.defaultNodeBox
-                )
-                addNodeModelsRecursive(child, origin)
-            }
+            if (child in app.state.hiddenObjects) continue
+            child.update()
+            nodeModel.add(child)
+            addNodeModelsRecursive(child)
         }
     }
 
     fun updateSelectedNodeModel() {
         selectedNodeModel.clear()
         originsModel.clear()
-        for (node in app.state.selectedNodes) {
-            if (node != app.state.rootNode) {
-                selectedNodeModel.addNode(node)
-                val origin = node.findGlobalPosition().toVector3f()
-                originsModel.addPoint(origin)
+        for (obj in app.state.selectedObjects) {
+            if (obj != app.state.rootNode) {
+                selectedNodeModel.addNode(obj)
+                if (obj is SceneNode) {
+                    val origin = obj.node.findGlobalPosition().toVector3f()
+                    originsModel.addPoint(origin)
+                }
             }
         }
         originsModel.update()

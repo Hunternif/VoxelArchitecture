@@ -3,8 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.actions.setSelectedNode
-import hunternif.voxarch.plan.Node
+import hunternif.voxarch.editor.actions.setSelectedObject
 import imgui.ImGui
 import org.joml.Vector2f
 import org.lwjgl.glfw.GLFW.*
@@ -53,25 +52,25 @@ abstract class BaseSelectionController(
     }
     protected open fun drag(posX: Float, posY: Float) {}
 
-    /** If no nodes are selected, select one that the cursor is hovering. */
-    protected fun selectNodeIfEmpty() {
-        if (app.state.selectedNodes.isEmpty())
-            app.setSelectedNode(hitTestNode())
+    /** If no objects are selected, select one that the cursor is hovering. */
+    protected fun selectOneObjectIfEmpty() {
+        if (app.state.selectedObjects.isEmpty())
+            app.setSelectedObject(hitTest())
     }
 
-    /** Returns the closest node under cursor,
+    /** Returns the closest object under cursor,
      * or null if the cursor is hovering above empty space*/
-    protected fun hitTestNode(): Node? {
+    protected fun hitTest(): SceneObject? {
         val result = Vector2f()
         var minDistance = Float.MAX_VALUE
-        var hitNode: Node? = null
-        for (inst in app.state.nodeDataMap.values) {
-            val hit = camera.projectToBox(mouseX, mouseY, inst.start, inst.end, result)
+        var hitObj: SceneObject? = null
+        for (obj in app.state.sceneObjects) {
+            val hit = camera.projectToBox(mouseX, mouseY, obj.start, obj.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
-                hitNode = inst.node
+                hitObj = obj
             }
         }
-        return hitNode
+        return hitObj
     }
 }

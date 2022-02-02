@@ -2,6 +2,9 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
@@ -18,63 +21,70 @@ import java.nio.file.Path
 
 fun EditorApp.importVoxFile(path: Path) = action {
     val file = readVoxFile(path)
-    state.voxels = file
+    state.run {
+        sceneObjects.remove(voxels)
+        voxels = SceneVoxelGroup(file)
+        sceneObjects.add(voxels)
+    }
     scene.setVoxelData(file)
 }
 
-/** Add the given node to selection. */
-fun EditorApp.selectNode(node: Node) = action {
-    if (state.selectedNodes.add(node)) {
+/** Add the given object to selection. */
+fun EditorApp.selectObject(obj: SceneObject) = action {
+    if (state.selectedObjects.add(obj)) {
         scene.updateSelectedNodeModel()
     }
 }
 
-/** Remove the given node from selection. */
-fun EditorApp.unselectNode(node: Node) = action {
-    if (state.selectedNodes.remove(node)) {
+/** Remove the given object from selection. */
+fun EditorApp.unselectObject(obj: SceneObject) = action {
+    if (state.selectedObjects.remove(obj)) {
         scene.updateSelectedNodeModel()
     }
 }
 
-/** Select a single node */
-fun EditorApp.setSelectedNode(node: Node?) = action {
+/** Select a single object */
+fun EditorApp.setSelectedObject(node: SceneObject?) = action {
     state.run {
-        selectedNodes.clear()
-        if (node != null && node != rootNode) selectedNodes.add(node)
+        selectedObjects.clear()
+        if (node != null && node != rootNode) selectedObjects.add(node)
     }
     scene.updateSelectedNodeModel()
 }
 
-fun EditorApp.setParentNode(node: Node) = action {
+fun EditorApp.setParentNode(node: SceneNode) = action {
     state.parentNode = node
 }
 
-fun EditorApp.showNode(node: Node) = action {
-    // This node may have been hidden by one of its parents
+fun EditorApp.showObject(obj: SceneObject) = action {
+    // This object may have been hidden by one of its parents
     // To make it visible, we must un-hide all parents.
-    var parent: Node? = node
-    while (parent != null) {
-        state.hiddenNodes.remove(parent)
-        parent = parent.parent
+    state.hiddenObjects.remove(obj)
+    if (obj is SceneNode) {
+        var parent: SceneNode? = obj
+        while (parent != null) {
+            state.hiddenObjects.remove(parent)
+            parent = parent.parent
+        }
+        scene.updateNodeModel()
     }
+}
+
+fun EditorApp.hideObject(obj: SceneObject) = action {
+    state.hiddenObjects.add(obj)
     scene.updateNodeModel()
 }
 
-fun EditorApp.hideNode(node: Node) = action {
-    state.hiddenNodes.add(node)
-    scene.updateNodeModel()
-}
-
-/** The given [node] is assumed to already exist in the scene, and to contain
+/** The given [obj] is assumed to already exist in the scene, and to contain
  * the updated data. In the future the update might need to happen here... */
-fun EditorApp.updateNode(node: Node) = action {
+fun EditorApp.updateObject(obj: SceneObject) = action {
     scene.updateNodeModel()
 }
 
 /** Modify Node.isCentered() to new value. This moves origin so that node's
  * global position stays the same. */
-fun EditorApp.modifyNodeCentered(node: Node, centered: Boolean) = action {
-    (node as? Room)?.apply {
+fun EditorApp.modifyNodeCentered(node: SceneNode, centered: Boolean) = action {
+    (node.node as? Room)?.apply {
         if (isCentered() == centered) return@action
         if (centered) {
             origin += start + Vec3(size.x/2, 0.0, size.z/ 2)
@@ -101,7 +111,7 @@ fun EditorApp.createRoom(
     val size = max - min
     val mid = min.add(size.x / 2 , 0.0, size.z / 2)
     state.run {
-        parentNode.run {
+        val room = parentNode.node.run {
             val globalPos = findGlobalPosition()
             if (centered) {
                 centeredRoom(mid - globalPos, size)
@@ -109,31 +119,38 @@ fun EditorApp.createRoom(
                 room(min - globalPos, max - globalPos)
             }
         }
+        parentNode.addChild(sceneNode(room))
     }
     scene.updateNodeModel()
 }
 
-fun EditorApp.deleteSelectedNodes() = action {
+fun EditorApp.deleteSelectedObjects() = action {
     state.run {
-        for (node in selectedNodes) {
-            if (node == rootNode) continue
-            hiddenNodes.remove(node)
-            node.parent?.removeChild(node)
-            nodeDataMap.remove(node)
+        for (obj in selectedObjects) {
+            if (obj == rootNode) continue
+            sceneObjects.remove(obj)
+            hiddenObjects.remove(obj)
+            if (obj is SceneNode) {
+                obj.parent?.removeChild(obj)
+                nodeObjectMap.remove(obj.node)
+            }
         }
-        selectedNodes.clear()
+        selectedObjects.clear()
     }
     scene.updateNodeModel()
 }
 
-fun EditorApp.deleteNode(node: Node) = action {
+fun EditorApp.deleteObject(obj: SceneObject) = action {
     state.run {
-        if (node == rootNode) return@action
-        selectedNodes.remove(node)
-        hiddenNodes.remove(node)
-        nodeDataMap.remove(node)
+        if (obj == rootNode) return@action
+        sceneObjects.remove(obj)
+        selectedObjects.remove(obj)
+        hiddenObjects.remove(obj)
+        if (obj is SceneNode) {
+            nodeObjectMap.remove(obj.node)
+            obj.parent?.removeChild(obj)
+        }
     }
-    node.parent?.removeChild(node)
     scene.updateNodeModel()
 }
 
