@@ -1,11 +1,8 @@
 package hunternif.voxarch.editor
 
-import hunternif.voxarch.editor.actions.centerCamera
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
-import hunternif.voxarch.editor.util.resourcePath
-import hunternif.voxarch.magicavoxel.readVoxFile
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
@@ -13,8 +10,6 @@ import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryUtil
 
 fun main() = EditorAppImpl().run()
-
-const val DEBUG = true
 
 /**
  * Central control mechanism for the app.
@@ -65,9 +60,6 @@ class EditorAppImpl : EditorApp {
         gui.init(window, vp, 4)
         scene.init(window, vp)
         glfwShowWindow(window)
-//        importVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
-//        scene.setVoxelData(Array3D(1, 1, 1, VoxColor(0xff9966)))
-        centerCamera()
     }
 
     private fun registerWindowEventHandler() {
@@ -85,14 +77,13 @@ class EditorAppImpl : EditorApp {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onWindowSize(window: Long, w: Int, h: Int) = runFrame()
-}
 
-
-private fun createWindow(width: Int, height: Int, title: String): Long {
-    glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
-    glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
-    val window = glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL)
-    glfwMakeContextCurrent(window)
-    GL.createCapabilities()
-    return window
+    private fun createWindow(width: Int, height: Int, title: String): Long {
+        glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE)
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE)
+        val window = glfwCreateWindow(width, height, title, MemoryUtil.NULL, MemoryUtil.NULL)
+        glfwMakeContextCurrent(window)
+        GL.createCapabilities()
+        return window
+    }
 }

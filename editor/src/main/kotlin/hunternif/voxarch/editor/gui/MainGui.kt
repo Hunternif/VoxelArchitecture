@@ -47,7 +47,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         )
         mainWindow("main_window") { vp ->
             renderMainWindow(vp)
-            if (DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
+            if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
                 ImGui.text("Tool: ${app.state.currentTool.toolName}")
                 ImGui.text("%.0f fps".format(fpsCounter.fps))
