@@ -154,18 +154,18 @@ fun EditorApp.createRoom(
 
 fun EditorApp.deleteSelectedObjects() = action {
     deleteObjects(state.selectedObjects)
-    state.selectedObjects.clear()
-    scene.updateSelectedNodeModel()
 }
 
 fun EditorApp.deleteObjects(objs: Collection<SceneObject>) = action {
     var removedNode = false
     var removedVoxels = false
     state.run {
-        for (obj in objs) {
+        // copy the list in case e.g. we were iterating over [selectedObjects]
+        for (obj in objs.toList()) {
             if (obj == rootNode) continue
             sceneObjects.remove(obj)
             hiddenObjects.remove(obj)
+            selectedObjects.remove(obj)
             when (obj) {
                 is SceneNode -> {
                     obj.parent?.removeChild(obj)
