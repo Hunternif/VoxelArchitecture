@@ -112,6 +112,7 @@ class MainScene(private val app: EditorApp) {
         if (voxelRoot !in hiddenObjects)
             addVoxelModelsRecursive(voxelRoot)
         voxelModel.uploadInstanceData()
+        updateSelectedNodeModel()
     }
 
     private fun addVoxelModelsRecursive(node: SceneVoxelGroup) {
@@ -128,6 +129,7 @@ class MainScene(private val app: EditorApp) {
         if (rootNode !in hiddenObjects)
             addNodeModelsRecursive(rootNode)
         nodeModel.uploadInstanceData()
+        updateSelectedNodeModel()
     }
 
     private fun addNodeModelsRecursive(node: SceneNode) {

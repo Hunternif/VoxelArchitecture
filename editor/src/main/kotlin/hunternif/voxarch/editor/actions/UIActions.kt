@@ -34,13 +34,11 @@ fun EditorApp.centerCamera() = action {
 /** Used by UI to show real-time updates that aren't yet written to history. */
 fun EditorApp.redrawNodes() = action {
     scene.updateNodeModel()
-    scene.updateSelectedNodeModel()
 }
 
 /** Used by UI to show real-time updates that aren't yet written to history. */
 fun EditorApp.redrawVoxels() = action {
     scene.updateVoxelModel()
-    scene.updateSelectedNodeModel()
 }
 
 fun EditorApp.clearNewNodeFrame() = action {

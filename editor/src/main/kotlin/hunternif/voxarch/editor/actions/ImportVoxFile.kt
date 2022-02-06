@@ -32,7 +32,6 @@ class ImportVoxFile(
             voxelGroup.parent?.removeChild(voxelGroup)
         }
         scene.updateVoxelModel()
-        scene.updateSelectedNodeModel()
     }
 
 }

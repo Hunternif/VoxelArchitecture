@@ -105,7 +105,6 @@ fun EditorApp.updateObject(obj: SceneObject) = action {
         is SceneNode -> scene.updateNodeModel()
         is SceneVoxelGroup -> scene.updateVoxelModel()
     }
-    scene.updateSelectedNodeModel()
 }
 
 /** Modify Node.isCentered() to new value. This moves origin so that node's
@@ -181,7 +180,6 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) = action {
     }
     if (removedNode) scene.updateNodeModel()
     if (removedVoxels) scene.updateVoxelModel()
-    scene.updateSelectedNodeModel()
 }
 
 fun EditorApp.undo() = action {
