@@ -9,9 +9,7 @@ import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVector3f
-import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.findGlobalPosition
-import hunternif.voxarch.storage.IStorage3D
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
@@ -40,7 +38,7 @@ class MainScene(private val app: EditorApp) {
 
     // Tool controllers
     private val newNodeController = NewNodeController(app, camera)
-    private val selectionController = SelectionController(app, camera)
+    private val selectController = SelectController(app, camera)
     private val moveController = MoveController(app, camera)
     private val resizeController = ResizeController(app, camera)
 
@@ -56,8 +54,8 @@ class MainScene(private val app: EditorApp) {
     )
     /** Overlaid on top in ortho camera*/
     private val models2d = listOf(
-        selectionController.marqueeModel,
-        selectionController.pointsDebugModel,
+        selectController.marqueeModel,
+        selectController.pointsDebugModel,
     )
 
     // misc technical fields
@@ -79,7 +77,7 @@ class MainScene(private val app: EditorApp) {
             addListener(keyController)
             addListener(camera)
             addListener(newNodeController)
-            addListener(selectionController)
+            addListener(selectController)
             addListener(moveController)
             addListener(resizeController)
         }

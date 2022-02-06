@@ -14,7 +14,7 @@ import kotlin.math.max
 import kotlin.math.min
 
 /** Draws a 2D rectangular marquee on screen, selecting any objects under it. */
-class SelectionController(
+class SelectController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
 ) : BaseSelectionController(app, camera, Tool.SELECT) {
@@ -102,7 +102,7 @@ class SelectionController(
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
 
         for (obj in app.state.sceneObjects) {
-            if (selectedSet.contains(obj)) continue
+            if (obj in selectedSet || obj in app.state.hiddenObjects) continue
             obj.screenAABB.run {
                 debugPoint(minX, minY)
                 debugPoint(maxX, minY)

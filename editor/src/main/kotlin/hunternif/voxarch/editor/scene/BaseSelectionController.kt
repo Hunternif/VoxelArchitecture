@@ -64,6 +64,7 @@ abstract class BaseSelectionController(
         var minDistance = Float.MAX_VALUE
         var hitObj: SceneObject? = null
         for (obj in app.state.sceneObjects) {
+            if (obj in app.state.hiddenObjects) continue
             val hit = camera.projectToBox(mouseX, mouseY, obj.start, obj.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
