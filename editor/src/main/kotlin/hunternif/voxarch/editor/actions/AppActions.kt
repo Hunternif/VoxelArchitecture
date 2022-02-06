@@ -18,15 +18,7 @@ import java.nio.file.Path
 
 // EditorApp must be injected into all classes that call these actions.
 
-fun EditorApp.importVoxFile(path: Path) = action {
-    val file = readVoxFile(path)
-    state.run {
-        val voxels = SceneVoxelGroup(path.fileName.toString(), file)
-        sceneObjects.add(voxels)
-        voxelRoot.addChild(voxels)
-    }
-    scene.updateVoxelModel()
-}
+fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
 /** Add the given object to selection. */
 fun EditorApp.selectObject(obj: SceneObject) = action {
