@@ -28,6 +28,7 @@ inline fun GuiBase.iconButton(
     crossinline onClick: () -> Unit = {}
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0f, 0f)
+    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 8f, 8f)
     if (selected) pushStyleColor(ImGuiCol.Button, Colors.accentActive)
     else if (transparent)
         ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0)
@@ -35,7 +36,7 @@ inline fun GuiBase.iconButton(
     if (ImGui.button(icon, size, size)) onClick()
     ImGui.popFont()
     if (tooltip.isNotEmpty() && ImGui.isItemHovered()) ImGui.setTooltip(tooltip)
-    ImGui.popStyleVar(1)
+    ImGui.popStyleVar(2)
     if (selected || transparent) ImGui.popStyleColor()
 }
 
