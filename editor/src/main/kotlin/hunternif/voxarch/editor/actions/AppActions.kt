@@ -22,9 +22,19 @@ fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
 /** Add the given object to selection. */
 fun EditorApp.selectObject(obj: SceneObject) = action {
-    if (state.selectedObjects.add(obj)) {
+    if (obj != state.rootNode && obj != state.voxelRoot &&
+        state.selectedObjects.add(obj)) {
         scene.updateSelectedNodeModel()
     }
+}
+
+/** Add the given objects to selection. */
+fun EditorApp.selectObjects(objs: Collection<SceneObject>) = action {
+    for (obj in objs) {
+        if (obj == state.rootNode || obj == state.voxelRoot) continue
+        state.selectedObjects.add(obj)
+    }
+    scene.updateSelectedNodeModel()
 }
 
 /** Remove the given object from selection. */
@@ -32,6 +42,14 @@ fun EditorApp.unselectObject(obj: SceneObject) = action {
     if (state.selectedObjects.remove(obj)) {
         scene.updateSelectedNodeModel()
     }
+}
+
+/** Remove the given objects from selection. */
+fun EditorApp.unselectObjects(objs: Collection<SceneObject>) = action {
+    for (obj in objs) {
+        state.selectedObjects.remove(obj)
+    }
+    scene.updateSelectedNodeModel()
 }
 
 /** Select a single object */

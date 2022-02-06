@@ -8,10 +8,7 @@ import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImGui
-import imgui.flag.ImGuiCol
-import imgui.flag.ImGuiStyleVar
-import imgui.flag.ImGuiTableColumnFlags
-import imgui.flag.ImGuiTreeNodeFlags
+import imgui.flag.*
 import org.lwjgl.glfw.GLFW.*
 
 class GuiNodeTree(
@@ -20,10 +17,21 @@ class GuiNodeTree(
 ) : GuiSceneTree<SceneNode>(app, gui) {
     override val root: SceneNode get() = app.state.rootNode
     override fun label(item: SceneNode): String = item.node.javaClass.simpleName
-    override fun onClick(item: SceneNode) { app.setSelectedObject(item) }
+    override fun onClick(item: SceneNode) {
+        unselectAll()
+        app.selectObject(item)
+    }
+    override fun onShiftClick(item: SceneNode) {
+        if (item in app.state.selectedObjects) app.unselectObject(item)
+        else app.selectObject(item)
+    }
     override fun onDoubleClick(item: SceneNode) {
         app.setParentNode(item)
         app.centerCamera()
+    }
+    override fun unselectAll() {
+        val selectedNodes = app.state.selectedObjects.filterIsInstance<SceneNode>()
+        app.unselectObjects(selectedNodes)
     }
 }
 
@@ -33,8 +41,19 @@ class GuiVoxelTree(
 ) : GuiSceneTree<SceneVoxelGroup>(app, gui) {
     override val root: SceneVoxelGroup get() = app.state.voxelRoot
     override fun label(item: SceneVoxelGroup): String = item.label
-    override fun onClick(item: SceneVoxelGroup) { app.setSelectedObject(item) }
+    override fun onClick(item: SceneVoxelGroup) {
+        unselectAll()
+        app.selectObject(item)
+    }
+    override fun onShiftClick(item: SceneVoxelGroup) {
+        if (item in app.state.selectedObjects) app.unselectObject(item)
+        else app.selectObject(item)
+    }
     override fun onDoubleClick(item: SceneVoxelGroup) {}
+    override fun unselectAll() {
+        val selectedVoxels = app.state.selectedObjects.filterIsInstance<SceneVoxelGroup>()
+        app.unselectObjects(selectedVoxels)
+    }
 }
 
 abstract class GuiSceneTree<T: INested<T>>(
@@ -48,13 +67,16 @@ abstract class GuiSceneTree<T: INested<T>>(
     abstract val root: T
     abstract fun label(item: T): String
     abstract fun onClick(item: T)
+    abstract fun onShiftClick(item: T)
     abstract fun onDoubleClick(item: T)
+    abstract fun unselectAll()
 
     fun render() {
         isAnyTreeNodeClicked = false
-        isThisPanelClicked = isMouseHoveringCurrentWindow() &&
+        isThisPanelClicked = ImGui.isWindowHovered() &&
             ImGui.isWindowFocused() &&
-            ImGui.isMouseClicked(0)
+            !ImGui.isMouseDragging(ImGuiMouseButton.Left) &&
+            ImGui.isMouseClicked(ImGuiMouseButton.Left)
 
         // CellPadding = 0 makes tree rows appear next to each other without breaks
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
@@ -67,7 +89,7 @@ abstract class GuiSceneTree<T: INested<T>>(
         }
         ImGui.popStyleVar(1)
         if (isThisPanelClicked && !isAnyTreeNodeClicked) {
-            app.setSelectedObject(null)
+            unselectAll()
         }
 
         if (ImGui.isWindowFocused() && ImGui.getIO().getKeysDown(GLFW_KEY_DELETE))
@@ -136,7 +158,8 @@ abstract class GuiSceneTree<T: INested<T>>(
 
         if (ImGui.isItemHovered()) {
             if (ImGui.isMouseClicked(0)) {
-                onClick(node)
+                if (ImGui.getIO().keyShift) onShiftClick(node)
+                else onClick(node)
                 isAnyTreeNodeClicked = true
             }
             if (ImGui.isMouseDoubleClicked(0)) {

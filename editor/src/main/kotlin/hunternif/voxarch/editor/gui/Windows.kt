@@ -23,15 +23,3 @@ inline fun toolbar(name: String, crossinline renderWindow: () -> Unit = {}) {
     }
     ImGui.end()
 }
-
-fun isMouseHoveringCurrentWindow(): Boolean {
-    val pos = ImGui.getWindowPos()
-    val vMin = ImGui.getWindowContentRegionMin()
-    val vMax = ImGui.getWindowContentRegionMax()
-    return  ImGui.isMouseHoveringRect(
-        pos.x + vMin.x,
-        pos.y + vMin.y,
-        pos.x + vMax.x,
-        pos.y + vMax.y
-    )
-}
