@@ -73,7 +73,7 @@ void main()
 //    gl_FragDepth = computeDepth(fragPos3D);
 
     float linearDepth = computeLinearDepth(fragPos3D);
-    float fading = exp(-10*linearDepth);
+    float fading = exp(-4*linearDepth);
 
     outColor.a *= float(t > 0) * fading;
 }
