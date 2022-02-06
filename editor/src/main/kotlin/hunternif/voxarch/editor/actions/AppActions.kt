@@ -189,4 +189,5 @@ internal fun EditorApp.historyAction(action: HistoryAction): Unit = action {
 abstract class HistoryAction(val description: String) {
     abstract fun invoke(app: EditorAppImpl)
     abstract fun revert(app: EditorAppImpl)
+    override fun toString(): String = description
 }

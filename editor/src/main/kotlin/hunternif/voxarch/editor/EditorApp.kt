@@ -52,7 +52,7 @@ class EditorAppImpl : EditorApp {
 
     //==================== INIT CODE =======================
 
-    private fun init() {
+    fun init() {
         glfwInit()
         window = createWindow(width, height, title)
         val vp = Viewport(0, 0, width, height)
