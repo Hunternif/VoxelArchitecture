@@ -41,7 +41,7 @@ class SceneNode(
 ) : SceneObject(color = Colors.defaultNodeBox), INested<SceneNode> {
     override var parent: SceneNode? = null
     private val _children = LinkedHashSet<SceneNode>()
-    override val children: List<SceneNode> get() = _children.toList()
+    override val children get() = _children
 
     init { update() }
 
@@ -77,7 +77,7 @@ class SceneVoxelGroup(
 ) : SceneObject(color = Colors.transparent), INested<SceneVoxelGroup> {
     override var parent: SceneVoxelGroup? = null
     private val _children = LinkedHashSet<SceneVoxelGroup>()
-    override val children: List<SceneVoxelGroup> get() = _children.toList()
+    override val children get() = _children
 
     init { update() }
 
@@ -99,7 +99,7 @@ class SceneVoxelGroup(
 
 interface INested<T : INested<T>> {
     var parent: T?
-    val children: List<T>
+    val children: Collection<T>
     fun addChild(child: T)
     fun removeChild(child: T)
 }

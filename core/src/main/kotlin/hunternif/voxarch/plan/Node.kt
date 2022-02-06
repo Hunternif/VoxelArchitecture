@@ -15,7 +15,7 @@ open class Node(
     open var rotationY = 0.0
 
     private val _children = mutableListOf<Node>()
-    val children: List<Node> get() = _children.toList()
+    val children: List<Node> get() = _children
 
     /**
      * Describes the purpose of this node. It can be used to find
