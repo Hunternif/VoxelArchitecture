@@ -50,6 +50,7 @@ interface AppState {
 
     val DEBUG: Boolean
     val isMainWindowFocused: Boolean
+    val isMainWindowHovered: Boolean
 
 
     //============================ GUI SETTINGS =============================
@@ -72,6 +73,7 @@ class AppStateImpl : AppState {
 
     override val DEBUG = true
     override var isMainWindowFocused = false
+    override var isMainWindowHovered = false
 
     override var gridMargin = 9
 }

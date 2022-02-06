@@ -13,14 +13,16 @@ import org.lwjgl.glfw.GLFW
 abstract class GuiBase {
     @PublishedApi internal val imGuiGlfw = ImGuiImplGlfw()
     @PublishedApi internal val imGuiGl3 = ImGuiImplGl3()
+    var window: Long = 0
 
-    fun init(windowHandle: Long) {
+    fun init(window: Long) {
+        this.window = window
         ImGui.createContext()
         val io = ImGui.getIO()
         io.configFlags = io.configFlags or ImGuiConfigFlags.DockingEnable
         io.iniFilename = null // This prevents "imgui.ini" from saving
         initFonts()
-        imGuiGlfw.init(windowHandle, true)
+        imGuiGlfw.init(window, true)
         imGuiGl3.init("#version 130")
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MAJOR, 3)
         GLFW.glfwWindowHint(GLFW.GLFW_CONTEXT_VERSION_MINOR, 0)

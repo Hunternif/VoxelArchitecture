@@ -32,7 +32,6 @@ abstract class BaseSelectionController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
-        if (ImGui.isAnyItemHovered()) return
         if (app.state.currentTool == tool && button == GLFW_MOUSE_BUTTON_1 &&
             camera.vp.contains(mouseX, mouseY)
         ) {

@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.centerCamera
 import hunternif.voxarch.editor.actions.focusMainWindow
+import hunternif.voxarch.editor.actions.hoverMainWindow
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
@@ -116,6 +117,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                     vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
             }
             app.focusMainWindow(ImGui.isWindowFocused())
+            app.hoverMainWindow(ImGui.isWindowHovered())
         }
         ImGui.end()
         ImGui.popStyleVar(3)

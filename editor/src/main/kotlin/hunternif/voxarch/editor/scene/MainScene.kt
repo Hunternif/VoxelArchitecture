@@ -31,7 +31,7 @@ class MainScene(private val app: EditorApp) {
 
 
     // core controllers
-    private val inputController = InputController()
+    private val inputController = InputController(app)
     private val guiKeyListener = ImGuiKeyListener()
     private val keyController = KeyController(app)
     private val camera = OrbitalCamera()

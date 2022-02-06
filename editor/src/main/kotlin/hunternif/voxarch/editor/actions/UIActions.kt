@@ -51,3 +51,7 @@ fun EditorApp.clearNewNodeFrame() = action {
 fun EditorApp.focusMainWindow(focused: Boolean) = action {
     state.isMainWindowFocused = focused
 }
+
+fun EditorApp.hoverMainWindow(hovered: Boolean) = action {
+    state.isMainWindowHovered = hovered
+}

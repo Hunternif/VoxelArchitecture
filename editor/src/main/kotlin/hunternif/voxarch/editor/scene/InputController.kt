@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.EditorApp
 import org.lwjgl.glfw.GLFW.*
 
 interface MouseListener {
@@ -12,7 +13,7 @@ interface KeyListener {
     fun onKeyPress(key: Int, action: Int, mods: Int) {}
 }
 
-class InputController {
+class InputController(private val app: EditorApp) {
     private val mouseListeners = mutableListOf<MouseListener>()
     private val keyListeners = mutableListOf<KeyListener>()
 
@@ -39,14 +40,16 @@ class InputController {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onMouseButton(window: Long, button: Int, action: Int, mods: Int) {
-        for (listener in mouseListeners)
-            listener.onMouseButton(button, action, mods)
+        if (app.state.isMainWindowHovered)
+            for (listener in mouseListeners)
+                listener.onMouseButton(button, action, mods)
     }
 
     @Suppress("UNUSED_PARAMETER")
     private fun onScroll(window: Long, offsetX: Double, offsetY: Double) {
-        for (listener in mouseListeners)
-            listener.onScroll(offsetX, offsetY)
+        if (app.state.isMainWindowHovered)
+            for (listener in mouseListeners)
+                listener.onScroll(offsetX, offsetY)
     }
 
     @Suppress("UNUSED_PARAMETER")
