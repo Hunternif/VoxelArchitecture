@@ -1,5 +1,8 @@
 package hunternif.voxarch.editor
 
+import hunternif.voxarch.editor.actions.History
+import hunternif.voxarch.editor.actions.HistoryAction
+import hunternif.voxarch.editor.actions.ReadOnlyHistory
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
@@ -40,6 +43,7 @@ interface AppState {
 
     val currentTool: Tool
     val newNodeFrame: NewNodeFrame
+    val history: ReadOnlyHistory<HistoryAction>
 
 
     //============================= GUI STATE ===============================
@@ -64,6 +68,7 @@ class AppStateImpl : AppState {
 
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()
+    override val history = History<HistoryAction>()
 
     override val DEBUG = true
     override var isMainWindowFocused = false

@@ -8,7 +8,6 @@ import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
-import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
@@ -174,9 +173,28 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) = action {
     scene.updateSelectedNodeModel()
 }
 
+fun EditorApp.undo() = action {
+    state.history.moveBack()?.revert(this)
+}
+
+fun EditorApp.redo() = action {
+    state.history.moveForward()?.invoke(this)
+}
+
 
 /////////////////////////// TECHNICAL ACTIONS ///////////////////////////////
 
-fun <T> EditorApp.action(execute: EditorAppImpl.() -> T): T {
+/** Simple action that isn't written to history. */
+internal fun <T> EditorApp.action(execute: EditorAppImpl.() -> T): T {
     return (this as EditorAppImpl).execute()
+}
+
+internal fun EditorApp.historyAction(action: HistoryAction): Unit = action {
+    action.invoke(this)
+    state.history.append(action)
+}
+
+abstract class HistoryAction(val description: String) {
+    abstract fun invoke(app: EditorAppImpl)
+    abstract fun revert(app: EditorAppImpl)
 }
