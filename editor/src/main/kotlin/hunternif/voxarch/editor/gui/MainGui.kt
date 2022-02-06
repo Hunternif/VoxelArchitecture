@@ -41,7 +41,10 @@ class MainGui(val app: EditorApp) : GuiBase() {
                     top = VerticalSplit(
                         bottomRatio = 0.5f,
                         top = Window("Node tree"),
-                        bottom = Window("Voxel tree"),
+                        bottom = WindowGroup(
+                            Window("Voxel tree"),
+                            Window("History"),
+                        )
                     ),
                 ),
             )
@@ -73,6 +76,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
         }
         rightPanel("Node tree", hasPadding = false) {
             nodeTree.render()
+        }
+        rightPanel("History", hasPadding = false) {
+            guiHistory()
         }
         rightPanel("Voxel tree", hasPadding = false) {
             voxelTree.render()

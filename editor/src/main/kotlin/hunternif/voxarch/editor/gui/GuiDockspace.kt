@@ -96,13 +96,18 @@ class VerticalSplit(
     }
 }
 
-class Window(
-    private val name: String,
-): DockspaceLayoutBuilder {
+class Window(val name: String): DockspaceLayoutBuilder {
     override fun build(dockNodeID: Int) {
         DockImGui.dockBuilderDockWindow(name, dockNodeID)
     }
+}
 
+class WindowGroup(private vararg val windows: Window): DockspaceLayoutBuilder {
+    override fun build(dockNodeID: Int) {
+        windows.forEach {
+            DockImGui.dockBuilderDockWindow(it.name, dockNodeID)
+        }
+    }
 }
 
 fun dockspace(layout: DockspaceLayoutBuilder) {

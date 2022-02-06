@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
@@ -204,7 +205,10 @@ internal fun EditorApp.historyAction(action: HistoryAction): Unit = action {
     state.history.append(action)
 }
 
-abstract class HistoryAction(val description: String) {
+abstract class HistoryAction(
+    val description: String,
+    val icon: String = FontAwesomeIcons.File,
+) {
     abstract fun invoke(app: EditorAppImpl)
     abstract fun revert(app: EditorAppImpl)
     override fun toString(): String = description

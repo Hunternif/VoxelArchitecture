@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.util.ColorRGBa
 
 class Colors {
     companion object {
+        val text = ColorRGBa.fromHex(0xffffff)
         val transparent = ColorRGBa.fromHex(0xffffff, 0f)
 
         val buttonActive = ColorRGBa.fromHex(0x0f87fa)

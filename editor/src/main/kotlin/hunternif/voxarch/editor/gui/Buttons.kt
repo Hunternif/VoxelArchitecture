@@ -70,3 +70,16 @@ fun MainGui.toolButton(tool: Tool) {
         app.setTool(tool)
     }
 }
+
+/** A hack that uses a transparent selectable to draw text,
+ * so that the text can be aligned horizontally */
+fun centeredText(text: String) {
+    ImGui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, 0.5f, 0f)
+    // Hack: hide the selectable highlight
+    pushStyleColor(ImGuiCol.Header, Colors.transparent)
+    pushStyleColor(ImGuiCol.HeaderHovered, Colors.transparent)
+    pushStyleColor(ImGuiCol.HeaderActive, Colors.transparent)
+    ImGui.selectable(text, false)
+    ImGui.popStyleColor(3)
+    ImGui.popStyleVar(1)
+}

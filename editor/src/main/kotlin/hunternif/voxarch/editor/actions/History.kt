@@ -4,13 +4,14 @@ import java.util.*
 
 interface ReadOnlyHistory<T> {
     val pastItems: List<T>
+    val futureItems: List<T>
     fun hasPastItems(): Boolean
     fun hasFutureItems(): Boolean
 }
 
 class History<T> : ReadOnlyHistory<T> {
     override val pastItems = LinkedList<T>()
-    private val futureItems = LinkedList<T>()
+    override val futureItems = LinkedList<T>()
 
     /**
      * Returns the last item and move current position back to it.

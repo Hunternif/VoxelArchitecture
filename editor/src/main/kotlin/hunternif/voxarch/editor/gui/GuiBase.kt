@@ -40,13 +40,15 @@ abstract class GuiBase {
         // config to merge solid & regular icons together
         val fontConfigMergeFont = ImFontConfig().apply { mergeMode = true }
         val iconRanges = ImFontGlyphRangesBuilder().apply {
+            addRanges(io.fonts.glyphRangesDefault)
             addRanges(FontAwesomeIcons._IconRange)
         }.buildRanges()
 
         io.fonts.apply {
-            fontSmallIcons = addFontFromMemoryTTF(
+            fontSmallIcons = addFontDefault()
+            addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-regular-400.ttf"),
-                10f, fontConfigNewFont, iconRanges
+                10f, fontConfigMergeFont, iconRanges
             )
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-solid-900.ttf"),

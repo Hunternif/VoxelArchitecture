@@ -1,13 +1,17 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.magicavoxel.readVoxFile
 import java.nio.file.Path
 
 class ImportVoxFile(
     private val path: Path
-) : HistoryAction("Import VOX file ${path.fileName}") {
+) : HistoryAction(
+    "Import VOX file ${path.fileName}",
+    FontAwesomeIcons.Cube
+) {
 
     private lateinit var voxelGroup: SceneVoxelGroup
 
