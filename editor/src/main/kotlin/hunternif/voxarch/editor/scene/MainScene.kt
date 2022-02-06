@@ -170,7 +170,9 @@ class MainScene(private val app: EditorApp) {
     }
 
     private fun updateCursor() {
-        if (app.state.currentTool == Tool.RESIZE && camera.isMouseInViewport()) {
+        if (app.state.currentTool == Tool.RESIZE &&
+            app.state.isMainWindowHovered
+        ) {
             val cursor = when (resizeController.pickedFace?.dir) {
                 POS_X, POS_Z, NEG_X, NEG_Z -> cursorResizeHor
                 POS_Y, NEG_Y -> cursorResizeVer
