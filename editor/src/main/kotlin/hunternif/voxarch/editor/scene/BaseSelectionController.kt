@@ -2,9 +2,8 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.selectObject
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.actions.setSelectedObject
-import imgui.ImGui
 import org.joml.Vector2f
 import org.lwjgl.glfw.GLFW.*
 
@@ -52,7 +51,7 @@ abstract class BaseSelectionController(
     /** If no objects are selected, select one that the cursor is hovering. */
     protected fun selectOneObjectIfEmpty() {
         if (app.state.selectedObjects.isEmpty())
-            app.setSelectedObject(hitTest())
+            hitTest()?.let { app.selectObject(it) }
     }
 
     /** Returns the closest object under cursor,

@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
-import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
@@ -21,45 +20,25 @@ import java.nio.file.Path
 
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
-/** Add the given object to selection. */
-fun EditorApp.selectObject(obj: SceneObject) = action {
-    if (obj != state.rootNode && obj != state.voxelRoot &&
-        state.selectedObjects.add(obj)) {
-        scene.updateSelectedNodeModel()
-    }
-}
+/** Modify selection in multiple steps. */
+fun EditorApp.selectionBuilder() = action { SelectObjectsBuilder(this) }
 
-/** Add the given objects to selection. */
-fun EditorApp.selectObjects(objs: Collection<SceneObject>) = action {
-    for (obj in objs) {
-        if (obj == state.rootNode || obj == state.voxelRoot) continue
-        state.selectedObjects.add(obj)
-    }
-    scene.updateSelectedNodeModel()
+/** Add the given object to selection. */
+fun EditorApp.selectObject(obj: SceneObject) = selectionBuilder().apply {
+    add(obj)
+    commit()
 }
 
 /** Remove the given object from selection. */
-fun EditorApp.unselectObject(obj: SceneObject) = action {
-    if (state.selectedObjects.remove(obj)) {
-        scene.updateSelectedNodeModel()
-    }
+fun EditorApp.unselectObject(obj: SceneObject) = selectionBuilder().apply {
+    remove(obj)
+    commit()
 }
 
 /** Remove the given objects from selection. */
-fun EditorApp.unselectObjects(objs: Collection<SceneObject>) = action {
-    for (obj in objs) {
-        state.selectedObjects.remove(obj)
-    }
-    scene.updateSelectedNodeModel()
-}
-
-/** Select a single object */
-fun EditorApp.setSelectedObject(node: SceneObject?) = action {
-    state.run {
-        selectedObjects.clear()
-        if (node != null && node != rootNode) selectedObjects.add(node)
-    }
-    scene.updateSelectedNodeModel()
+fun EditorApp.unselectObjects(objs: Collection<SceneObject>) = selectionBuilder().apply {
+    objs.forEach { remove(it) }
+    commit()
 }
 
 fun EditorApp.setParentNode(node: SceneNode) = action {
@@ -194,20 +173,13 @@ fun EditorApp.redo() = action {
 /////////////////////////// TECHNICAL ACTIONS ///////////////////////////////
 
 /** Simple action that isn't written to history. */
-internal fun <T> EditorApp.action(execute: EditorAppImpl.() -> T): T {
+internal inline fun <T> EditorApp.action(
+    crossinline execute: EditorAppImpl.() -> T
+): T {
     return (this as EditorAppImpl).execute()
 }
 
 internal fun EditorApp.historyAction(action: HistoryAction): Unit = action {
     action.invoke(this)
     state.history.append(action)
-}
-
-abstract class HistoryAction(
-    val description: String,
-    val icon: String = FontAwesomeIcons.File,
-) {
-    abstract fun invoke(app: EditorAppImpl)
-    abstract fun revert(app: EditorAppImpl)
-    override fun toString(): String = description
 }
