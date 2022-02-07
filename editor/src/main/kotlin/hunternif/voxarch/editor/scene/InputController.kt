@@ -40,7 +40,7 @@ class InputController(private val app: EditorApp) {
 
     @Suppress("UNUSED_PARAMETER")
     private fun onMouseButton(window: Long, button: Int, action: Int, mods: Int) {
-        if (app.state.isMainWindowHovered)
+        if (app.state.isMainWindowHovered || action != GLFW_PRESS)
             for (listener in mouseListeners)
                 listener.onMouseButton(button, action, mods)
     }

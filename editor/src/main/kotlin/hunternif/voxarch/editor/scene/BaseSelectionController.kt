@@ -32,9 +32,7 @@ abstract class BaseSelectionController(
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseButton(button: Int, action: Int, mods: Int) {
-        if (app.state.currentTool == tool && button == GLFW_MOUSE_BUTTON_1 &&
-            camera.vp.contains(mouseX, mouseY)
-        ) {
+        if (app.state.currentTool == tool && button == GLFW_MOUSE_BUTTON_1) {
             if (action == GLFW_PRESS) {
                 onMouseDown(mods)
             } else if (action == GLFW_RELEASE) {
