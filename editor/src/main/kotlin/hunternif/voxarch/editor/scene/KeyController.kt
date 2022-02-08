@@ -30,6 +30,7 @@ class KeyController(private val app: EditorApp) : KeyListener {
         when {
             key == GLFW_KEY_Z && control && shift -> app.redo()
             key == GLFW_KEY_Z && control -> app.undo()
+            key == GLFW_KEY_I && control -> app.openDialogImportVoxFile()
         }
     }
 }

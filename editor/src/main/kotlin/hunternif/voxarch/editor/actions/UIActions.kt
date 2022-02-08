@@ -3,8 +3,30 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scene.NewNodeFrame
+import imgui.ImGui
+import org.lwjgl.system.MemoryUtil
+import org.lwjgl.util.nfd.NativeFileDialog.*
+import java.lang.Exception
+import java.nio.file.Paths
 
 // Actions that update the state of UI and don't contribute to history
+
+//TODO: use a separate thread
+fun EditorApp.openDialogImportVoxFile() = action {
+    val outPath = MemoryUtil.memAllocPointer(1)
+    try {
+        if (NFD_OKAY == NFD_OpenDialog("vox", null, outPath)) {
+            val pathStr = outPath.getStringUTF8(0)
+            val path = Paths.get(pathStr)
+            importVoxFile(path)
+            centerCamera()
+        }
+    } catch (e: Exception) {
+        ImGui.text(e.toString())
+    } finally {
+        MemoryUtil.memFree(outPath)
+    }
+}
 
 fun EditorApp.setTool(tool: Tool) = action {
     state.currentTool = tool
