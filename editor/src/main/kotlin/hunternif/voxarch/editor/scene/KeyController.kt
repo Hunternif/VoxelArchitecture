@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
+import imgui.ImGui
 import org.lwjgl.glfw.GLFW.*
 
 /** Contains all keyboard shortcuts in the app. */
@@ -26,11 +27,14 @@ class KeyController(private val app: EditorApp) : KeyListener {
                 }
             }
         }
-        // Shortcuts anywhere in the program:
-        when {
-            key == GLFW_KEY_Z && control && shift -> app.redo()
-            key == GLFW_KEY_Z && control -> app.undo()
-            key == GLFW_KEY_I && control -> app.openDialogImportVoxFile()
+        // If an ImGui item is active, it may have its own shortcuts.
+        if (!ImGui.isAnyItemActive()) {
+            // Shortcuts anywhere in the program:
+            when {
+                key == GLFW_KEY_Z && control && shift -> app.redo()
+                key == GLFW_KEY_Z && control -> app.undo()
+                key == GLFW_KEY_I && control -> app.openDialogImportVoxFile()
+            }
         }
     }
 }
