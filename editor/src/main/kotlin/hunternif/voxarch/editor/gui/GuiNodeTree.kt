@@ -18,8 +18,7 @@ class GuiNodeTree(
     override val root: SceneNode get() = app.state.rootNode
     override fun label(item: SceneNode): String = item.node.javaClass.simpleName
     override fun onClick(item: SceneNode) {
-        unselectAll()
-        app.selectObject(item)
+        app.setSelectedObject(item)
     }
     override fun onShiftClick(item: SceneNode) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
@@ -42,8 +41,7 @@ class GuiVoxelTree(
     override val root: SceneVoxelGroup get() = app.state.voxelRoot
     override fun label(item: SceneVoxelGroup): String = item.label
     override fun onClick(item: SceneVoxelGroup) {
-        unselectAll()
-        app.selectObject(item)
+        app.setSelectedObject(item)
     }
     override fun onShiftClick(item: SceneVoxelGroup) {
         if (item in app.state.selectedObjects) app.unselectObject(item)

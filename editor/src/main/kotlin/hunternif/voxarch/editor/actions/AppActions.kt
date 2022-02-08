@@ -29,6 +29,13 @@ fun EditorApp.selectObject(obj: SceneObject) = selectionBuilder().apply {
     commit()
 }
 
+/** Clear current selection and select only the given object. */
+fun EditorApp.setSelectedObject(obj: SceneObject) = selectionBuilder().apply {
+    clear()
+    add(obj)
+    commit()
+}
+
 /** Remove the given object from selection. */
 fun EditorApp.unselectObject(obj: SceneObject) = selectionBuilder().apply {
     remove(obj)
