@@ -57,8 +57,9 @@ class EditorAppImpl : EditorApp {
         window = createWindow(width, height, title)
         val vp = Viewport(0, 0, width, height)
         registerWindowEventHandler()
-        gui.init(window, vp, 4)
         scene.init(window, vp)
+        // ImGui must be initialized after other GLFW callbacks are registered
+        gui.init(window, vp, 4)
         glfwShowWindow(window)
     }
 

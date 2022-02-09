@@ -144,8 +144,10 @@ class OrbitalCamera : MouseListener {
 
     @Suppress("UNUSED_PARAMETER")
     override fun onScroll(offsetX: Double, offsetY: Double) {
-        radius *= if (offsetY > 0) 1f / 1.1f else 1.1f
-        viewMatrixDirty = true
+        if (vp.contains(mouseX, mouseY)) {
+            radius *= if (offsetY > 0) 1f / 1.1f else 1.1f
+            viewMatrixDirty = true
+        }
     }
 
     // ======================== PANNING (middle-click) ========================

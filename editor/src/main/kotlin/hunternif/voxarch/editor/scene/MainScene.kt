@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.gui.ImGuiKeyListener
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.util.AADirection3D.*
@@ -30,7 +29,6 @@ class MainScene(private val app: EditorApp) {
 
     // core controllers
     private val inputController = InputController(app)
-    private val guiKeyListener = ImGuiKeyListener()
     private val keyController = KeyController(app)
     private val camera = OrbitalCamera()
     /** For drawing overlays on screen */
@@ -73,7 +71,6 @@ class MainScene(private val app: EditorApp) {
         models2d.forEach { it.init() }
         inputController.run {
             init(window)
-            addListener(guiKeyListener)
             addListener(keyController)
             addListener(camera)
             addListener(newNodeController)
