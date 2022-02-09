@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.scene.INested
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
@@ -18,7 +19,7 @@ class GuiNodeTree(
     override val root: SceneNode get() = app.state.rootNode
     override fun label(item: SceneNode): String = item.node.javaClass.simpleName
     override fun onClick(item: SceneNode) {
-        app.setSelectedObject(item)
+        app.setSelectedObject(item, NODES)
     }
     override fun onShiftClick(item: SceneNode) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
@@ -29,8 +30,7 @@ class GuiNodeTree(
         app.centerCamera()
     }
     override fun unselectAll() {
-        val selectedNodes = app.state.selectedObjects.filterIsInstance<SceneNode>()
-        app.unselectObjects(selectedNodes)
+        app.unselectAll(NODES)
     }
 }
 
@@ -41,7 +41,7 @@ class GuiVoxelTree(
     override val root: SceneVoxelGroup get() = app.state.voxelRoot
     override fun label(item: SceneVoxelGroup): String = item.label
     override fun onClick(item: SceneVoxelGroup) {
-        app.setSelectedObject(item)
+        app.setSelectedObject(item, VOXELS)
     }
     override fun onShiftClick(item: SceneVoxelGroup) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
@@ -49,8 +49,7 @@ class GuiVoxelTree(
     }
     override fun onDoubleClick(item: SceneVoxelGroup) {}
     override fun unselectAll() {
-        val selectedVoxels = app.state.selectedObjects.filterIsInstance<SceneVoxelGroup>()
-        app.unselectObjects(selectedVoxels)
+        app.unselectAll(VOXELS)
     }
 }
 

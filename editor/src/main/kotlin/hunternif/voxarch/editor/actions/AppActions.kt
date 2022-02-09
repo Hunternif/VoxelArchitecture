@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
@@ -21,32 +22,45 @@ import java.nio.file.Path
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
 /** Modify selection in multiple steps. */
-fun EditorApp.selectionBuilder() = action { SelectObjectsBuilder(this) }
+fun EditorApp.selectionBuilder(mask: SelectMask = ALL) = action {
+    SelectObjectsBuilder(this, mask)
+}
 
 /** Add the given object to selection. */
-fun EditorApp.selectObject(obj: SceneObject) = selectionBuilder().apply {
+fun EditorApp.selectObject(obj: SceneObject) = selectionBuilder().run {
     add(obj)
     commit()
 }
 
-/** Clear current selection and select only the given object. */
-fun EditorApp.setSelectedObject(obj: SceneObject) = selectionBuilder().apply {
-    clear()
-    add(obj)
-    commit()
-}
+/** Clear current selection and select only the given object.
+ * Selected objects not filtered by [mask] will stay selected. */
+fun EditorApp.setSelectedObject(obj: SceneObject, mask: SelectMask = ALL) =
+    selectionBuilder(mask).run {
+        clear()
+        add(obj)
+        commit()
+    }
 
 /** Remove the given object from selection. */
-fun EditorApp.unselectObject(obj: SceneObject) = selectionBuilder().apply {
+fun EditorApp.unselectObject(obj: SceneObject) = selectionBuilder().run {
     remove(obj)
     commit()
 }
 
 /** Remove the given objects from selection. */
-fun EditorApp.unselectObjects(objs: Collection<SceneObject>) = selectionBuilder().apply {
+fun EditorApp.unselectObjects(objs: Collection<SceneObject>) =
+    selectionBuilder().run {
     objs.forEach { remove(it) }
     commit()
 }
+
+/** Unselect all objects filtered by [mask]. */
+fun EditorApp.unselectAll(mask: SelectMask = ALL) =
+    selectionBuilder(mask).run {
+        clear()
+        commit()
+    }
+
 
 fun EditorApp.setParentNode(node: SceneNode) = action {
     state.parentNode = node

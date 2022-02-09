@@ -1,15 +1,31 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.SelectMask.*
+import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scene.SceneVoxelGroup
 
-class SelectObjectsBuilder(app: EditorAppImpl) : HistoryActionBuilder(app) {
-    private val oldSet = app.state.selectedObjects.toMutableSet()
-    private val newSet = app.state.selectedObjects.toMutableSet()
+class SelectObjectsBuilder(
+    app: EditorAppImpl,
+    private val mask: SelectMask = ALL,
+) : HistoryActionBuilder(app) {
+    private val oldSet = app.state.selectedObjects.toMutableSet().apply {
+        when (mask) {
+            NODES -> removeIf { it !is SceneNode }
+            VOXELS -> removeIf { it !is SceneVoxelGroup }
+            ALL -> {}
+        }
+    }
+    private val newSet = oldSet.toMutableSet()
 
     fun clear() = app.run {
+        when (mask) {
+            NODES -> state.selectedObjects.removeAll { it is SceneNode }
+            VOXELS -> state.selectedObjects.removeAll { it is SceneVoxelGroup }
+            ALL -> state.selectedObjects.clear()
+        }
         newSet.clear()
-        state.selectedObjects.clear()
         scene.updateSelectedNodeModel()
     }
 
@@ -33,7 +49,7 @@ class SelectObjectsBuilder(app: EditorAppImpl) : HistoryActionBuilder(app) {
         else -> "Select ${newSet.size} objects"
     }
 
-    override fun build() = SelectObjects(oldSet, newSet, makeDescription())
+    override fun build() = SelectObjects(oldSet, newSet, mask, makeDescription())
 
     override fun commit() {
         // only commit if it actually changes the selection
