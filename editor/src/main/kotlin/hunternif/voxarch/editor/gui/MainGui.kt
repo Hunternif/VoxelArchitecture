@@ -20,6 +20,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val nodeProperties = GuiObjectProperties(app)
     @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
+    @PublishedApi internal val history = GuiHistory(app, this)
 
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
@@ -78,7 +79,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             nodeTree.render()
         }
         rightPanel("History", hasPadding = false) {
-            guiHistory()
+            history.render()
         }
         rightPanel("Voxel tree", hasPadding = false) {
             voxelTree.render()
