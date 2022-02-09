@@ -12,13 +12,14 @@ class ImportVoxFile(
     "Import VOX file ${path.fileName}",
     FontAwesomeIcons.Cube
 ) {
-
     private lateinit var voxelGroup: SceneVoxelGroup
 
     override fun invoke(app: EditorAppImpl) = app.run {
-        val file = readVoxFile(path)
-        state.run {
+        if (!::voxelGroup.isInitialized) {
+            val file = readVoxFile(path)
             voxelGroup = SceneVoxelGroup(path.fileName.toString(), file)
+        }
+        state.run {
             sceneObjects.add(voxelGroup)
             voxelRoot.addChild(voxelGroup)
         }
