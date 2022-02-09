@@ -31,6 +31,11 @@ class SelectObjectsBuilder(
 
     fun add(obj: SceneObject) = app.run {
         if (obj != state.rootNode && obj != state.voxelRoot) {
+            when (mask) {
+                NODES -> if (obj !is SceneNode) return
+                VOXELS -> if (obj !is SceneVoxelGroup) return
+                ALL -> {}
+            }
             newSet.add(obj)
             if (state.selectedObjects.add(obj)) {
                 scene.updateSelectedNodeModel()
@@ -39,6 +44,11 @@ class SelectObjectsBuilder(
     }
 
     fun remove(obj: SceneObject) = app.run {
+        when (mask) {
+            NODES -> if (obj !is SceneNode) return
+            VOXELS -> if (obj !is SceneVoxelGroup) return
+            ALL -> {}
+        }
         newSet.remove(obj)
         if (state.selectedObjects.remove(obj)) {
             scene.updateSelectedNodeModel()

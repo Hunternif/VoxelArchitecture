@@ -51,4 +51,9 @@ class History<T> : ReadOnlyHistory<T> {
 
     /** Whether there are any items after the current position. */
     override fun hasFutureItems(): Boolean = futureItems.isNotEmpty()
+
+    fun clear() {
+        pastItems.clear()
+        futureItems.clear()
+    }
 }

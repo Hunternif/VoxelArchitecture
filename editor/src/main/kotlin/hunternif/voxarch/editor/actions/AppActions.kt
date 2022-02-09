@@ -47,13 +47,6 @@ fun EditorApp.unselectObject(obj: SceneObject) = selectionBuilder().run {
     commit()
 }
 
-/** Remove the given objects from selection. */
-fun EditorApp.unselectObjects(objs: Collection<SceneObject>) =
-    selectionBuilder().run {
-    objs.forEach { remove(it) }
-    commit()
-}
-
 /** Unselect all objects filtered by [mask]. */
 fun EditorApp.unselectAll(mask: SelectMask = ALL) =
     selectionBuilder(mask).run {
@@ -130,7 +123,7 @@ fun EditorApp.modifyNodeCentered(node: SceneNode, centered: Boolean) = action {
  */
 fun EditorApp.createRoom(
     start: Vector3i, end: Vector3i, centered: Boolean = false
-) = action {
+) : SceneNode = action {
     // ensure size is positive
     val min = min(start, end).toVec3()
     val max = max(start, end).toVec3()
@@ -148,8 +141,9 @@ fun EditorApp.createRoom(
         val sceneNode = SceneNode(room)
         sceneObjects.add(sceneNode)
         parentNode.addChild(sceneNode)
+        scene.updateNodeModel()
+        sceneNode
     }
-    scene.updateNodeModel()
 }
 
 fun EditorApp.deleteSelectedObjects() = action {
