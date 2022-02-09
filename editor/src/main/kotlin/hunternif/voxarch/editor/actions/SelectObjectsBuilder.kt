@@ -32,15 +32,17 @@ class SelectObjectsBuilder(
     fun add(obj: SceneObject) = app.run {
         if (obj != state.rootNode && obj != state.voxelRoot) {
             newSet.add(obj)
-            state.selectedObjects.add(obj)
-            scene.updateSelectedNodeModel()
+            if (state.selectedObjects.add(obj)) {
+                scene.updateSelectedNodeModel()
+            }
         }
     }
 
     fun remove(obj: SceneObject) = app.run {
         newSet.remove(obj)
-        state.selectedObjects.remove(obj)
-        scene.updateSelectedNodeModel()
+        if (state.selectedObjects.remove(obj)) {
+            scene.updateSelectedNodeModel()
+        }
     }
 
     private fun makeDescription(): String = when {
