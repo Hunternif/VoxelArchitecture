@@ -64,7 +64,7 @@ inline fun GuiBase.smallIconButton(
 fun MainGui.toolButton(tool: Tool) {
     bigIconButton(
         tool.icon,
-        tool.description,
+        tool.fullDescription,
         selected = app.state.currentTool == tool
     ) {
         app.setTool(tool)
