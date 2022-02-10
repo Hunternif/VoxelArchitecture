@@ -93,7 +93,7 @@ class MainScene(private val app: EditorApp) {
 
     fun lookAtObjects(objs: Collection<SceneObject>) {
         val minCorner = Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-        val maxCorner = Vector3f(Float.MIN_VALUE, Float.MIN_VALUE, Float.MIN_VALUE)
+        val maxCorner = Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
         for (obj in objs) {
             minCorner.set(min(minCorner, obj.start))
             maxCorner.set(max(maxCorner, obj.end))
