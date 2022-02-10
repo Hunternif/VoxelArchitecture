@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scene.SelectController.Mode.*
 import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
 import org.joml.Vector2f
@@ -16,6 +17,11 @@ class SelectController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
 ) : BaseSelectionController(app, camera, Tool.SELECT) {
+    /** How to modify the existing selection. */
+    private enum class Mode {
+        REPLACE, ADD, SUBTRACT
+    }
+
     val marqueeModel = SelectionMarqueeModel()
     val pointsDebugModel = Points2DModel()
 
@@ -37,7 +43,7 @@ class SelectController(
     private val selectedSet = LinkedHashSet<SceneObject>()
     /** Stores a copy of the original selection when shift-selecting. */
     private val origSelectedSet = LinkedHashSet<SceneObject>()
-    private var shift = false
+    private var mode = REPLACE
     /** Builder for the action that will be written to history. */
     private var selectionBuilder: SelectObjectsBuilder? = null
     /** True on first mouse-down, and false after the first move. */
@@ -58,8 +64,10 @@ class SelectController(
         }
         updateAABBs()
         if (mods and GLFW_MOD_SHIFT != 0) {
-            shift = true
-            origSelectedSet.clear()
+            mode = ADD
+            origSelectedSet.addAll(app.state.selectedObjects)
+        } else if (mods and GLFW_MOD_ALT != 0) {
+            mode = SUBTRACT
             origSelectedSet.addAll(app.state.selectedObjects)
         }
         selectedSet.clear()
@@ -74,27 +82,36 @@ class SelectController(
         ) {
             // if no node was selected, pick the single node that we clicked on
             val hit = hitTest()
-            if (shift) {
-                hit?.let {
-                    if (it in origSelectedSet) selectionBuilder?.remove(it)
-                    else selectionBuilder?.add(it)
+            when (mode) {
+                ADD -> {
+                    hit?.let {
+                        // in ADD mode, single click toggles selection
+                        if (it in origSelectedSet) selectionBuilder?.remove(it)
+                        else selectionBuilder?.add(it)
+                    }
                 }
-            } else {
-                selectionBuilder?.clear()
-                hit?.let { selectionBuilder?.add(it) }
+                SUBTRACT -> {
+                    hit?.let { selectionBuilder?.remove(it) }
+                }
+                REPLACE -> {
+                    selectionBuilder?.clear()
+                    hit?.let { selectionBuilder?.add(it) }
+                }
             }
         }
         if (DEBUG_SELECT) pointsDebugModel.points.clear()
         if (DEBUG_SELECT) pointsDebugModel.update()
-        shift = false
+        mode = REPLACE
         dragging = false
+        origSelectedSet.clear()
         selectionBuilder?.commit()
+        selectionBuilder = null
     }
 
     override fun drag(posX: Float, posY: Float) {
         if (firstMove) {
             firstMove = false
-            if (!shift) selectionBuilder?.clear()
+            if (mode === REPLACE) selectionBuilder?.clear()
         }
         marqueeModel.end.set(posX - camera.vp.x, posY - camera.vp.y)
         marqueeModel.update()
@@ -120,13 +137,11 @@ class SelectController(
                 debugPoint(maxX, maxY)
             }
             if (isAABBOutsideMarquee(obj)) {
-                if (!shift || obj !in origSelectedSet)
-                    selectionBuilder?.remove(obj)
+                onMissObject(obj)
                 continue
             }
             if (isAABBInsideMarquee(obj)) {
-                selectedSet.add(obj)
-                selectionBuilder?.add(obj)
+                onHitObject(obj)
                 continue
             }
             hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
@@ -134,17 +149,38 @@ class SelectController(
                     debugPoint(x, y)
                     val end = Vector3f(obj.start).add(obj.size)
                     if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.start, end)) {
-                        selectedSet.add(obj)
-                        selectionBuilder?.add(obj)
+                        onHitObject(obj)
                         break@hitTestLoop
                     } else {
-                        if (!shift || obj !in origSelectedSet)
-                            selectionBuilder?.remove(obj)
+                        onMissObject(obj)
                     }
                 }
             }
         }
         if (DEBUG_SELECT) pointsDebugModel.update()
+    }
+
+    /** When the selection marquee includes [obj] */
+    private fun onHitObject(obj: SceneObject) {
+        when (mode) {
+            REPLACE, ADD -> {
+                selectedSet.add(obj)
+                selectionBuilder?.add(obj)
+            }
+            SUBTRACT -> {
+                selectedSet.remove(obj)
+                selectionBuilder?.remove(obj)
+            }
+        }
+    }
+
+    /** When the selection marquee excludes [obj] */
+    private fun onMissObject(obj: SceneObject) {
+        when (mode) {
+            REPLACE -> selectionBuilder?.remove(obj)
+            ADD -> if (obj !in origSelectedSet) selectionBuilder?.remove(obj)
+            SUBTRACT -> if (obj in origSelectedSet) selectionBuilder?.add(obj)
+        }
     }
 
     private fun debugPoint(x: Float, y: Float) {
