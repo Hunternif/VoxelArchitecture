@@ -4,9 +4,7 @@ import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectController.Mode.*
-import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
-import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import kotlin.math.max
@@ -23,10 +21,6 @@ class SelectController(
     }
 
     val marqueeModel = SelectionMarqueeModel()
-    val pointsDebugModel = Points2DModel()
-
-    /** Whether to display debug dots */
-    private val DEBUG_SELECT = false
 
     /** Optimization: size of step in pixels when testing whether an object
      * falls within the marquee rectangle. */
@@ -99,8 +93,6 @@ class SelectController(
                 }
             }
         }
-        if (DEBUG_SELECT) pointsDebugModel.points.clear()
-        if (DEBUG_SELECT) pointsDebugModel.update()
         mode = REPLACE
         dragging = false
         origSelectedSet.clear()
@@ -126,16 +118,9 @@ class SelectController(
         maxY = max(marqueeModel.start.y, marqueeModel.end.y).toInt()
 
         selectedSet.clear()
-        if (DEBUG_SELECT) pointsDebugModel.points.clear()
 
         for (obj in app.state.sceneObjects) {
             if (obj in selectedSet || obj in app.state.hiddenObjects) continue
-            obj.screenAABB.run {
-                debugPoint(minX, minY)
-                debugPoint(maxX, minY)
-                debugPoint(minX, maxY)
-                debugPoint(maxX, maxY)
-            }
             if (isAABBOutsideMarquee(obj)) {
                 onMissObject(obj)
                 continue
@@ -146,7 +131,6 @@ class SelectController(
             }
             hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
                 for (y in minY..maxY step marqueeTestStep) {
-                    debugPoint(x, y)
                     val end = Vector3f(obj.start).add(obj.size)
                     if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.start, end)) {
                         onHitObject(obj)
@@ -157,7 +141,6 @@ class SelectController(
                 }
             }
         }
-        if (DEBUG_SELECT) pointsDebugModel.update()
     }
 
     /** When the selection marquee includes [obj] */
@@ -181,13 +164,6 @@ class SelectController(
             ADD -> if (obj !in origSelectedSet) selectionBuilder?.remove(obj)
             SUBTRACT -> if (obj in origSelectedSet) selectionBuilder?.add(obj)
         }
-    }
-
-    private fun debugPoint(x: Float, y: Float) {
-        if (DEBUG_SELECT) pointsDebugModel.points.add(Vector2f(x, y))
-    }
-    private fun debugPoint(x: Int, y: Int) {
-        if (DEBUG_SELECT) pointsDebugModel.points.add(Vector2f(x.toFloat(), y.toFloat()))
     }
 
     /** Returns true if the screen AABB is completely outside the marquee. */
