@@ -56,7 +56,7 @@ class SelectObjectsBuilder(
     }
 
     private fun makeDescription(): String = when {
-        newSet.isEmpty() && oldSet.isNotEmpty() -> "Unselect all"
+        newSet.isEmpty() && oldSet.isNotEmpty() -> "Deselect all"
         newSet.size == 1 -> "Select 1 object"
         else -> "Select ${newSet.size} objects"
     }

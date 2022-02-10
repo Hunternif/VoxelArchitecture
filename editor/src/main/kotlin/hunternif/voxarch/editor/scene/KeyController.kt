@@ -26,6 +26,7 @@ class KeyController(private val app: EditorApp) : KeyListener {
                     }
                 }
                 key == GLFW_KEY_A && control -> app.selectAll()
+                key == GLFW_KEY_D && control -> app.unselectAll()
             }
         }
         // If an ImGui item is active, it may have its own shortcuts.
