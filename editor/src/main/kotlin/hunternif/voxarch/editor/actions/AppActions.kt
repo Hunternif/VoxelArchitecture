@@ -47,6 +47,13 @@ fun EditorApp.unselectObject(obj: SceneObject) = selectionBuilder().run {
     commit()
 }
 
+/** Select all objects filtered by [mask]. */
+fun EditorApp.selectAll(mask: SelectMask = ALL) =
+    selectionBuilder(mask).run {
+        state.sceneObjects.forEach { add(it) }
+        commit()
+    }
+
 /** Unselect all objects filtered by [mask]. */
 fun EditorApp.unselectAll(mask: SelectMask = ALL) =
     selectionBuilder(mask).run {

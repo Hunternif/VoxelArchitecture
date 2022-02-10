@@ -16,15 +16,16 @@ class KeyController(private val app: EditorApp) : KeyListener {
 
         if (app.state.isMainWindowFocused) {
             // Shortcuts only inside main window:
-            when (key) {
-                GLFW_KEY_DELETE -> app.deleteSelectedObjects()
-                GLFW_KEY_ESCAPE -> app.clearNewNodeFrame()
-                GLFW_KEY_SPACE -> app.state.newNodeFrame.run {
+            when {
+                key == GLFW_KEY_DELETE -> app.deleteSelectedObjects()
+                key == GLFW_KEY_ESCAPE -> app.clearNewNodeFrame()
+                key == GLFW_KEY_SPACE -> app.state.newNodeFrame.run {
                     if (state != EMPTY) {
                         app.createRoom(start, end, fromCenter)
                         app.clearNewNodeFrame()
                     }
                 }
+                key == GLFW_KEY_A && control -> app.selectAll()
             }
         }
         // If an ImGui item is active, it may have its own shortcuts.

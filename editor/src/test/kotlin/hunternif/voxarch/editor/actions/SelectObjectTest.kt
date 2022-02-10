@@ -86,6 +86,27 @@ class SelectObjectTest : BaseActionTest() {
     }
 
     @Test
+    fun `test selectAll undo redo`() = app.state.run {
+        assertEquals(0, selectedObjects.size)
+        app.selectAll()
+        assertEquals(setOf(node1, node2, voxels1, voxels2), selectedObjects)
+        app.undo()
+        assertEquals(0, selectedObjects.size)
+        app.redo()
+        assertEquals(setOf(node1, node2, voxels1, voxels2), selectedObjects)
+    }
+
+    @Test
+    fun `test selectAll with mask`() = app.state.run {
+        assertEquals(0, selectedObjects.size)
+        app.selectAll(SelectMask.NODES)
+        assertEquals(setOf(node1, node2), selectedObjects)
+        app.undo()
+        app.selectAll(SelectMask.VOXELS)
+        assertEquals(setOf(voxels1, voxels2), selectedObjects)
+    }
+
+    @Test
     fun `test unselectAll undo redo`() = app.state.run {
         app.selectObject(node1)
         app.selectObject(node2)
@@ -96,6 +117,17 @@ class SelectObjectTest : BaseActionTest() {
         assertEquals(setOf(node1, node2), selectedObjects)
         app.redo()
         assertEquals(0, selectedObjects.size)
+    }
+
+    @Test
+    fun `test unselectAll with mask`() = app.state.run {
+        app.selectAll()
+        assertEquals(setOf(node1, node2, voxels1, voxels2), selectedObjects)
+        app.unselectAll(SelectMask.NODES)
+        assertEquals(setOf(voxels1, voxels2), selectedObjects)
+        app.undo()
+        app.unselectAll(SelectMask.VOXELS)
+        assertEquals(setOf(node1, node2), selectedObjects)
     }
 
     @Test
