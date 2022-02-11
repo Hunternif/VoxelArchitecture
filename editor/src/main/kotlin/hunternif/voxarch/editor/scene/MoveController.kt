@@ -5,11 +5,13 @@ import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.actions.redrawVoxels
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scene.MoveController.Direction.*
 import hunternif.voxarch.editor.util.set
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector2f
 import org.joml.Vector3f
+import org.lwjgl.glfw.GLFW.*
 import kotlin.math.round
 
 /** Moves selected objects horizontally. */
@@ -17,6 +19,9 @@ class MoveController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
 ) : BaseSelectionController(app, camera, Tool.MOVE) {
+    private enum class Direction {
+        XZ, Y
+    }
 
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val translation: Vector3f = Vector3f()
@@ -31,6 +36,8 @@ class MoveController(
      * It's used when starting drag outside a node, to not accidentally drag it
      * to the horizon. */
     private var cursorOffset = Vector2f()
+    /** Directions in which the objects are allowed to move. */
+    private var direction = XZ
 
     private var movingNodes = false
     private var movingVoxels = false
@@ -71,16 +78,23 @@ class MoveController(
         }
         floorY = round(pickedNode.start.y)
         dragStartWorldPos.set(projectToFloorWithOffset(mouseX, mouseY))
+        if (mods and GLFW_MOD_ALT != 0) {
+            direction = Y
+        }
     }
 
     override fun onMouseUp(mods: Int) {
         dragging = false
         cursorOffset.set(0f, 0f)
+        direction = XZ
     }
 
     override fun drag(posX: Float, posY: Float) {
-        val floorPos = projectToFloorWithOffset(posX, posY)
-        translation.set(floorPos.sub(dragStartWorldPos))
+        val newPos = when (direction) {
+            XZ -> projectToFloorWithOffset(posX, posY)
+            Y -> projectToYWithOffset(posX, posY)
+        }
+        translation.set(newPos.sub(dragStartWorldPos))
         for (obj in movingList) {
             val newOrigin = origins[obj]!! + translation.toVec3()
             // TODO: update origin on the actual Node on mouse-up.
@@ -125,4 +139,17 @@ class MoveController(
             posY + cursorOffset.y,
             floorY
         ).round() // round() so that it snaps to grid
+
+    /** See [cursorOffset]. */
+    private fun projectToYWithOffset(posX: Float, posY: Float): Vector3f =
+        camera.projectToY(
+            posX + cursorOffset.x,
+            posY + cursorOffset.y,
+            dragStartWorldPos
+        ).apply {
+            // Reset X & Z so that the movement is strictly vertical
+            x = dragStartWorldPos.x
+            z = dragStartWorldPos.z
+            round() // round() so that it snaps to grid
+        }
 }

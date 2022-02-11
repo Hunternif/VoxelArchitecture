@@ -12,7 +12,7 @@ enum class Tool(
     SELECT(FontAwesomeIcons.Expand, "Select", 'M'),
     ADD_NODE(FontAwesomeIcons.ClinicMedical, "Add nodes", 'A'),
     MOVE(FontAwesomeIcons.ArrowsAlt, "Move", 'V',
-    "Move selected nodes horizontally"),
+    "Move selected objects"),
     RESIZE(FontAwesomeIcons.ExpandAlt, "Resize", 'S',
         "Resize selected nodes"),
 }
