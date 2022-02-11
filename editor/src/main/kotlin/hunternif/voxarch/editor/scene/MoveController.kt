@@ -27,6 +27,10 @@ class MoveController(
     private var floorY = -0.5f
     /** Origins (starts) before translation */
     private val origins = mutableMapOf<SceneObject, Vec3>()
+    /** 2D offset applied to cursor position on screen, when calculating drag.
+     * It's used when starting drag outside a node, to not accidentally drag it
+     * to the horizon. */
+    private var cursorOffset = Vector2f()
 
     private var movingNodes = false
     private var movingVoxels = false
@@ -58,20 +62,24 @@ class MoveController(
         var pickedNode = pickClickedObject()
         if (pickedNode == null) {
             movingList.sortBy { it.start.y }
-            pickedNode = movingList[movingList.size / 2]
+            val midNode = movingList[movingList.size / 2]
+            // set 2D offset
+            cursorOffset
+                .set(camera.projectToViewport(midNode.floorCenter))
+                .sub(mouseX, mouseY)
+            pickedNode = midNode
         }
         floorY = round(pickedNode.start.y)
-        // round() so that it snaps to grid
-        dragStartWorldPos.set(camera.projectToFloor(mouseX, mouseY, floorY)).round()
+        dragStartWorldPos.set(projectToFloorWithOffset(mouseX, mouseY))
     }
 
     override fun onMouseUp(mods: Int) {
         dragging = false
+        cursorOffset.set(0f, 0f)
     }
 
     override fun drag(posX: Float, posY: Float) {
-        // round() so that it snaps to grid
-        val floorPos = camera.projectToFloor(posX, posY, floorY).round()
+        val floorPos = projectToFloorWithOffset(posX, posY)
         translation.set(floorPos.sub(dragStartWorldPos))
         for (obj in movingList) {
             val newOrigin = origins[obj]!! + translation.toVec3()
@@ -101,12 +109,20 @@ class MoveController(
     }
 
     private fun isAnyParentSelected(obj: SceneObject): Boolean {
-        if (obj !is SceneNode) return false
+        if (obj !is INested<*>) return false
         var parent = obj.parent
-        while (parent != null) {
+        while (parent != null && parent is SceneObject) {
             if (parent in app.state.selectedObjects) return true
             parent = parent.parent
         }
         return false
     }
+
+    /** See [cursorOffset]. */
+    private fun projectToFloorWithOffset(posX: Float, posY: Float): Vector3f =
+        camera.projectToFloor(
+            posX + cursorOffset.x,
+            posY + cursorOffset.y,
+            floorY
+        ).round() // round() so that it snaps to grid
 }

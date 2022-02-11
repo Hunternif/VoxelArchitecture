@@ -13,7 +13,8 @@ import org.joml.Vector3f
 /**
  * Base class for objects in the scene.
  * ([start], [start]+[size]) define the corners of its AABB.
- * [size] is in "natural" coordinates (not centric).
+ * [start] and [size] are in "natural" coordinates (not centric).
+ * [start] is an absolute position in the scene (not relative to parent).
  * [color] is the color that is used to render its AABB.
  */
 open class SceneObject(
@@ -21,9 +22,13 @@ open class SceneObject(
     val size: Vector3f = Vector3f(),
     var color: ColorRGBa,
 ) {
-    /** Read-only! Corner of the AAB in "natural" coordinates (not in voxels) */
+    /** Read-only! Corner of the AAB in "natural" coordinates (not in voxels),
+     * absolute position in the scene. */
     val end: Vector3f = Vector3f()
         get() = field.set(start).add(size)
+    /** Absolute position of the point in the middle of the floor. */
+    val floorCenter: Vector3f = Vector3f()
+        get() = field.set(start).add(end.x, 0f, end.z).mul(0.5f)
 
     /** AABB in screen coordinates relative to viewport.
      * Can be updated at any time. */
