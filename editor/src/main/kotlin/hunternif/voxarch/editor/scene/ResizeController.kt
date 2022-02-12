@@ -2,14 +2,13 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.actions.redrawNodes
+import hunternif.voxarch.editor.actions.ResizeNodesBuilder
+import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.ResizeNodeModel
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room
-import hunternif.voxarch.util.max
-import hunternif.voxarch.vector.Vec3
 import org.joml.Vector2f
 import org.joml.Vector3f
 
@@ -21,13 +20,8 @@ class ResizeController(
 ) : BaseSelectionController(app, camera, Tool.RESIZE) {
     val model = ResizeNodeModel()
 
-    /** Selected nodes that can be resized */
-    private val resizingRooms = mutableListOf<SceneNode>()
-    /** Starts before resize.
-     * Start will be updated instead of size when resized in NEG direction. */
-    private val origStarts = mutableMapOf<SceneNode, Vec3>()
-    /** Sizes before resize */
-    private val origSizes = mutableMapOf<SceneNode, Vec3>()
+    /** Builder for the action that will be written to history. */
+    private var resizeBuilder: ResizeNodesBuilder? = null
 
     private var pickedNode: SceneNode? = null
     var pickedFace: AABBFace? = null
@@ -44,31 +38,28 @@ class ResizeController(
     }
 
     override fun onMouseDown(mods: Int) {
-        resizingRooms.clear()
-        app.state.selectedObjects.forEach {
-            if (it is SceneNode && it.node is Room) {
-                resizingRooms.add(it)
-                origSizes[it] = it.node.size.clone()
-                origStarts[it] = it.node.start.clone()
-            }
-        }
+        val resizingRooms = app.state.selectedObjects
+            .filter { it is SceneNode && it.node is Room }
 
         if (resizingRooms.isEmpty()) {
             selectOneObjectIfEmpty()
             return
         }
 
-        pickedFace?.let {
+        pickedFace?.let { face ->
             dragging = true
             // set start position:
-            camera.projectToBox(mouseX, mouseY, it.min, it.max, Vector2f(),
+            camera.projectToBox(mouseX, mouseY, face.min, face.max, Vector2f(),
                 dragStartWorldPos
             )
+            resizeBuilder = app.resizeBuilder(resizingRooms)
         }
     }
 
     override fun onMouseUp(mods: Int) {
         dragging = false
+        resizeBuilder?.commit()
+        resizeBuilder = null
     }
 
     /** Find if the cursor is hitting any node, and which face on it. */
@@ -117,35 +108,17 @@ class ResizeController(
             }
             // round() so that it snaps to grid
             translation.set(dragWorldPos).sub(dragStartWorldPos).round()
-            for (obj in resizingRooms) {
-                val origSize = origSizes[obj]!!
-                val delta = Vec3(0, 0, 0)
+            val delta = translation.run {
                 when (face.dir) {
-                    POS_X -> delta.x = translation.x.toDouble()
-                    POS_Y -> delta.y = translation.y.toDouble()
-                    POS_Z -> delta.z = translation.z.toDouble()
-                    NEG_X -> delta.x = -translation.x.toDouble()
-                    NEG_Y -> delta.y = -translation.y.toDouble()
-                    NEG_Z -> delta.z = -translation.z.toDouble()
+                    POS_X -> x
+                    POS_Y -> y
+                    POS_Z -> z
+                    NEG_X -> -x
+                    NEG_Y -> -y
+                    NEG_Z -> -z
                 }
-                // TODO: update size on the actual Node on mouse-up.
-                val room = obj.node as Room
-                if (room.isCentered()) {
-                    delta.x *= 2
-                    delta.z *= 2
-                    room.size = max(Vec3.ZERO, origSize + delta)
-                } else {
-                    room.size = max(Vec3.ZERO, origSize + delta)
-                    when (face.dir) {
-                        POS_X, POS_Y, POS_Z -> {}
-                        NEG_X, NEG_Y, NEG_Z -> {
-                            room.start = origStarts[obj]!! + origSize - room.size
-                        }
-                    }
-                }
-                obj.update()
             }
-            app.redrawNodes()
+            resizeBuilder?.dragFace(face.dir, delta)
             pickedNode?.run {
                 // update face instance
                 updateFaces()

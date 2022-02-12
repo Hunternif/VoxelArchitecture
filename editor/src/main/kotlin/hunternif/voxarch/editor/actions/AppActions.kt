@@ -68,11 +68,16 @@ fun EditorApp.unselectAll(mask: SelectMask = ALL) =
     }
 
 
-//============================== MOVEMENT ===============================
+//============================== TRANSFORM ==============================
 
 /** Modify object position in multiple steps. */
 fun EditorApp.moveBuilder(objs: Collection<SceneObject>) = action {
     MoveObjectsBuilder(this, objs.toList())
+}
+
+/** Modify object size in multiple steps. */
+fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) = action {
+    ResizeNodesBuilder(this, objs.toList())
 }
 
 
