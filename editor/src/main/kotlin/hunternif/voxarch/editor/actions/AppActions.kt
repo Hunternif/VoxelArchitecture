@@ -83,38 +83,6 @@ fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) = action {
 }
 
 
-fun EditorApp.showObject(obj: SceneObject) = action {
-    // This object may have been hidden by one of its parents
-    // To make it visible, we must un-hide all parents.
-    state.hiddenObjects.remove(obj)
-    when (obj) {
-        is SceneNode -> {
-            var parent: SceneNode? = obj
-            while (parent != null) {
-                state.hiddenObjects.remove(parent)
-                parent = parent.parent
-            }
-            scene.updateNodeModel()
-        }
-        is SceneVoxelGroup -> {
-            var parent: SceneVoxelGroup? = obj
-            while (parent != null) {
-                state.hiddenObjects.remove(parent)
-                parent = parent.parent
-            }
-            scene.updateVoxelModel()
-        }
-    }
-}
-
-fun EditorApp.hideObject(obj: SceneObject) = action {
-    state.hiddenObjects.add(obj)
-    when (obj) {
-        is SceneNode -> scene.updateNodeModel()
-        is SceneVoxelGroup -> scene.updateVoxelModel()
-    }
-}
-
 /** The given [obj] is assumed to already exist in the scene, and to contain
  * the updated data. In the future the update might need to happen here... */
 fun EditorApp.updateObject(obj: SceneObject) = action {

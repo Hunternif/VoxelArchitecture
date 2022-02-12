@@ -3,6 +3,9 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scene.NewNodeFrame
+import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AABBFace
 import imgui.ImGui
 import org.lwjgl.system.MemoryUtil
@@ -51,6 +54,38 @@ fun EditorApp.centerCamera() = action {
                 scene.lookAtOrigin()
             }
         }
+    }
+}
+
+fun EditorApp.showObject(obj: SceneObject) = action {
+    // This object may have been hidden by one of its parents
+    // To make it visible, we must un-hide all parents.
+    state.hiddenObjects.remove(obj)
+    when (obj) {
+        is SceneNode -> {
+            var parent: SceneNode? = obj
+            while (parent != null) {
+                state.hiddenObjects.remove(parent)
+                parent = parent.parent
+            }
+            scene.updateNodeModel()
+        }
+        is SceneVoxelGroup -> {
+            var parent: SceneVoxelGroup? = obj
+            while (parent != null) {
+                state.hiddenObjects.remove(parent)
+                parent = parent.parent
+            }
+            scene.updateVoxelModel()
+        }
+    }
+}
+
+fun EditorApp.hideObject(obj: SceneObject) = action {
+    state.hiddenObjects.add(obj)
+    when (obj) {
+        is SceneNode -> scene.updateNodeModel()
+        is SceneVoxelGroup -> scene.updateVoxelModel()
     }
 }
 
