@@ -47,7 +47,7 @@ class GuiInputVec3(
 
     inline fun render(
         initialValue: Vec3,
-        crossinline onUpdate: () -> Unit = {}
+        crossinline onEditFinished: GuiInputVec3.() -> Unit = {}
     ) {
         setInitialValue(initialValue)
         updateFormat()
@@ -58,7 +58,7 @@ class GuiInputVec3(
             // Apply the new value
             dirty = false
             if (original != newValue) {
-                onUpdate()
+                this.onEditFinished()
             }
         }
         isBeingChanged = ImGui.isItemActive()

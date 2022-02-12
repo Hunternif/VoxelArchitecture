@@ -82,32 +82,62 @@ fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) = action {
     ResizeNodesBuilder(this, objs.toList())
 }
 
+fun EditorApp.transformNodeOrigin(
+    obj: SceneNode,
+    oldOrigin: Vec3,
+    newOrigin: Vec3,
+) = historyAction(
+    TransformNode(
+        obj,
+        obj.transformData(origin = oldOrigin),
+        obj.transformData(origin = newOrigin),
+    )
+)
 
-/** The given [obj] is assumed to already exist in the scene, and to contain
- * the updated data. In the future the update might need to happen here... */
-fun EditorApp.updateObject(obj: SceneObject) = action {
-    when (obj) {
-        is SceneNode -> scene.updateNodeModel()
-        is SceneVoxelGroup -> scene.updateVoxelModel()
+fun EditorApp.transformNodeSize(
+    obj: SceneNode,
+    oldSize: Vec3,
+    newSize: Vec3,
+) = historyAction(
+    TransformNode(
+        obj,
+        obj.transformData(size = oldSize),
+        obj.transformData(size = newSize),
+    )
+)
+
+fun EditorApp.transformNodeStart(
+    obj: SceneNode,
+    oldStart: Vec3,
+    newStart: Vec3,
+) = historyAction(
+    TransformNode(
+        obj,
+        obj.transformData(start = oldStart),
+        obj.transformData(start = newStart),
+    )
+)
+
+/** Can potentially modify origin and start, to preserve global node position. */
+fun EditorApp.transformNodeCentered(
+    obj: SceneNode,
+    newCentered: Boolean,
+) {
+    val newOrigin = (obj.node as? Room)?.run {
+        if (newCentered) origin + start + Vec3(size.x/2, 0.0, size.z/2)
+        else origin + start
     }
+    val newStart = if (obj.node is Room && !newCentered) Vec3.ZERO else null
+    historyAction(
+        TransformNode(
+            obj,
+            obj.transformData(isCentered = !newCentered),
+            obj.transformData(isCentered = newCentered,
+                origin = newOrigin, start = newStart),
+        )
+    )
 }
 
-/** Modify Node.isCentered() to new value. This moves origin so that node's
- * global position stays the same. */
-fun EditorApp.modifyNodeCentered(node: SceneNode, centered: Boolean) = action {
-    (node.node as? Room)?.apply {
-        if (isCentered() == centered) return@action
-        if (centered) {
-            origin += start + Vec3(size.x/2, 0.0, size.z/ 2)
-            setCentered(true)
-        } else {
-            origin += start
-            setCentered(false)
-            start.set(0, 0, 0)
-        }
-        scene.updateNodeModel()
-    }
-}
 
 /**
  * Add child room to the currently active node.

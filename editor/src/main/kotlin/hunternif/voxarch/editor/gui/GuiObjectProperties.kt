@@ -37,22 +37,25 @@ class GuiObjectProperties(private val app: EditorApp) {
     }
     private fun renderNode(sceneNode: SceneNode) {
         val node = sceneNode.node
+        // By passing the original Vec3 ref into render(), its value will be
+        // updated in real time.
         originInput.render(node.origin) {
-            app.moveBuilder(listOf(sceneNode)).apply {
-                setMoveNoUpdate(originInput.delta)
-                commit()
-            }
+            app.transformNodeOrigin(sceneNode, original, newValue)
         }
 
         if (node is Room) {
-            sizeInput.render(node.size) { app.updateObject(sceneNode) }
+            sizeInput.render(node.size) {
+                app.transformNodeSize(sceneNode, original, newValue)
+            }
 
             if (node.isCentered()) ImGui.beginDisabled()
-            startInput.render(node.start) { app.updateObject(sceneNode) }
+            startInput.render(node.start) {
+                app.transformNodeStart(sceneNode, original, newValue)
+            }
             if (node.isCentered()) ImGui.endDisabled()
 
             centeredInput.render(node.isCentered()) {
-                app.modifyNodeCentered(sceneNode, it)
+                app.transformNodeCentered(sceneNode, it)
             }
         }
     }
