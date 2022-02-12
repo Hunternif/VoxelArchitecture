@@ -2,13 +2,10 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.actions.redrawNodes
-import hunternif.voxarch.editor.actions.redrawVoxels
+import hunternif.voxarch.editor.actions.MoveObjectsBuilder
+import hunternif.voxarch.editor.actions.moveBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.MoveController.Direction.*
-import hunternif.voxarch.editor.util.set
-import hunternif.voxarch.editor.util.toVec3
-import hunternif.voxarch.vector.Vec3
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -30,38 +27,20 @@ class MoveController(
     private val movingList = mutableListOf<SceneObject>()
     /** The Y level we use for horizontal moving. */
     private var floorY = -0.5f
-    /** Origins (starts) before translation */
-    private val origins = mutableMapOf<SceneObject, Vec3>()
     /** 2D offset applied to cursor position on screen, when calculating drag.
      * It's used when starting drag outside a node, to not accidentally drag it
      * to the horizon. */
     private var cursorOffset = Vector2f()
     /** Directions in which the objects are allowed to move. */
     private var direction = XZ
-
-    private var movingNodes = false
-    private var movingVoxels = false
+    /** Builder for the action that will be written to history. */
+    private var moveBuilder: MoveObjectsBuilder? = null
 
     override fun onMouseDown(mods: Int) {
         dragging = true
-        movingNodes = false
-        movingVoxels = false
         movingList.clear()
-        app.state.selectedObjects.filter { !isAnyParentSelected(it) }.forEach {
-            movingList.add(it)
-            origins[it] = when (it) {
-                is SceneNode -> {
-                    movingNodes = true
-                    it.node.origin.clone()
-                }
-                is SceneVoxelGroup -> {
-                    movingVoxels = true
-                    it.origin.toVec3()
-                }
-                else -> it.start.toVec3()
-            }
-        }
-        
+        movingList.addAll(app.state.selectedObjects.filter { !isAnyParentSelected(it) })
+
         if (movingList.isEmpty()) {
             selectOneObjectIfEmpty()
             return
@@ -81,12 +60,16 @@ class MoveController(
         if (mods and GLFW_MOD_ALT != 0) {
             direction = Y
         }
+        moveBuilder = app.moveBuilder(movingList)
     }
 
     override fun onMouseUp(mods: Int) {
         dragging = false
         cursorOffset.set(0f, 0f)
         direction = XZ
+        movingList.clear()
+        moveBuilder?.commit()
+        moveBuilder = null
     }
 
     override fun drag(posX: Float, posY: Float) {
@@ -95,17 +78,7 @@ class MoveController(
             Y -> projectToYWithOffset(posX, posY)
         }
         translation.set(newPos.sub(dragStartWorldPos))
-        for (obj in movingList) {
-            val newOrigin = origins[obj]!! + translation.toVec3()
-            // TODO: update origin on the actual Node on mouse-up.
-            when (obj) {
-                is SceneNode -> obj.node.origin.set(newOrigin)
-                is SceneVoxelGroup -> obj.origin.set(newOrigin)
-            }
-            obj.update()
-        }
-        if (movingNodes) app.redrawNodes()
-        if (movingVoxels) app.redrawVoxels()
+        moveBuilder?.setMove(translation)
     }
 
     private fun pickClickedObject(): SceneObject? {

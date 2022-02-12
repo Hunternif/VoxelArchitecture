@@ -19,7 +19,13 @@ import java.nio.file.Path
 
 // EditorApp must be injected into all classes that call these actions.
 
+
+//=============================== VOXELS ================================
+
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
+
+
+//============================== SELECTION ==============================
 
 /** Modify selection in multiple steps. */
 fun EditorApp.selectionBuilder(mask: SelectMask = ALL) = action {
@@ -60,6 +66,14 @@ fun EditorApp.unselectAll(mask: SelectMask = ALL) =
         clear()
         commit()
     }
+
+
+//============================== MOVEMENT ===============================
+
+/** Modify object position in multiple steps. */
+fun EditorApp.moveBuilder(objs: Collection<SceneObject>) = action {
+    MoveObjectsBuilder(this, objs.toList())
+}
 
 
 fun EditorApp.setParentNode(node: SceneNode) = action {
