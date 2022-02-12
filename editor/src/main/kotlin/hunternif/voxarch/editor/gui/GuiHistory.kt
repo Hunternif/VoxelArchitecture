@@ -20,7 +20,7 @@ class GuiHistory(
         if (ImGui.beginTable("history_table", 2)) {
             ImGui.tableSetupColumn(
                 "icon",
-                ImGuiTableColumnFlags.WidthFixed, 19f
+                ImGuiTableColumnFlags.WidthFixed, 20f
             )
             ImGui.tableSetupColumn("description")
 

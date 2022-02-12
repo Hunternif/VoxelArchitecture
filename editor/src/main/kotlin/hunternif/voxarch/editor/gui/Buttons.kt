@@ -23,7 +23,8 @@ inline fun GuiBase.iconButton(
     tooltip: String = "",
     selected: Boolean = false,
     transparent: Boolean = false,
-    size: Float,
+    width: Float,
+    height: Float = width,
     font: ImFont = fontBigIcons,
     crossinline onClick: () -> Unit = {}
 ) {
@@ -33,7 +34,7 @@ inline fun GuiBase.iconButton(
     else if (transparent)
         ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0)
     ImGui.pushFont(font)
-    if (ImGui.button(icon, size, size)) onClick()
+    if (ImGui.button(icon, width, height)) onClick()
     ImGui.popFont()
     if (tooltip.isNotEmpty() && ImGui.isItemHovered()) ImGui.setTooltip(tooltip)
     ImGui.popStyleVar(2)
@@ -47,7 +48,7 @@ inline fun GuiBase.bigIconButton(
     transparent: Boolean = false,
     crossinline onClick: () -> Unit = {}
 ) {
-    iconButton(icon, tooltip, selected, transparent, 21f, fontBigIcons, onClick)
+    iconButton(icon, tooltip, selected, transparent, 22f, 22f, fontBigIcons, onClick)
 }
 
 /** Draws a smaller square button with an icon from FontAwesome */
@@ -58,7 +59,7 @@ inline fun GuiBase.smallIconButton(
     transparent: Boolean = false,
     crossinline onClick: () -> Unit = {}
 ) {
-    iconButton(icon, tooltip, selected, transparent, 19f, fontSmallIcons, onClick)
+    iconButton(icon, tooltip, selected, transparent, 20f, 19f, fontSmallIcons, onClick)
 }
 
 fun MainGui.toolButton(tool: Tool) {

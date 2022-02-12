@@ -79,7 +79,7 @@ abstract class GuiSceneTree<T: INested<T>>(
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
         if (ImGui.beginTable("node_tree_table", 2)) {
             ImGui.tableSetupColumn("visibility",
-                ImGuiTableColumnFlags.WidthFixed, 19f)
+                ImGuiTableColumnFlags.WidthFixed, 20f)
             ImGui.tableSetupColumn("tree")
             addTreeNodeRecursive(root, 0, false)
             ImGui.endTable()

@@ -48,20 +48,20 @@ abstract class GuiBase {
             fontSmallIcons = addFontDefault()
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-regular-400.ttf"),
-                10f, fontConfigMergeFont, iconRanges
+                11f, fontConfigMergeFont, iconRanges
             )
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-solid-900.ttf"),
-                10f, fontConfigMergeFont, iconRanges
+                11f, fontConfigMergeFont, iconRanges
             )
 
             fontBigIcons = addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-regular-400.ttf"),
-                14f, fontConfigNewFont, iconRanges
+                16f, fontConfigNewFont, iconRanges
             )
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-solid-900.ttf"),
-                14f, fontConfigMergeFont, iconRanges
+                16f, fontConfigMergeFont, iconRanges
             )
             build()
         }
