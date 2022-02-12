@@ -23,8 +23,6 @@ class MoveController(
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val translation: Vector3f = Vector3f()
 
-    /** Selected objects, excluding children of other selected nodes. */
-    private val movingList = mutableListOf<SceneObject>()
     /** The Y level we use for horizontal moving. */
     private var floorY = -0.5f
     /** 2D offset applied to cursor position on screen, when calculating drag.
@@ -38,17 +36,16 @@ class MoveController(
 
     override fun onMouseDown(mods: Int) {
         dragging = true
-        movingList.clear()
-        movingList.addAll(app.state.selectedObjects.filter { !isAnyParentSelected(it) })
+        val movingList = app.state.selectedObjects
+            .filter { !isAnyParentSelected(it) }
 
         if (movingList.isEmpty()) {
             selectOneObjectIfEmpty()
             return
         }
-        var pickedNode = pickClickedObject()
+        var pickedNode = pickClickedObject(movingList)
         if (pickedNode == null) {
-            movingList.sortBy { it.start.y }
-            val midNode = movingList[movingList.size / 2]
+            val midNode = movingList.run { sortedBy { it.start.y }[size / 2] }
             // set 2D offset
             cursorOffset
                 .set(camera.projectToViewport(midNode.floorCenter))
@@ -67,7 +64,6 @@ class MoveController(
         dragging = false
         cursorOffset.set(0f, 0f)
         direction = XZ
-        movingList.clear()
         moveBuilder?.commit()
         moveBuilder = null
     }
@@ -81,7 +77,7 @@ class MoveController(
         moveBuilder?.setMove(translation)
     }
 
-    private fun pickClickedObject(): SceneObject? {
+    private fun pickClickedObject(movingList: List<SceneObject>): SceneObject? {
         val result = Vector2f()
         var minDistance = Float.MAX_VALUE
         var hitObj: SceneObject? = null
