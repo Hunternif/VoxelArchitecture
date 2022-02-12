@@ -67,6 +67,8 @@ fun EditorApp.unselectAll(mask: SelectMask = ALL) =
         commit()
     }
 
+fun EditorApp.setParentNode(node: SceneNode) = historyAction(SetParent(node))
+
 
 //============================== TRANSFORM ==============================
 
@@ -80,10 +82,6 @@ fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) = action {
     ResizeNodesBuilder(this, objs.toList())
 }
 
-
-fun EditorApp.setParentNode(node: SceneNode) = action {
-    state.parentNode = node
-}
 
 fun EditorApp.showObject(obj: SceneObject) = action {
     // This object may have been hidden by one of its parents
