@@ -23,6 +23,7 @@ class MainScene(private val app: EditorApp) {
     private val nodeModel = NodeModel()
     private val selectedNodeModel = SelectedNodeFrameModel()
     private val originsModel = PointSpriteModel("textures/point-circle.png")
+    private val highlightedFaceModel = ResizeNodeModel()
 
     // 2d models
 
@@ -45,7 +46,7 @@ class MainScene(private val app: EditorApp) {
         gridModel,
         voxelModel,
         nodeModel,
-        resizeController.model,
+        highlightedFaceModel,
         selectedNodeModel,
         originsModel,
         newNodeController.model,
@@ -154,6 +155,10 @@ class MainScene(private val app: EditorApp) {
 
     fun updateNewNodeFrame() {
         newNodeController.model.updateEdges(app.state.newNodeFrame)
+    }
+
+    fun updateHighlightedFaces() {
+        highlightedFaceModel.face = app.state.highlightedFace
     }
 
     fun render() {

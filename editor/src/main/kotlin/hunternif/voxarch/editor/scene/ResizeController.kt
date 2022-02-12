@@ -3,9 +3,9 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.ResizeNodesBuilder
+import hunternif.voxarch.editor.actions.highlightFace
 import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.ResizeNodeModel
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room
@@ -18,7 +18,6 @@ class ResizeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
 ) : BaseSelectionController(app, camera, Tool.RESIZE) {
-    val model = ResizeNodeModel()
 
     /** Builder for the action that will be written to history. */
     private var resizeBuilder: ResizeNodesBuilder? = null
@@ -33,8 +32,11 @@ class ResizeController(
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
         super.onMouseMove(posX, posY)
-        if (app.state.currentTool == Tool.RESIZE && !dragging)
-            hitTest(mouseX, mouseY)
+        if (app.state.currentTool == Tool.RESIZE) {
+            if (!dragging) hitTest(mouseX, mouseY)
+        } else {
+            app.highlightFace(null)
+        }
     }
 
     override fun onMouseDown(mods: Int) {
@@ -90,7 +92,7 @@ class ResizeController(
         }
         if (pickedNode == null)
             pickedFace = null
-        model.face = pickedFace
+        app.highlightFace(pickedFace)
     }
 
     override fun drag(posX: Float, posY: Float) {
@@ -123,7 +125,7 @@ class ResizeController(
                 // update face instance
                 updateFaces()
                 pickedFace = faces[face.dir.ordinal]
-                model.face = pickedFace
+                app.highlightFace(pickedFace)
             }
         }
     }

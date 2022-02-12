@@ -63,6 +63,7 @@ class SceneNode(
     }
 
     override fun update() {
+        updateFaces()
         val origin = node.findGlobalPosition()
         if (node is Room) {
             start.set(origin).add(node.start).sub(0.5f, 0.5f, 0.5f)
@@ -97,6 +98,7 @@ class SceneVoxelGroup(
     }
 
     override fun update() {
+        updateFaces()
         start.set(origin).sub(0.5f, 0.5f, 0.5f)
         size.set(data.width + 1f, data.height + 1f, data.length + 1f)
     }

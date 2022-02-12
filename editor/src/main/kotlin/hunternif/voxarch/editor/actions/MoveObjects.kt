@@ -27,6 +27,7 @@ class MoveObjects(
         }
         if (movingNodes) app.redrawNodes()
         if (movingVoxels) app.redrawVoxels()
+        app.highlightFace(null)
     }
 
     override fun revert(app: EditorAppImpl) {
@@ -39,5 +40,6 @@ class MoveObjects(
         }
         if (movingNodes) app.redrawNodes()
         if (movingVoxels) app.redrawVoxels()
+        app.highlightFace(null)
     }
 }

@@ -15,23 +15,25 @@ class ResizeNodes(
     private val newSizes: Map<SceneNode, Vec3>,
     private val newStarts: Map<SceneNode, Vec3>,
 ) : HistoryAction("Resize", Tool.RESIZE.icon) {
-    override fun invoke(app: EditorAppImpl) {
-        for ((obj, size) in newSizes.entries) {
-            obj.node.let {
-                it.size = size
-                if (it is Room) it.start = newStarts[obj]!!
-            }
-        }
-        app.redrawNodes()
-    }
 
-    override fun revert(app: EditorAppImpl) {
-        for ((obj, size) in oldSizes.entries) {
+    override fun invoke(app: EditorAppImpl) =
+        app.applyResize(newSizes, newStarts)
+
+    override fun revert(app: EditorAppImpl) =
+        app.applyResize(oldSizes, oldStarts)
+
+    private fun EditorAppImpl.applyResize(
+        sizes: Map<SceneNode, Vec3>,
+        starts: Map<SceneNode, Vec3>,
+    ) {
+        for ((obj, size) in sizes.entries) {
             obj.node.let {
                 it.size = size
-                if (it is Room) it.start = oldStarts[obj]!!
+                if (it is Room) it.start = starts[obj]!!
             }
+            obj.update()
         }
-        app.redrawNodes()
+        redrawNodes()
+        highlightFace(null)
     }
 }

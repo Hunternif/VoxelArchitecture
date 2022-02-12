@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.storage.ChunkedStorage3D
@@ -44,6 +45,7 @@ interface AppState {
     val currentTool: Tool
     val newNodeFrame: NewNodeFrame
     val history: ReadOnlyHistory<HistoryAction>
+    val highlightedFace: AABBFace?
 
 
     //============================= GUI STATE ===============================
@@ -70,6 +72,7 @@ class AppStateImpl : AppState {
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()
     override val history = History<HistoryAction>()
+    override var highlightedFace: AABBFace? = null
 
     override val DEBUG = true
     override var isMainWindowFocused = false

@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scene.NewNodeFrame
+import hunternif.voxarch.editor.util.AABBFace
 import imgui.ImGui
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.nfd.NativeFileDialog.*
@@ -66,6 +67,12 @@ fun EditorApp.redrawVoxels() = action {
 fun EditorApp.clearNewNodeFrame() = action {
     state.newNodeFrame.state = NewNodeFrame.State.EMPTY
     scene.updateNewNodeFrame()
+}
+
+/** Highlight the given face on a node. Passing null removes the highlight. */
+fun EditorApp.highlightFace(face: AABBFace?) = action {
+    state.highlightedFace = face
+    scene.updateHighlightedFaces()
 }
 
 fun EditorApp.focusMainWindow(focused: Boolean) = action {
