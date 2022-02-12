@@ -9,13 +9,26 @@ import hunternif.voxarch.vector.Vec3
 open class Node(
     origin: Vec3
 ) {
-    open var origin: Vec3 = origin.clone()
+    var origin: Vec3 = origin.clone()
+        set(value) {
+            field.set(value) // keep the same instance
+        }
     var parent: Node? = null
     /** Rotation around Y axis in degrees */
     open var rotationY = 0.0
 
     private val _children = mutableListOf<Node>()
     val children: List<Node> get() = _children
+
+    open var size: Vec3 = Vec3(0, 0, 0)
+        set(value) { field.set(value) } // keep the same instance
+    // By default, individual dimensions are read-only
+    open var width: Double get() = size.x
+        set(value) {}
+    open var height: Double get() = size.y
+        set(value) {}
+    open var length: Double get() = size.z
+        set(value) {}
 
     /**
      * Describes the purpose of this node. It can be used to find

@@ -41,7 +41,7 @@ public class AlignedVerGateTest extends BaseBuilderTest {
         Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getRotationY(), 0);
 		assertEquals(new Vec3(0, 2.5, 0), gate.getCenter());
-		assertEquals(new Vec2(2, 3), gate.getSize());
+		assertEquals(new Vec2(2, 3), gate.getSizeXZ());
 	}
 	@Test
 	public void translated() {
@@ -50,7 +50,7 @@ public class AlignedVerGateTest extends BaseBuilderTest {
         Hatch gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getRotationY(), 0);
 		assertEquals(new Vec3(1.25, 4, 0), gate.getCenter());
-		assertEquals(new Vec2(0.5, 3), gate.getSize());
+		assertEquals(new Vec2(0.5, 3), gate.getSizeXZ());
 	}
 	@Test
 	public void rotated45() {
@@ -62,7 +62,7 @@ public class AlignedVerGateTest extends BaseBuilderTest {
 		assertEquals(Math.sqrt(1.5*1.5*2)/2, gate.getCenter().x, 0.000001);
 		assertEquals(0, gate.getCenter().z, 0.000001);
 		assertEquals(1.5, gate.getSize().x, 0.000001);
-		assertEquals(1.5, gate.getSize().y, 0.000001);
+		assertEquals(1.5, gate.getSize().z, 0.000001);
 	}
 	
 	@Test

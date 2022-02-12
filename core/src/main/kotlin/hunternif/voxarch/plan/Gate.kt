@@ -18,19 +18,26 @@ import hunternif.voxarch.vector.Vec4
  * A horizontal gate between two [Room]s.
  * The gate's generator should clear the passage and may add decorations.
  * @param origin the lower-left point, will be copied
- * @param size X=width, Y=height
+ * @param sizeXY X=width, Y=height
  */
 open class Gate(
     origin: Vec3,
-    var size: Vec2
+    var sizeXY: Vec2
 ) : Node(origin) {
+
+    override var size: Vec3
+        get() = super.size.set(sizeXY.x, sizeXY.y, 0.0)
+        set(value) {
+            sizeXY.x = value.x
+            sizeXY.y = value.y
+        }
 
     /** Center at floor level, relative to parent's origin. For legacy tests. */
     val center: Vec3
         get() = origin.add(
             Matrix4.rotationY(rotationY)
                 .multiplyLocal(
-                    Vec4(size.x/2, 0.0, 0.0, 1.0)
+                    Vec4(sizeXY.x/2, 0.0, 0.0, 1.0)
                 ).let { Vec3.from(it) }
         )
 
@@ -43,17 +50,17 @@ open class Gate(
         room1: Node,
         room2: Node,
         origin: Vec3,
-        size: Vec2,
+        sizeXY: Vec2,
         rotationY: Double
     ): this(
         // move origin from center to corner
         origin.add(
             Matrix4.rotationY(rotationY)
                 .multiplyLocal(
-                    Vec4(-size.x/2, 0.0, 0.0, 1.0)
+                    Vec4(-sizeXY.x/2, 0.0, 0.0, 1.0)
                 ).let { Vec3.from(it) }
         ),
-        size
+        sizeXY
     ) {
         this.parent = parent
         this.rotationY = rotationY

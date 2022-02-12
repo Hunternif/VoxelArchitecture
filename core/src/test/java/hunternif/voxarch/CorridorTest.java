@@ -50,7 +50,7 @@ public class CorridorTest {
 		assertEquals(new Vec3(4, 0, 0), point);
 		Gate gate = base.getGates().get(0);
 		assertEquals(new Vec3(1, 0, 0), gate.getCenter());
-		assertEquals(new Vec2(2, 3), gate.getSize());
+		assertEquals(new Vec2(2, 3), gate.getSizeXY());
 		assertEquals(90, gate.getRotationY(), 0.0001);
 	}
 	

@@ -32,6 +32,7 @@ open class Wall(
     /** Top far point relative to parent origin */
     val end: Vec3 get() = origin.add(innerEnd)
 
+    /** Read-only, determined from start and end. */
     override var rotationY: Double
         get() = atan2(-innerEnd.z, innerEnd.x) * 180 / Math.PI
         set(value) {}
@@ -39,18 +40,24 @@ open class Wall(
     val p1: Vec2 get() = Vec2.fromXZ(origin)
     val p2: Vec2 get() = Vec2.fromXZ(end)
 
-    var length: Double
+    override var size: Vec3 = Vec3(0, 0, 0)
+        get() = field.set(0.0, height, length)
+        set(value) {
+            length = value.z
+            height = value.y
+        }
+    override var length: Double
         get() = bottomEnd.distanceTo(bottomStart)
         set(value) {
             if (length == 0.0) {
-                innerEnd.x = length
+                innerEnd.x = value
             } else {
                 val ratio = value / length
                 innerEnd.x *= ratio
                 innerEnd.z *= ratio
             }
         }
-    var height: Double
+    override var height: Double
         get() = innerEnd.y
         set(value) { innerEnd.y = value }
 

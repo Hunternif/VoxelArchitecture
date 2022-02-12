@@ -18,7 +18,7 @@ class SimpleHatchBuilder(
 ): Builder<Hatch>() {
     override fun build(node: Hatch, world: IBlockStorage, context: BuildContext) {
         val width = max(minWidth, node.size.x.toInt())
-        val length = max(minLength, node.size.y.toInt())
+        val length = max(minLength, node.size.z.toInt())
         // Offset of 1 from both boundaries because the width & length of the hatch
         // span all available space, including where the walls go.
         for (x in 1 until width) {

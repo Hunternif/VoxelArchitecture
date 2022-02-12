@@ -9,4 +9,6 @@ import hunternif.voxarch.vector.Vec3
  *
  * The floor's origin is at parent's (0, [height], 0).
  */
-open class Floor(val height: Double = 0.0): Node(Vec3(0.0, height, 0.0))
+open class Floor(
+    override var height: Double = 0.0
+) : Node(Vec3(0.0, height, 0.0))

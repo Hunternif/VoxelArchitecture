@@ -37,20 +37,21 @@ open class Room(
         startDelegate.innerValue = if (value) null else start
     }
 
-    var width: Double
+    override var width: Double
         get() = size.x
         set(value) { size.x = value }
-    var height: Double
+    override var height: Double
         get() = size.y
         set(value) { size.y = value }
-    var length: Double
+    override var length: Double
         get() = size.z
         set(value) { size.z = value }
     /** Vector (width, height, length), doesn't take rotation into account.
      * Components of this vector are equal to distances between corner blocks
      * of the room. It would take that number + 1 blocks to build each boundary
      * of the room in a world. */
-    var size: Vec3 = size.clone()
+    override var size: Vec3 = size.clone()
+        set(value) { field.set(value) } // keep the same instance
 
     /** Vs local origin */
     val innerFloorCenter: Vec3 = start.add(size.x/2, 0.0, size.z/2)
