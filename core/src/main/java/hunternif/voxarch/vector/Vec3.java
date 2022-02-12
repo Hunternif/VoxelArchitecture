@@ -48,6 +48,12 @@ public class Vec3 {
 		this.z = z;
 		return this;
 	}
+	public Vec3 set(float x, float y, float z) {
+		this.x = x;
+		this.y = y;
+		this.z = z;
+		return this;
+	}
 	public Vec3 set(double x, double y, double z) {
 		this.x = x;
 		this.y = y;

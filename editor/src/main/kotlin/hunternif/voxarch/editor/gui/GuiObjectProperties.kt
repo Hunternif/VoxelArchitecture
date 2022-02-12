@@ -1,9 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
-import hunternif.voxarch.editor.actions.modifyNodeCentered
-import hunternif.voxarch.editor.actions.redrawNodes
-import hunternif.voxarch.editor.actions.updateObject
+import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.plan.Room
@@ -39,7 +37,12 @@ class GuiObjectProperties(private val app: EditorApp) {
     }
     private fun renderNode(sceneNode: SceneNode) {
         val node = sceneNode.node
-        originInput.render(node.origin) { app.updateObject(sceneNode) }
+        originInput.render(node.origin) {
+            app.moveBuilder(listOf(sceneNode)).apply {
+                setMoveNoUpdate(originInput.delta)
+                commit()
+            }
+        }
 
         if (node is Room) {
             sizeInput.render(node.size) { app.updateObject(sceneNode) }

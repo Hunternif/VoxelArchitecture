@@ -24,6 +24,9 @@ class GuiInputVec3(
      * while the input is being dragged. */
     val newValue = Vec3(0, 0, 0)
 
+    /** [newValue] - [original] */
+    val delta = Vec3(0, 0, 0)
+
     /** Data storage that ImGui understands */
     @PublishedApi internal val data = FloatArray(3)
 
@@ -38,6 +41,7 @@ class GuiInputVec3(
             original.set(value)
             newValue.set(value)
             newValue.writeToFloatArray(data)
+            delta.set(0, 0, 0)
         }
     }
 
@@ -60,6 +64,7 @@ class GuiInputVec3(
         isBeingChanged = ImGui.isItemActive()
         newValue.readFromFloatArray(data)
         ref.set(newValue)
+        delta.set(newValue).subtractLocal(original)
     }
 
     @PublishedApi internal fun updateFormat() {

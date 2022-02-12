@@ -48,6 +48,11 @@ class MoveObjectsBuilder(
         if (movingVoxels) app.redrawVoxels()
     }
 
+    /** Record the move but don't apply it to the objects. */
+    fun setMoveNoUpdate(vec: Vec3) {
+        move.set(vec)
+    }
+
     override fun build() = MoveObjects(objs, move)
 
     override fun commit() {
