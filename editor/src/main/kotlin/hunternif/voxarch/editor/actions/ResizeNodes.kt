@@ -14,7 +14,8 @@ class ResizeNodes(
     private val oldStarts: Map<SceneNode, Vec3>,
     private val newSizes: Map<SceneNode, Vec3>,
     private val newStarts: Map<SceneNode, Vec3>,
-) : HistoryAction("Resize", Tool.RESIZE.icon) {
+    description: String = "Resize",
+) : HistoryAction(description, Tool.RESIZE.icon) {
 
     override fun invoke(app: EditorAppImpl) =
         app.applyResize(newSizes, newStarts)

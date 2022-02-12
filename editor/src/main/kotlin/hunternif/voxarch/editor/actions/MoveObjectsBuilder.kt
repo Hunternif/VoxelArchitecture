@@ -53,7 +53,12 @@ class MoveObjectsBuilder(
         move.set(vec)
     }
 
-    override fun build() = MoveObjects(objs, move)
+    private fun makeDescription(): String = when (objs.size) {
+        1 -> "Move"
+        else -> "Move ${objs.size} objects"
+    }
+
+    override fun build() = MoveObjects(objs, move, makeDescription())
 
     override fun commit() {
         // only commit if the move is non-zero

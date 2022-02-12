@@ -12,7 +12,8 @@ import hunternif.voxarch.vector.Vec3
 class MoveObjects(
     private val objs: Collection<SceneObject>,
     private val move: Vec3,
-) : HistoryAction("Move", Tool.MOVE.icon) {
+    description: String = "Move",
+) : HistoryAction(description, Tool.MOVE.icon) {
 
     private val movingNodes = objs.any { it is SceneNode }
     private val movingVoxels = objs.any { it is SceneVoxelGroup }

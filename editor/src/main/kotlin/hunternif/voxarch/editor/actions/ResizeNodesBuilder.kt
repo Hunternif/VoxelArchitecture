@@ -76,7 +76,14 @@ class ResizeNodesBuilder(
         app.redrawNodes()
     }
 
-    override fun build() = ResizeNodes(oldSizes, oldStarts, newSizes, newStarts)
+    private fun makeDescription(): String = when (newSizes.size) {
+        1 -> "Resize"
+        else -> "Resize ${newSizes.size} objects"
+    }
+
+    override fun build() = ResizeNodes(
+        oldSizes, oldStarts, newSizes, newStarts, makeDescription()
+    )
 
     override fun commit() {
         // only commit if the resize is non-zero
