@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.util.AADirection3D
@@ -21,18 +22,14 @@ class ResizeNodesBuilder(
     objs: Collection<SceneObject>,
 ) : HistoryActionBuilder(app) {
 
-    private val oldSizes = LinkedHashMap<SceneNode, Vec3>()
-    private val oldStarts = LinkedHashMap<SceneNode, Vec3>()
-    private val newSizes = LinkedHashMap<SceneNode, Vec3>()
-    private val newStarts = LinkedHashMap<SceneNode, Vec3>()
+    private val oldData = LinkedHashMap<SceneNode, NodeTransformData>()
+    private val newData = LinkedHashMap<SceneNode, NodeTransformData>()
 
     init {
         for (obj in objs) {
             if (obj is SceneNode && obj.node is Room) {
-                oldSizes[obj] = obj.node.size.clone()
-                newSizes[obj] = obj.node.size.clone()
-                oldStarts[obj] = obj.node.start.clone()
-                newStarts[obj] = obj.node.start.clone()
+                oldData[obj] = obj.transformData()
+                newData[obj] = obj.transformData()
             }
         }
     }
@@ -49,44 +46,46 @@ class ResizeNodesBuilder(
             POS_Y, NEG_Y -> Vec3(0f, delta, 0f)
             POS_Z, NEG_Z -> Vec3(0f, 0f, delta)
         }
-        for ((obj, oldSize) in oldSizes) {
+        for ((obj, data) in oldData) {
             val room = obj.node as Room
             if (room.isCentered()) {
                 // For a centered room, multiply XZ size deltas by 2,
                 // because the opposite face is also moving.
                 room.size.apply {
-                    x = max(0.0, oldSize.x + deltaVec.x * 2)
-                    y = max(0.0, oldSize.y + deltaVec.y)
-                    z = max(0.0, oldSize.z + deltaVec.z * 2)
+                    x = max(0.0, data.size.x + deltaVec.x * 2)
+                    y = max(0.0, data.size.y + deltaVec.y)
+                    z = max(0.0, data.size.z + deltaVec.z * 2)
                 }
             } else {
-                room.size = max(Vec3.ZERO, oldSize + deltaVec)
+                room.size = max(Vec3.ZERO, data.size + deltaVec)
                 // For non-centered rooms, may need to update [start]
                 when (dir) {
                     POS_X, POS_Y, POS_Z -> {}
                     NEG_X, NEG_Y, NEG_Z -> {
-                        room.start = oldStarts[obj]!! + oldSize - room.size
+                        room.start = data.start + data.size - room.size
                     }
                 }
             }
-            newSizes[obj]!!.set(room.size)
-            newStarts[obj]!!.set(room.start)
+            newData[obj]!!.run {
+                size.set(room.size)
+                start.set(room.start)
+            }
             obj.update()
         }
         app.redrawNodes()
     }
 
-    private fun makeDescription(): String = when (newSizes.size) {
+    private fun makeDescription(): String = when (newData.size) {
         1 -> "Resize"
-        else -> "Resize ${newSizes.size} objects"
+        else -> "Resize ${newData.size} objects"
     }
 
-    override fun build() = ResizeNodes(
-        oldSizes, oldStarts, newSizes, newStarts, makeDescription()
+    override fun build() = TransformNodes(
+        oldData, newData, makeDescription(), Tool.RESIZE.icon
     )
 
     override fun commit() {
         // only commit if the resize is non-zero
-        if (newSizes.any { (obj, size) -> oldSizes[obj] != size }) super.commit()
+        if (newData.any { (obj, data) -> oldData[obj] != data }) super.commit()
     }
 }

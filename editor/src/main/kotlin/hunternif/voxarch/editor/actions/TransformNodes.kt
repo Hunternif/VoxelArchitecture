@@ -6,25 +6,30 @@ import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 
-class TransformNode(
-    private val obj: SceneNode,
-    private val oldData: NodeTransformData,
-    private val newData: NodeTransformData,
-    description: String = "Transform node",
-) : HistoryAction(description, FontAwesomeIcons.SlidersH) {
+class TransformNodes(
+    private val oldData: Map<SceneNode, NodeTransformData>,
+    private val newData: Map<SceneNode, NodeTransformData>,
+    description: String = "Transform nodes",
+    icon: String = FontAwesomeIcons.SlidersH,
+) : HistoryAction(description, icon) {
 
     override fun invoke(app: EditorAppImpl) = app.applyTransform(newData)
 
     override fun revert(app: EditorAppImpl) = app.applyTransform(oldData)
 
-    private fun EditorAppImpl.applyTransform(data: NodeTransformData) {
-        obj.node.run {
-            origin = data.origin
-            size = data.size
-            (this as? Room)?.run {
-                setCentered(data.isCentered)
-                if (!data.isCentered) start = data.start
+    private fun EditorAppImpl.applyTransform(
+        dataMap: Map<SceneNode, NodeTransformData>
+    ) {
+        for ((obj, data) in dataMap) {
+            obj.node.run {
+                origin = data.origin
+                size = data.size
+                (this as? Room)?.run {
+                    setCentered(data.isCentered)
+                    if (!data.isCentered) start = data.start
+                }
             }
+            obj.update()
         }
         redrawNodes()
         highlightFace(null)

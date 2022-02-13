@@ -77,7 +77,9 @@ fun EditorApp.moveBuilder(objs: Collection<SceneObject>) = action {
     MoveObjectsBuilder(this, objs.toList())
 }
 
-/** Modify object size in multiple steps. */
+/** Modify object size in multiple steps.
+ * Room start will be modified to keep origin in the same global position.
+ * A centered room will be resized symmetrically. */
 fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) = action {
     ResizeNodesBuilder(this, objs.toList())
 }
@@ -87,10 +89,9 @@ fun EditorApp.transformNodeOrigin(
     oldOrigin: Vec3,
     newOrigin: Vec3,
 ) = historyAction(
-    TransformNode(
-        obj,
-        obj.transformData(origin = oldOrigin),
-        obj.transformData(origin = newOrigin),
+    TransformNodes(
+        mapOf(obj to obj.transformData(origin = oldOrigin)),
+        mapOf(obj to obj.transformData(origin = newOrigin)),
         "Transform node (origin)",
     )
 )
@@ -100,10 +101,9 @@ fun EditorApp.transformNodeSize(
     oldSize: Vec3,
     newSize: Vec3,
 ) = historyAction(
-    TransformNode(
-        obj,
-        obj.transformData(size = oldSize),
-        obj.transformData(size = newSize),
+    TransformNodes(
+        mapOf(obj to obj.transformData(size = oldSize)),
+        mapOf(obj to obj.transformData(size = newSize)),
         "Transform node (size)",
     )
 )
@@ -113,10 +113,9 @@ fun EditorApp.transformNodeStart(
     oldStart: Vec3,
     newStart: Vec3,
 ) = historyAction(
-    TransformNode(
-        obj,
-        obj.transformData(start = oldStart),
-        obj.transformData(start = newStart),
+    TransformNodes(
+        mapOf(obj to obj.transformData(start = oldStart)),
+        mapOf(obj to obj.transformData(start = newStart)),
         "Transform node (start)",
     )
 )
@@ -132,11 +131,10 @@ fun EditorApp.transformNodeCentered(
     }
     val newStart = if (obj.node is Room && !newCentered) Vec3.ZERO else null
     historyAction(
-        TransformNode(
-            obj,
-            obj.transformData(isCentered = !newCentered),
-            obj.transformData(isCentered = newCentered,
-                origin = newOrigin, start = newStart),
+        TransformNodes(
+            mapOf(obj to obj.transformData(isCentered = !newCentered)),
+            mapOf(obj to obj.transformData(isCentered = newCentered,
+                origin = newOrigin, start = newStart)),
             "Transform node (${if (newCentered) "center" else "uncenter"})",
         )
     )
@@ -145,7 +143,7 @@ fun EditorApp.transformNodeCentered(
 
 /**
  * Add child room to the currently active node.
- * [start] and [end] are in global coordinates!
+ * [start] and [end] are in global 'centric' coordinates!
  */
 fun EditorApp.createRoom(
     start: Vector3i, end: Vector3i, centered: Boolean = false
