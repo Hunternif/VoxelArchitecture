@@ -7,8 +7,8 @@ abstract class BaseActionTest {
     @Before
     fun resetState() {
         app.state.run {
-            voxelRoot.children.clear()
-            rootNode.children.clear()
+            voxelRoot.removeAllChildren()
+            rootNode.removeAllChildren()
             parentNode = rootNode
             sceneObjects.clear()
             selectedObjects.clear()

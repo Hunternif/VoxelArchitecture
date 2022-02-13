@@ -46,7 +46,7 @@ class SceneNode(
 ) : SceneObject(color = Colors.defaultNodeBox), INested<SceneNode> {
     override var parent: SceneNode? = null
     private val _children = LinkedHashSet<SceneNode>()
-    override val children get() = _children
+    override val children: Collection<SceneNode> get() = _children
 
     init { update() }
 
@@ -57,9 +57,11 @@ class SceneNode(
     }
     override fun removeChild(child: SceneNode) {
         if (_children.remove(child)) {
-            child.parent = null
             node.removeChild(child.node)
         }
+    }
+    override fun removeAllChildren() {
+        _children.clear()
     }
 
     override fun update() {
@@ -73,6 +75,8 @@ class SceneNode(
             size.set(1f, 1f, 1f)
         }
     }
+
+    override fun toString() = "${node.javaClass.simpleName} ${hashCode()}"
 }
 
 class SceneVoxelGroup(
@@ -83,7 +87,7 @@ class SceneVoxelGroup(
 ) : SceneObject(color = Colors.transparent), INested<SceneVoxelGroup> {
     override var parent: SceneVoxelGroup? = null
     private val _children = LinkedHashSet<SceneVoxelGroup>()
-    override val children get() = _children
+    override val children: Collection<SceneVoxelGroup> get() = _children
 
     init { update() }
 
@@ -92,9 +96,10 @@ class SceneVoxelGroup(
         _children.add(child)
     }
     override fun removeChild(child: SceneVoxelGroup) {
-        if (_children.remove(child)) {
-            child.parent = null
-        }
+        _children.remove(child)
+    }
+    override fun removeAllChildren() {
+        _children.clear()
     }
 
     override fun update() {
@@ -102,6 +107,8 @@ class SceneVoxelGroup(
         start.set(origin).sub(0.5f, 0.5f, 0.5f)
         size.set(data.width + 1f, data.height + 1f, data.length + 1f)
     }
+
+    override fun toString() = label
 }
 
 interface INested<T : INested<T>> {
@@ -109,4 +116,5 @@ interface INested<T : INested<T>> {
     val children: Collection<T>
     fun addChild(child: T)
     fun removeChild(child: T)
+    fun removeAllChildren()
 }

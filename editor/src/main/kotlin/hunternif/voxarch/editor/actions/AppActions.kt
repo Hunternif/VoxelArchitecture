@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3
@@ -174,31 +173,12 @@ fun EditorApp.deleteSelectedObjects() = action {
     deleteObjects(state.selectedObjects)
 }
 
-fun EditorApp.deleteObjects(objs: Collection<SceneObject>) = action {
-    var removedNode = false
-    var removedVoxels = false
-    state.run {
-        // copy the list in case e.g. we were iterating over [selectedObjects]
-        for (obj in objs.toList()) {
-            if (obj == rootNode) continue
-            sceneObjects.remove(obj)
-            hiddenObjects.remove(obj)
-            selectedObjects.remove(obj)
-            when (obj) {
-                is SceneNode -> {
-                    obj.parent?.removeChild(obj)
-                    removedNode = true
-                }
-                is SceneVoxelGroup -> {
-                    obj.parent?.removeChild(obj)
-                    removedVoxels = true
-                }
-            }
-        }
-    }
-    if (removedNode) scene.updateNodeModel()
-    if (removedVoxels) scene.updateVoxelModel()
+fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
+    if (objs.isNotEmpty()) historyAction(DeleteObjects(objs))
 }
+
+
+//=============================== HISTORY ===============================
 
 fun EditorApp.undo() = action {
     state.history.moveBack()?.revert(this)
