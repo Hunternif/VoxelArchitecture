@@ -10,7 +10,8 @@ class TransformNode(
     private val obj: SceneNode,
     private val oldData: NodeTransformData,
     private val newData: NodeTransformData,
-) : HistoryAction("Transform node", FontAwesomeIcons.SlidersH) {
+    description: String = "Transform node",
+) : HistoryAction(description, FontAwesomeIcons.SlidersH) {
 
     override fun invoke(app: EditorAppImpl) = app.applyTransform(newData)
 

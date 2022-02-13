@@ -91,6 +91,7 @@ fun EditorApp.transformNodeOrigin(
         obj,
         obj.transformData(origin = oldOrigin),
         obj.transformData(origin = newOrigin),
+        "Transform node (origin)",
     )
 )
 
@@ -103,6 +104,7 @@ fun EditorApp.transformNodeSize(
         obj,
         obj.transformData(size = oldSize),
         obj.transformData(size = newSize),
+        "Transform node (size)",
     )
 )
 
@@ -115,6 +117,7 @@ fun EditorApp.transformNodeStart(
         obj,
         obj.transformData(start = oldStart),
         obj.transformData(start = newStart),
+        "Transform node (start)",
     )
 )
 
@@ -134,6 +137,7 @@ fun EditorApp.transformNodeCentered(
             obj.transformData(isCentered = !newCentered),
             obj.transformData(isCentered = newCentered,
                 origin = newOrigin, start = newStart),
+            "Transform node (${if (newCentered) "center" else "uncenter"})",
         )
     )
 }
