@@ -11,6 +11,7 @@ import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room
 import org.joml.Vector2f
 import org.joml.Vector3f
+import org.lwjgl.glfw.GLFW.*
 
 /** Allows resizing selected Rooms by dragging on their faces.
  * Doesn't handle any other types of objects. */
@@ -21,6 +22,8 @@ class ResizeController(
 
     /** Builder for the action that will be written to history. */
     private var resizeBuilder: ResizeNodesBuilder? = null
+    /** If true, the node will be resized symmetrically around its center. */
+    private var symmetric = false
 
     private var pickedNode: SceneNode? = null
     var pickedFace: AABBFace? = null
@@ -56,12 +59,17 @@ class ResizeController(
             )
             resizeBuilder = app.resizeBuilder(resizingRooms)
         }
+
+        if (mods and GLFW_MOD_ALT != 0) {
+            symmetric = true
+        }
     }
 
     override fun onMouseUp(mods: Int) {
         dragging = false
         resizeBuilder?.commit()
         resizeBuilder = null
+        symmetric = false
     }
 
     /** Find if the cursor is hitting any node, and which face on it. */
@@ -120,7 +128,7 @@ class ResizeController(
                     NEG_Z -> -z
                 }
             }
-            resizeBuilder?.dragFace(face.dir, delta)
+            resizeBuilder?.dragFace(face.dir, delta, symmetric)
             pickedNode?.run {
                 // update face instance
                 updateFaces()

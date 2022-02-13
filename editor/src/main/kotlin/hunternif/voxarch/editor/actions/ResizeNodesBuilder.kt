@@ -15,7 +15,6 @@ import kotlin.collections.any
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.max
 
 class ResizeNodesBuilder(
     app: EditorAppImpl,
@@ -39,8 +38,9 @@ class ResizeNodesBuilder(
      * @param dir determines the face that was dragged.
      * @param delta how far it was dragged (in the direction [dir])
      *              vs the initial position.
+     * @param symmetric whether to resize the opposite side symmetrically.
      */
-    fun dragFace(dir: AADirection3D, delta: Float) {
+    fun dragFace(dir: AADirection3D, delta: Float, symmetric: Boolean = false) {
         val deltaVec = when (dir) {
             POS_X, NEG_X -> Vec3(delta, 0f, 0f)
             POS_Y, NEG_Y -> Vec3(0f, delta, 0f)
@@ -48,25 +48,41 @@ class ResizeNodesBuilder(
         }
         for ((obj, data) in oldData) {
             val room = obj.node as Room
-            if (room.isCentered()) {
-                // For a centered room, multiply XZ size deltas by 2,
-                // because the opposite face is also moving.
-                room.size.apply {
-                    x = max(0.0, data.size.x + deltaVec.x * 2)
-                    y = max(0.0, data.size.y + deltaVec.y)
-                    z = max(0.0, data.size.z + deltaVec.z * 2)
+            if (symmetric) {
+                room.size = max(Vec3.ZERO, data.size + deltaVec * 2)
+                val center = data.origin + data.start + data.size / 2
+                if (room.isCentered()) {
+                    // Need to move origin when resizing vertically
+                    room.origin = center.addY(-room.size.y / 2)
+                } else {
+                    // Move [origin] to keep the center in place
+                    room.origin = center - (room.size) / 2 - data.start
                 }
             } else {
                 room.size = max(Vec3.ZERO, data.size + deltaVec)
-                // For non-centered rooms, may need to update [start]
-                when (dir) {
-                    POS_X, POS_Y, POS_Z -> {}
-                    NEG_X, NEG_Y, NEG_Z -> {
-                        room.start = data.start + data.size - room.size
+                if (room.isCentered()) {
+                    // Move [origin] to keep the opposite face in place.
+                    when (dir) {
+                        POS_X, POS_Y, POS_Z -> room.origin
+                            .set(data.origin)
+                            .addLocal(data.start)
+                            .addLocal(room.size.x / 2, 0.0, room.size.z / 2)
+                        NEG_X, NEG_Y, NEG_Z -> room.origin
+                            .set(data.origin)
+                            .addLocal(data.size.x / 2, data.size.y, data.size.z / 2)
+                            .addLocal(-room.size.x / 2, -room.size.y, -room.size.z / 2)
+                    }
+                } else {
+                    // Move [origin] to keep the opposite face in place.
+                    when (dir) {
+                        POS_X, POS_Y, POS_Z -> {}
+                        NEG_X, NEG_Y, NEG_Z -> room.origin =
+                            data.origin + data.size - room.size
                     }
                 }
             }
             newData[obj]!!.run {
+                origin.set(room.origin)
                 size.set(room.size)
                 start.set(room.start)
             }
