@@ -22,8 +22,8 @@ class ResizeNodesBuilder(
     objs: Collection<SceneObject>,
 ) : HistoryActionBuilder(app) {
 
-    private val oldData = LinkedHashMap<SceneNode, NodeTransformData>()
-    private val newData = LinkedHashMap<SceneNode, NodeTransformData>()
+    private val oldData = LinkedHashMap<SceneNode, TransformData>()
+    private val newData = LinkedHashMap<SceneNode, TransformData>()
 
     init {
         for (obj in objs) {
@@ -80,7 +80,7 @@ class ResizeNodesBuilder(
         else -> "Resize ${newData.size} objects"
     }
 
-    override fun build() = TransformNodes(
+    override fun build() = TransformObjects(
         oldData, newData, makeDescription(), Tool.RESIZE.icon
     )
 

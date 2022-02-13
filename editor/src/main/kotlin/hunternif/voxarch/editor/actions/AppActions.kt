@@ -89,7 +89,7 @@ fun EditorApp.transformNodeOrigin(
     oldOrigin: Vec3,
     newOrigin: Vec3,
 ) = historyAction(
-    TransformNodes(
+    TransformObjects(
         mapOf(obj to obj.transformData(origin = oldOrigin)),
         mapOf(obj to obj.transformData(origin = newOrigin)),
         "Transform node (origin)",
@@ -101,7 +101,7 @@ fun EditorApp.transformNodeSize(
     oldSize: Vec3,
     newSize: Vec3,
 ) = historyAction(
-    TransformNodes(
+    TransformObjects(
         mapOf(obj to obj.transformData(size = oldSize)),
         mapOf(obj to obj.transformData(size = newSize)),
         "Transform node (size)",
@@ -113,7 +113,7 @@ fun EditorApp.transformNodeStart(
     oldStart: Vec3,
     newStart: Vec3,
 ) = historyAction(
-    TransformNodes(
+    TransformObjects(
         mapOf(obj to obj.transformData(start = oldStart)),
         mapOf(obj to obj.transformData(start = newStart)),
         "Transform node (start)",
@@ -131,7 +131,7 @@ fun EditorApp.transformNodeCentered(
     }
     val newStart = if (obj.node is Room && !newCentered) Vec3.ZERO else null
     historyAction(
-        TransformNodes(
+        TransformObjects(
             mapOf(obj to obj.transformData(isCentered = !newCentered)),
             mapOf(obj to obj.transformData(isCentered = newCentered,
                 origin = newOrigin, start = newStart)),
