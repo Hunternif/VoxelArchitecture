@@ -5,9 +5,6 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.editor.util.max
-import hunternif.voxarch.editor.util.min
-import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
@@ -140,33 +137,18 @@ fun EditorApp.transformNodeCentered(
 }
 
 
+//=========================== CREATE & DELETE ===========================
+
 /**
  * Add child room to the currently active node.
  * [start] and [end] are in global 'centric' coordinates!
  */
 fun EditorApp.createRoom(
     start: Vector3i, end: Vector3i, centered: Boolean = false
-) : SceneNode = action {
-    // ensure size is positive
-    val min = min(start, end).toVec3()
-    val max = max(start, end).toVec3()
-    val size = max - min
-    val mid = min.add(size.x / 2 , 0.0, size.z / 2)
-    state.run {
-        val room = parentNode.node.run {
-            val globalPos = findGlobalPosition()
-            if (centered) {
-                centeredRoom(mid - globalPos, size)
-            } else {
-                room(min - globalPos, max - globalPos)
-            }
-        }
-        val sceneNode = SceneNode(room)
-        sceneObjects.add(sceneNode)
-        parentNode.addChild(sceneNode)
-        scene.updateNodeModel()
-        sceneNode
-    }
+) : SceneNode {
+    val action = CreateRoom(start, end, centered)
+    historyAction(action)
+    return action.node
 }
 
 fun EditorApp.deleteSelectedObjects() = action {
