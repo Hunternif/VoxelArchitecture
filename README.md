@@ -1,20 +1,32 @@
-VoxelArchitecture
-=================
+# VoxelArchitecture
 
-This ambitious little project attempts to find an algorithm or a framework for procedural building of 3-dimensional voxel architectural structures, such that:
-* Structures can have clearly defined style, e.g. consistent usage of certain elements (columns, long corridors, parapets etc), building materials (cobblesone, sandstone etc) and geometrical shapes (square arches, round arches, protruding roof etc);
-* Structures have multiple floors, which can be connected with rooms several floors high;
-* The algorithm analyzes and makes use of underlying terrain, e.g. a castle can have towers on mountain peaks, bridges over ravines and over rough or uneven ground.
-* Buildings can have complex corridor systems.[?]
+This project is a framework for procedural generation of 3d voxel buildings, mainly castles. In the end, it should support the following features:
+* Switchable architectural styles, which affect the shape and placement of rooms, decorations, building materials, etc. _E.g. choose between square/round arches, slanted/flat roofs._
+* Complex internal & external structure. _E.g. corridors that go in multiple directions and bridges that cross over each other._
+* Aesthetically pleasing appearance.
+* Fully traversable interiors.
+* Using underlying terrain as a guide. _E.g. build a castle on a hill, build bridges over ravines._
 
-Formal grammars can be useful in generating such structures.
+See [Wiki](https://github.com/Hunternif/VoxelArchitecture/wiki) for more details.
 
-The program can be used for procedural building in many applications, such as Minecraft and its clones. The architecture of the program should be general enough to allow specific implementations define the format in which to store the voxel data and paste it into actual voxel worlds. Design patterns Adapter and Bridge could help make the program abstract from concrete voxel storage implementations.
+## Modules
 
-See [Wiki](https://github.com/Hunternif/VoxelArchitecture/wiki) for more.
+* **`core`** contains all the generation algorithms for buildings and interfaces for voxel storage, with minimal dependencies, decoupled from concrete implementations such as Minecraft.
+* **`mc-mod`** is a Minecraft Forge Mod for experimenting with building structures. It implements the voxel storage interfaces from core.
+* **`editor`** is a powerful editor for manually constructing the node structure and generating voxels. It uses `LWJGL` for 3D rendering and `Dear-ImGui` for UI.
 
-Projects
---------
-* **core** will contain all the generation algorithms for buildings and interfaces for voxel storage, decoupled from concrete implementations such as Minecraft.
-* ~~**mc-api**~~ _(moved to mc-mod)_ will act as a reference implementation of voxel storage; the actual interface implementations will act as adaptors to a Minecraft world.
-* **mc-mod**` will be a complete Minecraft Forge Mod for experimenting with building structures.
+
+## `core` overview
+
+The first part is a framework that represents abstract architectural nodes in code. It has yielded some interesting results:
+* Builder classes recursively generate voxels from a nested structure of nodes.
+* Kotlin DSL for assembling the Node structure.
+* Another Kotlin DSL for declaring a "DOM" (logical hierarchy of nodes) and a "Stylesheet" (relative positions and sizes of Nodes), similar to HTML & CSS.
+* Voxel data can be written to MagicaVoxel VOX format.
+* Unit-testing framework using 2d snapshots of generated voxels.
+
+The second part is the procedural generation algorithm. It's still in early stages, and I'm trying out different approaches:
+* declaratively specifying all structures in code
+* randomly branching into different directions for different rooms
+* WFC
+* ...
