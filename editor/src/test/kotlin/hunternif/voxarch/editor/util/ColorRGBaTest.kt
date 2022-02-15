@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import hunternif.voxarch.editor.util.ColorRGBa.Companion.fromHex as rgb
 
 class ColorRGBaTest {
     @Test
@@ -13,8 +14,40 @@ class ColorRGBaTest {
             0xffffff,
         )
         for (color in colors) {
-            val rgba = ColorRGBa.fromHex(color)
+            val rgba = rgb(color)
             assertEquals(color, rgba.hex)
         }
+    }
+
+    @Test
+    fun `add 2 colors`() {
+        // commutativity
+        assertEquals(rgb(0x336699), rgb(0x000000).add(rgb(0x336699)))
+        assertEquals(rgb(0x336699), rgb(0x336699).add(rgb(0x000000)))
+
+        // actually summing 2 parts
+        assertEquals(rgb(0x669900), rgb(0x663300).add(rgb(0x006600)))
+
+        // limiting at 0xff
+        assertEquals(rgb(0xffffff), rgb(0xffaa00).add(rgb(0x11aaff)))
+
+        // use alpha
+        assertEquals(
+            rgb(0xffff66, 0.5f),
+            rgb(0xff0033, 0.25f).add(rgb(0x00ff33, 0.25f))
+        )
+    }
+
+    @Test
+    fun `alpha-blend 2 colors`() {
+        assertEquals(
+            rgb(0x5500AA, 0.75f),
+            rgb(0xff0000, 0.5f).blend(rgb(0x0000ff, 0.5f))
+        )
+        // non-commutable, the 2nd color is on top
+        assertEquals(
+            rgb(0xAA0055, 0.75f),
+            rgb(0x0000ff, 0.5f).blend(rgb(0xff0000, 0.5f))
+        )
     }
 }

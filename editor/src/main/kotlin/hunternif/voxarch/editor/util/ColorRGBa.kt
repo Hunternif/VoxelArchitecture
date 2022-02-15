@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.util
 import imgui.ImGui
 import org.joml.Vector3f
 import org.joml.Vector4f
+import kotlin.math.min
 import kotlin.math.round
 
 /** Borrowed from OpenRNDR */
@@ -25,6 +26,26 @@ data class ColorRGBa(
         val gbit = (gi shl 8) and 0x00ff00
         val bbit = bi and 0x0000ff
         return rbit or gbit or bbit
+    }
+
+    /** Add together all components of the 2 colors */
+    fun add(c: ColorRGBa) = ColorRGBa(
+        min(1f, r + c.r),
+        min(1f, g + c.g),
+        min(1f, b + c.b),
+        min(1f, a + c.a),
+    )
+
+    /** Alpha-blend the 2 colors. The given color [c] is on top. */
+    fun blend(c: ColorRGBa): ColorRGBa {
+        if (a == 0f) return c
+        val alpha = min(1f, a * (1f - c.a) + c.a)
+        return ColorRGBa(
+            min(1f, (r * a * (1f - c.a) + c.r * c.a) / alpha),
+            min(1f, (g * a * (1f - c.a) + c.g * c.a) / alpha),
+            min(1f, (b * a * (1f - c.a) + c.b * c.a) / alpha),
+            alpha,
+        )
     }
 
     companion object {
