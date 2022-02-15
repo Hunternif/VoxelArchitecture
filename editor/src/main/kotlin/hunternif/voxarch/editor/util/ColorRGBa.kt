@@ -39,7 +39,9 @@ data class ColorRGBa(
     /** Alpha-blend the 2 colors. The given color [c] is on top. */
     fun blend(c: ColorRGBa): ColorRGBa {
         if (a == 0f) return c
+        if (c.a == 0f) return this
         val alpha = min(1f, a * (1f - c.a) + c.a)
+        if (alpha == 0f) return ColorRGBa(0f, 0f, 0f, 0f)
         return ColorRGBa(
             min(1f, (r * a * (1f - c.a) + c.r * c.a) / alpha),
             min(1f, (g * a * (1f - c.a) + c.g * c.a) / alpha),
@@ -58,7 +60,6 @@ data class ColorRGBa(
     }
 }
 
-@Suppress("NOTHING_TO_INLINE")
 fun pushStyleColor(imGuiCol: Int, color: ColorRGBa) {
     color.run { ImGui.pushStyleColor(imGuiCol, r, g, b, a) }
 }

@@ -10,6 +10,7 @@ import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImGui
 import imgui.flag.*
+import imgui.flag.ImGuiCol.*
 import org.lwjgl.glfw.GLFW.*
 
 class GuiNodeTree(
@@ -81,7 +82,7 @@ abstract class GuiSceneTree<T: INested<T>>(
             ImGui.tableSetupColumn("visibility",
                 ImGuiTableColumnFlags.WidthFixed, 20f)
             ImGui.tableSetupColumn("tree")
-            addTreeNodeRecursive(root, 0, false)
+            addTreeNodeRecursive(root, 0, false, false)
             ImGui.endTable()
         }
         ImGui.popStyleVar(1)
@@ -93,7 +94,12 @@ abstract class GuiSceneTree<T: INested<T>>(
             app.deleteSelectedObjects()
     }
 
-    private fun addTreeNodeRecursive(node: T, depth: Int, hidden: Boolean) {
+    private fun addTreeNodeRecursive(
+        node: T,
+        depth: Int,
+        hidden: Boolean,
+        isChildNode: Boolean,
+    ) {
         ImGui.tableNextRow()
         val i = ImGui.tableGetRowIndex()
         ImGui.tableNextColumn()
@@ -122,7 +128,7 @@ abstract class GuiSceneTree<T: INested<T>>(
         ImGui.tableNextColumn()
         var flags = 0 or
             ImGuiTreeNodeFlags.OpenOnArrow or
-            ImGuiTreeNodeFlags.SpanAvailWidth or
+            ImGuiTreeNodeFlags.SpanFullWidth or
             ImGuiTreeNodeFlags.NoTreePushOnOpen or // we will be faking indents, no need to pop tree
             ImGuiTreeNodeFlags.DefaultOpen
         if (node.children.isEmpty()) {
@@ -130,20 +136,22 @@ abstract class GuiSceneTree<T: INested<T>>(
                 ImGuiTreeNodeFlags.Leaf or
                 ImGuiTreeNodeFlags.Bullet
         }
-        val isParentNode = node == app.state.parentNode
+        val isRootNode = node === app.state.rootNode // root node is never highlighted
+        val isParentNode = node === app.state.parentNode && !isRootNode
         val isSelected = (node is SceneObject) && node in app.state.selectedObjects
         if (isSelected) {
             flags = flags or ImGuiTreeNodeFlags.Selected
         }
         if (isParentNode) {
             flags = flags or ImGuiTreeNodeFlags.Selected
-            pushStyleColor(ImGuiCol.Header, Colors.accentBg)
-            pushStyleColor(ImGuiCol.HeaderHovered, Colors.accentHovered)
-            pushStyleColor(ImGuiCol.HeaderActive, Colors.accentActive)
+            applyParentNodeColors(isSelected)
+        } else if (isChildNode) {
+            flags = flags or ImGuiTreeNodeFlags.Selected
+            applyChileNodeColors(isSelected)
         }
         val text = label(node)
         ImGui.alignTextToFramePadding()
-        if (updatedHidden) pushStyleColor(ImGuiCol.Text, Colors.hiddenItemLabel)
+        if (updatedHidden) pushStyleColor(Text, Colors.hiddenItemLabel)
 
         // Create fake indents to make the tree work in the 2nd column.
         for (x in 1..depth) ImGui.indent()
@@ -151,7 +159,7 @@ abstract class GuiSceneTree<T: INested<T>>(
         for (x in 1..depth) ImGui.unindent()
 
         if (updatedHidden) ImGui.popStyleColor()
-        if (isParentNode) ImGui.popStyleColor(3)
+        if (isParentNode || isChildNode) ImGui.popStyleColor(3)
 
         if (ImGui.isItemHovered()) {
             if (ImGui.isMouseClicked(0)) {
@@ -167,8 +175,24 @@ abstract class GuiSceneTree<T: INested<T>>(
 
         if (open && node.children.isNotEmpty()) {
             node.children.forEach {
-                addTreeNodeRecursive(it, depth + 1, updatedHidden)
+                addTreeNodeRecursive(it, depth + 1, updatedHidden,
+                    isParentNode || isChildNode
+                )
             }
         }
+    }
+
+    private fun applyParentNodeColors(isSelected: Boolean) = Colors.run {
+        val color = parentNode.let { if (isSelected) it.blend(headerBg) else it }
+        pushStyleColor(Header, color)
+        pushStyleColor(HeaderHovered, color.blend(headerHovered))
+        pushStyleColor(HeaderActive, color.blend(headerActive))
+    }
+
+    private fun applyChileNodeColors(isSelected: Boolean) = Colors.run {
+        val color = childNode.let { if (isSelected) it.blend(headerBg) else it }
+        pushStyleColor(Header, color)
+        pushStyleColor(HeaderHovered, color.blend(headerHovered))
+        pushStyleColor(HeaderActive, color.blend(headerActive))
     }
 }
