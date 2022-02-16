@@ -22,6 +22,23 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
 
+    @PublishedApi internal val layout = HorizontalSplit(
+        rightRatio = 0.25f,
+        left = Window("main_window"),
+        right = VerticalSplit(
+            bottomRatio = 0.25f,
+            bottom = Window("Properties"),
+            top = VerticalSplit(
+                bottomRatio = 0.5f,
+                top = Window("Node tree"),
+                bottom = WindowGroup(
+                    Window("Voxel tree"),
+                    Window("History"),
+                )
+            ),
+        ),
+    )
+
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
         vp.set(viewport)
@@ -32,24 +49,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
         fpsCounter.run()
         mainMenu()
-        dockspace(
-            HorizontalSplit(
-                rightRatio = 0.25f,
-                left = Window("main_window"),
-                right = VerticalSplit(
-                    bottomRatio = 0.25f,
-                    bottom = Window("Properties"),
-                    top = VerticalSplit(
-                        bottomRatio = 0.5f,
-                        top = Window("Node tree"),
-                        bottom = WindowGroup(
-                            Window("Voxel tree"),
-                            Window("History"),
-                        )
-                    ),
-                ),
-            )
-        )
+        dockspace(layout)
         mainWindow("main_window") { vp ->
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
