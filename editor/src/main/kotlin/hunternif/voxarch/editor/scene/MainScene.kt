@@ -12,13 +12,14 @@ import hunternif.voxarch.plan.findGlobalPosition
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
+import java.util.*
 
 class MainScene(private val app: EditorApp) {
     // data
     private val vp = Viewport(0, 0, 0, 0)
 
     // 3d models
-    private val voxelModel = VoxelModel()
+    private val voxelModel = VoxelGroupsModel()
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel()
     private val selectedNodeModel = SelectedNodeFrameModel()
@@ -105,37 +106,37 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun updateVoxelModel() = app.state.run {
-        voxelModel.clear()
-        if (voxelRoot !in hiddenObjects)
-            addVoxelModelsRecursive(voxelRoot)
-        voxelModel.uploadInstanceData()
+        val visibleVoxels = findVisibleChildren(voxelRoot)
+        visibleVoxels.forEach { it.update() }
+        voxelModel.updateVisible(visibleVoxels)
         updateSelectedNodeModel()
-    }
-
-    private fun addVoxelModelsRecursive(node: SceneVoxelGroup) {
-        for (child in node.children) {
-            if (child in app.state.hiddenObjects) continue
-            child.update()
-            voxelModel.addVoxels(child)
-            addVoxelModelsRecursive(child)
-        }
     }
 
     fun updateNodeModel() = app.state.run {
         nodeModel.clear()
-        if (rootNode !in hiddenObjects)
-            addNodeModelsRecursive(rootNode)
+        findVisibleChildren(rootNode).forEach {
+            it.update()
+            nodeModel.add(it)
+        }
         nodeModel.uploadInstanceData()
         updateSelectedNodeModel()
     }
 
-    private fun addNodeModelsRecursive(node: SceneNode) {
-        for (child in node.children) {
-            if (child in app.state.hiddenObjects) continue
-            child.update()
-            nodeModel.add(child)
-            addNodeModelsRecursive(child)
+    /** Returns all children of [root] that are not hidden directly or
+     * indirectly (i.e. by a hidden parent), excluding the root itself. */
+    private fun <T : INested<T>> findVisibleChildren(root: T) : List<T> {
+        val result = mutableListOf<T>()
+        if (root is SceneObject && root in app.state.hiddenObjects) return result
+        val queue = LinkedList<T>()
+        queue.addAll(root.children)
+        while (queue.isNotEmpty()) {
+            val child = queue.removeLast()
+            if (child is SceneObject && child !in app.state.hiddenObjects) {
+                result.add(child)
+                queue.addAll(child.children)
+            }
         }
+        return result
     }
 
     fun updateSelectedNodeModel() {

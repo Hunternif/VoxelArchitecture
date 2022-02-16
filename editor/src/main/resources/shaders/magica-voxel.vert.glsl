@@ -10,6 +10,7 @@ out vec3 Normal;
 out vec4 VoxColor;
 
 uniform mat4 uViewProj;
+uniform mat4 uModel;
 
 void main()
 {
@@ -17,5 +18,5 @@ void main()
     Normal = aNormal;
     VoxColor = aVoxColor;
 
-    gl_Position = uViewProj * vec4(FragPos, 1.0);
+    gl_Position = uViewProj * uModel * vec4(FragPos, 1.0);
 }

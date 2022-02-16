@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene.shaders
 import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.resourcePath
+import org.joml.Matrix4f
 import org.joml.Vector3f
 
 class MagicaVoxelShader: Shader() {
@@ -23,6 +24,8 @@ class MagicaVoxelShader: Shader() {
 
             uploadVec3f("uAmbientColor", ColorRGBa.fromHex(0x353444).toVector3f())
             uploadFloat("uAmbientPower", 1.0f)
+
+            uploadMat4f("uModel", Matrix4f())
         }
     }
 }

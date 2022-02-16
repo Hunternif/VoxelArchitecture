@@ -3,7 +3,12 @@ package hunternif.voxarch.editor.render
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 
-abstract class BaseModel {
+interface IModel {
+    fun init() {}
+    fun runFrame(viewProj: Matrix4f)
+}
+
+abstract class BaseModel : IModel {
     protected var vaoID = 0
     protected var vboID = 0
 
@@ -12,7 +17,7 @@ abstract class BaseModel {
 
     protected abstract val shader: Shader
 
-    open fun init() {
+    override fun init() {
         shader.init()
         vaoID = glGenVertexArrays()
         glBindVertexArray(vaoID)
@@ -38,7 +43,7 @@ abstract class BaseModel {
         }
     }
 
-    fun runFrame(viewProj: Matrix4f) {
+    final override fun runFrame(viewProj: Matrix4f) {
         shader.render(viewProj) {
             startFrame()
             render()
