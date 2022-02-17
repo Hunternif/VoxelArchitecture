@@ -9,8 +9,8 @@ import java.nio.file.Path
 class ImportVoxFile(
     private val path: Path
 ) : HistoryAction(
-    "Import VOX file ${path.fileName}",
-    FontAwesomeIcons.Cube
+    "Import ${path.fileName}",
+    FontAwesomeIcons.File
 ) {
     private lateinit var voxelGroup: SceneVoxelGroup
 
