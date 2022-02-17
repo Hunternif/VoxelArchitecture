@@ -16,9 +16,12 @@ class Colors {
         val headerBg = ColorRGBa.fromHex(0x4296fa, 0.31f)
 
         // Orange accent
-        val accentActive = ColorRGBa.fromHex(0xD27626)
-        val accentHovered = ColorRGBa.fromHex(0xD27626, 0.8f)
-        val accentBg = ColorRGBa.fromHex(0xD27626, 0.5f)
+        val accentHiActive = ColorRGBa.fromHex(0xC7631E)
+        val accentLoActive = ColorRGBa.fromHex(0xC7631E, 0.8f)
+        val accentHiHovered = ColorRGBa.fromHex(0xD27626)
+        val accentLoHovered = ColorRGBa.fromHex(0xD27626, 0.8f)
+        val accentHiBg = ColorRGBa.fromHex(0xD27626, 0.8f)
+        val accentLoBg = ColorRGBa.fromHex(0xD27626, 0.5f)
 
         val defaultNodeBox = buttonBg.copy(a = 0.2f)
 

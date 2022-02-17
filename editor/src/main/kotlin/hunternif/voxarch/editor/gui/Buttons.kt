@@ -25,9 +25,9 @@ inline fun accentButton(
     fullWidth: Boolean = false,
     crossinline onClick: () -> Unit = {}
 ) {
-    pushStyleColor(ImGuiCol.Button, Colors.accentBg)
-    pushStyleColor(ImGuiCol.ButtonHovered, Colors.accentHovered)
-    pushStyleColor(ImGuiCol.ButtonActive, Colors.accentActive)
+    pushStyleColor(ImGuiCol.Button, Colors.accentLoBg)
+    pushStyleColor(ImGuiCol.ButtonHovered, Colors.accentLoHovered)
+    pushStyleColor(ImGuiCol.ButtonActive, Colors.accentLoActive)
     button(text, tooltip, fullWidth, onClick)
     ImGui.popStyleColor(3)
 }
@@ -45,7 +45,11 @@ inline fun GuiBase.iconButton(
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 0f, 0f)
     ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 8f, 8f)
-    if (selected) pushStyleColor(ImGuiCol.Button, Colors.accentActive)
+    if (selected) {
+        pushStyleColor(ImGuiCol.Button, Colors.accentHiBg)
+        pushStyleColor(ImGuiCol.ButtonHovered, Colors.accentHiBg)
+        pushStyleColor(ImGuiCol.ButtonActive, Colors.accentHiBg)
+    }
     else if (transparent)
         ImGui.pushStyleColor(ImGuiCol.Button, 0, 0, 0, 0)
     ImGui.pushFont(font)
@@ -53,7 +57,8 @@ inline fun GuiBase.iconButton(
     ImGui.popFont()
     if (tooltip.isNotEmpty() && ImGui.isItemHovered()) ImGui.setTooltip(tooltip)
     ImGui.popStyleVar(2)
-    if (selected || transparent) ImGui.popStyleColor()
+    if (selected) ImGui.popStyleColor(3)
+    else if (transparent) ImGui.popStyleColor()
 }
 
 inline fun GuiBase.bigIconButton(
