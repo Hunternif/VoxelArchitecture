@@ -11,10 +11,25 @@ import imgui.flag.ImGuiStyleVar
 inline fun button(
     text: String,
     tooltip: String = "",
+    fullWidth: Boolean = false,
     crossinline onClick: () -> Unit = {}
 ) {
-    if (ImGui.button(text)) onClick()
+    val width = if (fullWidth) ImGui.getContentRegionAvailX() else 0f
+    if (ImGui.button(text, width, 0f)) onClick()
     if (tooltip.isNotEmpty() && ImGui.isItemHovered()) ImGui.setTooltip(tooltip)
+}
+
+inline fun accentButton(
+    text: String,
+    tooltip: String = "",
+    fullWidth: Boolean = false,
+    crossinline onClick: () -> Unit = {}
+) {
+    pushStyleColor(ImGuiCol.Button, Colors.accentBg)
+    pushStyleColor(ImGuiCol.ButtonHovered, Colors.accentHovered)
+    pushStyleColor(ImGuiCol.ButtonActive, Colors.accentActive)
+    button(text, tooltip, fullWidth, onClick)
+    ImGui.popStyleColor(3)
 }
 
 /** Draws a square button with an icon from FontAwesome */

@@ -76,7 +76,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
         }
         rightPanel("Node tree", hasPadding = false) {
-            nodeTree.render()
+            ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
+            childWindow("tree", toolbarHeight) { nodeTree.render() }
+            childToolbar("footer") {
+                accentButton("Build voxels", fullWidth = true)
+            }
+            ImGui.popStyleVar()
         }
         rightPanel("History", hasPadding = false) {
             history.render()
