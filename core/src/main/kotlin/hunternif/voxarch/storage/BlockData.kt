@@ -3,8 +3,8 @@ package hunternif.voxarch.storage
 import hunternif.voxarch.util.Direction
 
 /**
- * Contains block id and [orientation].
- * @author Hunternif
+ * Contains block [key] and [orientation].
+ * (I tried to make this an interface, but the generics are too annoying.)
  */
 open class BlockData(var key: String) {
 

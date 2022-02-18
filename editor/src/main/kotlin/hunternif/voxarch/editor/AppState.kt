@@ -1,8 +1,11 @@
 package hunternif.voxarch.editor
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.editor.actions.History
 import hunternif.voxarch.editor.actions.HistoryAction
 import hunternif.voxarch.editor.actions.ReadOnlyHistory
+import hunternif.voxarch.editor.builder.setDefaultBuilders
+import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
@@ -10,8 +13,9 @@ import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.storage.ChunkedStorage3D
+import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.util.emptyArray3D
+import hunternif.voxarch.world.defaultEnvironment
 
 /**
  * Contains data that completely defines app state.
@@ -23,6 +27,8 @@ interface AppState {
     /** Root group containing all voxel groups in the scene.
      * The root itself should stay empty of voxels. */
     val voxelRoot: SceneVoxelGroup
+    val builder: Builder<Node>
+    val buildContext: BuildContext
 
 
     //=========================== SCENE OBJECTS =============================
@@ -62,6 +68,12 @@ interface AppState {
 
 class AppStateImpl : AppState {
     override val voxelRoot = SceneVoxelGroup("Voxel groups", emptyArray3D())
+    override val builder = MainBuilder()
+    override val buildContext = BuildContext(defaultEnvironment).apply {
+        materials.setSolidColorMaterials()
+        builders.setDefaultBuilders()
+        builders.setCastleBuilders()
+    }
 
     override val rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
