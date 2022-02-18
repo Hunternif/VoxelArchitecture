@@ -30,6 +30,7 @@ abstract class GuiBase {
 
     lateinit var fontDefault: ImFont
     lateinit var fontSmallIcons: ImFont
+    lateinit var fontMediumIcons: ImFont
     lateinit var fontBigIcons: ImFont
 
     private fun initFonts() {
@@ -53,6 +54,15 @@ abstract class GuiBase {
             addFontFromMemoryTTF(
                 loadFromResources("fonts/fa-solid-900.ttf"),
                 11f, fontConfigMergeFont, iconRanges
+            )
+
+            fontMediumIcons = addFontFromMemoryTTF(
+                loadFromResources("fonts/fa-regular-400.ttf"),
+                14f, fontConfigNewFont, iconRanges
+            )
+            addFontFromMemoryTTF(
+                loadFromResources("fonts/fa-solid-900.ttf"),
+                14f, fontConfigMergeFont, iconRanges
             )
 
             fontBigIcons = addFontFromMemoryTTF(

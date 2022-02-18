@@ -79,7 +79,14 @@ class MainGui(val app: EditorApp) : GuiBase() {
             ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
             childWindow("tree", toolbarHeight) { nodeTree.render() }
             childToolbar("footer") {
-                accentButton("Build voxels", fullWidth = true)
+                ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 4f)
+                val width = (ImGui.getContentRegionAvailX() - 2*4 - ImGui.getFrameHeight()) / 2
+                accentButton("Build voxels", width = width)
+                ImGui.sameLine()
+                accentButton("Generate nodes", width = width)
+                ImGui.sameLine()
+                iconButton(FontAwesomeIcons.Cog, accent = true, font = fontMediumIcons)
+                ImGui.popStyleVar()
             }
             ImGui.popStyleVar()
         }
