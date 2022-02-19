@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.builder
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
+import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 
@@ -20,7 +21,10 @@ abstract class DomBuilder<out N: Node?> {
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
     /** Recursively invokes this method on children. */
+    /** Generators add more child nodes. */
+    internal val generators = mutableListOf<IGenerator>()
     internal open fun build(): N {
+        node?.let { n -> generators.forEach { it.generate(n) } }
         children.forEach { it.build() }
         return node
     }
@@ -68,6 +72,7 @@ open class DomNodeBuilder<out N: Node>(
         stylesheet.apply(this, styleClass)
         if (visibility == Visibility.VISIBLE) {
             buildNode()
+            generators.forEach { it.generate(node) }
             children.forEach { it.build() }
         } else {
             // add and then remove the node, because it needs a parent to
