@@ -30,16 +30,22 @@ class DomLineSegmentBuilder(val p1: Vec3, val p2: Vec3): DomLogicBuilder() {
 /**
  * Calls [childBlock] on every segment of the polygon.
  *
- * Will only work when added as a child to a [DomBuilder]<[PolygonRoom]>.
+ * Will only work when added as a child to a [DomBuilder] for [Room] or
+ * [PolygonRoom]>.
  */
 open class DomPolygonSegmentBuilder(
     private val childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomLogicBuilder() {
     override fun build(): Node? {
         val room = parent.node
-        if (room is PolygonRoom) {
-            addSegmentBuilders(room.polygon.segments)
+        val polygon = when (room) {
+            is PolygonRoom -> room.polygon
+            is Room -> Path().apply {
+                rectangle(room.width, room.length)
+            }
+            else -> null
         }
+        polygon?.let { addSegmentBuilders(it.segments) }
         children.forEach { it.build() }
         return null
     }
@@ -77,16 +83,23 @@ class DomFourWallsBuilder(
 /**
  * Calls [childBlock] on one random segment.
  *
- * Will work when added as a child to a [DomBuilder]<[PolygonRoom]>.
+ * Will only work when added as a child to a [DomBuilder] for [Room] or
+ * [PolygonRoom].
  */
 class DomRandomSegmentBuilder(
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolygonSegmentBuilder(childBlock) {
     override fun build(): Node? {
         val room = parent.node
-        if (room is PolygonRoom) {
-            val segment = room.polygon.segments
-                .random(Random(seed + 21000))
+        val polygon = when (room) {
+            is PolygonRoom -> room.polygon
+            is Room -> Path().apply {
+                rectangle(room.width, room.length)
+            }
+            else -> null
+        }
+        polygon?.let {
+            val segment = it.segments.random(Random(seed + 21000))
             addSegmentBuilders(listOf(segment))
         }
         children.forEach { it.build() }

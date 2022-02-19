@@ -96,7 +96,7 @@ fun DomBuilder<Room>.fourCorners(
 }
 
 /** Runs [block] on every section of this polygon. */
-fun DomBuilder<PolygonRoom>.allWalls(
+fun DomBuilder<Room>.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomPolygonSegmentBuilder(block)
@@ -104,7 +104,7 @@ fun DomBuilder<PolygonRoom>.allWalls(
 }
 
 /** Runs [block] on one random section of this polygon. */
-fun DomBuilder<PolygonRoom>.randomWall(
+fun DomBuilder<Room>.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomRandomSegmentBuilder(block)

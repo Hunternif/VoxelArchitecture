@@ -2,10 +2,7 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.PolygonShape
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -68,6 +65,34 @@ class DomWallTest {
             }
         }.build()
 
+        verifyFourWalls(dom)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+    }
+
+    @Test
+    fun `create all walls on rectangle room`() {
+        val style = Stylesheet().apply {
+            styleFor<Room> {
+                width { 2.vx }
+                length { 4.vx }
+            }
+        }
+        val wallSeeds = mutableListOf<Long>()
+        val dom = DomRoot(style).apply {
+            room {
+                allWalls {
+                    wall {
+                        wallSeeds.add(seed)
+                    }
+                }
+            }
+        }.build()
+
+        verifyFourWalls(dom)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+    }
+
+    private fun verifyFourWalls(dom: Structure) {
         val room = dom.children[0]
         assertEquals(4, room.children.size)
 
@@ -83,7 +108,5 @@ class DomWallTest {
         assertEquals(Vec3(-1, 0, 2), w3.end)
         assertEquals(Vec3(-1, 0, 2), w4.origin)
         assertEquals(Vec3(1, 0, 2), w4.end)
-
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
     }
 }

@@ -34,7 +34,7 @@ class TurretGenerator(
     var taperRatio: Double = 0.75
 
     override fun generate(parent: Node) {
-        if (parent !is PolygonRoom) return
+        if (parent !is Room) return
         // Order matters! First apply the default styles, then the custom ones.
         val style = defaultStyle + baseStyle + createTurretStyle(parent)
         DomLocalRoot(parent, style, seed).apply {
@@ -54,7 +54,7 @@ class TurretGenerator(
         }.build()
     }
 
-    private fun createTurretStyle(body: PolygonRoom) = Stylesheet().apply {
+    private fun createTurretStyle(body: Room) = Stylesheet().apply {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }
