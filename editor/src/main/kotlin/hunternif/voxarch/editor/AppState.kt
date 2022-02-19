@@ -1,9 +1,12 @@
 package hunternif.voxarch.editor
 
 import hunternif.voxarch.builder.*
+import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.editor.actions.History
 import hunternif.voxarch.editor.actions.HistoryAction
 import hunternif.voxarch.editor.actions.ReadOnlyHistory
+import hunternif.voxarch.editor.builder.generatorsByName
 import hunternif.voxarch.editor.builder.setDefaultBuilders
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.scene.NewNodeFrame
@@ -29,6 +32,9 @@ interface AppState {
     val voxelRoot: SceneVoxelGroup
     val builder: Builder<Node>
     val buildContext: BuildContext
+    val stylesheet: Stylesheet
+    val seed: Long
+    val generatorNames: List<String>
 
 
     //=========================== SCENE OBJECTS =============================
@@ -74,6 +80,9 @@ class AppStateImpl : AppState {
         builders.setDefaultBuilders()
         builders.setCastleBuilders()
     }
+    override val stylesheet = defaultStyle
+    override var seed: Long = 0
+    override val generatorNames = generatorsByName.keys.toList()
 
     override val rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
