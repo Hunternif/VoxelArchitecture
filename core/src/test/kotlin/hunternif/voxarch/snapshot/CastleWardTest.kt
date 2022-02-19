@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.BLD_CURTAIN_WALL
@@ -63,7 +64,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
 
     private fun castleWard(): Structure {
         val style = defaultStyle.apply {
-            styleFor<Turret>("turret") {
+            styleFor<PolygonRoom>("main_turret") {
                 size(6.vx, 4.vx, 6.vx)
                 align {
                     center()
@@ -84,13 +85,13 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 size(16.vx, 8.vx, 16.vx)
                 align { bottom(4.vx) }
             }
-            styleFor<Turret>("outer_ward_turret") {
+            styleFor<PolygonRoom>("outer_ward_turret") {
                 bodyShape = BodyShape.ROUND
                 roofShape = RoofShape.FLAT_BORDERED
                 bottomShape = BottomShape.TAPERED
                 size(8.vx, 10.vx, 8.vx)
             }
-            styleFor<Turret>("inner_ward_turret") {
+            styleFor<PolygonRoom>("inner_ward_turret") {
                 bodyShape = BodyShape.SQUARE
                 roofShape = RoofShape.SPIRE
                 bottomShape = BottomShape.FOUNDATION
@@ -104,7 +105,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 ward("inner_ward") {
                     allCorners { turret("inner_ward_turret") }
                     allWalls { wall(BLD_CURTAIN_WALL) }
-                    randomWall { turret("turret") }
+                    randomWall { turret("main_turret") }
                 }
             }
         }.build()

@@ -60,6 +60,18 @@ class DomRoot(
     public override fun build(): Structure = super.build()
 }
 
+/** Used for creating a local DOM within a Node tree. */
+class DomLocalRoot<out N : Node>(
+    override val node: N,
+    override val stylesheet: Stylesheet = defaultStyle,
+    seed: Long = 0,
+) : DomBuilder<N>() {
+    init {
+        this.seed = seed
+    }
+    public override fun build(): N = super.build()
+}
+
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<out N: Node>(
     private val createNode: () -> N
@@ -81,11 +93,15 @@ open class DomNodeBuilder<out N: Node>(
         }
         return node
     }
-    /** Any custom code for adding more nodes inside this node. */
+    /** Any custom initialization code for this node.
+     * Don't use it to add child nodes, create a IGenerator for that instead. */
     open fun buildNode() {}
     /** Add given style class name to this builder. */
     fun addStyle(style: String) {
         styleClass.add(style)
+    }
+    fun addStyles(vararg styles: String) {
+        styleClass.addAll(styles)
     }
     /** Add given style class names to this builder. */
     operator fun Array<out String>.unaryPlus() {

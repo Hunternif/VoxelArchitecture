@@ -1,8 +1,10 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
+import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
@@ -24,7 +26,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
     companion object {
         private fun turret(width: Int): Structure {
             val style = Stylesheet().apply {
-                styleFor<Turret> {
+                styleFor<PolygonRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }
                     height { 5.vx }

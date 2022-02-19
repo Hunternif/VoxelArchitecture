@@ -4,6 +4,7 @@ import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 
+@Deprecated("Use TurretGenerator on a PolygonRoom")
 class Turret(
     /** maps to the center of the floor */
     origin: Vec3,

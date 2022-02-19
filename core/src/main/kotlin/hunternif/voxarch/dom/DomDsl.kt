@@ -1,9 +1,16 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
+import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.sandbox.castle.turret.Turret
+import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
 import hunternif.voxarch.vector.Vec3
+
+// Some DOM elements are built of more basic classes via generators,
+// e.g. by adding child Nodes to a Room. To help identify this initial parent
+// Node, a style will be automatically added to it.
+const val DOM_TURRET = "dom_turret"
+
 
 /**
  * Adds child empty [Node].
@@ -47,13 +54,18 @@ fun DomBuilder<Node?>.polygonRoom(
     bld.block()
 }
 
-/** Adds child [Turret]. See [node]. */
+/** Adds child PolygonRoom with a [TurretGenerator]. See [node]. */
 fun DomBuilder<Node?>.turret(
     vararg styleClass: String,
-    block: DomTurretBuilder.() -> Unit = {}
+    block: DomPolygonRoomBuilder.() -> Unit = {}
 ) {
-    val bld =  DomTurretBuilder().apply{ +styleClass }
+    val bld =  DomPolygonRoomBuilder().apply{
+        // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
+        // BLD_TOWER_BODY must go first, so that it's also used as node type.
+        addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
+    }
     addChild(bld)
+    bld.generators.add(TurretGenerator(stylesheet, seed))
     bld.block()
 }
 
