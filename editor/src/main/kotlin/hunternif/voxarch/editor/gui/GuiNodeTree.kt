@@ -18,7 +18,12 @@ class GuiNodeTree(
     gui: GuiBase
 ) : GuiSceneTree<SceneNode>(app, gui) {
     override val root: SceneNode get() = app.state.rootNode
-    override fun label(item: SceneNode): String = item.node.javaClass.simpleName
+    override fun label(item: SceneNode): String = item.node.run {
+        val nodeClass = javaClass.simpleName
+        val type = if (!type.isNullOrEmpty()) " $type" else ""
+        val generators = if (item.generators.isNotEmpty()) " []" else ""
+        return "$nodeClass$type$generators"
+    }
     override fun onClick(item: SceneNode) {
         app.setSelectedObject(item, NODES)
     }
