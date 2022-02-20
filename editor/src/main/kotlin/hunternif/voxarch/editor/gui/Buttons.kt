@@ -108,3 +108,15 @@ fun centeredText(text: String) {
     ImGui.popStyleColor(3)
     ImGui.popStyleVar(1)
 }
+
+inline fun GuiBase.inlineIconButton(
+    text: String,
+    font: ImFont = fontSmallIcons,
+    crossinline onClick: () -> Unit = {}
+) {
+    ImGui.pushFont(font)
+    ImGui.pushStyleVar(ImGuiStyleVar.SelectableTextAlign, 0.5f, 0f)
+    if (ImGui.selectable(text, false)) onClick()
+    ImGui.popStyleVar(1)
+    ImGui.popFont()
+}

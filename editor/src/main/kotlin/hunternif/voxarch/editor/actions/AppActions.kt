@@ -3,8 +3,11 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
+import hunternif.voxarch.editor.builder.createGeneratorByName
+import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
@@ -19,6 +22,26 @@ import java.nio.file.Path
 //=============================== VOXELS ================================
 
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
+
+fun EditorApp.addGenerator(node: SceneNode, generatorName: String) {
+    val generator = state.createGeneratorByName(generatorName)
+    generator?.let {
+        historyAction(SetGenerators(
+            node, node.generators + it,
+        "Add generator", FontAwesomeIcons.Landmark
+        ))
+    }
+}
+
+fun EditorApp.removeGenerator(node: SceneNode, generator: IGenerator) {
+    val newGens = node.generators.toMutableList()
+    if (newGens.remove(generator)) {
+        historyAction(SetGenerators(
+                node, newGens,
+            "Remove generator", FontAwesomeIcons.TrashAlt
+        ))
+    }
+}
 
 
 //============================== SELECTION ==============================

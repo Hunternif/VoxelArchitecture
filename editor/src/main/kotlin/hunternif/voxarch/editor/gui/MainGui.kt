@@ -17,7 +17,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
-    @PublishedApi internal val nodeProperties = GuiObjectProperties(app)
+    @PublishedApi internal val nodeProperties = GuiObjectProperties(app, this)
     @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
@@ -26,7 +26,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         rightRatio = 0.25f,
         left = Window("main_window"),
         right = VerticalSplit(
-            bottomRatio = 0.25f,
+            bottomRatio = 0.4f,
             bottom = Window("Properties"),
             top = VerticalSplit(
                 bottomRatio = 0.5f,

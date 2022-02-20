@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scene.models.boxFaces
 import hunternif.voxarch.editor.util.*
+import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
@@ -47,6 +48,7 @@ class SceneNode(
     override var parent: SceneNode? = null
     private val _children = LinkedHashSet<SceneNode>()
     override val children: Collection<SceneNode> get() = _children
+    val generators = mutableListOf<IGenerator>()
 
     init { update() }
 
