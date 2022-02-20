@@ -41,6 +41,7 @@ open class DomPolygonSegmentBuilder(
         val polygon = when (room) {
             is PolygonRoom -> room.polygon
             is Room -> Path().apply {
+                origin = room.innerFloorCenter
                 rectangle(room.width, room.length)
             }
             else -> null
@@ -71,6 +72,7 @@ class DomFourWallsBuilder(
         val room = parent.node
         if (room is Room) {
             val polygon = Path().apply {
+                origin = room.innerFloorCenter
                 rectangle(room.width, room.length)
             }
             addSegmentBuilders(polygon.segments)
@@ -94,6 +96,7 @@ class DomRandomSegmentBuilder(
         val polygon = when (room) {
             is PolygonRoom -> room.polygon
             is Room -> Path().apply {
+                origin = room.innerFloorCenter
                 rectangle(room.width, room.length)
             }
             else -> null

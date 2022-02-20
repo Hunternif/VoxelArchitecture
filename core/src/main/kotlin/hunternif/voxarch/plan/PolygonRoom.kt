@@ -26,6 +26,7 @@ open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
 
     /** Creates a wall from each edge of the polygon. */
     fun createWalls() {
+        polygon.origin = innerFloorCenter
         polygon.segments.forEach {
             wall(it.p1, it.p2.addY(height))
         }

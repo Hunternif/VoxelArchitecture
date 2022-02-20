@@ -80,9 +80,9 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 		// Check if the point is within the walls:
 		for (Wall wall : room.getWalls()) {
 			Vec3 wallNorm = getWallNormal(wall);
-			Vec3 point = new Vec3(x - room.getSize().x/2 - wall.getP1().x + wallNorm.x*offset,
+			Vec3 point = new Vec3(x + room.getStart().x - wall.getP1().x + wallNorm.x*offset,
 								  0,
-								  z - room.getSize().z/2 - wall.getP1().y + wallNorm.z*offset);
+								  z + room.getStart().z - wall.getP1().y + wallNorm.z*offset);
 			// If the point is inside the room, then the cross product of the
 			// wall vector with it will point upwards.
 			Vec3 wallVec = getWallVector(wall);

@@ -54,9 +54,9 @@ open class Room(
         set(value) { field.set(value) } // keep the same instance
 
     /** Vs local origin */
-    val innerFloorCenter: Vec3 = start.add(size.x/2, 0.0, size.z/2)
+    val innerFloorCenter: Vec3 get() = start.add(size.x/2, 0.0, size.z/2)
     /** Vs parent's origin */
-    val floorCenter: Vec3 = origin.add(innerFloorCenter)
+    val floorCenter: Vec3 get() = origin.add(innerFloorCenter)
 
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
