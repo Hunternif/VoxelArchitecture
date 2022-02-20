@@ -70,9 +70,11 @@ class FrameBufferMSAA(var samples: Int = 4) : FrameBuffer() {
         vp.set(viewport)
     }
 
-    override fun render(renderCall: () -> Unit) {
+    override fun startFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, fboMSAAID)
-        renderCall()
+    }
+
+    override fun endFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
         glBindFramebuffer(GL_READ_FRAMEBUFFER, fboMSAAID)
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, fboDrawID)

@@ -43,9 +43,19 @@ open class FrameBuffer {
         vp.set(viewport)
     }
 
-    open fun render(renderCall: () -> Unit) {
+    @PublishedApi
+    internal open fun startFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, fboID)
-        renderCall()
+    }
+
+    @PublishedApi
+    internal open fun endFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    }
+
+    inline fun render(crossinline renderCall: () -> Unit) {
+        startFrame()
+        renderCall()
+        endFrame()
     }
 }
