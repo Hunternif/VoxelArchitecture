@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.centerCamera
 import hunternif.voxarch.editor.actions.focusMainWindow
+import hunternif.voxarch.editor.actions.generateNodes
 import hunternif.voxarch.editor.actions.hoverMainWindow
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
@@ -83,7 +84,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 val width = (ImGui.getContentRegionAvailX() - 2*4 - ImGui.getFrameHeight()) / 2
                 accentButton("Build voxels", width = width)
                 ImGui.sameLine()
-                accentButton("Generate nodes", width = width)
+                accentButton("Generate nodes", width = width) {
+                    app.generateNodes()
+                }
                 ImGui.sameLine()
                 iconButton(FontAwesomeIcons.Cog, accent = true, font = fontMediumIcons)
                 ImGui.popStyleVar()

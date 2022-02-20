@@ -35,6 +35,7 @@ interface AppState {
     val stylesheet: Stylesheet
     val seed: Long
     val generatorNames: List<String>
+    val generatedNodes: Collection<SceneNode>
 
 
     //=========================== SCENE OBJECTS =============================
@@ -83,6 +84,7 @@ class AppStateImpl : AppState {
     override val stylesheet = defaultStyle
     override var seed: Long = 0
     override val generatorNames = generatorsByName.keys.toList()
+    override val generatedNodes: LinkedHashSet<SceneNode> = LinkedHashSet()
 
     override val rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode

@@ -43,6 +43,9 @@ fun EditorApp.removeGenerator(node: SceneNode, generator: IGenerator) {
     }
 }
 
+/** Clear generated nodes and run generators for all nodes that have them. */
+fun EditorApp.generateNodes() = historyAction(GenerateNodes())
+
 
 //============================== SELECTION ==============================
 

@@ -22,6 +22,7 @@ open class SceneObject(
     val start: Vector3f = Vector3f(),
     val size: Vector3f = Vector3f(),
     var color: ColorRGBa,
+    val isGenerated: Boolean = false,
 ) {
     /** Read-only! Corner of the AAB in "natural" coordinates (not in voxels),
      * absolute position in the scene. */
@@ -43,8 +44,12 @@ open class SceneObject(
 }
 
 class SceneNode(
-    val node: Node
-) : SceneObject(color = Colors.defaultNodeBox), INested<SceneNode> {
+    val node: Node,
+    isGenerated: Boolean = false,
+) : SceneObject(
+    color = Colors.defaultNodeBox,
+    isGenerated = isGenerated,
+), INested<SceneNode> {
     override var parent: SceneNode? = null
     private val _children = LinkedHashSet<SceneNode>()
     override val children: Collection<SceneNode> get() = _children
@@ -55,11 +60,13 @@ class SceneNode(
     override fun addChild(child: SceneNode) {
         child.parent = this
         _children.add(child)
-        node.addChild(child.node)
+        // prevent double-adding, especially when generating nodes
+        if (child.node.parent != node) node.addChild(child.node)
     }
     override fun removeChild(child: SceneNode) {
         if (_children.remove(child)) {
             node.removeChild(child.node)
+            // not resetting parent because it will be used for undo in history
         }
     }
     override fun removeAllChildren() {
@@ -84,9 +91,13 @@ class SceneNode(
 class SceneVoxelGroup(
     val label: String,
     val data: IStorage3D<VoxColor?>,
+    isGenerated: Boolean = false,
     /** Voxel centric coordinates of the lower corner */
     val origin: Vector3f = Vector3f(),
-) : SceneObject(color = Colors.transparent), INested<SceneVoxelGroup> {
+) : SceneObject(
+    color = Colors.transparent,
+    isGenerated = isGenerated,
+), INested<SceneVoxelGroup> {
     override var parent: SceneVoxelGroup? = null
     private val _children = LinkedHashSet<SceneVoxelGroup>()
     override val children: Collection<SceneVoxelGroup> get() = _children
