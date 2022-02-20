@@ -13,6 +13,7 @@ class Ward : PolygonRoom()
 
 class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
     override fun buildNode() = node.run {
+        polygon.origin = innerFloorCenter
         when (shape) {
             PolygonShape.SQUARE -> polygon.square(width)
             PolygonShape.ROUND -> polygon.circle(width, edgeCount)

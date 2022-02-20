@@ -46,14 +46,14 @@ open class DomPolygonSegmentBuilder(
             }
             else -> null
         }
-        polygon?.let { addSegmentBuilders(it.segments) }
+        polygon?.let { addSegmentBuilders(it.origin, it.segments) }
         children.forEach { it.build() }
         return null
     }
 
-    protected fun addSegmentBuilders(segments: List<PathSegment>) {
+    protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
         segments.forEachIndexed { i, seg ->
-            val bld = DomLineSegmentBuilder(seg.p1, seg.p2)
+            val bld = DomLineSegmentBuilder(origin + seg.p1, origin + seg.p2)
             addChild(bld, seed + 20000 + i)
             bld.childBlock()
         }
@@ -75,7 +75,7 @@ class DomFourWallsBuilder(
                 origin = room.innerFloorCenter
                 rectangle(room.width, room.length)
             }
-            addSegmentBuilders(polygon.segments)
+            addSegmentBuilders(polygon.origin, polygon.segments)
         }
         children.forEach { it.build() }
         return null
@@ -103,7 +103,7 @@ class DomRandomSegmentBuilder(
         }
         polygon?.let {
             val segment = it.segments.random(Random(seed + 21000))
-            addSegmentBuilders(listOf(segment))
+            addSegmentBuilders(it.origin, listOf(segment))
         }
         children.forEach { it.build() }
         return null

@@ -62,12 +62,18 @@ class TurretGenerator(
             shape { inherit() }
             visibleIf { hasTaperedBottom() }
             height { 2 * body.avgRadius() * taperRatio() }
-            align { below() }
+            align {
+                center()
+                below()
+            }
         }
         styleFor<PolygonRoom>("roof") {
             shape { inherit() }
             diameter { 100.pct + 2 * roofOffset() }
-            align { above(1.vx) } // 1 block above parent
+            align {
+                center()
+                above(1.vx) // 1 block above parent
+            }
         }
         styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
             visibleIf { hasSpire() }

@@ -11,6 +11,7 @@ open class DomPolygonRoomBuilder : DomNodeBuilder<PolygonRoom>({ PolygonRoom() }
 }
 
 internal fun PolygonRoom.createPolygon() {
+    polygon.origin = innerFloorCenter
     when (shape) {
         PolygonShape.SQUARE -> polygon.square(width)
         PolygonShape.ROUND -> {
