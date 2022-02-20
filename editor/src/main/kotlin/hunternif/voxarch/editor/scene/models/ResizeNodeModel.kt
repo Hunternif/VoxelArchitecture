@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.AABBFace
+import hunternif.voxarch.editor.util.put
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
@@ -36,9 +37,7 @@ class ResizeNodeModel : BaseModel() {
 
         // Store line positions in the vertex buffer
         face?.apply {
-            vertices.forEach { v ->
-                vertexBuffer.put(v.x).put(v.y).put(v.z)
-            }
+            vertices.forEach { vertexBuffer.put(it) }
             vertexBuffer.flip() // rewind
         }
 

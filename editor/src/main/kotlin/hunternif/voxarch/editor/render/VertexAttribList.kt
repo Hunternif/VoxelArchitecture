@@ -24,6 +24,14 @@ class VertexAttribList {
         list.add(VertexAttribData(id, 4, GL_FLOAT, 4 * Float.SIZE_BYTES))
     }
 
+    /** Matrix4 takes up 4 consecutive id values. */
+    fun mat4f(id: Int) {
+        list.add(VertexAttribData(id, 4, GL_FLOAT, 4 * Float.SIZE_BYTES))
+        list.add(VertexAttribData(id+1, 4, GL_FLOAT, 4 * Float.SIZE_BYTES))
+        list.add(VertexAttribData(id+2, 4, GL_FLOAT, 4 * Float.SIZE_BYTES))
+        list.add(VertexAttribData(id+3, 4, GL_FLOAT, 4 * Float.SIZE_BYTES))
+    }
+
     fun upload() {
         val stride = list.fold(0) { s, attr -> s + attr.sizeBytes }
         var offset = 0L

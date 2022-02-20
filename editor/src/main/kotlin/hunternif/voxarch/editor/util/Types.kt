@@ -2,9 +2,8 @@ package hunternif.voxarch.editor.util
 
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
-import org.joml.Vector3f
-import org.joml.Vector3fc
-import org.joml.Vector3i
+import org.joml.*
+import java.nio.FloatBuffer
 import kotlin.math.*
 
 fun IntVec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
@@ -117,4 +116,29 @@ class AABBFace(
         Vector3f(maxX, maxY, maxZ),
         vertices,
     )
+}
+
+fun FloatBuffer.put(vec: Vector3f): FloatBuffer = this.run {
+    put(vec.x).put(vec.y).put(vec.z)
+}
+fun FloatBuffer.put(vec: Vector4f): FloatBuffer = this.run {
+    put(vec.x).put(vec.y).put(vec.z).put(vec.w)
+}
+fun FloatBuffer.put(m: Matrix4f): FloatBuffer = this.run {
+    put(m.m00())
+    put(m.m01())
+    put(m.m02())
+    put(m.m03())
+    put(m.m10())
+    put(m.m11())
+    put(m.m12())
+    put(m.m13())
+    put(m.m20())
+    put(m.m21())
+    put(m.m22())
+    put(m.m23())
+    put(m.m30())
+    put(m.m31())
+    put(m.m32())
+    put(m.m33())
 }

@@ -3,6 +3,8 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
+import hunternif.voxarch.editor.util.put
+import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -36,9 +38,8 @@ abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
 
         initInstanceAttributes {
-            vector3f(2) // offset instance attribute
-            vector3f(3) // scale instance attribute
-            vector4f(4) // color instance attribute
+            vector4f(2) // color instance attribute
+            mat4f(3) // model matrix instance attribute, uses ids 3-6
         }
         uploadInstanceData()
     }
@@ -52,11 +53,11 @@ abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
     }
 
     fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 10).run {
+        // 20 = 4f color + 16f matrix
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 20).run {
             instances.forEach { it.run {
-                put(start.x).put(start.y).put(start.z)
-                put(size.x).put(size.y).put(size.z)
-                put(color.r).put(color.g).put(color.b).put(color.a)
+                put(color.toVector4f())
+                put(Matrix4f().translation(start).scale(size))
             }}
             flip()
         }

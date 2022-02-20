@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
+import hunternif.voxarch.editor.util.put
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
 
@@ -26,9 +27,7 @@ class NewNodeFrameModel : BaseModel() {
 
         // Store line positions in the vertex buffer
         for (e in edges) {
-            vertexBuffer
-                .put(e.start.x).put(e.start.y).put(e.start.z)
-                .put(e.end.x).put(e.end.y).put(e.end.z)
+            vertexBuffer.put(e.start).put(e.end)
         }
         vertexBuffer.flip() // rewind
 

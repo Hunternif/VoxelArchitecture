@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
+import hunternif.voxarch.editor.util.put
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
@@ -33,15 +34,14 @@ class GizmoModel : BaseModel() {
         val vertexBuffer = stack.mallocFloat(bufferSize)
         vertexBuffer.run {
             // X
-            put(-0.5f).put(0f).put(0f)
-                .put(colX.r).put(colX.g).put(colX.b).put(colX.a)
-            put( 0.5f).put(0f).put(0f).put(colX.r).put(colX.g).put(colX.b).put(colX.a)
+            put(-0.5f).put(0f).put(0f).put(colX.toVector4f())
+            put( 0.5f).put(0f).put(0f).put(colX.toVector4f())
             // Y
-            put(0f).put(-0.5f).put(0f).put(colY.r).put(colY.g).put(colY.b).put(colY.a)
-            put(0f).put( 0.5f).put(0f).put(colY.r).put(colY.g).put(colY.b).put(colY.a)
+            put(0f).put(-0.5f).put(0f).put(colY.toVector4f())
+            put(0f).put( 0.5f).put(0f).put(colY.toVector4f())
             // Z
-            put(0f).put(0f).put(-0.5f).put(colZ.r).put(colZ.g).put(colZ.b).put(colZ.a)
-            put(0f).put(0f).put( 0.5f).put(colZ.r).put(colZ.g).put(colZ.b).put(colZ.a)
+            put(0f).put(0f).put(-0.5f).put(colZ.toVector4f())
+            put(0f).put(0f).put( 0.5f).put(colZ.toVector4f())
             flip()
         }
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
