@@ -8,6 +8,7 @@ import hunternif.voxarch.wfc.tiled.wang7x3x7.generateValidTiles7x3x7
 import hunternif.voxarch.wfc.tiled.wang7x3x7.ground
 import hunternif.voxarch.wfc.tiled.wang7x3x7.groundedAir
 import org.junit.Test
+import java.nio.file.Files
 import java.nio.file.Paths
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -36,6 +37,7 @@ class WfcMagicaVoxelTest {
             "${today()}.vox"
         )
         wave.writeToVoxFile(path, colorMap)
+        Files.delete(path) // clean up
     }
 
     private fun today() =
