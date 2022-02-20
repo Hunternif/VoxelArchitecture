@@ -60,7 +60,7 @@ abstract class GuiSceneTree<T: INested<T>>(
 ) {
     /** Used to detect click outside the tree, which resets selection */
     private var isAnyTreeNodeClicked = false
-    var isThisPanelClicked = false
+    private var isThisPanelClicked = false
 
     abstract val root: T
     abstract fun label(item: T): String
@@ -100,6 +100,9 @@ abstract class GuiSceneTree<T: INested<T>>(
         hidden: Boolean,
         isChildNode: Boolean,
     ) {
+        val isGenerated = node is SceneObject && node.isGenerated
+        if (isGenerated) pushStyleColor(Text, Colors.generatedLabel)
+
         ImGui.tableNextRow()
         val i = ImGui.tableGetRowIndex()
         ImGui.tableNextColumn()
@@ -151,7 +154,10 @@ abstract class GuiSceneTree<T: INested<T>>(
         }
         val text = label(node)
         ImGui.alignTextToFramePadding()
-        if (updatedHidden) pushStyleColor(Text, Colors.hiddenItemLabel)
+        if (updatedHidden) {
+            if (isGenerated) pushStyleColor(Text, Colors.generatedHiddenLabel)
+            else pushStyleColor(Text, Colors.hiddenItemLabel)
+        }
 
         // Create fake indents to make the tree work in the 2nd column.
         for (x in 1..depth) ImGui.indent()
@@ -160,6 +166,7 @@ abstract class GuiSceneTree<T: INested<T>>(
 
         if (updatedHidden) ImGui.popStyleColor()
         if (isParentNode || isChildNode) ImGui.popStyleColor(3)
+        if (isGenerated) ImGui.popStyleColor()
 
         if (ImGui.isItemHovered()) {
             if (ImGui.isMouseClicked(0)) {

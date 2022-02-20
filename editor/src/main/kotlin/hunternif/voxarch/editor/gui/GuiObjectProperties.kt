@@ -138,7 +138,11 @@ class GuiObjectProperties(
     }
 
     private fun SceneObject.toText(): String {
-        return if (this is SceneNode) node.javaClass.simpleName else ""
+        val className =
+            if (this is SceneNode) node.javaClass.simpleName
+            else javaClass.simpleName
+        val generated = if (isGenerated) "(generated)" else ""
+        return "$className $generated"
     }
 
     /** Apply the modified values to the node. */

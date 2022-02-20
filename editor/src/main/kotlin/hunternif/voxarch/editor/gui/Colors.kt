@@ -28,6 +28,8 @@ class Colors {
         // Node tree colors
         val parentNode = ColorRGBa.fromHex(0x373737)
         val childNode = ColorRGBa.fromHex(0x262626)
+        val generatedLabel = accentHiHovered.copy()
+        val generatedHiddenLabel = generatedLabel.copy(a = 0.6f)
         val hiddenItemLabel = ColorRGBa.fromHex(0xffffff, 0.6f)
 
         // Pastel RGB colors
