@@ -2,10 +2,7 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
-import hunternif.voxarch.util.circle
-import hunternif.voxarch.util.clampMin
-import hunternif.voxarch.util.roundToEven
-import hunternif.voxarch.util.square
+import hunternif.voxarch.util.*
 import kotlin.math.PI
 
 /** Castle ward. */
@@ -15,13 +12,13 @@ class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
     override fun buildNode() = node.run {
         polygon.origin = innerFloorCenter
         when (shape) {
-            PolygonShape.SQUARE -> polygon.square(width)
-            PolygonShape.ROUND -> polygon.circle(width, edgeCount)
+            PolygonShape.SQUARE -> polygon.rectangle(width, length)
+            PolygonShape.ROUND -> polygon.ellipse(width, length, edgeCount)
         }
     }
 
     private val edgeCount: Int get() = node.run {
-        (width * PI / edgeLength)
+        ((width + length) / 2 * PI / edgeLength)
             .clampMin(4.0).roundToEven().toInt()
     }
 }

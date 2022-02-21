@@ -15,7 +15,7 @@ class DomWardTest {
         val style = Stylesheet().apply {
             styleFor<Ward> {
                 shape = SQUARE
-                width { 2.vx }
+                diameter { 2.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -39,7 +39,7 @@ class DomWardTest {
         val style = Stylesheet().apply {
             styleFor<Ward> {
                 shape = ROUND
-                width { 10.vx }
+                diameter { 10.vx }
                 edgeLength { 6.vx }
             }
         }
@@ -60,7 +60,7 @@ class DomWardTest {
         val style = Stylesheet().apply {
             styleFor<Ward> {
                 shape = ROUND
-                width { 10.vx }
+                diameter { 10.vx }
                 edgeLength { 4.vx }
             }
         }
