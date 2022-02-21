@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.actions.History
 import hunternif.voxarch.editor.actions.HistoryAction
 import hunternif.voxarch.editor.actions.ReadOnlyHistory
 import hunternif.voxarch.editor.builder.generatorsByName
+import hunternif.voxarch.editor.builder.mapVoxelToSolidColor
 import hunternif.voxarch.editor.builder.setDefaultBuilders
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.scene.NewNodeFrame
@@ -14,9 +15,11 @@ import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AABBFace
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.*
+import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.world.defaultEnvironment
 
@@ -36,6 +39,7 @@ interface AppState {
     val seed: Long
     val generatorNames: List<String>
     val generatedNodes: Collection<SceneNode>
+    val voxelColorMap: (IVoxel) -> ColorRGBa
 
 
     //=========================== SCENE OBJECTS =============================
@@ -85,6 +89,7 @@ class AppStateImpl : AppState {
     override var seed: Long = 0
     override val generatorNames = generatorsByName.keys.toList()
     override val generatedNodes: LinkedHashSet<SceneNode> = LinkedHashSet()
+    override val voxelColorMap = ::mapVoxelToSolidColor
 
     override val rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode

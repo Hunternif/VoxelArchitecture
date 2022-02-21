@@ -4,9 +4,9 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scene.models.boxFaces
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.generator.IGenerator
-import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.max
 import hunternif.voxarch.util.min
 import hunternif.voxarch.vector.Vec3
@@ -131,7 +131,7 @@ class SceneNode(
 
 class SceneVoxelGroup(
     val label: String,
-    val data: IStorage3D<VoxColor?>,
+    val data: IStorage3D<out IVoxel?>,
     isGenerated: Boolean = false,
     /** Voxel centric coordinates of the lower corner */
     val origin: Vector3f = Vector3f(),

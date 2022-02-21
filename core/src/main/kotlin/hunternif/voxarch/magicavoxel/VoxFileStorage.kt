@@ -6,6 +6,7 @@ import com.scs.voxlib.VoxWriter
 import com.scs.voxlib.Voxel
 import com.scs.voxlib.chunk.*
 import hunternif.voxarch.storage.IArray3D
+import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
@@ -13,7 +14,7 @@ import hunternif.voxarch.vector.IntVec3
 
 // I don't plan to support materials, only colors for now.
 
-data class VoxColor(val color: Int) {
+data class VoxColor(val color: Int) : IVoxel {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is VoxColor) return false

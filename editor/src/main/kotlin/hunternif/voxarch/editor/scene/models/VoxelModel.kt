@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.scene.models.VoxelModel.VoxelInstance
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -13,6 +14,7 @@ import org.lwjgl.opengl.GL33.*
  * TODO: voxels shouldn't be treated as SceneObjects */
 class VoxelModel(
     private val voxels: SceneVoxelGroup,
+    private val colorMap: (IVoxel) -> ColorRGBa,
 ) : BoxInstancedModel<VoxelInstance>() {
     class VoxelInstance(x: Float, y: Float, z: Float, color: ColorRGBa) :
         SceneObject(
@@ -33,7 +35,7 @@ class VoxelModel(
                         x.toFloat(),
                         y.toFloat(),
                         z.toFloat(),
-                        ColorRGBa.fromHex(v.color)
+                        colorMap(v)
                     )
                 )
             }

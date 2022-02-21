@@ -2,14 +2,18 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.IModel
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.storage.IVoxel
 import org.joml.Matrix4f
 
 /** Contains all models for individual [SceneVoxelGroup] instances. */
-class VoxelGroupsModel : IModel {
+class VoxelGroupsModel(
+    private val colorMap: (IVoxel) -> ColorRGBa,
+) : IModel {
     private val models = LinkedHashMap<SceneVoxelGroup, VoxelModel>()
 
     private fun getModel(group: SceneVoxelGroup) = models.getOrPut(group) {
-        VoxelModel(group).apply {
+        VoxelModel(group, colorMap).apply {
             init()
             updateVoxels()
         }

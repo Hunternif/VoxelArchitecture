@@ -6,7 +6,7 @@ import hunternif.voxarch.util.Direction
  * Contains block [key] and [orientation].
  * (I tried to make this an interface, but the generics are too annoying.)
  */
-open class BlockData(var key: String) {
+open class BlockData(var key: String) : IVoxel {
 
     var orientation: Direction? = null
 
