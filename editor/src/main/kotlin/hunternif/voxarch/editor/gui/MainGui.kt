@@ -1,10 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
-import hunternif.voxarch.editor.actions.centerCamera
-import hunternif.voxarch.editor.actions.focusMainWindow
-import hunternif.voxarch.editor.actions.generateNodes
-import hunternif.voxarch.editor.actions.hoverMainWindow
+import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
@@ -27,10 +24,10 @@ class MainGui(val app: EditorApp) : GuiBase() {
         rightRatio = 0.25f,
         left = Window("main_window"),
         right = VerticalSplit(
-            bottomRatio = 0.4f,
+            bottomSize = 180,
             bottom = Window("Properties"),
             top = VerticalSplit(
-                bottomRatio = 0.5f,
+                bottomRatio = 0.3f,
                 top = Window("Node tree"),
                 bottom = WindowGroup(
                     Window("Voxel tree"),
@@ -82,7 +79,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
             childToolbar("footer") {
                 ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 4f)
                 val width = (ImGui.getContentRegionAvailX() - 2*4 - ImGui.getFrameHeight()) / 2
-                accentButton("Build voxels", width = width)
+                accentButton("Build voxels", width = width) {
+                    app.buildVoxels()
+                }
                 ImGui.sameLine()
                 accentButton("Generate nodes", width = width) {
                     app.generateNodes()

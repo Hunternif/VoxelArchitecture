@@ -39,6 +39,7 @@ interface AppState {
     val seed: Long
     val generatorNames: List<String>
     val generatedNodes: Collection<SceneNode>
+    val generatedVoxels: Collection<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
 
 
@@ -89,6 +90,7 @@ class AppStateImpl : AppState {
     override var seed: Long = 0
     override val generatorNames = generatorsByName.keys.toList()
     override val generatedNodes: LinkedHashSet<SceneNode> = LinkedHashSet()
+    override val generatedVoxels: LinkedHashSet<SceneVoxelGroup> = LinkedHashSet()
     override val voxelColorMap = ::mapVoxelToSolidColor
 
     override val rootNode = SceneNode(Structure())
