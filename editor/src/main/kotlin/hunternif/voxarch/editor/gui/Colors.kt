@@ -24,6 +24,7 @@ class Colors {
         val accentLoBg = ColorRGBa.fromHex(0xD27626, 0.5f)
 
         val defaultNodeBox = buttonBg.copy(a = 0.2f)
+        val defaultGeneratedNodeBox = accentLoBg.copy(a = 0.2f)
 
         // Node tree colors
         val parentNode = ColorRGBa.fromHex(0x373737)

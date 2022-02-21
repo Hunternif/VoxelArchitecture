@@ -5,18 +5,22 @@ import hunternif.voxarch.editor.scene.models.boxFaces
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.magicavoxel.VoxColor
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.findGlobalPosition
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.util.max
+import hunternif.voxarch.util.min
+import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 
 /**
  * Base class for objects in the scene.
+ * Each object is presented as an axis-aligned rectangular box.
  * ([start], [start]+[size]) define the corners of its AABB.
  * [start] and [size] are in "natural" coordinates (not centric).
- * [start] is an absolute position in the scene (not relative to parent).
- * [color] is the color that is used to render its AABB.
+ * @param start absolute position in the scene (not relative to parent).
+ * @param size size of the object in natural coordinates.
+ * @param color the color that is used to render its AABB.
+ * @param isGenerated whether this object is generated (for UI).
  */
 open class SceneObject(
     val start: Vector3f = Vector3f(),
@@ -41,13 +45,24 @@ open class SceneObject(
 
     /** Recalculate [start] and [size] based on underlying data. */
     open fun update() {}
+
+    /**
+     * Set this object's boundaries to wrap around the given voxel AABB.
+     * @param minVox lower corner of the box, in voxel-centric coordinates.
+     * @param sizeVox size of the box, in voxel-centric coordinates.
+     */
+    protected fun wrapVoxels(minVox: Vec3, sizeVox: Vec3) {
+        start.set(minVox).sub(0.5f, 0.5f, 0.5f)
+        size.set(sizeVox).add(1f, 1f, 1f)
+    }
 }
 
 class SceneNode(
     val node: Node,
+    color: ColorRGBa = Colors.defaultNodeBox,
     isGenerated: Boolean = false,
 ) : SceneObject(
-    color = Colors.defaultNodeBox,
+    color = color,
     isGenerated = isGenerated,
 ), INested<SceneNode> {
     override var parent: SceneNode? = null
@@ -76,12 +91,38 @@ class SceneNode(
     override fun update() {
         updateFaces()
         val origin = node.findGlobalPosition()
-        if (node is Room) {
-            start.set(origin).add(node.start).sub(0.5f, 0.5f, 0.5f)
-            size.set(node.size).add(1f, 1f, 1f)
-        } else {
-            start.set(origin).sub(0.5f, 0.5f, 0.5f)
-            size.set(1f, 1f, 1f)
+        when (node) {
+            is Room -> {
+                wrapVoxels(origin + node.start, node.size)
+            }
+            is Wall -> {
+                //TODO: figure out how to render walls at non-right angles
+                val innerMin = min(Vec3.ZERO, node.innerEnd)
+                val innerMax = max(Vec3.ZERO, node.innerEnd)
+                wrapVoxels(origin + innerMin, innerMax - innerMin)
+            }
+            is Path -> {
+                //TODO: render path as a line
+                val innerMin = node.points.fold(Vec3.ZERO) { a, b -> min(a, b) }
+                val innerMax = node.points.fold(Vec3.ZERO) { a, b -> max(a, b) }
+                wrapVoxels(origin + innerMin, innerMax - innerMin)
+            }
+            is Floor -> {
+                val p = parent
+                if (p != null) {
+                    // Floor fills a horizontal plane within its parent's bounds
+                    //TODO: indicate that floor is a potentially infinite plane
+                    p.update()
+                    start.set(p.start).add(node.origin)
+                    size.set(p.size.x, 1f, p.size.z)
+                } else {
+                    // if no parent, render a small flat 3x3 square
+                    wrapVoxels(origin + Vec3(-1, 0, -1), Vec3(2, 0, 2))
+                }
+            }
+            else -> {
+                wrapVoxels(origin, Vec3.ZERO)
+            }
         }
     }
 
@@ -117,8 +158,10 @@ class SceneVoxelGroup(
 
     override fun update() {
         updateFaces()
-        start.set(origin).sub(0.5f, 0.5f, 0.5f)
-        size.set(data.width + 1f, data.height + 1f, data.length + 1f)
+        wrapVoxels(
+            origin.toVec3() + Vec3(data.minX, data.minY, data.minZ),
+            data.sizeVec.toVec3()
+        )
     }
 
     override fun toString() = label

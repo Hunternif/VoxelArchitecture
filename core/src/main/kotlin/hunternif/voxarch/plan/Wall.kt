@@ -11,6 +11,7 @@ import kotlin.math.atan2
  *  |         inside
  *  | start == wall == end
  *  |  (p1)   outside   (p2)
+ *  |(origin)
  *  V
  *  Z
  * ```
@@ -24,20 +25,26 @@ open class Wall(
     /** If true, the wall will not be generated, only used as boundary for calculations. */
     var transparent: Boolean = false
 ) : Node(start) {
+    /** Start point on the ground, vs parent origin. */
     val bottomStart: Vec3 get() = origin
+    /** End point on the ground, vs parent origin. */
     val bottomEnd: Vec3 get() = Vec3(end.x, 0.0, end.z)
 
-    /** Top far point relative to origin */
-    private val innerEnd: Vec3 = end.subtract(start)
-    /** Top far point relative to parent origin */
+    /** Top far point relative to local origin */
+    val innerEnd: Vec3 = end.subtract(start)
+    /** Top far point relative to parent origin.
+     * It's read-only, so that the entire wall can be moved by moving origin.
+     * To move the end, change [innerEnd]. */
     val end: Vec3 get() = origin.add(innerEnd)
 
     /** Read-only, determined from start and end. */
     override var rotationY: Double
         get() = atan2(-innerEnd.z, innerEnd.x) * 180 / Math.PI
-        set(value) {}
+        set(_) {}
 
+    /** XZ of start point, vs parent origin. */
     val p1: Vec2 get() = Vec2.fromXZ(origin)
+    /** XZ of end point, vs parent origin. */
     val p2: Vec2 get() = Vec2.fromXZ(end)
 
     override var size: Vec3 = Vec3(0, 0, 0)

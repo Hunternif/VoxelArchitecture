@@ -86,4 +86,7 @@ public class IntVec3 {
 	public IntVec2 toXZ() {
 		return new IntVec2(x, z);
 	}
+	public Vec3 toVec3() {
+		return new Vec3(x, y, z);
+	}
 }

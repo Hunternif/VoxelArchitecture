@@ -14,6 +14,7 @@ import kotlin.random.Random
  * [p1]-[p2].
  */
 class DomLineSegmentBuilder(val p1: Vec3, val p2: Vec3): DomLogicBuilder() {
+    /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
     override fun build(): Node? {
         children.forEach {

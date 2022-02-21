@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.plan.Node
@@ -61,7 +62,7 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.createSceneNodesRecursive(
         parent: SceneNode, newNode: Node
     ) {
-        val sceneNode = SceneNode(newNode, true)
+        val sceneNode = SceneNode(newNode, Colors.defaultGeneratedNodeBox, true)
         sceneNode.update()
         sceneNode.parent = parent
         newGenerated.add(sceneNode)
