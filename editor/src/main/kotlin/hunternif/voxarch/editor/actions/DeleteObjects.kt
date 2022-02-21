@@ -48,13 +48,14 @@ class DeleteObjects(
             // Parent node must not point to a deleted node:
             if (obj === parentNode) parentNode = rootNode
             sceneObjects.remove(obj)
-            if (hiddenObjects.remove(obj)) previouslyHidden.add(obj)
+            if (manuallyHiddenObjects.remove(obj)) previouslyHidden.add(obj)
             if (selectedObjects.remove(obj)) previouslySelected.add(obj)
             when (obj) {
                 is SceneNode -> obj.parent?.removeChild(obj)
                 is SceneVoxelGroup -> obj.parent?.removeChild(obj)
             }
         }
+        app.updateHiddenObjects()
         if (hasNodes) app.redrawNodes()
         if (hasVoxels) app.redrawVoxels()
     }
@@ -63,12 +64,13 @@ class DeleteObjects(
         for (obj in objs) {
             sceneObjects.add(obj)
             if (obj in previouslySelected) selectedObjects.add(obj)
-            if (obj in previouslyHidden) hiddenObjects.add(obj)
+            if (obj in previouslyHidden) manuallyHiddenObjects.add(obj)
             when (obj) {
                 is SceneNode -> obj.parent?.addChild(obj)
                 is SceneVoxelGroup -> obj.parent?.addChild(obj)
             }
         }
+        app.updateHiddenObjects()
         if (hasNodes) app.redrawNodes()
         if (hasVoxels) app.redrawVoxels()
     }

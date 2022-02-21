@@ -29,7 +29,9 @@ class ImportVoxFile(
     override fun revert(app: EditorAppImpl) = app.run {
         state.run {
             sceneObjects.remove(voxelGroup)
+            selectedObjects.remove(voxelGroup)
             hiddenObjects.remove(voxelGroup)
+            manuallyHiddenObjects.remove(voxelGroup)
             voxelGroup.parent?.removeChild(voxelGroup)
         }
         scene.updateVoxelModel()

@@ -79,7 +79,7 @@ abstract class GuiSceneTree<T: INested<T>>(
             ImGui.tableSetupColumn("visibility",
                 ImGuiTableColumnFlags.WidthFixed, 20f)
             ImGui.tableSetupColumn("tree")
-            addTreeNodeRecursive(root, 0, false, false)
+            addTreeNodeRecursive(root, 0, false)
             ImGui.endTable()
         }
         ImGui.popStyleVar(1)
@@ -94,7 +94,6 @@ abstract class GuiSceneTree<T: INested<T>>(
     private fun addTreeNodeRecursive(
         node: T,
         depth: Int,
-        hidden: Boolean,
         isChildNode: Boolean,
     ) {
         val isGenerated = node is SceneObject && node.isGenerated
@@ -108,7 +107,7 @@ abstract class GuiSceneTree<T: INested<T>>(
 
         var updatedHidden = false
         if (node is SceneObject) {
-            updatedHidden = hidden || node in app.state.hiddenObjects
+            updatedHidden = node in app.state.hiddenObjects
             if (updatedHidden)
                 gui.smallIconButton(
                     "${FontAwesomeIcons.EyeSlash}##$i",
@@ -179,7 +178,7 @@ abstract class GuiSceneTree<T: INested<T>>(
 
         if (open && node.children.isNotEmpty()) {
             node.children.forEach {
-                addTreeNodeRecursive(it, depth + 1, updatedHidden,
+                addTreeNodeRecursive(it, depth + 1,
                     isParentNode || isChildNode
                 )
             }

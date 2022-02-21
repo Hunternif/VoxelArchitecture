@@ -40,6 +40,7 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.clearGeneratedNodes() = state.run {
         sceneObjects.removeAll(generatedNodes)
         hiddenObjects.removeAll(generatedNodes)
+        manuallyHiddenObjects.removeAll(generatedNodes)
         selectedObjects.removeAll(generatedNodes)
         generatedNodes.forEach { it.parent?.removeChild(it) }
         generatedNodes.clear()

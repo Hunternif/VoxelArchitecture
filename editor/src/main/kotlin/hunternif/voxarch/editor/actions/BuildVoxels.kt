@@ -50,6 +50,7 @@ class BuildVoxels : HistoryAction(
     private fun EditorAppImpl.clearGeneratedVoxels() = state.run {
         sceneObjects.removeAll(generatedVoxels)
         hiddenObjects.removeAll(generatedVoxels)
+        manuallyHiddenObjects.removeAll(generatedVoxels)
         selectedObjects.removeAll(generatedVoxels)
         generatedVoxels.forEach { it.parent?.removeChild(it) }
         generatedVoxels.clear()

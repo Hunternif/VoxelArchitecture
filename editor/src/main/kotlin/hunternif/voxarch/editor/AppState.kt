@@ -54,8 +54,10 @@ interface AppState {
     /** Objects currently selected by cursor, for modification or inspection.
      * Should not contain [rootNode]. */
     val selectedObjects: Set<SceneObject>
-    /** Objects marked as hidden in UI, and invisible in 3d viewport. */
+    /** Objects hidden either manually or via its parent being hidden. */
     val hiddenObjects: Set<SceneObject>
+    /** Objects marked as hidden in UI, and invisible in 3d viewport. */
+    val manuallyHiddenObjects: Set<SceneObject>
 
 
     //=============================== TOOLS =================================
@@ -98,6 +100,7 @@ class AppStateImpl : AppState {
     override val sceneObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val hiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
+    override val manuallyHiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
 
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()

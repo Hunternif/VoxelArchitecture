@@ -111,8 +111,8 @@ class DeleteObjectsTest : BaseActionTest() {
 
     @Test
     fun `delete undo restores selected & hidden status`() = app.state.run {
-        selectedObjects.add(childNode)
-        hiddenObjects.add(voxels)
+        app.selectObject(childNode)
+        app.hideObject(voxels)
 
         app.deleteObjects(listOf(node, voxels))
         assertEquals(emptySet<SceneObject>(), selectedObjects.toSet())

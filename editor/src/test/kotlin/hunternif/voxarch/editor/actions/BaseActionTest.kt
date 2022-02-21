@@ -13,6 +13,7 @@ abstract class BaseActionTest {
             sceneObjects.clear()
             selectedObjects.clear()
             hiddenObjects.clear()
+            manuallyHiddenObjects.clear()
             history.clear()
         }
     }

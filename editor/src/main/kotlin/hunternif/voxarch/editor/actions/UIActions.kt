@@ -2,16 +2,14 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.scene.NewNodeFrame
-import hunternif.voxarch.editor.scene.SceneNode
-import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.scene.*
 import hunternif.voxarch.editor.util.AABBFace
 import imgui.ImGui
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.nfd.NativeFileDialog.*
 import java.lang.Exception
 import java.nio.file.Paths
+import java.util.*
 
 // Actions that update the state of UI and don't contribute to history
 
@@ -60,32 +58,49 @@ fun EditorApp.centerCamera() = action {
 fun EditorApp.showObject(obj: SceneObject) = action {
     // This object may have been hidden by one of its parents
     // To make it visible, we must un-hide all parents.
-    state.hiddenObjects.remove(obj)
+    state.manuallyHiddenObjects.remove(obj)
     when (obj) {
         is SceneNode -> {
             var parent: SceneNode? = obj
             while (parent != null) {
-                state.hiddenObjects.remove(parent)
+                state.manuallyHiddenObjects.remove(parent)
                 parent = parent.parent
             }
+            updateHiddenObjects()
             scene.updateNodeModel()
         }
         is SceneVoxelGroup -> {
             var parent: SceneVoxelGroup? = obj
             while (parent != null) {
-                state.hiddenObjects.remove(parent)
+                state.manuallyHiddenObjects.remove(parent)
                 parent = parent.parent
             }
+            updateHiddenObjects()
             scene.updateVoxelModel()
         }
     }
 }
 
 fun EditorApp.hideObject(obj: SceneObject) = action {
-    state.hiddenObjects.add(obj)
+    state.manuallyHiddenObjects.add(obj)
+    updateHiddenObjects()
     when (obj) {
         is SceneNode -> scene.updateNodeModel()
         is SceneVoxelGroup -> scene.updateVoxelModel()
+    }
+}
+
+/** Repopulate state.hiddenObjects by adding children of hidden parents. */
+internal fun EditorApp.updateHiddenObjects() = action {
+    state.run {
+        hiddenObjects.clear()
+        val queue = LinkedList<INested<*>>()
+        queue.addAll(manuallyHiddenObjects.filterIsInstance<INested<*>>())
+        while (queue.isNotEmpty()) {
+            val child = queue.removeLast()
+            hiddenObjects.add(child as SceneObject)
+            queue.addAll(child.children)
+        }
     }
 }
 
