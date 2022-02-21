@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
-import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.scene.INested
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
@@ -25,7 +24,7 @@ class GuiNodeTree(
         return "$nodeClass$type$generators"
     }
     override fun onClick(item: SceneNode) {
-        app.setSelectedObject(item, NODES)
+        app.setSelectedObject(item)
     }
     override fun onShiftClick(item: SceneNode) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
@@ -34,9 +33,6 @@ class GuiNodeTree(
     override fun onDoubleClick(item: SceneNode) {
         app.setParentNode(item)
         app.centerCamera()
-    }
-    override fun unselectAll() {
-        app.unselectAll(NODES)
     }
 }
 
@@ -47,16 +43,13 @@ class GuiVoxelTree(
     override val root: SceneVoxelGroup get() = app.state.voxelRoot
     override fun label(item: SceneVoxelGroup): String = item.label
     override fun onClick(item: SceneVoxelGroup) {
-        app.setSelectedObject(item, VOXELS)
+        app.setSelectedObject(item)
     }
     override fun onShiftClick(item: SceneVoxelGroup) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
         else app.selectObject(item)
     }
     override fun onDoubleClick(item: SceneVoxelGroup) {}
-    override fun unselectAll() {
-        app.unselectAll(VOXELS)
-    }
 }
 
 abstract class GuiSceneTree<T: INested<T>>(
@@ -72,7 +65,6 @@ abstract class GuiSceneTree<T: INested<T>>(
     abstract fun onClick(item: T)
     abstract fun onShiftClick(item: T)
     abstract fun onDoubleClick(item: T)
-    abstract fun unselectAll()
 
     fun render() {
         isAnyTreeNodeClicked = false
@@ -92,7 +84,7 @@ abstract class GuiSceneTree<T: INested<T>>(
         }
         ImGui.popStyleVar(1)
         if (isThisPanelClicked && !isAnyTreeNodeClicked) {
-            unselectAll()
+            app.unselectAll()
         }
 
         if (ImGui.isWindowFocused() && ImGui.getIO().getKeysDown(GLFW_KEY_DELETE))
