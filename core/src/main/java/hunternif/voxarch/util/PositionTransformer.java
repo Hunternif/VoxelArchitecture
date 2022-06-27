@@ -2,6 +2,7 @@ package hunternif.voxarch.util;
 
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
+import hunternif.voxarch.vector.IntVec3;
 import hunternif.voxarch.vector.Matrix4;
 import hunternif.voxarch.vector.Vec3;
 import hunternif.voxarch.vector.Vec4;
@@ -96,6 +97,21 @@ public class PositionTransformer implements IBlockStorage {
 		vec.set(x, y, z, 1);
 		matrix.multiplyLocal(vec);
 		storage.clearBlock(MathUtil.roundDown(vec.x), (int)vec.y, MathUtil.roundDown(vec.z));
+	}
+
+	@Override
+	public BlockData getBlock(IntVec3 vec) {
+		return getBlock(vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public void setBlock(IntVec3 vec, BlockData block) {
+		setBlock(vec.x, vec.y, vec.z, block);
+	}
+
+	@Override
+	public void clearBlock(IntVec3 vec) {
+		clearBlock(vec.x, vec.y, vec.z);
 	}
 
 	/** Apply transformation of translation. */

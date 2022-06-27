@@ -5,6 +5,7 @@ import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
 import hunternif.voxarch.storage.IFixedBlockStorage;
+import hunternif.voxarch.vector.IntVec3;
 import hunternif.voxarch.vector.Vec3;
 
 import java.util.HashMap;
@@ -58,6 +59,21 @@ public class RoomConstrainedStorage implements IFixedBlockStorage {
 		//TODO: BUG: When generating a 16x16 room with 16 round walls,
 		// one block in the corner is not cleared.
 		storage.clearBlock(x, y, z);
+	}
+
+	@Override
+	public BlockData getBlock(IntVec3 vec) {
+		return getBlock(vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public void setBlock(IntVec3 vec, BlockData block) {
+		setBlock(vec.x, vec.y, vec.z, block);
+	}
+
+	@Override
+	public void clearBlock(IntVec3 vec) {
+		clearBlock(vec.x, vec.y, vec.z);
 	}
 	
 	public void setOffset(double offset) {

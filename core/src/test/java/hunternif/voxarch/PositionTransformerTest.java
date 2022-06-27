@@ -8,6 +8,7 @@ import hunternif.voxarch.util.Direction;
 import hunternif.voxarch.util.PositionTransformer;
 import hunternif.voxarch.util.StructureUtil;
 
+import hunternif.voxarch.vector.IntVec3;
 import org.junit.Test;
 
 /**
@@ -220,5 +221,13 @@ public class PositionTransformerTest {
 		public BlockData getBlock(int x, int y, int z) { return null; }
 		@Override
 		public void clearBlock(int x, int y, int z) { }
+		@Override
+		public BlockData getBlock(IntVec3 vec) { return null; }
+		@Override
+		public void setBlock(IntVec3 vec, BlockData block) {
+			setBlock(vec.x, vec.y, vec.z, block);
+		}
+		@Override
+		public void clearBlock(IntVec3 vec) { }
 	}
 }

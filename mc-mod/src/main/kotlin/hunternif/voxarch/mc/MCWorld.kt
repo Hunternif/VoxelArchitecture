@@ -43,7 +43,11 @@ class MCWorld(private val world: World) : IBlockWorld {
         return result
     }
 
-    override fun setBlock(x: Int, y: Int, z: Int, block: BlockData) {
+    override fun setBlock(x: Int, y: Int, z: Int, block: BlockData?) {
+        if (block == null) {
+            clearBlock(x, y, z)
+            return
+        }
         if (block is ExtBlockDataMC) {
             block.onPasteIntoWorld(world, x, y, z)
         }
