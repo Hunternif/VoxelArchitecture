@@ -7,7 +7,8 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
-import kotlin.math.ceil
+import hunternif.voxarch.util.intRoundDown
+import hunternif.voxarch.vector.TransformationStack
 
 data class CrenellationSizes(
     val merlonLength: Int = 1,
@@ -28,11 +29,11 @@ class CrenellationPathBuilder(
     private val sizes: CrenellationSizes = CrenellationSizes()
 ) : Builder<Path>() {
 
-    override fun build(node: Path, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val wallLength = node.totalLength.toInt()
-        val hugger = PathHugger(world, node)
-        buildCrenellations(0, wallLength, 0, sizes, material, hugger, context)
-        super.build(node, world, context)
+        val hugger = PathHugger(node, trans, world)
+        buildCrenellations(0, wallLength, 0, sizes, material, trans, hugger, context)
+        super.build(node, trans, world, context)
     }
 }
 
@@ -49,12 +50,12 @@ class CrenellationWallBuilder(
     downToGround: Boolean = false
 ) : SimpleWallBuilder(material, downToGround) {
 
-    override fun build(node: Wall, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         if (node.transparent) return
-        super.build(node, world, context)
+        super.build(node, trans, world, context)
         val height = node.height.toInt()
         val length = node.length.toInt()
-        buildCrenellations(0, length, height+1, sizes, material, world, context)
+        buildCrenellations(0, length, height+1, sizes, material, trans, world, context)
     }
 }
 
@@ -64,6 +65,7 @@ private fun buildCrenellations(
     yOffset: Int,
     sizes: CrenellationSizes,
     material: String,
+    trans: TransformationStack,
     world: IBlockStorage,
     context: BuildContext
 ) {
@@ -72,12 +74,14 @@ private fun buildCrenellations(
         if (i < sizes.merlonLength) {
             for (y in 0 until sizes.merlonHeight) {
                 val block = context.materials.get(material)
-                world.setBlock(x, y + yOffset, 0, block)
+                val pos = trans.transform(x, y + yOffset, 0).intRoundDown()
+                world.setBlock(pos, block)
             }
         } else {
             for (y in 0 until sizes.crenelHeight) {
                 val block = context.materials.get(material)
-                world.setBlock(x, y + yOffset, 0, block)
+                val pos = trans.transform(x, y + yOffset, 0).intRoundDown()
+                world.setBlock(pos, block)
             }
         }
         i = (i + 1) % (sizes.merlonLength + sizes.crenelLength)

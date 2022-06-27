@@ -14,7 +14,7 @@ class CrenellationPathBuilderTest : BaseSnapshotTest(10, 10, 10) {
             Vec3(0, 0, 0), Vec3(9, 0, 0)
         )
         val builder = CrenellationPathBuilder(MAT_WALL)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceZ(0))
     }
 
@@ -24,7 +24,7 @@ class CrenellationPathBuilderTest : BaseSnapshotTest(10, 10, 10) {
             Vec3(0, 0, 0), Vec3(9, 0, 0)
         )
         val builder = CrenellationPathBuilder(MAT_WALL, CrenellationSizes(merlonLength = 2))
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceZ(0))
     }
 }

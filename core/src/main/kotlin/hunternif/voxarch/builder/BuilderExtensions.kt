@@ -4,11 +4,9 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PositionTransformer
 import hunternif.voxarch.util.RoomConstrainedStorage
+import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.roundToInt
-
-fun IBlockStorage.transformer() =
-    this as? PositionTransformer ?: PositionTransformer(this)
 
 /**
  * Runs the function [buildAtXZ] at every (X,Z) point inside the room's walls.
@@ -23,12 +21,15 @@ fun IBlockStorage.transformer() =
  */
 fun IBlockStorage.fillXZ(
     node: Room,
+    trans: TransformationStack,
     rotationOffset: Double = 0.0,
     rotationMargin: Double = 0.25,
     rotationStep: Double = 0.5,
     buildAtXZ: (x: Double, z: Double) -> Unit
 ) {
-    val transformer = this.transformer()
+    val transformer = PositionTransformer(this)
+    transformer.angleY = trans.angleY
+    transformer.matrix = trans.matrix
     val constraint = RoomConstrainedStorage(transformer, node)
 
     val isRightAngle = transformer.angleY.roundToInt() % 90 == 0

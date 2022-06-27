@@ -2,6 +2,7 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 
 /**
@@ -10,19 +11,20 @@ import hunternif.voxarch.vector.Vec3
 open class PathBuilder<in T : Path>(
     val step: Double = 1.0
 ) : Builder<T>() {
-    override fun build(node: T, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // distance traveled along the CURRENT SECTION of the path
         var traveled = 0.0
 
         // TODO: rotate transformer, and rename to `buildAtX`
         node.segments.forEach { s ->
             line(s.p1, s.p2, step = step, startOffset = traveled) { p ->
-                buildAt(p, node, world, context)
+                val pos = trans.transform(p)
+                buildAt(pos, node, world, context)
                 traveled += step
             }
             traveled -= s.length
         }
-        super.build(node, world, context)
+        super.build(node, trans, world, context)
     }
 
     /**

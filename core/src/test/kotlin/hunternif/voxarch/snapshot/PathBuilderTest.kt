@@ -12,7 +12,7 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `square path`() {
         val path = squarePath()
         val builder = SnakePathBuilder(MAT_WALL)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceY(0))
     }
 
@@ -20,7 +20,7 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `square path step 2`() {
         val path = squarePath()
         val builder = SnakePathBuilder(MAT_WALL, 2.0)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceY(0))
     }
 
@@ -28,7 +28,7 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `square path step 3`() {
         val path = squarePath()
         val builder = SnakePathBuilder(MAT_WALL, 3.0)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceY(0))
     }
 
@@ -36,7 +36,7 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `square path rotated 45`() {
         val path = square45Path()
         val builder = SnakePathBuilder(MAT_WALL)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceY(0))
     }
 
@@ -44,7 +44,7 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `square path rotated 45 step 2_828`() {
         val path = square45Path()
         val builder = SnakePathBuilder(MAT_WALL, 2.828)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceY(0))
     }
 
@@ -52,7 +52,7 @@ class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `square path rotated 45 step 4_243`() {
         val path = square45Path()
         val builder = SnakePathBuilder(MAT_WALL, 4.243)
-        builder.build(path, out, context)
+        builder.build(path, trans, out, context)
         record(out.sliceY(0))
     }
 

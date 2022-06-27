@@ -2,6 +2,7 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.TransformationStack
 
 /**
  * Use this builder to start building in an open world.
@@ -11,13 +12,14 @@ class MainBuilder : Builder<Node>() {
     /**
      * Moves starting point to `node`'s origin and then starts building.
      */
-    override fun build(node: Node, world: IBlockStorage, context: BuildContext) {
-        world.transformer().apply {
-            pushTransformation()
+    fun build(node: Node, world: IBlockStorage, context: BuildContext) {
+        val trans = TransformationStack()
+        trans.apply {
+            push()
             translate(node.origin)
             rotateY(node.rotationY)
-            super.build(node, this, context)
-            popTransformation()
+            super.build(node, this, world, context)
+            pop()
         }
     }
 }

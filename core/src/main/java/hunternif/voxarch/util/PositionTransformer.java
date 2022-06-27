@@ -16,10 +16,11 @@ import java.util.Deque;
  * and rotating the reference frame, in the same sequence.
  * @author Hunternif
  */
+@Deprecated
 public class PositionTransformer implements IBlockStorage {
 	private final IBlockStorage storage;
 	/** Angle of counterclockwise rotation. Need to remember it to rotate the blocks correctly. */
-	private double angleY = 0;
+	public double angleY = 0;
 	
 	/** Stack for transformations. */
 	private final Deque<StackData> stack = new ArrayDeque<>();
@@ -29,7 +30,7 @@ public class PositionTransformer implements IBlockStorage {
 	}
 	
 	/** Transformation matrix. */
-	private Matrix4 matrix = Matrix4.identity();
+	public Matrix4 matrix = Matrix4.identity();
 	
 	/** Saving memory by reusing the same vector. */
 	private final Vec4 vec = new Vec4(0, 0, 0, 1);

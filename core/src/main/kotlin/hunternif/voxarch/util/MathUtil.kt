@@ -1,5 +1,7 @@
 package hunternif.voxarch.util
 
+import hunternif.voxarch.util.MathUtil.roundDown
+import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Matrix4
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.vector.Vec4
@@ -72,6 +74,7 @@ fun Vec3.rotateY(angle: Double): Vec3 {
 }
 
 fun Vec3.round() = Vec3(round(x), round(y), round(z))
+fun Vec3.intRoundDown() = IntVec3(roundDown(x), roundDown(y), roundDown(z))
 fun max(a: Vec3, b: Vec3) = Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
 fun min(a: Vec3, b: Vec3) = Vec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
 

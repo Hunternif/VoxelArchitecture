@@ -2,6 +2,8 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Hatch
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.intRoundDown
+import hunternif.voxarch.vector.TransformationStack
 import kotlin.math.max
 
 /**
@@ -16,7 +18,7 @@ class SimpleHatchBuilder(
     private val minLength: Int = 1,
     private val clearance: Int = 1
 ): Builder<Hatch>() {
-    override fun build(node: Hatch, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Hatch, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val width = max(minWidth, node.size.x.toInt())
         val length = max(minLength, node.size.z.toInt())
         // Offset of 1 from both boundaries because the width & length of the hatch
@@ -24,10 +26,11 @@ class SimpleHatchBuilder(
         for (x in 1 until width) {
             for (z in 1 until length) {
                 for (y in -clearance..clearance) {
-                    world.clearBlock(x, y, z)
+                    val pos = trans.transform(x, y, z).intRoundDown()
+                    world.clearBlock(pos)
                 }
             }
         }
-        super.build(node, world, context)
+        super.build(node, trans, world, context)
     }
 }

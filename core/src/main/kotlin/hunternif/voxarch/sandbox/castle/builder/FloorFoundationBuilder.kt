@@ -4,45 +4,49 @@ import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.PositionTransformer
+import hunternif.voxarch.util.intRoundDown
+import hunternif.voxarch.vector.TransformationStack
 
 class FloorFoundationBuilder(
     private val material: String
 ) : Builder<Floor>() {
-    override fun build(node: Floor, world: IBlockStorage, context: BuildContext) {
-        val transformer = world.transformer()
-
+    override fun build(node: Floor, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // A floor must have a parent room
         val room = (node.parent as? Room) ?: return
 
         // 1. Fill space inside the room, starting from the corner
-        transformer.translate(room.start)
-        world.fillXZ(room) { x, z ->
-            buildDownToGround(x, z, transformer, context)
+        trans.apply {
+            push()
+            translate(room.start)
+            world.fillXZ(room, trans) { x, z ->
+                buildDownToGround(x, z, trans, world, context)
+            }
+            pop()
         }
-        transformer.translate(-room.start)
 
         // 2. Fill walls too, because at odd room sizes they can be 1 block away
         room.walls.forEach { wall ->
             line(wall.bottomStart, wall.bottomEnd) { p ->
-                buildDownToGround(p.x, p.z, transformer, context)
+                buildDownToGround(p.x, p.z, trans, world, context)
             }
         }
 
-        super.build(node, world, context)
+        super.build(node, trans, world, context)
     }
 
     private fun buildDownToGround(
         x: Double, z: Double,
-        transformer: PositionTransformer,
+        trans: TransformationStack,
+        world: IBlockStorage,
         context: BuildContext
     ) {
         var y = 0.0
         while(true) {
-            val b = transformer.getBlock(x, y, z)
+            val pos = trans.transform(x, y, z).intRoundDown()
+            val b = world.getBlock(pos)
             if (b != null && !context.env.shouldBuildThrough(b)) break
             val block = context.materials.get(material)
-            transformer.setBlock(x, y, z, block)
+            world.setBlock(pos, block)
             y--
         }
     }

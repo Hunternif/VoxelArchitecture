@@ -3,6 +3,7 @@ package hunternif.voxarch.builder
 import com.nhaarman.mockitokotlin2.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec2
 import hunternif.voxarch.vector.Vec3
 import org.junit.Before
@@ -26,6 +27,7 @@ class RoomBuilderTest {
 
     @Mock lateinit var world: IBlockStorage
     lateinit var buildContext: BuildContext
+    private val trans = TransformationStack()
 
     @Mock lateinit var builder: Builder<Node>
 
@@ -57,14 +59,14 @@ class RoomBuilderTest {
         }
         val inOrder = inOrder(builder)
 
-        RoomBuilder().build(room, world, buildContext)
+        RoomBuilder().build(room, trans, world, buildContext)
 
-        inOrder.verify(builder).build(eq(floor), any(), eq(buildContext))
-        inOrder.verify(builder).build(eq(wall), any(), eq(buildContext))
-        inOrder.verify(builder).build(eq(node), any(), eq(buildContext))
-        inOrder.verify(builder).build(eq(childRoom), any(), eq(buildContext))
-        inOrder.verify(builder).build(eq(prop), any(), eq(buildContext))
-        inOrder.verify(builder).build(eq(gate), any(), eq(buildContext))
-        inOrder.verify(builder).build(eq(hatch), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(floor), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(wall), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(node), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(childRoom), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(prop), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(gate), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(hatch), eq(trans), eq(world), eq(buildContext))
     }
 }

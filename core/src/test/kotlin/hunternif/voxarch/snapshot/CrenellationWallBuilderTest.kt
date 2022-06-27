@@ -12,7 +12,7 @@ class CrenellationWallBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `crenel 1 with wall height 0`() {
         val wall = Wall(Vec3(0, 0, 0), Vec3(9, 0, 0))
         val builder = CrenellationWallBuilder(MAT_WALL)
-        builder.build(wall, out, context)
+        builder.build(wall, trans, out, context)
         record(out.sliceZ(0))
     }
 
@@ -20,7 +20,7 @@ class CrenellationWallBuilderTest : BaseSnapshotTest(10, 10, 10) {
     fun `crenel 1 merlon 2 with wall height 1`() {
         val wall = Wall(Vec3(0, 0, 0), Vec3(9, 1, 0))
         val builder = CrenellationWallBuilder(MAT_WALL, CrenellationSizes(merlonLength = 2))
-        builder.build(wall, out, context)
+        builder.build(wall, trans, out, context)
         record(out.sliceZ(0))
     }
 }

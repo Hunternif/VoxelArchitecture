@@ -6,6 +6,7 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
 import hunternif.voxarch.util.symmetricSpacing
+import hunternif.voxarch.vector.TransformationStack
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -31,9 +32,9 @@ class CorbelBuilder(
         SYMMETRIC, ROUNDED, LINEAR
     }
 
-    override fun build(node: Path, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val wallLength = ceil(node.totalLength).toInt()
-        val hugger = PathHugger(world, node)
+        val hugger = PathHugger(node, trans, world)
 
         when (spacingMode) {
             SpacingMode.SYMMETRIC -> {
@@ -69,15 +70,20 @@ class CorbelBuilder(
             }
         }
 
-        super.build(node, world, context)
+        super.build(node, trans, world, context)
     }
 
-    private fun buildCorbel(startX: Int, topY: Int, world: IBlockStorage, context: BuildContext) {
+    private fun buildCorbel(
+        startX: Int,
+        topY: Int,
+        world: IBlockStorage,
+        context: BuildContext
+    ) {
         for (dx in 0 until corbelWidth) {
-            for (dy in 1 .. corbelHeight) {
-                for (z in 1 .. corbelDepth) {
+            for (dy in 1..corbelHeight) {
+                for (z in 1..corbelDepth) {
                     // make it sloping, i.e. closest to the wall at the bottom
-                    if (z - 1  > dy * (corbelDepth - 1) / corbelHeight) continue
+                    if (z - 1 > dy * (corbelDepth - 1) / corbelHeight) continue
                     val x = startX + dx
                     val y = topY - corbelHeight + dy
                     val block = context.materials.get(material)

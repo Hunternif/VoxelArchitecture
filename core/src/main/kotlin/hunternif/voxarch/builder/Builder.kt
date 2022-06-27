@@ -2,6 +2,7 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.TransformationStack
 
 /**
  * Builds any [Node] into "physical" blocks inside a world,
@@ -20,24 +21,24 @@ open class Builder<in T : Node> {
      *
      * @param context set up materials and custom Builders.
      */
-    open fun build(node: T, world: IBlockStorage, context: BuildContext) {
-        buildChildren(node, world, context)
+    open fun build(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+        buildChildren(node, trans, world, context)
         node.isBuilt = true
     }
 
-    internal fun buildChildren(node: T, world: IBlockStorage, context: BuildContext) {
-        node.children.filter { !it.isBuilt }.forEach { buildChild(it, world, context) }
+    internal fun buildChildren(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+        node.children.filter { !it.isBuilt }.forEach { buildChild(it, trans, world, context) }
     }
 
-    internal fun buildChild(child: Node, world: IBlockStorage, context: BuildContext) {
+    internal fun buildChild(child: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val builder = context.builders.get(child)
         if (builder != null) {
-            world.transformer().apply {
-                pushTransformation()
+            trans.apply {
+                push()
                 translate(child.origin)
                 rotateY(child.rotationY)
-                builder.build(child, this, context)
-                popTransformation()
+                builder.build(child, this, world, context)
+                pop()
             }
         }
     }

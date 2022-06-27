@@ -2,6 +2,8 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Gate
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.intRoundDown
+import hunternif.voxarch.vector.TransformationStack
 import kotlin.math.max
 
 /**
@@ -16,7 +18,7 @@ class SimpleGateBuilder(
     private val minHeight: Int = 2,
     private val clearance: Int = 1
 ): Builder<Gate>() {
-    override fun build(node: Gate, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Gate, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val width = max(minWidth, node.size.x.toInt())
         val height = max(minHeight, node.size.y.toInt())
         // Offset of 1 from both boundaries because the width of the gate spans
@@ -24,10 +26,11 @@ class SimpleGateBuilder(
         for (x in 1 until width) {
             for (y in 1 until height) {
                 for (z in -clearance..clearance) {
-                    world.clearBlock(x, y, z)
+                    val pos = trans.transform(x, y, z).intRoundDown()
+                    world.clearBlock(pos)
                 }
             }
         }
-        super.build(node, world, context)
+        super.build(node, trans, world, context)
     }
 }

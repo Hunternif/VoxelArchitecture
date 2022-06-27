@@ -33,7 +33,7 @@ interface AppState {
     /** Root group containing all voxel groups in the scene.
      * The root itself should stay empty of voxels. */
     val voxelRoot: SceneVoxelGroup
-    val builder: Builder<Node>
+    val builder: MainBuilder
     val buildContext: BuildContext
     val stylesheet: Stylesheet
     val seed: Long
