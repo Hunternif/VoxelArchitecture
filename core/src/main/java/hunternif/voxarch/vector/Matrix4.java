@@ -290,4 +290,67 @@ public class Matrix4 {
 		mat.invertLocal();
 		return mat;
 	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) return true;
+		if (o == null || getClass() != o.getClass()) return false;
+
+		Matrix4 matrix4 = (Matrix4) o;
+
+		if (matrix4.m01 != m01) return false;
+		if (matrix4.m02 != m02) return false;
+		if (matrix4.m03 != m03) return false;
+		if (matrix4.m10 != m10) return false;
+		if (matrix4.m11 != m11) return false;
+		if (matrix4.m12 != m12) return false;
+		if (matrix4.m13 != m13) return false;
+		if (matrix4.m20 != m20) return false;
+		if (matrix4.m21 != m21) return false;
+		if (matrix4.m22 != m22) return false;
+		if (matrix4.m23 != m23) return false;
+		if (matrix4.m30 != m30) return false;
+		if (matrix4.m31 != m31) return false;
+		if (matrix4.m32 != m32) return false;
+		return matrix4.m33 == m33;
+	}
+
+	@Override
+	public int hashCode() {
+		int result;
+		long temp;
+		temp = Double.doubleToLongBits(m00);
+		result = (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m01);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m02);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m03);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m10);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m11);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m12);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m13);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m20);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m21);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m22);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m23);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m30);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m31);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m32);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		temp = Double.doubleToLongBits(m33);
+		result = 31 * result + (int) (temp ^ (temp >>> 32));
+		return result;
+	}
 }
