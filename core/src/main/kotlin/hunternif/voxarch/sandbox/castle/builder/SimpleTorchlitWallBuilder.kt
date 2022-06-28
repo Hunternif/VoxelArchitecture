@@ -2,11 +2,11 @@ package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.SimpleWallBuilder
+import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.sandbox.castle.MAT_TORCH
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
-import hunternif.voxarch.util.intRoundDown
 import hunternif.voxarch.vector.TransformationStack
 
 class SimpleTorchlitWallBuilder(
@@ -18,6 +18,7 @@ class SimpleTorchlitWallBuilder(
     override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         if (node.transparent) return
         super.build(node, trans, world, context)
+        val localWorld = world.toLocal(trans)
 
         //TODO: some torches fall down. Consider spawning them as props.
 
@@ -27,8 +28,7 @@ class SimpleTorchlitWallBuilder(
         while (x < node.length) {
             val block = context.materials.get(MAT_TORCH)
             block.orientation = Direction.NORTH
-            val pos = trans.transform(x, torchHeight, -1).intRoundDown()
-            world.setBlock(pos, block)
+            localWorld.setBlock(x, torchHeight, -1, block)
             x += torchWallSpacing
         }
     }

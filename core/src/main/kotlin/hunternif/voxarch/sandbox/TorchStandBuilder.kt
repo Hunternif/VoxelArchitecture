@@ -2,6 +2,7 @@ package hunternif.voxarch.sandbox
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
+import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.IBlockStorage
@@ -14,8 +15,7 @@ class TorchStandBuilder : Builder<Prop>() {
         val block = context.materials.get(MAT_WALL)
         val torch = context.materials.get(MAT_TORCH)
 
-        world.apply {
-            //TODO: use transformation
+        world.toLocal(trans).apply {
             setBlock(0, 0, 0, post)
             setBlock(0, 1, 0, post)
             setBlock(0, 2, 0, block)

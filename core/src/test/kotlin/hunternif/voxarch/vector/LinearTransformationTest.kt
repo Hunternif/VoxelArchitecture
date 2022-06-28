@@ -5,7 +5,7 @@ import org.junit.Test
 
 class LinearTransformationTest {
     @Test
-    fun testRotate90() {
+    fun `rotate 90`() {
         val trans = LinearTransformation().rotateY(90.0)
         assertEquals(Vec3(0, 0, 0), trans.transform(0, 0, 0))
         assertEquals(Vec3(1, 2, 0), trans.transform(0, 2, 1))
@@ -14,7 +14,7 @@ class LinearTransformationTest {
     }
 
     @Test
-    fun testRotate180() {
+    fun `rotate 180`() {
         val trans = LinearTransformation().rotateY(180.0)
         assertEquals(Vec3(0, 0, 0), trans.transform(0, 0, 0))
         assertEquals(Vec3(0, 2, -1), trans.transform(0, 2, 1))
@@ -30,7 +30,7 @@ class LinearTransformationTest {
      *      # B
      */
     @Test
-    fun testKnightMove() {
+    fun `knight's move`() {
         val trans = LinearTransformation()
             .rotateY(-90.0)
             .translate(2, 0, 0)
@@ -42,13 +42,26 @@ class LinearTransformationTest {
     }
 
     @Test
-    fun testPushAndPopStack() {
+    fun `knight's move via composite`() {
+        val trans = CompositeTransformation(
+            LinearTransformation().rotateY(-90.0),
+            LinearTransformation().translate(2, 0, 0),
+            LinearTransformation().rotateY(90.0),
+            LinearTransformation().translate(1, 0, 0),
+            LinearTransformation().translate(0, 99, 0)
+        )
+        assertEquals(Vec3(1, 99, 2), trans.transform(0, 0, 0))
+        assertEquals(Vec3(2, 100, 3), trans.transform(1, 1, 1))
+    }
+
+    @Test
+    fun `push and pop stack`() {
         val stack = TransformationStack()
         stack.rotateY(30.0).translate(10.2, -3.4, 0.001)
         val savedAngleY = stack.angleY
         val savedMatrix = stack.matrix.clone()
 
-        stack.apply{
+        stack.apply {
             push()
             translate(-99, 17, 33)
             rotateY(-159.2)

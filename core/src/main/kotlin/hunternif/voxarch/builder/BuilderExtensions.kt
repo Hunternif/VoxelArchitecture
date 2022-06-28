@@ -2,11 +2,20 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.storage.TransformedBlockStorage
 import hunternif.voxarch.util.PositionTransformer
 import hunternif.voxarch.util.RoomConstrainedStorage
+import hunternif.voxarch.vector.ITransformation
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.roundToInt
+
+/**
+ * Returns transformed storage, which accepts "local" coordinates
+ * and transforms it to "global" coordinates.
+ */
+fun IBlockStorage.toLocal(trans: ITransformation) =
+    TransformedBlockStorage(this, trans)
 
 /**
  * Runs the function [buildAtXZ] at every (X,Z) point inside the room's walls.
