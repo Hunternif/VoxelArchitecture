@@ -4,7 +4,7 @@ import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.storage.TransformedBlockStorage
+import hunternif.voxarch.util.intRoundDown
 import hunternif.voxarch.vector.TransformationStack
 
 class FloorFoundationBuilder(
@@ -13,22 +13,17 @@ class FloorFoundationBuilder(
     override fun build(node: Floor, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // A floor must have a parent room
         val room = (node.parent as? Room) ?: return
-        val localWorld = world.toLocal(trans)
 
-        // 1. Fill space inside the room, starting from the corner
-        trans.apply {
-            push()
-            translate(room.start)
-            world.fillXZ(room, trans) { x, z ->
-                buildDownToGround(x, z, localWorld, context)
-            }
-            pop()
+        // 1. Fill space inside the room
+        room.fillXZ(trans) { x, y, z ->
+            buildDownToGround(x, y, z, world, context)
         }
 
         // 2. Fill walls too, because at odd room sizes they can be 1 block away
         room.walls.forEach { wall ->
             line(wall.bottomStart, wall.bottomEnd) { p ->
-                buildDownToGround(p.x, p.z, localWorld, context)
+                val pos = trans.transform(p).intRoundDown()
+                buildDownToGround(pos.x, pos.y, pos.z, world, context)
             }
         }
 
@@ -36,17 +31,17 @@ class FloorFoundationBuilder(
     }
 
     private fun buildDownToGround(
-        x: Double, z: Double,
-        localWorld: TransformedBlockStorage,
+        x: Int, y: Int, z: Int,
+        world: IBlockStorage,
         context: BuildContext
     ) {
-        var y = 0.0
+        var dy = 0
         while(true) {
-            val b = localWorld.getBlock(x, y, z)
+            val b = world.getBlock(x, y + dy, z)
             if (b != null && !context.env.shouldBuildThrough(b)) break
             val block = context.materials.get(material)
-            localWorld.setBlock(x, y, z, block)
-            y--
+            world.setBlock(x, y + dy, z, block)
+            dy--
         }
     }
 }

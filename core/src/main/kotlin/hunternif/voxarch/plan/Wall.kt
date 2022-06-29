@@ -28,7 +28,7 @@ open class Wall(
     /** Start point on the ground, vs parent origin. */
     val bottomStart: Vec3 get() = origin
     /** End point on the ground, vs parent origin. */
-    val bottomEnd: Vec3 get() = Vec3(end.x, 0.0, end.z)
+    val bottomEnd: Vec3 get() = Vec3(end.x, origin.y, end.z)
 
     /** Top far point relative to local origin */
     val innerEnd: Vec3 = end.subtract(start)

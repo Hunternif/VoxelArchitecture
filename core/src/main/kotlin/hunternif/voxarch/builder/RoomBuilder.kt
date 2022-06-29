@@ -4,7 +4,6 @@ import hunternif.voxarch.plan.Gate
 import hunternif.voxarch.plan.Hatch
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.intRoundDown
 import hunternif.voxarch.vector.TransformationStack
 
 open class RoomBuilder : Builder<Room>() {
@@ -22,22 +21,10 @@ open class RoomBuilder : Builder<Room>() {
 
     companion object {
         private fun Room.clearVolume(world: IBlockStorage, trans: TransformationStack) {
-            val room = this
-            trans.apply {
-                push()
-                translate(start)
-                world.fillXZ(
-                    room,
-                    trans,
-                    rotationOffset = 0.1,
-                    rotationMargin = 0.5
-                ) { x, z ->
-                    for (y in 0..height.toInt()) {
-                        val pos = transform(x, y.toDouble(), z).intRoundDown()
-                        world.clearBlock(pos)
-                    }
+            fillXZ(trans) { x, y, z ->
+                for (dy in 0..height.toInt()) {
+                    world.clearBlock(x, y + dy, z)
                 }
-                pop()
             }
         }
     }

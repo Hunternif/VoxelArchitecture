@@ -66,6 +66,38 @@ fun IBlockStorage.fillXZ(
     }
 }
 
+/**
+ * Runs the function [buildAt] at every (x, y, z) point inside the room's walls,
+ * at floor Y level.
+ * @param trans must rotate and translate (0, 0, 0) to room's origin.
+ * @param buildAt the arguments (x, y, z) are global coordinates,
+ *      i.e. relative to the storage, NOT to the room. Y is floor level.
+ */
+fun Room.fillXZ(
+    trans: TransformationStack,
+    buildAt: (x: Int, y: Int, z: Int) -> Unit
+) {
+    val aabb = findIntAABB(trans)
+    val boundaries = getGroundBoundaries()
+    aabb.forEachXZ { x, z ->
+        val q = Vec3(x, aabb.minY, z)
+        // Test if the point q is contained on the inside of each wall
+        var inside = true
+        for (b in boundaries) {
+            val p1 = trans.transform(b.first)
+            val p2 = trans.transform(b.second)
+            val p1p2 = p2 - p1
+            val p1q = q - p1
+            val cross = p1p2.crossProduct(p1q)
+            if (cross.y < 0) {
+                inside = false
+                break
+            }
+        }
+        if (inside) buildAt(x, aabb.minY, z)
+    }
+}
+
 fun line(
     p1: Vec3,
     p2: Vec3,
