@@ -13,7 +13,7 @@ import kotlin.math.roundToInt
  * Returns transformed storage, which accepts "local" coordinates
  * and transforms it to "global" coordinates.
  */
-fun IBlockStorage.toLocal(trans: ITransformation) =
+fun IBlockStorage.toLocal(trans: ILinearTransformation) =
     TransformedBlockStorage(this, trans)
 
 /**

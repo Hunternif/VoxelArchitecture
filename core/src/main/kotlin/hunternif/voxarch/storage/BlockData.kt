@@ -6,9 +6,13 @@ import hunternif.voxarch.util.Direction
  * Contains block [key] and [orientation].
  * (I tried to make this an interface, but the generics are too annoying.)
  */
-open class BlockData(var key: String) : IVoxel {
-
+open class BlockData(
+    var key: String,
     var orientation: Direction? = null
+) : IVoxel {
+
+    // Legacy constructor
+    constructor(key: String) : this(key, null)
 
     /** Rotate the Direction (if not NONE) counterclockwise by the
      * specified angle.  */
@@ -23,7 +27,7 @@ open class BlockData(var key: String) : IVoxel {
     }
 
     fun clone(): BlockData {
-        return BlockData(key)
+        return BlockData(key, orientation)
     }
 
     override fun toString(): String {

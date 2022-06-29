@@ -1,7 +1,7 @@
 package hunternif.voxarch.storage
 
 import hunternif.voxarch.util.intRoundDown
-import hunternif.voxarch.vector.ITransformation
+import hunternif.voxarch.vector.ILinearTransformation
 
 /**
  * Convenience class that applies a coordinate transformation
@@ -9,7 +9,7 @@ import hunternif.voxarch.vector.ITransformation
  */
 open class TransformedBlockStorage(
     private val storage: IBlockStorage,
-    private val trans: ITransformation,
+    private val trans: ILinearTransformation,
 ) : IBlockStorage {
     override fun getBlock(x: Int, y: Int, z: Int): BlockData? =
         this.getBlock(x.toDouble(), y.toDouble(), z.toDouble())
@@ -20,7 +20,12 @@ open class TransformedBlockStorage(
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: BlockData?) {
-        this.setBlock(x.toDouble(), y.toDouble(), z.toDouble(), block)
+        val rotatedBlock = block?.let {
+            it.clone().apply {
+                rotate(trans.angleY)
+            }
+        }
+        this.setBlock(x.toDouble(), y.toDouble(), z.toDouble(), rotatedBlock)
     }
 
     fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
