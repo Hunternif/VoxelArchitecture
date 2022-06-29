@@ -87,22 +87,43 @@ fun line(
 }
 
 /**
- * Finds the axis-aligned bounding box that contains this room's walls.
+ * Finds the GLOBAL axis-aligned bounding box that contains this room's walls.
  * The returned result is in global coordinates.
  * [trans] must rotate and translate (0, 0, 0) to room's origin.
  */
 fun Room.findAABB(trans: ITransformation): AABB {
     val aabb = AABB()
-    for (w in walls) {
-        w.run {
-            aabb.union(trans.transform(p1.x, 0.0, p1.y))
-            aabb.union(trans.transform(p1.x, height, p1.y))
-            aabb.union(trans.transform(p2.x, 0.0, p2.y))
-            aabb.union(trans.transform(p2.x, height, p2.y))
-        }
+    val boundaries = getGroundBoundaries()
+    for (b in boundaries) {
+        aabb.union(trans.transform(b.first))
+        aabb.union(trans.transform(b.second))
     }
+    aabb.maxY += height // we assume Y is always up
     aabb.correctBounds()
     return aabb
 }
+
 /** See [findAABB] */
 fun Room.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAABB()
+
+
+typealias RoomGroundBoundary = Pair<Vec3, Vec3>
+
+/**
+ * If the room has walls, returns wall vectors at floor level.
+ * Otherwise, returns boundaries defined by room size.
+ */
+fun Room.getGroundBoundaries(): List<RoomGroundBoundary> {
+    return if (walls.isNotEmpty()) {
+        walls.map { it.bottomStart to it.bottomEnd }
+    } else {
+        // No walls, use the room size:
+        listOf(
+            start,
+            start.addZ(size.z),
+            start.add(size.x, 0.0, size.z),
+            start.addX(size.x),
+            start
+        ).zipWithNext()
+    }
+}

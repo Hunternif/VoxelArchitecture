@@ -11,7 +11,23 @@ import kotlin.math.sqrt
 
 class BuilderExtensionsTest {
     @Test
-    fun `find AABB for straight room`() {
+    fun `find AABB for straight room without walls`() {
+        val room = Structure().room(
+            Vec3(1, 2, 3), Vec3(10, 20, 30)
+        )
+        val trans = LinearTransformation()
+            .translate(room.origin)
+        val aabb = room.findIntAABB(trans)
+        assertEquals(1, aabb.minX)
+        assertEquals(2, aabb.minY)
+        assertEquals(3, aabb.minZ)
+        assertEquals(10, aabb.maxX)
+        assertEquals(20, aabb.maxY)
+        assertEquals(30, aabb.maxZ)
+    }
+
+    @Test
+    fun `find AABB for straight room with walls`() {
         val room = Structure().room(
             Vec3(1, 2, 3), Vec3(10, 20, 30)
         ) {
