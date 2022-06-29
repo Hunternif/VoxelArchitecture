@@ -16,6 +16,8 @@ fun IBlockStorage.toLocal(trans: ILinearTransformation) =
 /**
  * Runs the function [buildAt] at every (x, y, z) point inside the room's walls,
  * at floor Y level.
+ * Is samples in global coordinate space, applying [trans] to local coordinates.
+ * Works correctly only for CONVEX rooms.
  * @param trans must rotate and translate (0, 0, 0) to room's origin.
  * @param buildAt the arguments (x, y, z) are global coordinates,
  *      i.e. relative to the storage, NOT to the room. Y is floor level.

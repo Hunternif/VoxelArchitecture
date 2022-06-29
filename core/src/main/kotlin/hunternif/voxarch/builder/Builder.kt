@@ -13,13 +13,15 @@ import hunternif.voxarch.vector.TransformationStack
  */
 open class Builder<in T : Node> {
     /**
-     * Assuming that the [world] has been rotated with respect to [Node.rotationY]
-     * and positioned so that (0, 0, 0) is at the Node's origin.
-     *
      * When overriding, don't forget to call [buildChildren]
      * and set `node.isBuilt = true` at some point.
      *
-     * @param context set up materials and custom Builders.
+     * @param node the node being built into blocks.
+     * @param trans transforms local coordinates to global world coordinates.
+     *      Must be rotated with respect to `node.rotationY`
+     *      and positioned so that (0, 0, 0) is at the Node's origin.
+     * @param world uses global coordinates.
+     * @param context contains materials and custom Builders.
      */
     open fun build(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         buildChildren(node, trans, world, context)
