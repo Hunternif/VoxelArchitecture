@@ -35,7 +35,7 @@ class LinearTransformation(
     /** Saving memory by reusing the same vector.  */
     private val vec4 = Vec4(0, 0, 0, 1)
 
-    override fun transform(vec: Vec3): Vec3 {
+    override fun transformLocal(vec: Vec3): Vec3 {
         vec4.set(vec.x, vec.y, vec.z, 1.0)
         matrix.multiplyLocal(vec4)
         vec.set(vec4.x, vec4.y, vec4.z)
