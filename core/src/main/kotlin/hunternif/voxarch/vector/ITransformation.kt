@@ -1,7 +1,10 @@
 package hunternif.voxarch.vector
 
 
-/** A generic interface for coordinate transformations. */
+/**
+ * A generic interface for coordinate transformations.
+ * Takes local coordinates as arguments and translates them into global coordinates.
+ */
 interface ITransformation {
     /** Transforms THIS vector and returns it. */
     fun transform(vec: Vec3): Vec3

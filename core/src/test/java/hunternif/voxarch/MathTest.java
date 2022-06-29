@@ -36,7 +36,13 @@ public class MathTest {
 		assertEquals(0, MathUtil.roundUp(0.499f));
 		assertEquals(1, MathUtil.roundDown(0.501f));
 	}
-	
+
+	@Test
+	public void testFloor() {
+		assertEquals(0, MathUtil.floor(0.501f));
+		assertEquals(-1, MathUtil.floor(-0.501f));
+	}
+
 	@Test
 	public void testCeiling() {
 		assertEquals(1, MathUtil.ceiling(0.501f));

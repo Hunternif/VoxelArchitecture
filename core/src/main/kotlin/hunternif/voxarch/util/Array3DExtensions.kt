@@ -3,6 +3,7 @@ package hunternif.voxarch.util
 import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
+import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.IntVec3
 
 inline fun <reified T> emptyArray3D() = Array3D<T>(0, 0, 0, emptyArray())
@@ -27,6 +28,16 @@ inline fun <T> IStorage3D<T>.forEachPos(
             for (z in minZ .. maxZ) {
                 action(x, y, z, get(x, y, z))
             }
+        }
+    }
+}
+
+inline fun IntAABB.forEachXZ(
+    crossinline actionXZ: (x: Int, z: Int) -> Unit
+) {
+    for (x in minX .. maxX) {
+        for (z in minZ .. maxZ) {
+            actionXZ(x, z)
         }
     }
 }

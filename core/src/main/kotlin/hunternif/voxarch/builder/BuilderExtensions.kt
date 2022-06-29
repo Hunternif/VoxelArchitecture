@@ -5,9 +5,8 @@ import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.storage.TransformedBlockStorage
 import hunternif.voxarch.util.PositionTransformer
 import hunternif.voxarch.util.RoomConstrainedStorage
-import hunternif.voxarch.vector.ITransformation
-import hunternif.voxarch.vector.TransformationStack
-import hunternif.voxarch.vector.Vec3
+import hunternif.voxarch.util.forEachXZ
+import hunternif.voxarch.vector.*
 import kotlin.math.roundToInt
 
 /**
@@ -86,3 +85,24 @@ fun line(
         x += step
     }
 }
+
+/**
+ * Finds the axis-aligned bounding box that contains this room's walls.
+ * The returned result is in global coordinates.
+ * [trans] must rotate and translate (0, 0, 0) to room's origin.
+ */
+fun Room.findAABB(trans: ITransformation): AABB {
+    val aabb = AABB()
+    for (w in walls) {
+        w.run {
+            aabb.union(trans.transform(p1.x, 0.0, p1.y))
+            aabb.union(trans.transform(p1.x, height, p1.y))
+            aabb.union(trans.transform(p2.x, 0.0, p2.y))
+            aabb.union(trans.transform(p2.x, height, p2.y))
+        }
+    }
+    aabb.correctBounds()
+    return aabb
+}
+/** See [findAABB] */
+fun Room.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAABB()

@@ -122,4 +122,16 @@ class Array3DTest {
         { x, y, z -> if (y > 0) 'a' else null }
         assertEquals(4, c.size)
     }
+
+    @Test
+    fun `print slice`() {
+        val a = Array3D(4, 1, 3) { x, _, z -> x + z*2 }
+        assertEquals("""
+0123
+2345
+4567
+""".trim(),
+            a.printSliceY(0)
+        )
+    }
 }
