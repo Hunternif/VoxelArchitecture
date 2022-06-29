@@ -26,15 +26,14 @@ fun Room.fillXZ(
 ) {
     val aabb = findIntAABB(trans)
     val boundaries = getGroundBoundaries()
+        .map { trans.transform(it.first) to trans.transform(it.second)}
     aabb.forEachXZ { x, z ->
         val q = Vec3(x, aabb.minY, z)
         // Test if the point q is contained on the inside of each wall
         var inside = true
         for (b in boundaries) {
-            val p1 = trans.transform(b.first)
-            val p2 = trans.transform(b.second)
-            val p1p2 = p2 - p1
-            val p1q = q - p1
+            val p1p2 = b.second - b.first
+            val p1q = q - b.first
             val cross = p1p2.crossProduct(p1q)
             if (cross.y < 0) {
                 inside = false
