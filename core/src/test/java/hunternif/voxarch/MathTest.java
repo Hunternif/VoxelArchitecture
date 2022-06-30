@@ -157,4 +157,11 @@ public class MathTest {
 		mat.invertLocal();
 		assertEquals(new Vec4(1.5, 0, 0.5, 0), mat.multiplyLocal(vec));
 	}
+
+	@Test
+	public void testScale() {
+		Matrix4 mat = Matrix4.scale(2, 1.5, -1);
+		Vec4 vec = new Vec4(1.2, 1.5, 1.4, 1);
+		assertEquals(new Vec4(2.4, 2.25, -1.4, 1), mat.multiplyLocal(vec));
+	}
 }

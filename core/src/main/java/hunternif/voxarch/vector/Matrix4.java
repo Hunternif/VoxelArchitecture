@@ -78,6 +78,16 @@ public class Matrix4 {
 		mat.m01 = -mat.m10;
 		return mat;
 	}
+	/**
+	 * Creates a transformation matrix of scaling by the given ratios.
+	 */
+	public static Matrix4 scale(double scaleX, double scaleY, double scaleZ) {
+		Matrix4 mat = identity();
+		mat.m00 = scaleX;
+		mat.m11 = scaleY;
+		mat.m22 = scaleZ;
+		return mat;
+	}
 	
 	/**
 	 * Modifies <em>this matrix</em> to be the product (this * mat).

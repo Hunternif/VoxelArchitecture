@@ -14,8 +14,12 @@ interface ILinearTransformation : ITransformation {
     /** Modifies this transformation, adds translation, returns this. */
     fun translate(x: Double, y: Double, z: Double): ILinearTransformation
 
-    /** Modifies this transformation, adds rotation counterclockwise around the Y axis, returns this. */
+    /** Rotates counterclockwise around the X axis, modifies and returns this. */
+    fun rotateX(angle: Double): ILinearTransformation
+    /** Rotates counterclockwise around the Y axis, modifies and returns this. */
     fun rotateY(angle: Double): ILinearTransformation
+    /** Rotates counterclockwise around the Z axis, modifies and returns this. */
+    fun rotateZ(angle: Double): ILinearTransformation
 
 
     // Convenience methods
@@ -25,6 +29,13 @@ interface ILinearTransformation : ITransformation {
     /** Modifies this transformation, adds translation, returns this. */
     fun translate(x: Number, y: Number, z: Number): ILinearTransformation =
         translate(x.toDouble(), y.toDouble(), z.toDouble())
+
+    /** Mirrors X coordinate, modifies and returns this. */
+    fun mirrorX(): ILinearTransformation
+    /** Mirrors Y coordinate, modifies and returns this. */
+    fun mirrorY(): ILinearTransformation
+    /** Mirrors Z coordinate, modifies and returns this. */
+    fun mirrorZ(): ILinearTransformation
 }
 
 
@@ -47,11 +58,37 @@ class LinearTransformation(
         return this
     }
 
+    override fun rotateX(angle: Double): LinearTransformation {
+        matrix.multiplyLocal(Matrix4.rotationX(angle))
+        return this
+    }
+
     override fun rotateY(angle: Double): LinearTransformation {
         angleY += angle
         matrix.multiplyLocal(Matrix4.rotationY(angle))
         return this
     }
+
+    override fun rotateZ(angle: Double): LinearTransformation {
+        matrix.multiplyLocal(Matrix4.rotationZ(angle))
+        return this
+    }
+
+    override fun mirrorX(): ILinearTransformation {
+        matrix.multiplyLocal(Matrix4.scale(-1.0, 1.0, 1.0))
+        return this
+    }
+
+    override fun mirrorY(): ILinearTransformation {
+        matrix.multiplyLocal(Matrix4.scale(1.0, -1.0, 1.0))
+        return this
+    }
+
+    override fun mirrorZ(): ILinearTransformation {
+        matrix.multiplyLocal(Matrix4.scale(1.0, 1.0, -1.0))
+        return this
+    }
+
 
     fun clone() = LinearTransformation(angleY, matrix.clone())
 }
