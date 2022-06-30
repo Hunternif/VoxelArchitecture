@@ -25,7 +25,7 @@ abstract class BaseBuilderTest(
     @Before
     open fun setup() {
         out = MultiDimArrayBlockStorage(outWidth, outHeight, outLength)
-        out.safeBoundary = true
+//        out.safeBoundary = true
         trans = TransformationStack()
         context = BuildContext(DEFAULT_ENV)
         builder = Builder()
