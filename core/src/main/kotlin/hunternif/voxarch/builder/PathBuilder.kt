@@ -17,7 +17,7 @@ open class PathBuilder<in T : Path>(
 
         // TODO: rotate transformer, and rename to `buildAtX`
         node.segments.forEach { s ->
-            line(s.p1, s.p2, step = step, startOffset = traveled) { p ->
+            line2(s.p1, s.p2) { p ->
                 val pos = trans.transform(p)
                 buildAt(pos, node, world, context)
                 traveled += step

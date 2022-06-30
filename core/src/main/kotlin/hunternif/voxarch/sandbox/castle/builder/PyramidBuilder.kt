@@ -2,7 +2,7 @@ package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
-import hunternif.voxarch.builder.line
+import hunternif.voxarch.builder.line2
 import hunternif.voxarch.plan.PathSegment
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.storage.IBlockStorage
@@ -46,8 +46,8 @@ class PyramidBuilder(
     ) {
         val p1 = trans.transform(segment.p1)
         val p2 = trans.transform(segment.p2)
-        line(p1, p2, 0.5) {
-            line(it, apex, 1.0, 0.1) { p ->
+        line2(p1, p2) {
+            line2(it, apex) { p ->
                 val block = context.materials.get(material)
                 world.setBlock(p, block)
             }
