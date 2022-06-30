@@ -23,12 +23,12 @@ fun IBlockStorage.toLocal(trans: ILinearTransformation) =
  *      i.e. relative to the storage, NOT to the room. Y is floor level.
  */
 fun Room.fillXZ(
-    trans: TransformationStack,
+    trans: ITransformation,
     buildAt: (x: Int, y: Int, z: Int) -> Unit
 ) {
     val aabb = findIntAABB(trans)
     val boundaries = getGroundBoundaries()
-        .map { trans.transform(it.first) to trans.transform(it.second)}
+        .map { trans.transform(it.first) to trans.transform(it.second) }
     aabb.forEachXZ { x, z ->
         val q = Vec3(x, aabb.minY, z)
         // Test if the point q is contained on the inside of each wall
@@ -105,5 +105,66 @@ fun Room.getGroundBoundaries(): List<RoomGroundBoundary> {
             start.addX(size.x),
             start
         ).zipWithNext()
+    }
+}
+
+/**
+ * Runs [buildAt] at every point on the line from [p1] to [p2].
+ * Adapting Bresenham's line algorithm to 3D.
+ */
+fun line2(
+    p1: Vec3,
+    p2: Vec3,
+    buildAt: (pos: IntVec3) -> Unit
+) {
+    // Find the smallest slope octant.
+    // Use a linear transformation to orient the octant so that
+    // slopes (dy/dx, dz/dx) are all within [0, 1].
+    val trans = LinearTransformation().translate(p1)
+    val end = p2 - p1
+    if (end.x < 0) {
+        trans.mirrorX()
+        end.x *= -1
+    }
+    if (end.y < 0) {
+        trans.mirrorY()
+        end.y *= -1
+    }
+    if (end.z < 0) {
+        trans.mirrorZ()
+        end.z *= -1
+    }
+    if (end.y > end.x) {
+        trans.mirrorY().rotateZ(-90.0)
+        val temp = end.y
+        end.y = end.x
+        end.x = temp
+    }
+    if (end.z > end.x) {
+        trans.mirrorX().rotateY(-90.0)
+        val temp = end.z
+        end.z = end.x
+        end.x = temp
+    }
+    // Now slopes (dy/dx, dz/dx) are all within [0, 1]
+    var x = 0.0
+    var y = 0.0
+    var z = 0.0
+    var dy = 2 * end.y - end.x
+    var dz = 2 * end.z - end.x
+    while (x <= end.x) {
+        val pos = trans.transform(x, y, z)
+        buildAt(pos.toIntVec3())
+        if (dy > 0) {
+            y++
+            dy -= 2 * end.x
+        }
+        if (dz > 0) {
+            z++
+            dz -= 2 * end.x
+        }
+        dy += 2 * end.y
+        dz += 2 * end.z
+        x++
     }
 }
