@@ -2,6 +2,7 @@ package hunternif.voxarch.wfc.tiled
 
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.writeToVoxFile
+import hunternif.voxarch.util.today
 import hunternif.voxarch.wfc.WfcColor.*
 import hunternif.voxarch.wfc.tiled.wang7x3x7.air
 import hunternif.voxarch.wfc.tiled.wang7x3x7.generateValidTiles7x3x7
@@ -10,8 +11,6 @@ import hunternif.voxarch.wfc.tiled.wang7x3x7.groundedAir
 import org.junit.Test
 import java.nio.file.Files
 import java.nio.file.Paths
-import java.time.LocalDateTime
-import java.time.format.DateTimeFormatter
 
 class WfcMagicaVoxelTest {
 
@@ -39,8 +38,4 @@ class WfcMagicaVoxelTest {
         wave.writeToVoxFile(path, colorMap)
         Files.delete(path) // clean up
     }
-
-    private fun today() =
-        DateTimeFormatter.ofPattern("YYY-MM-dd_HH_mm_ss")
-            .format(LocalDateTime.now())
 }

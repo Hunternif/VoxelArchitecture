@@ -2,10 +2,8 @@ package hunternif.voxarch.wfc.overlap
 
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
-import hunternif.voxarch.storage.IArray3D
-import hunternif.voxarch.util.forEachPos
+import hunternif.voxarch.util.assertStorageEquals
 import hunternif.voxarch.wfc.WfcColor.*
-import org.junit.Assert.assertEquals
 import org.junit.Test
 import java.nio.file.Path
 import java.nio.file.Paths
@@ -79,17 +77,5 @@ class WfcMagicaVoxelOverlapTest {
 
     companion object {
         val REFERENCES_DIR: Path = Paths.get("./src/test/resources/wfc")
-
-        private fun <T> assertStorageEquals(
-            expected: IArray3D<in T>,
-            actual: IArray3D<in T>
-        ) {
-            assertEquals(expected.width, actual.width)
-            assertEquals(expected.height, actual.height)
-            assertEquals(expected.length, actual.length)
-            expected.forEachPos { x, y, z, t ->
-                assertEquals(t, actual[x, y, z])
-            }
-        }
     }
 }

@@ -1,6 +1,6 @@
 package hunternif.voxarch.vector
 
-import hunternif.voxarch.util.forEachXZ
+import hunternif.voxarch.util.*
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
