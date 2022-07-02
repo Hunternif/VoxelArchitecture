@@ -1,7 +1,7 @@
 package hunternif.voxarch.util
 
 import hunternif.voxarch.storage.BlockData
-import hunternif.voxarch.storage.IFixedBlockStorage
+import hunternif.voxarch.storage.ArrayBlockStorage
 
 interface Slice {
     val width: Int
@@ -10,7 +10,7 @@ interface Slice {
 }
 
 class XSlice(
-    private val storage: IFixedBlockStorage,
+    private val storage: ArrayBlockStorage,
     private val offset: Int
 ): Slice {
     override val width = storage.length
@@ -20,7 +20,7 @@ class XSlice(
 }
 
 class YSlice(
-    private val storage: IFixedBlockStorage,
+    private val storage: ArrayBlockStorage,
     private val offset: Int
 ): Slice {
     override val width = storage.width
@@ -30,7 +30,7 @@ class YSlice(
 }
 
 class ZSlice(
-    private val storage: IFixedBlockStorage,
+    private val storage: ArrayBlockStorage,
     private val offset: Int
 ): Slice {
     override val width = storage.width

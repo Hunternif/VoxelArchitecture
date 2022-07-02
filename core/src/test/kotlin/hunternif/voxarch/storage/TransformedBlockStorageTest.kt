@@ -7,13 +7,13 @@ import org.junit.Before
 import org.junit.Test
 
 class TransformedBlockStorageTest {
-    lateinit var out: MultiDimArrayBlockStorage
+    lateinit var out: ArrayBlockStorage
     lateinit var trans: TransformationStack
     lateinit var storage: IBlockStorage
 
     @Before
     fun setup() {
-        out = MultiDimArrayBlockStorage(1, 1, 1)
+        out = ArrayBlockStorage(1, 1, 1)
         trans = TransformationStack()
         storage = TransformedBlockStorage(out, trans)
     }

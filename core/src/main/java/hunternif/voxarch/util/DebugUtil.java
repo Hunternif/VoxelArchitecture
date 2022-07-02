@@ -2,7 +2,6 @@ package hunternif.voxarch.util;
 
 import hunternif.voxarch.storage.BlockData;
 import hunternif.voxarch.storage.IBlockStorage;
-import hunternif.voxarch.storage.IFixedBlockStorage;
 import hunternif.voxarch.vector.IntVec3;
 
 /**
@@ -35,11 +34,5 @@ public class DebugUtil {
 			}
 		}
 		return sb.toString();
-	}
-	
-	/** See {@link #printStorageRegion}, but for all contents of the storage. */
-	public static String printFixedStorage(IFixedBlockStorage storage) {
-		return printStorageRegion(storage, new IntVec3(0, 0, 0),
-				new IntVec3(storage.getWidth(), storage.getHeight(), storage.getLength()));
 	}
 }

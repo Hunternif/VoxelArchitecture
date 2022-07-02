@@ -3,7 +3,7 @@ package hunternif.voxarch.util
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.whenever
-import hunternif.voxarch.storage.IFixedBlockStorage
+import hunternif.voxarch.storage.ArrayBlockStorage
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ import org.mockito.junit.MockitoJUnitRunner
 @RunWith(MockitoJUnitRunner::class)
 class SliceTest {
     @Mock
-    lateinit var box: IFixedBlockStorage
+    lateinit var box: ArrayBlockStorage
 
     @Before
     fun setup() {

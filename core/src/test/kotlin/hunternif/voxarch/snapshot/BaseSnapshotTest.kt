@@ -2,7 +2,7 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.BaseBuilderTest
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.storage.IFixedBlockStorage
+import hunternif.voxarch.storage.ArrayBlockStorage
 import hunternif.voxarch.util.Slice
 import hunternif.voxarch.util.XSlice
 import hunternif.voxarch.util.YSlice
@@ -74,8 +74,8 @@ abstract class BaseSnapshotTest(
             ID_WALL_DECO to 0xAE977D
         )
 
-        fun IFixedBlockStorage.sliceX(offset: Int): Slice = XSlice(this, offset)
-        fun IFixedBlockStorage.sliceY(offset: Int): Slice = YSlice(this, offset)
-        fun IFixedBlockStorage.sliceZ(offset: Int): Slice = ZSlice(this, offset)
+        fun ArrayBlockStorage.sliceX(offset: Int): Slice = XSlice(this, offset)
+        fun ArrayBlockStorage.sliceY(offset: Int): Slice = YSlice(this, offset)
+        fun ArrayBlockStorage.sliceZ(offset: Int): Slice = ZSlice(this, offset)
     }
 }

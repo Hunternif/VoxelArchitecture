@@ -6,7 +6,7 @@ import hunternif.voxarch.plan.ceiling
 import hunternif.voxarch.plan.floor
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.BlockData
-import hunternif.voxarch.storage.MultiDimArrayBlockStorage
+import hunternif.voxarch.storage.ArrayBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.world.Environment
@@ -17,14 +17,14 @@ abstract class BaseBuilderTest(
     internal val outHeight: Int,
     internal val outLength: Int
 ) {
-    lateinit var out: MultiDimArrayBlockStorage
+    lateinit var out: ArrayBlockStorage
     lateinit var trans: TransformationStack
     lateinit var context: BuildContext
     lateinit var builder: Builder<Node>
 
     @Before
     open fun setup() {
-        out = MultiDimArrayBlockStorage(outWidth, outHeight, outLength)
+        out = ArrayBlockStorage(outWidth, outHeight, outLength)
 //        out.safeBoundary = true
         trans = TransformationStack()
         context = BuildContext(DEFAULT_ENV)
