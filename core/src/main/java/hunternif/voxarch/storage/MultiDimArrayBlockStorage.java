@@ -2,6 +2,7 @@ package hunternif.voxarch.storage;
 
 import hunternif.voxarch.util.DebugUtil;
 import hunternif.voxarch.vector.IntVec3;
+import hunternif.voxarch.vector.Vec3;
 
 /**
  * IFixedBlockStorage implementation using multidimensional array of BlockData.
@@ -74,8 +75,23 @@ public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	}
 
 	@Override
+	public BlockData getBlock(double x, double y, double z) {
+		return getBlock(x, y, z);
+	}
+
+	@Override
 	public BlockData getBlock(IntVec3 vec) {
 		return getBlock(vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public BlockData getBlock(Vec3 vec) {
+		return getBlock(vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public void setBlock(double x, double y, double z, BlockData block) {
+		setBlock(x, y, z, block);
 	}
 
 	@Override
@@ -84,7 +100,22 @@ public class MultiDimArrayBlockStorage implements IFixedBlockStorage {
 	}
 
 	@Override
+	public void setBlock(Vec3 vec, BlockData block) {
+		setBlock(vec.x, vec.y, vec.z, block);
+	}
+
+	@Override
+	public void clearBlock(double x, double y, double z) {
+		clearBlock(x, y, z);
+	}
+
+	@Override
 	public void clearBlock(IntVec3 vec) {
+		clearBlock(vec.x, vec.y, vec.z);
+	}
+
+	@Override
+	public void clearBlock(Vec3 vec) {
 		clearBlock(vec.x, vec.y, vec.z);
 	}
 }

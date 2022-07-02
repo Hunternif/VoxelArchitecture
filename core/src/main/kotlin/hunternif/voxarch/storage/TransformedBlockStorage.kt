@@ -14,7 +14,7 @@ open class TransformedBlockStorage(
     override fun getBlock(x: Int, y: Int, z: Int): BlockData? =
         this.getBlock(x.toDouble(), y.toDouble(), z.toDouble())
 
-    fun getBlock(x: Double, y: Double, z: Double): BlockData? {
+    override fun getBlock(x: Double, y: Double, z: Double): BlockData? {
         val pos = trans.transform(x, y, z).intRoundDown()
         return storage.getBlock(pos)
     }
@@ -28,7 +28,7 @@ open class TransformedBlockStorage(
         this.setBlock(x.toDouble(), y.toDouble(), z.toDouble(), rotatedBlock)
     }
 
-    fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
+    override fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
         val pos = trans.transform(x, y, z).intRoundDown()
         storage.setBlock(pos, block)
     }

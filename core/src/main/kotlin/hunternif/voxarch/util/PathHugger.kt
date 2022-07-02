@@ -25,7 +25,7 @@ class PathHugger(
         this.setBlock(x.toDouble(), y.toDouble(), z.toDouble(), block)
     }
 
-    fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
+    override fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
         path.mapX(x)?.let { segment ->
             trans.apply {
                 push()

@@ -21,21 +21,20 @@ interface ILinearTransformation : ITransformation {
     /** Rotates counterclockwise around the Z axis, modifies and returns this. */
     fun rotateZ(angle: Double): ILinearTransformation
 
-
-    // Convenience methods
-    /** Modifies this transformation, adds translation, returns this. */
-    fun translate(vec: Vec3): ILinearTransformation = translate(vec.x, vec.y, vec.z)
-
-    /** Modifies this transformation, adds translation, returns this. */
-    fun translate(x: Number, y: Number, z: Number): ILinearTransformation =
-        translate(x.toDouble(), y.toDouble(), z.toDouble())
-
     /** Mirrors X coordinate, modifies and returns this. */
     fun mirrorX(): ILinearTransformation
     /** Mirrors Y coordinate, modifies and returns this. */
     fun mirrorY(): ILinearTransformation
     /** Mirrors Z coordinate, modifies and returns this. */
     fun mirrorZ(): ILinearTransformation
+
+
+    // Convenience methods
+    /** Modifies this transformation, adds translation, returns this. */
+    fun translate(vec: Vec3): ILinearTransformation = translate(vec.x, vec.y, vec.z)
+    /** Modifies this transformation, adds translation, returns this. */
+    fun translate(x: Number, y: Number, z: Number): ILinearTransformation =
+        translate(x.toDouble(), y.toDouble(), z.toDouble())
 }
 
 
