@@ -52,6 +52,7 @@ abstract class BaseBuilderTest(
                 null to SimpleFloorBuilder(MAT_FLOOR)
             )
             setDefault(SimpleWallBuilder(MAT_WALL))
+            setDefault(RoomBuilder())
             setDefault(SimpleGateBuilder())
             setDefault(SimpleHatchBuilder())
             setDefault<Node>(Builder())

@@ -33,31 +33,37 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
     }
 
     @Test
-    fun `castle ward top 2`() {
+    fun `castle ward top 8`() {
+        build(castleWard())
+        record(out.sliceY(8))
+    }
+
+    @Test
+    fun `castle ward top 13`() {
         build(castleWard())
         record(out.sliceY(13))
     }
 
     @Test
-    fun `castle ward top 3`() {
+    fun `castle ward top 19`() {
         build(castleWard())
         record(out.sliceY(19))
     }
 
     @Test
-    fun `castle ward profile 1`() {
+    fun `castle ward profile 30`() {
         build(castleWard())
         record(out.sliceX(30))
     }
 
     @Test
-    fun `castle ward profile 2`() {
+    fun `castle ward profile 9`() {
         build(castleWard())
         record(out.sliceX(9))
     }
 
     @Test
-    fun `castle ward profile 3`() {
+    fun `castle ward profile 22`() {
         build(castleWard())
         record(out.sliceX(22))
     }
