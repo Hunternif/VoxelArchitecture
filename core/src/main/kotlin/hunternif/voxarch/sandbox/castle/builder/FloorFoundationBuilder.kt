@@ -4,7 +4,7 @@ import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.intRoundDown
+import hunternif.voxarch.util.roundToInt
 import hunternif.voxarch.vector.TransformationStack
 
 class FloorFoundationBuilder(
@@ -22,7 +22,7 @@ class FloorFoundationBuilder(
         // 2. Fill walls too, because at odd room sizes they can be 1 block away
         room.walls.forEach { wall ->
             line(wall.bottomStart, wall.bottomEnd) { p ->
-                val pos = trans.transform(p).intRoundDown()
+                val pos = trans.transform(p).roundToInt()
                 buildDownToGround(pos.x, pos.y, pos.z, world, context)
             }
         }

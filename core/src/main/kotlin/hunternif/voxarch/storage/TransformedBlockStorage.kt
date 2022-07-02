@@ -1,6 +1,6 @@
 package hunternif.voxarch.storage
 
-import hunternif.voxarch.util.intRoundDown
+import hunternif.voxarch.util.round
 import hunternif.voxarch.vector.ILinearTransformation
 
 /**
@@ -15,7 +15,7 @@ open class TransformedBlockStorage(
         this.getBlock(x.toDouble(), y.toDouble(), z.toDouble())
 
     override fun getBlock(x: Double, y: Double, z: Double): BlockData? {
-        val pos = trans.transform(x, y, z).intRoundDown()
+        val pos = trans.transform(x, y, z).round()
         return storage.getBlock(pos)
     }
 
@@ -29,12 +29,12 @@ open class TransformedBlockStorage(
     }
 
     override fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
-        val pos = trans.transform(x, y, z).intRoundDown()
+        val pos = trans.transform(x, y, z).round()
         storage.setBlock(pos, block)
     }
 
     override fun clearBlock(x: Int, y: Int, z: Int) {
-        val pos = trans.transform(x, y, z).intRoundDown()
+        val pos = trans.transform(x, y, z).round()
         storage.clearBlock(pos)
     }
 }

@@ -46,7 +46,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
             )
         }
         build(structure)
-        record(out.sliceZ(3))
+        record(out.sliceZ(4))
     }
 
     @Test
