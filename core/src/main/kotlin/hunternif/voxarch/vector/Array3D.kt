@@ -56,7 +56,12 @@ class Array3D<T>(
     }
 
     @Suppress("NOTHING_TO_INLINE")
-    private inline fun index(x: Int, y: Int, z: Int) = (x*length + z)*height + y
+    private inline fun index(x: Int, y: Int, z: Int): Int {
+        if (x < 0 || x >= width) throw ArrayIndexOutOfBoundsException("x = $x is out of bounds")
+        if (y < 0 || y >= height) throw ArrayIndexOutOfBoundsException("y = $y is out of bounds")
+        if (z < 0 || z >= length) throw ArrayIndexOutOfBoundsException("z = $z is out of bounds")
+        return (x * length + z) * height + y
+    }
 
     override operator fun get(x: Int, y: Int, z: Int): T = data[index(x, y, z)]
     override operator fun get(p: IntVec3): T = data[index(p.x, p.y, p.z)]

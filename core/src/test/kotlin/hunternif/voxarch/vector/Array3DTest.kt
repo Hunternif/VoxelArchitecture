@@ -49,6 +49,24 @@ class Array3DTest {
     }
 
     @Test
+    fun `out of bounds`() {
+        val a = Array3D(2, 2, 2, 1)
+        val points = listOf(
+            IntVec3(-1, 0, 0),
+            IntVec3(2, 0, 0),
+            IntVec3(0, -1, 0),
+            IntVec3(0, 2, 0),
+            IntVec3(0, 0, -1),
+            IntVec3(0, 0, 2),
+        )
+        for (p in points) {
+            try { a[p] }
+            catch (e: ArrayIndexOutOfBoundsException) { continue }
+            fail("$p should throw exception")
+        }
+    }
+
+    @Test
     fun iterate() {
         val a = Array3D(2, 2, 2)
             { x, y, z -> x*100 + y*10 + z }
@@ -97,7 +115,7 @@ class Array3DTest {
 
     @Test
     fun size() {
-        val a = Array3D<Char?>(2, 2, 2, null)
+        val a = Array3D<Char?>(2, 2, 3, null)
         assertEquals(0, a.size)
 
         a[0, 0, 1] = 'a'

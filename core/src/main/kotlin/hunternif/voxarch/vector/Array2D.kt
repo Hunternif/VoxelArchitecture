@@ -30,7 +30,12 @@ open class Array2D<T>(
             invoke(list[0].size, list.size) { x, y -> list[y][x] }
     }
 
-    private inline fun index(x: Int, y: Int): Int = x*length + y
+    @Suppress("NOTHING_TO_INLINE")
+    private inline fun index(x: Int, y: Int): Int {
+        if (x < 0 || x >= width) throw ArrayIndexOutOfBoundsException("x = $x is out of bounds")
+        if (y < 0 || y >= length) throw ArrayIndexOutOfBoundsException("y = $y is out of bounds")
+        return x*length + y
+    }
 
     override operator fun get(x: Int, y: Int): T = data[index(x, y)]
     override operator fun get(p: IntVec2): T = get(p.x, p.y)

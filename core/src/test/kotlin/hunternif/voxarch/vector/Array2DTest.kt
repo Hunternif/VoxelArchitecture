@@ -1,7 +1,6 @@
 package hunternif.voxarch.vector
 
-import org.junit.Assert.assertEquals
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Test
 
 class Array2DTest {
@@ -45,6 +44,22 @@ class Array2DTest {
         assertTrue(IntVec2(0, 0) in a)
         assertTrue(IntVec2(0, 2) !in a)
         assertTrue(IntVec2(-1, -1) !in a)
+    }
+
+    @Test
+    fun `out of bounds`() {
+        val a = Array2D(2, 2, 1)
+        val points = listOf(
+            IntVec2(-1, 0),
+            IntVec2(2, 0),
+            IntVec2(0, -1),
+            IntVec2(0, 2),
+        )
+        for (p in points) {
+            try { a[p] }
+            catch (e: ArrayIndexOutOfBoundsException) { continue }
+            fail("$p should throw exception")
+        }
     }
 
     @Test
