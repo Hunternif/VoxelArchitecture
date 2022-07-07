@@ -3,11 +3,9 @@ package hunternif.voxarch.sandbox.castle.builder
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.line
-import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.PathSegment
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.storage.TransformedBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 
@@ -20,10 +18,17 @@ class PyramidBuilder(
     private val upsideDown: Boolean = false
 ): Builder<PolygonRoom>() {
     override fun build(node: PolygonRoom, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        val apex = Vec3(0.0, node.height, 0.0)
-        val localWorld = world.toLocal(trans)
+        if (upsideDown) {
+            trans.push()
+            trans.translate(0, node.height, 0)
+            trans.mirrorY()
+        }
+        val apex = trans.transform(0.0, node.height, 0.0)
         node.polygon.segments.forEach {
-            buildSegment(it, apex, localWorld, context)
+            buildSegment(it, apex, trans, world, context)
+        }
+        if (upsideDown) {
+            trans.pop()
         }
         super.build(node, trans, world, context)
     }
@@ -35,14 +40,16 @@ class PyramidBuilder(
     private fun buildSegment(
         segment: PathSegment,
         apex: Vec3,
-        localWorld: TransformedBlockStorage,
+        trans: TransformationStack,
+        world: IBlockStorage,
         context: BuildContext
     ) {
-        line(segment.p1, segment.p2, 0.5) {
+        val p1 = trans.transform(segment.p1)
+        val p2 = trans.transform(segment.p2)
+        line(p1, p2, 0.5) {
             line(it, apex, 1.0, 0.1) { p ->
                 val block = context.materials.get(material)
-                val y = if (upsideDown) apex.y - p.y else p.y
-                localWorld.setBlock(p.x, y, p.z, block)
+                world.setBlock(p, block)
             }
         }
     }
