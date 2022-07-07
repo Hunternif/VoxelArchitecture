@@ -32,7 +32,7 @@ abstract class BaseSnapshotTest(
     private val keyToColorMap: Map<String, Int> = DEFAULT_COLORMAP
 ) : BaseBuilderTest(outWidth, outHeight, outLength) {
     @get:Rule
-    val name = TestName()
+    val testName = TestName()
 
     private val blockToVoxColorMap by lazy {
         keyToColorMap
@@ -40,11 +40,16 @@ abstract class BaseSnapshotTest(
             .mapValues { (k, v) -> VoxColor(v) }
     }
 
-    /** Records a slice of the output into a PNG image.
-     * These can be useful to quickly spot the error. */
-    fun record(slice: Slice) {
+    /**
+     * Records a slice of the output into a PNG image.
+     * These can be useful to quickly spot the error.
+     * @param filename name of the snapshot file.
+     *     If no name is given, test method name is used instead.
+     */
+    fun record(slice: Slice, filename: String? = null) {
+        val baseName = filename ?: testName.methodName
         val path = SNAPSHOTS_DIR.resolve(
-            "${javaClass.canonicalName}/${name.methodName} ${slice.getName()}.png"
+            "${javaClass.canonicalName}/$baseName ${slice.getName()}.png"
         )
         if (!Files.exists(path.parent)) {
             Files.createDirectories(path.parent)
@@ -54,9 +59,14 @@ abstract class BaseSnapshotTest(
         }
     }
 
-    /** Records the entire output into a VOX file. */
-    fun recordVox() {
-        val path = SNAPSHOTS_DIR.resolve("${javaClass.canonicalName}/${name.methodName}.vox")
+    /**
+     * Records the entire output into a VOX file.
+     * @param filename name of the snapshot file.
+     *     If no name is given, test method name is used instead.
+     */
+    fun recordVox(filename: String? = null) {
+        val baseName = filename ?: testName.methodName
+        val path = SNAPSHOTS_DIR.resolve("${javaClass.canonicalName}/$baseName.vox")
         if (!Files.exists(path.parent)) {
             Files.createDirectories(path.parent)
         }

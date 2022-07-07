@@ -3,7 +3,7 @@ package hunternif.voxarch.dom
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonShape.ROUND
+import hunternif.voxarch.plan.PolygonShape.POLYGON
 import hunternif.voxarch.plan.PolygonShape.SQUARE
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
@@ -38,7 +38,7 @@ class DomWardTest {
     fun `round castle ward with 6 edges`() {
         val style = Stylesheet().apply {
             styleFor<Ward> {
-                shape = ROUND
+                shape = POLYGON
                 diameter { 10.vx }
                 edgeLength { 6.vx }
             }
@@ -59,7 +59,7 @@ class DomWardTest {
     fun `round castle ward with 8 edges`() {
         val style = Stylesheet().apply {
             styleFor<Ward> {
-                shape = ROUND
+                shape = POLYGON
                 diameter { 10.vx }
                 edgeLength { 4.vx }
             }
@@ -80,7 +80,7 @@ class DomWardTest {
     fun `castle ward with random shape`() {
         val style = Stylesheet().apply {
             styleFor<Ward> {
-                shape { random(ROUND, SQUARE) }
+                shape { random(POLYGON, SQUARE) }
             }
         }
         lateinit var ward: Ward
@@ -88,7 +88,7 @@ class DomWardTest {
         DomRoot(style, 1).apply {
             ward { ward = node}
         }.build()
-        assertEquals(ROUND, ward.shape)
+        assertEquals(POLYGON, ward.shape)
 
         DomRoot(style, 2).apply {
             ward { ward = node}

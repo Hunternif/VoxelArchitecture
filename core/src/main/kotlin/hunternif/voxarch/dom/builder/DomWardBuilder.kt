@@ -13,11 +13,12 @@ class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
         polygon.origin = innerFloorCenter
         when (shape) {
             PolygonShape.SQUARE -> polygon.rectangle(width, length)
-            PolygonShape.ROUND -> polygon.ellipse(width, length, edgeCount)
+            PolygonShape.POLYGON -> polygon.polygon(width, length, polygonEdgeCount)
+            PolygonShape.ROUND -> polygon.ellipse(width, length)
         }
     }
 
-    private val edgeCount: Int get() = node.run {
+    private val polygonEdgeCount: Int get() = node.run {
         ((width + length) / 2 * PI / edgeLength)
             .clampMin(4.0).roundToEven().toInt()
     }

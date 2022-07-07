@@ -37,13 +37,15 @@ open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
 }
 
 enum class PolygonShape {
-    /** axis-aligned walls, 4 towers in corners */
+    /** axis-aligned walls, 4 corners */
     SQUARE,
     /** rectangular sections project in each axis direction */
 //    CROSS,
-    /** N towers spread evenly in a circle */
+    /** N corners spread evenly on a regular polygon */
+    POLYGON,
+    /** Many corners, approximating a circle. */
     ROUND,
-    /** N towers spread evenly in a circle,
+    /** N corners spread evenly in a circle,
      * and then moved by random distance from center */
 //    JITTERY_POLYGON
 }

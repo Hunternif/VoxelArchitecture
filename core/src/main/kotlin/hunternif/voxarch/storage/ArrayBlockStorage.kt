@@ -1,5 +1,6 @@
 package hunternif.voxarch.storage
 
+import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.Array3D
 
 open class ArrayBlockStorage(
@@ -35,5 +36,9 @@ open class ArrayBlockStorage(
         } catch (e: ArrayIndexOutOfBoundsException) {
             if (!safeBoundary) throw e
         }
+    }
+
+    fun clearAll() {
+        data.forEachPos { x, y, z, _ -> data[x, y, z] = null }
     }
 }

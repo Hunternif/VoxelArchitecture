@@ -26,6 +26,10 @@ open class Path(origin: Vec3) : Node(origin) {
         points.forEach { addPoint(it) }
     }
 
+    fun addPoint(x: Double, y: Double, z: Double) {
+        addPoint(Vec3(x, y, z))
+    }
+
     fun addPoint(point: Vec3) {
         points.lastOrNull()?.let {
             val distance = _segments.lastOrNull()?.run {

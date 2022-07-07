@@ -47,7 +47,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 bottomShape = BottomShape.FOUNDATION
             }
             styleFor<Ward>("outer_ward") {
-                shape = PolygonShape.ROUND
+                shape = PolygonShape.POLYGON
                 size(48.vx, 6.vx, 48.vx)
                 position(30.vx, 0.vx, 30.vx)
                 edgeLength { 50.pct }

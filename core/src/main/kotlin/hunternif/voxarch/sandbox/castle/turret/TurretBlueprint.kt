@@ -132,9 +132,6 @@ fun createTurret(
 private fun PolygonRoom.createPolygon(bodyShape: BodyShape) {
     when (bodyShape) {
         BodyShape.SQUARE -> polygon.square(width)
-        BodyShape.ROUND -> {
-            val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
-            polygon.circle(width, sideCount)
-        }
+        BodyShape.ROUND -> polygon.circle(width)
     }
 }

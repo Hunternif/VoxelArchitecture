@@ -39,7 +39,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
 
     @Test
     fun `round 45deg pyramid`() {
-        build(roundPyramid(4, 8))
+        build(roundPyramid(4))
         recordVox()
         record(out.sliceY(0))
         record(out.sliceX(4))
@@ -48,7 +48,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
 
     @Test
     fun `round 60deg pyramid`() {
-        build(roundPyramid(8, 8))
+        build(roundPyramid(8))
         recordVox()
         record(out.sliceY(0))
         record(out.sliceX(4))
@@ -77,10 +77,10 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
         }
     }
 
-    private fun roundPyramid(height: Int, sides: Int) = Structure().apply {
+    private fun roundPyramid(height: Int) = Structure().apply {
         polygonRoom(Vec3.ZERO, Vec3(8, height, 8)).apply {
             type = TYPE_PYRAMID
-            polygon.circle(8.0, sides)
+            polygon.circle(8.0)
             walls.forEach { it.transparent = true }
         }
     }
