@@ -4,6 +4,7 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.storage.TransformedBlockStorage
 import hunternif.voxarch.util.forEachXZ
+import hunternif.voxarch.util.round
 import hunternif.voxarch.vector.*
 
 /**
@@ -112,16 +113,14 @@ fun Room.getGroundBoundaries(): List<RoomGroundBoundary> {
  * Runs [buildAt] at every point on the line from [p1] to [p2].
  * Adapting Bresenham's line algorithm to 3D.
  */
-fun line2(
-    p1: Vec3,
-    p2: Vec3,
-    buildAt: (pos: IntVec3) -> Unit
-) {
+fun line2(p1: Vec3, p2: Vec3, buildAt: (pos: Vec3) -> Unit) {
+    val p1round = p1.round()
+    val p2round = p2.round()
     // Find the smallest slope octant.
     // Use a linear transformation to orient the octant so that
     // slopes (dy/dx, dz/dx) are all within [0, 1].
-    val trans = LinearTransformation().translate(p1)
-    val end = p2 - p1
+    val trans = LinearTransformation().translate(p1round)
+    val end = p2round - p1round
     if (end.x < 0) {
         trans.mirrorX()
         end.x *= -1
@@ -154,7 +153,7 @@ fun line2(
     var dz = 2 * end.z - end.x
     while (x <= end.x) {
         val pos = trans.transform(x, y, z)
-        buildAt(pos.toIntVec3())
+        buildAt(pos)
         if (dy > 0) {
             y++
             dy -= 2 * end.x

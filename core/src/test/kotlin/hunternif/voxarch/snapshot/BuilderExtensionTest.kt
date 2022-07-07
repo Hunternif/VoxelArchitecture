@@ -2,7 +2,6 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.line2
 import hunternif.voxarch.sandbox.castle.MAT_ROOF
-import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
@@ -47,7 +46,7 @@ class BuilderExtensionTest : BaseSnapshotTest(10, 10, 10) {
         record(out.sliceZ(0))
     }
 
-    private fun putBlock(pos: IntVec3) {
+    private fun putBlock(pos: Vec3) {
         val block = context.materials.get(MAT_ROOF)
         out.setBlock(pos, block)
     }

@@ -98,7 +98,7 @@ class BuilderExtensionsTest {
         for (p in points) {
             val color = colors.next()
             line2(Vec3(10, 10, 10), p) {
-                out[it] = VoxColor(color)
+                out[it.toIntVec3()] = VoxColor(color)
             }
         }
 
