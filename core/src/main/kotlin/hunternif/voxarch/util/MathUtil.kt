@@ -100,6 +100,14 @@ fun Float.clamp(min: Float, max: Float): Float {
         else -> this
     }
 }
+fun Int.clamp(min: Int, max: Int): Int {
+    return when {
+        this < min -> min
+        this > max -> max
+        else -> this
+    }
+}
 
 fun Double.round(): Double = this.roundToInt().toDouble()
-fun Double.roundToEven() = round(this / 2)*2
+fun Double.roundToEven(): Double = round(this / 2) * 2
+fun Int.roundToEven(): Int = (this / 2) * 2

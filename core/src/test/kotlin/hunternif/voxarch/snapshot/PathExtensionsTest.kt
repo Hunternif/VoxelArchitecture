@@ -18,7 +18,7 @@ class PathExtensionsTest: BaseSnapshotTest(20, 1, 20) {
                     Vec3(w, 0, w)
                 ) {
                     shape = PolygonShape.ROUND
-                    polygon.circle(w.toDouble(), 4.0)
+                    polygon.circle(w.toDouble())
                     createWalls()
                 }
             }

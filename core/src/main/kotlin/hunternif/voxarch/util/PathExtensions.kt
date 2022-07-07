@@ -1,9 +1,9 @@
 package hunternif.voxarch.util
 
 import hunternif.voxarch.plan.Path
-import hunternif.voxarch.util.MathUtil.roundUp
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.PI
+import kotlin.math.roundToInt
 
 /** Adds points on a rectangle, centered at origin */
 fun Path.rectangle(width: Double, length: Double) {
@@ -63,9 +63,7 @@ fun Path.ellipse(width: Double, length: Double, segmentLength: Double = 4.0) {
     val zFrac = length / width
     // Decide one quadrant, and then copy it 4 times.
     val segmentLengthUpdated = kotlin.math.max(1.0, segmentLength)
-    val countInQuadrant =  kotlin.math.max(2,
-        roundUp(PI / 2 * r / segmentLengthUpdated)
-    )
+    val countInQuadrant =  (PI / 2 * r / segmentLengthUpdated).roundToInt().clamp(2, 6)
 
     // If the number of points in quadrant is odd, there is one point on the diagonal
     val hasDiagonal = countInQuadrant % 2 == 1
