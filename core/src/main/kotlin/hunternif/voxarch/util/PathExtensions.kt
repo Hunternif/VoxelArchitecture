@@ -4,7 +4,6 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.util.MathUtil.roundUp
 import hunternif.voxarch.vector.Vec3
 import kotlin.math.PI
-import kotlin.math.sqrt
 
 /** Adds points on a rectangle, centered at origin */
 fun Path.rectangle(width: Double, length: Double) {
@@ -58,21 +57,22 @@ fun Path.polygon(width: Double, length: Double, count: Int) {
 /** Adds points on an ellipse, centered at origin.
  * Adds many points to ensure the circle is symmetric */
 fun Path.ellipse(width: Double, length: Double, segmentLength: Double = 4.0) {
-    val a = width / 2
-    val b = length / 2
-    val perimeter = PI * 2 * sqrt((a * a + b * b) / 2)
+    // For symmetry, calculate points on a circle,
+    // then squish them into an ellipse at the end.
+    val r = width / 2
+    val zFrac = length / width
     // Decide one quadrant, and then copy it 4 times.
     val segmentLengthUpdated = kotlin.math.max(1.0, segmentLength)
     val countInQuadrant =  kotlin.math.max(2,
-        roundUp(perimeter / 4 / segmentLengthUpdated)
+        roundUp(PI / 2 * r / segmentLengthUpdated)
     )
 
     // If the number of points in quadrant is odd, there is one point on the diagonal
     val hasDiagonal = countInQuadrant % 2 == 1
     val diagonalPoint = Vec3(
-        a * MathUtil.cosDeg(45.0),
+        r * MathUtil.cosDeg(45.0),
         0.0,
-        -b * MathUtil.cosDeg(45.0)
+        -r * MathUtil.cosDeg(45.0)
     )
 
     // Go CCW, add points to octant (1/8 of a circle):
@@ -91,9 +91,9 @@ fun Path.ellipse(width: Double, length: Double, segmentLength: Double = 4.0) {
     while (angle < 45.0) {
         pointsInOctant.add(
             Vec3(
-                a * MathUtil.cosDeg(angle),
+                r * MathUtil.cosDeg(angle),
                 0.0,
-                -b * MathUtil.sinDeg(angle)
+                -r * MathUtil.sinDeg(angle)
             )
         )
         angle += angleStep
@@ -107,10 +107,10 @@ fun Path.ellipse(width: Double, length: Double, segmentLength: Double = 4.0) {
     }
 
     // Complete a circle from 4 quadrants:
-    pointsInQuadrant.forEach { addPoint(it) }
-    pointsInQuadrant.forEach { addPoint(it.z, it.y, -it.x) }
-    pointsInQuadrant.forEach { addPoint(-it.x, it.y, -it.z) }
-    pointsInQuadrant.forEach { addPoint(-it.z, it.y, it.x) }
+    pointsInQuadrant.forEach { addPoint(it.x, it.y, it.z * zFrac) }
+    pointsInQuadrant.forEach { addPoint(it.z, it.y, -it.x * zFrac) }
+    pointsInQuadrant.forEach { addPoint(-it.x, it.y, -it.z * zFrac) }
+    pointsInQuadrant.forEach { addPoint(-it.z, it.y, it.x * zFrac) }
     loopToStart()
 }
 
