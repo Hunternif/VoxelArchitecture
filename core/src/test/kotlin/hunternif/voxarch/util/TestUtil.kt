@@ -2,7 +2,7 @@ package hunternif.voxarch.util
 
 import hunternif.voxarch.storage.IArray3D
 import hunternif.voxarch.vector.Array3D
-import org.junit.Assert
+import org.junit.Assert.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
 
@@ -32,10 +32,10 @@ fun <T> assertStorageEquals(
     expected: IArray3D<in T>,
     actual: IArray3D<in T>
 ) {
-    Assert.assertEquals(expected.width, actual.width)
-    Assert.assertEquals(expected.height, actual.height)
-    Assert.assertEquals(expected.length, actual.length)
+    assertEquals(expected.width, actual.width)
+    assertEquals(expected.height, actual.height)
+    assertEquals(expected.length, actual.length)
     expected.forEachPos { x, y, z, t ->
-        Assert.assertEquals(t, actual[x, y, z])
+        assertEquals(t, actual[x, y, z])
     }
 }

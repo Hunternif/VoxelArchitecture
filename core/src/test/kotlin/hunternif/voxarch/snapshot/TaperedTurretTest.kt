@@ -17,9 +17,10 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
     }
 
     @Test
-    fun `tapered turret layer 5`() {
+    fun `tapered turret`() {
         val structure = turret(4)
         build(structure)
+        recordVox()
         record(out.sliceZ(5))
     }
 

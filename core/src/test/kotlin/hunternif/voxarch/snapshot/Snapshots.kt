@@ -1,5 +1,7 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.magicavoxel.readVoxFile
+import hunternif.voxarch.util.assertStorageEquals
 import org.apache.commons.io.FileUtils
 import org.junit.Assert
 import org.junit.Test
@@ -11,6 +13,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
 import javax.imageio.ImageIO
+import kotlin.io.path.extension
 
 class Snapshots {
     private val reflections = Reflections("hunternif.voxarch.snapshot")
@@ -48,7 +51,11 @@ class Snapshots {
             refDir.onFiles { refFile ->
                 val testFile = SNAPSHOTS_DIR.resolve("${refDir.fileName}/${refFile.fileName}")
                 if (Files.exists(testFile)) {
-                    errors.addAll(compareImages(refFile, testFile))
+                    if (refFile.extension.lowercase() == "png")
+                        errors.addAll(compareImages(refFile, testFile))
+                    else if (refFile.extension.lowercase() == "vox") {
+                        errors.addAll(compareVox(refFile, testFile))
+                    }
                 } else {
                     errors.add("Missing snapshot $refFile")
                 }
@@ -69,6 +76,18 @@ class Snapshots {
                     return listOf("image mismatch in $ref")
                 }
             }
+        }
+        return emptyList()
+    }
+
+    /** Returns errors */
+    private fun compareVox(ref: Path, test: Path): List<String> {
+        val refVox = readVoxFile(ref)
+        val testVox = readVoxFile(test)
+        try {
+            assertStorageEquals(refVox, testVox)
+        } catch (e: AssertionError) {
+            return listOf("vox file mismatch in $ref, ${e.message ?: ""}")
         }
         return emptyList()
     }

@@ -15,22 +15,14 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
     }
 
     @Test
-    fun tower_layer1() {
+    fun tower() {
         val structure = Structure().apply {
             ground()
             addChild(castleBlueprint.squareTower(), Vec3(5, 1, 5))
         }
         build(structure)
+        recordVox()
         record(out.sliceZ(3))
-    }
-
-    @Test
-    fun tower_layer2() {
-        val structure = Structure().apply {
-            ground()
-            addChild(castleBlueprint.squareTower(), Vec3(5, 1, 5))
-        }
-        build(structure)
         record(out.sliceZ(4))
     }
 
@@ -46,6 +38,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
             )
         }
         build(structure)
+        recordVox()
         record(out.sliceZ(4))
     }
 
@@ -59,6 +52,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
             )
         }
         build(structure)
+        recordVox()
         record(out.sliceX(5))
     }
 
@@ -72,6 +66,7 @@ class TowerSnapshotTest : BaseSnapshotTest(10, 13, 10) {
             )
         }
         build(structure)
+        recordVox()
         record(out.sliceY(9))
     }
 }

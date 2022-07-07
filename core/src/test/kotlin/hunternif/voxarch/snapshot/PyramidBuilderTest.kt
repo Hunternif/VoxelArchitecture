@@ -20,73 +20,43 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
     }
 
     @Test
-    fun `square 45deg pyramid base`() {
+    fun `square 45deg pyramid`() {
         build(squarePyramid(4))
+        recordVox()
         record(out.sliceY(0))
-    }
-
-    @Test
-    fun `square 45deg pyramid profile x`() {
-        build(squarePyramid(4))
         record(out.sliceX(4))
-    }
-
-    @Test
-    fun `square 45deg pyramid profile z`() {
-        build(squarePyramid(4))
         record(out.sliceZ(4))
     }
 
     @Test
-    fun `square 60deg pyramid base`() {
+    fun `square 60deg pyramid`() {
         build(squarePyramid(8))
+        recordVox()
         record(out.sliceY(0))
-    }
-
-    @Test
-    fun `square 60deg pyramid profile x`() {
-        build(squarePyramid(8))
         record(out.sliceX(4))
+        record(out.sliceZ(4))
     }
 
     @Test
-    fun `round 45deg pyramid base`() {
+    fun `round 45deg pyramid`() {
         build(roundPyramid(4, 8))
+        recordVox()
         record(out.sliceY(0))
-    }
-
-    @Test
-    fun `round 45deg pyramid profile x1`() {
-        build(roundPyramid(4, 8))
         record(out.sliceX(4))
-    }
-
-    @Test
-    fun `round 45deg pyramid profile x2`() {
-        build(roundPyramid(4, 8))
         record(out.sliceX(6))
     }
 
     @Test
-    fun `round 60deg pyramid base`() {
+    fun `round 60deg pyramid`() {
         build(roundPyramid(8, 8))
+        recordVox()
         record(out.sliceY(0))
-    }
-
-    @Test
-    fun `round 60deg pyramid profile x1`() {
-        build(roundPyramid(8, 8))
         record(out.sliceX(4))
-    }
-
-    @Test
-    fun `round 60deg pyramid profile x2`() {
-        build(roundPyramid(8, 8))
         record(out.sliceX(6))
     }
 
     @Test
-    fun `square 45deg pyramid upside down profile x`() {
+    fun `square 45deg pyramid upside down`() {
         val pyramid = Structure().apply {
             polygonRoom(Vec3(0, 4, 0), Vec3(8, 8, 8)).apply {
                 type = TYPE_PYRAMID_UPSIDE_DOWN
@@ -95,6 +65,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
             }
         }
         build(pyramid)
+        recordVox()
         record(out.sliceX(4))
     }
 

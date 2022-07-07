@@ -7,6 +7,7 @@ interface Slice {
     val width: Int
     val height: Int
     fun getBlock(x: Int, y: Int): BlockData?
+    fun getName(): String
 }
 
 class XSlice(
@@ -17,6 +18,7 @@ class XSlice(
     override val height = storage.height
     override fun getBlock(x: Int, y: Int): BlockData? =
         storage.getBlock(offset, y, x)
+    override fun getName(): String = "x=$offset"
 }
 
 class YSlice(
@@ -27,6 +29,7 @@ class YSlice(
     override val height = storage.length
     override fun getBlock(x: Int, y: Int): BlockData? =
         storage.getBlock(x, offset, y)
+    override fun getName(): String = "y=$offset"
 }
 
 class ZSlice(
@@ -37,4 +40,5 @@ class ZSlice(
     override val height = storage.height
     override fun getBlock(x: Int, y: Int): BlockData? =
         storage.getBlock(x, y, offset)
+    override fun getName(): String = "z=$offset"
 }

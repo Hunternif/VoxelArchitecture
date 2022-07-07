@@ -17,23 +17,12 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     }
 
     @Test
-    fun turret_layer2() {
+    fun turret() {
         val structure = turret(4)
         build(structure)
+        recordVox()
         record(out.sliceZ(2))
-    }
-
-    @Test
-    fun turret_layer3() {
-        val structure = turret(4)
-        build(structure)
         record(out.sliceZ(3))
-    }
-
-    @Test
-    fun turret_layer5() {
-        val structure = turret(4)
-        build(structure)
         record(out.sliceZ(5))
     }
 

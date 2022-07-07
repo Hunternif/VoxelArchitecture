@@ -1,8 +1,11 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.BaseBuilderTest
+import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.ArrayBlockStorage
+import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.util.Slice
 import hunternif.voxarch.util.XSlice
 import hunternif.voxarch.util.YSlice
@@ -20,19 +23,29 @@ import javax.imageio.ImageIO
  * Example: `record(out.sliceZ(1))`
  * -- this will "slice" the storage along the XY plane at z = 1 and render it to a pixel image.
  * TODO: in Y slice, the Z axis on the image is inverted, compared to Minecraft.
- * @param blockColorMap maps block id to RGB pixel color
+ * @param keyToColorMap maps block key to RGB pixel color
  */
 abstract class BaseSnapshotTest(
     outWidth: Int,
     outHeight: Int,
     outLength: Int,
-    private val blockColorMap: Map<String, Int> = DEFAULT_COLORMAP
+    private val keyToColorMap: Map<String, Int> = DEFAULT_COLORMAP
 ) : BaseBuilderTest(outWidth, outHeight, outLength) {
     @get:Rule
     val name = TestName()
 
+    private val blockToVoxColorMap by lazy {
+        keyToColorMap
+            .mapKeys { (k, v) -> BlockData(k) }
+            .mapValues { (k, v) -> VoxColor(v) }
+    }
+
+    /** Records a slice of the output into a PNG image.
+     * These can be useful to quickly spot the error. */
     fun record(slice: Slice) {
-        val path = SNAPSHOTS_DIR.resolve("${javaClass.canonicalName}/${name.methodName}.png")
+        val path = SNAPSHOTS_DIR.resolve(
+            "${javaClass.canonicalName}/${name.methodName} ${slice.getName()}.png"
+        )
         if (!Files.exists(path.parent)) {
             Files.createDirectories(path.parent)
         }
@@ -41,12 +54,23 @@ abstract class BaseSnapshotTest(
         }
     }
 
+    /** Records the entire output into a VOX file. */
+    fun recordVox() {
+        val path = SNAPSHOTS_DIR.resolve("${javaClass.canonicalName}/${name.methodName}.vox")
+        if (!Files.exists(path.parent)) {
+            Files.createDirectories(path.parent)
+        }
+        Files.newOutputStream(path).use {
+            out.writeToVoxFile(path, blockToVoxColorMap)
+        }
+    }
+
     private fun getImage(slice: Slice):BufferedImage {
         val image = BufferedImage(slice.width, slice.height, BufferedImage.TYPE_INT_RGB)
         for (x in 0 until slice.width) {
             for (y in 0 until slice.height) {
                 val block = slice.getBlock(x, y)
-                val color = blockColorMap.getOrDefault(block?.key ?: ID_AIR, BG_COLOR)
+                val color = keyToColorMap.getOrDefault(block?.key ?: ID_AIR, BG_COLOR)
                 image.setRGB(x, slice.height - 1 - y, color)
             }
         }
