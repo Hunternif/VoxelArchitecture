@@ -1,9 +1,6 @@
 package hunternif.voxarch.sandbox.castle.builder
 
-import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.Builder
-import hunternif.voxarch.builder.SimpleWallBuilder
-import hunternif.voxarch.builder.toLocal
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
@@ -30,9 +27,9 @@ class CrenellationPathBuilder(
 ) : Builder<Path>() {
 
     override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        val wallLength = node.totalLength.toInt()
+        val wallLength = node.totalLength
         val hugger = PathHugger(node, trans, world)
-        buildCrenellations(0, wallLength, 0, sizes, material, hugger, context)
+        buildCrenellations(wallLength, 0, sizes, material, trans, hugger, context)
         super.build(node, trans, world, context)
     }
 }
@@ -54,32 +51,33 @@ class CrenellationWallBuilder(
         if (node.transparent) return
         super.build(node, trans, world, context)
         val height = node.height.toInt()
-        val length = node.length.toInt()
-        val localWorld = world.toLocal(trans)
-        buildCrenellations(0, length, height+1, sizes, material, localWorld, context)
+        buildCrenellations(node.length, height+1, sizes, material, trans, world, context)
     }
 }
 
 private fun buildCrenellations(
-    fromX: Int,
-    toX: Int,
+    toX: Double,
     yOffset: Int,
     sizes: CrenellationSizes,
     material: String,
-    localWorld: IBlockStorage,
+    trans: TransformationStack,
+    world: IBlockStorage,
     context: BuildContext
 ) {
     var i = 0
-    for (x in fromX .. toX) {
+    // We are rotated so that the  wall runs along the X axis.
+    val p1 = trans.transform(0, 0, 0)
+    val p2 = trans.transform(toX, 0, 0)
+    line2(p1, p2) { p ->
         if (i < sizes.merlonLength) {
-            for (y in 0 until sizes.merlonHeight) {
+            for (dy in 0 until sizes.merlonHeight) {
                 val block = context.materials.get(material)
-                localWorld.setBlock(x, y + yOffset, 0, block)
+                world.setBlock(p.x, p.y + dy + yOffset, p.z, block)
             }
         } else {
-            for (y in 0 until sizes.crenelHeight) {
+            for (dy in 0 until sizes.crenelHeight) {
                 val block = context.materials.get(material)
-                localWorld.setBlock(x, y + yOffset, 0, block)
+                world.setBlock(p.x, p.y + dy + yOffset, p.z, block)
             }
         }
         i = (i + 1) % (sizes.merlonLength + sizes.crenelLength)
