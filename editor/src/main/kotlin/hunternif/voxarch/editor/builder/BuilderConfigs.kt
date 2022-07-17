@@ -17,7 +17,9 @@ fun BuilderConfig.setDefaultBuilders() {
     setDefault<Node>(Builder())
 }
 
-class SolidColorBlock(val color: Int) : BlockData(color.toString(16))
+class SolidColorBlock(val color: Int) : BlockData(color.toString(16)) {
+    override fun clone() = SolidColorBlock(color)
+}
 
 private val stoneBrick = SolidColorBlock(0x797979)
 private val stone = SolidColorBlock(0x6C6C6C)

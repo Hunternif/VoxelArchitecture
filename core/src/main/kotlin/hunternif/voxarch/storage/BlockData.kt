@@ -26,7 +26,7 @@ open class BlockData(
         else other.key == key && other.orientation == orientation
     }
 
-    fun clone(): BlockData {
+    open fun clone(): BlockData {
         return BlockData(key, orientation)
     }
 
