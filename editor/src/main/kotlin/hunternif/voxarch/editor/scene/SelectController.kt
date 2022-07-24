@@ -33,14 +33,15 @@ class SelectController(
     private var maxY = 0
 
     /** This contains the objects currently intersecting with the marquee.
-     * It's updated every frame when drawing the marquee. */
+     * It's updated every frame as we drag the marquee. */
     private val selectedSet = LinkedHashSet<SceneObject>()
     /** Stores a copy of the original selection when shift-selecting. */
     private val origSelectedSet = LinkedHashSet<SceneObject>()
     private var mode = REPLACE
     /** Builder for the action that will be written to history. */
     private var selectionBuilder: SelectObjectsBuilder? = null
-    /** True on first mouse-down, and false after the first move. */
+    /** True on first mouse-down, and false after the first move.
+     * This is needed so that mouse-down doesn't immediately clear selection. */
     private var firstMove = false
 
     // Update timer

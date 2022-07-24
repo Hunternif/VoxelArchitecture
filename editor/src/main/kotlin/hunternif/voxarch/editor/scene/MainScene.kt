@@ -151,6 +151,7 @@ class MainScene(private val app: EditorApp) {
                 }
             }
         }
+        selectedNodeModel.update()
         originsModel.update()
     }
 
