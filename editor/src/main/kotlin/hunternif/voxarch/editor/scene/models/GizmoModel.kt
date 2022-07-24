@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
 import hunternif.voxarch.editor.util.put
+import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
@@ -56,8 +57,7 @@ class GizmoModel : BaseModel() {
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
 
         initInstanceAttributes {
-            vector3f(2) // offset instance attribute
-            vector3f(3) // scale instance attribute
+            mat4f(2) // model matrix instance attribute, uses ids 2-5
         }
         uploadInstanceData()
     }
@@ -75,10 +75,10 @@ class GizmoModel : BaseModel() {
     }
 
     private fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 6).run {
+        // 16f is used by model matrix
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 16).run {
             instances.forEach { it.run {
-                put(pos.x).put(pos.y).put(pos.z)
-                put(length).put(length).put(length)
+                put(Matrix4f().translation(pos).scale(length, length, length))
             }}
             flip()
         }
