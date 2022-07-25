@@ -58,6 +58,7 @@ val boxVertices = listOf(
     Vertex(0f, 1f, 0f,  0.0f,  1.0f,  0.0f),
 )
 
+/** Creates new instances of Edges. Don't call it every frame! */
 fun boxEdges(start: Vector3f, end: Vector3f): List<Edge> {
     // bottom vertices
     val v1 = Vector3f(start.x, start.y, start.z)
@@ -92,7 +93,8 @@ fun boxEdges(start: Vector3f, end: Vector3f): List<Edge> {
     )
 }
 
-/** The faces have width [w] going inside the box, to make it hit-test-able. */
+/** The faces have width [w] going inside the box, to make it hit-test-able.
+ * Creates new instances. Don't call it every frame! */
 fun boxFaces(min: Vector3f, max: Vector3f, w: Float): Array<AABBFace> {
     // bottom vertices
     val v1 = Vector3f(min.x, min.y, min.z)
