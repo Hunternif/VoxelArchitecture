@@ -3,15 +3,16 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.AABBFace
+import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import org.lwjgl.opengl.GL33.*
-import org.lwjgl.system.MemoryUtil
 
 /**
  * Renders a single highlighted face.
  */
 class ResizeNodeModel : BaseModel() {
     private var bufferSize = 0
+    private val vertexBuffer = FloatBufferWrapper()
 
     override val shader = SolidColorShader(0xffffff, 0.2f)
 
@@ -33,18 +34,18 @@ class ResizeNodeModel : BaseModel() {
     private fun uploadVertexData() {
         bufferSize = if (face != null) 4 * 3 else 0
 
-        val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
-
-        // Store line positions in the vertex buffer
-        face?.apply {
-            vertices.forEach { vertexBuffer.put(it) }
-            vertexBuffer.flip() // rewind
+        vertexBuffer.prepare(bufferSize).run {
+            // Store line positions in the vertex buffer
+            face?.apply {
+                vertices.forEach { put(it) }
+                flip() // rewind
+            }
         }
 
         // Upload the vertex buffer
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
     }
 
     override fun render() {

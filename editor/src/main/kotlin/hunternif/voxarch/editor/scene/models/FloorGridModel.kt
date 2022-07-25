@@ -2,8 +2,8 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
+import hunternif.voxarch.editor.util.FloatBufferWrapper
 import org.lwjgl.opengl.GL33.*
-import org.lwjgl.system.MemoryUtil
 import java.lang.Integer.min
 import kotlin.math.max
 
@@ -14,6 +14,7 @@ class FloorGridModel : BaseModel() {
     private var toZ = 0
 
     private var bufferSize = 0
+    private val vertexBuffer = FloatBufferWrapper()
 
     override val shader = SolidColorShader(0x333333)
 
@@ -41,25 +42,23 @@ class FloorGridModel : BaseModel() {
         val vertexCount = (width + 1)*2 + (length + 1)*2
         bufferSize = vertexCount * 3
 
-        val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
-
-        // Store line positions in the vertex buffer
-        for (x in fromX .. toX) {
-            vertexBuffer
-                .put(-0.5f + x).put(-0.5f).put(-0.5f + fromZ)
-                .put(-0.5f + x).put(-0.5f).put(-0.5f + toZ)
+        vertexBuffer.prepare(bufferSize).run {
+            // Store line positions in the vertex buffer
+            for (x in fromX..toX) {
+                put(-0.5f + x).put(-0.5f).put(-0.5f + fromZ)
+                put(-0.5f + x).put(-0.5f).put(-0.5f + toZ)
+            }
+            for (z in fromZ..toZ) {
+                put(-0.5f + fromX).put(-0.5f).put(-0.5f + z)
+                    .put(-0.5f + toX).put(-0.5f).put(-0.5f + z)
+            }
+            flip() // rewind
         }
-        for (z in fromZ .. toZ) {
-            vertexBuffer
-                .put(-0.5f + fromX).put(-0.5f).put(-0.5f + z)
-                .put(-0.5f + toX).put(-0.5f).put(-0.5f + z)
-        }
-        vertexBuffer.flip() // rewind
 
         // Upload the vertex buffer
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
     }
 
     override fun render() {

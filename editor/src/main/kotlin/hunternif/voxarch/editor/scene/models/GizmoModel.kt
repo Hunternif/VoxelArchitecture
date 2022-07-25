@@ -3,12 +3,12 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
+import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.system.MemoryUtil
 
 /** Renders an RGB 3d gizmo at the given coordinates. */
 class GizmoModel : BaseModel() {
@@ -18,7 +18,8 @@ class GizmoModel : BaseModel() {
         val length: Float,
     )
 
-    private var bufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
+    private var vertBufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
+    private val instanceVertexBuffer = FloatBufferWrapper()
 
     private val colX = Colors.axisX
     private val colY = Colors.axisY
@@ -32,7 +33,7 @@ class GizmoModel : BaseModel() {
     override fun init() = MemoryStack.stackPush().use { stack ->
         super.init()
 
-        val vertexBuffer = stack.mallocFloat(bufferSize)
+        val vertexBuffer = stack.mallocFloat(vertBufferSize)
         vertexBuffer.run {
             // X
             put(-0.5f).put(0f).put(0f).put(colX.toVector4f())
@@ -76,14 +77,14 @@ class GizmoModel : BaseModel() {
 
     private fun uploadInstanceData() {
         // 16f is used by model matrix
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 16).run {
+        instanceVertexBuffer.prepare(instances.size * 16).run {
             instances.forEach { it.run {
                 put(Matrix4f().translation(pos).scale(length, length, length))
             }}
             flip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer.buffer, GL_STATIC_DRAW)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
@@ -91,7 +92,7 @@ class GizmoModel : BaseModel() {
         glDisable(GL_DEPTH_TEST)
 
         glLineWidth(2f)
-        glDrawArraysInstanced(GL_LINES, 0, bufferSize, instances.size)
+        glDrawArraysInstanced(GL_LINES, 0, vertBufferSize, instances.size)
 
         glEnable(GL_DEPTH_TEST)
     }

@@ -3,15 +3,17 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
+import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
-import org.lwjgl.system.MemoryUtil
 
 abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
     private var instanceVboID = 0
     val instances = mutableListOf<T>()
+
+    private val instanceVertexBuffer = FloatBufferWrapper()
 
     override val shader = MagicaVoxelShader()
 
@@ -54,7 +56,7 @@ abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
 
     fun uploadInstanceData() {
         // 20 = 4f color + 16f matrix
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 20).run {
+        instanceVertexBuffer.prepare(instances.size * 20).run {
             instances.forEach { it.run {
                 put(color.toVector4f())
                 put(Matrix4f().translation(start).scale(size))
@@ -62,7 +64,7 @@ abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
             flip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer.buffer, GL_STATIC_DRAW)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
