@@ -22,7 +22,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
 
     @PublishedApi internal val layout = HorizontalSplit(
         rightRatio = 0.25f,
-        left = Window("main_window"),
+        left = WindowGroup(
+            Window("Scene"),
+        ),
         right = VerticalSplit(
             bottomSize = 180,
             bottom = Window("Properties"),
@@ -48,7 +50,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         fpsCounter.run()
         mainMenu()
         dockspace(layout)
-        mainWindow("main_window") { vp ->
+        mainWindow("Scene") { vp ->
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
@@ -111,7 +113,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ImGui.setNextWindowClass(
             ImGuiWindowClass().apply {
                 dockNodeFlagsOverrideSet = 0 or
-                    ImGuiDockNodeFlags.NoTabBar or
                     ImGuiDockNodeFlags.NoDocking
             }
         )
