@@ -33,16 +33,17 @@ inline fun overlay(
         ImGuiWindowFlags.NoDocking
     ImGui.setNextWindowBgAlpha(bgAlpha)
 
-    val size = ImGui.getWindowSize()
     val pos = ImGui.getWindowPos()
+    val min = ImGui.getWindowContentRegionMin()
+    val max = ImGui.getWindowContentRegionMax()
 
     val posX = when (corner) {
-        TOP_LEFT, BOTTOM_LEFT -> pos.x + padding
-        TOP_RIGHT, BOTTOM_RIGHT -> pos.x + size.x - padding
+        TOP_LEFT, BOTTOM_LEFT -> pos.x + min.x + padding
+        TOP_RIGHT, BOTTOM_RIGHT -> pos.x + max.x - padding
     } + offsetX
     val posY = when (corner) {
-        TOP_LEFT, TOP_RIGHT -> pos.y + padding
-        BOTTOM_LEFT, BOTTOM_RIGHT -> pos.y + size.y - padding
+        TOP_LEFT, TOP_RIGHT -> pos.y + min.y + padding
+        BOTTOM_LEFT, BOTTOM_RIGHT -> pos.y + max.y - padding
     } + offsetY
 
     val pivotX = when (corner) {
