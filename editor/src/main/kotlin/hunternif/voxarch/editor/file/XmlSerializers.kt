@@ -21,7 +21,10 @@ val xmlMapper: XmlMapper by lazy {
 }
 
 
-fun serializeToStr(value: Any): String = xmlMapper.writeValueAsString(value)
+fun serializeToStr(value: Any, pretty: Boolean = false): String =
+    if (pretty) xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value)
+    else xmlMapper.writeValueAsString(value)
+
 fun <T : Any> deserialize(str: String, clazz: KClass<T>): T =
     xmlMapper.readValue(str, clazz.javaObjectType)
 
