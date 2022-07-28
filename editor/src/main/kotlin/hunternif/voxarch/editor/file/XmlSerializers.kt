@@ -8,13 +8,19 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
 import kotlin.reflect.KClass
 
 private val xmlMapper: XmlMapper by lazy {
     val module = SimpleModule()
+
     module.addSerializer(Vec3Serializer())
     module.addDeserializer(Vec3::class.java, Vec3Deserializer())
+
+    module.addSerializer(NodeSerializer())
+    module.addDeserializer(Node::class.java, NodeDeserializer())
+
     XmlMapper().apply {
         registerModule(module)
     }
@@ -51,5 +57,24 @@ private class Vec3Deserializer : StdDeserializer<Vec3>(Vec3::class.java) {
         val y = nums[1].toDouble()
         val z = nums[2].toDouble()
         return Vec3(x, y, z)
+    }
+}
+
+private class NodeSerializer : StdSerializer<Node>(Node::class.java) {
+    override fun serialize(
+        value: Node,
+        gen: JsonGenerator,
+        provider: SerializerProvider
+    ) {
+        gen.writeObject(value.mapToXmlNode())
+    }
+}
+
+private class NodeDeserializer : StdDeserializer<Node>(Node::class.java) {
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext
+    ): Node? {
+        return p.readValueAs(XmlNode::class.java)?.mapXmlNode()
     }
 }

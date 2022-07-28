@@ -40,6 +40,10 @@ open class Path(origin: Vec3) : Node(origin) {
         }
     }
 
+    fun addPoints(points: List<Vec3>) {
+        for (p in points) addPoint(p)
+    }
+
     /** Connects the end of the path to the start */
     fun loopToStart() {
         points.firstOrNull()?.let {
