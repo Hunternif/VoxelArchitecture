@@ -60,7 +60,6 @@ class XmlSerializersTest {
     fun `deserialize Node tree`() {
         val node = deserialize(structureXml, XmlStructure::class)
         val reserialized = serializeToStr(node, true)
-        //TODO: Jackson fails to deserialize nested children
         assertEquals(structureXml, reserialized.trim().replace("\r\n", "\n"))
     }
 }

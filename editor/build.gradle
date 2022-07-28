@@ -36,8 +36,8 @@ dependencies {
     implementation "io.github.spair:imgui-java-app:$imguiVersion"
     implementation "io.github.spair:imgui-java-natives-windows:$imguiVersion"
 
-    implementation "com.fasterxml.jackson.core:jackson-databind:2.13.0"
-    implementation "com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.0"
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.13.3'
+    implementation 'com.fasterxml.jackson.dataformat:jackson-dataformat-xml:2.13.3'
 
     implementation "com.google.guava:guava:21.0"
     testImplementation 'junit:junit:4.12'
