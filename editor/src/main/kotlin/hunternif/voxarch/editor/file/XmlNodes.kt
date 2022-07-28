@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
@@ -20,8 +21,10 @@ import hunternif.voxarch.vector.Vec3
     JsonSubTypes.Type(name="PolygonRoom", value = XmlPolygonRoom::class),
     JsonSubTypes.Type(name="Floor", value = XmlFloor::class),
     JsonSubTypes.Type(name="Wall", value = XmlWall::class),
+    JsonSubTypes.Type(name="Path", value = XmlPath::class),
 ])
 @JacksonXmlRootElement(localName = "node")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 abstract class XmlNode {
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "node")
@@ -51,7 +54,7 @@ class XmlPolygonRoom(
     centered: Boolean = true,
     @field:JacksonXmlProperty(isAttribute = true)
     var shape: PolygonShape = PolygonShape.SQUARE,
-//TODO: store entire polygon
+    var polygon: XmlPath = XmlPath()
 ) : XmlRoom(origin, size, start, centered)
 
 class XmlWall(
@@ -64,4 +67,12 @@ class XmlWall(
 class XmlFloor(
     @field:JacksonXmlProperty(isAttribute = true)
     var height: Double = 0.0,
+) : XmlNode()
+
+class XmlPath(
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "point")
+    var points: List<Vec3>? = null,
+    @field:JacksonXmlProperty(isAttribute = true)
+    var origin: Vec3? = null,
 ) : XmlNode()
