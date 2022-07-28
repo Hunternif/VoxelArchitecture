@@ -11,7 +11,7 @@ import com.fasterxml.jackson.dataformat.xml.XmlMapper
 import hunternif.voxarch.vector.Vec3
 import kotlin.reflect.KClass
 
-val xmlMapper: XmlMapper by lazy {
+private val xmlMapper: XmlMapper by lazy {
     val module = SimpleModule()
     module.addSerializer(Vec3Serializer())
     module.addDeserializer(Vec3::class.java, Vec3Deserializer())
@@ -21,11 +21,11 @@ val xmlMapper: XmlMapper by lazy {
 }
 
 
-fun serializeToStr(value: Any, pretty: Boolean = false): String =
+fun serializeToXmlStr(value: Any, pretty: Boolean = false): String =
     if (pretty) xmlMapper.writerWithDefaultPrettyPrinter().writeValueAsString(value)
     else xmlMapper.writeValueAsString(value)
 
-fun <T : Any> deserialize(str: String, clazz: KClass<T>): T =
+fun <T : Any> deserializeXml(str: String, clazz: KClass<T>): T =
     xmlMapper.readValue(str, clazz.javaObjectType)
 
 

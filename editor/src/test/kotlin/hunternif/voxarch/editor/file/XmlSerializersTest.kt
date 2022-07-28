@@ -9,17 +9,17 @@ class XmlSerializersTest {
     @Test
     fun `serialize Vec3`() {
         assertEquals("<Vec3>(1.0, 2.0, 3.0)</Vec3>",
-            serializeToStr(Vec3(1, 2, 3)))
+            serializeToXmlStr(Vec3(1, 2, 3)))
         assertEquals("<Vec3>(-1.1, 2.999999999, 3.0)</Vec3>",
-            serializeToStr(Vec3(-1.1, 2.999999999, 3.0)))
+            serializeToXmlStr(Vec3(-1.1, 2.999999999, 3.0)))
     }
 
     @Test
     fun `deserialize Vec3`() {
         assertEquals(Vec3(1, 2, 3),
-            deserialize("<Vec3>(1.0, 2.0, 3.0)</Vec3>", Vec3::class))
+            deserializeXml("<Vec3>(1.0, 2.0, 3.0)</Vec3>", Vec3::class))
         assertEquals(Vec3(-1.1, 2.999999999, 3.0),
-            deserialize("<Vec3>(-1.1, 2.999999999, 3.0)</Vec3>", Vec3::class))
+            deserializeXml("<Vec3>(-1.1, 2.999999999, 3.0)</Vec3>", Vec3::class))
     }
 
     private val structureXml = """
@@ -71,27 +71,27 @@ class XmlSerializersTest {
 
     @Test
     fun `serialize Node tree`() {
-        val xml = serializeToStr(structure, true)
+        val xml = serializeToXmlStr(structure, true)
         assertEquals(structureXml, xml.trim().replace("\r\n", "\n"))
     }
 
     @Test
     fun `deserialize Node tree`() {
-        val node = deserialize(structureXml, XmlStructure::class)
-        val reserialized = serializeToStr(node, true)
+        val node = deserializeXml(structureXml, XmlStructure::class)
+        val reserialized = serializeToXmlStr(node, true)
         assertEquals(structureXml, reserialized.trim().replace("\r\n", "\n"))
     }
 
     @Test
     fun `serialize PolygonRoom`() {
-        val xml = serializeToStr(polygonRoom, true)
+        val xml = serializeToXmlStr(polygonRoom, true)
         assertEquals(polygonRoomXml, xml.trim().replace("\r\n", "\n"))
     }
 
     @Test
     fun `deserialize PolygonRoom`() {
-        val node = deserialize(polygonRoomXml, XmlPolygonRoom::class)
-        val reserialized = serializeToStr(node, true)
+        val node = deserializeXml(polygonRoomXml, XmlPolygonRoom::class)
+        val reserialized = serializeToXmlStr(node, true)
         assertEquals(polygonRoomXml, reserialized.trim().replace("\r\n", "\n"))
     }
 }
