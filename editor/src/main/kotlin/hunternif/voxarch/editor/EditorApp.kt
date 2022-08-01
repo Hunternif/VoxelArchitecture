@@ -34,7 +34,11 @@ class EditorAppImpl : EditorApp {
     fun run() {
         init()
         while (!glfwWindowShouldClose(window)) {
-            runFrame()
+            try {
+                runFrame()
+            } catch (e: Exception) {
+                state.errors.add(e.message ?: e.toString())
+            }
         }
         Callbacks.glfwFreeCallbacks(window)
         glfwTerminate()

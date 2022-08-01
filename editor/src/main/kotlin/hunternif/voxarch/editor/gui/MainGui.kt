@@ -47,6 +47,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
+        errorWindow()
         fpsCounter.run()
         mainMenu()
         dockspace(layout)
@@ -161,5 +162,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ImGui.end()
         ImGui.popStyleVar(2)
         if (!hasPadding) ImGui.popStyleVar()
+    }
+
+    @PublishedApi
+    internal fun errorWindow() {
+        for (e in app.state.errors) {
+            ImGui.text(e)
+        }
     }
 }
