@@ -167,7 +167,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi
     internal fun errorWindow() {
         for (e in app.state.errors) {
-            ImGui.text(e)
+            if (ImGui.treeNode("${e.javaClass.simpleName}: ${e.message}")) {
+                for (stackFrame in e.stackTrace) {
+                    ImGui.text(stackFrame.toString())
+                }
+                ImGui.treePop()
+            }
         }
     }
 }

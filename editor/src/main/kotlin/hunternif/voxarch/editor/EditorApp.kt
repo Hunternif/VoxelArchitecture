@@ -37,7 +37,7 @@ class EditorAppImpl : EditorApp {
             try {
                 runFrame()
             } catch (e: Exception) {
-                state.errors.add(e.message ?: e.toString())
+                state.errors.add(e)
             }
         }
         Callbacks.glfwFreeCallbacks(window)

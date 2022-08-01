@@ -73,7 +73,7 @@ interface AppState {
     val DEBUG: Boolean
     val isMainWindowFocused: Boolean
     val isMainWindowHovered: Boolean
-    val errors: List<String>
+    val errors: List<Exception>
 
 
     //============================ GUI SETTINGS =============================
@@ -111,7 +111,7 @@ class AppStateImpl : AppState {
     override val DEBUG = true
     override var isMainWindowFocused = false
     override var isMainWindowHovered = false
-    override val errors = LinkedList<String>()
+    override val errors = LinkedList<Exception>()
 
     override var gridMargin = 9
 }
