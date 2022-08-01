@@ -1,10 +1,20 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.editor.AppState
+import hunternif.voxarch.editor.AppStateImpl
+import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.util.newZipFileSystem
+import hunternif.voxarch.plan.Node
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.StandardOpenOption.CREATE
+import java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+
 /*
 
 Project folder structure:
 
-/ project
+/ project.voxarch
   - metadata.yaml
   - nodes.xml
   / voxels
@@ -47,3 +57,51 @@ Serializers will be code-generated from annotated DSL builder methods.
     Example: see CastleWardTest.kt
 
 */
+
+const val VOXARCH_PROJECT_FILE_EXT = "voxarch"
+
+/**
+ * Reads the project from file and produces a new app state.
+ */
+fun readProject(path: Path): AppStateImpl {
+    val state = AppStateImpl()
+    val zipfs = newZipFileSystem(path)
+    zipfs.use {
+        Files.newBufferedReader(zipfs.getPath("/nodes.xml")).use {
+            val rootStructure = deserializeXml(it.readText(), Node::class)
+            state.rootNode = state.makeSceneNodeRecursive(null, rootStructure)
+        }
+    }
+    return state
+}
+
+/**
+ * Writes app state into a project file.
+ * Not all state will be written, see the file spec above.
+ */
+fun writeProject(state: AppState, path: Path) {
+    val zipfs = newZipFileSystem(path)
+    zipfs.use {
+        Files.newBufferedWriter(
+            zipfs.getPath("/nodes.xml"),
+            CREATE,
+            TRUNCATE_EXISTING
+        ).use {
+            val nodesXml = serializeToXmlStr(state.rootNode.node, true)
+            it.write(nodesXml)
+        }
+    }
+}
+
+private fun AppStateImpl.makeSceneNodeRecursive(parent: SceneNode?, node: Node): SceneNode {
+    val sceneNode = SceneNode(node)
+    parent?.let {
+        it.addChild(sceneNode)
+        // Don't add the new root to scene objects
+        sceneObjects.add(sceneNode)
+    }
+    for (child in node.children) {
+        makeSceneNodeRecursive(sceneNode, child)
+    }
+    return sceneNode
+}

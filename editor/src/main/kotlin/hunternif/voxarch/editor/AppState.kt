@@ -96,7 +96,7 @@ class AppStateImpl : AppState {
     override val generatedVoxels: LinkedHashSet<SceneVoxelGroup> = LinkedHashSet()
     override val voxelColorMap = ::mapVoxelToSolidColor
 
-    override val rootNode = SceneNode(Structure())
+    override var rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
     override val sceneObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
