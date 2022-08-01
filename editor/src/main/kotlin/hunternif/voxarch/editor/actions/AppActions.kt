@@ -4,6 +4,8 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.builder.createGeneratorByName
+import hunternif.voxarch.editor.file.readProject
+import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.editor.scene.SceneObject
@@ -13,10 +15,29 @@ import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 import java.nio.file.Path
 
-// This contains all actions that can be performed via UI.
+// This contains all "important" actions that modify App state,
+// contribute to history and can be performed via UI.
+// (As an exception, actions on project files may ignore history.)
 // Some of them can support keyboard shortcuts, console commands, undo/redo.
 
 // EditorApp must be injected into all classes that call these actions.
+
+
+//============================ PROJECT FILE =============================
+
+fun EditorApp.openProjectFile(path: Path) = action {
+    clearNewNodeFrame()
+    unselectAll()
+    state = readProject(path)
+    redrawNodes()
+    redrawVoxels()
+    centerCamera()
+}
+
+fun EditorApp.saveProjectFile(path: Path) = action {
+    writeProject(state, path)
+    state.projectPath = path
+}
 
 
 //=============================== VOXELS ================================
@@ -202,14 +223,15 @@ fun EditorApp.redo() = action {
 
 /////////////////////////// TECHNICAL ACTIONS ///////////////////////////////
 
-/** Simple action that isn't written to history. */
+/** Runs an action, doesn't write it to history. */
 internal inline fun <T> EditorApp.action(
     crossinline execute: EditorAppImpl.() -> T
 ): T {
     return (this as EditorAppImpl).execute()
 }
 
-internal fun EditorApp.historyAction(action: HistoryAction): Unit = action {
+/** Runs an action and also writes it to history. */
+internal fun EditorApp.historyAction(action: HistoryAction) = action {
     action.invoke(this)
     state.history.append(action)
 }

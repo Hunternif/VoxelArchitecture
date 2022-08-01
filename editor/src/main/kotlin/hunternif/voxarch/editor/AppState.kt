@@ -16,18 +16,22 @@ import hunternif.voxarch.editor.scene.SceneObject
 import hunternif.voxarch.editor.scene.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.world.defaultEnvironment
+import java.nio.file.Path
+import java.util.LinkedList
 
 /**
  * Contains data that completely defines app state.
  * It should only be modified via AppActions.
  */
 interface AppState {
+    //============================ PROJECT FILE =============================
+    val projectPath: Path?
+
     //=============================== VOXELS ================================
 
     /** Root group containing all voxel groups in the scene.
@@ -82,6 +86,8 @@ interface AppState {
 }
 
 class AppStateImpl : AppState {
+    override var projectPath: Path? = null
+
     override val voxelRoot = SceneVoxelGroup("Voxel groups", emptyArray3D())
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {

@@ -38,3 +38,17 @@ fun openFileDialog(fileFilter: String, onPathChosen: (Path) -> Unit) {
         MemoryUtil.memFree(outPath)
     }
 }
+
+//TODO: use a separate thread
+fun saveFileDialog(fileFilter: String, onPathChosen: (Path) -> Unit) {
+    val outPath = MemoryUtil.memAllocPointer(1)
+    try {
+        if (NFD_OKAY == NFD_SaveDialog(fileFilter, null, outPath)) {
+            val pathStr = outPath.getStringUTF8(0)
+            val path = Paths.get(pathStr)
+            onPathChosen(path)
+        }
+    } finally {
+        MemoryUtil.memFree(outPath)
+    }
+}

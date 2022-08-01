@@ -2,12 +2,26 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.openFileDialog
+import hunternif.voxarch.editor.util.saveFileDialog
 import java.util.*
 
 // Actions that update the state of UI and don't contribute to history
+
+fun EditorApp.openDialogSaveProjectFile() = action {
+    saveFileDialog(VOXARCH_PROJECT_FILE_EXT) {
+        saveProjectFile(it)
+    }
+}
+
+fun EditorApp.openDialogOpenProjectFile() = action {
+    openFileDialog(VOXARCH_PROJECT_FILE_EXT) {
+        openProjectFile(it)
+    }
+}
 
 fun EditorApp.openDialogImportVoxFile() = action {
     openFileDialog("vox") {
