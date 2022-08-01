@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.SceneNode
 import hunternif.voxarch.plan.Node
 
+/** Creates new nodes from all generators attached to nodes in the scene. */
 class GenerateNodes : HistoryAction(
     "Generate nodes",
     FontAwesomeIcons.Archway
