@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import org.lwjgl.opengl.GL33.*
 
 class NodeModel : BoxInstancedModel<SceneNode>() {

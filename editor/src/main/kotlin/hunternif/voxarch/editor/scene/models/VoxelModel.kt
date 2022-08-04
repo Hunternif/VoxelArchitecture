@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.scene.models.VoxelModel.VoxelInstance
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.storage.IVoxel

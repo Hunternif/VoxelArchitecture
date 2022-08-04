@@ -4,6 +4,9 @@ import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
+import hunternif.voxarch.editor.scenegraph.INested
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min

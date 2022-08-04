@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.FloatBufferWrapper

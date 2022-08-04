@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.AppStateImpl
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVec3

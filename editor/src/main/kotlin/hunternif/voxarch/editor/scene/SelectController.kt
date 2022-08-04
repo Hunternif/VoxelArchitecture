@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectController.Mode.*
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import kotlin.math.max

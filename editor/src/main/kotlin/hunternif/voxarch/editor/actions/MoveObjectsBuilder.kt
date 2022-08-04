@@ -2,9 +2,9 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.scene.SceneNode
-import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.set
 import org.joml.Vector3f
 

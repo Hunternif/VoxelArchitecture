@@ -1,8 +1,8 @@
 package hunternif.voxarch.editor.actions
 
-import hunternif.voxarch.editor.scene.SceneNode
-import hunternif.voxarch.editor.scene.SceneObject
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.emptyArray3D
 import org.joml.Vector3i

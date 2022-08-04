@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.plan.Node
 
 /** Creates new nodes from all generators attached to nodes in the scene. */

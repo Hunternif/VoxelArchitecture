@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.magicavoxel.readVoxFile
 import java.nio.file.Path
 

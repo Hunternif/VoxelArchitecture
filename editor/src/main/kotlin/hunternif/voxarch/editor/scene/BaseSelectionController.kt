@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.setSelectedObject
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import org.joml.Vector2f
 import org.lwjgl.glfw.GLFW.*
 

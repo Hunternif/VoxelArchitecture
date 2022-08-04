@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.AppStateImpl
-import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.plan.Node
 import java.nio.file.Files

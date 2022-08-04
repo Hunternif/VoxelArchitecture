@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.actions
 
-import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3

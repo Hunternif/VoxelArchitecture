@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.actions.ResizeNodesBuilder
 import hunternif.voxarch.editor.actions.highlightFace
 import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room

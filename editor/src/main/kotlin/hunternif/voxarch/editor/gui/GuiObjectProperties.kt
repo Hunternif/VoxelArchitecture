@@ -2,8 +2,8 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
-import hunternif.voxarch.editor.scene.SceneNode
-import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Room
 import imgui.ImGui

@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*

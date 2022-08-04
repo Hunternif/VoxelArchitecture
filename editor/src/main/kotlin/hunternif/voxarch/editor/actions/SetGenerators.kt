@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
-import hunternif.voxarch.editor.scene.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.generator.IGenerator
 
 class SetGenerators(

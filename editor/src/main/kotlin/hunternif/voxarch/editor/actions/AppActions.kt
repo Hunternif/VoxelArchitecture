@@ -7,8 +7,8 @@ import hunternif.voxarch.editor.builder.createGeneratorByName
 import hunternif.voxarch.editor.file.readProject
 import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.scene.SceneNode
-import hunternif.voxarch.editor.scene.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3

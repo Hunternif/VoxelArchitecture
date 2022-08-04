@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.actions
 
-import hunternif.voxarch.editor.scene.SceneNode
-import hunternif.voxarch.editor.scene.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.vector.Vec3
