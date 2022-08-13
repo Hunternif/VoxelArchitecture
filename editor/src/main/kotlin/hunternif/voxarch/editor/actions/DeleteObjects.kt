@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.scenegraph.INested
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup

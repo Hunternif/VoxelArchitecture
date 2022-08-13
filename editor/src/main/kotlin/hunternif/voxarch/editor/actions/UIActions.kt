@@ -4,7 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
-import hunternif.voxarch.editor.scenegraph.INested
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup

@@ -6,7 +6,7 @@ import hunternif.voxarch.editor.actions.MoveObjectsBuilder
 import hunternif.voxarch.editor.actions.moveBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.MoveController.Direction.*
-import hunternif.voxarch.editor.scenegraph.INested
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import org.joml.Vector2f
 import org.joml.Vector3f

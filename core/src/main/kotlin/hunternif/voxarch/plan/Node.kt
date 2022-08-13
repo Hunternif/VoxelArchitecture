@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 
 /**
@@ -8,17 +9,17 @@ import hunternif.voxarch.vector.Vec3
  */
 open class Node(
     origin: Vec3
-) {
+) : INested<Node> {
     var origin: Vec3 = origin.clone()
         set(value) {
             field.set(value) // keep the same instance
         }
-    var parent: Node? = null
+    override var parent: Node? = null
     /** Rotation around Y axis in degrees */
     open var rotationY = 0.0
 
     private val _children = mutableListOf<Node>()
-    val children: List<Node> get() = _children
+    override val children: List<Node> get() = _children
 
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance

@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 
@@ -25,16 +26,16 @@ class SceneVoxelGroup(
         update()
     }
 
-    override fun addChild(child: SceneVoxelGroup) {
+    internal fun addChild(child: SceneVoxelGroup) {
         child.parent = this
         _children.add(child)
     }
 
-    override fun removeChild(child: SceneVoxelGroup) {
+    internal fun removeChild(child: SceneVoxelGroup) {
         _children.remove(child)
     }
 
-    override fun removeAllChildren() {
+    internal fun removeAllChildren() {
         _children.clear()
     }
 
