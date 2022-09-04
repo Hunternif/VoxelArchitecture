@@ -41,7 +41,10 @@ class SceneNode(
     }
 
     override fun removeAllChildren() {
-        _children.clear()
+        val childrenCopy = _children.toList()
+        for (child in childrenCopy) {
+            removeChild(child)
+        }
     }
 
     override fun update() {
