@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.wrap
 import hunternif.voxarch.plan.Node
 
 /**
@@ -22,26 +23,14 @@ class AddNodes(
         if (!::newSceneNodes.isInitialized) {
             newSceneNodes = LinkedHashSet()
             for (node in nodes) {
-                makeSceneNodeRecursive(parent, node)
+                newSceneNodes.add(wrap(node))
             }
         }
-        app.state.sceneObjects.addAll(newSceneNodes)
-        newSceneNodes.forEach { it.parent?.addChild(it) }
+        app.state.sceneTree.attachAll(parent, newSceneNodes)
         app.redrawNodes()
     }
 
     override fun revert(app: EditorAppImpl) {
-        app.state.sceneObjects.removeAll(newSceneNodes)
-        newSceneNodes.forEach { it.parent?.removeChild(it) }
-    }
-
-    private fun makeSceneNodeRecursive(parent: SceneNode?, node: Node): SceneNode {
-        val sceneNode = SceneNode(node)
-        parent?.addChild(sceneNode)
-        newSceneNodes.add(sceneNode)
-        for (child in node.children) {
-            makeSceneNodeRecursive(sceneNode, child)
-        }
-        return sceneNode
+        app.state.sceneTree.detachAll(newSceneNodes)
     }
 }

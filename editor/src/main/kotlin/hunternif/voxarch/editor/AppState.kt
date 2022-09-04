@@ -13,6 +13,7 @@ import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneTree
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -42,6 +43,7 @@ interface AppState {
     val stylesheet: Stylesheet
     val seed: Long
     val generatorNames: List<String>
+    //TODO: this is probably not useful, also could be a SUBSET
     val generatedNodes: Collection<SceneNode>
     val generatedVoxels: Collection<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
@@ -49,12 +51,16 @@ interface AppState {
 
     //=========================== SCENE OBJECTS =============================
 
+    //TODO: consider using a root object that isn't a Node
     /** Root node containing all nodes in the scene. */
     val rootNode: SceneNode
     /** The node under which new child nodes would be added. */
     val parentNode: SceneNode
+
+    val sceneTree: SceneTree
+
     /** All objects in the scene, including nodes, voxels etc. */
-    val sceneObjects: Collection<SceneObject>
+    val sceneObjects: Collection<SceneObject> get() = sceneTree.nodes
     /** Objects currently selected by cursor, for modification or inspection.
      * Should not contain [rootNode]. */
     val selectedObjects: Set<SceneObject>
@@ -104,7 +110,7 @@ class AppStateImpl : AppState {
 
     override var rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
-    override val sceneObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
+    override val sceneTree = SceneTree()
     override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val hiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val manuallyHiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()

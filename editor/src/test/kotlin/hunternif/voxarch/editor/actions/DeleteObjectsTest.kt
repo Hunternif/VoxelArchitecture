@@ -21,8 +21,7 @@ class DeleteObjectsTest : BaseActionTest() {
         app.setParentNode(node)
         childNode = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
         voxels = SceneVoxelGroup("voxels", emptyArray3D())
-        sceneObjects.add(voxels)
-        voxelRoot.addChild(voxels)
+        sceneTree.attach(voxelRoot, voxels)
     }
 
     @Test
@@ -34,10 +33,10 @@ class DeleteObjectsTest : BaseActionTest() {
 
         assertEquals(rootNode, node.parent)
         assertEquals(rootNode.node, node.node.parent)
-        assertEquals(emptySet<SceneNode>(), node.children.toSet())
+        assertEquals(emptySet<SceneObject>(), node.children.toSet())
         assertEquals(emptySet<Node>(), node.node.children.toSet())
 
-        assertEquals(node, childNode.parent)
+        assertEquals(null, childNode.parent)
         assertEquals(null, childNode.node.parent)
 
         app.undo()
@@ -60,10 +59,10 @@ class DeleteObjectsTest : BaseActionTest() {
 
         assertEquals(rootNode, node.parent)
         assertEquals(rootNode.node, node.node.parent)
-        assertEquals(emptySet<SceneNode>(), node.children.toSet())
+        assertEquals(emptySet<SceneObject>(), node.children.toSet())
         assertEquals(emptySet<Node>(), node.node.children.toSet())
 
-        assertEquals(node, childNode.parent)
+        assertEquals(null, childNode.parent)
         assertEquals(null, childNode.node.parent)
     }
 
@@ -72,15 +71,15 @@ class DeleteObjectsTest : BaseActionTest() {
         app.deleteObjects(listOf(node))
         assertEquals(rootNode, parentNode) // reset parent node
         assertEquals(setOf(voxels), sceneObjects)
-        assertEquals(emptySet<SceneNode>(), rootNode.children.toSet())
+        assertEquals(emptySet<SceneObject>(), rootNode.children.toSet())
 
-        assertEquals(rootNode, node.parent)
+        assertEquals(null, node.parent)
         assertEquals(null, node.node.parent)
-        assertEquals(emptySet<SceneNode>(), node.children.toSet())
-        assertEquals(emptySet<Node>(), node.node.children.toSet())
+        assertEquals(setOf(childNode), node.children.toSet())
+        assertEquals(setOf(childNode.node), node.node.children.toSet())
 
         assertEquals(node, childNode.parent)
-        assertEquals(null, childNode.node.parent)
+        assertEquals(node.node, childNode.node.parent)
 
         app.undo()
         assertEquals(rootNode, parentNode) // don't reset parent node back
@@ -98,15 +97,15 @@ class DeleteObjectsTest : BaseActionTest() {
         app.redo()
         assertEquals(rootNode, parentNode)
         assertEquals(setOf(voxels), sceneObjects)
-        assertEquals(emptySet<SceneNode>(), rootNode.children.toSet())
+        assertEquals(emptySet<SceneObject>(), rootNode.children.toSet())
 
-        assertEquals(rootNode, node.parent)
+        assertEquals(null, node.parent)
         assertEquals(null, node.node.parent)
-        assertEquals(emptySet<SceneNode>(), node.children.toSet())
-        assertEquals(emptySet<Node>(), node.node.children.toSet())
+        assertEquals(setOf(childNode), node.children.toSet())
+        assertEquals(setOf(childNode.node), node.node.children.toSet())
 
         assertEquals(node, childNode.parent)
-        assertEquals(null, childNode.node.parent)
+        assertEquals(node.node, childNode.node.parent)
     }
 
     @Test

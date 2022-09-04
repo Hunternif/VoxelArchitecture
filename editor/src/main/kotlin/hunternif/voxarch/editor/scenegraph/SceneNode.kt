@@ -30,15 +30,6 @@ class SceneNode(
         }
     }
 
-    override fun removeChild(child: SceneObject): Boolean {
-        if (children.remove(child)) {
-            child.onRemoved()
-            // not resetting parent because it will be used for undo in history
-            return true
-        }
-        return false
-    }
-
     override fun onRemoved() {
         (parent as? SceneNode)?.node?.removeChild(node)
     }

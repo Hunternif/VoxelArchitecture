@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.AppStateImpl
-import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.plan.Node
 import java.nio.file.Files
@@ -69,7 +68,9 @@ fun readProject(path: Path): AppStateImpl {
     zipfs.use {
         Files.newBufferedReader(zipfs.getPath("/nodes.xml")).use {
             val rootStructure = deserializeXml(it.readText(), Node::class)
-            state.rootNode = state.makeSceneNodeRecursive(null, rootStructure)
+            rootStructure.children.toList().forEach { node ->
+                state.sceneTree.attach(state.rootNode, node)
+            }
         }
     }
     return state
@@ -91,17 +92,4 @@ fun writeProject(state: AppState, path: Path) {
             it.write(nodesXml)
         }
     }
-}
-
-private fun AppStateImpl.makeSceneNodeRecursive(parent: SceneNode?, node: Node): SceneNode {
-    val sceneNode = SceneNode(node)
-    parent?.let {
-        it.addChild(sceneNode)
-        // Don't add the new root to scene objects
-        sceneObjects.add(sceneNode)
-    }
-    for (child in node.children) {
-        makeSceneNodeRecursive(sceneNode, child)
-    }
-    return sceneNode
 }

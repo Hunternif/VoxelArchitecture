@@ -20,19 +20,18 @@ class CreateRoom(
 
     lateinit var node: SceneNode
         private set
+    lateinit var parent: SceneNode
 
     override fun invoke(app: EditorAppImpl) = app.state.run {
         if (!::node.isInitialized) {
             createRoom()
         }
-        sceneObjects.add(node)
-        node.parent?.addChild(node)
+        sceneTree.attach(parent, node)
         app.redrawNodes()
     }
 
     override fun revert(app: EditorAppImpl) = app.state.run {
-        sceneObjects.remove(node)
-        node.parent?.removeChild(node)
+        sceneTree.detach(node)
         app.redrawNodes()
     }
 
@@ -51,6 +50,6 @@ class CreateRoom(
             }
         }
         node = SceneNode(room)
-        node.parent = parentNode
+        parent = parentNode
     }
 }
