@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
-import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 
@@ -17,10 +16,7 @@ class SceneVoxelGroup(
 ) : SceneObject(
     color = Colors.transparent,
     isGenerated = isGenerated,
-), INested<SceneVoxelGroup> {
-    override var parent: SceneVoxelGroup? = null
-    override val children: LinkedHashSet<SceneVoxelGroup> = LinkedHashSet()
-
+) {
     init {
         update()
     }

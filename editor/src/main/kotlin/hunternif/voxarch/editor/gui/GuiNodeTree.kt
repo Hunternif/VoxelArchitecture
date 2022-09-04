@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
-import hunternif.voxarch.util.INested
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -15,44 +14,54 @@ import org.lwjgl.glfw.GLFW.*
 class GuiNodeTree(
     app: EditorApp,
     gui: GuiBase
-) : GuiSceneTree<SceneNode>(app, gui) {
+) : GuiSceneTree(app, gui) {
     override val root: SceneNode get() = app.state.rootNode
-    override fun label(item: SceneNode): String = item.node.run {
-        val nodeClass = javaClass.simpleName
-        val type = if (!type.isNullOrEmpty()) " $type" else ""
-        val generators = if (item.generators.isNotEmpty()) " []" else ""
-        return "$nodeClass$type$generators"
+    override fun label(item: SceneObject): String {
+        if (item is SceneNode) {
+            val nodeClass = item.node.javaClass.simpleName
+            val type = item.node.type.let { if (!it.isNullOrEmpty()) " $it" else "" }
+            val generators = if (item.generators.isNotEmpty()) " []" else ""
+            return "$nodeClass$type$generators"
+        }
+        return item.toString()
     }
-    override fun onClick(item: SceneNode) {
+
+    override fun onClick(item: SceneObject) {
         app.setSelectedObject(item)
     }
-    override fun onShiftClick(item: SceneNode) {
+
+    override fun onShiftClick(item: SceneObject) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
         else app.selectObject(item)
     }
-    override fun onDoubleClick(item: SceneNode) {
-        app.setParentNode(item)
-        app.centerCamera()
+
+    override fun onDoubleClick(item: SceneObject) {
+        if (item is SceneNode) {
+            app.setParentNode(item)
+            app.centerCamera()
+        }
     }
 }
 
 class GuiVoxelTree(
     app: EditorApp,
     gui: GuiBase
-) : GuiSceneTree<SceneVoxelGroup>(app, gui) {
+) : GuiSceneTree(app, gui) {
     override val root: SceneVoxelGroup get() = app.state.voxelRoot
-    override fun label(item: SceneVoxelGroup): String = item.label
-    override fun onClick(item: SceneVoxelGroup) {
+    override fun label(item: SceneObject): String = (item as? SceneVoxelGroup)?.label ?: item.toString()
+    override fun onClick(item: SceneObject) {
         app.setSelectedObject(item)
     }
-    override fun onShiftClick(item: SceneVoxelGroup) {
+
+    override fun onShiftClick(item: SceneObject) {
         if (item in app.state.selectedObjects) app.unselectObject(item)
         else app.selectObject(item)
     }
-    override fun onDoubleClick(item: SceneVoxelGroup) {}
+
+    override fun onDoubleClick(item: SceneObject) {}
 }
 
-abstract class GuiSceneTree<T: INested<T>>(
+abstract class GuiSceneTree(
     val app: EditorApp,
     private val gui: GuiBase,
 ) {
@@ -60,11 +69,11 @@ abstract class GuiSceneTree<T: INested<T>>(
     private var isAnyTreeNodeClicked = false
     private var isThisPanelClicked = false
 
-    abstract val root: T
-    abstract fun label(item: T): String
-    abstract fun onClick(item: T)
-    abstract fun onShiftClick(item: T)
-    abstract fun onDoubleClick(item: T)
+    abstract val root: SceneObject
+    abstract fun label(item: SceneObject): String
+    abstract fun onClick(item: SceneObject)
+    abstract fun onShiftClick(item: SceneObject)
+    abstract fun onDoubleClick(item: SceneObject)
 
     fun render() {
         isAnyTreeNodeClicked = false
@@ -92,7 +101,7 @@ abstract class GuiSceneTree<T: INested<T>>(
     }
 
     private fun addTreeNodeRecursive(
-        node: T,
+        node: SceneObject,
         depth: Int,
         isChildNode: Boolean,
     ) {

@@ -4,9 +4,9 @@ import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
-import hunternif.voxarch.util.INested
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
@@ -109,7 +109,7 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun updateVoxelModel() = app.state.run {
-        val visibleVoxels = findVisibleChildren(voxelRoot)
+        val visibleVoxels = findVisibleChildren(voxelRoot).filterIsInstance<SceneVoxelGroup>()
         visibleVoxels.forEach { it.update() }
         voxelModel.updateVisible(visibleVoxels)
         updateSelectedNodeModel()
@@ -117,7 +117,7 @@ class MainScene(private val app: EditorApp) {
 
     fun updateNodeModel() = app.state.run {
         nodeModel.clear()
-        findVisibleChildren(rootNode).forEach {
+        findVisibleChildren(rootNode).filterIsInstance<SceneNode>().forEach {
             it.update()
             nodeModel.add(it)
         }
@@ -127,10 +127,10 @@ class MainScene(private val app: EditorApp) {
 
     /** Returns all children of [root] that are not hidden directly or
      * indirectly (i.e. by a hidden parent), excluding the root itself. */
-    private fun <T : INested<T>> findVisibleChildren(root: T) : List<T> {
-        val result = mutableListOf<T>()
-        if (root is SceneObject && root in app.state.hiddenObjects) return result
-        val queue = LinkedList<T>()
+    private fun findVisibleChildren(root: SceneObject) : List<SceneObject> {
+        val result = mutableListOf<SceneObject>()
+        if (root in app.state.hiddenObjects) return result
+        val queue = LinkedList<SceneObject>()
         queue.addAll(root.children)
         while (queue.isNotEmpty()) {
             val child = queue.removeLast()

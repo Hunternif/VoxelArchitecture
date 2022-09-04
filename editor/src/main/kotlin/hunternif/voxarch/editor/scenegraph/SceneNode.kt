@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.add
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.util.INested
 import hunternif.voxarch.util.max
 import hunternif.voxarch.util.min
 import hunternif.voxarch.vector.Vec3
@@ -17,28 +16,31 @@ class SceneNode(
 ) : SceneObject(
     color = color,
     isGenerated = isGenerated,
-), INested<SceneNode> {
-    override var parent: SceneNode? = null
-    override val children: LinkedHashSet<SceneNode> = LinkedHashSet()
+) {
     val generators = mutableListOf<IGenerator>()
 
     init {
         update()
     }
 
-    override fun addChild(child: SceneNode) {
-        super.addChild(child)
-        // prevent double-adding, especially when generating nodes
-        if (child.node.parent != node) node.addChild(child.node)
+    override fun onAdded() {
+        (parent as? SceneNode)?.let { p ->
+            // prevent double-adding, especially when generating nodes
+            if (node.parent != p.node) p.node.addChild(node)
+        }
     }
 
-    override fun removeChild(child: SceneNode): Boolean {
+    override fun removeChild(child: SceneObject): Boolean {
         if (children.remove(child)) {
-            node.removeChild(child.node)
+            child.onRemoved()
             // not resetting parent because it will be used for undo in history
             return true
         }
         return false
+    }
+
+    override fun onRemoved() {
+        (parent as? SceneNode)?.node?.removeChild(node)
     }
 
     override fun update() {

@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.util.AABB2Df
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.set
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 
@@ -23,7 +24,10 @@ open class SceneObject(
     val size: Vector3f = Vector3f(),
     var color: ColorRGBa,
     val isGenerated: Boolean = false,
-) {
+) : INested<SceneObject> {
+    override var parent: SceneObject? = null
+    override val children: LinkedHashSet<SceneObject> = LinkedHashSet()
+
     /** Read-only! Corner of the AAB in "natural" coordinates (not in voxels),
      * absolute position in the scene. */
     val end: Vector3f = Vector3f()

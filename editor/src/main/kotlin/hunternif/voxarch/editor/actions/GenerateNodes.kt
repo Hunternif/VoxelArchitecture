@@ -51,11 +51,11 @@ class GenerateNodes : HistoryAction(
      * Any new [Node]s created in the process are treated as 'generated',
      * and are added to [newGenerated]. */
     private fun EditorAppImpl.runGeneratorsRecursive(root: SceneNode) {
-        val prevChildSet = root.children.map { it.node }.toSet()
+        val prevChildSet = root.children.filterIsInstance<SceneNode>().map { it.node }.toSet()
         root.generators.forEach { it.generate(root.node) }
         // Create SceneNodes for the new nodes
         val newNodes = root.node.children.filter { it !in prevChildSet }
-        root.children.forEach { runGeneratorsRecursive(it) }
+        root.children.filterIsInstance<SceneNode>().forEach { runGeneratorsRecursive(it) }
         newNodes.forEach { createSceneNodesRecursive(root, it) }
     }
 

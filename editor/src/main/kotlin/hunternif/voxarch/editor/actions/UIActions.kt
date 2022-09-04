@@ -65,7 +65,7 @@ fun EditorApp.showObject(obj: SceneObject) = action {
     state.manuallyHiddenObjects.remove(obj)
     when (obj) {
         is SceneNode -> {
-            var parent: SceneNode? = obj
+            var parent: SceneObject? = obj
             while (parent != null) {
                 state.manuallyHiddenObjects.remove(parent)
                 parent = parent.parent
@@ -74,7 +74,7 @@ fun EditorApp.showObject(obj: SceneObject) = action {
             scene.updateNodeModel()
         }
         is SceneVoxelGroup -> {
-            var parent: SceneVoxelGroup? = obj
+            var parent: SceneObject? = obj
             while (parent != null) {
                 state.manuallyHiddenObjects.remove(parent)
                 parent = parent.parent
@@ -99,7 +99,7 @@ internal fun EditorApp.updateHiddenObjects() = action {
     state.run {
         hiddenObjects.clear()
         val queue = LinkedList<INested<*>>()
-        queue.addAll(manuallyHiddenObjects.filterIsInstance<INested<*>>())
+        queue.addAll(manuallyHiddenObjects)
         while (queue.isNotEmpty()) {
             val child = queue.removeLast()
             hiddenObjects.add(child as SceneObject)

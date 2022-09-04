@@ -2,6 +2,7 @@ package hunternif.voxarch.util
 
 import java.util.LinkedList
 
+@Suppress("UNCHECKED_CAST")
 interface INested<T : INested<T>> {
     var parent: T?
     /** Should only be modified via `addChild` and `removeChild`. */
@@ -9,7 +10,6 @@ interface INested<T : INested<T>> {
 
     fun iterateSubtree() = sequence<T> {
         val queue = LinkedList<T>()
-        @Suppress("UNCHECKED_CAST")
         queue.add(this@INested as T)
         while (queue.isNotEmpty()) {
             val next = queue.removeFirst()
@@ -20,18 +20,23 @@ interface INested<T : INested<T>> {
 
     fun addChild(child: T) {
         child.parent?.removeChild(child)
-        @Suppress("UNCHECKED_CAST")
         child.parent = this as T
+        child.onAdded()
         children.add(child)
     }
 
+    fun onAdded() {}
+
     fun removeChild(child: T): Boolean {
         if (children.remove(child)) {
+            child.onRemoved()
             child.parent = null
             return true
         }
         return false
     }
+
+    fun onRemoved() {}
 
     fun removeAllChildren() {
         val childrenCopy = children.toList()
