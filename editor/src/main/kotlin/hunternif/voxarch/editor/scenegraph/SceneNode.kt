@@ -26,22 +26,19 @@ class SceneNode(
         update()
     }
 
-    fun addChild(child: SceneNode) {
-        child.parent = this
-        children.add(child)
+    override fun addChild(child: SceneNode) {
+        super.addChild(child)
         // prevent double-adding, especially when generating nodes
         if (child.node.parent != node) node.addChild(child.node)
     }
 
-    fun removeChild(child: SceneNode) {
+    override fun removeChild(child: SceneNode): Boolean {
         if (children.remove(child)) {
             node.removeChild(child.node)
             // not resetting parent because it will be used for undo in history
+            return true
         }
-    }
-
-    fun removeAllChildren() {
-        children.clear()
+        return false
     }
 
     override fun update() {

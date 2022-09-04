@@ -19,24 +19,10 @@ class SceneVoxelGroup(
     isGenerated = isGenerated,
 ), INested<SceneVoxelGroup> {
     override var parent: SceneVoxelGroup? = null
-    private val _children = LinkedHashSet<SceneVoxelGroup>()
-    override val children: Collection<SceneVoxelGroup> get() = _children
+    override val children: LinkedHashSet<SceneVoxelGroup> = LinkedHashSet()
 
     init {
         update()
-    }
-
-    internal fun addChild(child: SceneVoxelGroup) {
-        child.parent = this
-        _children.add(child)
-    }
-
-    internal fun removeChild(child: SceneVoxelGroup) {
-        _children.remove(child)
-    }
-
-    internal fun removeAllChildren() {
-        _children.clear()
     }
 
     override fun update() {

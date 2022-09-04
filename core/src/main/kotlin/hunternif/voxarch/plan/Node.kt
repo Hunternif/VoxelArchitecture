@@ -18,8 +18,7 @@ open class Node(
     /** Rotation around Y axis in degrees */
     open var rotationY = 0.0
 
-    private val _children = mutableListOf<Node>()
-    override val children: List<Node> get() = _children
+    override val children: MutableList<Node> = mutableListOf()
 
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance
@@ -46,20 +45,14 @@ open class Node(
     /** For use with incremental building. True means that this node will not be re-built.  */
     var isBuilt = false
 
-    fun addChild(child: Node) {
-        child.parent?.removeChild(child)
-        child.parent = this
+    override fun addChild(child: Node) {
+        super.addChild(child)
         child.type = child.type ?: type
-        _children.add(child)
     }
 
     fun addChild(child: Node, position: Vec3) {
         addChild(child)
         child.origin = position
-    }
-
-    fun removeChild(child: Node) {
-        if (_children.remove(child)) child.parent = null
     }
 
     constructor() : this(Vec3.ZERO)
