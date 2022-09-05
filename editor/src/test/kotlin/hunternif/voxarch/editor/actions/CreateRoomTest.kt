@@ -50,4 +50,14 @@ class CreateRoomTest : BaseActionTest() {
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(true, room.isCentered())
     }
+
+    @Test
+    fun `create room under parent`() = app.state.run {
+        val parentRoom = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
+        parentNode = parentRoom
+        val childRoom = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
+        assertEquals(setOf(parentRoom, childRoom), sceneObjects.toSet())
+        assertEquals(parentRoom, childRoom.parent)
+        assertEquals(parentRoom.node, childRoom.node.parent)
+    }
 }
