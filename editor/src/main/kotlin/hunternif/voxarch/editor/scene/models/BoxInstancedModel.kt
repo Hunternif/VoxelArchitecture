@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
@@ -9,7 +8,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
-abstract class BoxInstancedModel<T : SceneObject> : BaseModel() {
+abstract class BoxInstancedModel<T : Box> : BaseModel() {
     private var instanceVboID = 0
     val instances = mutableListOf<T>()
 
