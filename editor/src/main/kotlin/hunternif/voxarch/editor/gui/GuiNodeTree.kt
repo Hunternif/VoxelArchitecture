@@ -47,7 +47,7 @@ class GuiVoxelTree(
     app: EditorApp,
     gui: GuiBase
 ) : GuiSceneTree(app, gui) {
-    override val root: SceneVoxelGroup get() = app.state.voxelRoot
+    override val root: SceneObject get() = app.state.voxelRoot
     override fun label(item: SceneObject): String = (item as? SceneVoxelGroup)?.label ?: item.toString()
     override fun onClick(item: SceneObject) {
         app.setSelectedObject(item)
@@ -105,7 +105,7 @@ abstract class GuiSceneTree(
         depth: Int,
         isChildNode: Boolean,
     ) {
-        val isGenerated = node is SceneObject && node.isGenerated
+        val isGenerated = node.isGenerated
         if (isGenerated) pushStyleColor(Text, Colors.generatedLabel)
 
         ImGui.tableNextRow()
@@ -114,24 +114,21 @@ abstract class GuiSceneTree(
         // Selectable would make more sense, but its size & position is bugged.
         // Button maintains the size & pos well, regardless of font.
 
-        var updatedHidden = false
-        if (node is SceneObject) {
-            updatedHidden = node in app.state.hiddenObjects
-            if (updatedHidden)
-                gui.smallIconButton(
-                    "${FontAwesomeIcons.EyeSlash}##$i",
-                    transparent = true
-                ) {
-                    app.showObject(node)
-                }
-            else
-                gui.smallIconButton(
-                    "${FontAwesomeIcons.Eye}##$i",
-                    transparent = true
-                ) {
-                    app.hideObject(node)
-                }
-        }
+        val updatedHidden = node in app.state.hiddenObjects
+        if (updatedHidden)
+            gui.smallIconButton(
+                "${FontAwesomeIcons.EyeSlash}##$i",
+                transparent = true
+            ) {
+                app.showObject(node)
+            }
+        else
+            gui.smallIconButton(
+                "${FontAwesomeIcons.Eye}##$i",
+                transparent = true
+            ) {
+                app.hideObject(node)
+            }
 
         ImGui.tableNextColumn()
         var flags = 0 or
@@ -146,7 +143,7 @@ abstract class GuiSceneTree(
         }
         val isRootNode = node === app.state.rootNode // root node is never highlighted
         val isParentNode = node === app.state.parentNode && !isRootNode
-        val isSelected = (node is SceneObject) && node in app.state.selectedObjects
+        val isSelected = node in app.state.selectedObjects
         if (isSelected) {
             flags = flags or ImGuiTreeNodeFlags.Selected
         }
