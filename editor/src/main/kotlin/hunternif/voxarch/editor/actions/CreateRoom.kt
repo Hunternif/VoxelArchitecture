@@ -26,12 +26,12 @@ class CreateRoom(
         if (!::node.isInitialized) {
             createRoom()
         }
-        sceneTree.attach(parent, node)
+        parent.attach(node)
         app.redrawNodes()
     }
 
     override fun revert(app: EditorAppImpl) = app.state.run {
-        sceneTree.detach(node)
+        node.detach()
         app.redrawNodes()
     }
 

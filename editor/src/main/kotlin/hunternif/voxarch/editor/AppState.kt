@@ -51,16 +51,14 @@ interface AppState {
 
     //=========================== SCENE OBJECTS =============================
 
-    //TODO: consider using a root object that isn't a Node
     /** Root node containing all nodes in the scene. */
     val rootNode: SceneNode
     /** The node under which new child nodes would be added. */
     val parentNode: SceneNode
-
+    /** Contains all objects in the scene. */
     val sceneTree: SceneTree
-
     /** All objects in the scene, including nodes, voxels etc. */
-    val sceneObjects: Collection<SceneObject> get() = sceneTree.nodes
+    val sceneObjects: Collection<SceneObject> get() = sceneTree.items
     /** Objects currently selected by cursor, for modification or inspection.
      * Should not contain [rootNode]. */
     val selectedObjects: Set<SceneObject>
@@ -110,7 +108,12 @@ class AppStateImpl : AppState {
 
     override var rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
-    override val sceneTree = SceneTree()
+    override val sceneTree = SceneTree().apply {
+        root.attach(rootNode)
+        items.remove(rootNode) // root node should not be listed under "items"
+        root.attach(voxelRoot)
+        items.remove(voxelRoot) // voxel root node should not be listed under "items"
+    }
     override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val hiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
     override val manuallyHiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()

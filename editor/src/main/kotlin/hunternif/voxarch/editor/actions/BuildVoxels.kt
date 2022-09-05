@@ -27,19 +27,17 @@ class BuildVoxels : HistoryAction(
                 builder.build(rootNode.node, world, buildContext)
             }
             newGenerated = listOf(
-                SceneVoxelGroup("Built voxels", world, true).apply {
-                    parent = app.state.voxelRoot
-                }
+                SceneVoxelGroup("Built voxels", world, true)
             )
         }
         app.state.generatedVoxels.addAll(newGenerated)
-        app.state.sceneTree.attachAll(app.state.voxelRoot, newGenerated)
+        app.state.voxelRoot.attachAll(newGenerated)
         app.redrawVoxels()
     }
 
     override fun revert(app: EditorAppImpl) {
         app.clearGeneratedVoxels()
-        app.state.sceneTree.attachAll(app.state.voxelRoot, oldGenerated)
+        app.state.voxelRoot.attachAll(oldGenerated)
         app.state.generatedVoxels.addAll(oldGenerated)
         oldGenerated.forEach { it.parent?.addChild(it) }
         app.redrawVoxels()
@@ -47,7 +45,7 @@ class BuildVoxels : HistoryAction(
 
     /** Remove all generated voxel groups from the scene. */
     private fun EditorAppImpl.clearGeneratedVoxels() = state.run {
-        sceneTree.detachAll(generatedVoxels)
+        generatedVoxels.forEach { it.detach() }
         hiddenObjects.removeAll(generatedVoxels)
         manuallyHiddenObjects.removeAll(generatedVoxels)
         selectedObjects.removeAll(generatedVoxels)

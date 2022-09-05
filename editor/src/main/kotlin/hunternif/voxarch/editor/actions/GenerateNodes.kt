@@ -25,21 +25,25 @@ class GenerateNodes : HistoryAction(
             newGenerated = mutableListOf()
             app.runGeneratorsRecursive(app.state.rootNode)
         }
-        app.state.sceneTree.attachAll(newGenerated)
-        newGenerated.forEach { app.state.generatedNodes.add(it.node as SceneNode) }
+        newGenerated.forEach {
+            it.reattach()
+            app.state.generatedNodes.add(it.node as SceneNode)
+        }
         app.redrawNodes()
     }
 
     override fun revert(app: EditorAppImpl) {
         app.clearGeneratedNodes()
-        app.state.sceneTree.attachAll(oldGenerated)
-        oldGenerated.forEach { app.state.generatedNodes.add(it.node as SceneNode) }
+        oldGenerated.forEach {
+            it.detach()
+            app.state.generatedNodes.add(it.node as SceneNode)
+        }
         app.redrawNodes()
     }
 
     /** Remove all generated nodes from the scene. */
     private fun EditorAppImpl.clearGeneratedNodes() = state.run {
-        sceneTree.detachAll(generatedNodes)
+        generatedNodes.forEach { it.detach() }
         hiddenObjects.removeAll(generatedNodes)
         manuallyHiddenObjects.removeAll(generatedNodes)
         selectedObjects.removeAll(generatedNodes)

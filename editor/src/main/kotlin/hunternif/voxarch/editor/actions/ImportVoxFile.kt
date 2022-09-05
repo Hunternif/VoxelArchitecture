@@ -19,13 +19,13 @@ class ImportVoxFile(
             val file = readVoxFile(path)
             voxelGroup = SceneVoxelGroup(path.fileName.toString(), file)
         }
-        state.sceneTree.attach(state.voxelRoot, voxelGroup)
+        state.voxelRoot.attach(voxelGroup)
         scene.updateVoxelModel()
     }
 
     override fun revert(app: EditorAppImpl) = app.run {
+        voxelGroup.detach()
         state.run {
-            sceneTree.detach(voxelGroup)
             selectedObjects.remove(voxelGroup)
             hiddenObjects.remove(voxelGroup)
             manuallyHiddenObjects.remove(voxelGroup)

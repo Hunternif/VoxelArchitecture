@@ -2,10 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.scenegraph.DetachedObject
-import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.*
 import java.util.*
 
 class DeleteObjects(
@@ -35,7 +32,7 @@ class DeleteObjects(
         }
     }
 
-    private val detachedObjs = objs.map { DetachedObject(it.parent, it) }
+    private val detachedObjs = objs.map { it.detached() }
 
     private val previouslyHidden = mutableSetOf<SceneObject>()
     private val previouslySelected = mutableSetOf<SceneObject>()
@@ -45,7 +42,7 @@ class DeleteObjects(
 
     override fun invoke(app: EditorAppImpl) = app.state.run {
         for (detached in detachedObjs) {
-            sceneTree.detach(detached)
+            detached.detach()
         }
         for (obj in objs) {
             if (obj === rootNode) continue
@@ -61,7 +58,7 @@ class DeleteObjects(
 
     override fun revert(app: EditorAppImpl) = app.state.run {
         for (detached in detachedObjs) {
-            sceneTree.attach(detached)
+            detached.reattach()
         }
         for (obj in objs) {
             if (obj in previouslySelected) selectedObjects.add(obj)

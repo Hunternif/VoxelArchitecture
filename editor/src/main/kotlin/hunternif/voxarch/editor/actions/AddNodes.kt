@@ -26,11 +26,11 @@ class AddNodes(
                 newSceneNodes.add(wrap(node))
             }
         }
-        app.state.sceneTree.attachAll(parent, newSceneNodes)
+        parent.attachAll(newSceneNodes)
         app.redrawNodes()
     }
 
     override fun revert(app: EditorAppImpl) {
-        app.state.sceneTree.detachAll(newSceneNodes)
+        newSceneNodes.forEach { it.detach() }
     }
 }

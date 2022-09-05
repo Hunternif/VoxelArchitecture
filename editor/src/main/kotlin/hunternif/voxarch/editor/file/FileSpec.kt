@@ -69,7 +69,7 @@ fun readProject(path: Path): AppStateImpl {
         Files.newBufferedReader(zipfs.getPath("/nodes.xml")).use {
             val rootStructure = deserializeXml(it.readText(), Node::class)
             rootStructure.children.toList().forEach { node ->
-                state.sceneTree.attach(state.rootNode, node)
+                state.rootNode.attach(node)
             }
         }
     }
