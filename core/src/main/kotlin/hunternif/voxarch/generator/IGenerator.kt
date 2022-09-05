@@ -8,3 +8,6 @@ import hunternif.voxarch.plan.Node
 interface IGenerator {
     fun generate(parent: Node)
 }
+
+/** Used to locate generator classes visible in the UI. */
+annotation class PublicGenerator

@@ -15,6 +15,7 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
 /**
  * Adds child elements to make a Room look like a castle turret.
  */
+@PublicGenerator
 class TurretGenerator(
     private val baseStyle: Stylesheet,
     val seed: Long = 0,
