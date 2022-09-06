@@ -21,9 +21,10 @@ class SceneTree : Iterable<SceneObject> {
 
     /** A subset of objects in the scene tree. */
     open class Subset<T : SceneObject>(
+        override val id: Int,
         private val name: String,
         private val items: LinkedHashSet<T> = LinkedHashSet(),
-    ) : MutableSet<T> by items {
+    ) : MutableSet<T> by items, WithID {
         override fun toString() = "Subset $name: [${size}]"
     }
 

@@ -8,12 +8,14 @@ import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3f
 
 class SceneVoxelGroup(
+    id: Int,
     val label: String,
     val data: IStorage3D<out IVoxel?>,
     isGenerated: Boolean = false,
     /** Voxel centric coordinates of the lower corner */
     val origin: Vector3f = Vector3f(),
 ) : SceneObject(
+    id,
     color = Colors.transparent,
     isGenerated = isGenerated,
 ) {

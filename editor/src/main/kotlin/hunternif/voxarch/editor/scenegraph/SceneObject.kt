@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scenegraph
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scene.models.Box
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.util.INested
 import org.joml.Vector3f
 
@@ -20,11 +21,12 @@ import org.joml.Vector3f
  * @param isGenerated whether this object is generated (for UI).
  */
 open class SceneObject(
+    override val id: Int,
     start: Vector3f = Vector3f(),
     size: Vector3f = Vector3f(),
     color: ColorRGBa = Colors.defaultNodeBox,
     val isGenerated: Boolean = false,
-) : Box(start, size, color), INested<SceneObject> {
+) : Box(start, size, color), INested<SceneObject>, WithID {
 
     override var parent: SceneObject? = null
     override val children: LinkedHashSet<SceneObject> = LinkedHashSet()
@@ -57,4 +59,6 @@ open class SceneObject(
             child.detach()
         }
     }
+
+    override fun toString() = "${javaClass.simpleName} $id"
 }

@@ -10,10 +10,12 @@ import hunternif.voxarch.util.min
 import hunternif.voxarch.vector.Vec3
 
 class SceneNode(
+    id: Int,
     val node: Node,
     color: ColorRGBa = Colors.defaultNodeBox,
     isGenerated: Boolean = false,
 ) : SceneObject(
+    id,
     color = color,
     isGenerated = isGenerated,
 ) {
