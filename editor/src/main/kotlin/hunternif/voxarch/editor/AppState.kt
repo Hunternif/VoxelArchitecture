@@ -11,10 +11,7 @@ import hunternif.voxarch.editor.builder.mapVoxelToSolidColor
 import hunternif.voxarch.editor.builder.setDefaultBuilders
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.scene.NewNodeFrame
-import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.scenegraph.SceneTree
-import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Structure
@@ -88,10 +85,21 @@ interface AppState {
     val gridMargin: Int
 }
 
-class AppStateImpl : AppState {
+class AppStateImpl(
+    val registry: SceneRegistry,
+    // base objects with IDs:
+    val sceneRoot: SceneObject,
+    override val rootNode: SceneNode,
+    override val voxelRoot: SceneVoxelGroup,
+    // base subsets with IDs:
+    override val generatedNodes: SceneTree.Subset<SceneNode>,
+    override val generatedVoxels: SceneTree.Subset<SceneVoxelGroup>,
+    override val selectedObjects: SceneTree.Subset<SceneObject>,
+    override val hiddenObjects: SceneTree.Subset<SceneObject>,
+    override val manuallyHiddenObjects: SceneTree.Subset<SceneObject>,
+) : AppState {
     override var projectPath: Path? = null
 
-    override val voxelRoot = SceneVoxelGroup("Voxel groups", emptyArray3D())
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
         materials.setSolidColorMaterials()
@@ -101,16 +109,10 @@ class AppStateImpl : AppState {
     override val stylesheet = defaultStyle
     override var seed: Long = 0
     override val generatorNames = generatorsByName.keys.toList()
-    override val generatedNodes = SceneTree.Subset<SceneNode>("generated nodes")
-    override val generatedVoxels = SceneTree.Subset<SceneVoxelGroup>("generated voxels")
     override val voxelColorMap = ::mapVoxelToSolidColor
 
-    override var rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
-    override val selectedObjects = SceneTree.Subset<SceneObject>("selected")
-    override val hiddenObjects = SceneTree.Subset<SceneObject>("hidden")
-    override val manuallyHiddenObjects = SceneTree.Subset<SceneObject>("manually hidden")
-    override val sceneTree = SceneTree().apply {
+    override val sceneTree = SceneTree(sceneRoot).apply {
         root.attach(rootNode)
         items.remove(rootNode) // root node should not be listed under "items"
         root.attach(voxelRoot)
@@ -131,4 +133,20 @@ class AppStateImpl : AppState {
     override val errors = LinkedList<Exception>()
 
     override var gridMargin = 9
+}
+
+/** Create a new clean state. */
+fun newState() : AppStateImpl {
+    val reg = SceneRegistry()
+    return AppStateImpl(
+        registry = reg,
+        sceneRoot = reg.newObject(),
+        rootNode = reg.newNode(Structure()),
+        voxelRoot = reg.newVoxelGroup("Voxel groups", emptyArray3D()),
+        generatedNodes = reg.newSubset<SceneNode>("generated nodes"),
+        generatedVoxels = reg.newSubset<SceneVoxelGroup>("generated voxels"),
+        selectedObjects = reg.newSubset("selected"),
+        hiddenObjects = reg.newSubset("hidden"),
+        manuallyHiddenObjects = reg.newSubset("manually hidden"),
+    )
 }

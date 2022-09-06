@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.builders
 
-import hunternif.voxarch.editor.AppStateImpl
 import hunternif.voxarch.editor.builder.createGeneratorByName
+import hunternif.voxarch.editor.newState
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.generator.PublicGenerator
 import org.junit.Assert.assertEquals
@@ -12,7 +12,7 @@ import org.reflections.Reflections
 class GeneratorsTest {
     @Test
     fun `ensure all generators can be created`() {
-        val state = AppStateImpl()
+        val state = newState()
         val reflections = Reflections("hunternif.voxarch")
         val classes = reflections.getSubTypesOf(IGenerator::class.java)
             .filter { clazz -> clazz.annotations.any { it is PublicGenerator } }

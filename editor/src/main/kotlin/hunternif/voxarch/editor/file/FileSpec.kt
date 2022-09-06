@@ -2,8 +2,13 @@ package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.AppStateImpl
+import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneRegistry
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.util.emptyArray3D
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.CREATE
@@ -63,17 +68,34 @@ const val VOXARCH_PROJECT_FILE_EXT = "voxarch"
  * Reads the project from file and produces a new app state.
  */
 fun readProject(path: Path): AppStateImpl {
-    val state = AppStateImpl()
+    val reg = SceneRegistry()
+    val sceneRoot = reg.newObject()
+
     val zipfs = newZipFileSystem(path)
     zipfs.use {
         Files.newBufferedReader(zipfs.getPath("/nodes.xml")).use {
             val rootStructure = deserializeXml(it.readText(), Node::class)
-            rootStructure.children.toList().forEach { node ->
-                state.rootNode.attach(node)
-            }
+            val rootNode = reg.createNodes(rootStructure)
+            // The rest is default so far:
+            val voxelRoot = reg.newVoxelGroup("Voxel groups", emptyArray3D())
+            val generatedNodes = reg.newSubset<SceneNode>("generated nodes")
+            val generatedVoxels = reg.newSubset<SceneVoxelGroup>("generated voxels")
+            val selectedObjects = reg.newSubset<SceneObject>("selected")
+            val hiddenObjects = reg.newSubset<SceneObject>("hidden")
+            val manuallyHiddenObjects = reg.newSubset<SceneObject>("manually hidden")
+            return AppStateImpl(
+                reg,
+                sceneRoot,
+                rootNode,
+                voxelRoot,
+                generatedNodes,
+                generatedVoxels,
+                selectedObjects,
+                hiddenObjects,
+                manuallyHiddenObjects
+            )
         }
     }
-    return state
 }
 
 /**

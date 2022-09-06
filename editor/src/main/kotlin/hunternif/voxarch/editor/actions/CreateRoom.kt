@@ -49,7 +49,7 @@ class CreateRoom(
                 room(min - globalPos, max - globalPos)
             }
         }
-        node = SceneNode(room)
+        node = registry.newNode(room)
         parent = parentNode
     }
 }

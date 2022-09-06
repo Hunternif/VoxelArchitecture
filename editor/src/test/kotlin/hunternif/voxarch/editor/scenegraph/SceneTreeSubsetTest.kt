@@ -5,6 +5,7 @@ import org.junit.Before
 import org.junit.Test
 
 class SceneTreeSubsetTest {
+    private lateinit var registry: SceneRegistry
     private lateinit var tree: SceneTree
     private lateinit var subset1: SceneTree.Subset<SceneObject>
     private lateinit var subset2: SceneTree.Subset<SceneObject>
@@ -13,14 +14,15 @@ class SceneTreeSubsetTest {
 
     @Before
     fun setup() {
-        tree = SceneTree()
-        subset1 = SceneTree.Subset("parent subset")
-        subset2 = SceneTree.Subset("child subset")
+        registry = SceneRegistry()
+        tree = SceneTree(registry.newObject())
+        subset1 = registry.newSubset("parent subset")
+        subset2 = registry.newSubset("child subset")
         tree.subsets.add(subset1)
         tree.subsets.add(subset2)
 
-        parent = SceneObject()
-        child = SceneObject()
+        parent = registry.newObject()
+        child = registry.newObject()
         tree.root.attach(parent)
         parent.attach(child)
     }

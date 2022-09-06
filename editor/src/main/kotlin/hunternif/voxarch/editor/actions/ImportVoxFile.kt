@@ -17,7 +17,7 @@ class ImportVoxFile(
     override fun invoke(app: EditorAppImpl) = app.run {
         if (!::voxelGroup.isInitialized) {
             val file = readVoxFile(path)
-            voxelGroup = SceneVoxelGroup(path.fileName.toString(), file)
+            voxelGroup = state.registry.newVoxelGroup(path.fileName.toString(), file)
         }
         state.voxelRoot.attach(voxelGroup)
         scene.updateVoxelModel()

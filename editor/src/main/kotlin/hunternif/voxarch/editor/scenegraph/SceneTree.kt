@@ -1,12 +1,18 @@
 package hunternif.voxarch.editor.scenegraph
 
+import hunternif.voxarch.editor.util.WithID
+
 /**
  * An entity that unifies a single scene tree.
  * All items in the tree are linked to it.
  */
-class SceneTree : Iterable<SceneObject> {
-    /** Dummy object, root of the tree structure. */
-    val root: SceneObject = SceneObject().apply { tree = this@SceneTree }
+class SceneTree(
+    /** Root of the tree structure, should be a dummy object. */
+    val root: SceneObject
+) : Iterable<SceneObject> {
+    init {
+        root.tree = this
+    }
 
     /** All nodes currently in the tree */
     val items: LinkedHashSet<SceneObject> = LinkedHashSet()

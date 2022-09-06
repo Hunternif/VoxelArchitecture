@@ -29,7 +29,7 @@ class EditorAppImpl : EditorApp {
     internal val gui = MainGui(this)
     internal val scene = MainScene(this)
 
-    override var state: AppStateImpl = AppStateImpl()
+    override var state: AppStateImpl = newState()
 
     fun run() {
         init()

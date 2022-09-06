@@ -74,21 +74,5 @@ class SceneNode(
         }
     }
 
-    /** Attach a child to this object */
-    fun attach(subtree: Node) {
-        attach(wrap(subtree))
-    }
-
-    override fun toString() = "${node.javaClass.simpleName} ${hashCode()}"
-}
-
-/** Create a SceneNode tree matching the hierarchy of the node tree. */
-fun wrap(tree: Node): SceneNode {
-    val wrapperMap = mutableMapOf<Node, SceneNode>()
-    tree.iterateSubtree().forEach { node ->
-        val newWrapper = SceneNode(node)
-        wrapperMap[node] = newWrapper
-        node.parent?.let { wrapperMap[it] }?.children?.add(newWrapper)
-    }
-    return wrapperMap[tree]!!
+    override fun toString() = "${node.javaClass.simpleName} $id"
 }

@@ -20,7 +20,7 @@ class DeleteObjectsTest : BaseActionTest() {
         node = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         app.setParentNode(node)
         childNode = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
-        voxels = SceneVoxelGroup("voxels", emptyArray3D())
+        voxels = registry.newVoxelGroup("voxels", emptyArray3D())
         voxelRoot.attach(voxels)
     }
 

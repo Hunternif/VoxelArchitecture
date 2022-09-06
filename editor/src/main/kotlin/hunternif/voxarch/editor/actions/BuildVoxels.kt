@@ -25,10 +25,10 @@ class BuildVoxels : HistoryAction(
             app.state.run {
                 rootNode.node.setNotBuiltRecursive()
                 builder.build(rootNode.node, world, buildContext)
+                newGenerated = listOf(
+                    registry.newVoxelGroup("Built voxels", world, true)
+                )
             }
-            newGenerated = listOf(
-                SceneVoxelGroup("Built voxels", world, true)
-            )
         }
         app.state.generatedVoxels.addAll(newGenerated)
         app.state.voxelRoot.attachAll(newGenerated)

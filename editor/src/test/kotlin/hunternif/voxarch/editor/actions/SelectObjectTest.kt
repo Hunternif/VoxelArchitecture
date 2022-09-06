@@ -18,8 +18,8 @@ class SelectObjectTest : BaseActionTest() {
     fun setup() = app.state.run {
         node1 = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         node2 = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
-        voxels1 = SceneVoxelGroup("voxels1", emptyArray3D())
-        voxels2 = SceneVoxelGroup("voxels2", emptyArray3D())
+        voxels1 = registry.newVoxelGroup("voxels1", emptyArray3D())
+        voxels2 = registry.newVoxelGroup("voxels2", emptyArray3D())
         voxelRoot.attach(voxels1)
         voxelRoot.attach(voxels2)
     }

@@ -64,7 +64,7 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.createSceneNodesRecursive(
         parent: SceneNode, newNode: Node
     ) {
-        val sceneNode = SceneNode(newNode, Colors.defaultGeneratedNodeBox, true)
+        val sceneNode = state.registry.newNode(newNode, Colors.defaultGeneratedNodeBox, true)
         sceneNode.update()
         sceneNode.parent = parent
         newGenerated.add(sceneNode.detached())

@@ -65,4 +65,15 @@ class SceneRegistry {
         objectIDs.clear()
         subsetIDs.clear()
     }
+
+    /** Create a SceneNode tree matching the hierarchy of the node tree. */
+    fun createNodes(tree: Node): SceneNode {
+        val wrapperMap = mutableMapOf<Node, SceneNode>()
+        tree.iterateSubtree().forEach { node ->
+            val newWrapper = newNode(node)
+            wrapperMap[node] = newWrapper
+            node.parent?.let { wrapperMap[it] }?.children?.add(newWrapper)
+        }
+        return wrapperMap[tree]!!
+    }
 }

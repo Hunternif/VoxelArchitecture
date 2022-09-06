@@ -3,7 +3,6 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.scenegraph.wrap
 import hunternif.voxarch.plan.Node
 
 /**
@@ -23,7 +22,7 @@ class AddNodes(
         if (!::newSceneNodes.isInitialized) {
             newSceneNodes = LinkedHashSet()
             for (node in nodes) {
-                newSceneNodes.add(wrap(node))
+                newSceneNodes.add(app.state.registry.createNodes(node))
             }
         }
         parent.attachAll(newSceneNodes)
