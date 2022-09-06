@@ -27,7 +27,7 @@ class GenerateNodes : HistoryAction(
         }
         newGenerated.forEach {
             it.reattach()
-            app.state.generatedNodes.add(it.node as SceneNode)
+            app.state.generatedNodes.add(it.obj as SceneNode)
         }
         app.redrawNodes()
     }
@@ -36,7 +36,7 @@ class GenerateNodes : HistoryAction(
         app.clearGeneratedNodes()
         oldGenerated.forEach {
             it.detach()
-            app.state.generatedNodes.add(it.node as SceneNode)
+            app.state.generatedNodes.add(it.obj as SceneNode)
         }
         app.redrawNodes()
     }

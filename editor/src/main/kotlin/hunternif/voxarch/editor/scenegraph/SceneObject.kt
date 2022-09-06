@@ -36,7 +36,7 @@ open class SceneObject(
         subtree.tree = tree
         if (subtree !in children) {
             addChild(subtree)
-            tree?.items?.addAll(subtree.iterateSubtree())
+            tree?.onAttach(subtree)
         }
     }
 
@@ -46,9 +46,10 @@ open class SceneObject(
     }
 
     /** Detach this object from its parent. */
-    fun detach() {
-        parent?.removeChild(this)
-        iterateSubtree().forEach { tree?.items?.remove(it) }
+    fun detach(): DetachedObject {
+        val detached = detached()
+        detached.detach()
+        return detached
     }
 
     fun detachAllChildren() {
