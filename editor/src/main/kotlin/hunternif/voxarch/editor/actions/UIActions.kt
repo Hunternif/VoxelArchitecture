@@ -63,25 +63,15 @@ fun EditorApp.showObject(obj: SceneObject) = action {
     // This object may have been hidden by one of its parents
     // To make it visible, we must un-hide all parents.
     state.manuallyHiddenObjects.remove(obj)
+    var parent: SceneObject? = obj
+    while (parent != null) {
+        state.manuallyHiddenObjects.remove(parent)
+        parent = parent.parent
+    }
+    updateHiddenObjects()
     when (obj) {
-        is SceneNode -> {
-            var parent: SceneObject? = obj
-            while (parent != null) {
-                state.manuallyHiddenObjects.remove(parent)
-                parent = parent.parent
-            }
-            updateHiddenObjects()
-            scene.updateNodeModel()
-        }
-        is SceneVoxelGroup -> {
-            var parent: SceneObject? = obj
-            while (parent != null) {
-                state.manuallyHiddenObjects.remove(parent)
-                parent = parent.parent
-            }
-            updateHiddenObjects()
-            scene.updateVoxelModel()
-        }
+        is SceneNode -> scene.updateNodeModel()
+        is SceneVoxelGroup -> scene.updateVoxelModel()
     }
 }
 

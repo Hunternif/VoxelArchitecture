@@ -30,7 +30,12 @@ class SceneTree : Iterable<SceneObject> {
     val subsets = mutableListOf<Subset>()
 
     /** A subset of objects in the scene tree. */
-    class Subset : LinkedHashSet<SceneObject>()
+    class Subset(
+        private val name: String,
+        private val items: LinkedHashSet<SceneObject> = LinkedHashSet(),
+    ) : MutableSet<SceneObject> by items {
+        override fun toString() = "Subset $name: [${size}]"
+    }
 
     fun onAttach(subtree: SceneObject) {
         items.addAll(subtree.iterateSubtree())
@@ -45,7 +50,7 @@ class SceneTree : Iterable<SceneObject> {
     fun onDetach(detached: DetachedObject) {
         detached.obj.iterateSubtree().forEach { child ->
             items.remove(child)
-            subsets.forEach { it.remove(child)}
+            subsets.forEach { it.remove(child) }
         }
     }
 }

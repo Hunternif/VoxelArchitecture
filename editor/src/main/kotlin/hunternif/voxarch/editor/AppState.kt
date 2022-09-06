@@ -108,15 +108,18 @@ class AppStateImpl : AppState {
 
     override var rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
+    override val selectedObjects = SceneTree.Subset("selected")
+    override val hiddenObjects = SceneTree.Subset("hidden")
+    override val manuallyHiddenObjects = SceneTree.Subset("manually hidden")
     override val sceneTree = SceneTree().apply {
         root.attach(rootNode)
         items.remove(rootNode) // root node should not be listed under "items"
         root.attach(voxelRoot)
         items.remove(voxelRoot) // voxel root node should not be listed under "items"
+        subsets.add(selectedObjects)
+        subsets.add(hiddenObjects)
+        subsets.add(manuallyHiddenObjects)
     }
-    override val selectedObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
-    override val hiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
-    override val manuallyHiddenObjects: LinkedHashSet<SceneObject> = LinkedHashSet()
 
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()

@@ -26,8 +26,8 @@ class DetachedObject(
 }
 
 fun SceneObject.detached(): DetachedObject {
-    val memberships = this.tree?.subsets?.associateWith {
-        mutableSetOf<SceneObject>()
+    val memberships = this.tree?.subsets?.associate {
+        it to mutableSetOf<SceneObject>()
     } ?: emptyMap()
     this.iterateSubtree().forEach { child ->
         memberships.forEach { (subset, objectSet) ->

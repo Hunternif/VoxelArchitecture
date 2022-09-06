@@ -14,8 +14,8 @@ class SceneTreeSubsetTest {
     @Before
     fun setup() {
         tree = SceneTree()
-        subset1 = SceneTree.Subset()
-        subset2 = SceneTree.Subset()
+        subset1 = SceneTree.Subset("parent subset")
+        subset2 = SceneTree.Subset("child subset")
         tree.subsets.add(subset1)
         tree.subsets.add(subset2)
 
