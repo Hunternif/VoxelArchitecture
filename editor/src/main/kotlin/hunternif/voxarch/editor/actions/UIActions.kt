@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
-import hunternif.voxarch.util.INested
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -88,11 +87,11 @@ fun EditorApp.hideObject(obj: SceneObject) = action {
 internal fun EditorApp.updateHiddenObjects() = action {
     state.run {
         hiddenObjects.clear()
-        val queue = LinkedList<INested<*>>()
+        val queue = LinkedList<SceneObject>()
         queue.addAll(manuallyHiddenObjects)
         while (queue.isNotEmpty()) {
             val child = queue.removeLast()
-            hiddenObjects.add(child as SceneObject)
+            hiddenObjects.add(child)
             queue.addAll(child.children)
         }
     }
