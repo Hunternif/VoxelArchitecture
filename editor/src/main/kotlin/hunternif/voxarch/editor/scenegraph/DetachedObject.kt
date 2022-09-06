@@ -9,7 +9,7 @@ class DetachedObject(
     val obj: SceneObject,
     /** Maps each subset to a set of child objects in this subtree that
      * used to be in that subset. */
-    val memberships: Map<SceneTree.Subset, Set<SceneObject>>
+    val memberships: List<Membership<*>>,
 ) {
     /** Detach this object from its parent (in case it was reattached). */
     fun detach() {
@@ -23,16 +23,29 @@ class DetachedObject(
         obj.tree?.onReattach(this)
     }
 
+    data class Membership<T : SceneObject>(
+        val subset: SceneTree.Subset<T>,
+        val objects: MutableSet<T> = mutableSetOf(),
+    ) {
+        fun tryAdd(child: SceneObject) {
+            @Suppress("UNCHECKED_CAST")
+            if (child in subset) objects.add(child as T)
+        }
+        fun clear() {
+            subset.removeAll(objects)
+        }
+        fun restore() {
+            subset.addAll(objects)
+        }
+    }
 }
 
 fun SceneObject.detached(): DetachedObject {
-    val memberships = this.tree?.subsets?.associate {
-        it to mutableSetOf<SceneObject>()
-    } ?: emptyMap()
+    val memberships = this.tree?.subsets?.map {
+        DetachedObject.Membership(it)
+    } ?: emptyList()
     this.iterateSubtree().forEach { child ->
-        memberships.forEach { (subset, objectSet) ->
-            if (child in subset) objectSet.add(child)
-        }
+        memberships.forEach { it.tryAdd(child) }
     }
     return DetachedObject(parent, this, memberships)
 }

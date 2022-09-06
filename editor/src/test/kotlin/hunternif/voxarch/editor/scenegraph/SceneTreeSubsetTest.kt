@@ -6,8 +6,8 @@ import org.junit.Test
 
 class SceneTreeSubsetTest {
     private lateinit var tree: SceneTree
-    private lateinit var subset1: SceneTree.Subset
-    private lateinit var subset2: SceneTree.Subset
+    private lateinit var subset1: SceneTree.Subset<SceneObject>
+    private lateinit var subset2: SceneTree.Subset<SceneObject>
     private lateinit var parent: SceneObject
     private lateinit var child: SceneObject
 

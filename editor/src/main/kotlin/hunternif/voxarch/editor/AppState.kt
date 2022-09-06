@@ -43,7 +43,6 @@ interface AppState {
     val stylesheet: Stylesheet
     val seed: Long
     val generatorNames: List<String>
-    //TODO: this is probably not useful, also could be a SUBSET
     val generatedNodes: Collection<SceneNode>
     val generatedVoxels: Collection<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
@@ -102,15 +101,15 @@ class AppStateImpl : AppState {
     override val stylesheet = defaultStyle
     override var seed: Long = 0
     override val generatorNames = generatorsByName.keys.toList()
-    override val generatedNodes: LinkedHashSet<SceneNode> = LinkedHashSet()
-    override val generatedVoxels: LinkedHashSet<SceneVoxelGroup> = LinkedHashSet()
+    override val generatedNodes = SceneTree.Subset<SceneNode>("generated nodes")
+    override val generatedVoxels = SceneTree.Subset<SceneVoxelGroup>("generated voxels")
     override val voxelColorMap = ::mapVoxelToSolidColor
 
     override var rootNode = SceneNode(Structure())
     override var parentNode: SceneNode = rootNode
-    override val selectedObjects = SceneTree.Subset("selected")
-    override val hiddenObjects = SceneTree.Subset("hidden")
-    override val manuallyHiddenObjects = SceneTree.Subset("manually hidden")
+    override val selectedObjects = SceneTree.Subset<SceneObject>("selected")
+    override val hiddenObjects = SceneTree.Subset<SceneObject>("hidden")
+    override val manuallyHiddenObjects = SceneTree.Subset<SceneObject>("manually hidden")
     override val sceneTree = SceneTree().apply {
         root.attach(rootNode)
         items.remove(rootNode) // root node should not be listed under "items"

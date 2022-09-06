@@ -5,16 +5,6 @@ package hunternif.voxarch.editor.scenegraph
  * All items in the tree are linked to it.
  */
 class SceneTree : Iterable<SceneObject> {
-    //TODO use this to replace rootNode, selectedNodes, hiddenNodes as SUBSETS.
-
-    // Subsets of this tree.
-    // When a node is detached, it's removed from all subsets.
-    // Subsets can be iterated as a tree element, to recursively apply a feature
-    // to its children.
-    // Using a single TreeNode class to represent the hierarchy might help,
-    // e.g. when I'm combining Nodes and Voxel group inside a selection subset.
-    //private val subsets: List<TreeSubset<T>>
-
     /** Dummy object, root of the tree structure. */
     val root: SceneObject = SceneObject().apply { tree = this@SceneTree }
 
@@ -27,13 +17,13 @@ class SceneTree : Iterable<SceneObject> {
      * When a subtree is detached, its children are removed from all subsets;
      * and when it's reattached, they are added back.
      */
-    val subsets = mutableListOf<Subset>()
+    val subsets = mutableListOf<Subset<*>>()
 
     /** A subset of objects in the scene tree. */
-    class Subset(
+    open class Subset<T : SceneObject>(
         private val name: String,
-        private val items: LinkedHashSet<SceneObject> = LinkedHashSet(),
-    ) : MutableSet<SceneObject> by items {
+        private val items: LinkedHashSet<T> = LinkedHashSet(),
+    ) : MutableSet<T> by items {
         override fun toString() = "Subset $name: [${size}]"
     }
 
@@ -42,15 +32,11 @@ class SceneTree : Iterable<SceneObject> {
     }
 
     fun onReattach(detached: DetachedObject) {
-        detached.memberships.forEach { (subset, objectSet) ->
-            subset.addAll(objectSet)
-        }
+        detached.memberships.forEach { it.restore() }
     }
 
     fun onDetach(detached: DetachedObject) {
-        detached.obj.iterateSubtree().forEach { child ->
-            items.remove(child)
-            subsets.forEach { it.remove(child) }
-        }
+        detached.memberships.forEach { it.clear() }
+        detached.obj.iterateSubtree().forEach { items.remove(it) }
     }
 }
