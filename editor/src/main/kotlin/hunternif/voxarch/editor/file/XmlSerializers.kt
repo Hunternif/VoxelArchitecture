@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
 import kotlin.reflect.KClass
@@ -20,6 +21,9 @@ private val xmlMapper: XmlMapper by lazy {
 
     module.addSerializer(NodeSerializer())
     module.addDeserializer(Node::class.java, NodeDeserializer())
+
+    module.addSerializer(SceneObjectSerializer())
+    module.addDeserializer(SceneObject::class.java, SceneObjectDeserializer())
 
     XmlMapper().apply {
         registerModule(module)
@@ -76,5 +80,24 @@ private class NodeDeserializer : StdDeserializer<Node>(Node::class.java) {
         ctxt: DeserializationContext
     ): Node? {
         return p.readValueAs(XmlNode::class.java)?.mapXmlNode()
+    }
+}
+
+private class SceneObjectSerializer : StdSerializer<SceneObject>(SceneObject::class.java) {
+    override fun serialize(
+        value: SceneObject,
+        gen: JsonGenerator,
+        provider: SerializerProvider
+    ) {
+        gen.writeObject(value.mapToXml())
+    }
+}
+
+private class SceneObjectDeserializer : StdDeserializer<SceneObject>(SceneObject::class.java) {
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext
+    ): SceneObject? {
+        return p.readValueAs(XmlSceneObject::class.java)?.mapXml()
     }
 }

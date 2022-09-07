@@ -67,7 +67,7 @@ class XmlSerializersTest {
     @Test
     fun `serialize Node tree`() {
         val xml = serializeToXmlStr(structure, true)
-        assertEquals(structureXml, xml.trim().replace("\r\n", "\n"))
+        assertEquals(structureXml, xml.trimXml())
     }
 
     @Test
@@ -78,13 +78,13 @@ class XmlSerializersTest {
         assertEquals(Room::class, node.children[0]::class)
         assertEquals(PolygonRoom::class, node.children[1]::class)
         val reserialized = serializeToXmlStr(node, true)
-        assertEquals(structureXml, reserialized.trim().replace("\r\n", "\n"))
+        assertEquals(structureXml, reserialized.trimXml())
     }
 
     @Test
     fun `serialize PolygonRoom`() {
         val xml = serializeToXmlStr(polygonRoom, true)
-        assertEquals(polygonRoomXml, xml.trim().replace("\r\n", "\n"))
+        assertEquals(polygonRoomXml, xml.trimXml())
     }
 
     @Test
@@ -92,6 +92,8 @@ class XmlSerializersTest {
         val node = deserializeXml(polygonRoomXml, Node::class)
         assertEquals(PolygonRoom::class, node::class)
         val reserialized = serializeToXmlStr(node, true)
-        assertEquals(polygonRoomXml, reserialized.trim().replace("\r\n", "\n"))
+        assertEquals(polygonRoomXml, reserialized.trimXml())
     }
 }
+
+fun String.trimXml() = trim().replace("\r\n", "\n")

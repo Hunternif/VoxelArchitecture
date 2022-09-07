@@ -9,6 +9,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 
+// Annotated classes for XML serialization of Node and its subclasses.
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -81,22 +82,24 @@ class XmlPath(
 
 
 internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf())
+/** Maps to XML without mapping any of the children. */
+internal fun Node.mapToXmlNodeNoChildren(): XmlNode? = when (this) {
+    is Structure -> XmlStructure(origin)
+    is PolygonRoom -> XmlPolygonRoom(origin, size, start, isCentered(),
+        shape, polygon.mapToXmlNode() as XmlPath
+    )
+    is Room -> XmlRoom(origin, size, start, isCentered())
+    is Wall -> XmlWall(origin, end, transparent)
+    is Floor -> XmlFloor(height)
+    is Path -> XmlPath(points)
+    else -> null
+}
 
 /** The set is passed to prevent an infinite nested loop. */
 private fun Node.mapToXmlNodeRecursive(mapped: MutableSet<Node>): XmlNode? {
     if (this in mapped) return null
     mapped.add(this)
-    val xmlNode: XmlNode = when (this) {
-        is Structure -> XmlStructure(origin)
-        is PolygonRoom -> XmlPolygonRoom(origin, size, start, isCentered(),
-            shape, polygon.mapToXmlNode() as XmlPath
-        )
-        is Room -> XmlRoom(origin, size, start, isCentered())
-        is Wall -> XmlWall(origin, end, transparent)
-        is Floor -> XmlFloor(height)
-        is Path -> XmlPath(points)
-        else -> null
-    } ?: return null
+    val xmlNode: XmlNode = mapToXmlNodeNoChildren() ?: return null
     children.forEach { child ->
         child.mapToXmlNodeRecursive(mapped)?.let { xmlChild ->
             xmlNode.children.add(xmlChild)
