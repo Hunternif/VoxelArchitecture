@@ -19,12 +19,12 @@ class ImportVoxFile(
             val file = readVoxFile(path)
             voxelGroup = state.registry.newVoxelGroup(path.fileName.toString(), file)
         }
-        state.voxelRoot.attach(voxelGroup)
+        state.voxelRoot.addChild(voxelGroup)
         scene.updateVoxelModel()
     }
 
     override fun revert(app: EditorAppImpl) = app.run {
-        voxelGroup.detach()
+        voxelGroup.remove()
         state.run {
             voxelGroup.parent?.removeChild(voxelGroup)
         }

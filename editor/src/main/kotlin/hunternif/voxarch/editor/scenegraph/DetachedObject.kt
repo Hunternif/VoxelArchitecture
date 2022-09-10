@@ -9,18 +9,18 @@ class DetachedObject(
     val obj: SceneObject,
     /** Maps each subset to a set of child objects in this subtree that
      * used to be in that subset. */
-    val memberships: List<Membership<*>>,
+    private val memberships: List<Membership<*>>,
 ) {
     /** Detach this object from its parent (in case it was reattached). */
     fun detach() {
         obj.parent?.removeChild(obj)
-        obj.tree?.onDetach(this)
+        memberships.forEach { it.clear() }
     }
 
     /** Attach a child to its previous parent. */
     fun reattach() {
-        parent?.attach(obj)
-        obj.tree?.onReattach(this)
+        parent?.addChild(obj)
+        memberships.forEach { it.restore() }
     }
 
     data class Membership<T : SceneObject>(
@@ -40,6 +40,7 @@ class DetachedObject(
     }
 }
 
+/** Creates a detached object from this node. See [DetachedObject]. */
 fun SceneObject.detached(): DetachedObject {
     val memberships = this.tree?.subsets?.map {
         DetachedObject.Membership(it)

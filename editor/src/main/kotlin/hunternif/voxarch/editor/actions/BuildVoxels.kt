@@ -45,7 +45,7 @@ class BuildVoxels : HistoryAction(
 
     /** Remove all generated voxel groups from the scene. */
     private fun EditorAppImpl.clearGeneratedVoxels() = state.run {
-        generatedVoxels.forEach { it.detach() }
+        generatedVoxels.forEach { it.remove() }
         generatedVoxels.clear()
     }
 

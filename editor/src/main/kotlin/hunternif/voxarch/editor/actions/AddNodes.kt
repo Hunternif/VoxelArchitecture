@@ -30,6 +30,6 @@ class AddNodes(
     }
 
     override fun revert(app: EditorAppImpl) {
-        newSceneNodes.forEach { it.detach() }
+        newSceneNodes.forEach { it.remove() }
     }
 }

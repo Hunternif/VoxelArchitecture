@@ -25,15 +25,22 @@ class SceneNode(
         update()
     }
 
-    override fun onAdded() {
-        (parent as? SceneNode)?.let { p ->
+    override fun addChild(child: SceneObject) {
+        super.addChild(child)
+        (child as? SceneNode)?.node?.let {
             // prevent double-adding, especially when generating nodes
-            if (node.parent != p.node) p.node.addChild(node)
+            if (it.parent != node) node.addChild(it)
         }
     }
 
-    override fun onRemoved() {
-        (parent as? SceneNode)?.node?.removeChild(node)
+    override fun removeChild(child: SceneObject): Boolean {
+        if (super.removeChild(child)) {
+            (child as? SceneNode)?.node?.let {
+                node.removeChild(it)
+            }
+            return true
+        }
+        return false
     }
 
     override fun update() {

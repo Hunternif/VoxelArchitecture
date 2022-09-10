@@ -18,25 +18,29 @@ interface INested<T : INested<T>> {
         }
     }
 
+    /** Attach a child to this object */
     fun addChild(child: T) {
         child.parent?.removeChild(child)
         child.parent = this as T
-        child.onAdded()
         children.add(child)
     }
 
-    fun onAdded() {}
+    /** Attach multiple children to this object */
+    fun attachAll(items: Collection<T>) {
+        items.forEach { addChild(it) }
+    }
 
+    /** Remove a child from this object, if it exists */
     fun removeChild(child: T): Boolean {
         if (children.remove(child)) {
-            child.onRemoved()
             child.parent = null
             return true
         }
         return false
     }
 
-    fun onRemoved() {}
+    /** Remove this object from its parent */
+    fun remove(): Boolean = parent?.removeChild(this as T) ?: false
 
     fun removeAllChildren() {
         val childrenCopy = children.toList()

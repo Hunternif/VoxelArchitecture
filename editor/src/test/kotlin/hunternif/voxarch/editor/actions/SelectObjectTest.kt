@@ -20,8 +20,8 @@ class SelectObjectTest : BaseActionTest() {
         node2 = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
         voxels1 = registry.newVoxelGroup("voxels1", emptyArray3D())
         voxels2 = registry.newVoxelGroup("voxels2", emptyArray3D())
-        voxelRoot.attach(voxels1)
-        voxelRoot.attach(voxels2)
+        voxelRoot.addChild(voxels1)
+        voxelRoot.addChild(voxels2)
     }
 
     @Test

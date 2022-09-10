@@ -26,12 +26,12 @@ class CreateRoom(
         if (!::node.isInitialized) {
             createRoom()
         }
-        parent.attach(node)
+        parent.addChild(node)
         app.redrawNodes()
     }
 
     override fun revert(app: EditorAppImpl) = app.state.run {
-        node.detach()
+        node.remove()
         app.redrawNodes()
     }
 

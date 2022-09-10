@@ -33,31 +33,15 @@ open class SceneObject(
 
     var tree: SceneTree? = null
 
-    /** Attach a child to this object */
-    fun attach(subtree: SceneObject) {
-        subtree.tree = tree
-        if (subtree !in children) {
-            addChild(subtree)
-            tree?.onAttach(subtree)
-        }
+    override fun addChild(child: SceneObject) {
+        super.addChild(child)
+        child.tree = tree
+        tree?.add(child)
     }
 
-    /** Attach multiple children to this object */
-    fun attachAll(items: Collection<SceneObject>) {
-        items.forEach { attach(it) }
-    }
-
-    /** Detach this object from its parent. */
-    fun detach(): DetachedObject {
-        val detached = detached()
-        detached.detach()
-        return detached
-    }
-
-    fun detachAllChildren() {
-        for (child in children.toList()) {
-            child.detach()
-        }
+    override fun removeChild(child: SceneObject): Boolean {
+        tree?.remove(child)
+        return super.removeChild(child)
     }
 
     override fun toString() = "${javaClass.simpleName} $id"

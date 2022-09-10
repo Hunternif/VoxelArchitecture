@@ -34,16 +34,11 @@ class SceneTree(
         override fun toString() = "Subset $name: [${size}]"
     }
 
-    fun onAttach(subtree: SceneObject) {
+    fun add(subtree: SceneObject) {
         items.addAll(subtree.iterateSubtree())
     }
 
-    fun onReattach(detached: DetachedObject) {
-        detached.memberships.forEach { it.restore() }
-    }
-
-    fun onDetach(detached: DetachedObject) {
-        detached.memberships.forEach { it.clear() }
-        detached.obj.iterateSubtree().forEach { items.remove(it) }
+    fun remove(subtree: SceneObject) {
+        subtree.iterateSubtree().forEach { items.remove(it) }
     }
 }

@@ -113,9 +113,9 @@ class AppStateImpl(
 
     override var parentNode: SceneNode = rootNode
     override val sceneTree = SceneTree(sceneRoot).apply {
-        root.attach(rootNode)
+        root.addChild(rootNode)
         items.remove(rootNode) // root node should not be listed under "items"
-        root.attach(voxelRoot)
+        root.addChild(voxelRoot)
         items.remove(voxelRoot) // voxel root node should not be listed under "items"
         subsets.add(selectedObjects)
         subsets.add(hiddenObjects)

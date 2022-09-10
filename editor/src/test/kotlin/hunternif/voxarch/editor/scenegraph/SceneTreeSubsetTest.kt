@@ -23,8 +23,8 @@ class SceneTreeSubsetTest {
 
         parent = registry.newObject()
         child = registry.newObject()
-        tree.root.attach(parent)
-        parent.attach(child)
+        tree.root.addChild(parent)
+        parent.addChild(child)
     }
 
     @Test
@@ -35,7 +35,8 @@ class SceneTreeSubsetTest {
         assertEquals(setOf(child), subset2.toSet())
         assertEquals(setOf(parent, child), tree.items.toSet())
 
-        val detachedChild = child.detach()
+        val detachedChild = child.detached()
+        detachedChild.detach()
         assertEquals(setOf(parent), subset1.toSet())
         assertEquals(emptySet<SceneTree>(), subset2.toSet())
         assertEquals(setOf(parent), tree.items.toSet())
@@ -54,7 +55,8 @@ class SceneTreeSubsetTest {
         assertEquals(setOf(child), subset2.toSet())
         assertEquals(setOf(parent, child), tree.items.toSet())
 
-        val detachedParent = parent.detach()
+        val detachedParent = parent.detached()
+        detachedParent.detach()
         assertEquals(emptySet<SceneTree>(), subset1.toSet())
         assertEquals(emptySet<SceneTree>(), subset2.toSet())
         assertEquals(emptySet<SceneTree>(), tree.items.toSet())

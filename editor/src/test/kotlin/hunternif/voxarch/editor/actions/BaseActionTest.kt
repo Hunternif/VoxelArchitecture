@@ -7,8 +7,8 @@ abstract class BaseActionTest {
     @Before
     fun resetState() {
         app.state.run {
-            rootNode.detachAllChildren()
-            voxelRoot.detachAllChildren()
+            rootNode.removeAllChildren()
+            voxelRoot.removeAllChildren()
             parentNode = rootNode
             selectedObjects.clear()
             hiddenObjects.clear()

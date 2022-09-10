@@ -20,7 +20,7 @@ class MoveObjectsTest : BaseActionTest() {
         node = app.createRoom(Vector3i(10, 20, 30), Vector3i(11, 21, 31))
         voxels = registry.newVoxelGroup("voxels", emptyArray3D())
         voxels.origin.set(100f, 200f, 300f)
-        voxelRoot.attach(voxels)
+        voxelRoot.addChild(voxels)
     }
 
     @Test
