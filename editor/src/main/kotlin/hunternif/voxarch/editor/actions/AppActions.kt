@@ -42,11 +42,13 @@ fun EditorApp.openProjectFile(path: Path) = action {
 
 fun EditorApp.saveProjectFile() = action {
     state.projectPath?.let { writeProject(it) }
+    state.lastSavedAction = state.history.pastItems.last
 }
 
 fun EditorApp.saveProjectFileAs(path: Path) = action {
     writeProject(path)
     state.projectPath = path
+    state.lastSavedAction = state.history.pastItems.last
 }
 
 

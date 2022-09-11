@@ -28,6 +28,7 @@ import java.nio.file.Path
 interface AppState {
     //============================ PROJECT FILE =============================
     val projectPath: Path?
+    val lastSavedAction: HistoryAction?
 
     //=============================== VOXELS ================================
 
@@ -97,6 +98,7 @@ class AppStateImpl(
     override val manuallyHiddenObjects: Subset<SceneObject>,
 ) : AppState {
     override var projectPath: Path? = null
+    override var lastSavedAction: HistoryAction? = null
 
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {

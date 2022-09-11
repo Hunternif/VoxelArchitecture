@@ -25,14 +25,19 @@ class GuiHistory(
             ImGui.tableSetupColumn("description")
 
             val lastItem = app.state.history.pastItems.lastOrNull()
+            val saved = app.state.lastSavedAction
             for (item in app.state.history.pastItems) {
-                renderItem(item, isLast = item === lastItem)
+                renderItem(
+                    item,
+                    isLast = item === lastItem,
+                    isSaved = item === saved,
+                )
             }
 
             disabled {
                 pushStyleColor(ImGuiCol.Text, Colors.hiddenItemLabel) // extra dark
                 for (item in app.state.history.futureItems) {
-                    renderItem(item)
+                    renderItem(item, isSaved = item === saved)
                 }
                 ImGui.popStyleColor()
             }
@@ -53,6 +58,7 @@ class GuiHistory(
     private fun renderItem(
         item: HistoryAction,
         isLast: Boolean = false,
+        isSaved: Boolean = false,
     ) {
         ImGui.tableNextRow()
 
@@ -65,11 +71,12 @@ class GuiHistory(
         // Column 2 is the description
         ImGui.tableNextColumn()
         ImGui.alignTextToFramePadding()
+        val description = if (isSaved) "${item.description} (saved)" else item.description
         if (isLast) {
             // Highlight the last item to separate it from others.
-            ImGui.selectable(item.description, true, ImGuiSelectableFlags.SpanAllColumns)
+            ImGui.selectable(description, true, ImGuiSelectableFlags.SpanAllColumns)
         } else {
-            ImGui.text(item.description)
+            ImGui.text(description)
         }
     }
 }
