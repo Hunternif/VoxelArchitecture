@@ -125,7 +125,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             ImGuiWindowFlags.NoScrollbar
         if (ImGui.begin(title, mainWindowFlags)) {
             tabBar("main_window_tab_bar") {
-                tabItemWindow("Scene") {
+                tabItemWindow(sceneTabName) {
                     val pos = ImGui.getWindowPos()
                     val vMin = ImGui.getWindowContentRegionMin()
                     val vMax = ImGui.getWindowContentRegionMax()
@@ -185,5 +185,11 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 }
             }
         }
+    }
+
+    @PublishedApi
+    internal val sceneTabName: String get() = app.state.run {
+        if (lastSavedAction == history.pastItems.lastOrNull()) "Scene"
+        else "Scene *"
     }
 }
