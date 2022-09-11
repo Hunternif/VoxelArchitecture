@@ -14,7 +14,12 @@ fun MainGui.mainMenu() {
             if (ImGui.menuItem("Open project", "Ctrl+O")) {
                 app.openDialogOpenProjectFile()
             }
-            if (ImGui.menuItem("Save project", "Ctrl+S")) {
+            disabled(app.state.projectPath == null) {
+                if (ImGui.menuItem("Save project", "Ctrl+S")) {
+                    app.saveProjectFile()
+                }
+            }
+            if (ImGui.menuItem("Save project as...", "Ctrl+Shift+S")) {
                 app.openDialogSaveProjectFile()
             }
             ImGui.separator()

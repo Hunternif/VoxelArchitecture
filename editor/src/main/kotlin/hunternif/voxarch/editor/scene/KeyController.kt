@@ -39,7 +39,8 @@ class KeyController(private val app: EditorApp) : KeyListener {
                 key == GLFW_KEY_Z && control -> app.undo()
                 key == GLFW_KEY_I && control -> app.openDialogImportVoxFile()
                 key == GLFW_KEY_N && control -> app.newProject()
-                key == GLFW_KEY_S && control -> app.openDialogSaveProjectFile()
+                key == GLFW_KEY_S && control && shift -> app.openDialogSaveProjectFile()
+                key == GLFW_KEY_S && control -> app.saveProjectOrOpenDialogToSaveAs()
                 key == GLFW_KEY_O && control -> app.openDialogOpenProjectFile()
                 tool != null && mods == 0 -> app.setTool(tool)
             }

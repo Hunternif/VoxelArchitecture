@@ -15,9 +15,14 @@ import java.util.*
 
 // Actions that update the state of UI and don't contribute to history
 
+fun EditorApp.saveProjectOrOpenDialogToSaveAs() = action {
+    if (state.projectPath != null) saveProjectFile()
+    else openDialogSaveProjectFile()
+}
+
 fun EditorApp.openDialogSaveProjectFile() = action {
     saveFileDialog(VOXARCH_PROJECT_FILE_EXT) {
-        saveProjectFile(it)
+        saveProjectFileAs(it)
     }
 }
 

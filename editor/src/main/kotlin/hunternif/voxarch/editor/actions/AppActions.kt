@@ -40,7 +40,11 @@ fun EditorApp.openProjectFile(path: Path) = action {
     centerCamera()
 }
 
-fun EditorApp.saveProjectFile(path: Path) = action {
+fun EditorApp.saveProjectFile() = action {
+    state.projectPath?.let { writeProject(it) }
+}
+
+fun EditorApp.saveProjectFileAs(path: Path) = action {
     writeProject(path)
     state.projectPath = path
 }

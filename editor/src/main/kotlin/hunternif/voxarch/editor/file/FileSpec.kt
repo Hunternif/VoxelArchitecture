@@ -117,7 +117,9 @@ fun EditorAppImpl.readProject(path: Path) {
             selectedObjects,
             hiddenObjects,
             manuallyHiddenObjects
-        )
+        ).apply {
+            projectPath = path
+        }
     }
 }
 

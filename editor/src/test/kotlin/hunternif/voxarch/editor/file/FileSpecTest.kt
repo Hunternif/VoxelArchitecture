@@ -57,7 +57,7 @@ class FileSpecTest : BaseActionTest() {
 
         val refPath = resourcePath("project/2_rooms.voxarch")
         val testPath = tempDir.resolve("2_rooms.voxarch")
-        app.saveProjectFile(testPath)
+        app.saveProjectFileAs(testPath)
 
         val zipfsRef = newZipFileSystem(refPath)
         val zipfsTest = newZipFileSystem(testPath)
