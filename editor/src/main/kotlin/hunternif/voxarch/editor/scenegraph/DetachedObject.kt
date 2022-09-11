@@ -26,7 +26,7 @@ class DetachedObject(
     }
 
     data class Membership<T : SceneObject>(
-        val subset: SceneTree.Subset<T>,
+        val subset: Subset<T>,
         val objects: MutableSet<T> = mutableSetOf(),
     ) {
         fun tryAdd(child: SceneObject) {

@@ -12,7 +12,7 @@ import org.joml.Vector3f
 /** For creating and loading SceneObjects and Subsets. */
 class SceneRegistry {
     val objectIDs = IDRegistry<SceneObject>()
-    val subsetIDs = IDRegistry<SceneTree.Subset<*>>()
+    val subsetIDs = IDRegistry<Subset<*>>()
 
     fun newObject(
         start: Vector3f = Vector3f(),
@@ -48,9 +48,9 @@ class SceneRegistry {
         return obj
     }
 
-    fun <T : SceneObject> newSubset(name: String): SceneTree.Subset<T> {
+    fun <T : SceneObject> newSubset(name: String): Subset<T> {
         val id = subsetIDs.newID()
-        val subset = SceneTree.Subset<T>(id, name)
+        val subset = Subset<T>(id, name)
         subsetIDs.save(subset)
         return subset
     }
@@ -58,7 +58,7 @@ class SceneRegistry {
     fun save(obj: Any) {
         when (obj) {
             is SceneObject -> obj.forEachSubtree { objectIDs.save(it) }
-            is SceneTree.Subset<*> -> subsetIDs.save(obj)
+            is Subset<*> -> subsetIDs.save(obj)
         }
     }
 

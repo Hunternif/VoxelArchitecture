@@ -92,11 +92,11 @@ class AppStateImpl(
     override val rootNode: SceneNode,
     override val voxelRoot: SceneVoxelGroup,
     // base subsets with IDs:
-    override val generatedNodes: SceneTree.Subset<SceneNode>,
-    override val generatedVoxels: SceneTree.Subset<SceneVoxelGroup>,
-    override val selectedObjects: SceneTree.Subset<SceneObject>,
-    override val hiddenObjects: SceneTree.Subset<SceneObject>,
-    override val manuallyHiddenObjects: SceneTree.Subset<SceneObject>,
+    override val generatedNodes: Subset<SceneNode>,
+    override val generatedVoxels: Subset<SceneVoxelGroup>,
+    override val selectedObjects: Subset<SceneObject>,
+    override val hiddenObjects: Subset<SceneObject>,
+    override val manuallyHiddenObjects: Subset<SceneObject>,
 ) : AppState {
     override var projectPath: Path? = null
 
