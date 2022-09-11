@@ -34,14 +34,14 @@ fun EditorApp.newProject() = action {
 }
 
 fun EditorApp.openProjectFile(path: Path) = action {
-    state = readProject(path)
+    readProject(path)
     redrawNodes()
     redrawVoxels()
     centerCamera()
 }
 
 fun EditorApp.saveProjectFile(path: Path) = action {
-    writeProject(state, path)
+    writeProject(path)
     state.projectPath = path
 }
 

@@ -1,7 +1,8 @@
 package hunternif.voxarch.editor.file
 
-import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.AppStateImpl
+import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
 import java.nio.file.Files
@@ -73,39 +74,50 @@ const val VOXARCH_PROJECT_FILE_EXT = "voxarch"
 /**
  * Reads the project from file and produces a new app state.
  */
-fun readProject(path: Path): AppStateImpl {
+fun EditorAppImpl.readProject(path: Path) {
     val reg = SceneRegistry()
     val sceneRoot = reg.newObject()
 
     val zipfs = newZipFileSystem(path)
     zipfs.use {
-        Files.newBufferedReader(zipfs.getPath("/scenetree.xml")).use {
-            val treeXmlType = deserializeXml(it.readText(), XmlSceneTree::class)
-
-            val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
-            reg.save(rootNode)
-
-            val voxelRoot = treeXmlType.voxelroot?.mapXml() as SceneVoxelGroup
-            reg.save(voxelRoot)
-
-            val generatedNodes = treeXmlType.generatedNodes!!.mapXmlSubset<SceneNode>(reg)
-            val generatedVoxels = treeXmlType.generatedVoxels!!.mapXmlSubset<SceneVoxelGroup>(reg)
-            val selectedObjects = treeXmlType.selectedObjects!!.mapXmlSubset<SceneObject>(reg)
-            val hiddenObjects = treeXmlType.hiddenObjects!!.mapXmlSubset<SceneObject>(reg)
-            val manuallyHiddenObjects = treeXmlType.manuallyHiddenObjects!!.mapXmlSubset<SceneObject>(reg)
-
-            return AppStateImpl(
-                reg,
-                sceneRoot,
-                rootNode,
-                voxelRoot,
-                generatedNodes,
-                generatedVoxels,
-                selectedObjects,
-                hiddenObjects,
-                manuallyHiddenObjects
+        val metadata = Files.newBufferedReader(zipfs.getPath("/metadata.yaml")).use {
+            deserializeYaml(it.readText(), Metadata::class)
+        }
+        if (metadata.formatVersion < FORMAT_VERSION) {
+            logWarning(
+                "Attempting to open $path which uses old version ${metadata.formatVersion}, " +
+                    "while current version is $FORMAT_VERSION. " +
+                    "Things may not work as expected."
             )
         }
+
+        val treeXmlType = Files.newBufferedReader(zipfs.getPath("/scenetree.xml")).use {
+            deserializeXml(it.readText(), XmlSceneTree::class)
+        }
+
+        val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
+        reg.save(rootNode)
+
+        val voxelRoot = treeXmlType.voxelroot?.mapXml() as SceneVoxelGroup
+        reg.save(voxelRoot)
+
+        val generatedNodes = treeXmlType.generatedNodes!!.mapXmlSubset<SceneNode>(reg)
+        val generatedVoxels = treeXmlType.generatedVoxels!!.mapXmlSubset<SceneVoxelGroup>(reg)
+        val selectedObjects = treeXmlType.selectedObjects!!.mapXmlSubset<SceneObject>(reg)
+        val hiddenObjects = treeXmlType.hiddenObjects!!.mapXmlSubset<SceneObject>(reg)
+        val manuallyHiddenObjects = treeXmlType.manuallyHiddenObjects!!.mapXmlSubset<SceneObject>(reg)
+
+        state = AppStateImpl(
+            reg,
+            sceneRoot,
+            rootNode,
+            voxelRoot,
+            generatedNodes,
+            generatedVoxels,
+            selectedObjects,
+            hiddenObjects,
+            manuallyHiddenObjects
+        )
     }
 }
 
@@ -113,9 +125,19 @@ fun readProject(path: Path): AppStateImpl {
  * Writes app state into a project file.
  * Not all state will be written, see the file spec above.
  */
-fun writeProject(state: AppState, path: Path) {
+fun EditorAppImpl.writeProject(path: Path) {
     val zipfs = newZipFileSystem(path)
     zipfs.use {
+        Files.newBufferedWriter(
+            zipfs.getPath("/metadata.yaml"),
+            CREATE,
+            TRUNCATE_EXISTING
+        ).use {
+            val metadata = Metadata(FORMAT_VERSION)
+            val metadataStr = serializeToYamlStr(metadata)
+            it.write(metadataStr)
+        }
+
         Files.newBufferedWriter(
             zipfs.getPath("/scenetree.xml"),
             CREATE,
