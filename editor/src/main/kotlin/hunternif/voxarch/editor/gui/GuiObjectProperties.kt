@@ -31,8 +31,6 @@ class GuiObjectProperties(
     private var lastUpdateTime: Double = GLFW.glfwGetTime()
     private val updateIntervalSeconds: Double = 0.02
 
-    private var headerText: String = ""
-
     private var obj: SceneObject? = null
 
     private val generatorIndex = ImInt(-1)
@@ -42,7 +40,7 @@ class GuiObjectProperties(
     fun render() {
         currentTime = GLFW.glfwGetTime()
         checkSelectedNodes()
-        ImGui.text(headerText)
+        renderHeaderText()
 
         (obj as? SceneNode)?.let {
             renderNode(it)
@@ -103,8 +101,7 @@ class GuiObjectProperties(
                 ImGui.tableNextColumn()
                 ImGui.selectable(gen.javaClass.simpleName)
                 ImGui.tableNextColumn()
-                gui.inlineIconButton("${FontAwesomeIcons.Times}##$i",
-                ) {
+                gui.inlineIconButton(memoStrWithIndex(FontAwesomeIcons.Times, i)) {
                     app.removeGenerator(sceneNode, gen)
                 }
             }
@@ -120,29 +117,36 @@ class GuiObjectProperties(
     /** Check which nodes are currently selected, and update the state of gui */
     private fun checkSelectedNodes() = runAtInterval {
         app.state.selectedObjects.run {
-            when (size) {
-                0 -> {
-                    obj = null
-                    headerText = ""
-                }
-                1 -> {
-                    obj = first()
-                    headerText = obj?.toText() ?: ""
-                }
-                else -> {
-                    obj = null
-                    headerText = "$size nodes"
-                }
+            obj = when (size) {
+                0 -> null
+                1 -> first()
+                else -> null
             }
         }
     }
 
-    private fun SceneObject.toText(): String {
-        val className =
-            if (this is SceneNode) node.javaClass.simpleName
-            else javaClass.simpleName
-        val generated = if (isGenerated) "(generated)" else ""
-        return "$className $generated"
+    private fun renderHeaderText() {
+        app.state.selectedObjects.run {
+            when (size) {
+                0 -> {}
+                1 -> {
+                    val obj = obj
+                    when (obj) {
+                        is SceneNode -> ImGui.text(obj.nodeClassName)
+                        else -> ImGui.text(obj.toString())
+                    }
+                    if (obj?.isGenerated == true) {
+                        ImGui.sameLine()
+                        ImGui.text("(generated)")
+                    }
+                }
+                else -> {
+                    ImGui.text(size.toString())
+                    ImGui.sameLine()
+                    ImGui.text("nodes")
+                }
+            }
+        }
     }
 
     /** Apply the modified values to the node. */

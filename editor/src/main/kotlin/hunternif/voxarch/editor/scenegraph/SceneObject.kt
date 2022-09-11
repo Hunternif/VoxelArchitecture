@@ -44,5 +44,6 @@ open class SceneObject(
         return super.removeChild(child)
     }
 
-    override fun toString() = "${javaClass.simpleName} $id"
+    private val strRepr: String by lazy { "${javaClass.simpleName} $id" }
+    override fun toString() = strRepr
 }

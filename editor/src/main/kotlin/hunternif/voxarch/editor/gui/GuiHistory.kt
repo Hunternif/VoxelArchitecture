@@ -71,12 +71,15 @@ class GuiHistory(
         // Column 2 is the description
         ImGui.tableNextColumn()
         ImGui.alignTextToFramePadding()
-        val description = if (isSaved) "${item.description} (saved)" else item.description
         if (isLast) {
             // Highlight the last item to separate it from others.
-            ImGui.selectable(description, true, ImGuiSelectableFlags.SpanAllColumns)
+            ImGui.selectable(item.description, true, ImGuiSelectableFlags.SpanAllColumns)
         } else {
-            ImGui.text(description)
+            ImGui.text(item.description)
+        }
+        if (isSaved) {
+            ImGui.sameLine()
+            ImGui.text("(saved)")
         }
     }
 }

@@ -54,8 +54,13 @@ class MainGui(val app: EditorApp) : GuiBase() {
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
-                ImGui.text("Tool: ${app.state.currentTool.toolName}")
-                ImGui.text("%.0f fps".format(fpsCounter.fps))
+                ImGui.text("Tool: ")
+                ImGui.sameLine()
+                ImGui.text(app.state.currentTool.toolName)
+
+                ImGui.text(fpsCounter.fpsRoundStr)
+                ImGui.sameLine()
+                ImGui.text(" fps")
             }
             overlay("camera_controls", Corner.BOTTOM_RIGHT,
                 innerPadding=0f, bgAlpha=1f) {
@@ -176,7 +181,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                     ImGui.textWrapped(e.msg)
                 }
                 is LogMessage.Error -> {
-                    if (ImGui.treeNode("${e.javaClass.simpleName}: ${e.ex.message}")) {
+                    if (ImGui.treeNode(e.shortMsg)) {
                         for (stackFrame in e.ex.stackTrace) {
                             ImGui.text(stackFrame.toString())
                         }

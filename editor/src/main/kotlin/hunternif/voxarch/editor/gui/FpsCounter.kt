@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import org.lwjgl.glfw.GLFW.glfwGetTime
+import kotlin.math.roundToInt
 
 class FpsCounter {
     private var lastUpdateTime: Double = glfwGetTime()
@@ -15,6 +16,13 @@ class FpsCounter {
 
     /** Frames per second */
     var fps: Double = 0.0
+        private set(value) {
+            field = value
+            fpsRoundStr = value.roundToInt().toString()
+        }
+
+    /** String value of fps counter rounded to int */
+    var fpsRoundStr: String = "0"
         private set
 
     fun run() {

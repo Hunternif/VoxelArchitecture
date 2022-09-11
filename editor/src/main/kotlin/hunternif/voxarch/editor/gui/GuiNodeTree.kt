@@ -18,10 +18,11 @@ class GuiNodeTree(
     override val root: SceneNode get() = app.state.rootNode
     override fun label(item: SceneObject): String {
         if (item is SceneNode) {
-            val nodeClass = item.node.javaClass.simpleName
-            val type = item.node.type.let { if (!it.isNullOrEmpty()) " $it" else "" }
-            val generators = if (item.generators.isNotEmpty()) " []" else ""
-            return "$nodeClass$type$generators"
+            var result = item.nodeClassName
+            val type = item.node.type
+            if (!type.isNullOrEmpty()) result += " $type"
+            if (item.generators.isNotEmpty()) result += " []"
+            return result
         }
         return item.toString()
     }
@@ -117,14 +118,14 @@ abstract class GuiSceneTree(
         val updatedHidden = node in app.state.hiddenObjects
         if (updatedHidden)
             gui.smallIconButton(
-                "${FontAwesomeIcons.EyeSlash}##$i",
+                memoStrWithIndex(FontAwesomeIcons.EyeSlash, i),
                 transparent = true
             ) {
                 app.showObject(node)
             }
         else
             gui.smallIconButton(
-                "${FontAwesomeIcons.Eye}##$i",
+                memoStrWithIndex(FontAwesomeIcons.Eye, i),
                 transparent = true
             ) {
                 app.hideObject(node)

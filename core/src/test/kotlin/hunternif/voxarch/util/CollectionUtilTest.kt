@@ -14,4 +14,28 @@ class CollectionUtilTest {
     fun `loop empty sequence`() {
         emptyList<Int>().loopSequence().toList()
     }
+
+    @Test
+    fun `get or insert into list`() {
+        val list = mutableListOf<String?>()
+
+        val foo = list.getOrInsert(0) { "foo" }
+        assertEquals("foo", foo)
+        assertEquals(1, list.size)
+        assertEquals("foo", list[0])
+
+        val bar = list.getOrInsert(2) { "bar" }
+        assertEquals("bar", bar)
+        assertEquals(3, list.size)
+        assertEquals("foo", list[0])
+        assertEquals(null, list[1])
+        assertEquals("bar", list[2])
+
+        val buz = list.getOrInsert(0) { "buz" }
+        assertEquals("foo", buz)
+
+        val lol = list.getOrInsert(1) { "lol" }
+        assertEquals("lol", lol)
+        assertEquals("lol", list[1])
+    }
 }
