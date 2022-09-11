@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.builder.createGeneratorByName
 import hunternif.voxarch.editor.file.readProject
 import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
+import hunternif.voxarch.editor.newState
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.IGenerator
@@ -24,6 +25,15 @@ import java.nio.file.Path
 
 
 //============================ PROJECT FILE =============================
+
+fun EditorApp.newProject() = action {
+    clearNewNodeFrame()
+    unselectAll()
+    state = newState()
+    redrawNodes()
+    redrawVoxels()
+    centerCamera()
+}
 
 fun EditorApp.openProjectFile(path: Path) = action {
     clearNewNodeFrame()

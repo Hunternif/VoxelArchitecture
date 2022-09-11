@@ -8,6 +8,9 @@ fun MainGui.mainMenu() {
     ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
     if (ImGui.beginMainMenuBar()) {
         if (ImGui.beginMenu("File")) {
+            if (ImGui.menuItem("New project", "Ctrl+N")) {
+                app.newProject()
+            }
             if (ImGui.menuItem("Open project", "Ctrl+O")) {
                 app.openDialogOpenProjectFile()
             }
