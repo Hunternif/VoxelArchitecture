@@ -3,16 +3,10 @@ package hunternif.voxarch.editor.scenegraph
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.emptyArray3D
 import org.junit.Assert.*
-import org.junit.Before
 import org.junit.Test
 
 class SceneRegistryTest {
     private val registry = SceneRegistry()
-
-    @Before
-    fun setup() {
-        registry.clear()
-    }
 
     @Test
     fun `register new objects in order`() {

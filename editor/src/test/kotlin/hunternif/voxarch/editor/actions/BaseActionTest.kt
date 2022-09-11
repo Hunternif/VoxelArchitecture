@@ -6,14 +6,7 @@ import org.junit.Before
 abstract class BaseActionTest {
     @Before
     fun resetState() {
-        app.state.run {
-            rootNode.removeAllChildren()
-            voxelRoot.removeAllChildren()
-            parentNode = rootNode
-            registry.clear()
-            sceneTree.subsets.forEach { it.clear() }
-            history.clear()
-        }
+        app.newProject()
     }
 
     protected val app: EditorAppImpl get() = Companion.app

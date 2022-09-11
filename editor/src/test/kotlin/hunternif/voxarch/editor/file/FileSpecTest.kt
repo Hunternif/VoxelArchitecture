@@ -13,7 +13,7 @@ import org.junit.Before
 import org.junit.Test
 
 class FileSpecTest : BaseActionTest() {
-    private val root: Structure = Structure()
+    private lateinit var root: Structure
     private lateinit var room1: Room
     private lateinit var room2: Room
     private lateinit var room3: Room
@@ -21,6 +21,8 @@ class FileSpecTest : BaseActionTest() {
 
     @Before
     fun setup() {
+        // This structure mirrors what will be created inside AppState
+        root = Structure()
         room1 = root.centeredRoom(Vec3(-4.0, 0.0, -3.5), Vec3(8, 5, 9))
         room2 = root.room(Vec3(-4, 0, 1), Vec3(3, 3, 6))
         room3 = room2.room(Vec3(1, 2, -1), Vec3(2, 3, 0))
@@ -30,13 +32,13 @@ class FileSpecTest : BaseActionTest() {
     @Test
     fun `read project 2_rooms`() {
         val path = resourcePath("project/2_rooms.voxarch")
-        val state = readProject(path)
-        assertEquals(2, state.rootNode.children.size)
-        assertEquals(2, state.rootNode.node.children.size)
-        assertNodeEquals(room1, state.rootNode.node.children[0])
-        assertNodeEquals(room2, state.rootNode.node.children[1])
-        assertEquals(1, state.rootNode.node.children[1].children.size)
-        assertNodeEquals(room3, state.rootNode.node.children[1].children[0])
+        app.openProjectFile(path)
+        assertEquals(2, app.state.rootNode.children.size)
+        assertEquals(2, app.state.rootNode.node.children.size)
+        assertNodeEquals(room1, app.state.rootNode.node.children[0])
+        assertNodeEquals(room2, app.state.rootNode.node.children[1])
+        assertEquals(1, app.state.rootNode.node.children[1].children.size)
+        assertNodeEquals(room3, app.state.rootNode.node.children[1].children[0])
     }
 
     @Test
@@ -54,8 +56,8 @@ class FileSpecTest : BaseActionTest() {
         app.selectAll()
 
         val refPath = resourcePath("project/2_rooms.voxarch")
-        val testPath = tempDir.resolve("2_rooms_test.voxarch")
-        writeProject(app.state, testPath)
+        val testPath = tempDir.resolve("2_rooms.voxarch")
+        app.saveProjectFile(testPath)
 
         val zipfsRef = newZipFileSystem(refPath)
         val zipfsTest = newZipFileSystem(testPath)
