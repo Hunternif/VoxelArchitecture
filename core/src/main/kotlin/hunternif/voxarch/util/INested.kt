@@ -8,6 +8,7 @@ interface INested<T : INested<T>> {
     /** Should only be modified via `addChild` and `removeChild`. */
     val children: MutableCollection<T>
 
+    /** Recursive sequence of children, including `this` instance. */
     fun iterateSubtree() = sequence<T> {
         val queue = LinkedList<T>()
         queue.add(this@INested as T)
@@ -47,5 +48,19 @@ interface INested<T : INested<T>> {
         for (child in childrenCopy) {
             removeChild(child)
         }
+    }
+}
+
+/** Runs action recursively on all children, including `this` instance. */
+@Suppress("UNCHECKED_CAST")
+inline fun <T : INested<T>> INested<T>.forEachSubtree(
+    crossinline action: (T) -> Unit
+) {
+    val queue = LinkedList<T>()
+    queue.add(this as T)
+    while (queue.isNotEmpty()) {
+        val next = queue.removeFirst()
+        action(next)
+        queue.addAll(next.children)
     }
 }

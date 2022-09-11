@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.util.WithID
+import hunternif.voxarch.util.forEachSubtree
 
 /**
  * An entity that unifies a single scene tree.
@@ -42,6 +43,6 @@ class SceneTree(
     }
 
     fun remove(subtree: SceneObject) {
-        subtree.iterateSubtree().forEach { items.remove(it) }
+        subtree.forEachSubtree { items.remove(it) }
     }
 }

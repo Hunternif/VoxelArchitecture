@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.scenegraph
 
+import hunternif.voxarch.util.forEachSubtree
+
 /**
  * Contains information about an object after it's removed from the tree,
  * so that it can be attached again.
@@ -45,7 +47,7 @@ fun SceneObject.detached(): DetachedObject {
     val memberships = this.tree?.subsets?.map {
         DetachedObject.Membership(it)
     } ?: emptyList()
-    this.iterateSubtree().forEach { child ->
+    this.forEachSubtree { child ->
         memberships.forEach { it.tryAdd(child) }
     }
     return DetachedObject(parent, this, memberships)

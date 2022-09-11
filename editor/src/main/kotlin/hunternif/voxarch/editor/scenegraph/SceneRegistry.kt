@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
+import hunternif.voxarch.util.forEachSubtree
 import org.joml.Vector3f
 
 /** For creating and loading SceneObjects and Subsets. */
@@ -56,7 +57,7 @@ class SceneRegistry {
 
     fun save(obj: Any) {
         when (obj) {
-            is SceneObject -> obj.iterateSubtree().forEach { objectIDs.save(it) }
+            is SceneObject -> obj.forEachSubtree { objectIDs.save(it) }
             is SceneTree.Subset<*> -> subsetIDs.save(obj)
         }
     }
@@ -69,7 +70,7 @@ class SceneRegistry {
     /** Create a SceneNode tree matching the hierarchy of the node tree. */
     fun createNodes(tree: Node): SceneNode {
         val wrapperMap = mutableMapOf<Node, SceneNode>()
-        tree.iterateSubtree().forEach { node ->
+        tree.forEachSubtree { node ->
             val newWrapper = newNode(node)
             wrapperMap[node] = newWrapper
             node.parent?.let { wrapperMap[it] }?.children?.add(newWrapper)
