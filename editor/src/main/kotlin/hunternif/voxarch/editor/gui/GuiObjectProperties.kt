@@ -65,11 +65,11 @@ class GuiObjectProperties(
                 app.transformNodeSize(sceneNode, original, newValue)
             }
 
-            if (node.isCentered()) ImGui.beginDisabled()
-            startInput.render(node.start) {
-                app.transformNodeStart(sceneNode, original, newValue)
+            disabled(node.isCentered()) {
+                startInput.render(node.start) {
+                    app.transformNodeStart(sceneNode, original, newValue)
+                }
             }
-            if (node.isCentered()) ImGui.endDisabled()
 
             centeredInput.render(node.isCentered()) {
                 app.transformNodeCentered(sceneNode, it)

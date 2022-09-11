@@ -56,3 +56,9 @@ val toolbarHeight get() = ImGui.getFrameHeightWithSpacing() +
     /* ImGui.getStyle().windowPaddingY = */ 4f * 2
 
 val thinToolbarHeight get() = ImGui.getFrameHeightWithSpacing()
+
+inline fun disabled(disabledIf: Boolean = true, crossinline block: () -> Unit) {
+    if (disabledIf) ImGui.beginDisabled()
+    block()
+    if (disabledIf) ImGui.endDisabled()
+}

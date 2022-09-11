@@ -29,13 +29,13 @@ class GuiHistory(
                 renderItem(item, isLast = item === lastItem)
             }
 
-            ImGui.beginDisabled()
-            pushStyleColor(ImGuiCol.Text, Colors.hiddenItemLabel) // extra dark
-            for (item in app.state.history.futureItems) {
-                renderItem(item)
+            disabled {
+                pushStyleColor(ImGuiCol.Text, Colors.hiddenItemLabel) // extra dark
+                for (item in app.state.history.futureItems) {
+                    renderItem(item)
+                }
+                ImGui.popStyleColor()
             }
-            ImGui.popStyleColor()
-            ImGui.endDisabled()
 
             ImGui.endTable()
         }
