@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor
 
+import hunternif.voxarch.editor.actions.newProject
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
@@ -29,7 +30,7 @@ class EditorAppImpl : EditorApp {
     internal val gui = MainGui(this)
     internal val scene = MainScene(this)
 
-    override var state: AppStateImpl = newState()
+    override lateinit var state: AppStateImpl
 
     fun run() {
         init()
@@ -65,6 +66,7 @@ class EditorAppImpl : EditorApp {
         // ImGui must be initialized after other GLFW callbacks are registered
         gui.init(window, vp, 4)
         glfwShowWindow(window)
+        newProject()
     }
 
     private fun registerWindowEventHandler() {

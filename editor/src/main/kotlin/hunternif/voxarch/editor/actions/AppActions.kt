@@ -27,8 +27,6 @@ import java.nio.file.Path
 //============================ PROJECT FILE =============================
 
 fun EditorApp.newProject() = action {
-    clearNewNodeFrame()
-    unselectAll()
     state = newState()
     redrawNodes()
     redrawVoxels()
@@ -36,8 +34,6 @@ fun EditorApp.newProject() = action {
 }
 
 fun EditorApp.openProjectFile(path: Path) = action {
-    clearNewNodeFrame()
-    unselectAll()
     state = readProject(path)
     redrawNodes()
     redrawVoxels()
