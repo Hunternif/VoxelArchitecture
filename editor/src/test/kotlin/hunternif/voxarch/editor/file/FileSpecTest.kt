@@ -61,7 +61,7 @@ class FileSpecTest : BaseActionTest() {
         val zipfsTest = newZipFileSystem(testPath)
         zipfsRef.use {
             zipfsTest.use {
-                assertFilesEqual(
+                assertTextFilesEqual(
                     zipfsRef.getPath("/scenetree.xml"),
                     zipfsTest.getPath("/scenetree.xml")
                 )
