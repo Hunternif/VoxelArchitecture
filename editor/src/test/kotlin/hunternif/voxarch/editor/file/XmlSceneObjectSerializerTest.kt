@@ -18,7 +18,7 @@ class XmlSceneObjectSerializerTest {
             <node class="Floor" height="1.0"/>
           </node>
           <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
-            <polygon class="Path"/>
+            <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
           </node>
         </node>
         """.trimIndent()
@@ -39,7 +39,7 @@ class XmlSceneObjectSerializerTest {
           </obj>
           <obj class="SceneNode" id="2" generated="false" color="4296fa" alpha="0.2">
             <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
-              <polygon class="Path"/>
+              <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
             </node>
           </obj>
           <node class="Structure" origin="(1.0, 2.0, 3.0)"/>

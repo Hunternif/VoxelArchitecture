@@ -30,7 +30,7 @@ class XmlSerializersTest {
             <node class="Floor" height="1.0"/>
           </node>
           <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
-            <polygon class="Path"/>
+            <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
           </node>
         </node>
         """.trimIndent()
@@ -47,7 +47,7 @@ class XmlSerializersTest {
 
     private val polygonRoomXml = """
         <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
-          <polygon class="Path">
+          <polygon class="Path" origin="(0.0, 0.0, 0.0)">
             <point>(0.0, 0.0, 0.0)</point>
             <point>(1.0, 2.0, 3.0)</point>
           </polygon>

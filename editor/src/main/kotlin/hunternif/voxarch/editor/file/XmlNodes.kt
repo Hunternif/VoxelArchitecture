@@ -91,7 +91,7 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode? = when (this) {
     is Room -> XmlRoom(origin, size, start, isCentered())
     is Wall -> XmlWall(origin, end, transparent)
     is Floor -> XmlFloor(height)
-    is Path -> XmlPath(points)
+    is Path -> XmlPath(points, origin)
     else -> null
 }
 
