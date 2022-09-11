@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.gui
 
 import imgui.ImGui
-import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiDir
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
@@ -32,6 +31,17 @@ private var dockSpaceInitialized = false
 
 interface DockspaceLayoutBuilder {
     fun build(dockNodeID: Int)
+}
+
+/** Container for the whole layout. */
+class DockLayout(
+    private val root: DockspaceLayoutBuilder,
+): DockspaceLayoutBuilder {
+    internal var isBuilt = false
+    override fun build(dockNodeID: Int) {
+        root.build(dockNodeID)
+        isBuilt = true
+    }
 }
 
 class HorizontalSplit(
@@ -110,7 +120,7 @@ class WindowGroup(private vararg val windows: Window): DockspaceLayoutBuilder {
     }
 }
 
-fun dockspace(layout: DockspaceLayoutBuilder) {
+fun dockspace(layout: DockLayout) {
     val dockspaceId = ImGui.getID("MyDockSpace")
     val vp = ImGui.getMainViewport()
     ImGui.setNextWindowPos(vp.workPosX, vp.workPosY)
@@ -133,15 +143,12 @@ fun dockspace(layout: DockspaceLayoutBuilder) {
     ImGui.dockSpace(dockspaceId, vp.workSizeX, vp.workSizeY, dockFlags)
     if (!dockSpaceInitialized) {
         dockSpaceInitialized = true
-
         DockImGui.dockBuilderRemoveNode(dockspaceId)
         DockImGui.dockBuilderAddNode(dockspaceId, ImGuiDockNodeFlags.DockSpace)
         DockImGui.dockBuilderSetNodeSize(dockspaceId, vp.workSizeX, vp.workSizeY)
-
-        layout.build(dockspaceId)
-
         DockImGui.dockBuilderFinish(dockspaceId)
     }
+    if (!layout.isBuilt) layout.build(dockspaceId)
     ImGui.end()
     ImGui.popStyleVar(3)
 }

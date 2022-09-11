@@ -21,7 +21,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
 
-    @PublishedApi internal val layout = HorizontalSplit(
+    @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightRatio = 0.25f,
         left = WindowGroup(
             Window("Scene"),
@@ -38,7 +38,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 )
             ),
         ),
-    )
+    ))
 
     fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
         super.init(windowHandle)
