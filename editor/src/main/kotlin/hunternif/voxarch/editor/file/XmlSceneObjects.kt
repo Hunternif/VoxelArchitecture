@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -28,6 +29,7 @@ import hunternif.voxarch.vector.Vec3
 ])
 @JacksonXmlRootElement(localName = "obj")
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 open class XmlSceneObject(
     @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,

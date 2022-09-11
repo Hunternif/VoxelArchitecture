@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
@@ -7,6 +8,7 @@ import hunternif.voxarch.editor.scenegraph.*
 
 /** Represents part of the AppState related to the scene tree. */
 @JacksonXmlRootElement(localName = "scenetree")
+@JsonIgnoreProperties(ignoreUnknown = true)
 class XmlSceneTree(
     @field:JacksonXmlProperty
     var noderoot: XmlSceneObject? = null,
@@ -31,6 +33,7 @@ class XmlSceneTree(
 )
 
 @JacksonXmlRootElement(localName = "subset")
+@JsonIgnoreProperties(ignoreUnknown = true)
 class XmlSubset(
     @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,
