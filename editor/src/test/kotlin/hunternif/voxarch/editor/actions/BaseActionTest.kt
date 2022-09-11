@@ -10,9 +10,8 @@ abstract class BaseActionTest {
             rootNode.removeAllChildren()
             voxelRoot.removeAllChildren()
             parentNode = rootNode
-            selectedObjects.clear()
-            hiddenObjects.clear()
-            manuallyHiddenObjects.clear()
+            registry.clear()
+            sceneTree.subsets.forEach { it.clear() }
             history.clear()
         }
     }

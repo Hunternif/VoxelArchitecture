@@ -15,7 +15,7 @@ Project folder structure:
 
 / project.voxarch
   - metadata.yaml
-  - nodes.xml
+  - scenetree.xml
   / voxels
     - generated.vox
     - imported-1.vox
@@ -32,17 +32,28 @@ The folder could be zipped into a single file.
 0. Metadata
 Format version, project name etc.
 
-1. Nodes
+1. Scene Tree
 Serialized to XML. Raw node objects are mapped to a DTO class and serialized
 via annotations.
+Nodes are contained within SceneObjects.
+Subsets are serialized as a list of ids.
 
     Example:
-    <structure origin="(0, 0, 0)">
-        <room>
-            <wall>
-            <wall>
-        </room>
-    </structure>
+    <obj id="0">
+        <structure origin="(0, 0, 0)"/>
+        <obj id="1">
+            <room/>
+            <obj id="2">
+                <wall/>
+            </obj>
+            <obj id="3">
+                <wall/>
+            </obj>
+        </obj>
+    </obj>
+    <subset name="hidden">
+        <item>1</item>
+    </subset>
 
 
 2. Voxels
@@ -77,12 +88,12 @@ fun readProject(path: Path): AppStateImpl {
             val voxelRoot = treeXmlType.voxelroot?.mapXml() as SceneVoxelGroup
             reg.save(voxelRoot)
 
-            // The subsets are default so far:
-            val generatedNodes = reg.newSubset<SceneNode>("generated nodes")
-            val generatedVoxels = reg.newSubset<SceneVoxelGroup>("generated voxels")
-            val selectedObjects = reg.newSubset<SceneObject>("selected")
-            val hiddenObjects = reg.newSubset<SceneObject>("hidden")
-            val manuallyHiddenObjects = reg.newSubset<SceneObject>("manually hidden")
+            val generatedNodes = treeXmlType.generatedNodes!!.mapXmlSubset<SceneNode>(reg)
+            val generatedVoxels = treeXmlType.generatedVoxels!!.mapXmlSubset<SceneVoxelGroup>(reg)
+            val selectedObjects = treeXmlType.selectedObjects!!.mapXmlSubset<SceneObject>(reg)
+            val hiddenObjects = treeXmlType.hiddenObjects!!.mapXmlSubset<SceneObject>(reg)
+            val manuallyHiddenObjects = treeXmlType.manuallyHiddenObjects!!.mapXmlSubset<SceneObject>(reg)
+
             return AppStateImpl(
                 reg,
                 sceneRoot,
@@ -113,6 +124,11 @@ fun writeProject(state: AppState, path: Path) {
             val treeXmlType = XmlSceneTree(
                 noderoot = state.rootNode.mapToXml(),
                 voxelroot = state.voxelRoot.mapToXml(),
+                generatedNodes = state.generatedNodes.mapToXml(),
+                generatedVoxels = state.generatedVoxels.mapToXml(),
+                selectedObjects = state.selectedObjects.mapToXml(),
+                hiddenObjects = state.hiddenObjects.mapToXml(),
+                manuallyHiddenObjects = state.manuallyHiddenObjects.mapToXml(),
             )
             val treeXmlStr = serializeToXmlStr(treeXmlType, true)
             it.write(treeXmlStr)

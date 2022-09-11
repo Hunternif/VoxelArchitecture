@@ -40,8 +40,8 @@ interface AppState {
     val stylesheet: Stylesheet
     val seed: Long
     val generatorNames: List<String>
-    val generatedNodes: Collection<SceneNode>
-    val generatedVoxels: Collection<SceneVoxelGroup>
+    val generatedNodes: Subset<SceneNode>
+    val generatedVoxels: Subset<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
 
 
@@ -57,11 +57,11 @@ interface AppState {
     val sceneObjects: Collection<SceneObject> get() = sceneTree.items
     /** Objects currently selected by cursor, for modification or inspection.
      * Should not contain [rootNode]. */
-    val selectedObjects: Set<SceneObject>
+    val selectedObjects: Subset<SceneObject>
     /** Objects hidden either manually or via its parent being hidden. */
-    val hiddenObjects: Set<SceneObject>
+    val hiddenObjects: Subset<SceneObject>
     /** Objects marked as hidden in UI, and invisible in 3d viewport. */
-    val manuallyHiddenObjects: Set<SceneObject>
+    val manuallyHiddenObjects: Subset<SceneObject>
 
 
     //=============================== TOOLS =================================
@@ -120,6 +120,8 @@ class AppStateImpl(
         subsets.add(selectedObjects)
         subsets.add(hiddenObjects)
         subsets.add(manuallyHiddenObjects)
+        subsets.add(generatedNodes)
+        subsets.add(generatedVoxels)
     }
 
     override var currentTool: Tool = Tool.ADD_NODE
