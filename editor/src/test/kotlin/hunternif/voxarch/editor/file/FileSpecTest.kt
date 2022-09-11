@@ -50,8 +50,8 @@ class FileSpecTest : BaseActionTest() {
         zipfsRef.use {
             zipfsTest.use {
                 assertFilesEqual(
-                    zipfsRef.getPath("/nodes.xml"),
-                    zipfsTest.getPath("/nodes.xml")
+                    zipfsRef.getPath("/scenetree.xml"),
+                    zipfsTest.getPath("/scenetree.xml")
                 )
             }
         }

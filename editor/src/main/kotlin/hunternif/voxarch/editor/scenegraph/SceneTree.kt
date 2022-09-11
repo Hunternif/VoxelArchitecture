@@ -10,13 +10,16 @@ class SceneTree(
     /** Root of the tree structure, should be a dummy object. */
     val root: SceneObject
 ) : Iterable<SceneObject> {
-    init {
-        root.tree = this
-    }
 
     /** All nodes currently in the tree */
     val items: LinkedHashSet<SceneObject> = LinkedHashSet()
     override fun iterator(): Iterator<SceneObject> = items.iterator()
+
+    init {
+        root.tree = this
+        add(root) // in case the root already has children
+        items.remove(root)
+    }
 
     /**
      * Subsets of objects within this tree.

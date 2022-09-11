@@ -2,13 +2,8 @@ package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.AppStateImpl
-import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.scenegraph.SceneRegistry
-import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.util.emptyArray3D
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.CREATE
@@ -73,11 +68,16 @@ fun readProject(path: Path): AppStateImpl {
 
     val zipfs = newZipFileSystem(path)
     zipfs.use {
-        Files.newBufferedReader(zipfs.getPath("/nodes.xml")).use {
-            val rootStructure = deserializeXml(it.readText(), Node::class)
-            val rootNode = reg.createNodes(rootStructure)
-            // The rest is default so far:
-            val voxelRoot = reg.newVoxelGroup("Voxel groups", emptyArray3D())
+        Files.newBufferedReader(zipfs.getPath("/scenetree.xml")).use {
+            val treeXmlType = deserializeXml(it.readText(), XmlSceneTree::class)
+
+            val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
+            reg.save(rootNode)
+
+            val voxelRoot = treeXmlType.voxelroot?.mapXml() as SceneVoxelGroup
+            reg.save(voxelRoot)
+
+            // The subsets are default so far:
             val generatedNodes = reg.newSubset<SceneNode>("generated nodes")
             val generatedVoxels = reg.newSubset<SceneVoxelGroup>("generated voxels")
             val selectedObjects = reg.newSubset<SceneObject>("selected")
@@ -106,12 +106,16 @@ fun writeProject(state: AppState, path: Path) {
     val zipfs = newZipFileSystem(path)
     zipfs.use {
         Files.newBufferedWriter(
-            zipfs.getPath("/nodes.xml"),
+            zipfs.getPath("/scenetree.xml"),
             CREATE,
             TRUNCATE_EXISTING
         ).use {
-            val nodesXml = serializeToXmlStr(state.rootNode.node, true)
-            it.write(nodesXml)
+            val treeXmlType = XmlSceneTree(
+                noderoot = state.rootNode.mapToXml(),
+                voxelroot = state.voxelRoot.mapToXml(),
+            )
+            val treeXmlStr = serializeToXmlStr(treeXmlType, true)
+            it.write(treeXmlStr)
         }
     }
 }

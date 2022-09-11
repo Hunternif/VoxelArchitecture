@@ -56,7 +56,7 @@ class SceneRegistry {
 
     fun save(obj: Any) {
         when (obj) {
-            is SceneObject -> objectIDs.save(obj)
+            is SceneObject -> obj.iterateSubtree().forEach { objectIDs.save(it) }
             is SceneTree.Subset<*> -> subsetIDs.save(obj)
         }
     }
