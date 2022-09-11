@@ -4,11 +4,13 @@ import hunternif.voxarch.editor.actions.newProject
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.util.LogMessage
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryUtil
+import java.util.*
 
 fun main() = EditorAppImpl().run()
 
@@ -20,6 +22,7 @@ fun main() = EditorAppImpl().run()
  */
 interface EditorApp {
     val state: AppState
+    val logs: List<LogMessage>
 }
 
 class EditorAppImpl : EditorApp {
@@ -31,15 +34,12 @@ class EditorAppImpl : EditorApp {
     internal val scene = MainScene(this)
 
     override lateinit var state: AppStateImpl
+    override val logs = LinkedList<LogMessage>()
 
     fun run() {
         init()
         while (!glfwWindowShouldClose(window)) {
-            try {
-                runFrame()
-            } catch (e: Exception) {
-                state.errors.add(e)
-            }
+            runFrame()
         }
         Callbacks.glfwFreeCallbacks(window)
         glfwTerminate()

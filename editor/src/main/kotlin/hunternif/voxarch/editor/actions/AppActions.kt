@@ -80,9 +80,8 @@ fun EditorApp.buildVoxels() = historyAction(BuildVoxels())
 //============================== SELECTION ==============================
 
 /** Modify selection in multiple steps. */
-fun EditorApp.selectionBuilder(mask: SelectMask = ALL) = action {
-    SelectObjectsBuilder(this, mask)
-}
+fun EditorApp.selectionBuilder(mask: SelectMask = ALL) =
+    SelectObjectsBuilder(this as EditorAppImpl, mask)
 
 /** Add the given object to selection. */
 fun EditorApp.selectObject(obj: SceneObject) = selectionBuilder().run {
@@ -125,16 +124,14 @@ fun EditorApp.setParentNode(node: SceneNode) = historyAction(SetParent(node))
 //============================== TRANSFORM ==============================
 
 /** Modify object position in multiple steps. */
-fun EditorApp.moveBuilder(objs: Collection<SceneObject>) = action {
-    MoveObjectsBuilder(this, objs.toList())
-}
+fun EditorApp.moveBuilder(objs: Collection<SceneObject>) =
+    MoveObjectsBuilder(this as EditorAppImpl, objs.toList())
 
 /** Modify object size in multiple steps.
  * Room start will be modified to keep origin in the same global position.
  * A centered room will be resized symmetrically. */
-fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) = action {
-    ResizeNodesBuilder(this, objs.toList())
-}
+fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) =
+    ResizeNodesBuilder(this as EditorAppImpl, objs.toList())
 
 fun EditorApp.transformNodeOrigin(
     obj: SceneNode,
@@ -230,10 +227,14 @@ fun EditorApp.redo() = action {
 /////////////////////////// TECHNICAL ACTIONS ///////////////////////////////
 
 /** Runs an action, doesn't write it to history. */
-internal inline fun <T> EditorApp.action(
-    crossinline execute: EditorAppImpl.() -> T
-): T {
-    return (this as EditorAppImpl).execute()
+internal inline fun EditorApp.action(
+    crossinline execute: EditorAppImpl.() -> Unit
+) {
+    try {
+        (this as EditorAppImpl).execute()
+    } catch (e: Exception) {
+        logError(e)
+    }
 }
 
 /** Runs an action and also writes it to history. */

@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AABBFace
+import hunternif.voxarch.editor.util.LogMessage
 import hunternif.voxarch.editor.util.openFileDialog
 import hunternif.voxarch.editor.util.saveFileDialog
 import java.util.*
@@ -124,4 +125,12 @@ fun EditorApp.focusMainWindow(focused: Boolean) = action {
 
 fun EditorApp.hoverMainWindow(hovered: Boolean) = action {
     state.isMainWindowHovered = hovered
+}
+
+fun EditorApp.logWarning(msg: String) = action {
+    logs.add(LogMessage.Warning(msg))
+}
+
+fun EditorApp.logError(e: Exception) = action {
+    logs.add(LogMessage.Error(e))
 }

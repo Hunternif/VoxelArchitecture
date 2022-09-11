@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.util.LogMessage
 import imgui.ImGui
 import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiStyleVar
@@ -47,7 +48,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
-        errorWindow()
+        logWindow()
         fpsCounter.run()
         mainMenu()
         dockspace(layout)
@@ -165,13 +166,20 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     @PublishedApi
-    internal fun errorWindow() {
-        for (e in app.state.errors) {
-            if (ImGui.treeNode("${e.javaClass.simpleName}: ${e.message}")) {
-                for (stackFrame in e.stackTrace) {
-                    ImGui.text(stackFrame.toString())
+    internal fun logWindow() {
+        for (e in app.logs) {
+            when (e) {
+                is LogMessage.Warning -> {
+                    ImGui.textWrapped(e.msg)
                 }
-                ImGui.treePop()
+                is LogMessage.Error -> {
+                    if (ImGui.treeNode("${e.javaClass.simpleName}: ${e.ex.message}")) {
+                        for (stackFrame in e.ex.stackTrace) {
+                            ImGui.text(stackFrame.toString())
+                        }
+                        ImGui.treePop()
+                    }
+                }
             }
         }
     }

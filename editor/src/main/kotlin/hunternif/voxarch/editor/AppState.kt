@@ -20,7 +20,6 @@ import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.world.defaultEnvironment
 import java.nio.file.Path
-import java.util.LinkedList
 
 /**
  * Contains data that completely defines app state.
@@ -77,7 +76,6 @@ interface AppState {
     val DEBUG: Boolean
     val isMainWindowFocused: Boolean
     val isMainWindowHovered: Boolean
-    val errors: List<Exception>
 
 
     //============================ GUI SETTINGS =============================
@@ -132,13 +130,12 @@ class AppStateImpl(
     override val DEBUG = true
     override var isMainWindowFocused = false
     override var isMainWindowHovered = false
-    override val errors = LinkedList<Exception>()
 
     override var gridMargin = 9
 }
 
 /** Create a new clean state. */
-fun newState() : AppStateImpl {
+fun newState(): AppStateImpl {
     val reg = SceneRegistry()
     return AppStateImpl(
         registry = reg,
