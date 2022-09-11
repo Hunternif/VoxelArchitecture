@@ -1,6 +1,5 @@
 package hunternif.voxarch.editor.file
 
-import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
@@ -33,20 +32,8 @@ open class XmlSceneObject(
     @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,
 
-    @field:JacksonXmlProperty(isAttribute = true, localName = "color")
-    var colorHexRGB: String = "ffffff",
-
-    @field:JacksonXmlProperty(isAttribute = true, localName = "alpha")
-    var colorAlpha: Float = 1f,
-
     @field:JacksonXmlProperty(isAttribute = true)
     var generated: Boolean = false,
-
-    @field:JacksonXmlProperty(isAttribute = true)
-    open var start: Vec3 = Vec3.ZERO,
-
-    @field:JacksonXmlProperty(isAttribute = true)
-    open var size: Vec3 = Vec3.ZERO,
 ) {
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "obj")
@@ -59,22 +46,22 @@ class XmlSceneNode(
     @field:JacksonXmlProperty(localName = "node")
     val node: XmlNode? = null,
 
-    color: String = "ffffff",
-    alpha: Float = 1f,
-    generated: Boolean = false,
-) : XmlSceneObject(id, color, alpha, generated) {
-    @field:JsonIgnore
-    override var start: Vec3 = Vec3.ZERO
+    @field:JacksonXmlProperty(isAttribute = true, localName = "color")
+    var colorHexRGB: String = "ffffff",
 
-    @field:JsonIgnore
-    override var size: Vec3 = Vec3.ZERO
-}
+    @field:JacksonXmlProperty(isAttribute = true, localName = "alpha")
+    var colorAlpha: Float = 1f,
+
+    generated: Boolean = false,
+) : XmlSceneObject(id, generated)
 
 class XmlSceneVoxelGroup(
     id: Int = -1,
+
     @field:JacksonXmlProperty(isAttribute = true)
     var label: String = "voxel group",
     generated: Boolean = false,
+
     @field:JacksonXmlProperty(isAttribute = true)
     var origin: Vec3 = Vec3.ZERO,
 ) : XmlSceneObject(id, generated = generated)
@@ -90,7 +77,7 @@ private fun SceneObject.mapToXmlRecursive(mapped: MutableSet<SceneObject>): XmlS
     val xmlNode: XmlSceneObject = when (this) {
         is SceneNode -> XmlSceneNode(id, node.mapToXmlNodeNoChildren(), colorHex, color.a, isGenerated)
         is SceneVoxelGroup -> XmlSceneVoxelGroup(id, label, isGenerated, origin.toVec3())
-        else -> XmlSceneObject(id, colorHex, color.a, isGenerated, start.toVec3(), size.toVec3())
+        else -> XmlSceneObject(id, isGenerated)
     }
     children.forEach { child ->
         child.mapToXmlRecursive(mapped)?.let { xmlChild ->
@@ -105,13 +92,15 @@ internal fun XmlSceneObject.mapXml(): SceneObject? = mapXmlRecursive(mutableSetO
 /** The set is passed to prevent an infinite nested loop. */
 private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): SceneObject? {
     if (this in mapped) return null
-    val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
     mapped.add(this)
     val node: SceneObject = when (this) {
-        is XmlSceneNode -> SceneNode(id, node?.mapXmlNode() ?: return null, color, generated)
+        is XmlSceneNode -> {
+            val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
+            SceneNode(id, node?.mapXmlNode() ?: return null, color, generated)
+        }
         //TODO: read voxel file
         is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, emptyArray3D(), generated, origin.toVector3f())
-        else -> SceneObject(id, start.toVector3f(), size.toVector3f(), color, generated)
+        else -> SceneObject(id, isGenerated = generated)
     }
     children.forEach { xmlChild ->
         xmlChild.mapXmlRecursive(mapped)?.let { child ->
