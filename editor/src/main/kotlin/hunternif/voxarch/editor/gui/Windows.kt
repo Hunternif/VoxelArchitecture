@@ -62,3 +62,26 @@ inline fun disabled(disabledIf: Boolean = true, crossinline block: () -> Unit) {
     block()
     if (disabledIf) ImGui.endDisabled()
 }
+
+inline fun tabBar(name: String, crossinline block: () -> Unit) {
+    if (ImGui.beginTabBar(name)) {
+        block()
+        ImGui.endTabBar()
+    }
+}
+
+inline fun tabItem(label: String, flags: Int = 0, crossinline block: () -> Unit) {
+    if (ImGui.beginTabItem(label, flags)) {
+        block()
+        ImGui.endTabItem()
+    }
+}
+
+/** Same as [tabItem] but also adds a child window inside. */
+inline fun tabItemWindow(label: String, flags: Int = 0, crossinline block: () -> Unit) {
+    ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
+    tabItem(label, flags) {
+        childWindow("tab_item_window") { block() }
+    }
+    ImGui.popStyleVar(1)
+}

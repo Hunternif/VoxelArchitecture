@@ -23,9 +23,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightRatio = 0.25f,
-        left = WindowGroup(
-            Window("Scene"),
-        ),
+        left = Window("main_window"),
         right = VerticalSplit(
             bottomSize = 180,
             bottom = Window("Properties"),
@@ -52,7 +50,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         fpsCounter.run()
         mainMenu()
         dockspace(layout)
-        mainWindow("Scene") { vp ->
+        mainWindow("main_window") { vp ->
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
@@ -115,6 +113,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ImGui.setNextWindowClass(
             ImGuiWindowClass().apply {
                 dockNodeFlagsOverrideSet = 0 or
+                    ImGuiDockNodeFlags.NoTabBar or
                     ImGuiDockNodeFlags.NoDocking
             }
         )
@@ -125,23 +124,27 @@ class MainGui(val app: EditorApp) : GuiBase() {
             ImGuiWindowFlags.NoMove or
             ImGuiWindowFlags.NoScrollbar
         if (ImGui.begin(title, mainWindowFlags)) {
-            val pos = ImGui.getWindowPos()
-            val vMin = ImGui.getWindowContentRegionMin()
-            val vMax = ImGui.getWindowContentRegionMax()
-            vp.set(
-                vMin.x + pos.x,
-                vMin.y + pos.y,
-                vMax.x - vMin.x,
-                vMax.y - vMin.y
-            )
-            mainWindowFbo.setViewport(vp)
-            mainWindowFbo.render {
-                renderWindow(vp)
-                ImGui.image(mainWindowFbo.texture.texID,
-                    vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
+            tabBar("main_window_tab_bar") {
+                tabItemWindow("Scene") {
+                    val pos = ImGui.getWindowPos()
+                    val vMin = ImGui.getWindowContentRegionMin()
+                    val vMax = ImGui.getWindowContentRegionMax()
+                    vp.set(
+                        vMin.x + pos.x,
+                        vMin.y + pos.y,
+                        vMax.x - vMin.x,
+                        vMax.y - vMin.y
+                    )
+                    mainWindowFbo.setViewport(vp)
+                    mainWindowFbo.render {
+                        renderWindow(vp)
+                        ImGui.image(mainWindowFbo.texture.texID,
+                            vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
+                    }
+                    app.focusMainWindow(ImGui.isWindowFocused())
+                    app.hoverMainWindow(ImGui.isWindowHovered())
+                }
             }
-            app.focusMainWindow(ImGui.isWindowFocused())
-            app.hoverMainWindow(ImGui.isWindowHovered())
         }
         ImGui.end()
         ImGui.popStyleVar(3)
