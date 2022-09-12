@@ -99,10 +99,17 @@ inline fun <reified T> Array3D<T>.copy(): Array3D<T> =
         x, y, z -> this[x, y, z]
     }
 
-/** Copy all data to [dest] at the same coordinates */
-inline fun <reified T> IStorage3D<T>.copyTo(dest: IStorage3D<T>) {
+/**
+ * Copy all data to [dest] at the same coordinates,
+ * optionally offset by [offset].
+ */
+fun <T> IStorage3D<out T?>.copyTo(
+    dest: IStorage3D<in T>,
+    offset: IntVec3 = IntVec3(0, 0, 0)
+) {
     forEachPos { x, y, z, t ->
-        dest[x, y, z] = t
+        if (t != null)
+            dest[x + offset.x, y + offset.y, z + offset.z] = t
     }
 }
 
