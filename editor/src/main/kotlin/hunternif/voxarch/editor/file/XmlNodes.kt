@@ -32,6 +32,8 @@ abstract class XmlNode {
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "node")
     var children = mutableListOf<XmlNode>()
+    @field:JacksonXmlProperty(isAttribute = true)
+    var type: String? = null
 }
 
 class XmlStructure(
@@ -85,16 +87,20 @@ class XmlPath(
 
 internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf())
 /** Maps to XML without mapping any of the children. */
-internal fun Node.mapToXmlNodeNoChildren(): XmlNode? = when (this) {
-    is Structure -> XmlStructure(origin)
-    is PolygonRoom -> XmlPolygonRoom(origin, size, start, isCentered(),
-        shape, polygon.mapToXmlNode() as XmlPath
-    )
-    is Room -> XmlRoom(origin, size, start, isCentered())
-    is Wall -> XmlWall(origin, end, transparent)
-    is Floor -> XmlFloor(height)
-    is Path -> XmlPath(points, origin)
-    else -> null
+internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
+    val xmlNode = when (this) {
+        is Structure -> XmlStructure(origin)
+        is PolygonRoom -> XmlPolygonRoom(origin, size, start, isCentered(),
+            shape, polygon.mapToXmlNode() as XmlPath
+        )
+        is Room -> XmlRoom(origin, size, start, isCentered())
+        is Wall -> XmlWall(origin, end, transparent)
+        is Floor -> XmlFloor(height)
+        is Path -> XmlPath(points, origin)
+        else -> null
+    }
+    xmlNode?.type = type
+    return xmlNode
 }
 
 /** The set is passed to prevent an infinite nested loop. */
@@ -133,6 +139,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
         }
         else -> null
     } ?: return null
+    node.type = type
     children.forEach { xmlChild ->
         xmlChild.mapXmlNodeRecursive(mapped)?.let { child ->
             node.addChild(child)
