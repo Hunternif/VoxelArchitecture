@@ -5,10 +5,10 @@ import com.scs.voxlib.VoxFile
 import com.scs.voxlib.VoxWriter
 import com.scs.voxlib.Voxel
 import com.scs.voxlib.chunk.*
-import hunternif.voxarch.storage.IArray3D
+import hunternif.voxarch.storage.ChunkedStorage3D
+import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
-import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 
 
@@ -23,9 +23,9 @@ data class VoxColor(val color: Int) : IVoxel {
     override fun hashCode(): Int = color
 }
 
-class VoxFileStorage private constructor(
-    private val array: Array3D<VoxColor?>
-) : IArray3D<VoxColor?> by array {
+class VoxFileStorage(
+    private val data: IStorage3D<VoxColor?> = ChunkedStorage3D()
+) : IStorage3D<VoxColor?> by data {
 
     private val palette = LinkedHashSet<VoxColor>()
         // add the 0 color to shift the index. MagicaVoxel uses indices 1+.
@@ -33,18 +33,15 @@ class VoxFileStorage private constructor(
     private val colorIndex = mutableMapOf<VoxColor, Byte>()
     private var voxelCount = 0
 
-    constructor(width: Int, height: Int, length: Int):
-        this(Array3D<VoxColor?>(width, height, length, null))
-
     override operator fun set(p: IntVec3, v: VoxColor?) { set(p.x, p.y, p.z, v) }
     override operator fun set(x: Int, y: Int, z: Int, v: VoxColor?) {
         if (v == null) {
-            if (array[x, y, z] != null) voxelCount--
+            if (data[x, y, z] != null) voxelCount--
         } else {
-            if (array[x, y, z] == null) voxelCount++
+            if (data[x, y, z] == null) voxelCount++
             palette.add(v)
         }
-        array[x, y, z] = v
+        data[x, y, z] = v
     }
 
     fun serialize(): VoxFile {
@@ -88,7 +85,7 @@ class VoxFileStorage private constructor(
     )
     private fun makeVoxelChunk() = VoxXYZIChunk(voxelCount).apply {
         var i = 0
-        array.forEachPos { x, y, z, color ->
+        data.forEachPos { x, y, z, color ->
             val index = colorIndex[color]
             if (index != null) {
                 voxels[i] = Voxel(gridPoint3(x, y, z), index)
@@ -129,7 +126,7 @@ class VoxFileStorage private constructor(
             val width = model.size.y
             val height = model.size.z
             val length = model.size.x
-            val storage = VoxFileStorage(width, height, length)
+            val storage = VoxFileStorage()
             file.palette.forEach {
                 //TODO check if VoxFileParser stores colors correctly
                 val unsignedColor = it and 0xffffff
@@ -138,7 +135,7 @@ class VoxFileStorage private constructor(
             model.voxels.forEach {
                 val pos = it.position.toIntVec3()
                 val color = file.palette[it.colourIndex] and 0xffffff
-                storage.array[pos] = VoxColor(color)
+                storage.data[pos] = VoxColor(color)
             }
             return storage
         }

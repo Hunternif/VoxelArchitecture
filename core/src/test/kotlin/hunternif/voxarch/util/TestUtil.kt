@@ -1,6 +1,6 @@
 package hunternif.voxarch.util
 
-import hunternif.voxarch.storage.IArray3D
+import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
 import org.junit.Assert.*
 import java.time.LocalDateTime
@@ -29,8 +29,8 @@ fun <T> Array3D<T>.printSliceY(y: Int): String {
 }
 
 fun <T> assertStorageEquals(
-    expected: IArray3D<in T>,
-    actual: IArray3D<in T>
+    expected: IStorage3D<in T>,
+    actual: IStorage3D<in T>
 ) {
     assertEquals(expected.width, actual.width)
     assertEquals(expected.height, actual.height)

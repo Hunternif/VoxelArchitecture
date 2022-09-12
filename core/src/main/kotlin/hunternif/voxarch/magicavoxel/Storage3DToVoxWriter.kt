@@ -1,7 +1,7 @@
 package hunternif.voxarch.magicavoxel
 
 import com.scs.voxlib.VoxWriter
-import hunternif.voxarch.storage.IArray3D
+import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.util.forEachPos
 import java.nio.file.Files
 import java.nio.file.Path
@@ -10,11 +10,11 @@ import java.nio.file.StandardOpenOption
 /**
  * Writes from any storage to a .vox file
  */
-fun <T> IArray3D<T?>.writeToVoxFile(
+fun <T> IStorage3D<out T?>.writeToVoxFile(
     path: Path,
     colorMap: (T) -> VoxColor?
 ) {
-    val voxStorage = VoxFileStorage(width, height, length)
+    val voxStorage = VoxFileStorage()
     forEachPos { x, y, z, color ->
         if (color != null)
             voxStorage[x, y, z] = colorMap(color)
@@ -23,8 +23,8 @@ fun <T> IArray3D<T?>.writeToVoxFile(
     voxStorage.writeToFile(path)
 }
 
-fun IArray3D<VoxColor?>.writeToVoxFile(path: Path) {
-    val voxStorage = VoxFileStorage(width, height, length)
+fun IStorage3D<VoxColor?>.writeToVoxFile(path: Path) {
+    val voxStorage = VoxFileStorage()
     forEachPos { x, y, z, color ->
         if (color != null)
             voxStorage[x, y, z] = color
