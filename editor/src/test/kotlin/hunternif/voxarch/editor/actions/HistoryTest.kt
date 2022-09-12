@@ -13,7 +13,15 @@ class HistoryTest {
         assertEquals(emptyList<String>(), history.futureItems)
 
         history.append("first")
-        assertEquals(true, history.hasPastItems())
+        // first item can't be removed
+        assertEquals(false, history.hasPastItems())
+        assertEquals(false, history.hasFutureItems())
+        assertEquals(listOf("first"), history.pastItems)
+        assertEquals(emptyList<String>(), history.futureItems)
+
+        history.moveBack()
+        // first item can't be removed
+        assertEquals(false, history.hasPastItems())
         assertEquals(false, history.hasFutureItems())
         assertEquals(listOf("first"), history.pastItems)
         assertEquals(emptyList<String>(), history.futureItems)
@@ -31,7 +39,7 @@ class HistoryTest {
         assertEquals(emptyList<String>(), history.futureItems)
 
         history.moveBack()
-        assertEquals(true, history.hasPastItems())
+        assertEquals(false, history.hasPastItems())
         assertEquals(true, history.hasFutureItems())
         assertEquals(listOf("first"), history.pastItems)
         assertEquals(listOf("second"), history.futureItems)
@@ -46,20 +54,14 @@ class HistoryTest {
         history.moveBack()
         assertEquals(false, history.hasPastItems())
         assertEquals(true, history.hasFutureItems())
-        assertEquals(emptyList<String>(), history.pastItems)
-        assertEquals(listOf("first", "second"), history.futureItems)
+        assertEquals(listOf("first"), history.pastItems)
+        assertEquals(listOf("second"), history.futureItems)
 
         history.moveBack()
         assertEquals(false, history.hasPastItems())
         assertEquals(true, history.hasFutureItems())
-        assertEquals(emptyList<String>(), history.pastItems)
-        assertEquals(listOf("first", "second"), history.futureItems)
-
-        history.moveForward()
-        assertEquals(true, history.hasPastItems())
-        assertEquals(true, history.hasFutureItems())
         assertEquals(listOf("first"), history.pastItems)
-        assertEquals(listOf("second"), history.futureItems)
+        assertEquals(listOf( "second"), history.futureItems)
 
         history.append("third")
         assertEquals(true, history.hasPastItems())

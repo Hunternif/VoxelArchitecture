@@ -130,21 +130,21 @@ class SelectObjectTest : BaseActionTest() {
 
     @Test
     fun `test selectionBuilder unchanged selection is not saved`() = app.state.run {
-        assertEquals(2, history.pastItems.size) // from creating the 2 rooms
+        assertEquals(3, history.pastItems.size) // new project + created the 2 rooms
         app.selectObject(node1)
         assertEquals(setOf(node1), selectedObjects)
-        assertEquals(3, history.pastItems.size)
+        assertEquals(4, history.pastItems.size)
 
         val builder = app.selectionBuilder()
         builder.add(node1)
         builder.commit()
-        assertEquals(3, history.pastItems.size)
+        assertEquals(4, history.pastItems.size)
 
         val builder2 = app.selectionBuilder()
         builder2.remove(node1)
         builder2.add(node1)
         builder2.commit()
-        assertEquals(3, history.pastItems.size)
+        assertEquals(4, history.pastItems.size)
     }
 
     @Test
