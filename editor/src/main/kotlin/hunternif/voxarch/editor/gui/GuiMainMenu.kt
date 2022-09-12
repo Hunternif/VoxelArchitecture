@@ -26,6 +26,9 @@ fun MainGui.mainMenu() {
             if (ImGui.menuItem("Import VOX file...", "Ctrl+I")) {
                 app.openDialogImportVoxFile()
             }
+            if (ImGui.menuItem("Export as VOX file...")) {
+                app.openDialogExportVoxFile()
+            }
             ImGui.endMenu()
         }
         if (ImGui.beginMenu("Edit")) {

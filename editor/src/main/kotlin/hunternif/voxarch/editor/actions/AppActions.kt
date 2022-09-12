@@ -8,8 +8,17 @@ import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.generator.IGenerator
+import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.storage.ChunkedStorage3D
+import hunternif.voxarch.storage.IVoxel
+import hunternif.voxarch.storage.boundedView
+import hunternif.voxarch.util.copyTo
+import hunternif.voxarch.util.forEachSubtree
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 import java.nio.file.Path
@@ -37,6 +46,25 @@ fun EditorApp.saveProjectFileAs(path: Path) = action {
     writeProject(path)
     state.projectPath = path
     state.lastSavedAction = state.history.pastItems.last
+}
+
+fun EditorApp.exportVoxFile(path: Path) = action {
+    // Copy all vox groups into a single storage
+    //TODO: serialize separate VOX groups
+    val mergedStorage = ChunkedStorage3D<IVoxel>()
+    state.voxelRoot.forEachSubtree {
+        if (it is SceneVoxelGroup) {
+            it.data.copyTo(mergedStorage, it.origin.toVec3().toIntVec3())
+        }
+    }
+    val boundedView = mergedStorage.boundedView()
+    boundedView.writeToVoxFile(path) { v ->
+        when (v) {
+            is VoxColor -> v
+            else -> VoxColor(state.voxelColorMap(v).hex)
+        }
+    }
+    logWarning("Export complete to '$path'")
 }
 
 

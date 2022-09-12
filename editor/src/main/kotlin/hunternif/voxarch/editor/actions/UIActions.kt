@@ -39,6 +39,12 @@ fun EditorApp.openDialogImportVoxFile() = action {
     }
 }
 
+fun EditorApp.openDialogExportVoxFile() = action {
+    saveFileDialog("vox") {
+        exportVoxFile(it)
+    }
+}
+
 fun EditorApp.setTool(tool: Tool) = action {
     state.currentTool = tool
 }
