@@ -61,7 +61,7 @@ abstract class BaseSnapshotTest(
             Files.createDirectories(path.parent)
         }
         Files.newOutputStream(path).use {
-            out.writeToVoxFile(path, blockToVoxColorMap)
+            out.writeToVoxFile(path) { blockToVoxColorMap[it] }
         }
     }
 

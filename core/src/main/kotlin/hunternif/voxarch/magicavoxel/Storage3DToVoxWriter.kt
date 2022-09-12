@@ -12,12 +12,12 @@ import java.nio.file.StandardOpenOption
  */
 fun <T> IArray3D<T?>.writeToVoxFile(
     path: Path,
-    colorMap: Map<T, VoxColor?>
+    colorMap: (T) -> VoxColor?
 ) {
     val voxStorage = VoxFileStorage(width, height, length)
     forEachPos { x, y, z, color ->
         if (color != null)
-            voxStorage[x, y, z] = colorMap[color]
+            voxStorage[x, y, z] = colorMap(color)
     }
     println("writing to $path")
     voxStorage.writeToFile(path)

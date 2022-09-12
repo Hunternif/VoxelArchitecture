@@ -10,7 +10,7 @@ import java.nio.file.Path
  */
 fun WfcTiledModel<WangTile>.writeToVoxFile(
     path: Path,
-    colorMap: Map<WfcColor, VoxColor?>
+    colorMap: (WfcColor) -> VoxColor?
 ) {
     // Assuming all tiles are of equal size, fetch one to gauge grid size
     val samplePos = this.firstOrNull { this[it] != null }
@@ -33,7 +33,7 @@ fun WfcTiledModel<WangTile>.writeToVoxFile(
         for (v in tile) {
             val voxel = tile[v]
             val p = v.add(tilePos.x * tx, tilePos.y * ty, tilePos.z * tz)
-            voxStorage[p] = colorMap[voxel]
+            voxStorage[p] = colorMap(voxel)
         }
     }
 

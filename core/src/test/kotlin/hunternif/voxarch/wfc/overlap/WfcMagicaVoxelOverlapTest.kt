@@ -3,6 +3,7 @@ package hunternif.voxarch.wfc.overlap
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.util.assertStorageEquals
+import hunternif.voxarch.wfc.WfcColor
 import hunternif.voxarch.wfc.WfcColor.*
 import org.junit.Test
 import java.nio.file.Path
@@ -19,11 +20,13 @@ class WfcMagicaVoxelOverlapTest {
     private val reverseColorMap = colorMap.toList()
         .associate { it.second to it.first }
 
+    private fun mapColorToBlock(color: VoxColor?): WfcColor = reverseColorMap[color] ?: AIR
+
     @Test
     fun `lattice pattern with 2 attempts`() {
         val input = readVoxFile(
             REFERENCES_DIR.resolve("lattice-sample.vox"),
-            reverseColorMap
+            ::mapColorToBlock
         )
         val patterns = input.findPatterns(3, 3)
         println("${patterns.size} patterns read")
@@ -33,7 +36,7 @@ class WfcMagicaVoxelOverlapTest {
         println("WFC 1 complete!")
         val lattice1Ref = readVoxFile(
             REFERENCES_DIR.resolve("lattice-1.vox"),
-            reverseColorMap
+            ::mapColorToBlock
         )
         assertStorageEquals(lattice1Ref, wave)
 
@@ -42,7 +45,7 @@ class WfcMagicaVoxelOverlapTest {
         println("WFC 2 complete!")
         val lattice2Ref = readVoxFile(
             REFERENCES_DIR.resolve("lattice-2.vox"),
-            reverseColorMap
+            ::mapColorToBlock
         )
         assertStorageEquals(lattice2Ref, wave)
     }
@@ -55,7 +58,7 @@ class WfcMagicaVoxelOverlapTest {
 
         val stripesRef = readVoxFile(
             REFERENCES_DIR.resolve("stripes.vox"),
-            reverseColorMap
+            ::mapColorToBlock
         )
         assertStorageEquals(stripesRef, wave)
     }

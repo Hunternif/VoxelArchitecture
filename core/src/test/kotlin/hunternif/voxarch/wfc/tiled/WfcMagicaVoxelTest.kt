@@ -35,7 +35,7 @@ class WfcMagicaVoxelTest {
             "${wave.width}x${wave.height}x${wave.length}-" +
             "${today()}.vox"
         )
-        wave.writeToVoxFile(path, colorMap)
+        wave.writeToVoxFile(path) { colorMap[it] }
         Files.delete(path) // clean up
     }
 }
