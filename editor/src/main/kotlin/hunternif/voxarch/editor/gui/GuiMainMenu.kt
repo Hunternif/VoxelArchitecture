@@ -8,25 +8,25 @@ fun MainGui.mainMenu() {
     ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
     if (ImGui.beginMainMenuBar()) {
         if (ImGui.beginMenu("File")) {
-            if (ImGui.menuItem("New project", "Ctrl+N")) {
+            if (ImGui.menuItem("New", "Ctrl+N")) {
                 app.newProject()
             }
-            if (ImGui.menuItem("Open project", "Ctrl+O")) {
+            if (ImGui.menuItem("Open...", "Ctrl+O")) {
                 app.openDialogOpenProjectFile()
             }
             disabled(app.state.projectPath == null) {
-                if (ImGui.menuItem("Save project", "Ctrl+S")) {
+                if (ImGui.menuItem("Save", "Ctrl+S")) {
                     app.saveProjectFile()
                 }
             }
-            if (ImGui.menuItem("Save project as...", "Ctrl+Shift+S")) {
+            if (ImGui.menuItem("Save as...", "Ctrl+Shift+S")) {
                 app.openDialogSaveProjectFile()
             }
             ImGui.separator()
-            if (ImGui.menuItem("Import VOX file...", "Ctrl+I")) {
+            if (ImGui.menuItem("Import VOX...", "Ctrl+I")) {
                 app.openDialogImportVoxFile()
             }
-            if (ImGui.menuItem("Export as VOX file...")) {
+            if (ImGui.menuItem("Export VOX...")) {
                 app.openDialogExportVoxFile()
             }
             ImGui.endMenu()
