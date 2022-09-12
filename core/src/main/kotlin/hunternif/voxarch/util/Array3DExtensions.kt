@@ -99,6 +99,13 @@ inline fun <reified T> Array3D<T>.copy(): Array3D<T> =
         x, y, z -> this[x, y, z]
     }
 
+/** Copy all data to [dest] at the same coordinates */
+inline fun <reified T> IStorage3D<T>.copyTo(dest: IStorage3D<T>) {
+    forEachPos { x, y, z, t ->
+        dest[x, y, z] = t
+    }
+}
+
 /** Carves a subarray from this array and returns it.
  * @param from starting point, inclusive.
  * @param size size of the subarray.

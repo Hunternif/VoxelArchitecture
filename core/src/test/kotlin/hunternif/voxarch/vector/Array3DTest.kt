@@ -114,6 +114,24 @@ class Array3DTest {
     }
 
     @Test
+    fun copyTo() {
+        val a = Array3D(2, 1, 2)
+        { x, y, z -> 800 + x*10 + z }
+
+        val b = Array3D(3, 2, 4, 4)
+        a.copyTo(b)
+        assertEquals(800, b[0, 0, 0])
+        assertEquals(801, b[0, 0, 1])
+        assertEquals(4, b[0, 0, 2])
+        assertEquals(810, b[1, 0, 0])
+        assertEquals(811, b[1, 0, 1])
+        assertEquals(4, b[1, 0, 2])
+        assertEquals(4, b[1, 1, 0])
+        assertEquals(4, b[1, 1, 1])
+        assertEquals(4, b[1, 1, 2])
+    }
+
+    @Test
     fun size() {
         val a = Array3D<Char?>(2, 2, 3, null)
         assertEquals(0, a.size)
