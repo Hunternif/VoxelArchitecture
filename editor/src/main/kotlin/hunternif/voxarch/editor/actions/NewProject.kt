@@ -10,6 +10,7 @@ class NewProject() : HistoryAction(
 ) {
     override fun invoke(app: EditorAppImpl) = app.run {
         state = newState()
+        clearNewNodeFrame()
         redrawNodes()
         redrawVoxels()
         centerCamera()

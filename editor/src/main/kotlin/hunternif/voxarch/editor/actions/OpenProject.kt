@@ -3,7 +3,6 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.file.readProject
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.newState
 import java.nio.file.Path
 
 class OpenProject(private val path: Path) : HistoryAction(
@@ -12,6 +11,7 @@ class OpenProject(private val path: Path) : HistoryAction(
 ) {
     override fun invoke(app: EditorAppImpl) = app.run {
         readProject(path)
+        clearNewNodeFrame()
         redrawNodes()
         redrawVoxels()
         centerCamera()
