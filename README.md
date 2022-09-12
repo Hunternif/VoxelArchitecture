@@ -19,14 +19,18 @@ See [Wiki](https://github.com/Hunternif/VoxelArchitecture/wiki) for more details
 ## `core` overview
 
 The first part is a framework that represents abstract architectural nodes in code. It has yielded some interesting results:
-* Builder classes recursively generate voxels from a nested structure of nodes.
+* Builder classes that recursively generate voxels from a nested structure of nodes.
 * Kotlin DSL for assembling the Node structure.
 * Another Kotlin DSL for declaring a "DOM" (logical hierarchy of nodes) and a "Stylesheet" (relative positions and sizes of Nodes), similar to HTML & CSS.
-* Voxel data can be written to MagicaVoxel VOX format.
-* Unit-testing framework using 2d snapshots of generated voxels.
+* Support for MagicaVoxel VOX format.
+* Unit-testing framework using 2D slices and 3D snapshots of generated voxels.
 
 The second part is the procedural generation algorithm. It's still in early stages, and I'm trying out different approaches:
 * declaratively specifying all structures in code
 * randomly branching into different directions for different rooms
 * WFC
 * ...
+
+## `editor` preview
+
+[![Editor demo, click to see video](https://drive.google.com/uc?id=1Ur1-t52ME9Ok0qzZsVWvDeB8PInjo2bq)](https://video.twimg.com/ext_tw_video/1495597787773386754/pu/vid/1008x604/l7ox57HoSsarY-mF.mp4?tag=12)
