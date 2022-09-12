@@ -155,7 +155,7 @@ abstract class GuiSceneTree(
             flags = flags or ImGuiTreeNodeFlags.Selected
             applyChileNodeColors(isSelected)
         }
-        val text = label(node)
+        val text = memoStrWithIndex(label(node), node.id)
         ImGui.alignTextToFramePadding()
         if (updatedHidden) {
             if (isGenerated) pushStyleColor(Text, Colors.generatedHiddenLabel)
