@@ -81,7 +81,7 @@ inline fun tabItem(label: String, flags: Int = 0, crossinline block: () -> Unit)
 inline fun tabItemWindow(label: String, flags: Int = 0, crossinline block: () -> Unit) {
     ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
     tabItem(label, flags) {
+        ImGui.popStyleVar(1)
         childWindow("tab_item_window") { block() }
     }
-    ImGui.popStyleVar(1)
 }
