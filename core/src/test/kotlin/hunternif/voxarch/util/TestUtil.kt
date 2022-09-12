@@ -35,6 +35,12 @@ fun <T> assertStorageEquals(
     assertEquals(expected.width, actual.width)
     assertEquals(expected.height, actual.height)
     assertEquals(expected.length, actual.length)
+    assertEquals(expected.minX, actual.minX)
+    assertEquals(expected.minY, actual.minY)
+    assertEquals(expected.minZ, actual.minZ)
+    assertEquals(expected.maxX, actual.maxX)
+    assertEquals(expected.maxY, actual.maxY)
+    assertEquals(expected.maxZ, actual.maxZ)
     expected.forEachPos { x, y, z, t ->
         assertEquals(t, actual[x, y, z])
     }
