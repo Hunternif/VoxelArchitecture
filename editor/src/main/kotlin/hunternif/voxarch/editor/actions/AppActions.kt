@@ -186,12 +186,27 @@ fun EditorApp.transformNodeCentered(
         if (newCentered) origin + start + Vec3(size.x / 2, 0.0, size.z / 2)
         else origin + start
     }
+    val originDelta = newOrigin?.let { it - obj.node.origin } ?: Vec3.ZERO
     val newStart = if (obj.node is Room && !newCentered) Vec3.ZERO else null
+    val oldData = mutableMapOf(
+        obj to obj.transformData(isCentered = !newCentered)
+    ).apply {
+        putAll(
+            obj.children.filterIsInstance<SceneNode>()
+                .map { it to it.transformData(origin = it.node.origin) }
+        )
+    }
+    val newData = mutableMapOf(
+        obj to obj.transformData(isCentered = newCentered, origin = newOrigin, start = newStart)
+    ).apply {
+        putAll(
+            obj.children.filterIsInstance<SceneNode>()
+                .map { it to it.transformData(origin = it.node.origin - originDelta) }
+        )
+    }
     historyAction(
         TransformObjects(
-            mapOf(obj to obj.transformData(isCentered = !newCentered)),
-            mapOf(obj to obj.transformData(isCentered = newCentered,
-                origin = newOrigin, start = newStart)),
+            oldData, newData,
             "Transform node (${if (newCentered) "center" else "uncenter"})",
         )
     )
