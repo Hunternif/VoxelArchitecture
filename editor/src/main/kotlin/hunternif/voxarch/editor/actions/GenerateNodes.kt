@@ -35,7 +35,7 @@ class GenerateNodes : HistoryAction(
     override fun revert(app: EditorAppImpl) {
         app.clearGeneratedNodes()
         oldGenerated.forEach {
-            it.detach()
+            it.reattach()
             app.state.generatedNodes.add(it.obj as SceneNode)
         }
         app.redrawNodes()

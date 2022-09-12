@@ -82,6 +82,6 @@ class SceneNode(
     }
 
     val nodeClassName: String = node.javaClass.simpleName
-    private val strRepr: String by lazy { "${javaClass.simpleName} $id" }
+    private val strRepr: String by lazy { "$nodeClassName $id" }
     override fun toString() = strRepr
 }

@@ -58,19 +58,21 @@ fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
 fun EditorApp.addGenerator(node: SceneNode, generatorName: String) {
     val generator = state.createGeneratorByName(generatorName)
-    generator?.let {
-        historyAction(SetGenerators(
-            node, node.generators + it,
+    generator?.let { addGenerator(node, it) }
+}
+
+fun EditorApp.addGenerator(node: SceneNode, generator: IGenerator) {
+    historyAction(SetGenerators(
+        node, node.generators + generator,
         "Add generator", FontAwesomeIcons.Landmark
-        ))
-    }
+    ))
 }
 
 fun EditorApp.removeGenerator(node: SceneNode, generator: IGenerator) {
     val newGens = node.generators.toMutableList()
     if (newGens.remove(generator)) {
         historyAction(SetGenerators(
-                node, newGens,
+            node, newGens,
             "Remove generator", FontAwesomeIcons.TrashAlt
         ))
     }
@@ -181,7 +183,7 @@ fun EditorApp.transformNodeCentered(
     newCentered: Boolean,
 ) {
     val newOrigin = (obj.node as? Room)?.run {
-        if (newCentered) origin + start + Vec3(size.x/2, 0.0, size.z/2)
+        if (newCentered) origin + start + Vec3(size.x / 2, 0.0, size.z / 2)
         else origin + start
     }
     val newStart = if (obj.node is Room && !newCentered) Vec3.ZERO else null
@@ -204,7 +206,7 @@ fun EditorApp.transformNodeCentered(
  */
 fun EditorApp.createRoom(
     start: Vector3i, end: Vector3i, centered: Boolean = false
-) : SceneNode {
+): SceneNode {
     val action = CreateRoom(start, end, centered)
     historyAction(action)
     return action.node

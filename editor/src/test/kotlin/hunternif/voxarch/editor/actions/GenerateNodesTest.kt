@@ -25,7 +25,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent, undo redo`() = app.state.run {
-        parent.generators.add(PropGenerator())
+        app.addGenerator(parent, PropGenerator())
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -42,7 +42,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on child, undo redo`() = app.state.run {
-        child.generators.add(PropGenerator())
+        app.addGenerator(child, PropGenerator())
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(setOf(child), parent.children.toSet())
@@ -59,8 +59,8 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent and child, undo redo`() = app.state.run {
-        parent.generators.add(PropGenerator())
-        child.generators.add(PropGenerator())
+        app.addGenerator(parent, PropGenerator())
+        app.addGenerator(child, PropGenerator())
         app.generateNodes()
         assertEquals(4, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -75,6 +75,36 @@ class GenerateNodesTest : BaseActionTest() {
         assertEquals(1, child.children.size)
         assertProp(parent.children.last())
         assertProp(child.children.first())
+    }
+
+    @Test
+    fun `after removing generator re-generate will remove nodes`() = app.state.run {
+        val generator = PropGenerator()
+        app.addGenerator(parent, generator)
+        assertEquals(emptySet<SceneNode>(), generatedNodes.toSet())
+        assertEquals(setOf(parent, child), sceneObjects.toSet())
+        app.generateNodes()
+        val prop = parent.children.last()
+        assertEquals(setOf(prop), generatedNodes.toSet())
+        assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
+        app.removeGenerator(parent, generator)
+        assertEquals(setOf(prop), generatedNodes.toSet())
+        assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
+        app.generateNodes()
+        assertEquals(emptySet<SceneNode>(), generatedNodes.toSet())
+        assertEquals(setOf(parent, child), sceneObjects.toSet())
+        app.undo()
+        assertEquals(setOf(prop), generatedNodes.toSet())
+        assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
+        app.undo()
+        assertEquals(setOf(prop), generatedNodes.toSet())
+        assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
+        app.undo()
+        assertEquals(emptySet<SceneNode>(), generatedNodes.toSet())
+        assertEquals(setOf(parent, child), sceneObjects.toSet())
+        app.redo()
+        assertEquals(setOf(prop), generatedNodes.toSet())
+        assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
     }
 
     private fun assertProp(obj: SceneObject) {
