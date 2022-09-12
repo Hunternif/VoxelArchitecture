@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.scene.models.Box
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.util.INested
+import hunternif.voxarch.util.forEachSubtree
 import org.joml.Vector3f
 
 /**
@@ -35,12 +36,13 @@ open class SceneObject(
 
     override fun addChild(child: SceneObject) {
         super.addChild(child)
-        child.tree = tree
+        child.forEachSubtree { it.tree = tree }
         tree?.add(child)
     }
 
     override fun removeChild(child: SceneObject): Boolean {
         tree?.remove(child)
+        child.forEachSubtree { it.tree = null }
         return super.removeChild(child)
     }
 
