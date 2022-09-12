@@ -42,11 +42,11 @@ fun assertFilesEqual(
     expected: java.nio.file.Path,
     actual: java.nio.file.Path
 ) {
-    val expectedReader = Files.newBufferedReader(expected)
-    val actualReader = Files.newBufferedReader(actual)
-    expectedReader.use {
-        actualReader.use {
-            assertTrue(IOUtils.contentEquals(expectedReader, actualReader))
+    val expectedStream = Files.newInputStream(expected)
+    val actualStream = Files.newInputStream(actual)
+    expectedStream.use {
+        actualStream.use {
+            assertTrue(IOUtils.contentEquals(expectedStream, actualStream))
         }
     }
 }

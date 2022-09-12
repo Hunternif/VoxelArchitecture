@@ -1,11 +1,14 @@
 package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
+import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.room
+import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 import org.junit.Assert.assertEquals
@@ -33,12 +36,19 @@ class FileSpecTest : BaseActionTest() {
     fun `read project 2_rooms`() {
         val path = resourcePath("project/2_rooms.voxarch")
         app.openProjectFile(path)
+        // Nodes
         assertEquals(2, app.state.rootNode.children.size)
         assertEquals(2, app.state.rootNode.node.children.size)
         assertNodeEquals(room1, app.state.rootNode.node.children[0])
         assertNodeEquals(room2, app.state.rootNode.node.children[1])
         assertEquals(1, app.state.rootNode.node.children[1].children.size)
         assertNodeEquals(room3, app.state.rootNode.node.children[1].children[0])
+        // Voxels
+        assertEquals(1, app.state.voxelRoot.children.size)
+        val vox = app.state.voxelRoot.children.first() as SceneVoxelGroup
+        assertEquals("one block", vox.label)
+        assertEquals(1, vox.data.size)
+        assertEquals(VoxColor(0xff0000), vox.data[0, 0, 0])
     }
 
     @Test
@@ -51,6 +61,11 @@ class FileSpecTest : BaseActionTest() {
             Vector3i(2, 3, 0).add(node2.node.origin.toVector3i()),
             false
         )
+        val vox = app.state.registry.newVoxelGroup(
+            "one block",
+            Array3D(1, 1, 1, VoxColor(0xff0000))
+        )
+        app.state.voxelRoot.addChild(vox)
 
         app.hideObject(node2)
         app.selectAll()
@@ -66,6 +81,10 @@ class FileSpecTest : BaseActionTest() {
                 assertTextFilesEqual(
                     zipfsRef.getPath("/scenetree.xml"),
                     zipfsTest.getPath("/scenetree.xml")
+                )
+                assertFilesEqual(
+                    zipfsRef.getPath("/voxels/group_6.vox"),
+                    zipfsTest.getPath("/voxels/group_6.vox")
                 )
             }
         }

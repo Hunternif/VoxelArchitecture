@@ -5,6 +5,11 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
+import hunternif.voxarch.magicavoxel.VoxColor
+import hunternif.voxarch.magicavoxel.readVoxFile
+import hunternif.voxarch.magicavoxel.writeToVoxFile
+import hunternif.voxarch.util.forEachSubtree
+import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.CREATE
@@ -18,8 +23,8 @@ Project folder structure:
   - metadata.yaml
   - scenetree.xml
   / voxels
-    - generated.vox
-    - imported-1.vox
+    - group_0.vox
+    - group_1.vox
     ...
   / generators
     - turret.kt
@@ -59,6 +64,9 @@ Subsets are serialized as a list of ids.
 
 2. Voxels
 Serialized to VOX.
+NOTE: generated voxels can have negative coordinates, which isn't supported by
+MagicaVoxel. The reading and writing works for this project, but viewing in MV
+can cause issues.
 
 
 3. Generators
@@ -94,6 +102,10 @@ fun EditorAppImpl.readProject(path: Path) {
         val treeXmlType = Files.newBufferedReader(zipfs.getPath("/scenetree.xml")).use {
             deserializeXml(it.readText(), XmlSceneTree::class)
         }
+
+        // populate VOX files
+        treeXmlType.noderoot?.forEachSubtree { zipfs.tryReadVoxFile(it) }
+        treeXmlType.voxelroot?.forEachSubtree { zipfs.tryReadVoxFile(it) }
 
         val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
         reg.save(rootNode)
@@ -156,6 +168,31 @@ fun EditorAppImpl.writeProject(path: Path) {
             )
             val treeXmlStr = serializeToXmlStr(treeXmlType, true)
             it.write(treeXmlStr)
+        }
+
+        Files.createDirectories(zipfs.getPath("/voxels"))
+        fun tryWriteVoxFile(obj: SceneObject) {
+            if (obj is SceneVoxelGroup && obj.data.isNotEmpty()) {
+                val voxPath = zipfs.getPath("/voxels/group_${obj.id}.vox")
+                obj.data.writeToVoxFile(voxPath) { v ->
+                    if (v is VoxColor) v
+                    else VoxColor(state.voxelColorMap(v).hex)
+                }
+            }
+        }
+        state.rootNode.forEachSubtree { tryWriteVoxFile(it) }
+        state.voxelRoot.forEachSubtree { tryWriteVoxFile(it) }
+
+    }
+}
+
+private fun FileSystem.tryReadVoxFile(obj: XmlSceneObject) {
+    val voxPath = getPath("/voxels/group_${obj.id}.vox")
+    if (obj is XmlSceneVoxelGroup) {
+        try {
+            obj.data = readVoxFile(voxPath)
+        } catch (_: Exception) {
+            // data could have been empty
         }
     }
 }

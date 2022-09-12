@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.annotation.JsonSubTypes
@@ -13,6 +14,9 @@ import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.editor.util.toVector3f
+import hunternif.voxarch.storage.IStorage3D
+import hunternif.voxarch.storage.IVoxel
+import hunternif.voxarch.util.INested
 import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.vector.Vec3
 
@@ -36,10 +40,13 @@ open class XmlSceneObject(
 
     @field:JacksonXmlProperty(isAttribute = true)
     var generated: Boolean = false,
-) {
+) : INested<XmlSceneObject> {
+    @field:JsonIgnore
+    override var parent: XmlSceneObject? = null
+
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "obj")
-    var children = mutableListOf<XmlSceneObject>()
+    override var children = mutableListOf<XmlSceneObject>()
 }
 
 class XmlSceneNode(
@@ -66,6 +73,10 @@ class XmlSceneVoxelGroup(
 
     @field:JacksonXmlProperty(isAttribute = true)
     var origin: Vec3 = Vec3.ZERO,
+
+    /** Populated during deserialization */
+    @field:JsonIgnore
+    var data: IStorage3D<out IVoxel?> = emptyArray3D(),
 ) : XmlSceneObject(id, generated = generated)
 
 
@@ -83,7 +94,7 @@ private fun SceneObject.mapToXmlRecursive(mapped: MutableSet<SceneObject>): XmlS
     }
     children.forEach { child ->
         child.mapToXmlRecursive(mapped)?.let { xmlChild ->
-            xmlNode.children.add(xmlChild)
+            xmlNode.addChild(xmlChild)
         }
     }
     return xmlNode
@@ -100,8 +111,7 @@ private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): 
             val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
             SceneNode(id, node?.mapXmlNode() ?: return null, color, generated)
         }
-        //TODO: read voxel file
-        is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, emptyArray3D(), generated, origin.toVector3f())
+        is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, data, generated, origin.toVector3f())
         else -> SceneObject(id, isGenerated = generated)
     }
     children.forEach { xmlChild ->
