@@ -10,6 +10,7 @@ import java.lang.Math
 class OrbitalCamera : MouseListener {
     private val fov = 60.0
     val vp = Viewport(0, 0, 0, 0)
+
     /** Camera is looking at (0, 0, 0) - [translation]. */
     private val translation: Vector3f = Vector3f()
     private val projectionMatrix: Matrix4f = Matrix4f()
@@ -34,8 +35,10 @@ class OrbitalCamera : MouseListener {
     private val pos4: Vector4f = Vector4f()
     private val screenPos: Vector2f = Vector2f()
 
-    private var xAngle = 0.5f
-    private var yAngle = 0.3f
+    var xAngle = 0.5f
+        private set
+    var yAngle = 0.3f
+        private set
     var radius = 5f
         set(value) {
             field = value
@@ -61,8 +64,8 @@ class OrbitalCamera : MouseListener {
         setPosition(pos.x, pos.y, pos.z)
     }
 
-    fun setPosition(x: Float, y: Float, z: Float) {
-        this.translation.set(-x, -y, -z)
+    fun setPosition(x: Number, y: Number, z: Number) {
+        this.translation.set(-x.toFloat(), -y.toFloat(), -z.toFloat())
         viewMatrixDirty = true
     }
 
@@ -373,6 +376,7 @@ class OrbitalCamera : MouseListener {
         )
         return screenPos
     }
+
     /** @see [projectToViewport] */
     fun projectToViewport(point: Vector3f): Vector2f =
         projectToViewport(point.x, point.y, point.z)

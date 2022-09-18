@@ -12,6 +12,7 @@ import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.plan.findGlobalPosition
+import org.joml.Vector2i
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
@@ -28,6 +29,8 @@ class MainScene(private val app: EditorApp) {
     private val selectedNodeModel = SelectedNodeFrameModel()
     private val originsModel = PointSpriteModel("textures/point-circle.png")
     private val highlightedFaceModel = ResizeNodeModel()
+    // special 3d model with a separate camera
+    private val gizmoModel = GizmoModel().apply { addPos(Vector3f(0f, 0f, 0f), 4f) }
 
     // 2d models
 
@@ -36,6 +39,8 @@ class MainScene(private val app: EditorApp) {
     private val inputController = InputController(app)
     private val keyController = KeyController(app)
     private val camera = OrbitalCamera()
+    /** For drawing the gizmo model in overlay */
+    private val gizmoCamera = GizmoCamera(camera)
     /** For drawing overlays on screen */
     private val orthoCamera = OrthoCamera()
 
@@ -73,10 +78,12 @@ class MainScene(private val app: EditorApp) {
         setViewport(viewport)
         models3d.forEach { it.init() }
         models2d.forEach { it.init() }
+        gizmoModel.init()
         inputController.run {
             init(window)
             addListener(keyController)
             addListener(camera)
+            addListener(gizmoCamera)
             addListener(newNodeController)
             addListener(selectController)
             addListener(moveController)
@@ -90,6 +97,12 @@ class MainScene(private val app: EditorApp) {
         vp.set(viewport)
         camera.setViewport(vp)
         orthoCamera.setViewport(vp)
+        gizmoCamera.setViewport(Viewport(
+            vp.right - gizmoSize - gizmoPadding.x,
+            vp.bottom - gizmoSize - gizmoPadding.y,
+            gizmoSize,
+            gizmoSize
+        ))
     }
 
     fun lookAtOrigin() {
@@ -168,13 +181,15 @@ class MainScene(private val app: EditorApp) {
 
     fun render() {
         updateCursor()
-        glViewport(0, 0, vp.width, vp.height)
+        setGLViewport(vp)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
         val viewProj3d = camera.getViewProjectionMatrix()
         models3d.forEach { it.runFrame(viewProj3d) }
         val viewProj2d = orthoCamera.getViewProjectionMatrix()
         models2d.forEach { it.runFrame(viewProj2d) }
+        setGLViewport(gizmoCamera.vp)
+        gizmoModel.runFrame(gizmoCamera.getViewProjectionMatrix())
     }
 
     private fun updateCursor() {
@@ -188,5 +203,25 @@ class MainScene(private val app: EditorApp) {
             }
             glfwSetCursor(window, cursor)
         }
+    }
+
+    companion object {
+        private const val gizmoSize: Int = 80
+        // From Gui button, camera button has size 22 + padding 10
+        private val gizmoPadding = Vector2i(0, 32)
+    }
+
+    private fun setGLViewport(vp: Viewport) {
+        // The GL viewport starts from the corner of the window where
+        // it's rendered in the UI.
+        // [vp] starts from the root window, so we need to ignore its position.
+        // Also note that Viewport (0, 0) is top left corner, but
+        // OpenGL viewport (0, 0) is bottom left corner.
+        glViewport(
+            vp.left - this.vp.left,
+            this.vp.bottom - vp.bottom,
+            vp.width,
+            vp.height
+        )
     }
 }

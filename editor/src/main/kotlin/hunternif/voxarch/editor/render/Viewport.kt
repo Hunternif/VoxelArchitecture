@@ -2,16 +2,25 @@ package hunternif.voxarch.editor.render
 
 import kotlin.math.sqrt
 
+/**
+ * Represents a viewport on the screen, where (0, 0) is the top left corner.
+ */
 data class Viewport(
     var x: Int,
     var y: Int,
     var width: Int,
     var height: Int,
 ) {
+    /** Distance from the left side of the window to the LEFT side of this viewport */
     inline val left get() = x
+    /** Distance from the left side of the window to the RIGHT side of this viewport */
     inline val right get() = x + width
-    inline val bottom get() = y + height
+    /** Distance from the top of the window to the TOP of this viewport */
     inline val top get() = y
+    /** Distance from the top of the window to the BOTTOM of this viewport */
+    inline val bottom get() = y + height
+
+    constructor(vp: Viewport) : this(vp.x, vp.y, vp.width, vp.height)
 
     private val array = intArrayOf(0, 0, width, height)
 
