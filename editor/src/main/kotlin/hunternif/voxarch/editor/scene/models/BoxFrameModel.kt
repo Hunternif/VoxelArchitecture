@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.FloatBufferWrapper
@@ -14,20 +13,26 @@ import org.lwjgl.system.MemoryStack
 /**
  * Renders the frame outline of a node that's currently selected
  */
-class SelectedNodeFrameModel : BaseModel() {
-    // 12 edges, 2 vertices per edge, 3f pos + 4f color per vertex
-    private var vertBufferSize = 12 * 2 * (3 + 4)
+class BoxFrameModel(
+    private val singleColor: ColorRGBa? = null,
+    private val lineWidth: Float = 1f,
+) : BaseModel() {
+    // 12 edges, 2 vertices per edge, 3f pos per vertex
+    private var vertBufferSize = 12 * 2 * 3
 
-    private val color = ColorRGBa.fromHex(0xffffff)
     override val shader = SolidColorInstancedShader()
 
     private var instanceVboID = 0
-    private val instances = mutableListOf<SceneObject>()
+    private val instances = mutableListOf<Box>()
 
     private val instanceVertexBuffer = FloatBufferWrapper()
 
-    fun addNode(obj: SceneObject) {
-        instances.add(obj)
+    fun add(box: Box) {
+        if (singleColor != null) {
+            instances.add(Box(box.start, box.size, singleColor))
+        } else {
+            instances.add(box)
+        }
     }
 
     fun clear() {
@@ -45,8 +50,8 @@ class SelectedNodeFrameModel : BaseModel() {
         val edges = boxEdges(Vector3f(0f, 0f, 0f), Vector3f(1f, 1f, 1f))
         vertexBuffer.run {
             for (v in edges) {
-                put(v.start).put(color.toVector4f())
-                put(v.end).put(color.toVector4f())
+                put(v.start)
+                put(v.end)
             }
             flip()
         }
@@ -54,7 +59,6 @@ class SelectedNodeFrameModel : BaseModel() {
 
         initVertexAttributes {
             vector3f(0) // position attribute
-            vector4f(1) // color attribute
         }
 
         // Create VBO for the instances of this model
@@ -62,6 +66,7 @@ class SelectedNodeFrameModel : BaseModel() {
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
 
         initInstanceAttributes {
+            vector4f(1) // color attribute
             mat4f(2) // model matrix instance attribute, uses ids 2-5
         }
         uploadInstanceData()
@@ -69,8 +74,9 @@ class SelectedNodeFrameModel : BaseModel() {
 
     private fun uploadInstanceData() {
         // 16f is used by model matrix
-        instanceVertexBuffer.prepare(instances.size * 16).run {
+        instanceVertexBuffer.prepare(instances.size * (4 + 16)).run {
             instances.forEach { it.run {
+                put(color.toVector4f())
                 put(Matrix4f().translation(start).scale(size))
             }}
             flip()
@@ -83,7 +89,7 @@ class SelectedNodeFrameModel : BaseModel() {
     override fun render() {
         glDisable(GL_DEPTH_TEST)
 
-        glLineWidth(1f)
+        glLineWidth(lineWidth)
         glDrawArraysInstanced(GL_LINES, 0, vertBufferSize, instances.size)
 
         glEnable(GL_DEPTH_TEST)
