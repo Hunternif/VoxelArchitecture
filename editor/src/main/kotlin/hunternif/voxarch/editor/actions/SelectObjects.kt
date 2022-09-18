@@ -25,7 +25,6 @@ class SelectObjects(
             ALL -> state.selectedObjects.clear()
         }
         for (obj in objs) {
-            if (obj == state.rootNode || obj == state.voxelRoot) continue
             state.selectedObjects.add(obj)
         }
         scene.updateSelectedNodeModel()
