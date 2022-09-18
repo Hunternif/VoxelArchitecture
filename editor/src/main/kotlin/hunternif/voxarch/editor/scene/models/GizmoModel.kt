@@ -11,12 +11,14 @@ import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
 /** Renders an RGB 3d gizmo at the given coordinates. */
-class GizmoModel : BaseModel() {
-    private data class GizmoData(
-        val pos: Vector3f,
-        /** length of axis line */
-        val length: Float,
-    )
+class GizmoModel(
+    /** position of the axis intersection point
+     * relative to the center of the voxel */
+    private val center: Vector3f = Vector3f(0f, 0f, 0f),
+    /** length of axis line */
+    private val length: Float = 0.5f,
+) : BaseModel() {
+    private data class GizmoData(val pos: Vector3f)
 
     private var vertBufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
     private val instanceVertexBuffer = FloatBufferWrapper()
@@ -36,14 +38,14 @@ class GizmoModel : BaseModel() {
         val vertexBuffer = stack.mallocFloat(vertBufferSize)
         vertexBuffer.run {
             // X
-            put(-0.5f).put(0f).put(0f).put(colX.toVector4f())
-            put( 0.5f).put(0f).put(0f).put(colX.toVector4f())
+            put(-0.5f).put(center.y).put(center.z).put(colX.toVector4f())
+            put( 0.5f).put(center.y).put(center.z).put(colX.toVector4f())
             // Y
-            put(0f).put(-0.5f).put(0f).put(colY.toVector4f())
-            put(0f).put( 0.5f).put(0f).put(colY.toVector4f())
+            put(center.x).put(-0.5f).put(center.z).put(colY.toVector4f())
+            put(center.x).put( 0.5f).put(center.z).put(colY.toVector4f())
             // Z
-            put(0f).put(0f).put(-0.5f).put(colZ.toVector4f())
-            put(0f).put(0f).put( 0.5f).put(colZ.toVector4f())
+            put(center.x).put(center.y).put(-0.5f).put(colZ.toVector4f())
+            put(center.x).put(center.y).put( 0.5f).put(colZ.toVector4f())
             flip()
         }
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
@@ -63,8 +65,8 @@ class GizmoModel : BaseModel() {
         uploadInstanceData()
     }
 
-    fun addPos(pos: Vector3f, length: Float = 1f) {
-        instances.add(GizmoData(pos, length))
+    fun addPos(pos: Vector3f) {
+        instances.add(GizmoData(pos))
     }
 
     fun clear() {

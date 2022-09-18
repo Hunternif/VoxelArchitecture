@@ -29,7 +29,7 @@ class GizmoCamera(
 
     private var xAngle = 0.5f
     private var yAngle = 0.3f
-    var radius = 5f
+    var radius = 1f
         set(value) {
             field = value
             viewMatrixDirty = true
