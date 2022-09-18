@@ -11,7 +11,7 @@ import org.joml.Vector3f
 class GizmoCamera(
     private val orbitalCamera: OrbitalCamera
 ) : MouseListener {
-    private val fov = 60.0
+    private val fov = 45.0
     /**
      * Viewport for drawing the gizmo.
      * Should be smaller than [orbitalCamera]'s viewport.
@@ -29,7 +29,7 @@ class GizmoCamera(
 
     private var xAngle = 0.5f
     private var yAngle = 0.3f
-    var radius = 1f
+    var radius = 2.5f
         set(value) {
             field = value
             viewMatrixDirty = true

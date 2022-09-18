@@ -31,7 +31,7 @@ class MainScene(private val app: EditorApp) {
     private val originsModel = PointSpriteModel("textures/point-circle.png")
     private val highlightedFaceModel = ResizeNodeModel()
     // special 3d model with a separate camera
-    private val gizmoModel = GizmoModel(Vector3f(-0.5f, -0.5f, -0.5f)).apply { addPos(Vector3f(0f, 0f, 0f)) }
+    private val gizmoModel = GizmoBoxModel()
 
     // 2d models
 

@@ -16,7 +16,8 @@ class GizmoModel(
      * relative to the center of the voxel */
     private val center: Vector3f = Vector3f(0f, 0f, 0f),
     /** length of axis line */
-    private val length: Float = 0.5f,
+    private val length: Float = 1f,
+    private val lineWidth: Float = 2f,
 ) : BaseModel() {
     private data class GizmoData(val pos: Vector3f)
 
@@ -93,7 +94,7 @@ class GizmoModel(
     override fun render() {
         glDisable(GL_DEPTH_TEST)
 
-        glLineWidth(2f)
+        glLineWidth(lineWidth)
         glDrawArraysInstanced(GL_LINES, 0, vertBufferSize, instances.size)
 
         glEnable(GL_DEPTH_TEST)
