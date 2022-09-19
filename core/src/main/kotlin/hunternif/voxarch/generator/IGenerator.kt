@@ -29,3 +29,7 @@ interface IGenerator {
 /** Used to locate generator classes visible in the UI. */
 @Target(AnnotationTarget.CLASS)
 annotation class PublicGenerator(val name: String)
+
+/** A slot on the generator that accepts another generator. */
+@Target(AnnotationTarget.PROPERTY)
+annotation class GeneratorSlot(val name: String)

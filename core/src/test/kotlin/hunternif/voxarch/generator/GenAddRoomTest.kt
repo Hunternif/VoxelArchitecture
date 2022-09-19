@@ -1,0 +1,64 @@
+package hunternif.voxarch.generator
+
+import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.room
+import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.height
+import hunternif.voxarch.dom.style.vx
+import hunternif.voxarch.plan.Room
+import org.junit.Assert.assertEquals
+import org.junit.Test
+
+class GenAddRoomTest {
+    @Test
+    fun `add room and apply styles`() {
+        val style = Stylesheet().apply {
+            style("my_room") {
+                height { 10.vx }
+            }
+            style("my_child") {
+                height { 5.vx }
+            }
+        }
+        val dom = DomRoot(style).apply {
+            room("my_room") {
+                generators.add(GenAddRoom("my_child"))
+            }
+        }.build()
+
+        val parent = dom.children.first() as Room
+        assertEquals(1, parent.children.size)
+        assertEquals("my_room", parent.type)
+        assertEquals(10.0, parent.height, 0.0)
+
+        val child = parent.children.first() as Room
+        assertEquals(0, child.children.size)
+        assertEquals("my_child", child.type)
+        assertEquals(5.0, child.height, 0.0)
+    }
+
+    @Test
+    fun `add room and call next generator`() {
+        val style = Stylesheet().apply {
+            style("nested_child") {
+                height { 2.vx }
+            }
+        }
+        val generator = GenAddRoom()
+        generator.nextGen = GenAddRoom("nested_child")
+        val dom = DomRoot(style).apply {
+            room() {
+                generators.add(generator)
+            }
+        }.build()
+
+        val parent = dom.children.first() as Room
+        val child = parent.children.first() as Room
+        assertEquals(1, child.children.size)
+
+        val nestedChild = child.children.first() as Room
+        assertEquals(0, nestedChild.children.size)
+        assertEquals("nested_child", nestedChild.type)
+        assertEquals(2.0, nestedChild.height, 0.0)
+    }
+}
