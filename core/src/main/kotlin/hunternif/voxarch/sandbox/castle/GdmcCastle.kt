@@ -111,6 +111,6 @@ private fun Node.buildWallBetween(t1: Room, t2: Room) {
     val p2 = t2.origin.clone().apply { y = wallTop }
 
     wall(p1, p2) {
-        type = BLD_CURTAIN_WALL
+        tags += BLD_CURTAIN_WALL
     }
 }

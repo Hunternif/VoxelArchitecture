@@ -17,7 +17,7 @@ fun assertNodeEquals(
 ) {
     assertEquals(expected::class, actual::class)
     assertEquals(expected.origin, actual.origin)
-    assertEquals(expected.type, actual.type)
+    assertEquals(expected.tags, actual.tags)
     assertEquals(expected.rotationY, actual.rotationY, 0.0)
     assertEquals(expected.size, actual.size)
     assertEquals(expected.width, actual.width, 0.0)

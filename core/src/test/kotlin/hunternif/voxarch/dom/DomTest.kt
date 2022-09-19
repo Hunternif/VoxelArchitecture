@@ -236,7 +236,7 @@ class DomTest {
     }
 
     @Test
-    fun `inherit node type from style class`() {
+    fun `do not inherit node tag from style class`() {
         val dom = DomRoot().apply {
             node("parent") {
                 node("child", "extra class") {
@@ -255,12 +255,12 @@ class DomTest {
         val noclass = child.children[1]
         val noclass2 = noclass.children[0]
         val innermost = noclass.children[1]
-        assertEquals("parent", parent.type)
-        assertEquals("child", child.type)
-        assertEquals("inner", inner.type)
-        assertEquals("child", noclass.type)
-        assertEquals("child", noclass2.type)
-        assertEquals("innermost", innermost.type)
+        assertEquals(setOf("parent"), parent.tags)
+        assertEquals(setOf("child", "extra class"), child.tags)
+        assertEquals(setOf("inner"), inner.tags)
+        assertEquals(emptySet<String>(), noclass.tags)
+        assertEquals(emptySet<String>(), noclass2.tags)
+        assertEquals(setOf("innermost"), innermost.tags)
     }
 
 //    @Test

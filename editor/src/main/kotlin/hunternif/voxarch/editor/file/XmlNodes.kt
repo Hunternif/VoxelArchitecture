@@ -30,10 +30,11 @@ import hunternif.voxarch.vector.Vec3
 @JsonIgnoreProperties(ignoreUnknown = true)
 abstract class XmlNode {
     @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "tag")
+    var tags = mutableListOf<String>()
+    @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "node")
     var children = mutableListOf<XmlNode>()
-    @field:JacksonXmlProperty(isAttribute = true)
-    var type: String? = null
 }
 
 class XmlStructure(
@@ -99,7 +100,7 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
         is Path -> XmlPath(points, origin)
         else -> null
     }
-    xmlNode?.type = type
+    xmlNode?.tags?.addAll(tags)
     return xmlNode
 }
 
@@ -139,7 +140,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
         }
         else -> null
     } ?: return null
-    node.type = type
+    node.tags += tags
     children.forEach { xmlChild ->
         xmlChild.mapXmlNodeRecursive(mapped)?.let { child ->
             node.addChild(child)

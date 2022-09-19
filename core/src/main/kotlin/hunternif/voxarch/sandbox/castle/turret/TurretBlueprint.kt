@@ -85,7 +85,7 @@ fun createTurret(
         level = level
     ).apply {
         if (hasFoundation) {
-            floor { type = BLD_FOUNDATION }
+            floor { tags +=  BLD_FOUNDATION }
         }
         if (hasTaperedBottom) {
             centeredPolygonRoom(
@@ -93,10 +93,10 @@ fun createTurret(
                 taperedBottomSize
             ) {
                 createPolygon(bodyShape)
-                type = BLD_TURRET_BOTTOM
+                tags += BLD_TURRET_BOTTOM
             }
         }
-        type = BLD_TOWER_BODY
+        tags += BLD_TOWER_BODY
         floor()
         createPolygon(bodyShape)
         createWalls()
@@ -104,7 +104,7 @@ fun createTurret(
         // corbels
         walls.forEach {
             it.path(size.y) {
-                type = BLD_TOWER_CORBEL
+                tags += BLD_TOWER_CORBEL
             }
         }
         // TODO: place corbels as separate nodes
@@ -113,14 +113,14 @@ fun createTurret(
         if (hasSpire) {
             centeredPolygonRoom(spireOrigin, spireSize) {
                 createPolygon(bodyShape)
-                type = BLD_TOWER_SPIRE
+                tags += BLD_TOWER_SPIRE
             }
         }
 
         // overhanging roof:
         if (withCrenellation) {
             centeredPolygonRoom(roofOrigin, roofSize) {
-                type = BLD_TOWER_ROOF
+                tags += BLD_TOWER_ROOF
                 ceiling()
                 createPolygon(bodyShape)
                 createWalls()

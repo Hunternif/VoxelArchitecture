@@ -144,7 +144,7 @@ fun outerWard(keep: Turret, seed: Long): Turret {
         turrets.add(turrets.first())
         turrets.zipWithNext { a, b ->
             wall(a.origin, b.origin.addY(wallHeight)) {
-                type = BLD_CURTAIN_WALL
+                tags += BLD_CURTAIN_WALL
             }
         }
 

@@ -6,6 +6,7 @@ import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Structure
+import java.util.*
 
 /** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
@@ -36,7 +37,7 @@ abstract class DomBuilder<out N: Node?> {
         child.seed = childSeed
         children.add(child)
     }
-    /** Checks if this builder builds the right type of node and casts to it*/
+    /** Checks if this builder builds the right class of node and casts to it*/
     @Suppress("UNCHECKED_CAST")
     internal inline fun <reified N2 : Node?> asBuilder(): DomBuilder<N2>? {
         return if (node is N2) this as DomBuilder<N2>
@@ -82,10 +83,10 @@ class DomLocalRoot<out N : Node>(
 open class DomNodeBuilder<out N: Node>(
     private val createNode: () -> N
 ) : DomBuilder<N>() {
-    private val styleClass = mutableListOf<String>()
+    private val styleClass = LinkedHashSet<String>()
     override val node: N by lazy { createNode() }
     override fun build(): N {
-        node.type = styleClass.firstOrNull()
+        node.tags += styleClass
         findParentNode().addChild(node)
         stylesheet.apply(this, styleClass)
         if (visibility == Visibility.VISIBLE) {

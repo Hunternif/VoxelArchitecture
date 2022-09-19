@@ -31,24 +31,16 @@ open class Node(
         set(value) {}
 
     /**
-     * Describes the purpose of this node. It can be used to find
-     * a Builder with a particular architectural style or materials to it.
-     *
-     * When set, will recursively apply to all children that don't have a type.
+     * Tags can be Style class names, or building part names etc.
+     * They will be used to find a Builder with a particular architectural style,
+     * or building materials.
+     * Does not automatically apply to children; if you need inheritance, make sure
+     * to add the tags to children manually.
      */
-    var type: String? = null
-        set(value) {
-            children.filter { (it.type ?: field) == field }.forEach { it.type = value }
-            field = value
-        }
+    val tags = LinkedHashSet<String>()
 
     /** For use with incremental building. True means that this node will not be re-built.  */
     var isBuilt = false
-
-    override fun addChild(child: Node) {
-        super.addChild(child)
-        child.type = child.type ?: type
-    }
 
     fun addChild(child: Node, position: Vec3) {
         addChild(child)

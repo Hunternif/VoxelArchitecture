@@ -16,7 +16,7 @@ import hunternif.voxarch.vector.Vec3
  */
 open class Prop(origin: Vec3, type: String) : Node(origin) {
     init {
-        this.type = type
+        this.tags += type
     }
 
     constructor(type: String): this(Vec3.ZERO, type)

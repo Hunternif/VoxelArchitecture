@@ -28,12 +28,12 @@ class GenAddRoomTest {
 
         val parent = dom.children.first() as Room
         assertEquals(1, parent.children.size)
-        assertEquals("my_room", parent.type)
+        assertEquals(setOf("my_room"), parent.tags)
         assertEquals(10.0, parent.height, 0.0)
 
         val child = parent.children.first() as Room
         assertEquals(0, child.children.size)
-        assertEquals("my_child", child.type)
+        assertEquals(setOf("my_child"), child.tags)
         assertEquals(5.0, child.height, 0.0)
     }
 
@@ -58,7 +58,7 @@ class GenAddRoomTest {
 
         val nestedChild = child.children.first() as Room
         assertEquals(0, nestedChild.children.size)
-        assertEquals("nested_child", nestedChild.type)
+        assertEquals(setOf("nested_child"), nestedChild.tags)
         assertEquals(2.0, nestedChild.height, 0.0)
     }
 }

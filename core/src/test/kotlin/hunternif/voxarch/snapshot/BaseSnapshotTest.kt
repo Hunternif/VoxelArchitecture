@@ -80,7 +80,7 @@ abstract class BaseSnapshotTest(
     fun Node.ground() {
         room(Vec3.ZERO, Vec3(outWidth - 1, 0, outLength - 1)) {
             floor {
-                type = TYPE_FLOOR
+                tags += TYPE_FLOOR
             }
         }
     }

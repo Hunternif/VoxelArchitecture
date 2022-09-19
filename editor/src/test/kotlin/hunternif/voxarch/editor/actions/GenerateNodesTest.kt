@@ -114,7 +114,7 @@ class GenerateNodesTest : BaseActionTest() {
         assertEquals(emptySet<SceneObject>(), obj.children.toSet())
         assertEquals(emptySet<Node>(), node.children.toSet())
         assertEquals(Vec3(4, 5, 6), node.origin)
-        assertEquals("generated prop", node.type)
+        assertEquals(setOf("generated prop"), node.tags)
         assertTrue(obj.isGenerated)
     }
 

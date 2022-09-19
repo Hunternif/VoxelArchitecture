@@ -19,7 +19,7 @@ class GuiNodeTree(
     override fun label(item: SceneObject): String {
         if (item is SceneNode) {
             var result = item.nodeClassName
-            val type = item.node.type
+            val type = item.node.tags.firstOrNull()
             if (!type.isNullOrEmpty()) result += " $type"
             if (item.generators.isNotEmpty()) result += " []"
             return result

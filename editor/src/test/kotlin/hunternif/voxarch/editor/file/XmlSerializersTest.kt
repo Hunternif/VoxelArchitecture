@@ -25,6 +25,7 @@ class XmlSerializersTest {
     private val structureXml = """
         <node class="Structure" origin="(1.0, 2.0, 3.0)">
           <node class="Room" origin="(0.0, 0.0, 0.0)" size="(5.0, 6.0, 7.0)" start="(-2.5, 0.0, -3.5)" centered="true">
+            <tag>my_tag</tag>
             <node class="Wall" start="(0.0, 0.0, 0.0)" end="(1.0, 2.0, 0.0)" transparent="true"/>
             <node class="Wall" start="(0.0, 0.0, 1.0)" end="(1.0, 2.0, 1.0)" transparent="false"/>
             <node class="Floor" height="1.0"/>
@@ -37,10 +38,11 @@ class XmlSerializersTest {
 
     private val structure = Structure(Vec3(1, 2, 3)).apply {
         centeredRoom(Vec3.ZERO, Vec3(5, 6, 7)) {
+            tags += "my_tag"
             wall(Vec3(0, 0, 0), Vec3(1, 2, 0)) { transparent = true }
             wall(Vec3(0, 0, 1), Vec3(1, 2, 1))
             floor(1.0)
-            addChild(Gate()) // missing node type
+            addChild(Gate()) // missing node class
         }
         polygonRoom(Vec3.ZERO, Vec3(7, 8, 9)) { shape = PolygonShape.ROUND }
     }

@@ -8,7 +8,7 @@ package hunternif.voxarch.dom
 // Castle DOM tree:
 /*
 ward(styleClass = "ward") {
-    // option A for sizes etc: use CSS for this type
+    // option A for sizes etc: use CSS for this tag
     // option B for sizes:
     size = parent.width mapTo {random(0.5, 0.7) * it.width}
     shape = randomBody()

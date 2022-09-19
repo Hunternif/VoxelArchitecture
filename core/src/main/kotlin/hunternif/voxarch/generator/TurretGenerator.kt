@@ -38,14 +38,14 @@ class TurretGenerator : IGenerator {
             polygonRoom(BLD_TURRET_BOTTOM)
             floor()
             allWalls {
-                wall()
+                wall(BLD_TOWER_BODY)
                 path(BLD_TOWER_CORBEL)
                 // TODO: place corbels as separate nodes
             }
             polygonRoom(BLD_TOWER_SPIRE, "roof")
             polygonRoom(BLD_TOWER_ROOF, "roof") {
-                floor()
-                allWalls { wall() }
+                floor(BLD_TOWER_ROOF)
+                allWalls { wall(BLD_TOWER_ROOF) }
             }
         }
     }

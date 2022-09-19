@@ -61,8 +61,8 @@ abstract class BaseBuilderTest(
 
     fun testRoom(origin: Vec3, size: Vec3) =
         Room(null, origin, size, 0.0).apply {
-            floor { type = TYPE_FLOOR }
-            ceiling { type = TYPE_ROOF }
+            floor { tags += TYPE_FLOOR }
+            ceiling { tags += TYPE_ROOF }
             createFourWalls()
         }
 

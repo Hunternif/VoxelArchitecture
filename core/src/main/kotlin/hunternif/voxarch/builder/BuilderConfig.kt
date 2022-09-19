@@ -3,7 +3,7 @@ package hunternif.voxarch.builder
 import hunternif.voxarch.plan.Node
 
 /**
- * Register here your builders for classes and types of [Node]s.
+ * Register here your builders for classes and tags of [Node]s.
  */
 class BuilderConfig {
     private val buildersMap = mutableMapOf<Class<out Node>, NodeClassBuilders<out Node>>()
@@ -14,14 +14,14 @@ class BuilderConfig {
     }
 
     /**
-     * Register builders per type, for a single class of [Node].
+     * Register builders per tag, for a single class of [Node].
      *
-     * If you set a builder for `null` type, it will be used by default,
-     * when the Node has no type, or when the builder for this type is not set.
+     * If you set a builder for `null` tag, it will be used by default,
+     * when the Node has no tags, or when there are no builders for its tags.
      */
-    inline fun <reified T: Node> set(vararg typeBuilder: Pair<String?, Builder<T>>) {
+    inline fun <reified T: Node> set(vararg tagBuilder: Pair<String?, Builder<T>>) {
         buildersForClass(T::class.java).apply {
-            typeBuilder.forEach { pair ->
+            tagBuilder.forEach { pair ->
                 set(pair.first, pair.second)
             }
         }
@@ -32,17 +32,22 @@ class BuilderConfig {
     }
 
     /**
-     * Get Builder for this Node given its class and type.
-     * If builder is not found for type, will try default type.
+     * Get Builder for this Node given its class and tags.
+     * Will try to find a builder for all tags in order.
      * If builder is not found for class, will try superclasses.
      */
     @Suppress("UNCHECKED_CAST")
     fun <T: Node> get(node: T): Builder<T>? {
         var nodeClass: Class<*> = node.javaClass
         var builder: Builder<*>? = null
-        while (Node::class.java.isAssignableFrom(nodeClass)) {
-            builder = buildersForClass(nodeClass as Class<out Node>).get(node.type)
-            if (builder != null) break
+        classLoop@ while (Node::class.java.isAssignableFrom(nodeClass)) {
+            val buildersForClass = buildersForClass(nodeClass as Class<out Node>)
+            tagLoop@ for (tag in node.tags) {
+                builder = buildersForClass.get(tag)
+                if (builder != null) break@classLoop
+            }
+            builder = buildersForClass.getDefault()
+            if (builder != null) break@classLoop
             nodeClass = nodeClass.superclass
         }
         return builder as Builder<T>?
@@ -52,8 +57,8 @@ class BuilderConfig {
     class NodeClassBuilders<T: Node> {
         private val map: MutableMap<String?, Builder<T>> = mutableMapOf()
         fun setDefault(builder: Builder<T>) { map[null] = builder }
-        fun set(type: String?, builder: Builder<T>) { map[type] = builder }
-        /** If builder is not found for type, will try default type. */
-        fun get(type: String?): Builder<T>? = map[type] ?: map[null]
+        fun set(tag: String?, builder: Builder<T>) { map[tag] = builder }
+        fun get(tag: String?): Builder<T>? = map[tag]
+        fun getDefault(): Builder<T>? = map[null]
     }
 }

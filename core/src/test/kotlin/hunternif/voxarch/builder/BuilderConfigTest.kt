@@ -19,11 +19,11 @@ class BuilderConfigTest {
     fun setup() {
         config = BuilderConfig()
         config.set(
-            "room type" to specialRoomBuilder,
+            "room tag" to specialRoomBuilder,
             null to roomBuilder
         )
         config.set(
-            "node type" to nodeBuilder
+            "node tag" to nodeBuilder
         )
         config.set(
             null to floorBuilder
@@ -31,15 +31,15 @@ class BuilderConfigTest {
     }
 
     @Test
-    fun `get exact class and type`() {
+    fun `get exact class and tag`() {
         val node = Room(Vec3.ZERO, Vec3.ZERO).apply {
-            type = "room type"
+            tags += "room tag"
         }
         assertEquals(specialRoomBuilder, config.get(node))
     }
 
     @Test
-    fun `get exact class and default type`() {
+    fun `get exact class and default tag`() {
         val node = Room(Vec3.ZERO, Vec3.ZERO)
         assertEquals(roomBuilder, config.get(node))
     }

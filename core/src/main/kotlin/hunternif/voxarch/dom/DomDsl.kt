@@ -19,7 +19,7 @@ const val DOM_TURRET = "dom_turret"
  * to the [Node] in the given order.
  *
  * @param styleClass names of style classes (like in CSS).
- * The first class name will be used as the node type.
+ * Class names are also added to node tags.
  */
 fun DomBuilder<Node?>.node(
     vararg styleClass: String,
@@ -61,7 +61,6 @@ fun DomBuilder<Node?>.turret(
 ) {
     val bld =  DomPolygonRoomBuilder().apply{
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
-        // BLD_TOWER_BODY must go first, so that it's also used as node type.
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
     addChild(bld)

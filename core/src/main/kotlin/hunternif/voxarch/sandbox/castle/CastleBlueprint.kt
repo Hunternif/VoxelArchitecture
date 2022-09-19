@@ -91,7 +91,7 @@ class CastleBlueprint(
 
         val y = max(t1.origin.y, t2.origin.y)
         wall(Vec3(p1.x, y, p1.y), Vec3(p2.x, y + config.wallHeight, p2.y)) {
-            type = BLD_CURTAIN_WALL
+            tags += BLD_CURTAIN_WALL
         }
     }
 
@@ -115,11 +115,11 @@ class CastleBlueprint(
         val start = Vec3(box.start.x, maxHeight, box.start.y)
         val end = Vec3(box.end.x, maxHeight, box.end.y)
         return room(start, end.addY(towerHeight)) {
-            floor { type = BLD_FOUNDATION }
+            floor { tags += BLD_FOUNDATION }
             floor()
             ceiling()
             createFourWalls()
-            type = BLD_TOWER_MAIN
+            tags += BLD_TOWER_MAIN
         }
     }
 
@@ -138,7 +138,7 @@ class CastleBlueprint(
             Vec3(foundationSide, 0, foundationSide)
         ) {
             floor {
-                type = BLD_FOUNDATION
+                tags += BLD_FOUNDATION
             }
         }
         centeredRoom(
@@ -148,7 +148,8 @@ class CastleBlueprint(
             floor()
             ceiling()
             createFourWalls()
-            type = BLD_TOWER_MAIN
+            tags += BLD_TOWER_MAIN
+            children.forEach { it.tags += BLD_TOWER_MAIN }
         }
     }
 }
