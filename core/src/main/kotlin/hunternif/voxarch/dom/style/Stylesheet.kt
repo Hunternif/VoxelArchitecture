@@ -45,7 +45,7 @@ open class Stylesheet {
     }
 
     /**
-     * Register a style for for all subclasses.
+     * Register a style for all subclasses.
      */
     inline fun <reified N: Node> styleFor(
         noinline block: StyleRule<N>

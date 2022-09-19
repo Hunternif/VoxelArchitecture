@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.IGenerator
@@ -118,8 +119,8 @@ class GenerateNodesTest : BaseActionTest() {
     }
 
     private class PropGenerator : IGenerator {
-        override fun generate(parent: Node) {
-            parent.prop(Vec3(4, 5, 6), "generated prop")
+        override fun generate(parent: DomBuilder<Node?>) {
+            parent.node?.prop(Vec3(4, 5, 6), "generated prop")
         }
 
     }

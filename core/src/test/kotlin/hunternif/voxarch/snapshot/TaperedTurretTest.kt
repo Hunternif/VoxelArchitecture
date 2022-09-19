@@ -26,7 +26,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
 
     companion object {
         private fun turret(width: Int): Structure {
-            val style = Stylesheet().apply {
+            val style = defaultStyle.apply {
                 styleFor<PolygonRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }

@@ -15,16 +15,16 @@ abstract class DomBuilder<out N: Node?> {
         private set
     internal var seed: Long = 0
     /** Can be null for logical parts of DOM that don't correspond to a Node*/
-    internal abstract val node: N
+    abstract val node: N
     /** Don't manually add children, use [addChild] instead.*/
     internal val children = mutableListOf<DomBuilder<Node?>>()
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
     /** Recursively invokes this method on children. */
-    /** Generators add more child nodes. */
+    /** Generators add more child DomBuilders. */
     internal val generators = mutableListOf<IGenerator>()
     internal open fun build(): N {
-        node?.let { n -> generators.forEach { it.generate(n) } }
+        generators.forEach { it.generate(this) }
         children.forEach { it.build() }
         return node
     }
@@ -35,6 +35,12 @@ abstract class DomBuilder<out N: Node?> {
         child.parent = this
         child.seed = childSeed
         children.add(child)
+    }
+    /** Checks if this builder builds the right type of node and casts to it*/
+    @Suppress("UNCHECKED_CAST")
+    internal inline fun <reified N2 : Node?> asBuilder(): DomBuilder<N2>? {
+        return if (node is N2) this as DomBuilder<N2>
+        else null
     }
 }
 
@@ -84,7 +90,7 @@ open class DomNodeBuilder<out N: Node>(
         stylesheet.apply(this, styleClass)
         if (visibility == Visibility.VISIBLE) {
             buildNode()
-            generators.forEach { it.generate(node) }
+            generators.forEach { it.generate(this) }
             children.forEach { it.build() }
         } else {
             // add and then remove the node, because it needs a parent to

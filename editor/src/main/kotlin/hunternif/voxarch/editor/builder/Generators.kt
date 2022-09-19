@@ -7,7 +7,7 @@ import hunternif.voxarch.generator.TurretGenerator
 typealias GeneratorFactory = AppState.() -> IGenerator
 
 private val generatorsByClass: Map<Class<out IGenerator>, GeneratorFactory> = mapOf(
-    TurretGenerator::class.java to { TurretGenerator(stylesheet, seed) }
+    TurretGenerator::class.java to { TurretGenerator() },
 )
 
 val generatorsByName: Map<String, GeneratorFactory> =

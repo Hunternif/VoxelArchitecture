@@ -65,7 +65,7 @@ fun DomBuilder<Node?>.turret(
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
     addChild(bld)
-    bld.generators.add(TurretGenerator(stylesheet, seed))
+    bld.generators.add(TurretGenerator())
     bld.block()
 }
 

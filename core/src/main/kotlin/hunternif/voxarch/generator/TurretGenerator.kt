@@ -1,7 +1,7 @@
 package hunternif.voxarch.generator
 
 import hunternif.voxarch.dom.*
-import hunternif.voxarch.dom.builder.DomLocalRoot
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
@@ -15,11 +15,8 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
 /**
  * Adds child elements to make a Room look like a castle turret.
  */
-@PublicGenerator
-class TurretGenerator(
-    private val baseStyle: Stylesheet,
-    val seed: Long = 0,
-) : IGenerator {
+@PublicGenerator("Turret")
+class TurretGenerator : IGenerator {
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
     var bodyShape: BodyShape = BodyShape.SQUARE
     var bottomShape: BottomShape = BottomShape.FLAT
@@ -34,11 +31,9 @@ class TurretGenerator(
     /** Y/X ratio of tapered bottoms of turrets. */
     var taperRatio: Double = 0.75
 
-    override fun generate(parent: Node) {
-        if (parent !is Room) return
-        // Order matters! First apply the default styles, then the custom ones.
-        val style = defaultStyle + baseStyle + createTurretStyle(parent)
-        DomLocalRoot(parent, style, seed).apply {
+    override fun generate(parent: DomBuilder<Node?>) {
+        parent.asBuilder<Room>()?.apply {
+            stylesheet.createTurretStyle(node)
             floor(BLD_FOUNDATION)
             polygonRoom(BLD_TURRET_BOTTOM)
             floor()
@@ -52,10 +47,10 @@ class TurretGenerator(
                 floor()
                 allWalls { wall() }
             }
-        }.build()
+        }
     }
 
-    private fun createTurretStyle(body: Room) = Stylesheet().apply {
+    private fun Stylesheet.createTurretStyle(body: Room) {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }
