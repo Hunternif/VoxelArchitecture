@@ -97,8 +97,9 @@ abstract class GuiSceneTree(
             app.unselectAll()
         }
 
-        if (ImGui.isWindowFocused() && ImGui.getIO().getKeysDown(GLFW_KEY_DELETE))
+        if (ImGui.isWindowFocused() && ImGui.isKeyPressed(GLFW_KEY_DELETE, false)) {
             app.deleteSelectedObjects()
+        }
     }
 
     private fun addTreeNodeRecursive(
