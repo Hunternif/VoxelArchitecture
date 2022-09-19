@@ -21,3 +21,13 @@ fun Node.findGlobalPosition(): Vec3 {
     }
     return result
 }
+
+/** Finds children in the subtree matching the given class and tags. */
+inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = sequence {
+    val tagSet = tags.toSet()
+    this@query.iterateSubtree().forEach {
+        if (it is N && (tagSet.isEmpty() || it.tags.containsAll(tagSet))) {
+            yield(it)
+        }
+    }
+}
