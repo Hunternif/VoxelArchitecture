@@ -248,7 +248,9 @@ fun EditorApp.deleteSelectedObjects() = action {
 }
 
 fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
-    if (objs.isNotEmpty()) historyAction(DeleteObjects(objs))
+    objs.filter { it != state.rootNode && it != state.voxelRoot }.let {
+        if (it.isNotEmpty()) historyAction(DeleteObjects(it))
+    }
 }
 
 
