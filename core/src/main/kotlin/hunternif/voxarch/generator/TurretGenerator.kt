@@ -33,24 +33,30 @@ class TurretGenerator : IGenerator {
 
     override fun generate(parent: DomBuilder<Node?>) {
         parent.asBuilder<Room>()?.apply {
-            stylesheet.createTurretStyle(node)
-            floor(BLD_FOUNDATION)
-            polygonRoom(BLD_TURRET_BOTTOM)
-            floor()
-            allWalls {
-                wall(BLD_TOWER_BODY)
-                path(BLD_TOWER_CORBEL)
-                // TODO: place corbels as separate nodes
-            }
-            polygonRoom(BLD_TOWER_SPIRE, "roof")
-            polygonRoom(BLD_TOWER_ROOF, "roof") {
-                floor(BLD_TOWER_ROOF)
-                allWalls { wall(BLD_TOWER_ROOF) }
+            // Order matters! First apply the default styles, then the custom ones.
+            newRoot(stylesheet + createTurretStyle(node)) {
+                floor(BLD_FOUNDATION)
+                polygonRoom(BLD_TURRET_BOTTOM)
+                floor()
+                allWalls {
+                    wall(BLD_TOWER_BODY)
+                    path(BLD_TOWER_CORBEL)
+                    // TODO: place corbels as separate nodes
+                }
+                polygonRoom(BLD_TOWER_SPIRE, "roof")
+                polygonRoom(BLD_TOWER_ROOF, "roof") {
+                    floor(BLD_TOWER_ROOF)
+                    allWalls { wall(BLD_TOWER_ROOF) }
+                }
             }
         }
     }
 
-    private fun Stylesheet.createTurretStyle(body: Room) {
+    /**
+     * These styles will apply to the new generated part of the DOM,
+     * but not to any children.
+     */
+    private fun createTurretStyle(body: Room) = Stylesheet().apply {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }

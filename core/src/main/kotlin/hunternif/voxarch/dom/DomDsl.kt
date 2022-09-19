@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
+import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
@@ -132,6 +133,17 @@ fun DomLineSegmentBuilder.path(
     block: DomBuilder<Path>.() -> Unit = {}
 ) {
     this.createChild(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
+}
+
+/** Creates a "local root" in the DOM. This doesn't create any new nodes, but
+ * it can be used to modify the stylesheet only for this subtree and no others. */
+fun <N: Node?> DomBuilder<N>.newRoot(
+    newStylesheet: Stylesheet? = null,
+    block: DomBuilder<N>.() -> Unit = {}
+) {
+    val child = DomLocalRoot(node, newStylesheet ?: stylesheet, seed)
+    addChild(child)
+    child.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////

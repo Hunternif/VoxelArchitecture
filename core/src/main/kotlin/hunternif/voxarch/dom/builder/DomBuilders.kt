@@ -68,7 +68,7 @@ class DomRoot(
 }
 
 /** Used for creating a local DOM within a Node tree. */
-class DomLocalRoot<out N : Node>(
+class DomLocalRoot<out N : Node?>(
     override val node: N,
     override val stylesheet: Stylesheet = defaultStyle,
     seed: Long = 0,

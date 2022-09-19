@@ -10,6 +10,9 @@ import hunternif.voxarch.plan.Node
  * A program that adds more child nodes to the given node.
  */
 interface IGenerator {
+    /**
+     * Add new DOM elements.
+     */
     fun generate(parent: DomBuilder<Node?>)
     /**
      * Creates a new detached DOM root and generates on it.
