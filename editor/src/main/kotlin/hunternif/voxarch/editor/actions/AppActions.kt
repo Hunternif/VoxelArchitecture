@@ -82,6 +82,9 @@ fun EditorApp.addBlueprint(node: SceneNode, blueprint: Blueprint) {
 }
 
 fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
+    if (state.selectedBlueprint == blueprint) {
+        selectBlueprint(null)
+    }
     val newBlues = node.blueprints.toMutableList()
     if (newBlues.remove(blueprint)) {
         historyAction(SetBlueprints(

@@ -6,6 +6,7 @@ import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.editor.actions.History
 import hunternif.voxarch.editor.actions.HistoryAction
 import hunternif.voxarch.editor.actions.ReadOnlyHistory
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.builder.generatorsByName
 import hunternif.voxarch.editor.builder.mapVoxelToSolidColor
 import hunternif.voxarch.editor.builder.setDefaultBuilders
@@ -77,6 +78,7 @@ interface AppState {
     val DEBUG: Boolean
     val isMainWindowFocused: Boolean
     val isMainWindowHovered: Boolean
+    val selectedBlueprint: Blueprint?
 }
 
 class AppStateImpl(
@@ -127,6 +129,7 @@ class AppStateImpl(
     override val DEBUG = true
     override var isMainWindowFocused = false
     override var isMainWindowHovered = false
+    override var selectedBlueprint: Blueprint? = null
 }
 
 /** Create a new clean state. */

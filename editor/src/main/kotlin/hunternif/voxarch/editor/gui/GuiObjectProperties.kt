@@ -101,7 +101,11 @@ class GuiObjectProperties(
             curBlueprints.forEachIndexed { i, blue ->
                 ImGui.tableNextRow()
                 ImGui.tableNextColumn()
-                ImGui.selectable(blue.name)
+                if (ImGui.selectable(memoStrWithIndex(blue.name, i),
+                        app.state.selectedBlueprint == blue)
+                ) {
+                    app.selectBlueprint(blue)
+                }
                 ImGui.tableNextColumn()
                 gui.inlineIconButton(memoStrWithIndex(FontAwesomeIcons.Times, i)) {
                     app.removeBlueprint(sceneNode, blue)

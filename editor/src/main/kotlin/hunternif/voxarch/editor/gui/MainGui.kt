@@ -116,7 +116,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         panel("Properties") {
             nodeProperties.render()
         }
-        panel("Blueprint###blueprint_window", hasPadding = false) {
+        panel(blueprintWindowTitle, hasPadding = false) {
             blueprintEditor.render()
         }
     }
@@ -201,5 +201,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
     internal val sceneWindowTitle: String get() = app.state.run {
         if (lastSavedAction == history.pastItems.lastOrNull()) "Scene###scene_window"
         else "Scene *###scene_window"
+    }
+
+    @PublishedApi
+    internal val blueprintWindowTitle: String get() = app.state.run {
+        selectedBlueprint?.let {
+            "Blueprint: ${it.name}###blueprint_window"
+        } ?: "Blueprint###blueprint_window"
     }
 }
