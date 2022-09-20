@@ -1,6 +1,8 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.editor.generator.Blueprint
+import hunternif.voxarch.editor.generator.BlueprintNode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.IGenerator
@@ -26,7 +28,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent, undo redo`() = app.state.run {
-        app.addGenerator(parent, PropGenerator())
+        app.addBlueprint(parent, makeBlueprint(PropGenerator()))
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -43,7 +45,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on child, undo redo`() = app.state.run {
-        app.addGenerator(child, PropGenerator())
+        app.addBlueprint(child, makeBlueprint(PropGenerator()))
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(setOf(child), parent.children.toSet())
@@ -60,8 +62,8 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent and child, undo redo`() = app.state.run {
-        app.addGenerator(parent, PropGenerator())
-        app.addGenerator(child, PropGenerator())
+        app.addBlueprint(parent, makeBlueprint(PropGenerator()))
+        app.addBlueprint(child, makeBlueprint(PropGenerator()))
         app.generateNodes()
         assertEquals(4, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -79,16 +81,16 @@ class GenerateNodesTest : BaseActionTest() {
     }
 
     @Test
-    fun `after removing generator re-generate will remove nodes`() = app.state.run {
-        val generator = PropGenerator()
-        app.addGenerator(parent, generator)
+    fun `after removing blueprint re-generate will remove nodes`() = app.state.run {
+        val blueprint = makeBlueprint(PropGenerator())
+        app.addBlueprint(parent, blueprint)
         assertEquals(emptySet<SceneNode>(), generatedNodes.toSet())
         assertEquals(setOf(parent, child), sceneObjects.toSet())
         app.generateNodes()
         val prop = parent.children.last()
         assertEquals(setOf(prop), generatedNodes.toSet())
         assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
-        app.removeGenerator(parent, generator)
+        app.removeBlueprint(parent, blueprint)
         assertEquals(setOf(prop), generatedNodes.toSet())
         assertEquals(setOf(parent, child, prop), sceneObjects.toSet())
         app.generateNodes()
@@ -118,10 +120,13 @@ class GenerateNodesTest : BaseActionTest() {
         assertTrue(obj.isGenerated)
     }
 
+    private fun makeBlueprint(gen: IGenerator) = Blueprint("test blueprint").apply {
+        addNode(BlueprintNode(gen))
+    }
+
     private class PropGenerator : IGenerator {
         override fun generate(parent: DomBuilder<Node?>) {
             parent.node?.prop(Vec3(4, 5, 6), "generated prop")
         }
-
     }
 }

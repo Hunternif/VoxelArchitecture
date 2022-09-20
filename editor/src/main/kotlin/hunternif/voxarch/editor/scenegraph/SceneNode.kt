@@ -1,9 +1,9 @@
 package hunternif.voxarch.editor.scenegraph
 
+import hunternif.voxarch.editor.generator.Blueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.add
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.max
 import hunternif.voxarch.util.min
@@ -19,7 +19,7 @@ class SceneNode(
     color = color,
     isGenerated = isGenerated,
 ) {
-    val generators = mutableListOf<IGenerator>()
+    val blueprints = mutableListOf<Blueprint>()
 
     init {
         update()

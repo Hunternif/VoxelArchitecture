@@ -3,14 +3,13 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
-import hunternif.voxarch.editor.builder.createGeneratorByName
 import hunternif.voxarch.editor.file.writeProject
+import hunternif.voxarch.editor.generator.Blueprint
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.toVec3
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.plan.*
@@ -72,24 +71,19 @@ fun EditorApp.exportVoxFile(path: Path) = action {
 
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
-fun EditorApp.addGenerator(node: SceneNode, generatorName: String) {
-    val generator = state.createGeneratorByName(generatorName)
-    generator?.let { addGenerator(node, it) }
-}
-
-fun EditorApp.addGenerator(node: SceneNode, generator: IGenerator) {
-    historyAction(SetGenerators(
-        node, node.generators + generator,
-        "Add generator", FontAwesomeIcons.Landmark
+fun EditorApp.addBlueprint(node: SceneNode, blueprint: Blueprint) {
+    historyAction(SetBlueprints(
+        node, node.blueprints + blueprint,
+        "Add blueprint", FontAwesomeIcons.Landmark
     ))
 }
 
-fun EditorApp.removeGenerator(node: SceneNode, generator: IGenerator) {
-    val newGens = node.generators.toMutableList()
-    if (newGens.remove(generator)) {
-        historyAction(SetGenerators(
-            node, newGens,
-            "Remove generator", FontAwesomeIcons.TrashAlt
+fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
+    val newBlues = node.blueprints.toMutableList()
+    if (newBlues.remove(blueprint)) {
+        historyAction(SetBlueprints(
+            node, newBlues,
+            "Remove blueprint", FontAwesomeIcons.TrashAlt
         ))
     }
 }

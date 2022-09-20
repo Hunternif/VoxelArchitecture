@@ -2,12 +2,11 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.generator.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Room
 import imgui.ImGui
-import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
 import imgui.type.ImInt
@@ -35,7 +34,7 @@ class GuiObjectProperties(
 
     private val generatorIndex = ImInt(-1)
     private val allGenerators by lazy { app.state.generatorNames.toTypedArray() }
-    private val curGenerators = mutableListOf<IGenerator>()
+    private val curBlueprints = mutableListOf<Blueprint>()
 
     fun render() {
         currentTime = GLFW.glfwGetTime()
@@ -75,43 +74,44 @@ class GuiObjectProperties(
         }
 
         ImGui.separator()
-        ImGui.text("Generators")
-        ImGui.combo("##Add", generatorIndex, allGenerators)
-        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 0f)
-        ImGui.sameLine()
-        ImGui.popStyleVar()
-        button("Add") {
-            val i = generatorIndex.get()
-            if (i >= 0) {
-                app.addGenerator(sceneNode, allGenerators[i])
-                generatorIndex.set(-1) // clear to prevent too many generators
-            }
-        }
-        renderGeneratorTable(sceneNode)
+        ImGui.text("Blueprints")
+        button("New blueprint...")
+//        ImGui.combo("##Add", generatorIndex, allGenerators)
+//        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 0f)
+//        ImGui.sameLine()
+//        ImGui.popStyleVar()
+//        button("Add") {
+//            val i = generatorIndex.get()
+//            if (i >= 0) {
+////                app.addGenerator(sceneNode, allGenerators[i])
+//                generatorIndex.set(-1) // clear to prevent too many generators
+//            }
+//        }
+        renderBlueprintTable(sceneNode)
     }
 
-    private fun renderGeneratorTable(sceneNode: SceneNode) {
-        updateCurrentGenerators(sceneNode)
-        if (ImGui.beginTable("generators_table", 2, ImGuiTableFlags.PadOuterX)) {
+    private fun renderBlueprintTable(sceneNode: SceneNode) {
+        updateCurrentBlueprints(sceneNode)
+        if (ImGui.beginTable("blueprints_table", 2, ImGuiTableFlags.PadOuterX)) {
             ImGui.tableSetupColumn("name")
             // it's not actually 10px wide, selectable makes it wider
             ImGui.tableSetupColumn("remove", ImGuiTableColumnFlags.WidthFixed, 10f)
-            curGenerators.forEachIndexed { i, gen ->
+            curBlueprints.forEachIndexed { i, gen ->
                 ImGui.tableNextRow()
                 ImGui.tableNextColumn()
                 ImGui.selectable(gen.javaClass.simpleName)
                 ImGui.tableNextColumn()
                 gui.inlineIconButton(memoStrWithIndex(FontAwesomeIcons.Times, i)) {
-                    app.removeGenerator(sceneNode, gen)
+                    app.removeBlueprint(sceneNode, gen)
                 }
             }
             ImGui.endTable()
         }
     }
 
-    private fun updateCurrentGenerators(sceneNode: SceneNode) = runAtInterval {
-        curGenerators.clear()
-        curGenerators.addAll(sceneNode.generators)
+    private fun updateCurrentBlueprints(sceneNode: SceneNode) = runAtInterval {
+        curBlueprints.clear()
+        curBlueprints.addAll(sceneNode.blueprints)
     }
 
     /** Check which nodes are currently selected, and update the state of gui */

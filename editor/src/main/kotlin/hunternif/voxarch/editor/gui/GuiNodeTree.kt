@@ -21,7 +21,7 @@ class GuiNodeTree(
             var result = item.nodeClassName
             val type = item.node.tags.firstOrNull()
             if (!type.isNullOrEmpty()) result += " $type"
-            if (item.generators.isNotEmpty()) result += " []"
+            if (item.blueprints.isNotEmpty()) result += " []"
             return result
         }
         return item.toString()
