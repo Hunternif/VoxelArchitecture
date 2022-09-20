@@ -71,6 +71,9 @@ fun EditorApp.exportVoxFile(path: Path) = action {
 
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
+fun EditorApp.newBlueprint(node: SceneNode) =
+    addBlueprint(node, Blueprint("Untitled"))
+
 fun EditorApp.addBlueprint(node: SceneNode, blueprint: Blueprint) {
     historyAction(SetBlueprints(
         node, node.blueprints + blueprint,

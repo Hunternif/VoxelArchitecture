@@ -75,7 +75,9 @@ class GuiObjectProperties(
 
         ImGui.separator()
         ImGui.text("Blueprints")
-        button("New blueprint...")
+        button("New blueprint...") {
+            app.newBlueprint(sceneNode)
+        }
 //        ImGui.combo("##Add", generatorIndex, allGenerators)
 //        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 0f)
 //        ImGui.sameLine()
@@ -96,13 +98,13 @@ class GuiObjectProperties(
             ImGui.tableSetupColumn("name")
             // it's not actually 10px wide, selectable makes it wider
             ImGui.tableSetupColumn("remove", ImGuiTableColumnFlags.WidthFixed, 10f)
-            curBlueprints.forEachIndexed { i, gen ->
+            curBlueprints.forEachIndexed { i, blue ->
                 ImGui.tableNextRow()
                 ImGui.tableNextColumn()
-                ImGui.selectable(gen.javaClass.simpleName)
+                ImGui.selectable(blue.name)
                 ImGui.tableNextColumn()
                 gui.inlineIconButton(memoStrWithIndex(FontAwesomeIcons.Times, i)) {
-                    app.removeBlueprint(sceneNode, gen)
+                    app.removeBlueprint(sceneNode, blue)
                 }
             }
             ImGui.endTable()
