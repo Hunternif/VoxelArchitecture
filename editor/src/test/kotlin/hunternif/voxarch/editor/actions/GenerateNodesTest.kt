@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.ChainedGenerator
@@ -24,6 +23,7 @@ class GenerateNodesTest : BaseActionTest() {
         parent = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         parentNode = parent
         child = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
+
     }
 
     @Test
@@ -121,8 +121,8 @@ class GenerateNodesTest : BaseActionTest() {
     }
 
     private fun makeBlueprint(gen: ChainedGenerator) =
-        Blueprint("test blueprint").apply {
-            addNode(BlueprintNode(gen))
+        Blueprint(0, "test blueprint").apply {
+            newNode(gen)
         }
 
     private class PropGenerator : ChainedGenerator() {

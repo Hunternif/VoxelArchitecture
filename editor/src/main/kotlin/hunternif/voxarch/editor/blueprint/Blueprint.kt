@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.editor.util.IDRegistry
+import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.generator.ChainedGenerator
 import hunternif.voxarch.plan.Node
 import kotlin.collections.LinkedHashSet
@@ -8,16 +10,21 @@ import kotlin.collections.LinkedHashSet
  * Represents a graph of DOM Generators.
  */
 class Blueprint(
+    override val id: Int,
     var name: String,
-) {
+) : WithID {
     val nodes = LinkedHashSet<BlueprintNode>()
     var start: BlueprintNode? = null
 
-    fun addNode(node: BlueprintNode) {
+    private val registry = IDRegistry<BlueprintNode>()
+
+    fun newNode(generator: ChainedGenerator): BlueprintNode {
+        val node = BlueprintNode(registry.newID(), generator)
         nodes.add(node)
         if (start == null) {
             start = node
         }
+        return node
     }
 
     fun execute(root: Node) {
@@ -26,8 +33,9 @@ class Blueprint(
 }
 
 class BlueprintNode(
+    override val id: Int,
     val generator: ChainedGenerator,
-) {
+) : WithID {
     var input: BlueprintNode? = null
     var output: BlueprintNode? = null
         private set

@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.scenegraph
 
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.IDRegistry
@@ -13,6 +14,7 @@ import org.joml.Vector3f
 class SceneRegistry {
     val objectIDs = IDRegistry<SceneObject>()
     val subsetIDs = IDRegistry<Subset<*>>()
+    val blueprintIDs = IDRegistry<Blueprint>()
 
     fun newObject(
         start: Vector3f = Vector3f(),
@@ -53,6 +55,13 @@ class SceneRegistry {
         val subset = Subset<T>(id, name)
         subsetIDs.save(subset)
         return subset
+    }
+
+    fun newBlueprint(name: String): Blueprint {
+        val id = blueprintIDs.newID()
+        val blueprint = Blueprint(id, name)
+        blueprintIDs.save(blueprint)
+        return blueprint
     }
 
     fun save(obj: Any) {
