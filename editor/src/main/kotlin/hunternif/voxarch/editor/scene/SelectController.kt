@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.gui.Timer
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectController.Mode.*
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
@@ -46,8 +47,7 @@ class SelectController(
     private var firstMove = false
 
     // Update timer
-    private var lastUpdateTime: Double = glfwGetTime()
-    private val updateIntervalSeconds: Double = 0.1
+    private val updateTimer = Timer(0.1)
 
     override fun onMouseDown(mods: Int) {
         dragging = true
@@ -110,35 +110,33 @@ class SelectController(
         marqueeModel.end.set(posX - camera.vp.x, posY - camera.vp.y)
         marqueeModel.update()
 
-        val currentTime = glfwGetTime()
-        if (currentTime - lastUpdateTime < updateIntervalSeconds) return
-        lastUpdateTime = currentTime
+        updateTimer.runAtInterval {
+            minX = min(marqueeModel.start.x, marqueeModel.end.x).toInt()
+            minY = min(marqueeModel.start.y, marqueeModel.end.y).toInt()
+            maxX = max(marqueeModel.start.x, marqueeModel.end.x).toInt()
+            maxY = max(marqueeModel.start.y, marqueeModel.end.y).toInt()
 
-        minX = min(marqueeModel.start.x, marqueeModel.end.x).toInt()
-        minY = min(marqueeModel.start.y, marqueeModel.end.y).toInt()
-        maxX = max(marqueeModel.start.x, marqueeModel.end.x).toInt()
-        maxY = max(marqueeModel.start.y, marqueeModel.end.y).toInt()
+            selectedSet.clear()
 
-        selectedSet.clear()
-
-        for (obj in app.state.sceneObjects) {
-            if (obj in selectedSet || obj in app.state.hiddenObjects) continue
-            if (isAABBOutsideMarquee(obj)) {
-                onMissObject(obj)
-                continue
-            }
-            if (isAABBInsideMarquee(obj)) {
-                onHitObject(obj)
-                continue
-            }
-            hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
-                for (y in minY..maxY step marqueeTestStep) {
-                    val end = Vector3f(obj.start).add(obj.size)
-                    if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.start, end)) {
-                        onHitObject(obj)
-                        break@hitTestLoop
-                    } else {
-                        onMissObject(obj)
+            for (obj in app.state.sceneObjects) {
+                if (obj in selectedSet || obj in app.state.hiddenObjects) continue
+                if (isAABBOutsideMarquee(obj)) {
+                    onMissObject(obj)
+                    continue
+                }
+                if (isAABBInsideMarquee(obj)) {
+                    onHitObject(obj)
+                    continue
+                }
+                hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
+                    for (y in minY..maxY step marqueeTestStep) {
+                        val end = Vector3f(obj.start).add(obj.size)
+                        if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.start, end)) {
+                            onHitObject(obj)
+                            break@hitTestLoop
+                        } else {
+                            onMissObject(obj)
+                        }
                     }
                 }
             }

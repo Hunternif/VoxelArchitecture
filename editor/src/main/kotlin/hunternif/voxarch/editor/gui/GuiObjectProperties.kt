@@ -10,7 +10,6 @@ import imgui.ImGui
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
 import imgui.type.ImInt
-import org.lwjgl.glfw.GLFW
 
 /**
  * Displays properties of a node, and updates them at an interval.
@@ -26,9 +25,9 @@ class GuiObjectProperties(
     private val centeredInput = GuiCheckbox("centered")
 
     // Update timer
-    private var currentTime: Double = GLFW.glfwGetTime()
-    private var lastUpdateTime: Double = GLFW.glfwGetTime()
-    private val updateIntervalSeconds: Double = 0.02
+    private val nodeTimer = Timer(0.02)
+    private val blueprintsTimer = Timer(0.02)
+    private val redrawTimer = Timer(0.02)
 
     private var obj: SceneObject? = null
 
@@ -37,16 +36,12 @@ class GuiObjectProperties(
     private val curBlueprints = mutableListOf<Blueprint>()
 
     fun render() {
-        currentTime = GLFW.glfwGetTime()
         checkSelectedNodes()
         renderHeaderText()
 
         (obj as? SceneNode)?.let {
             renderNode(it)
             redrawNodesIfNeeded()
-        }
-        if (currentTime - lastUpdateTime > updateIntervalSeconds) {
-            lastUpdateTime = currentTime
         }
     }
     private fun renderNode(sceneNode: SceneNode) {
@@ -115,13 +110,13 @@ class GuiObjectProperties(
         }
     }
 
-    private fun updateCurrentBlueprints(sceneNode: SceneNode) = runAtInterval {
+    private fun updateCurrentBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
         curBlueprints.clear()
         curBlueprints.addAll(sceneNode.blueprints)
     }
 
     /** Check which nodes are currently selected, and update the state of gui */
-    private fun checkSelectedNodes() = runAtInterval {
+    private fun checkSelectedNodes() = nodeTimer.runAtInterval {
         app.state.selectedObjects.run {
             obj = when (size) {
                 0 -> null
@@ -156,15 +151,9 @@ class GuiObjectProperties(
     }
 
     /** Apply the modified values to the node. */
-    private fun redrawNodesIfNeeded() = runAtInterval {
+    private fun redrawNodesIfNeeded() = redrawTimer.runAtInterval {
         if (originInput.dirty || sizeInput.dirty || startInput.dirty) {
             app.redrawNodes()
         }
-    }
-
-    /** A mechanism to throttle expensive operations to happen less often than
-     * every frame. */
-    private inline fun runAtInterval(crossinline action: () -> Unit) {
-        if (currentTime - lastUpdateTime > updateIntervalSeconds) action()
     }
 }
