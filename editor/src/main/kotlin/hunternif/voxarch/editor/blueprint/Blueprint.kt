@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.generator
+package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node

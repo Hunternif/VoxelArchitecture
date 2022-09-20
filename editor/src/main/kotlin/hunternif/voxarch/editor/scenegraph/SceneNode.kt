@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.scenegraph
 
-import hunternif.voxarch.editor.generator.Blueprint
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.add

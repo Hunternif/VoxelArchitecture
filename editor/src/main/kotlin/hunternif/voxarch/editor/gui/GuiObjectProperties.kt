@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
-import hunternif.voxarch.editor.generator.Blueprint
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Room

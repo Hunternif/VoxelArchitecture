@@ -1,8 +1,8 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.editor.generator.Blueprint
-import hunternif.voxarch.editor.generator.BlueprintNode
+import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.IGenerator
