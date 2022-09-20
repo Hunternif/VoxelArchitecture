@@ -20,10 +20,15 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
+    @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightRatio = 0.25f,
-        left = Window("main_window"),
+        left = VerticalSplit(
+            bottomRatio = 0.3f,
+            top = Window("main_window"),
+            bottom = Window("Blueprint")
+        ),
         right = VerticalSplit(
             bottomSize = 180,
             bottom = Window("Properties"),
@@ -43,6 +48,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         vp.set(viewport)
         if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA(samplesMSAA)
         mainWindowFbo.init(viewport)
+        blueprintEditor.init()
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
@@ -80,7 +86,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 topPanel()
             }
         }
-        rightPanel("Node tree", hasPadding = false) {
+        panel("Node tree", hasPadding = false) {
             ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
             childWindow("tree", toolbarHeight) { nodeTree.render() }
             childToolbar("footer") {
@@ -99,14 +105,17 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
             ImGui.popStyleVar()
         }
-        rightPanel("History", hasPadding = false) {
+        panel("History", hasPadding = false) {
             history.render()
         }
-        rightPanel("Voxel tree", hasPadding = false) {
+        panel("Voxel tree", hasPadding = false) {
             voxelTree.render()
         }
-        rightPanel("Properties") {
+        panel("Properties") {
             nodeProperties.render()
+        }
+        panel("Blueprint", hasPadding = false) {
+            blueprintEditor.render()
         }
     }
 
@@ -156,7 +165,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     @PublishedApi
-    internal inline fun rightPanel(
+    internal inline fun panel(
         title: String,
         hasPadding: Boolean = true,
         crossinline renderWindow: () -> Unit
