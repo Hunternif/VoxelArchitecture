@@ -5,15 +5,15 @@ import hunternif.voxarch.dom.room
 import hunternif.voxarch.plan.Node
 
 @PublicGenerator("Add room")
-class GenAddRoom(vararg styleClass: String) : IGenerator {
+class GenAddRoom(vararg styleClass: String) : ChainedGenerator() {
     private val styles = styleClass
 
-    @GeneratorSlot("room")
-    var nextGen: IGenerator? = null
-
-    override fun generate(parent: DomBuilder<Node?>) {
+    override fun generateChained(
+        parent: DomBuilder<Node?>,
+        nextBlock: DomBuilder<Node?>.() -> Unit,
+    ) {
         parent.room(*styles) {
-            nextGen?.let { generators.add(it) }
+            nextBlock()
         }
     }
 }

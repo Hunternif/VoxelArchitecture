@@ -45,7 +45,7 @@ class GenAddRoomTest {
             }
         }
         val generator = GenAddRoom()
-        generator.nextGen = GenAddRoom("nested_child")
+        generator.nextGens.add(GenAddRoom("nested_child"))
         val dom = DomRoot(style).apply {
             room() {
                 generators.add(generator)

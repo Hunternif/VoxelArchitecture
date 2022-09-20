@@ -5,7 +5,7 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.generator.IGenerator
+import hunternif.voxarch.generator.ChainedGenerator
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.plan.prop
@@ -120,12 +120,16 @@ class GenerateNodesTest : BaseActionTest() {
         assertTrue(obj.isGenerated)
     }
 
-    private fun makeBlueprint(gen: IGenerator) = Blueprint("test blueprint").apply {
-        addNode(BlueprintNode(gen))
-    }
+    private fun makeBlueprint(gen: ChainedGenerator) =
+        Blueprint("test blueprint").apply {
+            addNode(BlueprintNode(gen))
+        }
 
-    private class PropGenerator : IGenerator {
-        override fun generate(parent: DomBuilder<Node?>) {
+    private class PropGenerator : ChainedGenerator() {
+        override fun generateChained(
+            parent: DomBuilder<Node?>,
+            nextBlock: DomBuilder<Node?>.() -> Unit
+        ) {
             parent.node?.prop(Vec3(4, 5, 6), "generated prop")
         }
     }

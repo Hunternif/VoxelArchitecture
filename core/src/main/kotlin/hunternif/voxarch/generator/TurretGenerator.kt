@@ -16,7 +16,7 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
  * Adds child elements to make a Room look like a castle turret.
  */
 @PublicGenerator("Turret")
-class TurretGenerator : IGenerator {
+class TurretGenerator : ChainedGenerator() {
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
     var bodyShape: BodyShape = BodyShape.SQUARE
     var bottomShape: BottomShape = BottomShape.FLAT
@@ -31,7 +31,10 @@ class TurretGenerator : IGenerator {
     /** Y/X ratio of tapered bottoms of turrets. */
     var taperRatio: Double = 0.75
 
-    override fun generate(parent: DomBuilder<Node?>) {
+    override fun generateChained(
+        parent: DomBuilder<Node?>,
+        nextBlock: DomBuilder<Node?>.() -> Unit,
+    ) {
         parent.asBuilder<Room>()?.apply {
             // Order matters! First apply the default styles, then the custom ones.
             newRoot(stylesheet + createTurretStyle(node)) {
@@ -49,6 +52,7 @@ class TurretGenerator : IGenerator {
                     allWalls { wall(BLD_TOWER_ROOF) }
                 }
             }
+            nextBlock()
         }
     }
 

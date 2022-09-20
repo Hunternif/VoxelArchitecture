@@ -1,6 +1,6 @@
 package hunternif.voxarch.editor.blueprint
 
-import hunternif.voxarch.generator.IGenerator
+import hunternif.voxarch.generator.ChainedGenerator
 import hunternif.voxarch.plan.Node
 import kotlin.collections.LinkedHashSet
 
@@ -21,13 +21,27 @@ class Blueprint(
     }
 
     fun execute(root: Node) {
-        start?.let { it.generator.generateFinal(root) }
+        start?.generator?.generateFinal(root)
     }
 }
 
 class BlueprintNode(
-    val generator: IGenerator,
+    val generator: ChainedGenerator,
 ) {
     var input: BlueprintNode? = null
-    val outputs = mutableListOf<BlueprintNode>()
+    var output: BlueprintNode? = null
+        private set
+
+    fun connectOutput(output: BlueprintNode?) {
+        // disconnect the previous one
+        this.output?.let {
+            it.input = null
+            this.generator.nextGens.remove(it.generator)
+        }
+        this.output = output
+        output?.let {
+            it.input = this
+            this.generator.nextGens.add(it.generator)
+        }
+    }
 }
