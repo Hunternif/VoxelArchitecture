@@ -26,8 +26,10 @@ class MainGui(val app: EditorApp) : GuiBase() {
         rightRatio = 0.25f,
         left = VerticalSplit(
             bottomRatio = 0.3f,
-            top = Window("main_window"),
-            bottom = Window("Blueprint")
+            top = WindowGroup(
+                Window("###scene_window"),
+            ),
+            bottom = Window("###blueprint_window")
         ),
         right = VerticalSplit(
             bottomSize = 180,
@@ -56,7 +58,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         fpsCounter.run()
         mainMenu()
         dockspace(layout)
-        mainWindow("main_window") { vp ->
+        sceneWindow { vp ->
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
@@ -114,20 +116,18 @@ class MainGui(val app: EditorApp) : GuiBase() {
         panel("Properties") {
             nodeProperties.render()
         }
-        panel("Blueprint", hasPadding = false) {
+        panel("Blueprint###blueprint_window", hasPadding = false) {
             blueprintEditor.render()
         }
     }
 
     @PublishedApi
-    internal inline fun mainWindow(
-        title: String,
-        crossinline renderWindow: (Viewport) -> Unit
+    internal inline fun sceneWindow(
+        crossinline renderWindow: (Viewport) -> Unit,
     ) {
         ImGui.setNextWindowClass(
             ImGuiWindowClass().apply {
                 dockNodeFlagsOverrideSet = 0 or
-                    ImGuiDockNodeFlags.NoTabBar or
                     ImGuiDockNodeFlags.NoDocking
             }
         )
@@ -137,28 +137,24 @@ class MainGui(val app: EditorApp) : GuiBase() {
         val mainWindowFlags = 0 or
             ImGuiWindowFlags.NoMove or
             ImGuiWindowFlags.NoScrollbar
-        if (ImGui.begin(title, mainWindowFlags)) {
-            tabBar("main_window_tab_bar") {
-                tabItemWindow(sceneTabName) {
-                    val pos = ImGui.getWindowPos()
-                    val vMin = ImGui.getWindowContentRegionMin()
-                    val vMax = ImGui.getWindowContentRegionMax()
-                    vp.set(
-                        vMin.x + pos.x,
-                        vMin.y + pos.y,
-                        vMax.x - vMin.x,
-                        vMax.y - vMin.y
-                    )
-                    mainWindowFbo.setViewport(vp)
-                    mainWindowFbo.render {
-                        renderWindow(vp)
-                        ImGui.image(mainWindowFbo.texture.texID,
-                            vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
-                    }
-                    app.focusMainWindow(ImGui.isWindowFocused())
-                    app.hoverMainWindow(ImGui.isWindowHovered())
-                }
+        if (ImGui.begin(sceneWindowTitle, mainWindowFlags)) {
+            val pos = ImGui.getWindowPos()
+            val vMin = ImGui.getWindowContentRegionMin()
+            val vMax = ImGui.getWindowContentRegionMax()
+            vp.set(
+                vMin.x + pos.x,
+                vMin.y + pos.y,
+                vMax.x - vMin.x,
+                vMax.y - vMin.y
+            )
+            mainWindowFbo.setViewport(vp)
+            mainWindowFbo.render {
+                renderWindow(vp)
+                ImGui.image(mainWindowFbo.texture.texID,
+                    vMax.x - vMin.x, vMax.y - vMin.y, 0f, 1f, 1f, 0f)
             }
+            app.focusMainWindow(ImGui.isWindowFocused())
+            app.hoverMainWindow(ImGui.isWindowHovered())
         }
         ImGui.end()
         ImGui.popStyleVar(3)
@@ -202,8 +198,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     @PublishedApi
-    internal val sceneTabName: String get() = app.state.run {
-        if (lastSavedAction == history.pastItems.lastOrNull()) "Scene"
-        else "Scene *"
+    internal val sceneWindowTitle: String get() = app.state.run {
+        if (lastSavedAction == history.pastItems.lastOrNull()) "Scene###scene_window"
+        else "Scene *###scene_window"
     }
 }
