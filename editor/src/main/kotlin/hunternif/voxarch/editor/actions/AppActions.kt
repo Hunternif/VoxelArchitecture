@@ -4,8 +4,6 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
 import hunternif.voxarch.editor.file.writeProject
-import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -73,26 +71,6 @@ fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
 fun EditorApp.newBlueprint(node: SceneNode) = action {
     addBlueprint(node, state.registry.newBlueprint("Untitled"))
-}
-
-fun EditorApp.addBlueprint(node: SceneNode, blueprint: Blueprint) {
-    historyAction(SetBlueprints(
-        node, node.blueprints + blueprint,
-        "Add blueprint", FontAwesomeIcons.Landmark
-    ))
-}
-
-fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
-    if (state.selectedBlueprint == blueprint) {
-        selectBlueprint(null)
-    }
-    val newBlues = node.blueprints.toMutableList()
-    if (newBlues.remove(blueprint)) {
-        historyAction(SetBlueprints(
-            node, newBlues,
-            "Remove blueprint", FontAwesomeIcons.TrashAlt
-        ))
-    }
 }
 
 /** Clear generated nodes and run generators for all nodes that have them. */
