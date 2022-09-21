@@ -37,9 +37,13 @@ class GuiBlueprintEditor(
         blueprint?.run {
             ImNodes.beginNodeEditor()
             ImNodes.pushAttributeFlag(ImNodesAttributeFlags.EnableLinkDetachWithDragClick)
+            val editorPos = ImGui.getWindowPos()
+
             nodes.forEach { node ->
                 ImNodes.beginNode(node.id)
                 ImNodes.beginNodeTitleBar()
+                node.x = ImNodes.getNodeEditorSpacePosX(node.id)
+                node.y = ImNodes.getNodeEditorSpacePosY(node.id)
                 ImGui.text(node.name)
                 ImNodes.endNodeTitleBar()
                 ImNodes.beginInputAttribute(node.input.id, pinShape(node.input))
@@ -97,8 +101,9 @@ class GuiBlueprintEditor(
 
             if (ImGui.beginPopup("node_editor_context")) {
                 if (ImGui.button("Create New Node")) {
-                    val node = app.newBlueprintNode(this, TurretGenerator())
-                    ImNodes.setNodeScreenSpacePos(node.id, ImGui.getMousePosX(), ImGui.getMousePosY())
+                    val x = ImGui.getMousePosX() - editorPos.x
+                    val y = ImGui.getMousePosY() - editorPos.y
+                    app.newBlueprintNode(this, TurretGenerator(), x, y)
                     ImGui.closeCurrentPopup()
                 }
                 ImGui.endPopup()

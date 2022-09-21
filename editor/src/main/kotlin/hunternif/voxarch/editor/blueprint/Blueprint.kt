@@ -21,8 +21,10 @@ class Blueprint(
     val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
-    fun newNode(generator: ChainedGenerator): BlueprintNode {
+    fun newNode(generator: ChainedGenerator, x: Float = 0f, y: Float = 0f): BlueprintNode {
         val node = BlueprintNode(nodeIDs.newID(), generator, this)
+        node.x = x
+        node.y = y
         nodeIDs.save(node)
         nodes.add(node)
         if (start == null) {
@@ -54,6 +56,8 @@ class BlueprintNode(
 ) : WithID {
     val input = BlueprintSlot.In(this)
     val output = BlueprintSlot.Out(this)
+    var x: Float = 0f
+    var y: Float = 0f
 
     val name: String = generator.javaClass.simpleName
 }

@@ -34,9 +34,11 @@ fun EditorApp.selectBlueprint(bp: Blueprint?) = historyAction(OpenBlueprint(bp))
 
 fun EditorApp.newBlueprintNode(
     bp: Blueprint,
-    generator: ChainedGenerator
+    generator: ChainedGenerator,
+    x: Float = 0f,
+    y: Float = 0f,
 ): BlueprintNode {
-    val action = BlueprintNewNode(bp, generator)
+    val action = BlueprintNewNode(bp, generator, x, y)
     historyAction(action)
     return action.node
 }
