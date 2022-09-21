@@ -32,6 +32,10 @@ class Blueprint(
     }
 
     fun removeNode(node: BlueprintNode) {
+        if (node == start) {
+            start = node.output.link?.to?.node
+                ?: nodes.firstOrNull { it != node }
+        }
         node.input.unlink()
         node.output.unlink()
         nodes.remove(node)
@@ -46,16 +50,17 @@ class Blueprint(
 class BlueprintNode(
     override val id: Int,
     val generator: ChainedGenerator,
-    bp: Blueprint,
+    val bp: Blueprint,
 ) : WithID {
-    val input = BlueprintSlot.In(bp)
-    val output = BlueprintSlot.Out(bp)
+    val input = BlueprintSlot.In(this)
+    val output = BlueprintSlot.Out(this)
 
     val name: String = generator.javaClass.simpleName
 }
 
 sealed class BlueprintSlot(
     val bp: Blueprint,
+    val node: BlueprintNode,
     override val id: Int = bp.slotIDs.newID(),
 ) : WithID {
     init {
@@ -63,9 +68,9 @@ sealed class BlueprintSlot(
     }
     var link: BlueprintLink? = null
 
-    class In(bp: Blueprint) : BlueprintSlot(bp)
+    class In(node: BlueprintNode) : BlueprintSlot(node.bp, node)
 
-    class Out(bp: Blueprint) : BlueprintSlot(bp) {
+    class Out(node: BlueprintNode) : BlueprintSlot(node.bp, node) {
         fun linkTo(dest: In) {
             unlink()
             val newLink = BlueprintLink(bp.linkIDs.newID(), this, dest)
