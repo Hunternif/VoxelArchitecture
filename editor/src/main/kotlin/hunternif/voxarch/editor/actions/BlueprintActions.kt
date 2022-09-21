@@ -10,22 +10,29 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.generator.ChainedGenerator
 
 
-fun EditorApp.addBlueprint(node: SceneNode, blueprint: Blueprint) {
+fun EditorApp.newBlueprint(node: SceneNode) = action {
+    addBlueprint(node, state.registry.newBlueprint("Untitled"), true)
+}
+
+fun EditorApp.addBlueprint(
+    node: SceneNode, blueprint: Blueprint, autoSelect: Boolean = false
+) {
+    val newSelected = if (autoSelect) blueprint else state.selectedBlueprint
     historyAction(SetBlueprints(
-        node, node.blueprints + blueprint,
+        node, node.blueprints + blueprint, newSelected,
         "Add blueprint", FontAwesomeIcons.Landmark
     ))
 }
 
 fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
-    if (state.selectedBlueprint == blueprint) {
-        selectBlueprint(null)
+    val newSelected = state.selectedBlueprint?.let {
+        if (it == blueprint) null else it
     }
     val newBlues = node.blueprints.toMutableList()
     if (newBlues.remove(blueprint)) {
         historyAction(SetBlueprints(
-            node, newBlues,
-            "Remove blueprint", FontAwesomeIcons.TrashAlt
+            node, newBlues, newSelected,
+            "Remove blueprint", FontAwesomeIcons.TrashAlt,
         ))
     }
 }

@@ -7,18 +7,23 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 class SetBlueprints(
     private val node: SceneNode,
     private val newBlues: List<Blueprint>,
+    private val newSelected: Blueprint? = null,
     description: String,
-    icon: String
+    icon: String,
 ) : HistoryAction(description, icon) {
     private val oldGens = node.blueprints.toList()
+    private var oldSelected: Blueprint? = null
 
     override fun invoke(app: EditorAppImpl) {
+        oldSelected = app.state.selectedBlueprint
         node.blueprints.clear()
         node.blueprints.addAll(newBlues)
+        app.state.selectedBlueprint = newSelected
     }
 
     override fun revert(app: EditorAppImpl) {
         node.blueprints.clear()
         node.blueprints.addAll(oldGens)
+        app.state.selectedBlueprint = oldSelected
     }
 }

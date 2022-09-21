@@ -69,10 +69,6 @@ fun EditorApp.exportVoxFile(path: Path) = action {
 
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
-fun EditorApp.newBlueprint(node: SceneNode) = action {
-    addBlueprint(node, state.registry.newBlueprint("Untitled"))
-}
-
 /** Clear generated nodes and run generators for all nodes that have them. */
 fun EditorApp.generateNodes() = historyAction(GenerateNodes())
 
