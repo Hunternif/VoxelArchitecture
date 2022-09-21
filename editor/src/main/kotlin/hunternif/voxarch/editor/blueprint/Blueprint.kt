@@ -18,7 +18,7 @@ class Blueprint(
     var start: BlueprintNode? = null
 
     val nodeIDs = IDRegistry<BlueprintNode>()
-    internal val slotIDs = IDRegistry<BlueprintSlot>()
+    val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
     fun newNode(generator: ChainedGenerator): BlueprintNode {
