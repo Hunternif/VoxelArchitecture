@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.BlueprintLink
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
@@ -43,6 +44,8 @@ fun EditorApp.newBlueprintNode(
 fun EditorApp.deleteBlueprintNode(node: BlueprintNode) =
     historyAction(BlueprintDeleteNode(node))
 
-fun EditorApp.linkBlueprintNodes(from: BlueprintSlot.Out, to: BlueprintSlot.In) =
+fun EditorApp.linkBlueprintSlots(from: BlueprintSlot.Out, to: BlueprintSlot.In) =
     historyAction(BlueprintCreateLink(from, to))
 
+fun EditorApp.unlinkBlueprintSlot(link: BlueprintLink) =
+    historyAction(BlueprintUnlink(link))

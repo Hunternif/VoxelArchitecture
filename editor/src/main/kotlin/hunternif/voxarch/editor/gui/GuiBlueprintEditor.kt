@@ -2,13 +2,15 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.deleteBlueprintNode
-import hunternif.voxarch.editor.actions.linkBlueprintNodes
+import hunternif.voxarch.editor.actions.linkBlueprintSlots
 import hunternif.voxarch.editor.actions.newBlueprintNode
+import hunternif.voxarch.editor.actions.unlinkBlueprintSlot
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.generator.TurretGenerator
 import imgui.ImGui
 import imgui.extension.imnodes.ImNodes
+import imgui.extension.imnodes.flag.ImNodesAttributeFlags
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiMouseButton
@@ -34,6 +36,7 @@ class GuiBlueprintEditor(
 
         blueprint?.run {
             ImNodes.beginNodeEditor()
+            ImNodes.pushAttributeFlag(ImNodesAttributeFlags.EnableLinkDetachWithDragClick)
             nodes.forEach { node ->
                 ImNodes.beginNode(node.id)
                 ImNodes.beginNodeTitleBar()
@@ -61,8 +64,13 @@ class GuiBlueprintEditor(
                 val from = slotIDs.map[LINK_A.get()]
                 val to = slotIDs.map[LINK_B.get()]
                 if (from is BlueprintSlot.Out && to is BlueprintSlot.In) {
-                    app.linkBlueprintNodes(from, to)
+                    app.linkBlueprintSlots(from, to)
                 }
+            }
+
+            if (ImNodes.isLinkDestroyed(LINK_A)) {
+                val link = linkIDs.map[LINK_A.get()]
+                link?.let { app.unlinkBlueprintSlot(it) }
             }
 
             if (ImGui.isMouseClicked(ImGuiMouseButton.Right)) {
