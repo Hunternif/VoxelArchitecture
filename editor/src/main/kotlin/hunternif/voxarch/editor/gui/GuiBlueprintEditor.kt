@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.linkBlueprintNodes
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.generator.TurretGenerator
@@ -58,7 +59,7 @@ class GuiBlueprintEditor(
                 val from = slotIDs.map[LINK_A.get()]
                 val to = slotIDs.map[LINK_B.get()]
                 if (from is BlueprintSlot.Out && to is BlueprintSlot.In) {
-                    from.linkTo(to)
+                    app.linkBlueprintNodes(from, to)
                 }
             }
 
