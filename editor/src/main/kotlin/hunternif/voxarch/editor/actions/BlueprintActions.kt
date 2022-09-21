@@ -40,6 +40,9 @@ fun EditorApp.newBlueprintNode(
     return action.node
 }
 
+fun EditorApp.deleteBlueprintNode(node: BlueprintNode) =
+    historyAction(BlueprintDeleteNode(node))
+
 fun EditorApp.linkBlueprintNodes(from: BlueprintSlot.Out, to: BlueprintSlot.In) =
     historyAction(BlueprintCreateLink(from, to))
 

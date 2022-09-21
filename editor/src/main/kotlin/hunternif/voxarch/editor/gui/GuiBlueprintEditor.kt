@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.deleteBlueprintNode
 import hunternif.voxarch.editor.actions.linkBlueprintNodes
 import hunternif.voxarch.editor.actions.newBlueprintNode
 import hunternif.voxarch.editor.blueprint.Blueprint
@@ -79,7 +80,7 @@ class GuiBlueprintEditor(
                 if (ImGui.beginPopup("node_context")) {
                     button("Delete node") {
                         val targetNode = nodeIDs.map[targetNodeID]
-                        targetNode?.let { removeNode(it) }
+                        targetNode?.let { app.deleteBlueprintNode(it) }
                         ImGui.closeCurrentPopup()
                     }
                     ImGui.endPopup()
