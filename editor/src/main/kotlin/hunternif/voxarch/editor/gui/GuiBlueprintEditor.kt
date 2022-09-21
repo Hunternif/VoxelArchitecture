@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.linkBlueprintNodes
+import hunternif.voxarch.editor.actions.newBlueprintNode
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.generator.TurretGenerator
@@ -87,7 +88,7 @@ class GuiBlueprintEditor(
 
             if (ImGui.beginPopup("node_editor_context")) {
                 if (ImGui.button("Create New Node")) {
-                    val node = newNode(TurretGenerator())
+                    val node = app.newBlueprintNode(this, TurretGenerator())
                     ImNodes.setNodeScreenSpacePos(node.id, ImGui.getMousePosX(), ImGui.getMousePosY())
                     ImGui.closeCurrentPopup()
                 }
