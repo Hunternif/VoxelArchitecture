@@ -107,8 +107,8 @@ class GuiBlueprintEditor(
     }
 
     private fun pinShape(slot: BlueprintSlot) = when (slot.link) {
-        null -> ImNodesPinShape.Circle
-        else -> ImNodesPinShape.CircleFilled
+        null -> ImNodesPinShape.Triangle
+        else -> ImNodesPinShape.TriangleFilled
     }
 
     private fun checkSelectedBlueprint() = loadBPTimer.runAtInterval {
