@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -108,10 +107,6 @@ internal fun EditorApp.updateHiddenObjects() = action {
             queue.addAll(child.children)
         }
     }
-}
-
-fun EditorApp.selectBlueprint(blue: Blueprint?) = action {
-    state.selectedBlueprint = blue
 }
 
 /** Used by UI to show real-time updates that aren't yet written to history. */
