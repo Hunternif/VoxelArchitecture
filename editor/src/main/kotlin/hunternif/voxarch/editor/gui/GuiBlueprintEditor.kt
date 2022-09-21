@@ -36,11 +36,11 @@ class GuiBlueprintEditor(
                 ImNodes.beginNodeTitleBar()
                 ImGui.text(node.name)
                 ImNodes.endNodeTitleBar()
-                ImNodes.beginInputAttribute(node.input.id, ImNodesPinShape.CircleFilled)
+                ImNodes.beginInputAttribute(node.input.id, pinShape(node.input))
                 ImGui.text("In")
                 ImNodes.endInputAttribute()
                 ImGui.sameLine()
-                ImNodes.beginOutputAttribute(node.output.id)
+                ImNodes.beginOutputAttribute(node.output.id, pinShape(node.output))
                 ImGui.text("Out")
                 ImNodes.endOutputAttribute()
                 ImNodes.endNode()
@@ -93,6 +93,11 @@ class GuiBlueprintEditor(
                 ImGui.endPopup()
             }
         }
+    }
+
+    private fun pinShape(slot: BlueprintSlot) = when (slot.link) {
+        null -> ImNodesPinShape.Circle
+        else -> ImNodesPinShape.CircleFilled
     }
 
     private fun checkSelectedBlueprint() = loadBPTimer.runAtInterval {
