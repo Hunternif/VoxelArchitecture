@@ -26,6 +26,10 @@ class IDRegistry<T : WithID> {
         if (lastID < obj.id) lastID = obj.id
     }
 
+    fun remove(obj: T) {
+        map.remove(obj.id)
+    }
+
     fun clear() {
         lastID = -1
         map.clear()

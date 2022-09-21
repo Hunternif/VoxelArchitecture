@@ -14,17 +14,28 @@ class Blueprint(
     var name: String,
 ) : WithID {
     val nodes = LinkedHashSet<BlueprintNode>()
+    val links = LinkedHashSet<BlueprintLink>()
     var start: BlueprintNode? = null
 
-    private val registry = IDRegistry<BlueprintNode>()
+    val nodeIDs = IDRegistry<BlueprintNode>()
+    internal val slotIDs = IDRegistry<BlueprintSlot>()
+    internal val linkIDs = IDRegistry<BlueprintLink>()
 
     fun newNode(generator: ChainedGenerator): BlueprintNode {
-        val node = BlueprintNode(registry.newID(), generator)
+        val node = BlueprintNode(nodeIDs.newID(), generator, this)
+        nodeIDs.save(node)
         nodes.add(node)
         if (start == null) {
             start = node
         }
         return node
+    }
+
+    fun removeNode(node: BlueprintNode) {
+        node.input.unlink()
+        node.output.unlink()
+        nodes.remove(node)
+        // not removing from the ID registry, in case of undo
     }
 
     fun execute(root: Node) {
@@ -35,21 +46,50 @@ class Blueprint(
 class BlueprintNode(
     override val id: Int,
     val generator: ChainedGenerator,
+    bp: Blueprint,
 ) : WithID {
-    var input: BlueprintNode? = null
-    var output: BlueprintNode? = null
-        private set
+    val input = BlueprintSlot.In(bp)
+    val output = BlueprintSlot.Out(bp)
 
-    fun connectOutput(output: BlueprintNode?) {
-        // disconnect the previous one
-        this.output?.let {
-            it.input = null
-            this.generator.nextGens.remove(it.generator)
-        }
-        this.output = output
-        output?.let {
-            it.input = this
-            this.generator.nextGens.add(it.generator)
+    val name: String = generator.javaClass.simpleName
+}
+
+sealed class BlueprintSlot(
+    val bp: Blueprint,
+    override val id: Int = bp.slotIDs.newID(),
+) : WithID {
+    init {
+        bp.slotIDs.save(this)
+    }
+    var link: BlueprintLink? = null
+
+    class In(bp: Blueprint) : BlueprintSlot(bp)
+
+    class Out(bp: Blueprint) : BlueprintSlot(bp) {
+        fun linkTo(dest: In) {
+            unlink()
+            val newLink = BlueprintLink(bp.linkIDs.newID(), this, dest)
+            bp.linkIDs.save(newLink)
+            bp.links.add(newLink)
+            this.link = newLink
+            dest.link = newLink
         }
     }
+
+    fun unlink() {
+        link?.run {
+            to.link = null
+            from.link = null
+            // remove from ID Registry, because links are cheap to re-create
+            bp.linkIDs.remove(this)
+            bp.links.remove(this)
+        }
+        link = null
+    }
 }
+
+class BlueprintLink(
+    override val id: Int,
+    val from: BlueprintSlot.Out,
+    val to: BlueprintSlot.In,
+) : WithID

@@ -64,5 +64,15 @@ class IDRegistryTest {
         assertEquals(mapOf(0 to minion0, 2 to minion2copy), registry.map)
     }
 
+    @Test
+    fun `create and remove`() {
+        registry.save(minion0)
+        registry.save(minion2)
+        assertEquals(mapOf(0 to minion0, 2 to minion2), registry.map)
+
+        registry.remove(minion0)
+        assertEquals(mapOf(2 to minion2), registry.map)
+    }
+
     data class Minion(override val id: Int) : WithID
 }
