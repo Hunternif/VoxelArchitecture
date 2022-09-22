@@ -23,22 +23,22 @@ class BlueprintTest {
 
     @Test
     fun `create link`() {
-        node1.output.linkTo(node2.input)
+        node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
-        val link12 = node1.output.link!!
-        assertEquals(link12, node2.input.link)
-        assertEquals(node1.output, link12.from)
-        assertEquals(node2.input, link12.to)
+        val link12 = node1.outputs[0].link!!
+        assertEquals(link12, node2.inputs[0].link)
+        assertEquals(node1.outputs[0], link12.from)
+        assertEquals(node2.inputs[0], link12.to)
         assertEquals(setOf(link12), bp.links)
     }
 
     @Test
     fun `unlink from source slot`() {
-        node1.output.linkTo(node2.input)
+        node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
-        node1.output.unlink()
-        assertNull(node1.output.link)
-        assertNull(node2.input.link)
+        node1.outputs[0].unlink()
+        assertNull(node1.outputs[0].link)
+        assertNull(node2.inputs[0].link)
         assertEquals("link should be deleted from registry",
             0, bp.linkIDs.map.size)
         assertEquals(emptySet<BlueprintLink>(), bp.links)
@@ -46,11 +46,11 @@ class BlueprintTest {
 
     @Test
     fun `unlink from destination slot`() {
-        node1.output.linkTo(node2.input)
+        node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
-        node2.input.unlink()
-        assertNull(node1.output.link)
-        assertNull(node2.input.link)
+        node2.inputs[0].unlink()
+        assertNull(node1.outputs[0].link)
+        assertNull(node2.inputs[0].link)
         assertEquals("link should be deleted from registry",
             0, bp.linkIDs.map.size)
         assertEquals(emptySet<BlueprintLink>(), bp.links)
@@ -58,13 +58,13 @@ class BlueprintTest {
 
     @Test
     fun `remove source node should delete link`() {
-        node1.output.linkTo(node2.input)
+        node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
         assertEquals(setOf(node1, node2, node3), bp.nodes)
 
         bp.removeNode(node1)
         assertEquals(setOf(node2, node3), bp.nodes)
-        assertNull(node1.output.link)
+        assertNull(node1.outputs[0].link)
         assertEquals("link should be deleted from registry",
             0, bp.linkIDs.map.size)
         assertEquals(emptySet<BlueprintLink>(), bp.links)
@@ -72,13 +72,13 @@ class BlueprintTest {
 
     @Test
     fun `remove destination node should delete link`() {
-        node1.output.linkTo(node2.input)
+        node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
         assertEquals(setOf(node1, node2, node3), bp.nodes)
 
         bp.removeNode(node2)
         assertEquals(setOf(node1, node3), bp.nodes)
-        assertNull(node1.output.link)
+        assertNull(node1.outputs[0].link)
         assertEquals("link should be deleted from registry",
             0, bp.linkIDs.map.size)
         assertEquals(emptySet<BlueprintLink>(), bp.links)
@@ -86,26 +86,26 @@ class BlueprintTest {
 
     @Test
     fun `relink to another node`() {
-        node1.output.linkTo(node2.input)
-        val link12 = node1.output.link!!
+        node1.outputs[0].linkTo(node2.inputs[0])
+        val link12 = node1.outputs[0].link!!
         assertEquals(1, bp.linkIDs.map.size)
         assertEquals(setOf(link12), bp.links)
 
-        node1.output.linkTo(node3.input)
-        val link13 = node1.output.link!!
+        node1.outputs[0].linkTo(node3.inputs[0])
+        val link13 = node1.outputs[0].link!!
         assertEquals(1, bp.linkIDs.map.size)
         assertEquals(setOf(link13), bp.links)
 
-        assertEquals(link13, node3.input.link)
-        assertEquals(node1.output, link13.from)
-        assertEquals(node3.input, link13.to)
-        assertNull(node2.input.link)
+        assertEquals(link13, node3.inputs[0].link)
+        assertEquals(node1.outputs[0], link13.from)
+        assertEquals(node3.inputs[0], link13.to)
+        assertNull(node2.inputs[0].link)
     }
 
     @Test
     fun `remove start node should assign next linked node`() {
         assertEquals(node1, bp.start)
-        node1.output.linkTo(node3.input)
+        node1.outputs[0].linkTo(node3.inputs[0])
         bp.removeNode(node1)
         assertEquals(node3, bp.start)
     }

@@ -46,13 +46,16 @@ class GuiBlueprintEditor(
                 node.y = ImNodes.getNodeEditorSpacePosY(node.id)
                 ImGui.text(node.name)
                 ImNodes.endNodeTitleBar()
-                ImNodes.beginInputAttribute(node.input.id, pinShape(node.input))
-                ImGui.text("In")
-                ImNodes.endInputAttribute()
-                ImGui.sameLine()
-                ImNodes.beginOutputAttribute(node.output.id, pinShape(node.output))
-                ImGui.text("Out")
-                ImNodes.endOutputAttribute()
+                node.inputs.forEach {
+                    ImNodes.beginInputAttribute(it.id, pinShape(it))
+                    ImGui.text(it.name)
+                    ImNodes.endInputAttribute()
+                }
+                node.outputs.forEach {
+                    ImNodes.beginOutputAttribute(it.id, pinShape(it))
+                    ImGui.text(it.name)
+                    ImNodes.endOutputAttribute()
+                }
                 ImNodes.endNode()
             }
             links.forEach { link ->
