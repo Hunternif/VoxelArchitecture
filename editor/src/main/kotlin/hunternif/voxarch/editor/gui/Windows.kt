@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import imgui.ImGui
 import imgui.ImGuiWindowClass
+import imgui.ImVec2
 import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
@@ -84,4 +85,30 @@ inline fun tabItemWindow(label: String, flags: Int = 0, crossinline block: () ->
         ImGui.popStyleVar(1)
         childWindow("tab_item_window") { block() }
     }
+}
+
+enum class Align {
+    LEFT,
+    RIGHT,
+}
+
+fun text(str: String, align: Align = Align.LEFT, maxWidth: Float? = null) {
+    when (align) {
+        Align.LEFT -> ImGui.text(str)
+        Align.RIGHT -> {
+            val min = ImGui.getWindowContentRegionMin()
+            val max = ImGui.getWindowContentRegionMax()
+            val regionWidth = maxWidth ?: (max.x - min.x)
+            val size = calcTextSize(str)
+            if (regionWidth > size.x)
+                ImGui.indent(regionWidth - size.x)
+            ImGui.text(str)
+        }
+    }
+}
+
+private val sizeBuf = ImVec2()
+fun calcTextSize(str: String): ImVec2 {
+    ImGui.calcTextSize(sizeBuf, str)
+    return sizeBuf
 }

@@ -15,11 +15,14 @@ import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiMouseButton
 import imgui.type.ImInt
+import kotlin.math.max
 
 class GuiBlueprintEditor(
     private val app: EditorApp,
     private val gui: GuiBase,
 ) {
+    private val minWidth = 100f
+
     private var blueprint: Blueprint? = null
 
     private val LINK_A = ImInt()
@@ -44,16 +47,17 @@ class GuiBlueprintEditor(
                 ImNodes.beginNodeTitleBar()
                 node.x = ImNodes.getNodeEditorSpacePosX(node.id)
                 node.y = ImNodes.getNodeEditorSpacePosY(node.id)
+                val width = max(minWidth, calcTextSize(node.name).x)
                 ImGui.text(node.name)
                 ImNodes.endNodeTitleBar()
                 node.inputs.forEach {
                     ImNodes.beginInputAttribute(it.id, pinShape(it))
-                    ImGui.text(it.name)
+                    text(it.name, Align.LEFT)
                     ImNodes.endInputAttribute()
                 }
                 node.outputs.forEach {
                     ImNodes.beginOutputAttribute(it.id, pinShape(it))
-                    ImGui.text(it.name)
+                    text(it.name, Align.RIGHT, width)
                     ImNodes.endOutputAttribute()
                 }
                 ImNodes.endNode()
