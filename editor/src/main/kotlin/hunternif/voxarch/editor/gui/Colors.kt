@@ -34,6 +34,10 @@ class Colors {
         val generatedHiddenLabel = generatedLabel.copy(a = 0.6f)
         val hiddenItemLabel = ColorRGBa.fromHex(0xffffff, 0.6f)
 
+        // Blueprint editor colors
+        val emptySlot = ColorRGBa.fromHex(0x999999)
+        val filledSlot = buttonHovered.copy()
+
         // Pastel RGB colors
         val axisX = ColorRGBa.fromHex(0xD46363)
         val axisY = ColorRGBa.fromHex(0x69B042)

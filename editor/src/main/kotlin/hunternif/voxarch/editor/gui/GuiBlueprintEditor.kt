@@ -7,22 +7,22 @@ import hunternif.voxarch.editor.actions.newBlueprintNode
 import hunternif.voxarch.editor.actions.unlinkBlueprintSlot
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.generator.TurretGenerator
+import imgui.ImColor
 import imgui.ImGui
 import imgui.extension.imnodes.ImNodes
 import imgui.extension.imnodes.flag.ImNodesAttributeFlags
+import imgui.extension.imnodes.flag.ImNodesColorStyle
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiMouseButton
 import imgui.type.ImInt
-import kotlin.math.max
 
 class GuiBlueprintEditor(
     private val app: EditorApp,
     private val gui: GuiBase,
 ) {
-    private val minWidth = 100f
-
     private var blueprint: Blueprint? = null
 
     private val LINK_A = ImInt()
@@ -39,28 +39,40 @@ class GuiBlueprintEditor(
 
         blueprint?.run {
             ImNodes.beginNodeEditor()
+            ImNodes.getStyle().apply {
+                pinCircleRadius = 4f
+                nodeCornerRounding = 2f
+                setNodePadding(8f, 5f)
+            }
             ImNodes.pushAttributeFlag(ImNodesAttributeFlags.EnableLinkDetachWithDragClick)
             val editorPos = ImGui.getWindowPos()
 
             nodes.forEach { node ->
                 ImNodes.beginNode(node.id)
+
                 ImNodes.beginNodeTitleBar()
-                node.x = ImNodes.getNodeEditorSpacePosX(node.id)
-                node.y = ImNodes.getNodeEditorSpacePosY(node.id)
-                val width = max(minWidth, calcTextSize(node.name).x)
+                val width = calcTextSize(node.name).x
                 ImGui.text(node.name)
                 ImNodes.endNodeTitleBar()
+
                 node.inputs.forEach {
-                    ImNodes.beginInputAttribute(it.id, pinShape(it))
-                    text(it.name, Align.LEFT)
+                    pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
+                    ImNodes.beginInputAttribute(it.id, ImNodesPinShape.CircleFilled)
+                    text(it.name)
                     ImNodes.endInputAttribute()
+                    ImNodes.popColorStyle()
                 }
                 node.outputs.forEach {
-                    ImNodes.beginOutputAttribute(it.id, pinShape(it))
+                    pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
+                    ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
                     text(it.name, Align.RIGHT, width)
                     ImNodes.endOutputAttribute()
+                    ImNodes.popColorStyle()
                 }
                 ImNodes.endNode()
+
+                node.x = ImNodes.getNodeEditorSpacePosX(node.id)
+                node.y = ImNodes.getNodeEditorSpacePosY(node.id)
             }
             links.forEach { link ->
                 ImNodes.link(link.id, link.from.id, link.to.id)
@@ -118,12 +130,16 @@ class GuiBlueprintEditor(
         }
     }
 
-    private fun pinShape(slot: BlueprintSlot) = when (slot.link) {
-        null -> ImNodesPinShape.Triangle
-        else -> ImNodesPinShape.TriangleFilled
+    private fun pinColor(slot: BlueprintSlot) = when (slot.link) {
+        null -> Colors.emptySlot
+        else -> Colors.filledSlot
     }
 
     private fun checkSelectedBlueprint() = loadBPTimer.runAtInterval {
         blueprint = app.state.selectedBlueprint
+    }
+
+    private fun pushNodesColorStyle(imGuiCol: Int, color: ColorRGBa) {
+        color.run { ImNodes.pushColorStyle(imGuiCol, ImColor.floatToColor(r, g, b, a)) }
     }
 }

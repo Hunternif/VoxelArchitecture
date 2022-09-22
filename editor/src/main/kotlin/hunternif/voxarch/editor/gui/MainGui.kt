@@ -25,7 +25,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightRatio = 0.25f,
         left = VerticalSplit(
-            bottomRatio = 0.3f,
+            bottomRatio = 0.5f,
             top = WindowGroup(
                 Window("###scene_window"),
             ),
