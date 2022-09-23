@@ -9,6 +9,7 @@ import imgui.extension.imnodes.ImNodes
 
 class BlueprintNewNode(
     private val bp: Blueprint,
+    private val name: String,
     private val generator: ChainedGenerator,
     private val x: Float,
     private val y: Float,
@@ -21,7 +22,7 @@ class BlueprintNewNode(
 
     override fun invoke(app: EditorAppImpl) {
         if (!::node.isInitialized) {
-            node = bp.newNode(generator, x, y)
+            node = bp.addNode(name, generator, x, y)
         }
         bp.nodes.add(node)
         ImNodes.setNodeEditorSpacePos(node.id, node.x, node.y)

@@ -8,14 +8,11 @@ class BlueprintDeleteNode(private val node: BlueprintNode) : HistoryAction(
     "Delete blueprint node",
     FontAwesomeIcons.TrashAlt
 ) {
-    private val oldStart = node.bp.start
-
     override fun invoke(app: EditorAppImpl) {
         node.bp.removeNode(node)
     }
 
     override fun revert(app: EditorAppImpl) {
         node.bp.nodes.add(node)
-        node.bp.start = oldStart
     }
 }

@@ -122,7 +122,7 @@ class GuiBlueprintEditor(
                 if (ImGui.button("Create New Node")) {
                     val x = ImGui.getMousePosX() - editorPos.x
                     val y = ImGui.getMousePosY() - editorPos.y
-                    app.newBlueprintNode(this, TurretGenerator(), x, y)
+                    app.newBlueprintNode(this, "Turret", TurretGenerator(), x, y)
                     ImGui.closeCurrentPopup()
                 }
                 ImGui.endPopup()

@@ -122,7 +122,8 @@ class GenerateNodesTest : BaseActionTest() {
 
     private fun makeBlueprint(gen: ChainedGenerator) =
         Blueprint(0, "test blueprint").apply {
-            newNode(gen)
+            val node = addNode("test", gen)
+            start.outputs[0].linkTo(node.inputs[0])
         }
 
     private class PropGenerator : ChainedGenerator() {

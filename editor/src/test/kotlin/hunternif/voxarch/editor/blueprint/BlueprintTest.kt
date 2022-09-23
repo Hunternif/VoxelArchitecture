@@ -16,9 +16,9 @@ class BlueprintTest {
     @Before
     fun setup() {
         bp = Blueprint(0, "test blueprint")
-        node1 = bp.newNode(generator)
-        node2 = bp.newNode(generator)
-        node3 = bp.newNode(generator)
+        node1 = bp.addNode("test", generator)
+        node2 = bp.addNode("test", generator)
+        node3 = bp.addNode("test", generator)
     }
 
     @Test
@@ -60,10 +60,10 @@ class BlueprintTest {
     fun `remove source node should delete link`() {
         node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
-        assertEquals(setOf(node1, node2, node3), bp.nodes)
+        assertEquals(setOf(bp.start, node1, node2, node3), bp.nodes)
 
         bp.removeNode(node1)
-        assertEquals(setOf(node2, node3), bp.nodes)
+        assertEquals(setOf(bp.start, node2, node3), bp.nodes)
         assertNull(node1.outputs[0].link)
         assertEquals("link should be deleted from registry",
             0, bp.linkIDs.map.size)
@@ -74,10 +74,10 @@ class BlueprintTest {
     fun `remove destination node should delete link`() {
         node1.outputs[0].linkTo(node2.inputs[0])
         assertEquals(1, bp.linkIDs.map.size)
-        assertEquals(setOf(node1, node2, node3), bp.nodes)
+        assertEquals(setOf(bp.start, node1, node2, node3), bp.nodes)
 
         bp.removeNode(node2)
-        assertEquals(setOf(node1, node3), bp.nodes)
+        assertEquals(setOf(bp.start, node1, node3), bp.nodes)
         assertNull(node1.outputs[0].link)
         assertEquals("link should be deleted from registry",
             0, bp.linkIDs.map.size)
@@ -100,30 +100,6 @@ class BlueprintTest {
         assertEquals(node1.outputs[0], link13.from)
         assertEquals(node3.inputs[0], link13.to)
         assertNull(node2.inputs[0].link)
-    }
-
-    @Test
-    fun `remove start node should assign next linked node`() {
-        assertEquals(node1, bp.start)
-        node1.outputs[0].linkTo(node3.inputs[0])
-        bp.removeNode(node1)
-        assertEquals(node3, bp.start)
-    }
-
-    @Test
-    fun `remove start node should assign next existing node`() {
-        assertEquals(node1, bp.start)
-        bp.removeNode(node1)
-        assertEquals(node2, bp.start)
-    }
-
-    @Test
-    fun `remove start node should keep start null if no nodes`() {
-        bp.removeNode(node2)
-        bp.removeNode(node3)
-        assertEquals(node1, bp.start)
-        bp.removeNode(node1)
-        assertNull(bp.start)
     }
 
     private val generator = object : ChainedGenerator() {
