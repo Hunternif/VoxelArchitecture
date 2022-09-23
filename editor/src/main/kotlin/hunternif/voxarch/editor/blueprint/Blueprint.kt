@@ -54,8 +54,8 @@ class Blueprint(
 
     fun removeNode(node: BlueprintNode) {
         if (node == start) return
-        node.inputs.forEach { it.unlink() }
-        node.outputs.forEach { it.unlink() }
+        node.inputs.forEach { it.links.forEach { it.unlink() } }
+        node.outputs.forEach { it.links.forEach { it.unlink() } }
         nodes.remove(node)
         // not removing from the ID registry, in case of undo
     }
@@ -92,31 +92,23 @@ sealed class BlueprintSlot(
     init {
         bp.slotIDs.save(this)
     }
-    var link: BlueprintLink? = null
+    val links = LinkedHashSet<BlueprintLink>()
 
     class In(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node)
 
     class Out(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node) {
-        fun linkTo(dest: In) {
-            unlink()
+        fun linkTo(dest: In): BlueprintLink {
+            val existingLink = links.firstOrNull { it.from == this && it.to == dest }
+            if (existingLink != null) return existingLink
+
             val newLink = BlueprintLink(bp.linkIDs.newID(), this, dest)
             bp.linkIDs.save(newLink)
             bp.links.add(newLink)
-            this.link = newLink
-            dest.link = newLink
+            this.links.add(newLink)
+            dest.links.add(newLink)
             (node.generator as? ChainedGenerator)?.nextGens?.add(dest.node.generator)
+            return newLink
         }
-    }
-
-    fun unlink() {
-        link?.run {
-            to.link = null
-            from.link = null
-            // remove from ID Registry, because links are cheap to re-create
-            bp.linkIDs.remove(this)
-            bp.links.remove(this)
-        }
-        link = null
     }
 }
 
@@ -124,4 +116,12 @@ class BlueprintLink(
     override val id: Int,
     val from: BlueprintSlot.Out,
     val to: BlueprintSlot.In,
-) : WithID
+) : WithID {
+    fun unlink() {
+        from.links.remove(this)
+        to.links.remove(this)
+        // remove from ID Registry, because links are cheap to re-create
+        to.bp.linkIDs.remove(this)
+        to.bp.links.remove(this)
+    }
+}

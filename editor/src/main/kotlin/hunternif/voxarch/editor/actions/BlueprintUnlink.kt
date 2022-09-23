@@ -9,7 +9,7 @@ class BlueprintUnlink(private val link: BlueprintLink) : HistoryAction(
     FontAwesomeIcons.Unlink
 ) {
     override fun invoke(app: EditorAppImpl) {
-        link.to.unlink()
+        link.unlink()
     }
 
     override fun revert(app: EditorAppImpl) {

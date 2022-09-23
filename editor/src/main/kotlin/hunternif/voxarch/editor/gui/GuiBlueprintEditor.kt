@@ -12,7 +12,6 @@ import hunternif.voxarch.generator.TurretGenerator
 import imgui.ImColor
 import imgui.ImGui
 import imgui.extension.imnodes.ImNodes
-import imgui.extension.imnodes.flag.ImNodesAttributeFlags
 import imgui.extension.imnodes.flag.ImNodesColorStyle
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.extension.imnodes.flag.ImNodesPinShape
@@ -44,7 +43,6 @@ class GuiBlueprintEditor(
                 nodeCornerRounding = 2f
                 setNodePadding(8f, 5f)
             }
-            ImNodes.pushAttributeFlag(ImNodesAttributeFlags.EnableLinkDetachWithDragClick)
             val editorPos = ImGui.getWindowPos()
 
             nodes.forEach { node ->
@@ -130,10 +128,8 @@ class GuiBlueprintEditor(
         }
     }
 
-    private fun pinColor(slot: BlueprintSlot) = when (slot.link) {
-        null -> Colors.emptySlot
-        else -> Colors.filledSlot
-    }
+    private fun pinColor(slot: BlueprintSlot) =
+        if (slot.links.isEmpty()) Colors.emptySlot else Colors.filledSlot
 
     private fun checkSelectedBlueprint() = loadBPTimer.runAtInterval {
         blueprint = app.state.selectedBlueprint
