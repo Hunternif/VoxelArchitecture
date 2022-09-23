@@ -110,6 +110,19 @@ sealed class BlueprintSlot(
             return newLink
         }
     }
+
+    fun unlinkFrom(other: BlueprintSlot) {
+        val link = links.firstOrNull {
+            it.from == this && it.to == other || it.from == other && it.to== this
+        }
+        link?.let {
+            this.links.remove(it)
+            other.links.remove(it)
+            // remove from ID Registry, because links are cheap to re-create
+            bp.linkIDs.remove(it)
+            bp.links.remove(it)
+        }
+    }
 }
 
 class BlueprintLink(
@@ -118,10 +131,6 @@ class BlueprintLink(
     val to: BlueprintSlot.In,
 ) : WithID {
     fun unlink() {
-        from.links.remove(this)
-        to.links.remove(this)
-        // remove from ID Registry, because links are cheap to re-create
-        to.bp.linkIDs.remove(this)
-        to.bp.links.remove(this)
+        to.unlinkFrom(from)
     }
 }

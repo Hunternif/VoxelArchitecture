@@ -57,5 +57,5 @@ fun EditorApp.deleteBlueprintNode(node: BlueprintNode) =
 fun EditorApp.linkBlueprintSlots(from: BlueprintSlot.Out, to: BlueprintSlot.In) =
     historyAction(BlueprintCreateLink(from, to))
 
-fun EditorApp.unlinkBlueprintSlot(link: BlueprintLink) =
-    historyAction(BlueprintUnlink(link))
+fun EditorApp.unlinkBlueprintLink(link: BlueprintLink) =
+    historyAction(BlueprintUnlink(link.from, link.to))

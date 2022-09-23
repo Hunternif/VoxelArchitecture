@@ -4,7 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.deleteBlueprintNode
 import hunternif.voxarch.editor.actions.linkBlueprintSlots
 import hunternif.voxarch.editor.actions.newBlueprintNode
-import hunternif.voxarch.editor.actions.unlinkBlueprintSlot
+import hunternif.voxarch.editor.actions.unlinkBlueprintLink
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -23,6 +23,8 @@ class GuiBlueprintEditor(
     private val gui: GuiBase,
 ) {
     private var blueprint: Blueprint? = null
+    private var hoveredLinkID: Int = -1
+    private var hoveredNodeID: Int = -1
 
     private val LINK_A = ImInt()
     private val LINK_B = ImInt()
@@ -91,39 +93,46 @@ class GuiBlueprintEditor(
 
             if (ImNodes.isLinkDestroyed(LINK_A)) {
                 val link = linkIDs.map[LINK_A.get()]
-                link?.let { app.unlinkBlueprintSlot(it) }
+                link?.let { app.unlinkBlueprintLink(it) }
             }
 
             if (ImGui.isMouseClicked(ImGuiMouseButton.Right)) {
-                val hoveredNode = ImNodes.getHoveredNode()
-                if (hoveredNode != -1) {
+                hoveredLinkID = ImNodes.getHoveredLink()
+                hoveredNodeID = ImNodes.getHoveredNode()
+                if (hoveredLinkID != -1) {
+                    ImGui.openPopup("link_context")
+                } else if (hoveredNodeID != -1) {
                     ImGui.openPopup("node_context")
-                    ImGui.getStateStorage().setInt(ImGui.getID("delete_node_id"), hoveredNode)
                 } else if (isEditorHovered) {
                     ImGui.openPopup("node_editor_context")
                 }
             }
 
-            if (ImGui.isPopupOpen("node_context")) {
-                val targetNodeID = ImGui.getStateStorage().getInt(ImGui.getID("delete_node_id"))
-                if (ImGui.beginPopup("node_context")) {
+            popup("node_context") {
+                val targetNode = nodeIDs.map[hoveredNodeID]
+                disabled(targetNode == start) {
                     button("Delete node") {
-                        val targetNode = nodeIDs.map[targetNodeID]
                         targetNode?.let { app.deleteBlueprintNode(it) }
                         ImGui.closeCurrentPopup()
                     }
-                    ImGui.endPopup()
                 }
             }
 
-            if (ImGui.beginPopup("node_editor_context")) {
-                if (ImGui.button("Create New Node")) {
+            popup("link_context") {
+                button("Unlink") {
+                    val targetLink = linkIDs.map[hoveredLinkID]
+                    targetLink?.let { app.unlinkBlueprintLink(it) }
+                    ImGui.closeCurrentPopup()
+                }
+            }
+
+            popup("node_editor_context") {
+                button("Create New Node") {
                     val x = ImGui.getMousePosX() - editorPos.x
                     val y = ImGui.getMousePosY() - editorPos.y
                     app.newBlueprintNode(this, "Turret", TurretGenerator(), x, y)
                     ImGui.closeCurrentPopup()
                 }
-                ImGui.endPopup()
             }
         }
     }
