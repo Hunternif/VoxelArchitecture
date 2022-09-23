@@ -54,8 +54,8 @@ class Blueprint(
 
     fun removeNode(node: BlueprintNode) {
         if (node == start) return
-        node.inputs.forEach { it.links.forEach { it.unlink() } }
-        node.outputs.forEach { it.links.forEach { it.unlink() } }
+        node.inputs.forEach { it.links.toList().forEach { it.unlink() } }
+        node.outputs.forEach { it.links.toList().forEach { it.unlink() } }
         nodes.remove(node)
         // not removing from the ID registry, in case of undo
     }
