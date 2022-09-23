@@ -1,10 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.deleteBlueprintNode
-import hunternif.voxarch.editor.actions.linkBlueprintSlots
-import hunternif.voxarch.editor.actions.newBlueprintNode
-import hunternif.voxarch.editor.actions.unlinkBlueprintLink
+import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -17,6 +14,7 @@ import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiMouseButton
 import imgui.type.ImInt
+import org.lwjgl.glfw.GLFW
 
 class GuiBlueprintEditor(
     private val app: EditorApp,
@@ -25,6 +23,9 @@ class GuiBlueprintEditor(
     private var blueprint: Blueprint? = null
     private var hoveredLinkID: Int = -1
     private var hoveredNodeID: Int = -1
+
+    private var selectedNodeIDs = IntArray(10)
+    private var selectedLinkIDs = IntArray(10)
 
     private val LINK_A = ImInt()
     private val LINK_B = ImInt()
@@ -106,6 +107,16 @@ class GuiBlueprintEditor(
                 } else if (isEditorHovered) {
                     ImGui.openPopup("node_editor_context")
                 }
+            }
+
+            if (ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
+                selectedNodeIDs = IntArray(ImNodes.numSelectedNodes())
+                ImNodes.getSelectedNodes(selectedNodeIDs)
+                selectedLinkIDs = IntArray(ImNodes.numSelectedLinks())
+                ImNodes.getSelectedLinks(selectedLinkIDs)
+                val nodes = selectedNodeIDs.map { nodeIDs.map[it] }.filterNotNull()
+                val links = selectedLinkIDs.map { linkIDs.map[it] }.filterNotNull()
+                app.deleteBlueprintParts(nodes, links)
             }
 
             popup("node_context") {
