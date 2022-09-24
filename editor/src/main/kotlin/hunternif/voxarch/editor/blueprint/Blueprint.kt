@@ -111,7 +111,9 @@ sealed class BlueprintSlot(
             bp.links.add(newLink)
             this.links.add(newLink)
             dest.links.add(newLink)
-            (node.generator as? ChainedGenerator)?.nextGens?.add(dest.node.generator)
+            val fromGen = node.generator
+            val toGen = dest.node.generator
+            (fromGen as? ChainedGenerator)?.nextGens?.add(toGen)
             return newLink
         }
     }
@@ -126,6 +128,9 @@ sealed class BlueprintSlot(
             // remove from ID Registry, because links are cheap to re-create
             bp.linkIDs.remove(it)
             bp.links.remove(it)
+            val fromGen = it.from.node.generator
+            val toGen = it.to.node.generator
+            (fromGen as? ChainedGenerator)?.nextGens?.remove(toGen)
         }
     }
 }
