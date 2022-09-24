@@ -34,7 +34,10 @@ class SceneTree(
     }
 
     fun remove(subtree: SceneObject) {
-        subtree.forEachSubtree { items.remove(it) }
+        subtree.forEachSubtree { obj ->
+            items.remove(obj)
+            subsets.forEach { it.remove(obj) }
+        }
     }
 }
 
