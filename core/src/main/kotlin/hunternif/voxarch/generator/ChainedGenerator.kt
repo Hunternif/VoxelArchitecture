@@ -8,6 +8,7 @@ import hunternif.voxarch.plan.Node
  */
 abstract class ChainedGenerator : IGenerator {
     val nextGens = LinkedHashSet<IGenerator>()
+    var recursions = 0
 
     /**
      * Add new DOM elements and run the next generators
@@ -18,8 +19,14 @@ abstract class ChainedGenerator : IGenerator {
     )
 
     override fun generate(parent: DomBuilder<Node?>) {
+        recursions++
+        if (recursions > RECURSION_CAP) return
         generateChained(parent) {
             nextGens.forEach { it.generate(this) }
         }
+    }
+
+    companion object {
+        const val RECURSION_CAP = 20
     }
 }
