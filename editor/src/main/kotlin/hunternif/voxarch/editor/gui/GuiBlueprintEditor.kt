@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.builder.createGeneratorByName
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -36,6 +37,7 @@ class GuiBlueprintEditor(
     private val SLOT_B = ImInt()
 
     private val titleInput = GuiInputText("title")
+    private val styleMap = mutableMapOf<BlueprintNode, GuiBlueprintNodeStyle>()
 
     fun init() {
         ImNodes.createContext()
@@ -58,7 +60,12 @@ class GuiBlueprintEditor(
             }
             popup("node_context") {
                 val targetNode = nodeIDs.map[hoveredNodeID]
-                disabled(targetNode == start) {
+                if (targetNode == start) {
+                    text("Start node")
+                } else {
+                    menu("Style...") {
+                        targetNode?.let { renderStyles(it) }
+                    }
                     menuItem("Delete node") {
                         targetNode?.let { app.deleteBlueprintNode(it) }
                         ImGui.closeCurrentPopup()
@@ -113,6 +120,9 @@ class GuiBlueprintEditor(
                 ImNodes.endInputAttribute()
                 ImNodes.popColorStyle()
             }
+            if (styleMap[node]?.items?.any { it.enabled } == true) {
+                ImGui.bulletText("styles")
+            }
             node.outputs.forEach {
                 pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
                 ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
@@ -135,6 +145,17 @@ class GuiBlueprintEditor(
 
         ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
         ImNodes.endNodeEditor()
+    }
+
+    private fun renderStyles(node: BlueprintNode) {
+        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle() }
+        style.items.forEach {
+            it.checkbox.render(it.enabled) { v -> it.enabled = v }
+            disabled(!it.enabled) {
+                ImGui.sameLine()
+                it.text.render(it.value) { v -> it.value = v }
+            }
+        }
     }
 
     private fun pinColor(slot: BlueprintSlot) =
