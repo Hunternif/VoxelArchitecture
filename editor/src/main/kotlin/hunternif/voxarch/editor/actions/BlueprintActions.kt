@@ -45,8 +45,9 @@ fun EditorApp.newBlueprintNode(
     generator: IGenerator,
     x: Float = 0f,
     y: Float = 0f,
+    autoLinkFrom: BlueprintSlot.Out? = null,
 ): BlueprintNode {
-    val action = BlueprintNewNode(bp, name, generator, x, y)
+    val action = BlueprintNewNode(bp, name, generator, x, y, autoLinkFrom)
     historyAction(action)
     return action.node
 }

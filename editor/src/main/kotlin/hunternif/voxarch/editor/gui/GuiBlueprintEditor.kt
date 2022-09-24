@@ -28,9 +28,12 @@ class GuiBlueprintEditor(
     private val editorPos = ImVec2()
     private val clickPos = ImVec2()
     private var isEditorHovered = false
+    /** A newly created node will be linked to this slot */
+    private var lastOutSlot: BlueprintSlot.Out? = null
 
-    private val LINK_A = ImInt()
-    private val LINK_B = ImInt()
+    private val LINK = ImInt()
+    private val SLOT_A = ImInt()
+    private val SLOT_B = ImInt()
 
     private val titleInput = GuiInputText("title")
 
@@ -156,16 +159,26 @@ class GuiBlueprintEditor(
     }
 
     private fun Blueprint.installControls() {
-        if (ImNodes.isLinkCreated(LINK_A, LINK_B)) {
-            val from = slotIDs.map[LINK_A.get()]
-            val to = slotIDs.map[LINK_B.get()]
+        if (ImNodes.isLinkStarted(SLOT_A)) {
+            lastOutSlot = slotIDs.map[SLOT_A.get()] as? BlueprintSlot.Out
+        }
+
+        if (ImNodes.isLinkCreated(SLOT_A, SLOT_B)) {
+            lastOutSlot = null
+            val from = slotIDs.map[SLOT_A.get()]
+            val to = slotIDs.map[SLOT_B.get()]
             if (from is BlueprintSlot.Out && to is BlueprintSlot.In) {
                 app.linkBlueprintSlots(from, to)
             }
         }
 
-        if (ImNodes.isLinkDestroyed(LINK_A)) {
-            val link = linkIDs.map[LINK_A.get()]
+        if (ImNodes.isLinkDropped(LINK, false)) {
+            storeClickPos()
+            ImGui.openPopup("node_editor_context")
+        }
+
+        if (ImNodes.isLinkDestroyed(LINK)) {
+            val link = linkIDs.map[LINK.get()]
             link?.let { app.unlinkBlueprintLink(it) }
         }
 
@@ -206,7 +219,7 @@ class GuiBlueprintEditor(
     private fun Blueprint.addNodeWithGenerator(classname: String, pos: ImVec2) {
         val generator = app.state.createGeneratorByName(classname)
         generator?.let {
-            app.newBlueprintNode(this, it.javaClass.simpleName, it, pos.x, pos.y)
+            app.newBlueprintNode(this, it.javaClass.simpleName, it, pos.x, pos.y, lastOutSlot)
         }
     }
 }
