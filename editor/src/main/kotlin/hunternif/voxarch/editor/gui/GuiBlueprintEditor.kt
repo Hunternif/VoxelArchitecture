@@ -26,6 +26,7 @@ class GuiBlueprintEditor(
     private var hoveredNodeID: Int = -1
 
     private val editorPos = ImVec2()
+    private val clickPos = ImVec2()
     private var isEditorHovered = false
 
     private val LINK_A = ImInt()
@@ -74,7 +75,7 @@ class GuiBlueprintEditor(
                     listbox("##generator_type") {
                         app.state.generatorNames.forEach { name ->
                             selectable(name) {
-                                addNodeWithGenerator(name)
+                                addNodeWithGenerator(name, clickPos)
                                 ImGui.closeCurrentPopup()
                             }
                         }
@@ -171,6 +172,7 @@ class GuiBlueprintEditor(
         if (ImGui.isMouseClicked(ImGuiMouseButton.Right)) {
             hoveredLinkID = ImNodes.getHoveredLink()
             hoveredNodeID = ImNodes.getHoveredNode()
+            storeClickPos()
             if (hoveredLinkID != -1) {
                 ImGui.openPopup("link_context")
             } else if (hoveredNodeID != -1) {
@@ -195,13 +197,16 @@ class GuiBlueprintEditor(
         app.deleteBlueprintParts(nodes, links)
     }
 
-    private fun Blueprint.addNodeWithGenerator(classname: String) {
+    private fun Blueprint.storeClickPos() {
         val panPos = getPanning()
-        val x = ImGui.getMousePosX() - editorPos.x - panPos.x
-        val y = ImGui.getMousePosY() - editorPos.y - panPos.y
+        clickPos.x = ImGui.getMousePosX() - editorPos.x - panPos.x
+        clickPos.y = ImGui.getMousePosY() - editorPos.y - panPos.y
+    }
+
+    private fun Blueprint.addNodeWithGenerator(classname: String, pos: ImVec2) {
         val generator = app.state.createGeneratorByName(classname)
         generator?.let {
-            app.newBlueprintNode(this, it.javaClass.simpleName, it, x, y)
+            app.newBlueprintNode(this, it.javaClass.simpleName, it, pos.x, pos.y)
         }
     }
 }
