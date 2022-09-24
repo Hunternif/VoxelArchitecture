@@ -4,12 +4,12 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.generator.ChainedGenerator
+import hunternif.voxarch.generator.IGenerator
 
 class BlueprintNewNode(
     private val bp: Blueprint,
     private val name: String,
-    private val generator: ChainedGenerator,
+    private val generator: IGenerator,
     private val x: Float,
     private val y: Float,
 ) : HistoryAction(

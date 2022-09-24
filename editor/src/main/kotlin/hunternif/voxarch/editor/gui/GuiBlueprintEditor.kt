@@ -4,8 +4,8 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
+import hunternif.voxarch.editor.builder.createGeneratorByName
 import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.generator.TurretGenerator
 import imgui.ImColor
 import imgui.ImGui
 import imgui.ImVec2
@@ -69,12 +69,16 @@ class GuiBlueprintEditor(
                 }
             }
             popup("node_editor_context") {
-                menuItem("Create New Node") {
-                    val panPos = getPanning()
-                    val x = ImGui.getMousePosX() - editorPos.x - panPos.x
-                    val y = ImGui.getMousePosY() - editorPos.y - panPos.y
-                    app.newBlueprintNode(this, "Turret", TurretGenerator(), x, y)
-                    ImGui.closeCurrentPopup()
+                menu("Add..") {
+                    text("Generator:")
+                    listbox("##generator_type") {
+                        app.state.generatorNames.forEach { name ->
+                            selectable(name) {
+                                addNodeWithGenerator(name)
+                                ImGui.closeCurrentPopup()
+                            }
+                        }
+                    }
                 }
             }
             ImGui.popStyleVar()
@@ -189,5 +193,15 @@ class GuiBlueprintEditor(
         val nodes = selectedNodeIDs.map { nodeIDs.map[it] }.filterNotNull()
         val links = selectedLinkIDs.map { linkIDs.map[it] }.filterNotNull()
         app.deleteBlueprintParts(nodes, links)
+    }
+
+    private fun Blueprint.addNodeWithGenerator(classname: String) {
+        val panPos = getPanning()
+        val x = ImGui.getMousePosX() - editorPos.x - panPos.x
+        val y = ImGui.getMousePosY() - editorPos.y - panPos.y
+        val generator = app.state.createGeneratorByName(classname)
+        generator?.let {
+            app.newBlueprintNode(this, it.javaClass.simpleName, it, x, y)
+        }
     }
 }

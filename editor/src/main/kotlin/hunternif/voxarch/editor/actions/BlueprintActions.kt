@@ -7,7 +7,7 @@ import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.generator.ChainedGenerator
+import hunternif.voxarch.generator.IGenerator
 
 
 fun EditorApp.newBlueprint(node: SceneNode) = action {
@@ -42,7 +42,7 @@ fun EditorApp.selectBlueprint(bp: Blueprint?) = historyAction(OpenBlueprint(bp))
 fun EditorApp.newBlueprintNode(
     bp: Blueprint,
     name: String,
-    generator: ChainedGenerator,
+    generator: IGenerator,
     x: Float = 0f,
     y: Float = 0f,
 ): BlueprintNode {
