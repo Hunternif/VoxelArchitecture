@@ -20,8 +20,8 @@ fun StyledNode<Node>.visibleIf(predicate: () -> Boolean) {
     domBuilder.visibility = if (predicate()) VISIBLE else GONE
 }
 
-fun StyleVisibility.visible(): Option<Visibility> = { _, _-> VISIBLE}
-fun StyleVisibility.gone(): Option<Visibility> = { _, _-> GONE}
+fun StyleVisibility.visible(): Option<Visibility> = option { _, _-> VISIBLE}
+fun StyleVisibility.gone(): Option<Visibility> = option { _, _-> GONE}
 
 fun StyledNode<Node>.visible() { domBuilder.visibility = VISIBLE }
 fun StyledNode<Node>.gone() { domBuilder.visibility = GONE }

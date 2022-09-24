@@ -95,7 +95,7 @@ var StyledNode<Room>.bottomShape: BottomShape
     get() = firstGenerator?.bottomShape ?: BottomShape.FLAT
     set(value) { forTurretGenerators { bottomShape = value } }
 
-fun StyleTurretShape.randomRoof(): Option<RoofShape> = { _, seed ->
+fun StyleTurretShape.randomRoof(): Option<RoofShape> = option { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, RoofShape.FLAT_BORDERED),
         RandomOption(0.5, RoofShape.SPIRE),
@@ -103,7 +103,7 @@ fun StyleTurretShape.randomRoof(): Option<RoofShape> = { _, seed ->
     ).value
 }
 
-fun StyleTurretShape.randomBody(): Option<BodyShape> = { _, seed ->
+fun StyleTurretShape.randomBody(): Option<BodyShape> = option { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, BodyShape.SQUARE),
         RandomOption(1.0, BodyShape.ROUND)
