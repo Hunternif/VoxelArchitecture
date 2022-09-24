@@ -24,8 +24,8 @@ class GuiBlueprintEditor(
     private var hoveredLinkID: Int = -1
     private var hoveredNodeID: Int = -1
 
-    private var selectedNodeIDs = IntArray(10)
-    private var selectedLinkIDs = IntArray(10)
+    private val editorPos = ImVec2()
+    private var isEditorHovered = false
 
     private val LINK_A = ImInt()
     private val LINK_B = ImInt()
@@ -36,87 +36,8 @@ class GuiBlueprintEditor(
 
     fun render() {
         app.state.selectedBlueprint?.run {
-            ImNodes.beginNodeEditor()
-            ImNodes.getStyle().apply {
-                pinCircleRadius = 4f
-                nodeCornerRounding = 2f
-                setNodePadding(8f, 5f)
-            }
-            val editorPos = ImGui.getWindowPos()
-
-            nodes.forEach { node ->
-                ImNodes.beginNode(node.id)
-
-                ImNodes.beginNodeTitleBar()
-                val width = calcTextSize(node.name).x
-                ImGui.text(node.name)
-                ImNodes.endNodeTitleBar()
-
-                node.inputs.forEach {
-                    pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
-                    ImNodes.beginInputAttribute(it.id, ImNodesPinShape.CircleFilled)
-                    text(it.name)
-                    ImNodes.endInputAttribute()
-                    ImNodes.popColorStyle()
-                }
-                node.outputs.forEach {
-                    pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
-                    ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
-                    text(it.name, Align.RIGHT, width)
-                    ImNodes.endOutputAttribute()
-                    ImNodes.popColorStyle()
-                }
-                ImNodes.endNode()
-
-                node.x = ImNodes.getNodeGridSpacePosX(node.id)
-                node.y = ImNodes.getNodeGridSpacePosY(node.id)
-            }
-            links.forEach { link ->
-                ImNodes.link(link.id, link.from.id, link.to.id)
-            }
-            val pos = ImVec2()
-            ImNodes.getNodeGridSpacePos(start.id, pos)
-
-            val isEditorHovered = ImNodes.isEditorHovered()
-
-            ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
-            ImNodes.endNodeEditor()
-
-            if (ImNodes.isLinkCreated(LINK_A, LINK_B)) {
-                val from = slotIDs.map[LINK_A.get()]
-                val to = slotIDs.map[LINK_B.get()]
-                if (from is BlueprintSlot.Out && to is BlueprintSlot.In) {
-                    app.linkBlueprintSlots(from, to)
-                }
-            }
-
-            if (ImNodes.isLinkDestroyed(LINK_A)) {
-                val link = linkIDs.map[LINK_A.get()]
-                link?.let { app.unlinkBlueprintLink(it) }
-            }
-
-            if (ImGui.isMouseClicked(ImGuiMouseButton.Right)) {
-                hoveredLinkID = ImNodes.getHoveredLink()
-                hoveredNodeID = ImNodes.getHoveredNode()
-                if (hoveredLinkID != -1) {
-                    ImGui.openPopup("link_context")
-                } else if (hoveredNodeID != -1) {
-                    ImGui.openPopup("node_context")
-                } else if (isEditorHovered) {
-                    ImGui.openPopup("node_editor_context")
-                }
-            }
-
-            if (ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
-                selectedNodeIDs = IntArray(ImNodes.numSelectedNodes())
-                ImNodes.getSelectedNodes(selectedNodeIDs)
-                selectedLinkIDs = IntArray(ImNodes.numSelectedLinks())
-                ImNodes.getSelectedLinks(selectedLinkIDs)
-                val nodes = selectedNodeIDs.map { nodeIDs.map[it] }.filterNotNull()
-                val links = selectedLinkIDs.map { linkIDs.map[it] }.filterNotNull()
-                app.deleteBlueprintParts(nodes, links)
-            }
-
+            renderEditor()
+            installControls()
             popup("node_context") {
                 val targetNode = nodeIDs.map[hoveredNodeID]
                 disabled(targetNode == start) {
@@ -126,7 +47,6 @@ class GuiBlueprintEditor(
                     }
                 }
             }
-
             popup("link_context") {
                 button("Unlink") {
                     val targetLink = linkIDs.map[hoveredLinkID]
@@ -134,7 +54,6 @@ class GuiBlueprintEditor(
                     ImGui.closeCurrentPopup()
                 }
             }
-
             popup("node_editor_context") {
                 button("Create New Node") {
                     val panPos = getPanning()
@@ -145,6 +64,54 @@ class GuiBlueprintEditor(
                 }
             }
         }
+    }
+
+    private fun Blueprint.renderEditor() {
+        ImNodes.beginNodeEditor()
+        ImNodes.getStyle().apply {
+            pinCircleRadius = 4f
+            nodeCornerRounding = 2f
+            setNodePadding(8f, 5f)
+        }
+        ImGui.getWindowPos(editorPos)
+
+        nodes.forEach { node ->
+            ImNodes.beginNode(node.id)
+
+            ImNodes.beginNodeTitleBar()
+            val width = calcTextSize(node.name).x
+            ImGui.text(node.name)
+            ImNodes.endNodeTitleBar()
+
+            node.inputs.forEach {
+                pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
+                ImNodes.beginInputAttribute(it.id, ImNodesPinShape.CircleFilled)
+                text(it.name)
+                ImNodes.endInputAttribute()
+                ImNodes.popColorStyle()
+            }
+            node.outputs.forEach {
+                pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
+                ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
+                text(it.name, Align.RIGHT, width)
+                ImNodes.endOutputAttribute()
+                ImNodes.popColorStyle()
+            }
+            ImNodes.endNode()
+
+            node.x = ImNodes.getNodeGridSpacePosX(node.id)
+            node.y = ImNodes.getNodeGridSpacePosY(node.id)
+        }
+        links.forEach { link ->
+            ImNodes.link(link.id, link.from.id, link.to.id)
+        }
+        val pos = ImVec2()
+        ImNodes.getNodeGridSpacePos(start.id, pos)
+
+        isEditorHovered = ImNodes.isEditorHovered()
+
+        ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
+        ImNodes.endNodeEditor()
     }
 
     private fun pinColor(slot: BlueprintSlot) =
@@ -166,5 +133,46 @@ class GuiBlueprintEditor(
             y -= startGridPos.y
         }
         return startScreenPos
+    }
+
+    private fun Blueprint.installControls() {
+        if (ImNodes.isLinkCreated(LINK_A, LINK_B)) {
+            val from = slotIDs.map[LINK_A.get()]
+            val to = slotIDs.map[LINK_B.get()]
+            if (from is BlueprintSlot.Out && to is BlueprintSlot.In) {
+                app.linkBlueprintSlots(from, to)
+            }
+        }
+
+        if (ImNodes.isLinkDestroyed(LINK_A)) {
+            val link = linkIDs.map[LINK_A.get()]
+            link?.let { app.unlinkBlueprintLink(it) }
+        }
+
+        if (ImGui.isMouseClicked(ImGuiMouseButton.Right)) {
+            hoveredLinkID = ImNodes.getHoveredLink()
+            hoveredNodeID = ImNodes.getHoveredNode()
+            if (hoveredLinkID != -1) {
+                ImGui.openPopup("link_context")
+            } else if (hoveredNodeID != -1) {
+                ImGui.openPopup("node_context")
+            } else if (isEditorHovered) {
+                ImGui.openPopup("node_editor_context")
+            }
+        }
+
+        if (ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
+            deleteSelected()
+        }
+    }
+
+    private fun Blueprint.deleteSelected() {
+        val selectedNodeIDs = IntArray(ImNodes.numSelectedNodes())
+        ImNodes.getSelectedNodes(selectedNodeIDs)
+        val selectedLinkIDs = IntArray(ImNodes.numSelectedLinks())
+        ImNodes.getSelectedLinks(selectedLinkIDs)
+        val nodes = selectedNodeIDs.map { nodeIDs.map[it] }.filterNotNull()
+        val links = selectedLinkIDs.map { linkIDs.map[it] }.filterNotNull()
+        app.deleteBlueprintParts(nodes, links)
     }
 }
