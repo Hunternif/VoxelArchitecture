@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.blueprint.BlueprintLink
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import imgui.extension.imnodes.ImNodes
 
 class BlueprintDeleteParts(
     private val nodes: Collection<BlueprintNode>,
@@ -40,7 +39,7 @@ class BlueprintDeleteParts(
     override fun revert(app: EditorAppImpl) {
         nodes.forEach {
             it.bp.nodes.add(it)
-            ImNodes.setNodeEditorSpacePos(it.id, it.x, it.y)
+            it.applyImNodesPos()
         }
         allLinks.forEach { it.from.linkTo(it.to) }
     }

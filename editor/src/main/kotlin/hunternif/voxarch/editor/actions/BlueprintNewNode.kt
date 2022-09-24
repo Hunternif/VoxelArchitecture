@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.generator.ChainedGenerator
-import imgui.extension.imnodes.ImNodes
 
 class BlueprintNewNode(
     private val bp: Blueprint,
@@ -25,7 +24,7 @@ class BlueprintNewNode(
             node = bp.addNode(name, generator, x, y)
         }
         bp.nodes.add(node)
-        ImNodes.setNodeEditorSpacePos(node.id, node.x, node.y)
+        node.applyImNodesPos()
     }
 
     override fun revert(app: EditorAppImpl) {

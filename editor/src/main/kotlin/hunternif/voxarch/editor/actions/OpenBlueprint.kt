@@ -13,9 +13,11 @@ class OpenBlueprint(private val newBlueprint: Blueprint?) : HistoryAction(
     override fun invoke(app: EditorAppImpl) {
         oldBlueprint = app.state.selectedBlueprint
         app.state.selectedBlueprint = newBlueprint
+        newBlueprint?.nodes?.forEach { it.applyImNodesPos() }
     }
 
     override fun revert(app: EditorAppImpl) {
         app.state.selectedBlueprint = oldBlueprint
+        oldBlueprint?.nodes?.forEach { it.applyImNodesPos() }
     }
 }

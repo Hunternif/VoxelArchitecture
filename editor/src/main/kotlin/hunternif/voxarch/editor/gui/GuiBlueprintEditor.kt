@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.generator.TurretGenerator
 import imgui.ImColor
 import imgui.ImGui
+import imgui.ImVec2
 import imgui.extension.imnodes.ImNodes
 import imgui.extension.imnodes.flag.ImNodesColorStyle
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
@@ -20,7 +21,6 @@ class GuiBlueprintEditor(
     private val app: EditorApp,
     private val gui: GuiBase,
 ) {
-    private var blueprint: Blueprint? = null
     private var hoveredLinkID: Int = -1
     private var hoveredNodeID: Int = -1
 
@@ -30,16 +30,12 @@ class GuiBlueprintEditor(
     private val LINK_A = ImInt()
     private val LINK_B = ImInt()
 
-    private val loadBPTimer = Timer(0.2)
-
     fun init() {
         ImNodes.createContext()
     }
 
     fun render() {
-        checkSelectedBlueprint()
-
-        blueprint?.run {
+        app.state.selectedBlueprint?.run {
             ImNodes.beginNodeEditor()
             ImNodes.getStyle().apply {
                 pinCircleRadius = 4f
@@ -72,12 +68,14 @@ class GuiBlueprintEditor(
                 }
                 ImNodes.endNode()
 
-                node.x = ImNodes.getNodeEditorSpacePosX(node.id)
-                node.y = ImNodes.getNodeEditorSpacePosY(node.id)
+                node.x = ImNodes.getNodeGridSpacePosX(node.id)
+                node.y = ImNodes.getNodeGridSpacePosY(node.id)
             }
             links.forEach { link ->
                 ImNodes.link(link.id, link.from.id, link.to.id)
             }
+            val pos = ImVec2()
+            ImNodes.getNodeGridSpacePos(start.id, pos)
 
             val isEditorHovered = ImNodes.isEditorHovered()
 
@@ -139,8 +137,9 @@ class GuiBlueprintEditor(
 
             popup("node_editor_context") {
                 button("Create New Node") {
-                    val x = ImGui.getMousePosX() - editorPos.x
-                    val y = ImGui.getMousePosY() - editorPos.y
+                    val panPos = getPanning()
+                    val x = ImGui.getMousePosX() - editorPos.x - panPos.x
+                    val y = ImGui.getMousePosY() - editorPos.y - panPos.y
                     app.newBlueprintNode(this, "Turret", TurretGenerator(), x, y)
                     ImGui.closeCurrentPopup()
                 }
@@ -151,11 +150,21 @@ class GuiBlueprintEditor(
     private fun pinColor(slot: BlueprintSlot) =
         if (slot.links.isEmpty()) Colors.emptySlot else Colors.filledSlot
 
-    private fun checkSelectedBlueprint() = loadBPTimer.runAtInterval {
-        blueprint = app.state.selectedBlueprint
-    }
-
     private fun pushNodesColorStyle(imGuiCol: Int, color: ColorRGBa) {
         color.run { ImNodes.pushColorStyle(imGuiCol, ImColor.floatToColor(r, g, b, a)) }
+    }
+
+    /** Implements a workaround to find this value from the start node
+     * because EditorContextGetPanning() is missing from the Java lib */
+    private fun Blueprint.getPanning(): ImVec2 {
+        val startScreenPos = ImVec2()
+        ImNodes.getNodeEditorSpacePos(start.id, startScreenPos)
+        val startGridPos = ImVec2()
+        ImNodes.getNodeGridSpacePos(start.id, startGridPos)
+        startScreenPos.apply {
+            x -= startGridPos.x
+            y -= startGridPos.y
+        }
+        return startScreenPos
     }
 }

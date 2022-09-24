@@ -19,11 +19,13 @@ class SetBlueprints(
         node.blueprints.clear()
         node.blueprints.addAll(newBlues)
         app.state.selectedBlueprint = newSelected
+        newSelected?.nodes?.forEach { it.applyImNodesPos() }
     }
 
     override fun revert(app: EditorAppImpl) {
         node.blueprints.clear()
         node.blueprints.addAll(oldGens)
         app.state.selectedBlueprint = oldSelected
+        oldSelected?.nodes?.forEach { it.applyImNodesPos() }
     }
 }

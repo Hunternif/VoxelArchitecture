@@ -6,6 +6,7 @@ import hunternif.voxarch.generator.ChainedGenerator
 import hunternif.voxarch.generator.GenPassthrough
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
+import imgui.extension.imnodes.ImNodes
 import kotlin.collections.LinkedHashSet
 
 /**
@@ -22,7 +23,7 @@ class Blueprint(
     val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
-    val start: BlueprintNode = createNode("Start", GenPassthrough()).apply {
+    val start: BlueprintNode = createNode("Start", GenPassthrough(), 100f, 100f).apply {
         addOutput("node")
     }
 
@@ -81,6 +82,10 @@ class BlueprintNode(
 
     internal fun addOutput(name: String): BlueprintSlot.Out =
         BlueprintSlot.Out(name, this).also { outputs.add(it) }
+
+    fun applyImNodesPos() {
+        ImNodes.setNodeGridSpacePos(id, x, y)
+    }
 }
 
 sealed class BlueprintSlot(
