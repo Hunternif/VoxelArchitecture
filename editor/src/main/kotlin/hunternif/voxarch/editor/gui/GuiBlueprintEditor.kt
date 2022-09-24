@@ -30,6 +30,8 @@ class GuiBlueprintEditor(
     private val LINK_A = ImInt()
     private val LINK_B = ImInt()
 
+    private val titleInput = GuiInputText("title")
+
     fun init() {
         ImNodes.createContext()
     }
@@ -38,7 +40,17 @@ class GuiBlueprintEditor(
         app.state.selectedBlueprint?.run {
             renderEditor()
             installControls()
-            popup("node_context") {
+            overlay("toolbar", Corner.TOP_LEFT, padding = 0f, bgAlpha = 0f) {
+                gui.iconButton(FontAwesomeIcons.Cog, font = gui.fontMediumIcons) {
+                    ImGui.openPopup("settings_context")
+                }
+                popup("settings_context") {
+                    text("Blueprint settings")
+                    ImGui.separator()
+                    titleInput.render(name) { name = it }
+                }
+            }
+            popup("node_context", padding = 0f) {
                 val targetNode = nodeIDs.map[hoveredNodeID]
                 disabled(targetNode == start) {
                     button("Delete node") {
@@ -47,14 +59,14 @@ class GuiBlueprintEditor(
                     }
                 }
             }
-            popup("link_context") {
+            popup("link_context", padding = 0f) {
                 button("Unlink") {
                     val targetLink = linkIDs.map[hoveredLinkID]
                     targetLink?.let { app.unlinkBlueprintLink(it) }
                     ImGui.closeCurrentPopup()
                 }
             }
-            popup("node_editor_context") {
+            popup("node_editor_context", padding = 0f) {
                 button("Create New Node") {
                     val panPos = getPanning()
                     val x = ImGui.getMousePosX() - editorPos.x - panPos.x

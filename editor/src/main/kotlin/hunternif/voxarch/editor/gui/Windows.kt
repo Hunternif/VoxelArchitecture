@@ -8,11 +8,17 @@ import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
 import imgui.internal.flag.ImGuiDockNodeFlags
 
-inline fun popup(name: String, crossinline content: () -> Unit) {
+inline fun popup(
+    name: String,
+    padding: Float = 10f,
+    crossinline content: () -> Unit,
+) {
+    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, padding, padding)
     if (ImGui.beginPopup(name)) {
         content()
         ImGui.endPopup()
     }
+    ImGui.popStyleVar()
 }
 
 inline fun toolbar(name: String, crossinline renderWindow: () -> Unit = {}) {
