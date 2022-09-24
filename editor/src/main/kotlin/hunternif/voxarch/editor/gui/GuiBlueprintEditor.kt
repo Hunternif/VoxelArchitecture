@@ -14,6 +14,7 @@ import imgui.extension.imnodes.flag.ImNodesColorStyle
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiMouseButton
+import imgui.flag.ImGuiStyleVar
 import imgui.type.ImInt
 import org.lwjgl.glfw.GLFW
 
@@ -40,6 +41,7 @@ class GuiBlueprintEditor(
         app.state.selectedBlueprint?.run {
             renderEditor()
             installControls()
+            ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
             overlay("toolbar", Corner.TOP_LEFT, padding = 0f, bgAlpha = 0f) {
                 gui.iconButton(FontAwesomeIcons.Cog, font = gui.fontMediumIcons) {
                     ImGui.openPopup("settings_context")
@@ -50,24 +52,24 @@ class GuiBlueprintEditor(
                     titleInput.render(name) { name = it }
                 }
             }
-            popup("node_context", padding = 0f) {
+            popup("node_context") {
                 val targetNode = nodeIDs.map[hoveredNodeID]
                 disabled(targetNode == start) {
-                    button("Delete node") {
+                    menuItem("Delete node") {
                         targetNode?.let { app.deleteBlueprintNode(it) }
                         ImGui.closeCurrentPopup()
                     }
                 }
             }
-            popup("link_context", padding = 0f) {
-                button("Unlink") {
+            popup("link_context") {
+                menuItem("Unlink") {
                     val targetLink = linkIDs.map[hoveredLinkID]
                     targetLink?.let { app.unlinkBlueprintLink(it) }
                     ImGui.closeCurrentPopup()
                 }
             }
-            popup("node_editor_context", padding = 0f) {
-                button("Create New Node") {
+            popup("node_editor_context") {
+                menuItem("Create New Node") {
                     val panPos = getPanning()
                     val x = ImGui.getMousePosX() - editorPos.x - panPos.x
                     val y = ImGui.getMousePosY() - editorPos.y - panPos.y
@@ -75,6 +77,7 @@ class GuiBlueprintEditor(
                     ImGui.closeCurrentPopup()
                 }
             }
+            ImGui.popStyleVar()
         }
     }
 

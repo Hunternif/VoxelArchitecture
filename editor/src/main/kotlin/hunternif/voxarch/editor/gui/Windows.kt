@@ -21,6 +21,12 @@ inline fun popup(
     ImGui.popStyleVar()
 }
 
+inline fun menuItem(label: String, crossinline onOpen: () -> Unit) {
+    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
+    if (ImGui.menuItem(label)) { onOpen() }
+    ImGui.popStyleVar()
+}
+
 inline fun toolbar(name: String, crossinline renderWindow: () -> Unit = {}) {
     ImGui.setNextWindowClass(
         ImGuiWindowClass().apply {
