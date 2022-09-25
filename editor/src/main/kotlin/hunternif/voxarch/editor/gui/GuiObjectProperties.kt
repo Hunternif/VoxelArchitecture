@@ -9,7 +9,6 @@ import hunternif.voxarch.plan.Room
 import imgui.ImGui
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
-import imgui.type.ImInt
 
 /**
  * Displays properties of a node, and updates them at an interval.
@@ -31,8 +30,6 @@ class GuiObjectProperties(
 
     private var obj: SceneObject? = null
 
-    private val generatorIndex = ImInt(-1)
-    private val allGenerators by lazy { app.state.generatorNames.toTypedArray() }
     private val curBlueprints = mutableListOf<Blueprint>()
 
     fun render() {
@@ -73,17 +70,6 @@ class GuiObjectProperties(
         button("New blueprint...") {
             app.newBlueprint(sceneNode)
         }
-//        ImGui.combo("##Add", generatorIndex, allGenerators)
-//        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 0f)
-//        ImGui.sameLine()
-//        ImGui.popStyleVar()
-//        button("Add") {
-//            val i = generatorIndex.get()
-//            if (i >= 0) {
-////                app.addGenerator(sceneNode, allGenerators[i])
-//                generatorIndex.set(-1) // clear to prevent too many generators
-//            }
-//        }
         renderBlueprintTable(sceneNode)
     }
 
