@@ -70,7 +70,7 @@ class GuiInputVec3(
     @PublishedApi internal fun updateFormat() {
         for (x in data) {
             if ((x * 10).toInt() % 10 != 0) {
-                format = "%0.1f"
+                format = "%.1f"
                 return
             }
         }
