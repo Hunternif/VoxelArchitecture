@@ -53,22 +53,24 @@ var StyledNode<Room>.taperRatio: Double
     get() = firstGenerator?.taperRatio ?: 0.0
     set(value) { forTurretGenerators { taperRatio = value } }
 
-class StyleTurretShape : StyleParameter
+class StyleTurretBodyShape : StyleParameter
+class StyleTurretRoofShape : StyleParameter
+class StyleTurretBottomShape : StyleParameter
 
-fun StyledNode<Room>.roofShape(block: StyleTurretShape.() -> Option<RoofShape>) {
+fun StyledNode<Room>.roofShape(block: StyleTurretRoofShape.() -> Option<RoofShape>) {
     val base = domBuilder.parent.firstGenerator?.roofShape
         ?: RoofShape.FLAT_BORDERED
-    roofShape = StyleTurretShape().block().invoke(base, seed + 10000007)
+    roofShape = StyleTurretRoofShape().block().invoke(base, seed + 10000007)
 }
 
 var StyledNode<Room>.roofShape: RoofShape
     get() = firstGenerator?.roofShape ?: RoofShape.FLAT_BORDERED
     set(value) { forTurretGenerators { roofShape = value } }
 
-fun StyledNode<Room>.bodyShape(block: StyleTurretShape.() -> Option<BodyShape>) {
+fun StyledNode<Room>.bodyShape(block: StyleTurretBodyShape.() -> Option<BodyShape>) {
     val base = domBuilder.parent.firstGenerator?.bodyShape
         ?: BodyShape.SQUARE
-    bodyShape = StyleTurretShape().block().invoke(base, seed + 10000008)
+    bodyShape = StyleTurretBodyShape().block().invoke(base, seed + 10000008)
 }
 
 var StyledNode<Room>.bodyShape: BodyShape
@@ -85,17 +87,17 @@ private fun BodyShape.toPolygonShape(): PolygonShape = when(this) {
     BodyShape.ROUND -> PolygonShape.ROUND
 }
 
-fun StyledNode<Room>.bottomShape(block: StyleTurretShape.() -> Option<BottomShape>) {
+fun StyledNode<Room>.bottomShape(block: StyleTurretBottomShape.() -> Option<BottomShape>) {
     val base = domBuilder.parent.firstGenerator?.bottomShape
         ?: BottomShape.FLAT
-    bottomShape = StyleTurretShape().block().invoke(base, seed + 10000009)
+    bottomShape = StyleTurretBottomShape().block().invoke(base, seed + 10000009)
 }
 
 var StyledNode<Room>.bottomShape: BottomShape
     get() = firstGenerator?.bottomShape ?: BottomShape.FLAT
     set(value) { forTurretGenerators { bottomShape = value } }
 
-fun StyleTurretShape.randomRoof(): Option<RoofShape> = option { _, seed ->
+fun StyleTurretRoofShape.randomRoof(): Option<RoofShape> = option { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, RoofShape.FLAT_BORDERED),
         RandomOption(0.5, RoofShape.SPIRE),
@@ -103,7 +105,7 @@ fun StyleTurretShape.randomRoof(): Option<RoofShape> = option { _, seed ->
     ).value
 }
 
-fun StyleTurretShape.randomBody(): Option<BodyShape> = option { _, seed ->
+fun StyleTurretBodyShape.randomBody(): Option<BodyShape> = option { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, BodyShape.SQUARE),
         RandomOption(1.0, BodyShape.ROUND)

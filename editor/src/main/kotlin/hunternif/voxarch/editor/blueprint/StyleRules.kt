@@ -9,6 +9,8 @@ import hunternif.voxarch.plan.Room
 import kotlin.reflect.KClass
 import kotlin.reflect.KFunction
 
+typealias StyleRuleInfoAny = StyleRuleInfo<*, *, *>
+
 abstract class StyleRuleInfo<N : Node, P : StyleParameter, V : Any>(
     val name: String,
     val nodeClass: KClass<N>,
@@ -18,7 +20,7 @@ abstract class StyleRuleInfo<N : Node, P : StyleParameter, V : Any>(
     abstract fun StyledNode<N>.rule(paramBlock: P.() -> V)
 }
 
-val allRules: List<StyleRuleInfo<*, *, *>> by lazy {
+val allRules: List<StyleRuleInfoAny> by lazy {
     listOf(
         rule(StyledNode<Node>::align),
         rule(StyledNode<Node>::x),

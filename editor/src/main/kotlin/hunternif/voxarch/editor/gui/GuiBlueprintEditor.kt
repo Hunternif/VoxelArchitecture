@@ -64,7 +64,7 @@ class GuiBlueprintEditor(
                     text("Start node")
                 } else {
                     menu("Style...") {
-                        targetNode?.let { renderStyles(it) }
+                        targetNode?.let { renderStyleMenu(it) }
                     }
                     menuItem("Delete node") {
                         targetNode?.let { app.deleteBlueprintNode(it) }
@@ -120,9 +120,7 @@ class GuiBlueprintEditor(
                 ImNodes.endInputAttribute()
                 ImNodes.popColorStyle()
             }
-            if (styleMap[node]?.items?.any { it.enabled } == true) {
-                ImGui.bulletText("styles")
-            }
+            renderEnabledStyleList(node)
             node.outputs.forEach {
                 pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
                 ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
@@ -147,15 +145,20 @@ class GuiBlueprintEditor(
         ImNodes.endNodeEditor()
     }
 
-    private fun renderStyles(node: BlueprintNode) {
-        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle() }
-        style.items.forEach {
-            it.checkbox.render(it.enabled) { v -> it.enabled = v }
-            disabled(!it.enabled) {
-                ImGui.sameLine()
-                it.text.render(it.value) { v -> it.value = v }
+    private fun renderEnabledStyleList(node: BlueprintNode) {
+        styleMap[node]?.items?.forEach { item ->
+            if (item.enabled) {
+                ImGui.bulletText(item.stringRepr)
             }
         }
+    }
+
+    private fun renderStyleMenu(node: BlueprintNode) {
+        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle() }
+        ImGui.pushItemWidth(150f)
+        text("Style Rules")
+        ImGui.separator()
+        style.items.forEach { it.render() }
     }
 
     private fun pinColor(slot: BlueprintSlot) =
