@@ -27,15 +27,6 @@ class GuiNodeTree(
         return item.toString()
     }
 
-    override fun onClick(item: SceneObject) {
-        app.setSelectedObject(item)
-    }
-
-    override fun onShiftClick(item: SceneObject) {
-        if (item in app.state.selectedObjects) app.unselectObject(item)
-        else app.selectObject(item)
-    }
-
     override fun onDoubleClick(item: SceneObject) {
         if (item is SceneNode) {
             app.setParentNode(item)
@@ -49,17 +40,8 @@ class GuiVoxelTree(
     gui: GuiBase
 ) : GuiSceneTree(app, gui) {
     override val root: SceneObject get() = app.state.voxelRoot
-    override fun label(item: SceneObject): String = (item as? SceneVoxelGroup)?.label ?: item.toString()
-    override fun onClick(item: SceneObject) {
-        app.setSelectedObject(item)
-    }
-
-    override fun onShiftClick(item: SceneObject) {
-        if (item in app.state.selectedObjects) app.unselectObject(item)
-        else app.selectObject(item)
-    }
-
-    override fun onDoubleClick(item: SceneObject) {}
+    override fun label(item: SceneObject): String =
+        (item as? SceneVoxelGroup)?.label ?: item.toString()
 }
 
 abstract class GuiSceneTree(
@@ -71,10 +53,19 @@ abstract class GuiSceneTree(
     private var isThisPanelClicked = false
 
     abstract val root: SceneObject
+
     abstract fun label(item: SceneObject): String
-    abstract fun onClick(item: SceneObject)
-    abstract fun onShiftClick(item: SceneObject)
-    abstract fun onDoubleClick(item: SceneObject)
+
+    open fun onClick(item: SceneObject) {
+        app.setSelectedObject(item)
+    }
+
+    open fun onShiftClick(item: SceneObject) {
+        if (item in app.state.selectedObjects) app.unselectObject(item)
+        else app.selectObject(item)
+    }
+
+    open fun onDoubleClick(item: SceneObject) {}
 
     fun render() {
         isAnyTreeNodeClicked = false
