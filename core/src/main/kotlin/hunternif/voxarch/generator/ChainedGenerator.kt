@@ -1,6 +1,9 @@
 package hunternif.voxarch.generator
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.newRoot
+import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.plus
 import hunternif.voxarch.plan.Node
 
 /**
@@ -8,6 +11,7 @@ import hunternif.voxarch.plan.Node
  */
 abstract class ChainedGenerator : IGenerator {
     val nextGens = LinkedHashSet<IGenerator>()
+    val localStyle = Stylesheet()
     var recursions = 0
 
     /**
@@ -21,8 +25,12 @@ abstract class ChainedGenerator : IGenerator {
     override fun generate(parent: DomBuilder<Node?>) {
         recursions++
         if (recursions > RECURSION_CAP) return
-        generateChained(parent) {
-            nextGens.forEach { it.generate(this) }
+        parent.apply {
+            newRoot(stylesheet + localStyle) {
+                generateChained(this) {
+                    nextGens.forEach { it.generate(this) }
+                }
+            }
         }
     }
 

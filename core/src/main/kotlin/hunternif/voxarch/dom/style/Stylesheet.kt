@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.plan.Node
+import kotlin.reflect.KClass
 
 /** Defines a sequence of cosmetic modifications to a DOM element. */
 typealias StyleRule<N> = StyledNode<N>.() -> Unit
@@ -53,6 +54,26 @@ open class Stylesheet {
         styleFor(N::class.java, GLOBAL_STYLE, block)
     }
 
+    /**
+     * Register a style for all subclasses.
+     */
+    fun <N: Node> styleFor(
+        nodeClass: Class<N>,
+        block: StyleRule<N>,
+    ) {
+        styleFor(nodeClass, GLOBAL_STYLE, block)
+    }
+
+    /**
+     * Register a style for all subclasses.
+     */
+    fun <N: Node> styleFor(
+        nodeClass: KClass<N>,
+        block: StyleRule<N>,
+    ) {
+        styleFor(nodeClass.java, GLOBAL_STYLE, block)
+    }
+
     /** Register a style for the given class name for all [Node] subclasses. */
     fun style(styleClass: String, block: StyleRule<Node>) {
         styleFor(Node::class.java, styleClass, block)
@@ -80,6 +101,10 @@ open class Stylesheet {
                 val rule = it.rule as StyleRule<Node>
                 rule.invoke(styled)
             }
+    }
+
+    fun clear() {
+        styleMap.clear()
     }
 
     companion object {

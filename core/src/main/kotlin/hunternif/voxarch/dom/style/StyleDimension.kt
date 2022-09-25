@@ -9,10 +9,14 @@ interface Dimension : Option<Double>
 /** voxels (blocks) */
 val Int.vx: Dimension get() = dimension { _, _ -> this.toDouble() }
 /** voxels (blocks) */
+val Float.vx: Dimension get() = dimension { _, _ -> this.toDouble() }
+/** voxels (blocks) */
 val Double.vx: Dimension get() = dimension { _, _ -> this }
 
 /** percent vs parent size */
 val Int.pct: Dimension get() = dimension { base, _ -> base * 0.01 * this.toDouble() }
+/** percent vs parent size */
+val Float.pct: Dimension get() = dimension { base, _ -> base * 0.01 * this.toDouble() }
 /** percent vs parent size */
 val Double.pct: Dimension get() = dimension { base, _ -> base * 0.01 * this }
 

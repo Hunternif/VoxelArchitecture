@@ -18,6 +18,11 @@ abstract class StyleRuleInfo<N : Node, P : StyleParameter, V : Any>(
     val valueClass: KClass<V>,
 ) {
     abstract fun StyledNode<N>.rule(paramBlock: P.() -> V)
+    fun addStyleForNodeClass(stylesheet: Stylesheet, paramBlock: StyleParameter.() -> V) {
+        stylesheet.styleFor(nodeClass) {
+            rule(paramBlock)
+        }
+    }
 }
 
 val allRules: List<StyleRuleInfoAny> by lazy {

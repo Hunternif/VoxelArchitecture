@@ -154,7 +154,7 @@ class GuiBlueprintEditor(
     }
 
     private fun renderStyleMenu(node: BlueprintNode) {
-        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle() }
+        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle(node) }
         ImGui.pushItemWidth(150f)
         text("Style Rules")
         ImGui.separator()
