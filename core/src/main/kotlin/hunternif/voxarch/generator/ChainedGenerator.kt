@@ -5,6 +5,8 @@ import hunternif.voxarch.dom.newRoot
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.plus
 import hunternif.voxarch.plan.Node
+import java.util.*
+import kotlin.collections.LinkedHashSet
 
 /**
  * Allows running more generators on the output of this generator.
@@ -35,6 +37,21 @@ abstract class ChainedGenerator : IGenerator {
                         nextGens.forEach { it.generate(this) }
                     }
                 }
+            }
+        }
+    }
+
+    fun clearRecursionCounters() {
+        val visited = mutableSetOf<ChainedGenerator>()
+        val queue = LinkedList<ChainedGenerator>()
+        queue.add(this)
+        while (queue.isNotEmpty()) {
+            val next = queue.removeFirst()
+            next.recursions = 0
+            visited.add(next)
+            next.nextGens.forEach {
+                if (it !in visited && it is ChainedGenerator)
+                    queue.add(it)
             }
         }
     }

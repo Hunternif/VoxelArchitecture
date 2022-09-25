@@ -62,6 +62,7 @@ class Blueprint(
     }
 
     fun execute(root: Node) {
+        (start.generator as? ChainedGenerator)?.clearRecursionCounters()
         start.generator.generateFinal(root)
     }
 }
