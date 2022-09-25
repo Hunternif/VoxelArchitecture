@@ -29,6 +29,7 @@ class GuiBlueprintEditor(
     private val editorPos = ImVec2()
     private val clickPos = ImVec2()
     private var isEditorHovered = false
+    private var isEditorFocused = false
     /** A newly created node will be linked to this slot */
     private var lastOutSlot: BlueprintSlot.Out? = null
 
@@ -142,6 +143,7 @@ class GuiBlueprintEditor(
         ImNodes.getNodeGridSpacePos(start.id, pos)
 
         isEditorHovered = ImNodes.isEditorHovered()
+        isEditorFocused = ImGui.isWindowFocused()
 
         ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
         ImNodes.endNodeEditor()
@@ -221,7 +223,7 @@ class GuiBlueprintEditor(
             }
         }
 
-        if (ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
+        if (isEditorFocused && ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
             deleteSelected()
         }
     }
