@@ -26,9 +26,14 @@ abstract class ChainedGenerator : IGenerator {
         recursions++
         if (recursions > RECURSION_CAP) return
         parent.apply {
-            newRoot(stylesheet + localStyle) {
+            // Add custom stylesheet
+            val originalStyle = stylesheet
+            newRoot(originalStyle + localStyle) {
                 generateChained(this) {
-                    nextGens.forEach { it.generate(this) }
+                    // Restore original stylesheet
+                    newRoot(originalStyle) {
+                        nextGens.forEach { it.generate(this) }
+                    }
                 }
             }
         }
