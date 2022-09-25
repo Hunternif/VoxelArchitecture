@@ -39,6 +39,8 @@ class GuiBlueprintEditor(
     private val titleInput = GuiInputText("title")
     private val styleMap = mutableMapOf<BlueprintNode, GuiBlueprintNodeStyle>()
 
+    private val padding = ImVec2(8f, 5f)
+
     fun init() {
         ImNodes.createContext()
     }
@@ -101,7 +103,7 @@ class GuiBlueprintEditor(
         ImNodes.getStyle().apply {
             pinCircleRadius = 4f
             nodeCornerRounding = 2f
-            setNodePadding(8f, 5f)
+            setNodePadding(padding.x, padding.y)
         }
         ImGui.getWindowPos(editorPos)
 
@@ -109,7 +111,6 @@ class GuiBlueprintEditor(
             ImNodes.beginNode(node.id)
 
             ImNodes.beginNodeTitleBar()
-            val width = calcTextSize(node.name).x
             ImGui.text(node.name)
             ImNodes.endNodeTitleBar()
 
@@ -121,6 +122,7 @@ class GuiBlueprintEditor(
                 ImNodes.popColorStyle()
             }
             renderEnabledStyleList(node)
+            val width = ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f
             node.outputs.forEach {
                 pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
                 ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
