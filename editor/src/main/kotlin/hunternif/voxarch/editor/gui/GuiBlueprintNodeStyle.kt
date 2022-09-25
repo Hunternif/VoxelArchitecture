@@ -12,7 +12,8 @@ import imgui.ImGui
 class GuiBlueprintNodeStyle {
     val items: List<Item> = allRules.map {
         when (it.parameterClass) {
-            StyleSize::class -> ItemSize(it)
+            StylePosition::class -> ItemNumber(it)
+            StyleSize::class -> ItemNumber(it, min = 0f)
             StyleShape::class -> ItemEnum(it, PolygonShape.SQUARE)
             StyleTurretBodyShape::class -> ItemEnum(it, BodyShape.SQUARE)
             StyleTurretRoofShape::class -> ItemEnum(it, RoofShape.FLAT_BORDERED)
@@ -40,20 +41,26 @@ class GuiBlueprintNodeStyle {
         protected abstract fun renderInput()
 
         protected fun updateStringRepr() {
-            stringRepr = "${rule.name}: $value"
+            stringRepr = "${rule.name}: ${valueToString()}"
         }
+        protected open fun valueToString(): String = value.toString()
     }
 
-    class ItemSize(rule: StyleRuleInfoAny) : Item(rule) {
-        val gui = GuiInputText(rule.name)
-        override var value: String = ""
+    class ItemNumber(
+        rule: StyleRuleInfoAny,
+        min: Float = -999f,
+        max: Float = 999f,
+    ) : Item(rule) {
+        val gui = GuiInputFloat(rule.name, min, max)
+        override var value: Float = 0f
         init { updateStringRepr() }
         override fun renderInput() {
             gui.render(value) {
-                value = it
+                value = gui.newValue
                 updateStringRepr()
             }
         }
+        override fun valueToString() = gui.format.format(value)
     }
 
     class ItemEnum<E: Enum<E>>(
