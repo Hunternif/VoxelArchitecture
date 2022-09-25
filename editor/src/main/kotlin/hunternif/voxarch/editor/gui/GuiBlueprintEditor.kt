@@ -245,7 +245,9 @@ class GuiBlueprintEditor(
     private fun Blueprint.addNodeWithGenerator(classname: String, pos: ImVec2) {
         val generator = app.state.createGeneratorByName(classname)
         generator?.let {
-            app.newBlueprintNode(this, it.javaClass.simpleName, it, pos.x, pos.y, lastOutSlot)
+            app.newBlueprintNode(this, it.javaClass.simpleName, it,
+                // place node higher so that cursor lands on the input slot
+                pos.x, pos.y - 35f, lastOutSlot)
         }
     }
 }
