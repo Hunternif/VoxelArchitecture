@@ -11,7 +11,7 @@ import java.util.*
 /** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
 abstract class DomBuilder<out N: Node?> {
-    internal open val stylesheet: Stylesheet by lazy { parent.stylesheet }
+    var stylesheet: Stylesheet = defaultStyle
     internal var parent: DomBuilder<Node?> = DetachedRoot
         private set
     internal var seed: Long = 0
@@ -29,12 +29,13 @@ abstract class DomBuilder<out N: Node?> {
         children.forEach { it.build() }
         return node
     }
-    internal fun addChild(
+    internal open fun addChild(
         child: DomBuilder<Node?>,
         childSeed: Long = nextChildSeed()
     ) {
         child.parent = this
         child.seed = childSeed
+        child.stylesheet = stylesheet
         children.add(child)
     }
     /** Checks if this builder builds the right class of node and casts to it*/
@@ -56,27 +57,35 @@ internal object DetachedRoot : DomBuilder<Node?>() {
  *             from this root seed value by a deterministic arithmetic.
  */
 class DomRoot(
-    override val stylesheet: Stylesheet = defaultStyle,
-    seed: Long = 0
+    stylesheet: Stylesheet = defaultStyle,
+    seed: Long = 0,
 ) : DomBuilder<Structure>() {
     override val node = Structure()
     init {
         this.seed = seed
+        this.stylesheet = stylesheet
     }
     /** Builds the entire DOM tree. */
     public override fun build(): Structure = super.build()
 }
 
-/** Used for creating a local DOM within a Node tree. */
+/** Used for creating a local DOM within a Node tree,
+ * e.g. to change the stylesheet locally. */
 class DomLocalRoot<out N : Node?>(
     override val node: N,
-    override val stylesheet: Stylesheet = defaultStyle,
+    private val localStylesheet: Stylesheet = defaultStyle,
     seed: Long = 0,
 ) : DomBuilder<N>() {
     init {
         this.seed = seed
+        this.stylesheet = localStylesheet
     }
     public override fun build(): N = super.build()
+    override fun addChild(child: DomBuilder<Node?>, childSeed: Long) {
+        // pass children to the upper level
+        parent.addChild(child, childSeed)
+        child.stylesheet = localStylesheet
+    }
 }
 
 /** Represents any nodes below the root. */
