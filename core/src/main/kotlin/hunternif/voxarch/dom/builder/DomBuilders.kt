@@ -73,19 +73,14 @@ class DomRoot(
  * e.g. to change the stylesheet locally. */
 class DomLocalRoot<out N : Node?>(
     override val node: N,
-    private val localStylesheet: Stylesheet = defaultStyle,
+    stylesheet: Stylesheet = defaultStyle,
     seed: Long = 0,
 ) : DomBuilder<N>() {
     init {
         this.seed = seed
-        this.stylesheet = localStylesheet
+        this.stylesheet = stylesheet
     }
     public override fun build(): N = super.build()
-    override fun addChild(child: DomBuilder<Node?>, childSeed: Long) {
-        // pass children to the upper level
-        parent.addChild(child, childSeed)
-        child.stylesheet = localStylesheet
-    }
 }
 
 /** Represents any nodes below the root. */

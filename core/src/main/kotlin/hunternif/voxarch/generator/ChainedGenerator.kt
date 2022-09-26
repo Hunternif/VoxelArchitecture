@@ -1,7 +1,6 @@
 package hunternif.voxarch.generator
 
 import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.dom.newRoot
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.plus
 import hunternif.voxarch.plan.Node
@@ -30,13 +29,11 @@ abstract class ChainedGenerator : IGenerator {
         parent.apply {
             // Add custom stylesheet
             val originalStyle = stylesheet
-            newRoot(originalStyle + localStyle) {
-                generateChained(this) {
-                    // Restore original stylesheet
-                    newRoot(originalStyle) {
-                        nextGens.forEach { it.generate(this) }
-                    }
-                }
+            stylesheet = originalStyle + localStyle
+            generateChained(this) {
+                // Restore original stylesheet
+                stylesheet = originalStyle
+                nextGens.forEach { it.generate(this) }
             }
         }
     }

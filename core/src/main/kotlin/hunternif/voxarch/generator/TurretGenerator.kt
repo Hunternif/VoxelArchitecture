@@ -36,22 +36,23 @@ class TurretGenerator : ChainedGenerator() {
         nextBlock: DomBuilder<Node?>.() -> Unit,
     ) {
         parent.asBuilder<Room>()?.apply {
+            val originalStyle = stylesheet
             // Order matters! First apply the default styles, then the custom ones.
-            newRoot(stylesheet + createTurretStyle(node)) {
-                floor(BLD_FOUNDATION)
-                polygonRoom(BLD_TURRET_BOTTOM)
-                floor()
-                allWalls {
-                    wall(BLD_TOWER_BODY)
-                    path(BLD_TOWER_CORBEL)
-                    // TODO: place corbels as separate nodes
-                }
-                polygonRoom(BLD_TOWER_SPIRE, "roof")
-                polygonRoom(BLD_TOWER_ROOF, "roof") {
-                    floor(BLD_TOWER_ROOF)
-                    allWalls { wall(BLD_TOWER_ROOF) }
-                }
+            stylesheet = originalStyle + createTurretStyle(node)
+            floor(BLD_FOUNDATION)
+            polygonRoom(BLD_TURRET_BOTTOM)
+            floor()
+            allWalls {
+                wall(BLD_TOWER_BODY)
+                path(BLD_TOWER_CORBEL)
+                // TODO: place corbels as separate nodes
             }
+            polygonRoom(BLD_TOWER_SPIRE, "roof")
+            polygonRoom(BLD_TOWER_ROOF, "roof") {
+                floor(BLD_TOWER_ROOF)
+                allWalls { wall(BLD_TOWER_ROOF) }
+            }
+            stylesheet = originalStyle
             nextBlock()
         }
     }

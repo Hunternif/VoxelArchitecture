@@ -135,17 +135,6 @@ fun DomLineSegmentBuilder.path(
     this.createChild(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
 }
 
-/** Creates a "local root" in the DOM. This doesn't create any new nodes, but
- * it can be used to modify the stylesheet only for this subtree and no others. */
-fun <N: Node?> DomBuilder<N>.newRoot(
-    newStylesheet: Stylesheet? = null,
-    block: DomBuilder<N>.() -> Unit = {}
-) {
-    val child = DomLocalRoot(node, newStylesheet ?: stylesheet, seed)
-    addChild(child)
-    child.block()
-}
-
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
 annotation class CastleDsl
