@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.dom.builder.DomLocalRoot
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.generator.ChainedGenerator
@@ -63,7 +64,11 @@ class Blueprint(
 
     fun execute(root: Node) {
         (start.generator as? ChainedGenerator)?.clearRecursionCounters()
-        start.generator.generateFinal(root)
+        // Creates a new detached DOM root and generates on it.
+        // Not recommended, because this will ignore styles or nested generators.
+        DomLocalRoot(root).apply {
+            start.generator.generate(this)
+        }.build()
     }
 }
 
