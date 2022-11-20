@@ -19,9 +19,10 @@ abstract class DomBuilder {
     internal val children = mutableListOf<DomBuilder>()
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
-    /** Recursively invokes this method on children. */
-    /** Generators add more child DomBuilders. */
+    /** Generators add more child DomBuilders.
+     * Must be called prior to [build], to prevent concurrent modification. */
     internal val generators = mutableListOf<IGenerator>()
+    /** Recursively invokes this method on children. */
     open fun build() {
         generators.forEach { it.generate(this) }
         children.forEach { it.build() }
