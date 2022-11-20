@@ -30,7 +30,7 @@ class TurretGeneratorTest {
                 room(BLD_TOWER_ROOF, "other_room_1")
             }
             room(BLD_TOWER_ROOF, "other_room_2")
-        }.build()
+        }.buildDom()
 
         val turret = dom.query<Room>("turret").first()
         val roof = turret.query<PolygonRoom>(BLD_TOWER_ROOF).first()

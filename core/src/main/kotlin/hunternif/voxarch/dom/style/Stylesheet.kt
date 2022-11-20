@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.style
 import com.google.common.collect.ArrayListMultimap
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.plan.Node
 import kotlin.reflect.KClass
 
@@ -12,12 +13,12 @@ typealias StyleRule<N> = StyledNode<N>.() -> Unit
 /** Represents a DOM element for the purpose of styling. */
 @CastleDsl
 class StyledNode<out N: Node>(
-    internal val domBuilder: DomBuilder<N>,
+    internal val domBuilder: DomNodeBuilder<N>,
     internal var seed: Long = domBuilder.seed
 ) {
     val node: N get() = domBuilder.node
     /**
-     * Use the seed of the parent [DomBuilder] to calculate random values.
+     * Use the seed of the parent [DomNodeBuilder] to calculate random values.
      * This makes the _immediate_ children appear identical, but the children's
      * children's seeds can still be different.
      */
@@ -87,20 +88,22 @@ open class Stylesheet {
         styleMap.put(styleClass, TypedStyleRule(nodeClass, block))
     }
 
-    internal open fun <N: Node> apply(
-        domBuilder: DomBuilder<N>,
+    internal open fun apply(
+        domBuilder: DomBuilder,
         styleClass: Collection<String>
     ) {
-        val styled = StyledNode(domBuilder, domBuilder.seed)
-        val nodeClass = domBuilder.node.javaClass
-        (listOf(GLOBAL_STYLE) + styleClass)
-            .flatMap { styleMap[it] }
-            .filter { it.nodeClass.isAssignableFrom(nodeClass) }
-            .forEach {
-                @Suppress("UNCHECKED_CAST")
-                val rule = it.rule as StyleRule<Node>
-                rule.invoke(styled)
-            }
+        if (domBuilder is DomNodeBuilder<*>) {
+            val styled = StyledNode(domBuilder, domBuilder.seed)
+            val nodeClass = domBuilder.node.javaClass
+            (listOf(GLOBAL_STYLE) + styleClass)
+                .flatMap { styleMap[it] }
+                .filter { it.nodeClass.isAssignableFrom(nodeClass) }
+                .forEach {
+                    @Suppress("UNCHECKED_CAST")
+                    val rule = it.rule as StyleRule<Node>
+                    rule.invoke(styled)
+                }
+        }
     }
 
     fun clear() {
@@ -118,8 +121,8 @@ open class Stylesheet {
 }
 
 class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>): Stylesheet() {
-    override fun <N : Node> apply(
-        domBuilder: DomBuilder<N>,
+    override fun apply(
+        domBuilder: DomBuilder,
         styleClass: Collection<String>
     ) {
         stylesheets.forEach { it.apply(domBuilder, styleClass) }

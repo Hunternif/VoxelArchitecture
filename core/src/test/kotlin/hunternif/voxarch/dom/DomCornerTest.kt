@@ -24,7 +24,7 @@ class DomCornerTest {
                     room()
                 }
             }
-        }.build()
+        }.buildDom()
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)
@@ -48,7 +48,7 @@ class DomCornerTest {
                     room()
                 }
             }
-        }.build()
+        }.buildDom()
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)

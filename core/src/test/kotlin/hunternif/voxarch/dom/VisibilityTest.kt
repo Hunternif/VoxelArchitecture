@@ -18,7 +18,7 @@ class VisibilityTest {
             node("parent") {
                 node("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.firstOrNull()
         val child = parent?.children?.firstOrNull()
@@ -37,7 +37,7 @@ class VisibilityTest {
             node("parent") {
                 node("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.firstOrNull()
         val child = parent?.children?.firstOrNull()
@@ -56,7 +56,7 @@ class VisibilityTest {
             node("parent") {
                 node("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.firstOrNull()
         val child = parent?.children?.firstOrNull()

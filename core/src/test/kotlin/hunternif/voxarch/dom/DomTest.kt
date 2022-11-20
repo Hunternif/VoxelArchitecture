@@ -14,7 +14,7 @@ class DomTest {
             node("parent") {
                 node("child")
             }
-        }.build()
+        }.buildDom()
 
         assertEquals(1, dom.children.size)
         val parent = dom.children.first()
@@ -41,7 +41,7 @@ class DomTest {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -71,7 +71,7 @@ class DomTest {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -90,7 +90,7 @@ class DomTest {
         }
         val dom = DomRoot(style, seed).apply {
             room("random")
-        }.build()
+        }.buildDom()
 
         val room = dom.children.first() as Room
         assertEquals(Vec3(110, 46, 144), room.size)
@@ -116,7 +116,7 @@ class DomTest {
             room("parent_seed", "random") {
                 room("random")
             }
-        }.build()
+        }.buildDom()
 
         val room1 = dom.children[0] as Room
         val room2 = dom.children[1] as Room
@@ -144,7 +144,7 @@ class DomTest {
         }
         val dom = DomRoot(style).apply {
             room("height_100", "width_200")
-        }.build()
+        }.buildDom()
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
@@ -163,7 +163,7 @@ class DomTest {
         }
         val dom = DomRoot(style).apply {
             room()
-        }.build()
+        }.buildDom()
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
@@ -186,7 +186,7 @@ class DomTest {
         val dom = DomRoot(style).apply {
             room()
             polygonRoom()
-        }.build()
+        }.buildDom()
 
         val room = dom.children[0] as Room
         val polyRoom = dom.children[1] as PolygonRoom
@@ -227,7 +227,7 @@ class DomTest {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -247,7 +247,7 @@ class DomTest {
                     }
                 }
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first()
         val child = parent.children.first()
@@ -280,7 +280,7 @@ class DomTest {
 //                    room()
 //                }
 //            }
-//        }.build()
+//        }.buildDom()
 //
 //        val parent = dom.children.first() as Room
 //        val child1 = parent.children[0] as Room
@@ -298,14 +298,14 @@ class DomTest {
 
     companion object {
         /** Creates empty logic element for testing. */
-        private fun DomBuilder<Node?>.empty(
-            block: DomBuilder<Node?>.() -> Unit = {}
+        private fun DomBuilder.empty(
+            block: DomBuilder.() -> Unit = {}
         ) {
             val bld = EmptyLogicBuilder()
             addChild(bld)
             bld.block()
         }
 
-        class EmptyLogicBuilder: DomLogicBuilder()
+        class EmptyLogicBuilder: DomBuilder()
     }
 }

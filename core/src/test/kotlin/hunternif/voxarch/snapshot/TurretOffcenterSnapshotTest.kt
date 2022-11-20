@@ -73,7 +73,7 @@ class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
             }
             return DomRoot(style).apply {
                 turret()
-            }.build()
+            }.buildDom()
         }
     }
 }

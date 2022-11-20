@@ -10,27 +10,24 @@ import java.util.*
 
 /** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
 @CastleDsl
-abstract class DomBuilder<out N: Node?> {
+abstract class DomBuilder {
     var stylesheet: Stylesheet = defaultStyle
-    internal var parent: DomBuilder<Node?> = DetachedRoot
+    internal var parent: DomBuilder = DetachedRoot
         private set
     internal var seed: Long = 0
-    /** Can be null for logical parts of DOM that don't correspond to a Node*/
-    abstract val node: N
     /** Don't manually add children, use [addChild] instead.*/
-    internal val children = mutableListOf<DomBuilder<Node?>>()
+    internal val children = mutableListOf<DomBuilder>()
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
     /** Recursively invokes this method on children. */
     /** Generators add more child DomBuilders. */
     internal val generators = mutableListOf<IGenerator>()
-    internal open fun build(): N {
+    open fun build() {
         generators.forEach { it.generate(this) }
         children.forEach { it.build() }
-        return node
     }
     internal open fun addChild(
-        child: DomBuilder<Node?>,
+        child: DomBuilder,
         childSeed: Long = nextChildSeed()
     ) {
         child.parent = this
@@ -38,18 +35,10 @@ abstract class DomBuilder<out N: Node?> {
         child.stylesheet = stylesheet
         children.add(child)
     }
-    /** Checks if this builder builds the right class of node and casts to it*/
-    @Suppress("UNCHECKED_CAST")
-    internal inline fun <reified N2 : Node?> asBuilder(): DomBuilder<N2>? {
-        return if (node is N2) this as DomBuilder<N2>
-        else null
-    }
 }
 
 /** Placeholder for parent when a builder is not yet added as a child. */
-internal object DetachedRoot : DomBuilder<Node?>() {
-    override val node: Node? = null
-}
+internal object DetachedRoot : DomBuilder()
 
 /** Root of the DOM.
  * @param stylesheet this stylesheet will apply to all elements in this DOM.
@@ -59,37 +48,36 @@ internal object DetachedRoot : DomBuilder<Node?>() {
 class DomRoot(
     stylesheet: Stylesheet = defaultStyle,
     seed: Long = 0,
-) : DomBuilder<Structure>() {
-    override val node = Structure()
-    init {
-        this.seed = seed
-        this.stylesheet = stylesheet
-    }
-    /** Builds the entire DOM tree. */
-    public override fun build(): Structure = super.build()
-}
+) : DomLocalRoot<Structure>(Structure(), stylesheet, seed)
 
 /** Used for creating a local DOM within a Node tree,
  * e.g. to change the stylesheet locally. */
-class DomLocalRoot<out N : Node?>(
-    override val node: N,
+open class DomLocalRoot<out N : Node>(
+    node: N,
     stylesheet: Stylesheet = defaultStyle,
     seed: Long = 0,
-) : DomBuilder<N>() {
+) : DomNodeBuilder<N>({ node }) {
     init {
         this.seed = seed
         this.stylesheet = stylesheet
     }
-    public override fun build(): N = super.build()
+    override fun build() {
+        children.forEach { it.build() }
+    }
+    /** Builds the entire DOM tree. */
+    fun buildDom(): N {
+        build()
+        return node
+    }
 }
 
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<out N: Node>(
     private val createNode: () -> N
-) : DomBuilder<N>() {
+) : DomBuilder() {
     private val styleClass = LinkedHashSet<String>()
-    override val node: N by lazy { createNode() }
-    override fun build(): N {
+    val node: N by lazy { createNode() }
+    override fun build() {
         node.tags += styleClass
         findParentNode().addChild(node)
         stylesheet.apply(this, styleClass)
@@ -102,7 +90,6 @@ open class DomNodeBuilder<out N: Node>(
             // calculate styles including visibility.
             node.parent?.removeChild(node)
         }
-        return node
     }
     /** Any custom initialization code for this node.
      * Don't use it to add child nodes, create a IGenerator for that instead. */
@@ -124,18 +111,23 @@ open class DomNodeBuilder<out N: Node>(
  * Finds the most immediate (lowest) non-null parent [Node].
  * Non-null because root has a non-null node.
  */
-internal fun DomBuilder<Node?>.findParentNode(): Node {
+fun DomBuilder.findParentNode(): Node {
+    if (this is DomLocalRoot<*>) return node
     var domBuilder = this.parent
-    while (domBuilder !is DomRoot)
+    while (domBuilder !is DomNodeBuilder<*>)
     {
-        val node = domBuilder.node
-        if (node != null) return node
         domBuilder = domBuilder.parent
     }
     return domBuilder.node
 }
 
-internal fun DomBuilder<Node?>.nextChildSeed() = seed + children.size + 1
+/** Checks if this builder builds the right class of node and casts to it*/
+@Suppress("UNCHECKED_CAST")
+inline fun <reified N2 : Node> DomBuilder.asNodeBuilder(): DomNodeBuilder<N2>? =
+    if (this is DomNodeBuilder<*> && node is N2) this as DomNodeBuilder<N2>
+    else null
+
+internal fun DomBuilder.nextChildSeed() = seed + children.size + 1
 
 enum class Visibility {
     VISIBLE,

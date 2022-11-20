@@ -41,7 +41,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
             }
             return DomRoot(style).apply {
                 turret()
-            }.build()
+            }.buildDom()
         }
     }
 }

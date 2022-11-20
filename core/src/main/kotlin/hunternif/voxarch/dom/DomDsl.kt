@@ -22,33 +22,33 @@ const val DOM_TURRET = "dom_turret"
  * @param styleClass names of style classes (like in CSS).
  * Class names are also added to node tags.
  */
-fun DomBuilder<Node?>.node(
+fun DomBuilder.node(
     vararg styleClass: String,
-    block: DomBuilder<Node>.() -> Unit = {}
+    block: DomNodeBuilder<Node>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Node() }.block()
+    this.addChildNodeBuilder(styleClass) { Node() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
-fun DomBuilder<Node?>.room(
+fun DomBuilder.room(
     vararg styleClass: String,
-    block: DomBuilder<Room>.() -> Unit = {}
+    block: DomNodeBuilder<Room>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Room() }.block()
+    this.addChildNodeBuilder(styleClass) { Room() }.block()
 }
 
 /** Adds child [Floor]. See [node]. */
-fun DomBuilder<Node?>.floor(
+fun DomBuilder.floor(
     vararg styleClass: String,
-    block: DomBuilder<Floor>.() -> Unit = {}
+    block: DomNodeBuilder<Floor>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Floor() }.block()
+    this.addChildNodeBuilder(styleClass) { Floor() }.block()
 }
 
 /** Adds child [PolygonRoom]. See [node]. */
-fun DomBuilder<Node?>.polygonRoom(
+fun DomBuilder.polygonRoom(
     vararg styleClass: String,
-    block: DomBuilder<PolygonRoom>.() -> Unit = {}
+    block: DomNodeBuilder<PolygonRoom>.() -> Unit = {}
 ) {
     val bld = DomPolygonRoomBuilder().apply{ +styleClass }
     addChild(bld)
@@ -56,7 +56,7 @@ fun DomBuilder<Node?>.polygonRoom(
 }
 
 /** Adds child PolygonRoom with a [TurretGenerator]. See [node]. */
-fun DomBuilder<Node?>.turret(
+fun DomBuilder.turret(
     vararg styleClass: String,
     block: DomPolygonRoomBuilder.() -> Unit = {}
 ) {
@@ -70,7 +70,7 @@ fun DomBuilder<Node?>.turret(
 }
 
 /** Adds child [Ward] with a perimeter of walls and towers. */
-fun DomBuilder<Node?>.ward(
+fun DomBuilder.ward(
     vararg styleClass: String,
     block: DomWardBuilder.() -> Unit = {}
 ) {
@@ -80,23 +80,23 @@ fun DomBuilder<Node?>.ward(
 }
 
 /** Runs [block] in every corner of this [PolygonRoom]. */
-fun DomBuilder<PolygonRoom>.allCorners(
-    block: DomBuilder<Node?>.() -> Unit = {}
+fun DomNodeBuilder<PolygonRoom>.allCorners(
+    block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicPolygonCornerBuilder(block)
     addChild(bld)
 }
 
 /** Runs [block] in the 4 corners of this [Room]'s bounding box. */
-fun DomBuilder<Room>.fourCorners(
-    block: DomBuilder<Node?>.() -> Unit = {}
+fun DomNodeBuilder<Room>.fourCorners(
+    block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicFourCornerBuilder(block)
     addChild(bld)
 }
 
 /** Runs [block] on every section of this polygon. */
-fun DomBuilder<Room>.allWalls(
+fun DomNodeBuilder<Room>.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomPolygonSegmentBuilder(block)
@@ -104,7 +104,7 @@ fun DomBuilder<Room>.allWalls(
 }
 
 /** Runs [block] on one random section of this polygon. */
-fun DomBuilder<Room>.randomWall(
+fun DomNodeBuilder<Room>.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomRandomSegmentBuilder(block)
@@ -112,7 +112,7 @@ fun DomBuilder<Room>.randomWall(
 }
 
 /** Runs [block] on every side of this room. */
-fun DomBuilder<Room>.fourWalls(
+fun DomNodeBuilder<Room>.fourWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomFourWallsBuilder(block)
@@ -122,17 +122,17 @@ fun DomBuilder<Room>.fourWalls(
 /** Creates a [Wall] on the line segment. */
 fun DomLineSegmentBuilder.wall(
     vararg styleClass: String,
-    block: DomBuilder<Wall>.() -> Unit = {}
+    block: DomNodeBuilder<Wall>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Wall(Vec3.ZERO, end) }.block()
+    this.addChildNodeBuilder(styleClass) { Wall(Vec3.ZERO, end) }.block()
 }
 
 /** Creates a [Path] on the line segment. */
 fun DomLineSegmentBuilder.path(
     vararg styleClass: String,
-    block: DomBuilder<Path>.() -> Unit = {}
+    block: DomNodeBuilder<Path>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
+    this.addChildNodeBuilder(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////
@@ -140,10 +140,10 @@ fun DomLineSegmentBuilder.path(
 annotation class CastleDsl
 
 /** Creates a child [DomBuilder], adds it to parent and returns. */
-private fun <N: Node> DomBuilder<Node?>.createChild(
+private fun <N: Node> DomBuilder.addChildNodeBuilder(
     styleClass: Array<out String>,
     createNode: () -> N
-) : DomBuilder<N> {
+) : DomNodeBuilder<N> {
     val child = DomNodeBuilder(createNode).apply{ +styleClass }
     addChild(child)
     return child

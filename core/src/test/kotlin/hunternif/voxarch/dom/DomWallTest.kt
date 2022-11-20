@@ -25,7 +25,7 @@ class DomWallTest {
                     }
                 }
             }
-        }.build()
+        }.buildDom()
 
         val room = dom.children[0]
         assertEquals(4, room.children.size)
@@ -63,7 +63,7 @@ class DomWallTest {
                     }
                 }
             }
-        }.build()
+        }.buildDom()
 
         verifyFourWalls(dom)
         assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
@@ -86,7 +86,7 @@ class DomWallTest {
                     }
                 }
             }
-        }.build()
+        }.buildDom()
 
         verifyFourWalls(dom)
         assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)

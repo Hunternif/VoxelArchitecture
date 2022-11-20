@@ -24,7 +24,7 @@ class DomWardTest {
                     room()
                 }
             }
-        }.build()
+        }.buildDom()
 
         val ward = dom.children[0]
         assertEquals(4, ward.children.size)
@@ -49,7 +49,7 @@ class DomWardTest {
                     room()
                 }
             }
-        }.build()
+        }.buildDom()
 
         val ward = dom.children[0]
         assertEquals(6, ward.children.size)
@@ -70,7 +70,7 @@ class DomWardTest {
                     room()
                 }
             }
-        }.build()
+        }.buildDom()
 
         val ward = dom.children[0]
         assertEquals(8, ward.children.size)
@@ -87,12 +87,12 @@ class DomWardTest {
 
         DomRoot(style, 1).apply {
             ward { ward = node}
-        }.build()
+        }.buildDom()
         assertEquals(ROUND, ward.shape)
 
         DomRoot(style, 2).apply {
             ward { ward = node}
-        }.build()
+        }.buildDom()
         assertEquals(SQUARE, ward.shape)
     }
 }

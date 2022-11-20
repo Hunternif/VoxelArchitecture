@@ -28,7 +28,7 @@ private inline fun StyledNode<*>.forTurretGenerators(
 
 private inline val StyledNode<*>.firstGenerator: TurretGenerator?
     get() = domBuilder.firstGenerator
-private inline val DomBuilder<*>.firstGenerator: TurretGenerator?
+private inline val DomBuilder.firstGenerator: TurretGenerator?
     get() = generators.filterIsInstance<TurretGenerator>().firstOrNull()
 
 /** Offset for borders and spires in all child turrets. */

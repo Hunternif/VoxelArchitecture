@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
@@ -128,10 +129,10 @@ class GenerateNodesTest : BaseActionTest() {
 
     private class PropGenerator : ChainedGenerator() {
         override fun generateChained(
-            parent: DomBuilder<Node?>,
-            nextBlock: DomBuilder<Node?>.() -> Unit
+            parent: DomBuilder,
+            nextBlock: DomBuilder.() -> Unit
         ) {
-            parent.node?.prop(Vec3(4, 5, 6), "generated prop")
+            parent.findParentNode().prop(Vec3(4, 5, 6), "generated prop")
         }
     }
 }

@@ -20,7 +20,7 @@ class StylePositionTest {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children[0] as Room
         val child = parent.children[0] as Room

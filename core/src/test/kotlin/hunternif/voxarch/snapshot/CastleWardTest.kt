@@ -80,6 +80,6 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                     randomWall { turret("main_turret") }
                 }
             }
-        }.build()
+        }.buildDom()
     }
 }

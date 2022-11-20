@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.generator.ChainedGenerator
-import hunternif.voxarch.plan.Node
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -105,8 +104,8 @@ class BlueprintTest {
 
     private val generator = object : ChainedGenerator() {
         override fun generateChained(
-            parent: DomBuilder<Node?>,
-            nextBlock: DomBuilder<Node?>.() -> Unit,
+            parent: DomBuilder,
+            nextBlock: DomBuilder.() -> Unit,
         ) {}
     }
 }

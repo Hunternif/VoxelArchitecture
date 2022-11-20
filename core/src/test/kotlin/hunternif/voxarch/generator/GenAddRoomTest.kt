@@ -24,7 +24,7 @@ class GenAddRoomTest {
             room("my_room") {
                 generators.add(GenAddRoom("my_child"))
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first() as Room
         assertEquals(1, parent.children.size)
@@ -50,7 +50,7 @@ class GenAddRoomTest {
             room() {
                 generators.add(generator)
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
