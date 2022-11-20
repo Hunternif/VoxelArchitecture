@@ -38,7 +38,7 @@ open class DomPolygonSegmentBuilder(
     private val childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomLogicBuilder() {
     override fun build(): Node? {
-        val room = parent.node
+        val room = findParentNode()
         val polygon = when (room) {
             is PolygonRoom -> room.polygon
             is Room -> Path().apply {
@@ -70,7 +70,7 @@ class DomFourWallsBuilder(
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolygonSegmentBuilder(childBlock) {
     override fun build(): Node? {
-        val room = parent.node
+        val room = findParentNode()
         if (room is Room) {
             val polygon = Path().apply {
                 origin = room.innerFloorCenter
@@ -93,7 +93,7 @@ class DomRandomSegmentBuilder(
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolygonSegmentBuilder(childBlock) {
     override fun build(): Node? {
-        val room = parent.node
+        val room = findParentNode()
         val polygon = when (room) {
             is PolygonRoom -> room.polygon
             is Room -> Path().apply {
