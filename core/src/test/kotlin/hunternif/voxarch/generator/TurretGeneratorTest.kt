@@ -21,8 +21,8 @@ class TurretGeneratorTest {
                 // This enables the "roof" element with height 0.0
                 roofShape = RoofShape.FLAT_BORDERED
             }
-            styleFor<Room> {
-                height { 10.vx }
+            style2For<Room> {
+                height2 { 10.vx }
             }
         }
         val dom = DomRoot(style).apply {

@@ -15,7 +15,9 @@ class DomCornerTest {
         val style = Stylesheet().apply {
             styleFor<PolygonRoom> {
                 shape = PolygonShape.SQUARE
-                diameter { 2.vx }
+            }
+            style2For<PolygonRoom> {
+                diameter2 { 2.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -37,9 +39,9 @@ class DomCornerTest {
     @Test
     fun `rectangle room`() {
         val style = Stylesheet().apply {
-            styleFor<Room> {
-                width { 2.vx }
-                length { 4.vx }
+            style2For<Room> {
+                width2 { 2.vx }
+                length2 { 4.vx }
             }
         }
         val dom = DomRoot(style).apply {

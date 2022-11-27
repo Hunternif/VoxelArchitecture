@@ -13,7 +13,9 @@ class DomWallTest {
         val style = Stylesheet().apply {
             styleFor<PolygonRoom> {
                 shape = PolygonShape.SQUARE
-                diameter { 2.vx }
+            }
+            style2For<PolygonRoom> {
+                diameter2 { 2.vx }
             }
         }
         val wallSeeds = mutableListOf<Long>()
@@ -49,9 +51,9 @@ class DomWallTest {
     @Test
     fun `create 4 walls on rectangle room`() {
         val style = Stylesheet().apply {
-            styleFor<Room> {
-                width { 2.vx }
-                length { 4.vx }
+            style2For<Room> {
+                width2 { 2.vx }
+                length2 { 4.vx }
             }
         }
         val wallSeeds = mutableListOf<Long>()
@@ -72,9 +74,9 @@ class DomWallTest {
     @Test
     fun `create all walls on rectangle room`() {
         val style = Stylesheet().apply {
-            styleFor<Room> {
-                width { 2.vx }
-                length { 4.vx }
+            style2For<Room> {
+                width2 { 2.vx }
+                length2 { 4.vx }
             }
         }
         val wallSeeds = mutableListOf<Long>()

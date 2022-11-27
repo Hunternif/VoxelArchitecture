@@ -31,9 +31,13 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
             val style = defaultStyle.apply {
                 styleFor<PolygonRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
-                    diameter { width.vx }
-                    height { 5.vx }
+//                    diameter { width.vx }
+//                    height { 5.vx }
                     shape = PolygonShape.SQUARE
+                }
+                style2For<PolygonRoom>(DOM_TURRET) {
+                    diameter2 { width.vx }
+                    height2 { 5.vx }
                 }
                 styleForGen<TurretGenerator> {
                     roofShape = RoofShape.FLAT_BORDERED

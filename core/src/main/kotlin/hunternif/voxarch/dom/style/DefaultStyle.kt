@@ -5,12 +5,12 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
 
 val defaultStyle get() = Stylesheet().apply {
-    styleFor<Room> {
-        diameter { 100.pct }
-        height { 100.pct }
+    style2For<Room> {
+        diameter2 { 100.pct }
+        height2 { 100.pct }
     }
-    styleFor<Wall> {
-        height { 100.pct }
+    style2For<Wall> {
+        height2 { 100.pct }
     }
     styleForGen<TurretGenerator> {
         roofOffset { 1.vx }

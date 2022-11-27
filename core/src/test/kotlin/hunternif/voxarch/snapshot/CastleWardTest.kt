@@ -37,8 +37,10 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
 
     private fun castleWard(): Structure {
         val style = defaultStyle.apply {
+            style2For<PolygonRoom>("main_turret") {
+                size2(6.vx, 4.vx, 6.vx)
+            }
             styleFor<PolygonRoom>("main_turret") {
-                size(6.vx, 4.vx, 6.vx)
                 align {
                     center()
                     bottom(15.vx)
@@ -49,27 +51,35 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 roofShape = RoofShape.FLAT_BORDERED
                 bottomShape = BottomShape.FOUNDATION
             }
+            style2For<Ward>("outer_ward") {
+                size2(48.vx, 6.vx, 48.vx)
+            }
             styleFor<Ward>("outer_ward") {
                 shape = PolygonShape.ROUND
-                size(48.vx, 6.vx, 48.vx)
                 position(30.vx, 0.vx, 30.vx)
                 edgeLength { 50.pct }
             }
+            style2For<Ward>("inner_ward") {
+                size2(16.vx, 8.vx, 16.vx)
+            }
             styleFor<Ward>("inner_ward") {
                 shape = PolygonShape.SQUARE
-                size(16.vx, 8.vx, 16.vx)
                 align { bottom(4.vx) }
             }
+            style2For<PolygonRoom>("outer_ward_turret") {
+                size2(8.vx, 10.vx, 8.vx)
+            }
             styleFor<PolygonRoom>("outer_ward_turret") {
-                size(8.vx, 10.vx, 8.vx)
                 shape = PolygonShape.ROUND
             }
             styleForGen<TurretGenerator>("outer_ward_turret") {
                 roofShape = RoofShape.FLAT_BORDERED
                 bottomShape = BottomShape.TAPERED
             }
+            style2For<PolygonRoom>("inner_ward_turret") {
+                size2(4.vx, 12.vx, 4.vx)
+            }
             styleFor<PolygonRoom>("inner_ward_turret") {
-                size(4.vx, 12.vx, 4.vx)
                 shape = PolygonShape.SQUARE
             }
             styleForGen<TurretGenerator>("inner_ward_turret") {

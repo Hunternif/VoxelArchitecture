@@ -51,7 +51,7 @@ open class Stylesheet {
     private val nodeStyleMap = ArrayListMultimap.create<String, TypedStyleRuleForNode<*>>()
     private val genStyleMap = ArrayListMultimap.create<String, TypedStyleRuleForGen<*>>()
 
-    private val rules = ArrayListMultimap.create<String, Rule>()
+    val rules = ArrayListMultimap.create<String, Rule>()
 
     /**
      * Register a style rule i.e. a list of style declarations.
@@ -63,6 +63,18 @@ open class Stylesheet {
         block: Rule.() -> Unit,
     ) {
         rules.put(styleClass, Rule(styleClass).apply(block))
+    }
+
+    /**
+     * Register a style rule i.e. a list of style declarations.
+     * These will be limited by type [T].
+     * @param styleClass is the "CSS class".
+     */
+    inline fun <reified T> style2For(
+        styleClass: String = GLOBAL_STYLE,
+        noinline block: Rule.() -> Unit,
+    ) {
+        rules.put(styleClass, Rule(styleClass, T::class.java).apply(block))
     }
 
     /**
@@ -170,6 +182,7 @@ open class Stylesheet {
             // apply rules
             styleClasses
                 .flatMap { rules[it] }
+                .filter { it.destType?.isAssignableFrom(genClass) ?: true}
                 .flatMap { it.declarations }
                 .forEach { it.applyTo(styledGen) }
         }
@@ -177,6 +190,13 @@ open class Stylesheet {
         if (domBuilder is DomNodeBuilder<*>) {
             val styledNode = StyledNode(domBuilder)
             val nodeClass = domBuilder.node.javaClass
+            // apply rules (moved up because alignment must be calculated after size)
+            styleClasses
+                .flatMap { rules[it] }
+                .filter { it.destType?.isAssignableFrom(nodeClass) ?: true}
+                .flatMap { it.declarations }
+                .forEach { it.applyTo(styledNode) }
+            // apply old styles
             styleClasses
                 .flatMap { nodeStyleMap[it] }
                 .filter { it.nodeClass.isAssignableFrom(nodeClass) }
@@ -185,11 +205,6 @@ open class Stylesheet {
                     val rule = it.rule as StyleRuleForNode<*>
                     rule.invoke(styledNode)
                 }
-            // apply rules
-            styleClasses
-                .flatMap { rules[it] }
-                .flatMap { it.declarations }
-                .forEach { it.applyTo(styledNode) }
         }
     }
 

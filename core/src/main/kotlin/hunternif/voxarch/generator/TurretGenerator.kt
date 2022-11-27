@@ -66,27 +66,37 @@ class TurretGenerator : ChainedGenerator() {
         styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
             shape { inherit() }
             visibleIf { hasTaperedBottom() }
-            height { 2 * body.avgRadius() * taperRatio() }
+//            height { 2 * body.avgRadius() * taperRatio() }
             align {
                 center()
                 below()
             }
         }
+        style2For<PolygonRoom>(BLD_TURRET_BOTTOM) {
+            height2 { 2 * body.avgRadius() * taperRatio() }
+        }
         styleFor<PolygonRoom>("roof") {
             shape { inherit() }
-            diameter { 100.pct + 2 * roofOffset() }
+//            diameter { 100.pct + 2 * roofOffset() }
             align {
                 center()
                 above(1.vx) // 1 block above parent
             }
         }
+        style2For<PolygonRoom>("roof") {
+            diameter2 { 100.pct + 2 * roofOffset() }
+        }
         styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
             visibleIf { hasSpire() }
-            height { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
+        }
+        style2For<PolygonRoom>(BLD_TOWER_SPIRE) {
+            height2 { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
         }
         styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
             visibleIf { hasCrenellation() }
-            height { 0.vx }
+        }
+        style2For<PolygonRoom>(BLD_TOWER_ROOF) {
+            height2 { 0.vx }
         }
         style(BLD_TOWER_CORBEL) {
             align { above() }

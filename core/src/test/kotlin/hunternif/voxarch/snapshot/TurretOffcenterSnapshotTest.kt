@@ -63,9 +63,13 @@ class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                 styleFor<PolygonRoom>(DOM_TURRET) {
                     position(1.vx, 0.vx, 1.vx)
                     start(0.vx, 0.vx, 0.vx)
-                    diameter { width.vx }
-                    height { 5.vx }
+//                    diameter { width.vx }
+//                    height { 5.vx }
                     shape = PolygonShape.SQUARE
+                }
+                style2For<PolygonRoom>(DOM_TURRET) {
+                    diameter2 { width.vx }
+                    height2 { 5.vx }
                 }
                 styleForGen<TurretGenerator> {
                     roofShape = RoofShape.SPIRE_BORDERED

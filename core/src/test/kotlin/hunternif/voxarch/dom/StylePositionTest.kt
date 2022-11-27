@@ -10,9 +10,11 @@ class StylePositionTest {
     @Test
     fun `vertical offset`() {
         val style = Stylesheet().apply {
-            style("parent") { height { 100.vx } }
+            style2("parent") { height2 { 100.vx } }
+            style2("child") {
+                height2 { 50.vx }
+            }
             style("child") {
-                height { 50.vx }
                 y { 100.pct - 3.vx }
             }
         }

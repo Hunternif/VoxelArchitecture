@@ -32,10 +32,10 @@ val allRules: List<StyleRuleInfoAny> by lazy {
         rule(StyledNode<Node>::y),
         rule(StyledNode<Node>::z),
 //        rule(StyledNode<Node>::position), // TODO: support vectors
-        rule(StyledNode<Node>::height),
-        rule(StyledNode<Node>::width),
-        rule(StyledNode<Node>::length),
-        rule(StyledNode<Node>::diameter),
+//        rule(StyledNode<Node>::height),  // TODO: migrate to style2
+//        rule(StyledNode<Node>::width),  // TODO: migrate to style2
+//        rule(StyledNode<Node>::length),  // TODO: migrate to style2
+//        rule(StyledNode<Node>::diameter), // TODO: migrate to style2
 //        rule(StyledNode<Node>::size), // TODO: support vectors
 //        rule(StyledNode<Node>::visibility), // only useful with logic, too complex for UI
         rule(StyledNode<PolygonRoom>::shape),
