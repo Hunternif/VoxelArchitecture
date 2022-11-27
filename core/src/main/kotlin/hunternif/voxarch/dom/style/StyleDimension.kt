@@ -79,6 +79,18 @@ fun Dimension.clamp(min: Dimension, max: Dimension): Dimension {
     }
 }
 
+fun min(a: Dimension, b: Dimension): Dimension {
+    return dimension { base, seed ->
+        kotlin.math.min(a(base, seed), b(base, seed))
+    }
+}
+
+fun max(a: Dimension, b: Dimension): Dimension {
+    return dimension { base, seed ->
+        kotlin.math.max(a(base, seed), b(base, seed))
+    }
+}
+
 private fun dimension(
     method: (base: Double, seed: Long) -> Double,
 ) = object : Dimension {

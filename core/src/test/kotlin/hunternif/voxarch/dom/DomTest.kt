@@ -62,7 +62,7 @@ class DomTest {
                 length { 30.vx }
             }
             style("child") {
-                height {  min = 8.vx; 75.pct }
+                height { min = 8.vx; 75.pct }
                 width { max = 21.vx; 120.pct }
                 length { min = 1.vx; 0.pct }
             }
