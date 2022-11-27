@@ -1,7 +1,6 @@
 package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.dom.builder.DomNodeBuilder
+import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet.Companion.GLOBAL_STYLE
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
@@ -9,20 +8,41 @@ import hunternif.voxarch.plan.Node
 /**
  * The constructor arguments are the "CSS selector" for this rule.
  * @param styleClass is the "CSS class".
- * @param destType is the "CSS tag" (a node or a generator).
+ * @param destType is the optional "CSS tag" (a node or a generator).
  */
+@CastleDsl
 class Rule(
     var styleClass: String = GLOBAL_STYLE,
-    var destType: Class<*>,
+    var destType: Class<*>? = null,
 ) {
     val declarations = mutableListOf<Declaration<*>>()
+    fun <V> add(prop: Property<V>, value: IStyleValue<V>) {
+        declarations.add(Declaration(prop, value))
+    }
 }
 
-/** Represents a single property-value pair, e.g.: `width: 100%` */
+/**
+ * Represents a single property-value pair, e.g.: `width: 100%`.
+ *
+ * Note that [value] is just a "written description" in the stylesheet,
+ * not the calculated value [V] that's applied to the Node/Generator.
+ */
 class Declaration<V>(
     val property: Property<V>,
-    val value: V,
-)
+    val value: IStyleValue<V>,
+) {
+    fun applyTo(styled: StyledElement) {
+        property.applyTo(styled, value.get())
+    }
+}
+
+/**
+ * The value as a "written description" in the stylesheet,
+ * not the calculated value [V] that's applied to the Node/Generator.
+ */
+interface IStyleValue<V> {
+    fun get(): V
+}
 
 /**
  * [destType] is either a [Node] or a [IGenerator].
@@ -35,54 +55,67 @@ abstract class Property<V>(
     val destType: Class<*>,
     val valType: Class<V>,
 ) {
-    abstract fun apply(domBuilder: DomBuilder, value: V)
-    fun appliesTo(obj: Any): Boolean {
-        return destType.isAssignableFrom(obj.javaClass)
-    }
+    abstract fun applyTo(styled: StyledElement, value: V)
 }
 
 
 // ============================================================================
 // Below are helper abstract base classes to simplify implementation
 // of properties for Nodes and Generators.
-// (They're actually concrete classes, in order to have a reified constructor.)
 // ============================================================================
 
-open class NodeProperty<N : Node, V>(
+abstract class NodeProperty<N : Node, V>(
     nodeType: Class<N>,
     valType: Class<V>,
 ) : Property<V>(nodeType, valType) {
-    companion object {
-        inline operator fun <reified N : Node, reified V> invoke():
-            NodeProperty<N, V> = NodeProperty(N::class.java, V::class.java)
-    }
-    override fun apply(domBuilder: DomBuilder, value: V) {
-        if (domBuilder is DomNodeBuilder<*> && appliesTo(domBuilder.node)) {
+    override fun applyTo(styled: StyledElement, value: V) {
+        if (styled is StyledNode<*> &&
+            destType.isAssignableFrom(styled.domBuilder.node.javaClass)
+        ) {
             @Suppress("UNCHECKED_CAST")
-            applyToNode(domBuilder as DomNodeBuilder<N>, value)
+            applyToNode(styled as StyledNode<N>, value)
         }
     }
-    /** To be overridden */
-    open fun applyToNode(domBuilder: DomNodeBuilder<N>, value: V) {}
+
+    abstract fun applyToNode(styled: StyledNode<N>, value: V)
 }
 
 
-open class GenProperty<G : IGenerator, V>(
+abstract class GenProperty<G : IGenerator, V>(
     genType: Class<G>,
     valType: Class<V>,
 ) : Property<V>(genType, valType) {
-    companion object {
-        inline operator fun <reified G : IGenerator, reified V> invoke():
-            GenProperty<G, V> = GenProperty(G::class.java, V::class.java)
-    }
-    override fun apply(domBuilder: DomBuilder, value: V) {
-        domBuilder.generators.forEach { gen ->
-            if (appliesTo(gen)) {
-                @Suppress("UNCHECKED_CAST")
-                applyToGen(gen as G, domBuilder, value)
-            }
+    override fun applyTo(styled: StyledElement, value: V) {
+        if (styled is StyledGen<*> &&
+            destType.isAssignableFrom(styled.gen.javaClass)
+        ) {
+            @Suppress("UNCHECKED_CAST")
+            applyToGen(styled as StyledGen<G>, value)
         }
     }
-    /** To be overridden */
-    open fun applyToGen(gen: G, domBuilder: DomBuilder, value: V) {}
+
+    abstract fun applyToGen(styled: StyledGen<G>, value: V)
+}
+
+
+/** Helper function for creating a new [NodeProperty] */
+internal inline fun <reified N : Node, reified V> newNodeProperty(
+    noinline block: StyledNode<N>.(V) -> Unit,
+): NodeProperty<N, V> {
+    return object : NodeProperty<N, V>(N::class.java, V::class.java) {
+        override fun applyToNode(styled: StyledNode<N>, value: V) {
+            styled.block(value)
+        }
+    }
+}
+
+/** Helper function for creating a new [GenProperty] */
+internal inline fun <reified G : IGenerator, reified V> newGenProperty(
+    noinline block: StyledGen<G>.(V) -> Unit,
+): GenProperty<G, V> {
+    return object : GenProperty<G, V>(G::class.java, V::class.java) {
+        override fun applyToGen(styled: StyledGen<G>, value: V) {
+            styled.block(value)
+        }
+    }
 }

@@ -51,6 +51,20 @@ open class Stylesheet {
     private val nodeStyleMap = ArrayListMultimap.create<String, TypedStyleRuleForNode<*>>()
     private val genStyleMap = ArrayListMultimap.create<String, TypedStyleRuleForGen<*>>()
 
+    private val rules = ArrayListMultimap.create<String, Rule>()
+
+    /**
+     * Register a style rule i.e. a list of style declarations.
+     * They are not limited by Node type, they will apply wherever possible.
+     * @param styleClass is the "CSS class".
+     */
+    fun style2(
+        styleClass: String,
+        block: Rule.() -> Unit,
+    ) {
+        rules.put(styleClass, Rule(styleClass).apply(block))
+    }
+
     /**
      * Register a style for the given "style class" name, for specific Java class
      * and its subclasses.
@@ -153,6 +167,11 @@ open class Stylesheet {
                     val rule = it.rule as StyleRuleForGen<*>
                     rule.invoke(styledGen)
                 }
+            // apply rules
+            styleClasses
+                .flatMap { rules[it] }
+                .flatMap { it.declarations }
+                .forEach { it.applyTo(styledGen) }
         }
         // apply node styles
         if (domBuilder is DomNodeBuilder<*>) {
@@ -166,6 +185,11 @@ open class Stylesheet {
                     val rule = it.rule as StyleRuleForNode<*>
                     rule.invoke(styledNode)
                 }
+            // apply rules
+            styleClasses
+                .flatMap { rules[it] }
+                .flatMap { it.declarations }
+                .forEach { it.applyTo(styledNode) }
         }
     }
 

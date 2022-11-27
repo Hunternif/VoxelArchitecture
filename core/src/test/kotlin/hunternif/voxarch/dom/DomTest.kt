@@ -32,9 +32,11 @@ class DomTest {
                 length { 30.vx }
             }
             style("child") {
-                height { 75.pct }
                 width { 120.pct }
                 length { 100.pct }
+            }
+            style2("child") {
+                height2 { 75.pct }
             }
         }
         val dom = DomRoot(style).apply {
@@ -62,9 +64,11 @@ class DomTest {
                 length { 30.vx }
             }
             style("child") {
-                height { min = 8.vx; 75.pct }
                 width { max = 21.vx; 120.pct }
                 length { min = 1.vx; 0.pct }
+            }
+            style2("child") {
+                height2 { min = 8.vx; 75.pct }
             }
         }
         val dom = DomRoot(style).apply {
@@ -83,9 +87,11 @@ class DomTest {
         val seed = 0L
         val style = Stylesheet().apply {
             style("random") {
-                height { 1.vx to 100.vx }
                 width { 1.vx to 1000.vx }
                 length { 1.vx to 1000.vx }
+            }
+            style2("random") {
+                height2 { 1.vx to 100.vx }
             }
         }
         val dom = DomRoot(style, seed).apply {

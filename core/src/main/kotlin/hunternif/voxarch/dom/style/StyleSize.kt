@@ -5,8 +5,25 @@ import hunternif.voxarch.util.round
 
 class StyleSize(
     var min: Dimension = 0.vx,
-    var max: Dimension = Int.MAX_VALUE.vx
-) : StyleParameter
+    var max: Dimension = Int.MAX_VALUE.vx,
+    var initial: Dimension = 0.vx,
+) : StyleParameter, IStyleValue<Dimension> {
+    override fun get(): Dimension = initial.clamp(min, max)
+}
+
+val PropHeight = newNodeProperty<Node, Dimension> { value ->
+    val node = domBuilder.node
+    val baseValue = node.parent?.height ?: 0.0
+    val newValue = value
+        .invoke(baseValue, seed + 10000001)
+        .round()
+    node.height = newValue
+}
+
+fun Rule.height2(block: StyleSize.() -> Dimension) {
+    val value = StyleSize().apply { initial = block() }
+    add(PropHeight, value)
+}
 
 fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
     val node = domBuilder.node
