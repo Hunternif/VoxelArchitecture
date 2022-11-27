@@ -7,7 +7,6 @@ import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.sandbox.castle.*
-import hunternif.voxarch.sandbox.castle.turret.BodyShape
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.sandbox.castle.turret.TurretPosition
@@ -18,7 +17,6 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
 @PublicGenerator("Turret")
 class TurretGenerator : ChainedGenerator() {
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
-    var bodyShape: BodyShape = BodyShape.SQUARE
     var bottomShape: BottomShape = BottomShape.FLAT
     /** position of this turret in relation to parent turret */
     var positionType: TurretPosition = TurretPosition.NONE

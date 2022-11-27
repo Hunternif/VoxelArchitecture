@@ -17,7 +17,7 @@ class TurretGeneratorTest {
     @Test
     fun `turret adds style rules to itself but not children`() {
         val style = defaultStyle.apply {
-            styleFor<PolygonRoom>(DOM_TURRET) {
+            styleForGen<TurretGenerator>(DOM_TURRET) {
                 // This enables the "roof" element with height 0.0
                 roofShape = RoofShape.FLAT_BORDERED
             }

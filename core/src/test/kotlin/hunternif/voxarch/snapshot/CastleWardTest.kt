@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.plan.Structure
@@ -42,8 +43,10 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                     center()
                     bottom(15.vx)
                 }
+                shape = PolygonShape.SQUARE
+            }
+            styleForGen<TurretGenerator>("main_turret") {
                 roofShape = RoofShape.FLAT_BORDERED
-                bodyShape = BodyShape.SQUARE
                 bottomShape = BottomShape.FOUNDATION
             }
             styleFor<Ward>("outer_ward") {
@@ -58,16 +61,20 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 align { bottom(4.vx) }
             }
             styleFor<PolygonRoom>("outer_ward_turret") {
-                bodyShape = BodyShape.ROUND
+                size(8.vx, 10.vx, 8.vx)
+                shape = PolygonShape.ROUND
+            }
+            styleForGen<TurretGenerator>("outer_ward_turret") {
                 roofShape = RoofShape.FLAT_BORDERED
                 bottomShape = BottomShape.TAPERED
-                size(8.vx, 10.vx, 8.vx)
             }
             styleFor<PolygonRoom>("inner_ward_turret") {
-                bodyShape = BodyShape.SQUARE
+                size(4.vx, 12.vx, 4.vx)
+                shape = PolygonShape.SQUARE
+            }
+            styleForGen<TurretGenerator>("inner_ward_turret") {
                 roofShape = RoofShape.SPIRE
                 bottomShape = BottomShape.FOUNDATION
-                size(4.vx, 12.vx, 4.vx)
             }
         }
         return DomRoot(style, 0).apply {

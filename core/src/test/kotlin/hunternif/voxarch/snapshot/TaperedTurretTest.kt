@@ -4,7 +4,9 @@ import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
+import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.plan.PolygonRoom
+import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
@@ -31,8 +33,10 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }
                     height { 5.vx }
+                    shape = PolygonShape.SQUARE
+                }
+                styleForGen<TurretGenerator> {
                     roofShape = RoofShape.FLAT_BORDERED
-                    bodyShape = BodyShape.SQUARE
                     bottomShape = BottomShape.TAPERED
                     roofOffset { 1.vx }
                     spireRatio = 1.5

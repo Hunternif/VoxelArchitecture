@@ -1,10 +1,8 @@
 package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.generator.TurretGenerator
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.PolygonShape
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
@@ -18,84 +16,57 @@ import kotlin.random.Random
 // Potentially there can be multiple generators attached to this node, so
 // we must apply the styles to all of them.
 
-private inline fun StyledNode<*>.forTurretGenerators(
-    crossinline block: TurretGenerator.() -> Unit
-) {
-    for (gen in domBuilder.generators) {
-        if (gen is TurretGenerator) gen.block()
-    }
-}
-
-private inline val StyledNode<*>.firstGenerator: TurretGenerator?
-    get() = domBuilder.firstGenerator
-private inline val DomBuilder.firstGenerator: TurretGenerator?
-    get() = generators.filterIsInstance<TurretGenerator>().firstOrNull()
-
 /** Offset for borders and spires in all child turrets. */
-fun StyledNode<Room>.roofOffset(block: StyleSize.() -> Dimension) {
-    val baseValue = node.width
+fun StyledGen<TurretGenerator>.roofOffset(block: StyleSize.() -> Dimension) {
+    val baseValue = domBuilder.findParentNode().width
     val style = StyleSize()
-    forTurretGenerators {
-        roofOffset = style.block()
-            .clamp(style.min, style.max)
-            .invoke(baseValue, seed + 10000006)
-            .roundToInt()
-    }
+    gen.roofOffset = style.block()
+        .clamp(style.min, style.max)
+        .invoke(baseValue, seed + 10000006)
+        .roundToInt()
 }
 
 /** Y/X ratio of spires for all child turrets. */
-var StyledNode<Room>.spireRatio: Double
-    get() = firstGenerator?.spireRatio ?: 0.0
-    set(value) { forTurretGenerators { spireRatio = value } }
+var StyledGen<TurretGenerator>.spireRatio: Double
+    get() = gen.spireRatio
+    set(value) { gen.spireRatio = value }
 
 /** Y/X ratio of tapered bottoms of turrets. */
-var StyledNode<Room>.taperRatio: Double
-    get() = firstGenerator?.taperRatio ?: 0.0
-    set(value) { forTurretGenerators { taperRatio = value } }
+var StyledGen<TurretGenerator>.taperRatio: Double
+    get() = gen.taperRatio
+    set(value) { gen.taperRatio = value }
 
 class StyleTurretBodyShape : StyleParameter
 class StyleTurretRoofShape : StyleParameter
 class StyleTurretBottomShape : StyleParameter
 
-fun StyledNode<Room>.roofShape(block: StyleTurretRoofShape.() -> Option<RoofShape>) {
-    val base = domBuilder.parent.firstGenerator?.roofShape
-        ?: RoofShape.FLAT_BORDERED
-    roofShape = StyleTurretRoofShape().block().invoke(base, seed + 10000007)
+fun StyledGen<TurretGenerator>.roofShape(block: StyleTurretRoofShape.() -> Option<RoofShape>) {
+    val base =gen.roofShape
+    gen.roofShape = StyleTurretRoofShape().block().invoke(base, seed + 10000007)
 }
 
-var StyledNode<Room>.roofShape: RoofShape
-    get() = firstGenerator?.roofShape ?: RoofShape.FLAT_BORDERED
-    set(value) { forTurretGenerators { roofShape = value } }
+var StyledGen<TurretGenerator>.roofShape: RoofShape
+    get() = gen.roofShape
+    set(value) { gen.roofShape = value }
 
-fun StyledNode<Room>.bodyShape(block: StyleTurretBodyShape.() -> Option<BodyShape>) {
-    val base = domBuilder.parent.firstGenerator?.bodyShape
-        ?: BodyShape.SQUARE
-    bodyShape = StyleTurretBodyShape().block().invoke(base, seed + 10000008)
+// TODO: this will apply to a turret-with-room generator
+//var StyledGen<TurretGenerator>.bodyShape: BodyShape
+//    get() = gen.bodyShape
+//    set(value) { gen.bodyShape = value }
+
+//fun StyledGen<TurretGenerator>.bodyShape(block: StyleTurretBodyShape.() -> Option<BodyShape>) {
+//    val base = gen.bodyShape
+//    gen.bodyShape = StyleTurretBodyShape().block().invoke(base, seed + 10000008)
+//}
+
+fun StyledGen<TurretGenerator>.bottomShape(block: StyleTurretBottomShape.() -> Option<BottomShape>) {
+    val base = gen.bottomShape
+    gen.bottomShape = StyleTurretBottomShape().block().invoke(base, seed + 10000009)
 }
 
-var StyledNode<Room>.bodyShape: BodyShape
-    get() = firstGenerator?.bodyShape ?: BodyShape.SQUARE
-    set(value) {
-        forTurretGenerators {
-            bodyShape = value
-            (node as? PolygonRoom)?.run { shape = value.toPolygonShape() }
-        }
-    }
-
-private fun BodyShape.toPolygonShape(): PolygonShape = when(this) {
-    BodyShape.SQUARE -> PolygonShape.SQUARE
-    BodyShape.ROUND -> PolygonShape.ROUND
-}
-
-fun StyledNode<Room>.bottomShape(block: StyleTurretBottomShape.() -> Option<BottomShape>) {
-    val base = domBuilder.parent.firstGenerator?.bottomShape
-        ?: BottomShape.FLAT
-    bottomShape = StyleTurretBottomShape().block().invoke(base, seed + 10000009)
-}
-
-var StyledNode<Room>.bottomShape: BottomShape
-    get() = firstGenerator?.bottomShape ?: BottomShape.FLAT
-    set(value) { forTurretGenerators { bottomShape = value } }
+var StyledGen<TurretGenerator>.bottomShape: BottomShape
+    get() = gen.bottomShape
+    set(value) { gen.bottomShape = value }
 
 fun StyleTurretRoofShape.randomRoof(): Option<RoofShape> = option { _, seed ->
     Random(seed).nextWeighted(

@@ -40,12 +40,12 @@ val allRules: List<StyleRuleInfoAny> by lazy {
 //        rule(StyledNode<Node>::visibility), // only useful with logic, too complex for UI
         rule(StyledNode<PolygonRoom>::shape),
         rule(StyledNode<PolygonRoom>::edgeLength),
-        rule(StyledNode<Room>::roofOffset),
+//        rule(StyledNode<Room>::roofOffset), // TODO: support generator styles
 //        rule(StyledNode<Room>::spireRatio), // TODO: make into DSL builder
 //        rule(StyledNode<Room>::taperRatio), // TODO: make into DSL builder
-        rule(StyledNode<Room>::roofShape),
-        rule(StyledNode<Room>::bodyShape),
-        rule(StyledNode<Room>::bottomShape),
+//        rule(StyledNode<Room>::roofShape), // TODO: support generator styles
+//        rule(StyledNode<Room>::bodyShape), // TODO: support generator styles
+//        rule(StyledNode<Room>::bottomShape), // TODO: support generator styles
     )
 }
 
