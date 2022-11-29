@@ -13,9 +13,7 @@ class StylePositionTest {
             style2("parent") { height2 { 100.vx } }
             style2("child") {
                 height2 { 50.vx }
-            }
-            style("child") {
-                y { 100.pct - 3.vx }
+                y2 { 100.pct - 3.vx }
             }
         }
         val dom = DomRoot(style).apply {

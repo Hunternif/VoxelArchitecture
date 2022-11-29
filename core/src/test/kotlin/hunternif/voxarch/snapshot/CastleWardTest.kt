@@ -53,10 +53,10 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
             }
             style2For<Ward>("outer_ward") {
                 size2(48.vx, 6.vx, 48.vx)
+                position2(30.vx, 0.vx, 30.vx)
             }
             styleFor<Ward>("outer_ward") {
                 shape = PolygonShape.ROUND
-                position(30.vx, 0.vx, 30.vx)
                 edgeLength { 50.pct }
             }
             style2For<Ward>("inner_ward") {

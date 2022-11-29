@@ -7,80 +7,92 @@ class StylePosition : StyleParameter
 
 // ================================ ORIGIN ================================
 
-fun StyledNode<Node>.y(block: StylePosition.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StylePosition()
+val PropY = newNodeProperty<Node, Dimension> { value ->
     val baseValue = node.height
-    val newValue = style.block()
+    val newValue = value
         .invoke(baseValue, seed + 10000011)
         .round()
     node.origin.y += newValue
 }
 
-fun StyledNode<Node>.x(block: StylePosition.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StylePosition()
+val PropX = newNodeProperty<Node, Dimension> { value ->
     val baseValue = node.width
-    val newValue = style.block()
+    val newValue = value
         .invoke(baseValue, seed + 10000012)
         .round()
     node.origin.x += newValue
 }
 
-fun StyledNode<Node>.z(block: StylePosition.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StylePosition()
+val PropZ = newNodeProperty<Node, Dimension> { value ->
     val baseValue = node.length
-    val newValue = style.block()
+    val newValue = value
         .invoke(baseValue, seed + 10000013)
         .round()
     node.origin.z += newValue
 }
 
-fun StyledNode<Node>.position(x: Dimension, y: Dimension, z: Dimension) {
-    this.x { x }
-    this.y { y }
-    this.z { z }
+fun Rule.y2(block: StylePosition.() -> Dimension) {
+    add(PropY, StylePosition().block())
+}
+
+fun Rule.x2(block: StylePosition.() -> Dimension) {
+    add(PropX, StylePosition().block())
+}
+
+fun Rule.z2(block: StylePosition.() -> Dimension) {
+    add(PropZ, StylePosition().block())
+}
+
+fun Rule.position2(x: Dimension, y: Dimension, z: Dimension) {
+    add(PropX, x)
+    add(PropY, y)
+    add(PropZ, z)
 }
 
 
 // ================================ START ================================
 
-fun StyledNode<Room>.startY(block: StylePosition.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StylePosition()
+val PropStartY = newNodeProperty<Room, Dimension> { value ->
     val baseValue = node.height
-    val newValue = style.block()
-        .invoke(baseValue, seed + 10000011)
+    val newValue = value
+        .invoke(baseValue, seed + 10000021)
         .round()
     node.setCentered(false)
     node.start.y = newValue
 }
 
-fun StyledNode<Room>.startX(block: StylePosition.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StylePosition()
+val PropStartX = newNodeProperty<Room, Dimension> { value ->
     val baseValue = node.width
-    val newValue = style.block()
-        .invoke(baseValue, seed + 10000012)
+    val newValue = value
+        .invoke(baseValue, seed + 10000022)
         .round()
     node.setCentered(false)
     node.start.x = newValue
 }
 
-fun StyledNode<Room>.startZ(block: StylePosition.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StylePosition()
+val PropStartZ = newNodeProperty<Room, Dimension> { value ->
     val baseValue = node.length
-    val newValue = style.block()
-        .invoke(baseValue, seed + 10000013)
+    val newValue = value
+        .invoke(baseValue, seed + 10000023)
         .round()
     node.setCentered(false)
     node.start.z = newValue
 }
 
-fun StyledNode<Room>.start(x: Dimension, y: Dimension, z: Dimension) {
-    this.startX { x }
-    this.startY { y }
-    this.startZ { z }
+fun Rule.startY2(block: StylePosition.() -> Dimension) {
+    add(PropStartY, StylePosition().block())
+}
+
+fun Rule.startX2(block: StylePosition.() -> Dimension) {
+    add(PropStartX, StylePosition().block())
+}
+
+fun Rule.startZ2(block: StylePosition.() -> Dimension) {
+    add(PropStartZ, StylePosition().block())
+}
+
+fun Rule.start2(x: Dimension, y: Dimension, z: Dimension) {
+    add(PropStartX, x)
+    add(PropStartY, y)
+    add(PropStartZ, z)
 }

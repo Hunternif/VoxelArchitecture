@@ -59,15 +59,13 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     companion object {
         private fun turret(width: Int): Structure {
             val style = defaultStyle.apply {
-                styleFor<PolygonRoom>(DOM_TURRET) {
-                    position(5.vx, 0.vx, 5.vx)
-//                    diameter { width.vx }
-//                    height { 5.vx }
-                    shape = PolygonShape.SQUARE
-                }
                 style2For<PolygonRoom>(DOM_TURRET) {
+                    position2(5.vx, 0.vx, 5.vx)
                     diameter2 { width.vx }
                     height2 { 5.vx }
+                }
+                styleFor<PolygonRoom>(DOM_TURRET) {
+                    shape = PolygonShape.SQUARE
                 }
                 styleForGen<TurretGenerator> {
                     roofShape = RoofShape.SPIRE_BORDERED
