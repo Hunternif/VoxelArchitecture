@@ -16,7 +16,7 @@ class Rule(
     var destType: Class<*>? = null,
 ) {
     val declarations = mutableListOf<Declaration<*>>()
-    fun <V> add(prop: Property<V>, value: IStyleValue<V>) {
+    fun <V> add(prop: Property<V>, value: V) {
         declarations.add(Declaration(prop, value))
     }
 }
@@ -25,23 +25,15 @@ class Rule(
  * Represents a single property-value pair, e.g.: `width: 100%`.
  *
  * Note that [value] is just a "written description" in the stylesheet,
- * not the calculated value [V] that's applied to the Node/Generator.
+ * not the calculated value that's applied to the Node/Generator.
  */
 class Declaration<V>(
     val property: Property<V>,
-    val value: IStyleValue<V>,
+    val value: V,
 ) {
     fun applyTo(styled: StyledElement) {
-        property.applyTo(styled, value.get())
+        property.applyTo(styled, value)
     }
-}
-
-/**
- * The value as a "written description" in the stylesheet,
- * not the calculated value [V] that's applied to the Node/Generator.
- */
-interface IStyleValue<V> {
-    fun get(): V
 }
 
 /**

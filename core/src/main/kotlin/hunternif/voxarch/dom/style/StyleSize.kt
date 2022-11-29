@@ -7,8 +7,8 @@ class StyleSize(
     var initial: Dimension = 0.vx,
     var min: Dimension = 0.vx,
     var max: Dimension = Int.MAX_VALUE.vx,
-) : StyleParameter, IStyleValue<Dimension> {
-    override fun get(): Dimension = initial.clamp(min, max)
+) : StyleParameter {
+    fun get(): Dimension = initial.clamp(min, max)
 }
 
 val PropHeight = newNodeProperty<Node, Dimension> { value ->
@@ -40,30 +40,30 @@ val PropLength = newNodeProperty<Node, Dimension> { value ->
 
 fun Rule.height2(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
-    add(PropHeight, value)
+    add(PropHeight, value.get())
 }
 
 fun Rule.width2(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
-    add(PropWidth, value)
+    add(PropWidth, value.get())
 }
 
 fun Rule.length2(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
-    add(PropLength, value)
+    add(PropLength, value.get())
 }
 
 /** Applies to both width and length. */
 fun Rule.diameter2(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
-    add(PropWidth, value)
-    add(PropLength, value)
+    add(PropWidth, value.get())
+    add(PropLength, value.get())
 }
 
 fun Rule.size2(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropWidth, StyleSize(x))
-    add(PropHeight, StyleSize(y))
-    add(PropLength, StyleSize(z))
+    add(PropWidth, x)
+    add(PropHeight, y)
+    add(PropLength, z)
 }
 
 @Deprecated("Use style2")
