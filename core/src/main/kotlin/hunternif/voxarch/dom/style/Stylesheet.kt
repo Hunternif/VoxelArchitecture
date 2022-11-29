@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
+import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 import kotlin.reflect.KClass
@@ -33,6 +34,7 @@ class StyledNode<out N: Node>(
     override val domBuilder: DomNodeBuilder<N>,
 ) : StyledElement(domBuilder) {
     val node: N get() = domBuilder.node
+    val parent: Node get() = domBuilder.findParentNode()
 }
 
 /** Represents a DOM element with a [IGenerator] for the purpose of styling. */
