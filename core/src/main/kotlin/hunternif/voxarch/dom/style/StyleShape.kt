@@ -5,7 +5,7 @@ import hunternif.voxarch.plan.PolygonShape
 
 class StyleShape : StyleParameter
 
-fun StyledNode<PolygonRoom>.shape(block: StyleShape.() -> Option<PolygonShape>) {
+fun StyledNode<PolygonRoom>.shape(block: StyleShape.() -> Value<PolygonShape>) {
     val base = when (val parent = node.parent) {
         is PolygonRoom -> parent.shape
         else -> PolygonShape.SQUARE

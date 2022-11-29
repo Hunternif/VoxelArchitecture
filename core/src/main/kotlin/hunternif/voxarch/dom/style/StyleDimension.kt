@@ -4,7 +4,7 @@ import hunternif.voxarch.util.round
 import kotlin.random.Random
 
 /** For styling [Double]-typed properties */
-interface Dimension : Option<Double>
+interface Dimension : Value<Double>
 
 /** voxels (blocks) */
 val Int.vx: Dimension get() = dimension { _, _ -> this.toDouble() }

@@ -96,7 +96,7 @@ class GuiBlueprintNodeStyle(
         rule: StyleRuleInfoAny,
         initialValue: E,
         values: Array<E>,
-    ) : Item<Option<E>>(style, rule as StyleRuleInfo<*, *, Option<E>>) {
+    ) : Item<Value<E>>(style, rule as StyleRuleInfo<*, *, Value<E>>) {
         companion object {
             inline operator fun <reified E: Enum<E>> invoke(
                 style: GuiBlueprintNodeStyle,
@@ -115,6 +115,6 @@ class GuiBlueprintNodeStyle(
                 style.updateStylesheet()
             }
         }
-        override fun StyleParameter.applyStyle(): Option<E> = set(value)
+        override fun StyleParameter.applyStyle(): Value<E> = set(value)
     }
 }

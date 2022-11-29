@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
@@ -40,7 +39,7 @@ class StyleTurretBodyShape : StyleParameter
 class StyleTurretRoofShape : StyleParameter
 class StyleTurretBottomShape : StyleParameter
 
-fun StyledGen<TurretGenerator>.roofShape(block: StyleTurretRoofShape.() -> Option<RoofShape>) {
+fun StyledGen<TurretGenerator>.roofShape(block: StyleTurretRoofShape.() -> Value<RoofShape>) {
     val base =gen.roofShape
     gen.roofShape = StyleTurretRoofShape().block().invoke(base, seed + 10000007)
 }
@@ -59,7 +58,7 @@ var StyledGen<TurretGenerator>.roofShape: RoofShape
 //    gen.bodyShape = StyleTurretBodyShape().block().invoke(base, seed + 10000008)
 //}
 
-fun StyledGen<TurretGenerator>.bottomShape(block: StyleTurretBottomShape.() -> Option<BottomShape>) {
+fun StyledGen<TurretGenerator>.bottomShape(block: StyleTurretBottomShape.() -> Value<BottomShape>) {
     val base = gen.bottomShape
     gen.bottomShape = StyleTurretBottomShape().block().invoke(base, seed + 10000009)
 }
@@ -68,7 +67,7 @@ var StyledGen<TurretGenerator>.bottomShape: BottomShape
     get() = gen.bottomShape
     set(value) { gen.bottomShape = value }
 
-fun StyleTurretRoofShape.randomRoof(): Option<RoofShape> = option { _, seed ->
+fun StyleTurretRoofShape.randomRoof(): Value<RoofShape> = value { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, RoofShape.FLAT_BORDERED),
         RandomOption(0.5, RoofShape.SPIRE),
@@ -76,7 +75,7 @@ fun StyleTurretRoofShape.randomRoof(): Option<RoofShape> = option { _, seed ->
     ).value
 }
 
-fun StyleTurretBodyShape.randomBody(): Option<BodyShape> = option { _, seed ->
+fun StyleTurretBodyShape.randomBody(): Value<BodyShape> = value { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, BodyShape.SQUARE),
         RandomOption(1.0, BodyShape.ROUND)

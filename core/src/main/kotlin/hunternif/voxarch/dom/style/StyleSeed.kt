@@ -2,7 +2,7 @@ package hunternif.voxarch.dom.style
 
 class StyleSeed : StyleParameter
 
-typealias Seed = Option<Long>
+typealias Seed = Value<Long>
 
 val PropSeed = newDomProperty<Seed> { value ->
     val baseValue = domBuilder.parent.seed

@@ -17,7 +17,7 @@ class Rule(
     var destType: Class<*>? = null,
 ) {
     val declarations = mutableListOf<Declaration<*>>()
-    fun <V : Option<*>> add(prop: Property<V>, value: V) {
+    fun <V : Value<*>> add(prop: Property<V>, value: V) {
         declarations.add(Declaration(prop, value))
     }
 }
@@ -28,7 +28,7 @@ class Rule(
  * Note that [value] is just a "written description" in the stylesheet.
  * At runtime it will be calculated as [V] and applied to the Node/Generator.
  */
-class Declaration<V : Option<*>>(
+class Declaration<V : Value<*>>(
     val property: Property<V>,
     val value: V,
 ) {
@@ -49,6 +49,14 @@ abstract class Property<V>(
     val valType: Class<V>,
 ) {
     abstract fun applyTo(styled: StyledElement, value: V)
+}
+
+/**
+ * At runtime this will be invoked, and the result will be applied to the
+ * styled property of a Node/Generator.
+ */
+interface Value<T> {
+    operator fun invoke(base: T, seed: Long): T
 }
 
 
