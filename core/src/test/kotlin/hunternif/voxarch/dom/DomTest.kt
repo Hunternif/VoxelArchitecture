@@ -100,12 +100,11 @@ class DomTest {
     fun `use parent seed`() {
         val seed = 3L
         val style = Stylesheet().apply {
-            style("random") {
-                height { 1.vx to 1000.vx }
+            style2("random") {
+                height2 { 1.vx to 1000.vx }
             }
-            style("parent_seed") {
-                // TODO: implement seed as CSS property and migrate to style2
-                useParentSeed()
+            style2("parent_seed") {
+                seed2 { inherit() }
             }
         }
         val dom = DomRoot(style, seed).apply {

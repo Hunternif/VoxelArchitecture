@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.dom.CastleDsl
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.Stylesheet.Companion.GLOBAL_STYLE
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
@@ -107,6 +108,17 @@ internal inline fun <reified G : IGenerator, reified V> newGenProperty(
 ): GenProperty<G, V> {
     return object : GenProperty<G, V>(G::class.java, V::class.java) {
         override fun applyToGen(styled: StyledGen<G>, value: V) {
+            styled.block(value)
+        }
+    }
+}
+
+/** Helper function for creating a new property that applies to any DomBuilder */
+internal inline fun <reified V> newDomProperty(
+    noinline block: StyledElement.(V) -> Unit,
+): Property<V> {
+    return object : Property<V>(DomBuilder::class.java, V::class.java) {
+        override fun applyTo(styled: StyledElement, value: V) {
             styled.block(value)
         }
     }

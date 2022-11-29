@@ -66,14 +66,3 @@ fun Rule.size2(x: Dimension, y: Dimension, z: Dimension) {
     add(PropLength, z)
 }
 
-@Deprecated("Use style2")
-fun StyledNode<Node>.height(block: StyleSize.() -> Dimension) {
-    val node = domBuilder.node
-    val style = StyleSize()
-    val baseValue = node.parent?.height ?: 0.0
-    val newValue = style.block()
-        .clamp(style.min, style.max)
-        .invoke(baseValue, seed + 10000001)
-        .round()
-    node.height = newValue
-}
