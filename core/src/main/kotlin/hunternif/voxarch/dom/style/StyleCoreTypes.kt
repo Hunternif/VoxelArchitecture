@@ -17,7 +17,7 @@ class Rule(
     var destType: Class<*>? = null,
 ) {
     val declarations = mutableListOf<Declaration<*>>()
-    fun <V> add(prop: Property<V>, value: V) {
+    fun <V : Option<*>> add(prop: Property<V>, value: V) {
         declarations.add(Declaration(prop, value))
     }
 }
@@ -25,10 +25,10 @@ class Rule(
 /**
  * Represents a single property-value pair, e.g.: `width: 100%`.
  *
- * Note that [value] is just a "written description" in the stylesheet,
- * not the calculated value that's applied to the Node/Generator.
+ * Note that [value] is just a "written description" in the stylesheet.
+ * At runtime it will be calculated as [V] and applied to the Node/Generator.
  */
-class Declaration<V>(
+class Declaration<V : Option<*>>(
     val property: Property<V>,
     val value: V,
 ) {

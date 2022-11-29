@@ -3,7 +3,10 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.util.next
 import kotlin.random.Random
 
-/** For styling properties that take on a set of predefined values. */
+/**
+ * At runtime this will be invoked, and the result will be applied to the
+ * styled property of a Node/Generator.
+ */
 interface Option<T> {
     operator fun invoke(base: T, seed: Long): T
 
