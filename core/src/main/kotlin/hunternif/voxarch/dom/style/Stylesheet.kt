@@ -17,16 +17,7 @@ typealias StyleRuleForGen<G> = StyledGen<G>.() -> Unit
 abstract class StyledElement(
     internal open val domBuilder: DomBuilder,
     internal var seed: Long = domBuilder.seed,
-) {
-    /**
-     * Use the seed of the parent [DomNodeBuilder] to calculate random values.
-     * This makes the _immediate_ children appear identical, but the children's
-     * children's seeds can still be different.
-     */
-    fun useParentSeed() {
-        seed = domBuilder.parent.seed
-    }
-}
+)
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
 @CastleDsl
