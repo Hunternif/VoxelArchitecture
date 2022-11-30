@@ -35,6 +35,7 @@ class StyledGen<out G: IGenerator>(
     domBuilder: DomBuilder
 ) : StyledElement(domBuilder)
 
+/** Used as the base for Style DSL. */
 @CastleDsl
 interface StyleParameter
 

@@ -26,7 +26,7 @@ class Rule(
  * Represents a single property-value pair, e.g.: `width: 100%`.
  *
  * Note that [value] is just a "written description" in the stylesheet.
- * At runtime it will be calculated as [V] and applied to the Node/Generator.
+ * At runtime it will be calculated and applied to the Node/Generator.
  */
 class Declaration<V : Value<*>>(
     val property: Property<V>,
@@ -44,7 +44,7 @@ class Declaration<V : Value<*>>(
  * - property 'width' accepts a [Dimension].
  * - property 'shape' accepts enum [PolygonShape].
  */
-abstract class Property<V>(
+abstract class Property<V : Value<*>>(
     val destType: Class<*>,
     val valType: Class<V>,
 ) {
@@ -65,7 +65,7 @@ interface Value<T> {
 // of properties for Nodes and Generators.
 // ============================================================================
 
-abstract class NodeProperty<N : Node, V>(
+abstract class NodeProperty<N : Node, V : Value<*>>(
     nodeType: Class<N>,
     valType: Class<V>,
 ) : Property<V>(nodeType, valType) {
@@ -82,7 +82,7 @@ abstract class NodeProperty<N : Node, V>(
 }
 
 
-abstract class GenProperty<G : IGenerator, V>(
+abstract class GenProperty<G : IGenerator, V : Value<*>>(
     genType: Class<G>,
     valType: Class<V>,
 ) : Property<V>(genType, valType) {
@@ -100,7 +100,7 @@ abstract class GenProperty<G : IGenerator, V>(
 
 
 /** Helper function for creating a new [NodeProperty] */
-internal inline fun <reified N : Node, reified V> newNodeProperty(
+internal inline fun <reified N : Node, reified V : Value<*>> newNodeProperty(
     noinline block: StyledNode<N>.(V) -> Unit,
 ): NodeProperty<N, V> {
     return object : NodeProperty<N, V>(N::class.java, V::class.java) {
@@ -111,7 +111,7 @@ internal inline fun <reified N : Node, reified V> newNodeProperty(
 }
 
 /** Helper function for creating a new [GenProperty] */
-internal inline fun <reified G : IGenerator, reified V> newGenProperty(
+internal inline fun <reified G : IGenerator, reified V : Value<*>> newGenProperty(
     noinline block: StyledGen<G>.(V) -> Unit,
 ): GenProperty<G, V> {
     return object : GenProperty<G, V>(G::class.java, V::class.java) {
@@ -122,7 +122,7 @@ internal inline fun <reified G : IGenerator, reified V> newGenProperty(
 }
 
 /** Helper function for creating a new property that applies to any DomBuilder */
-internal inline fun <reified V> newDomProperty(
+internal inline fun <reified V : Value<*>> newDomProperty(
     noinline block: StyledElement.(V) -> Unit,
 ): Property<V> {
     return object : Property<V>(DomBuilder::class.java, V::class.java) {
