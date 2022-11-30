@@ -61,62 +61,37 @@ interface Value<T> {
 
 
 // ============================================================================
-// Below are helper abstract base classes to simplify implementation
-// of properties for Nodes and Generators.
+// Helpers to simplify implementation of properties for Nodes and Generators.
 // ============================================================================
 
-abstract class NodeProperty<N : Node, V : Value<*>>(
-    nodeType: Class<N>,
-    valType: Class<V>,
-) : Property<V>(nodeType, valType) {
-    override fun applyTo(styled: StyledElement, value: V) {
-        if (styled is StyledNode<*> &&
-            destType.isAssignableFrom(styled.domBuilder.node.javaClass)
-        ) {
-            @Suppress("UNCHECKED_CAST")
-            applyToNode(styled as StyledNode<N>, value)
-        }
-    }
-
-    abstract fun applyToNode(styled: StyledNode<N>, value: V)
-}
-
-
-abstract class GenProperty<G : IGenerator, V : Value<*>>(
-    genType: Class<G>,
-    valType: Class<V>,
-) : Property<V>(genType, valType) {
-    override fun applyTo(styled: StyledElement, value: V) {
-        if (styled is StyledGen<*> &&
-            destType.isAssignableFrom(styled.gen.javaClass)
-        ) {
-            @Suppress("UNCHECKED_CAST")
-            applyToGen(styled as StyledGen<G>, value)
-        }
-    }
-
-    abstract fun applyToGen(styled: StyledGen<G>, value: V)
-}
-
-
-/** Helper function for creating a new [NodeProperty] */
+/** Helper function for creating a new [Property] for a [Node] class */
 internal inline fun <reified N : Node, reified V : Value<*>> newNodeProperty(
     noinline block: StyledNode<N>.(V) -> Unit,
-): NodeProperty<N, V> {
-    return object : NodeProperty<N, V>(N::class.java, V::class.java) {
-        override fun applyToNode(styled: StyledNode<N>, value: V) {
-            styled.block(value)
+): Property<V> {
+    return object : Property<V>(N::class.java, V::class.java) {
+        override fun applyTo(styled: StyledElement, value: V) {
+            if (styled is StyledNode<*> &&
+                destType.isAssignableFrom(styled.domBuilder.node.javaClass)
+            ) {
+                @Suppress("UNCHECKED_CAST")
+                (styled as StyledNode<N>).block(value)
+            }
         }
     }
 }
 
-/** Helper function for creating a new [GenProperty] */
+/** Helper function for creating a new [Property] for a [IGenerator] class */
 internal inline fun <reified G : IGenerator, reified V : Value<*>> newGenProperty(
     noinline block: StyledGen<G>.(V) -> Unit,
-): GenProperty<G, V> {
-    return object : GenProperty<G, V>(G::class.java, V::class.java) {
-        override fun applyToGen(styled: StyledGen<G>, value: V) {
-            styled.block(value)
+): Property<V> {
+    return object : Property<V>(G::class.java, V::class.java) {
+        override fun applyTo(styled: StyledElement, value: V) {
+            if (styled is StyledGen<*> &&
+                destType.isAssignableFrom(styled.gen.javaClass)
+            ) {
+                @Suppress("UNCHECKED_CAST")
+                (styled as StyledGen<G>).block(value)
+            }
         }
     }
 }
