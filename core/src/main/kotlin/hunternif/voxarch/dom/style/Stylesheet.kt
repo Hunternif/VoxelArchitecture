@@ -178,6 +178,7 @@ open class Stylesheet {
                 .flatMap { rules[it] }
                 .filter { it.destType?.isAssignableFrom(genClass) ?: true}
                 .flatMap { it.declarations }
+                .sortedBy { GlobalStyleOrderIndex[it.property] }
                 .forEach { it.applyTo(styledGen) }
         }
         // apply node styles
@@ -189,6 +190,7 @@ open class Stylesheet {
                 .flatMap { rules[it] }
                 .filter { it.destType?.isAssignableFrom(nodeClass) ?: true}
                 .flatMap { it.declarations }
+                .sortedBy { GlobalStyleOrderIndex[it.property] }
                 .forEach { it.applyTo(styledNode) }
             // apply old styles
             styleClasses
