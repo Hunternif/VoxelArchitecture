@@ -1,6 +1,7 @@
 package hunternif.voxarch.plan
 
 import hunternif.voxarch.vector.Vec3
+import kotlin.math.max
 
 /**
  * A room shaped as a cylinder with an polygon at its base.
@@ -21,6 +22,7 @@ open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
 
     /** For styling: approximate expected length of edges on the the polygon. */
     var edgeLength: Double = 1.0
+        set(value) { field = max(1.0, value) }
     /** For styling. Mimics Turret's body shape. */
     var shape: PolygonShape = PolygonShape.SQUARE
 

@@ -67,9 +67,7 @@ class RoundTurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                     position2(5.vx, 0.vx, 5.vx)
                     diameter2 { width.vx }
                     height2 { 5.vx }
-                }
-                styleFor<PolygonRoom>(DOM_TURRET) {
-                    shape = PolygonShape.ROUND
+                    shape2 { set(PolygonShape.ROUND) }
                 }
                 styleForGen<TurretGenerator> {
                     roofShape = RoofShape.SPIRE_BORDERED

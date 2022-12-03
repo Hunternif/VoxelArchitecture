@@ -13,10 +13,8 @@ class DomCornerTest {
     @Test
     fun `square polygon room`() {
         val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape = PolygonShape.SQUARE
-            }
             style2For<PolygonRoom> {
+                shape2 { set(PolygonShape.SQUARE) }
                 diameter2 { 2.vx }
             }
         }

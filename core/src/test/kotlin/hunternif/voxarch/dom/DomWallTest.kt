@@ -11,10 +11,8 @@ class DomWallTest {
     @Test
     fun `create walls on square polygon`() {
         val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape = PolygonShape.SQUARE
-            }
             style2For<PolygonRoom> {
+                shape2 { set(PolygonShape.SQUARE) }
                 diameter2 { 2.vx }
             }
         }

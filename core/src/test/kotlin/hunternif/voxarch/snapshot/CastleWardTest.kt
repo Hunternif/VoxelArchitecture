@@ -42,45 +42,35 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 alignXZ { center() }
                 alignY { bottom() }
                 y2 { 15.vx }
-            }
-            styleFor<PolygonRoom>("main_turret") {
-                shape = PolygonShape.SQUARE
+                shape2 { set(PolygonShape.SQUARE) }
             }
             styleForGen<TurretGenerator>("main_turret") {
                 roofShape = RoofShape.FLAT_BORDERED
                 bottomShape = BottomShape.FOUNDATION
             }
             style2For<Ward>("outer_ward") {
+                shape2 { set(PolygonShape.ROUND) }
                 size2(48.vx, 6.vx, 48.vx)
                 position2(30.vx, 0.vx, 30.vx)
-            }
-            styleFor<Ward>("outer_ward") {
-                shape = PolygonShape.ROUND
-                edgeLength { 50.pct }
+                edgeLength2 { 50.pct }
             }
             style2For<Ward>("inner_ward") {
+                shape2 { set(PolygonShape.SQUARE) }
                 size2(16.vx, 8.vx, 16.vx)
                 alignY { bottom() }
                 y2 { 4.vx }
             }
-            styleFor<Ward>("inner_ward") {
-                shape = PolygonShape.SQUARE
-            }
             style2For<PolygonRoom>("outer_ward_turret") {
+                shape2 { set(PolygonShape.ROUND) }
                 size2(8.vx, 10.vx, 8.vx)
-            }
-            styleFor<PolygonRoom>("outer_ward_turret") {
-                shape = PolygonShape.ROUND
             }
             styleForGen<TurretGenerator>("outer_ward_turret") {
                 roofShape = RoofShape.FLAT_BORDERED
                 bottomShape = BottomShape.TAPERED
             }
             style2For<PolygonRoom>("inner_ward_turret") {
+                shape2 { set(PolygonShape.SQUARE) }
                 size2(4.vx, 12.vx, 4.vx)
-            }
-            styleFor<PolygonRoom>("inner_ward_turret") {
-                shape = PolygonShape.SQUARE
             }
             styleForGen<TurretGenerator>("inner_ward_turret") {
                 roofShape = RoofShape.SPIRE

@@ -64,18 +64,16 @@ class TurretGenerator : ChainedGenerator() {
             visibleIf { hasFoundation() }
         }
         styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
-            shape { inherit() }
             visibleIf { hasTaperedBottom() }
         }
         style2For<PolygonRoom>(BLD_TURRET_BOTTOM) {
+            shape2 { inherit() }
             height2 { 2 * body.avgRadius() * taperRatio() }
             alignXZ { center() }
             alignY { below() }
         }
-        styleFor<PolygonRoom>("roof") {
-            shape { inherit() }
-        }
         style2For<PolygonRoom>("roof") {
+            shape2 { inherit() }
             diameter2 { 100.pct + 2 * roofOffset() }
             alignXZ { center() }
             alignY { above() }

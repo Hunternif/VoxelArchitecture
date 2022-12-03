@@ -5,22 +5,23 @@ import hunternif.voxarch.plan.PolygonShape
 
 class StyleShape : StyleParameter
 
-fun StyledNode<PolygonRoom>.shape(block: StyleShape.() -> Value<PolygonShape>) {
-    val base = when (val parent = node.parent) {
+val PropShape = newNodeProperty<PolygonRoom, Value<PolygonShape>> { value ->
+    val baseValue = when (val parent = node.parent) {
         is PolygonRoom -> parent.shape
         else -> PolygonShape.SQUARE
     }
-    node.shape = StyleShape().block().invoke(base, seed + 10000004)
+    node.shape = value.invoke(baseValue, seed + 10000004)
 }
 
-var StyledNode<PolygonRoom>.shape: PolygonShape
-    get() = node.shape
-    set(value) { node.shape = value }
-
-fun StyledNode<PolygonRoom>.edgeLength(block: StyleSize.() -> Dimension) {
+val PropEdgeLength = newNodeProperty<PolygonRoom, Dimension> { value ->
     val baseValue = node.width
-    val style = StyleSize(min = 1.vx)
-    node.edgeLength = style.block()
-        .clamp(style.min, style.max)
-        .invoke(baseValue, seed + 10000005)
+    node.edgeLength = value.invoke(baseValue, seed + 10000005)
+}
+
+fun Rule.shape2(block: StyleShape.() -> Value<PolygonShape>) {
+    add(PropShape, StyleShape().block())
+}
+
+fun Rule.edgeLength2(block: StyleSize.() -> Dimension) {
+    add(PropEdgeLength, StyleSize(min = 1.vx).block())
 }

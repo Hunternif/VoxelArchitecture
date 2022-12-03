@@ -38,8 +38,8 @@ val allRules: List<StyleRuleInfoAny> by lazy {
 //        rule(StyledNode<Node>::diameter), // TODO: migrate to style2
 //        rule(StyledNode<Node>::size), // TODO: support vectors
 //        rule(StyledNode<Node>::visibility), // only useful with logic, too complex for UI
-        rule(StyledNode<PolygonRoom>::shape),
-        rule(StyledNode<PolygonRoom>::edgeLength),
+//        rule(StyledNode<PolygonRoom>::shape), // TODO: migrate to style2
+//        rule(StyledNode<PolygonRoom>::edgeLength), // TODO: migrate to style2
 //        rule(StyledNode<Room>::roofOffset), // TODO: support generator styles
 //        rule(StyledNode<Room>::spireRatio), // TODO: make into DSL builder
 //        rule(StyledNode<Room>::taperRatio), // TODO: make into DSL builder
