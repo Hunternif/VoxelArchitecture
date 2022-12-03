@@ -39,12 +39,11 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
         val style = defaultStyle.apply {
             style2For<PolygonRoom>("main_turret") {
                 size2(6.vx, 4.vx, 6.vx)
+                alignXZ { center() }
+                alignY { bottom() }
+                y2 { 15.vx }
             }
             styleFor<PolygonRoom>("main_turret") {
-                align {
-                    center()
-                    bottom(15.vx)
-                }
                 shape = PolygonShape.SQUARE
             }
             styleForGen<TurretGenerator>("main_turret") {
@@ -61,10 +60,11 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
             }
             style2For<Ward>("inner_ward") {
                 size2(16.vx, 8.vx, 16.vx)
+                alignY { bottom() }
+                y2 { 4.vx }
             }
             styleFor<Ward>("inner_ward") {
                 shape = PolygonShape.SQUARE
-                align { bottom(4.vx) }
             }
             style2For<PolygonRoom>("outer_ward_turret") {
                 size2(8.vx, 10.vx, 8.vx)

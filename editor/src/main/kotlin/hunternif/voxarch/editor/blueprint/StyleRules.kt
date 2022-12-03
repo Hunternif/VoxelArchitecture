@@ -27,7 +27,7 @@ abstract class StyleRuleInfo<N : Node, P : StyleParameter, V : Any>(
 
 val allRules: List<StyleRuleInfoAny> by lazy {
     listOf(
-        rule(StyledNode<Node>::align),
+//        rule(StyledNode<Node>::align) // TODO: migrate to style2,
 //        rule(StyledNode<Node>::x), // TODO: migrate to style2
 //        rule(StyledNode<Node>::y), // TODO: migrate to style2
 //        rule(StyledNode<Node>::z), // TODO: migrate to style2

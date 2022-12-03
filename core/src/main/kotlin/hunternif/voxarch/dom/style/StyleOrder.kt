@@ -8,7 +8,8 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropWidth,
     PropLength,
 
-    // Alignment goes here
+    PropAlignY,
+    PropAlignXZ,
 
     PropStartY,
     PropStartX,
