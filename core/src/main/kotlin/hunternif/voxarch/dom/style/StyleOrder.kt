@@ -21,6 +21,13 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
 
     PropEdgeLength,
     PropShape,
+
+    PropRoofShape,
+//    PropBodyShape,
+    PropBottomShape,
+    PropRoofOffset,
+    PropSpireRatio,
+    PropTaperRatio,
 )
 
 val GlobalStyleOrderIndex : Map<Property<*>, Int> by lazy {

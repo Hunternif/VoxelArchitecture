@@ -2,10 +2,7 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomRoot
-import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.generator.TurretGenerator
-import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.BLD_CURTAIN_WALL
@@ -37,44 +34,38 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
 
     private fun castleWard(): Structure {
         val style = defaultStyle.apply {
-            style2For<PolygonRoom>("main_turret") {
+            style2("main_turret") {
                 size2(6.vx, 4.vx, 6.vx)
                 alignXZ { center() }
                 alignY { bottom() }
                 y2 { 15.vx }
                 shape2 { set(PolygonShape.SQUARE) }
+                roofShape2 { set(RoofShape.FLAT_BORDERED) }
+                bottomShape2 { set(BottomShape.FOUNDATION) }
             }
-            styleForGen<TurretGenerator>("main_turret") {
-                roofShape = RoofShape.FLAT_BORDERED
-                bottomShape = BottomShape.FOUNDATION
-            }
-            style2For<Ward>("outer_ward") {
+            style2("outer_ward") {
                 shape2 { set(PolygonShape.ROUND) }
                 size2(48.vx, 6.vx, 48.vx)
                 position2(30.vx, 0.vx, 30.vx)
                 edgeLength2 { 50.pct }
             }
-            style2For<Ward>("inner_ward") {
+            style2("inner_ward") {
                 shape2 { set(PolygonShape.SQUARE) }
                 size2(16.vx, 8.vx, 16.vx)
                 alignY { bottom() }
                 y2 { 4.vx }
             }
-            style2For<PolygonRoom>("outer_ward_turret") {
+            style2("outer_ward_turret") {
                 shape2 { set(PolygonShape.ROUND) }
+                roofShape2 { set(RoofShape.FLAT_BORDERED) }
+                bottomShape2 { set(BottomShape.TAPERED) }
                 size2(8.vx, 10.vx, 8.vx)
             }
-            styleForGen<TurretGenerator>("outer_ward_turret") {
-                roofShape = RoofShape.FLAT_BORDERED
-                bottomShape = BottomShape.TAPERED
-            }
-            style2For<PolygonRoom>("inner_ward_turret") {
+            style2("inner_ward_turret") {
                 shape2 { set(PolygonShape.SQUARE) }
+                roofShape2 { set(RoofShape.SPIRE) }
+                bottomShape2 { set(BottomShape.FOUNDATION) }
                 size2(4.vx, 12.vx, 4.vx)
-            }
-            styleForGen<TurretGenerator>("inner_ward_turret") {
-                roofShape = RoofShape.SPIRE
-                bottomShape = BottomShape.FOUNDATION
             }
         }
         return DomRoot(style, 0).apply {

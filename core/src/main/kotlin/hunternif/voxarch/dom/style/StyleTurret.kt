@@ -10,62 +10,69 @@ import hunternif.voxarch.util.nextWeighted
 import kotlin.math.roundToInt
 import kotlin.random.Random
 
-// A turret is created via TurretGenerator, by adding child nodes to a Room.
-// Therefore, any styles must be applied to that generator.
-// Potentially there can be multiple generators attached to this node, so
-// we must apply the styles to all of them.
+class StyleTurretBodyShape : StyleParameter
+class StyleTurretRoofShape : StyleParameter
+class StyleTurretBottomShape : StyleParameter
 
 /** Offset for borders and spires in all child turrets. */
-fun StyledGen<TurretGenerator>.roofOffset(block: StyleSize.() -> Dimension) {
+val PropRoofOffset = newGenProperty<TurretGenerator, Dimension> { value ->
     val baseValue = domBuilder.findParentNode().width
-    val style = StyleSize()
-    gen.roofOffset = style.block()
-        .clamp(style.min, style.max)
+    gen.roofOffset = value
         .invoke(baseValue, seed + 10000006)
         .roundToInt()
 }
 
 /** Y/X ratio of spires for all child turrets. */
-var StyledGen<TurretGenerator>.spireRatio: Double
-    get() = gen.spireRatio
-    set(value) { gen.spireRatio = value }
+val PropSpireRatio = newGenProperty<TurretGenerator, Value<Double>> { value ->
+    val baseValue = 1.5
+    gen.spireRatio = value.invoke(baseValue, seed + 10000014)
+}
 
 /** Y/X ratio of tapered bottoms of turrets. */
-var StyledGen<TurretGenerator>.taperRatio: Double
-    get() = gen.taperRatio
-    set(value) { gen.taperRatio = value }
-
-class StyleTurretBodyShape : StyleParameter
-class StyleTurretRoofShape : StyleParameter
-class StyleTurretBottomShape : StyleParameter
-
-fun StyledGen<TurretGenerator>.roofShape(block: StyleTurretRoofShape.() -> Value<RoofShape>) {
-    val base =gen.roofShape
-    gen.roofShape = StyleTurretRoofShape().block().invoke(base, seed + 10000007)
+val PropTaperRatio = newGenProperty<TurretGenerator, Value<Double>> { value ->
+    val baseValue = 0.75
+    gen.taperRatio = value.invoke(baseValue, seed + 10000015)
 }
 
-var StyledGen<TurretGenerator>.roofShape: RoofShape
-    get() = gen.roofShape
-    set(value) { gen.roofShape = value }
+val PropRoofShape = newGenProperty<TurretGenerator, Value<RoofShape>> { value ->
+    val baseValue = gen.roofShape
+    gen.roofShape = value.invoke(baseValue, seed + 10000007)
+}
 
 // TODO: this will apply to a turret-with-room generator
-//var StyledGen<TurretGenerator>.bodyShape: BodyShape
-//    get() = gen.bodyShape
-//    set(value) { gen.bodyShape = value }
-
-//fun StyledGen<TurretGenerator>.bodyShape(block: StyleTurretBodyShape.() -> Option<BodyShape>) {
-//    val base = gen.bodyShape
-//    gen.bodyShape = StyleTurretBodyShape().block().invoke(base, seed + 10000008)
+//val PropBodyShape = newGenProperty<TurretGenerator, Value<BodyShape>> { value ->
+//    val baseValue = gen.bodyShape
+//    gen.bodyShape = value.invoke(baseValue, seed + 10000008)
 //}
 
-fun StyledGen<TurretGenerator>.bottomShape(block: StyleTurretBottomShape.() -> Value<BottomShape>) {
-    val base = gen.bottomShape
-    gen.bottomShape = StyleTurretBottomShape().block().invoke(base, seed + 10000009)
+val PropBottomShape = newGenProperty<TurretGenerator, Value<BottomShape>> { value ->
+    val baseValue = gen.bottomShape
+    gen.bottomShape = value.invoke(baseValue, seed + 10000009)
 }
 
-var StyledGen<TurretGenerator>.bottomShape: BottomShape
-    get() = gen.bottomShape
-    set(value) { gen.bottomShape = value }
+fun Rule.roofOffset2(block: StyleSize.() -> Dimension) {
+    add(PropRoofOffset, StyleSize().block())
+}
+
+fun Rule.spireRatio2(block: StyleSize.() -> Value<Double>) {
+    add(PropSpireRatio, StyleSize().block())
+}
+
+fun Rule.taperRatio2(block: StyleSize.() -> Value<Double>) {
+    add(PropTaperRatio, StyleSize().block())
+}
+
+fun Rule.roofShape2(block: StyleTurretRoofShape.() -> Value<RoofShape>) {
+    add(PropRoofShape, StyleTurretRoofShape().block())
+}
+
+//fun Rule.bodyShape2(block: StyleTurretBodyShape.() -> Value<BodyShape>) {
+//    add(PropBodyShape, StyleTurretBodyShape().block())
+//}
+
+fun Rule.bottomShape2(block: StyleTurretBottomShape.() -> Value<BottomShape>) {
+    add(PropBottomShape, StyleTurretBottomShape().block())
+}
 
 fun StyleTurretRoofShape.randomRoof(): Value<RoofShape> = value { _, seed ->
     Random(seed).nextWeighted(

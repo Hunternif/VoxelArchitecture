@@ -12,9 +12,9 @@ val defaultStyle get() = Stylesheet().apply {
     style2For<Wall> {
         height2 { 100.pct }
     }
-    styleForGen<TurretGenerator> {
-        roofOffset { 1.vx }
-        spireRatio = 1.5
-        taperRatio = 0.75
+    style2For<TurretGenerator> {
+        roofOffset2 { 1.vx }
+        spireRatio2 { set(1.5) }
+        taperRatio2 { set(0.75) }
     }
 }
