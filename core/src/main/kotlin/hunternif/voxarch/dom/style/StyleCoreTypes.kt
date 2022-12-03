@@ -45,6 +45,7 @@ class Declaration<V : Value<*>>(
  * - property 'shape' accepts enum [PolygonShape].
  */
 abstract class Property<V : Value<*>>(
+    val name: String,
     val destType: Class<*>,
     val valType: Class<V>,
 ) {
@@ -66,9 +67,10 @@ interface Value<T> {
 
 /** Helper function for creating a new [Property] for a [Node] class */
 internal inline fun <reified N : Node, reified V : Value<*>> newNodeProperty(
+    name: String,
     noinline block: StyledNode<N>.(V) -> Unit,
 ): Property<V> {
-    return object : Property<V>(N::class.java, V::class.java) {
+    return object : Property<V>(name, N::class.java, V::class.java) {
         override fun applyTo(styled: StyledElement, value: V) {
             if (styled is StyledNode<*> &&
                 destType.isAssignableFrom(styled.domBuilder.node.javaClass)
@@ -82,9 +84,10 @@ internal inline fun <reified N : Node, reified V : Value<*>> newNodeProperty(
 
 /** Helper function for creating a new [Property] for a [IGenerator] class */
 internal inline fun <reified G : IGenerator, reified V : Value<*>> newGenProperty(
+    name: String,
     noinline block: StyledGen<G>.(V) -> Unit,
 ): Property<V> {
-    return object : Property<V>(G::class.java, V::class.java) {
+    return object : Property<V>(name, G::class.java, V::class.java) {
         override fun applyTo(styled: StyledElement, value: V) {
             if (styled is StyledGen<*> &&
                 destType.isAssignableFrom(styled.gen.javaClass)
@@ -98,9 +101,10 @@ internal inline fun <reified G : IGenerator, reified V : Value<*>> newGenPropert
 
 /** Helper function for creating a new property that applies to any DomBuilder */
 internal inline fun <reified V : Value<*>> newDomProperty(
+    name: String,
     noinline block: StyledElement.(V) -> Unit,
 ): Property<V> {
-    return object : Property<V>(DomBuilder::class.java, V::class.java) {
+    return object : Property<V>(name, DomBuilder::class.java, V::class.java) {
         override fun applyTo(styled: StyledElement, value: V) {
             styled.block(value)
         }

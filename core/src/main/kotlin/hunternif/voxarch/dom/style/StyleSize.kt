@@ -11,7 +11,7 @@ class StyleSize(
     fun get(): Dimension = initial.clamp(min, max)
 }
 
-val PropHeight = newNodeProperty<Node, Dimension> { value ->
+val PropHeight = newNodeProperty<Node, Dimension>("height") { value ->
     val baseValue = parent.height
     val newValue = value
         .invoke(baseValue, seed + 10000001)
@@ -19,7 +19,7 @@ val PropHeight = newNodeProperty<Node, Dimension> { value ->
     node.height = newValue
 }
 
-val PropWidth = newNodeProperty<Node, Dimension> { value ->
+val PropWidth = newNodeProperty<Node, Dimension>("width") { value ->
     val baseValue = parent.width
     val newValue = value
         .invoke(baseValue, seed + 10000002)
@@ -27,7 +27,7 @@ val PropWidth = newNodeProperty<Node, Dimension> { value ->
     node.width = newValue
 }
 
-val PropLength = newNodeProperty<Node, Dimension> { value ->
+val PropLength = newNodeProperty<Node, Dimension>("length") { value ->
     val baseValue = parent.length
     val newValue = value
         .invoke(baseValue, seed + 10000003)

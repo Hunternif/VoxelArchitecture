@@ -7,7 +7,7 @@ class StylePosition : StyleParameter
 
 // ================================ ORIGIN ================================
 
-val PropY = newNodeProperty<Node, Dimension> { value ->
+val PropY = newNodeProperty<Node, Dimension>("y") { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000011)
@@ -15,7 +15,7 @@ val PropY = newNodeProperty<Node, Dimension> { value ->
     node.origin.y += newValue
 }
 
-val PropX = newNodeProperty<Node, Dimension> { value ->
+val PropX = newNodeProperty<Node, Dimension>("x") { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000012)
@@ -23,7 +23,7 @@ val PropX = newNodeProperty<Node, Dimension> { value ->
     node.origin.x += newValue
 }
 
-val PropZ = newNodeProperty<Node, Dimension> { value ->
+val PropZ = newNodeProperty<Node, Dimension>("z") { value ->
     val baseValue = node.length
     val newValue = value
         .invoke(baseValue, seed + 10000013)
@@ -52,7 +52,7 @@ fun Rule.position(x: Dimension, y: Dimension, z: Dimension) {
 
 // ================================ START ================================
 
-val PropStartY = newNodeProperty<Room, Dimension> { value ->
+val PropStartY = newNodeProperty<Room, Dimension>("startY") { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000021)
@@ -61,7 +61,7 @@ val PropStartY = newNodeProperty<Room, Dimension> { value ->
     node.start.y = newValue
 }
 
-val PropStartX = newNodeProperty<Room, Dimension> { value ->
+val PropStartX = newNodeProperty<Room, Dimension>("startX") { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000022)
@@ -70,7 +70,7 @@ val PropStartX = newNodeProperty<Room, Dimension> { value ->
     node.start.x = newValue
 }
 
-val PropStartZ = newNodeProperty<Room, Dimension> { value ->
+val PropStartZ = newNodeProperty<Room, Dimension>("startZ") { value ->
     val baseValue = node.length
     val newValue = value
         .invoke(baseValue, seed + 10000023)

@@ -4,7 +4,7 @@ class StyleSeed : StyleParameter
 
 typealias Seed = Value<Long>
 
-val PropSeed = newDomProperty<Seed> { value ->
+val PropSeed = newDomProperty<Seed>("seed") { value ->
     val baseValue = domBuilder.parent.seed
     val newValue = value.invoke(baseValue, seed + 10000018)
     seed = newValue
