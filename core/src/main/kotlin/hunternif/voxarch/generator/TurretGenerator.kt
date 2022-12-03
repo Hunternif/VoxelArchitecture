@@ -60,14 +60,12 @@ class TurretGenerator : ChainedGenerator() {
      * but not to any children.
      */
     private fun createTurretStyle(body: Room) = Stylesheet().apply {
-        style(BLD_FOUNDATION) {
-            visibleIf { hasFoundation() }
-        }
-        styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
-            visibleIf { hasTaperedBottom() }
+        style2(BLD_FOUNDATION) {
+            visibleIf2 { hasFoundation() }
         }
         style2For<PolygonRoom>(BLD_TURRET_BOTTOM) {
             shape2 { inherit() }
+            visibleIf2 { hasTaperedBottom() }
             height2 { 2 * body.avgRadius() * taperRatio() }
             alignXZ { center() }
             alignY { below() }
@@ -79,16 +77,12 @@ class TurretGenerator : ChainedGenerator() {
             alignY { above() }
             y2 { 1.vx } // 1 block above parent
         }
-        styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
-            visibleIf { hasSpire() }
-        }
         style2For<PolygonRoom>(BLD_TOWER_SPIRE) {
+            visibleIf2 { hasSpire() }
             height2 { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
         }
-        styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
-            visibleIf { hasCrenellation() }
-        }
         style2For<PolygonRoom>(BLD_TOWER_ROOF) {
+            visibleIf2 { hasCrenellation() }
             height2 { 0.vx }
         }
         style2(BLD_TOWER_CORBEL) {

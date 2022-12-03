@@ -1,9 +1,7 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.DomRoot
-import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.dom.style.gone
-import hunternif.voxarch.dom.style.visible
+import hunternif.voxarch.dom.style.*
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -11,8 +9,8 @@ class VisibilityTest {
     @Test
     fun `both visible`() {
         val style = Stylesheet().apply {
-            style("parent") { visible() }
-            style("child") { visible() }
+            style2("parent") { visible2() }
+            style2("child") { visible2() }
         }
         val dom = DomRoot(style).apply {
             node("parent") {
@@ -30,8 +28,8 @@ class VisibilityTest {
     @Test
     fun `child gone`() {
         val style = Stylesheet().apply {
-            style("parent") { visible() }
-            style("child") { gone() }
+            style2("parent") { visible2() }
+            style2("child") { gone2() }
         }
         val dom = DomRoot(style).apply {
             node("parent") {
@@ -49,8 +47,8 @@ class VisibilityTest {
     @Test
     fun `parent gone`() {
         val style = Stylesheet().apply {
-            style("parent") { gone() }
-            style("child") { visible() }
+            style2("parent") { gone2() }
+            style2("child") { visible2() }
         }
         val dom = DomRoot(style).apply {
             node("parent") {
