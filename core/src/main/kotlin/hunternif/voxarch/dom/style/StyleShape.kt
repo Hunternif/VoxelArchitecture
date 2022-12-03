@@ -13,7 +13,7 @@ val PropShape = newNodeProperty<PolygonRoom, Value<PolygonShape>>("shape") { val
     node.shape = value.invoke(baseValue, seed + 10000004)
 }
 
-val PropEdgeLength = newNodeProperty<PolygonRoom, Dimension>("edgeLength") { value ->
+val PropEdgeLength = newNodeProperty<PolygonRoom, Dimension>("edge length") { value ->
     val baseValue = node.width
     node.edgeLength = value.invoke(baseValue, seed + 10000005)
 }

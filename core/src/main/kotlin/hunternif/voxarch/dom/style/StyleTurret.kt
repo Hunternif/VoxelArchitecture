@@ -15,7 +15,7 @@ class StyleTurretRoofShape : StyleParameter
 class StyleTurretBottomShape : StyleParameter
 
 /** Offset for borders and spires in all child turrets. */
-val PropRoofOffset = newGenProperty<TurretGenerator, Dimension>("roofOffset") { value ->
+val PropRoofOffset = newGenProperty<TurretGenerator, Dimension>("roof offset") { value ->
     val baseValue = domBuilder.findParentNode().width
     gen.roofOffset = value
         .invoke(baseValue, seed + 10000006)
@@ -23,29 +23,29 @@ val PropRoofOffset = newGenProperty<TurretGenerator, Dimension>("roofOffset") { 
 }
 
 /** Y/X ratio of spires for all child turrets. */
-val PropSpireRatio = newGenProperty<TurretGenerator, Value<Double>>("spireRatio") { value ->
+val PropSpireRatio = newGenProperty<TurretGenerator, Value<Double>>("spire ratio") { value ->
     val baseValue = 1.5
     gen.spireRatio = value.invoke(baseValue, seed + 10000014)
 }
 
 /** Y/X ratio of tapered bottoms of turrets. */
-val PropTaperRatio = newGenProperty<TurretGenerator, Value<Double>>("taperRatio") { value ->
+val PropTaperRatio = newGenProperty<TurretGenerator, Value<Double>>("taper ratio") { value ->
     val baseValue = 0.75
     gen.taperRatio = value.invoke(baseValue, seed + 10000015)
 }
 
-val PropRoofShape = newGenProperty<TurretGenerator, Value<RoofShape>>("roofShape") { value ->
+val PropRoofShape = newGenProperty<TurretGenerator, Value<RoofShape>>("roof shape") { value ->
     val baseValue = gen.roofShape
     gen.roofShape = value.invoke(baseValue, seed + 10000007)
 }
 
 // TODO: this will apply to a turret-with-room generator
-//val PropBodyShape = newGenProperty<TurretGenerator, Value<BodyShape>>("bodyShape") { value ->
+//val PropBodyShape = newGenProperty<TurretGenerator, Value<BodyShape>>("body shape") { value ->
 //    val baseValue = gen.bodyShape
 //    gen.bodyShape = value.invoke(baseValue, seed + 10000008)
 //}
 
-val PropBottomShape = newGenProperty<TurretGenerator, Value<BottomShape>>("bottomShape") { value ->
+val PropBottomShape = newGenProperty<TurretGenerator, Value<BottomShape>>("bottom shape") { value ->
     val baseValue = gen.bottomShape
     gen.bottomShape = value.invoke(baseValue, seed + 10000009)
 }
