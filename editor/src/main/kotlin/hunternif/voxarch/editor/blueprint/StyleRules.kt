@@ -19,9 +19,10 @@ abstract class StyleRuleInfo<N : Node, P : StyleParameter, V : Any>(
 ) {
     abstract fun StyledNode<N>.rule(paramBlock: P.() -> V)
     fun addStyleForNodeClass(stylesheet: Stylesheet, paramBlock: StyleParameter.() -> V) {
-        stylesheet.styleFor(nodeClass) {
-            rule(paramBlock)
-        }
+        // TODO: migrate to style2
+//        stylesheet.styleFor(nodeClass) {
+//            rule(paramBlock)
+//        }
     }
 }
 

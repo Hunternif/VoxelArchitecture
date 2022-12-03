@@ -7,11 +7,6 @@ import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
-import kotlin.reflect.KClass
-
-/** Defines a sequence of cosmetic modifications to a DOM element. */
-typealias StyleRuleForNode<N> = StyledNode<N>.() -> Unit
-typealias StyleRuleForGen<G> = StyledGen<G>.() -> Unit
 
 @CastleDsl
 abstract class StyledElement(
@@ -21,7 +16,7 @@ abstract class StyledElement(
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
 @CastleDsl
-class StyledNode<out N: Node>(
+class StyledNode<out N : Node>(
     override val domBuilder: DomNodeBuilder<N>,
 ) : StyledElement(domBuilder) {
     val node: N get() = domBuilder.node
@@ -30,7 +25,7 @@ class StyledNode<out N: Node>(
 
 /** Represents a DOM element with a [IGenerator] for the purpose of styling. */
 @CastleDsl
-class StyledGen<out G: IGenerator>(
+class StyledGen<out G : IGenerator>(
     internal val gen: G,
     domBuilder: DomBuilder
 ) : StyledElement(domBuilder)
@@ -42,9 +37,6 @@ interface StyleParameter
 /** Container for all styles in a DOM. */
 @CastleDsl
 open class Stylesheet {
-    private val nodeStyleMap = ArrayListMultimap.create<String, TypedStyleRuleForNode<*>>()
-    private val genStyleMap = ArrayListMultimap.create<String, TypedStyleRuleForGen<*>>()
-
     val rules = ArrayListMultimap.create<String, Rule>()
 
     /**
@@ -71,91 +63,6 @@ open class Stylesheet {
         rules.put(styleClass, Rule(styleClass, T::class.java).apply(block))
     }
 
-    /**
-     * Register a style for the given "style class" name, for specific Java class
-     * and its subclasses.
-     */
-    inline fun <reified N: Node> styleFor(
-        styleClass: String,
-        noinline block: StyleRuleForNode<N>
-    ) {
-        styleFor(N::class.java, styleClass, block)
-    }
-
-    /**
-     * Register a style for all subclasses.
-     */
-    inline fun <reified N: Node> styleFor(
-        noinline block: StyleRuleForNode<N>
-    ) {
-        styleFor(N::class.java, GLOBAL_STYLE, block)
-    }
-
-    /**
-     * Register a style for all subclasses.
-     */
-    fun <N: Node> styleFor(
-        nodeClass: Class<N>,
-        block: StyleRuleForNode<N>,
-    ) {
-        styleFor(nodeClass, GLOBAL_STYLE, block)
-    }
-
-    /**
-     * Register a style for all subclasses.
-     */
-    fun <N: Node> styleFor(
-        nodeClass: KClass<N>,
-        block: StyleRuleForNode<N>,
-    ) {
-        styleFor(nodeClass.java, GLOBAL_STYLE, block)
-    }
-
-    /** Register a style for the given "style class" name for all [Node] subclasses. */
-    fun style(styleClass: String, block: StyleRuleForNode<Node>) {
-        styleFor(Node::class.java, styleClass, block)
-    }
-
-    /**
-     * Register a style for the given "style class" name, for specific Java class
-     * and its subclasses.
-     */
-    fun <N: Node> styleFor(nodeClass: Class<N>, styleClass: String, block: StyleRuleForNode<N>) {
-        nodeStyleMap.put(styleClass, TypedStyleRuleForNode(nodeClass, block))
-    }
-
-    /**
-     * Register a style for the given "style class" name, for specific Java class
-     * and its subclasses.
-     */
-    inline fun <reified G: IGenerator> styleForGen(
-        styleClass: String,
-        noinline block: StyleRuleForGen<G>
-    ) {
-        styleForGen(G::class.java, styleClass, block)
-    }
-
-    /**
-     * Register a style for all subclasses.
-     */
-    inline fun <reified G: IGenerator> styleForGen(
-        noinline block: StyleRuleForGen<G>
-    ) {
-        styleForGen(G::class.java, GLOBAL_STYLE, block)
-    }
-
-    /**
-     * Register a style for the given "style class" name, for specific Java class
-     * and its subclasses.
-     */
-    fun <G: IGenerator> styleForGen(
-        genClass: Class<G>,
-        styleClass: String,
-        block: StyleRuleForGen<G>,
-    ) {
-        genStyleMap.put(styleClass, TypedStyleRuleForGen(genClass, block))
-    }
-
     internal open fun apply(
         domBuilder: DomBuilder,
         styleClass: Collection<String>
@@ -166,17 +73,8 @@ open class Stylesheet {
             val styledGen = StyledGen(gen, domBuilder)
             val genClass = gen.javaClass
             styleClasses
-                .flatMap { genStyleMap[it] }
-                .filter { it.genClass.isAssignableFrom(genClass) }
-                .forEach {
-                    @Suppress("UNCHECKED_CAST")
-                    val rule = it.rule as StyleRuleForGen<*>
-                    rule.invoke(styledGen)
-                }
-            // apply rules
-            styleClasses
                 .flatMap { rules[it] }
-                .filter { it.destType?.isAssignableFrom(genClass) ?: true}
+                .filter { it.destType?.isAssignableFrom(genClass) ?: true }
                 .flatMap { it.declarations }
                 .sortedBy { GlobalStyleOrderIndex[it.property] }
                 .forEach { it.applyTo(styledGen) }
@@ -185,45 +83,25 @@ open class Stylesheet {
         if (domBuilder is DomNodeBuilder<*>) {
             val styledNode = StyledNode(domBuilder)
             val nodeClass = domBuilder.node.javaClass
-            // apply rules (moved up because alignment must be calculated after size)
             styleClasses
                 .flatMap { rules[it] }
-                .filter { it.destType?.isAssignableFrom(nodeClass) ?: true}
+                .filter { it.destType?.isAssignableFrom(nodeClass) ?: true }
                 .flatMap { it.declarations }
                 .sortedBy { GlobalStyleOrderIndex[it.property] }
                 .forEach { it.applyTo(styledNode) }
-            // apply old styles
-            styleClasses
-                .flatMap { nodeStyleMap[it] }
-                .filter { it.nodeClass.isAssignableFrom(nodeClass) }
-                .forEach {
-                    @Suppress("UNCHECKED_CAST")
-                    val rule = it.rule as StyleRuleForNode<*>
-                    rule.invoke(styledNode)
-                }
         }
     }
 
     fun clear() {
-        nodeStyleMap.clear()
+        rules.clear()
     }
 
     companion object {
         const val GLOBAL_STYLE = "__global_style__"
-
-        private data class TypedStyleRuleForNode<N: Node>(
-            val nodeClass: Class<N>,
-            val rule: StyleRuleForNode<N>
-        )
-
-        private data class TypedStyleRuleForGen<G: IGenerator>(
-            val genClass: Class<G>,
-            val rule: StyleRuleForGen<G>
-        )
     }
 }
 
-class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>): Stylesheet() {
+class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>) : Stylesheet() {
     override fun apply(
         domBuilder: DomBuilder,
         styleClass: Collection<String>
