@@ -48,6 +48,7 @@ abstract class Property<T>(
     val name: String,
     val destType: Class<*>,
     val valType: Class<T>,
+    val default: T,
 ) {
     abstract fun applyTo(styled: StyledElement, value: Value<T>)
 }
@@ -68,9 +69,10 @@ interface Value<T> {
 /** Helper function for creating a new [Property] for a [Node] class */
 internal inline fun <reified N : Node, reified T> newNodeProperty(
     name: String,
+    default: T,
     noinline block: StyledNode<N>.(Value<T>) -> Unit,
 ): Property<T> {
-    return object : Property<T>(name, N::class.java, T::class.java) {
+    return object : Property<T>(name, N::class.java, T::class.java, default) {
         override fun applyTo(styled: StyledElement, value: Value<T>) {
             if (styled is StyledNode<*> &&
                 destType.isAssignableFrom(styled.domBuilder.node.javaClass)
@@ -85,9 +87,10 @@ internal inline fun <reified N : Node, reified T> newNodeProperty(
 /** Helper function for creating a new [Property] for a [IGenerator] class */
 internal inline fun <reified G : IGenerator, reified T> newGenProperty(
     name: String,
+    default: T,
     noinline block: StyledGen<G>.(Value<T>) -> Unit,
 ): Property<T> {
-    return object : Property<T>(name, G::class.java, T::class.java) {
+    return object : Property<T>(name, G::class.java, T::class.java, default) {
         override fun applyTo(styled: StyledElement, value: Value<T>) {
             if (styled is StyledGen<*> &&
                 destType.isAssignableFrom(styled.gen.javaClass)
@@ -102,9 +105,10 @@ internal inline fun <reified G : IGenerator, reified T> newGenProperty(
 /** Helper function for creating a new property that applies to any DomBuilder */
 internal inline fun <reified T> newDomProperty(
     name: String,
+    default: T,
     noinline block: StyledElement.(Value<T>) -> Unit,
 ): Property<T> {
-    return object : Property<T>(name, DomBuilder::class.java, T::class.java) {
+    return object : Property<T>(name, DomBuilder::class.java, T::class.java, default) {
         override fun applyTo(styled: StyledElement, value: Value<T>) {
             styled.block(value)
         }

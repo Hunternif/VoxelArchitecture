@@ -31,7 +31,7 @@ enum class AlignXZ {
     CENTER,
 }
 
-val PropAlignY = newNodeProperty<Node, AlignY>("align y") { value ->
+val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value ->
     val p = parent
     val baseValue = AlignY.ORIGIN
     val align = value.invoke(baseValue, seed)
@@ -46,7 +46,7 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align y") { value ->
     node.origin.y = newY
 }
 
-val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz") { value ->
+val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { value ->
     val p = parent
     val domParent = domBuilder.parent
     val baseValue = AlignXZ.ORIGIN
