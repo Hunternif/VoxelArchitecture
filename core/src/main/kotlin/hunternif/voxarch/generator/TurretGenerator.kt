@@ -60,32 +60,32 @@ class TurretGenerator : ChainedGenerator() {
      * but not to any children.
      */
     private fun createTurretStyle(body: Room) = Stylesheet().apply {
-        style2(BLD_FOUNDATION) {
-            visibleIf2 { hasFoundation() }
+        style(BLD_FOUNDATION) {
+            visibleIf { hasFoundation() }
         }
-        style2For<PolygonRoom>(BLD_TURRET_BOTTOM) {
-            shape2 { inherit() }
-            visibleIf2 { hasTaperedBottom() }
-            height2 { 2 * body.avgRadius() * taperRatio() }
+        styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
+            shape { inherit() }
+            visibleIf { hasTaperedBottom() }
+            height { 2 * body.avgRadius() * taperRatio() }
             alignXZ { center() }
             alignY { below() }
         }
-        style2For<PolygonRoom>("roof") {
-            shape2 { inherit() }
-            diameter2 { 100.pct + 2 * roofOffset() }
+        styleFor<PolygonRoom>("roof") {
+            shape { inherit() }
+            diameter { 100.pct + 2 * roofOffset() }
             alignXZ { center() }
             alignY { above() }
-            y2 { 1.vx } // 1 block above parent
+            y { 1.vx } // 1 block above parent
         }
-        style2For<PolygonRoom>(BLD_TOWER_SPIRE) {
-            visibleIf2 { hasSpire() }
-            height2 { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
+        styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
+            visibleIf { hasSpire() }
+            height { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
         }
-        style2For<PolygonRoom>(BLD_TOWER_ROOF) {
-            visibleIf2 { hasCrenellation() }
-            height2 { 0.vx }
+        styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
+            visibleIf { hasCrenellation() }
+            height { 0.vx }
         }
-        style2(BLD_TOWER_CORBEL) {
+        style(BLD_TOWER_CORBEL) {
             alignY { above() }
         }
     }

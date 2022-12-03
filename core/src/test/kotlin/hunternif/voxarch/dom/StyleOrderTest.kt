@@ -12,12 +12,12 @@ class StyleOrderTest {
     @Test
     fun `execute styles in order`() {
         val style = Stylesheet().apply {
-            style2("class1") {
-                width2 { 98.vx }
+            style("class1") {
+                width { 98.vx }
             }
-            style2("class2") {
-                length2 { 50.vx }
-                height2 { 100.vx }
+            style("class2") {
+                length { 50.vx }
+                height { 100.vx }
             }
         }
         val node: Room = spy(Room())

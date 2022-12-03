@@ -13,11 +13,11 @@ class GenAddRoomTest {
     @Test
     fun `add room and apply styles`() {
         val style = Stylesheet().apply {
-            style2("my_room") {
-                height2 { 10.vx }
+            style("my_room") {
+                height { 10.vx }
             }
-            style2("my_child") {
-                height2 { 5.vx }
+            style("my_child") {
+                height { 5.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -40,8 +40,8 @@ class GenAddRoomTest {
     @Test
     fun `add room and call next generator`() {
         val style = Stylesheet().apply {
-            style2("nested_child") {
-                height2 { 2.vx }
+            style("nested_child") {
+                height { 2.vx }
             }
         }
         val generator = GenAddRoom()

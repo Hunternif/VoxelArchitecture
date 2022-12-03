@@ -14,6 +14,6 @@ val PropSeed = newDomProperty<Seed> { value ->
  * Using `inherit()` on the seed will make this element use the same seed
  * as the parent, but its own children will use their own seeds.
  */
-fun Rule.seed2(block: StyleSeed.() -> Seed) {
+fun Rule.seed(block: StyleSeed.() -> Seed) {
     add(PropSeed, StyleSeed().block())
 }

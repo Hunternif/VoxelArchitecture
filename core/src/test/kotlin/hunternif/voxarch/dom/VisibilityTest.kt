@@ -9,8 +9,8 @@ class VisibilityTest {
     @Test
     fun `both visible`() {
         val style = Stylesheet().apply {
-            style2("parent") { visible2() }
-            style2("child") { visible2() }
+            style("parent") { visible() }
+            style("child") { visible() }
         }
         val dom = DomRoot(style).apply {
             node("parent") {
@@ -28,8 +28,8 @@ class VisibilityTest {
     @Test
     fun `child gone`() {
         val style = Stylesheet().apply {
-            style2("parent") { visible2() }
-            style2("child") { gone2() }
+            style("parent") { visible() }
+            style("child") { gone() }
         }
         val dom = DomRoot(style).apply {
             node("parent") {
@@ -47,8 +47,8 @@ class VisibilityTest {
     @Test
     fun `parent gone`() {
         val style = Stylesheet().apply {
-            style2("parent") { gone2() }
-            style2("child") { visible2() }
+            style("parent") { gone() }
+            style("child") { visible() }
         }
         val dom = DomRoot(style).apply {
             node("parent") {

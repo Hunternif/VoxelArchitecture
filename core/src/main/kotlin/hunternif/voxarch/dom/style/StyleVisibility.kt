@@ -10,18 +10,18 @@ val PropVisibility = newDomProperty<Value<Visibility>> { value ->
     domBuilder.visibility = value.invoke(baseValue, seed + 10000010)
 }
 
-fun Rule.visibility2(block: StyleVisibility.() -> Value<Visibility>) {
+fun Rule.visibility(block: StyleVisibility.() -> Value<Visibility>) {
     add(PropVisibility, StyleVisibility().block())
 }
 
-fun Rule.visibleIf2(predicate: () -> Boolean) {
+fun Rule.visibleIf(predicate: () -> Boolean) {
     add(PropVisibility, set(if (predicate()) VISIBLE else GONE))
 }
 
-fun Rule.visible2() {
+fun Rule.visible() {
     add(PropVisibility, set(VISIBLE))
 }
 
-fun Rule.gone2() {
+fun Rule.gone() {
     add(PropVisibility, set(GONE))
 }

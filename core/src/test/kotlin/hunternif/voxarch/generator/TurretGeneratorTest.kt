@@ -17,12 +17,12 @@ class TurretGeneratorTest {
     @Test
     fun `turret adds style rules to itself but not children`() {
         val style = defaultStyle.apply {
-            style2For<TurretGenerator>(DOM_TURRET) {
+            styleFor<TurretGenerator>(DOM_TURRET) {
                 // This enables the "roof" element with height 0.0
-                roofShape2 { set(RoofShape.FLAT_BORDERED) }
+                roofShape { set(RoofShape.FLAT_BORDERED) }
             }
-            style2For<Room> {
-                height2 { 10.vx }
+            styleFor<Room> {
+                height { 10.vx }
             }
         }
         val dom = DomRoot(style).apply {

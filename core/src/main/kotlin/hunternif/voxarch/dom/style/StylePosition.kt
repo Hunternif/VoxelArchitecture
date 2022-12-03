@@ -31,19 +31,19 @@ val PropZ = newNodeProperty<Node, Dimension> { value ->
     node.origin.z += newValue
 }
 
-fun Rule.y2(block: StylePosition.() -> Dimension) {
+fun Rule.y(block: StylePosition.() -> Dimension) {
     add(PropY, StylePosition().block())
 }
 
-fun Rule.x2(block: StylePosition.() -> Dimension) {
+fun Rule.x(block: StylePosition.() -> Dimension) {
     add(PropX, StylePosition().block())
 }
 
-fun Rule.z2(block: StylePosition.() -> Dimension) {
+fun Rule.z(block: StylePosition.() -> Dimension) {
     add(PropZ, StylePosition().block())
 }
 
-fun Rule.position2(x: Dimension, y: Dimension, z: Dimension) {
+fun Rule.position(x: Dimension, y: Dimension, z: Dimension) {
     add(PropX, x)
     add(PropY, y)
     add(PropZ, z)
@@ -79,19 +79,19 @@ val PropStartZ = newNodeProperty<Room, Dimension> { value ->
     node.start.z = newValue
 }
 
-fun Rule.startY2(block: StylePosition.() -> Dimension) {
+fun Rule.startY(block: StylePosition.() -> Dimension) {
     add(PropStartY, StylePosition().block())
 }
 
-fun Rule.startX2(block: StylePosition.() -> Dimension) {
+fun Rule.startX(block: StylePosition.() -> Dimension) {
     add(PropStartX, StylePosition().block())
 }
 
-fun Rule.startZ2(block: StylePosition.() -> Dimension) {
+fun Rule.startZ(block: StylePosition.() -> Dimension) {
     add(PropStartZ, StylePosition().block())
 }
 
-fun Rule.start2(x: Dimension, y: Dimension, z: Dimension) {
+fun Rule.start(x: Dimension, y: Dimension, z: Dimension) {
     add(PropStartX, x)
     add(PropStartY, y)
     add(PropStartZ, z)

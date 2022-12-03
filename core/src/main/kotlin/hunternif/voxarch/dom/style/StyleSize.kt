@@ -35,29 +35,29 @@ val PropLength = newNodeProperty<Node, Dimension> { value ->
     node.length = newValue
 }
 
-fun Rule.height2(block: StyleSize.() -> Dimension) {
+fun Rule.height(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
     add(PropHeight, value.get())
 }
 
-fun Rule.width2(block: StyleSize.() -> Dimension) {
+fun Rule.width(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
     add(PropWidth, value.get())
 }
 
-fun Rule.length2(block: StyleSize.() -> Dimension) {
+fun Rule.length(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
     add(PropLength, value.get())
 }
 
 /** Applies to both width and length. */
-fun Rule.diameter2(block: StyleSize.() -> Dimension) {
+fun Rule.diameter(block: StyleSize.() -> Dimension) {
     val value = StyleSize().apply { initial = block() }
     add(PropWidth, value.get())
     add(PropLength, value.get())
 }
 
-fun Rule.size2(x: Dimension, y: Dimension, z: Dimension) {
+fun Rule.size(x: Dimension, y: Dimension, z: Dimension) {
     add(PropWidth, x)
     add(PropHeight, y)
     add(PropLength, z)

@@ -18,10 +18,10 @@ val PropEdgeLength = newNodeProperty<PolygonRoom, Dimension> { value ->
     node.edgeLength = value.invoke(baseValue, seed + 10000005)
 }
 
-fun Rule.shape2(block: StyleShape.() -> Value<PolygonShape>) {
+fun Rule.shape(block: StyleShape.() -> Value<PolygonShape>) {
     add(PropShape, StyleShape().block())
 }
 
-fun Rule.edgeLength2(block: StyleSize.() -> Dimension) {
+fun Rule.edgeLength(block: StyleSize.() -> Dimension) {
     add(PropEdgeLength, StyleSize(min = 1.vx).block())
 }

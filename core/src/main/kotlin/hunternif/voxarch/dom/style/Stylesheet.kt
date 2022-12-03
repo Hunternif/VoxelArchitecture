@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.style
 
 import com.google.common.collect.ArrayListMultimap
+import com.google.common.collect.ListMultimap
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
@@ -8,6 +9,7 @@ import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 
+/** Represents a DOM element for the purpose of styling. */
 @CastleDsl
 abstract class StyledElement(
     internal open val domBuilder: DomBuilder,
@@ -37,14 +39,14 @@ interface StyleParameter
 /** Container for all styles in a DOM. */
 @CastleDsl
 open class Stylesheet {
-    val rules = ArrayListMultimap.create<String, Rule>()
+    val rules: ListMultimap<String, Rule> = ArrayListMultimap.create()
 
     /**
      * Register a style rule i.e. a list of style declarations.
      * They are not limited by Node type, they will apply wherever possible.
      * @param styleClass is the "CSS class".
      */
-    fun style2(
+    fun style(
         styleClass: String,
         block: Rule.() -> Unit,
     ) {
@@ -56,7 +58,7 @@ open class Stylesheet {
      * These will be limited by type [T].
      * @param styleClass is the "CSS class".
      */
-    inline fun <reified T> style2For(
+    inline fun <reified T> styleFor(
         styleClass: String = GLOBAL_STYLE,
         noinline block: Rule.() -> Unit,
     ) {

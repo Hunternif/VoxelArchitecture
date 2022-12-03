@@ -26,15 +26,15 @@ class DomTest {
     @Test
     fun `nested rooms with styled size`() {
         val style = Stylesheet().apply {
-            style2("parent") {
-                height2 { 10.vx }
-                width2 { 20.vx }
-                length2 { 30.vx }
+            style("parent") {
+                height { 10.vx }
+                width { 20.vx }
+                length { 30.vx }
             }
-            style2("child") {
-                height2 { 75.pct }
-                width2 { 120.pct }
-                length2 { 100.pct }
+            style("child") {
+                height { 75.pct }
+                width { 120.pct }
+                length { 100.pct }
             }
         }
         val dom = DomRoot(style).apply {
@@ -56,15 +56,15 @@ class DomTest {
     @Test
     fun `nested rooms with min and max size`() {
         val style = Stylesheet().apply {
-            style2("parent") {
-                height2 { 10.vx }
-                width2 { 20.vx }
-                length2 { 30.vx }
+            style("parent") {
+                height { 10.vx }
+                width { 20.vx }
+                length { 30.vx }
             }
-            style2("child") {
-                height2 { min = 8.vx; 75.pct }
-                width2 { max = 21.vx; 120.pct }
-                length2 { min = 1.vx; 0.pct }
+            style("child") {
+                height { min = 8.vx; 75.pct }
+                width { max = 21.vx; 120.pct }
+                length { min = 1.vx; 0.pct }
             }
         }
         val dom = DomRoot(style).apply {
@@ -82,10 +82,10 @@ class DomTest {
     fun `room with random size`() {
         val seed = 0L
         val style = Stylesheet().apply {
-            style2("random") {
-                height2 { 1.vx to 100.vx }
-                width2 { 1.vx to 1000.vx }
-                length2 { 1.vx to 1000.vx }
+            style("random") {
+                height { 1.vx to 100.vx }
+                width { 1.vx to 1000.vx }
+                length { 1.vx to 1000.vx }
             }
         }
         val dom = DomRoot(style, seed).apply {
@@ -100,11 +100,11 @@ class DomTest {
     fun `use parent seed`() {
         val seed = 3L
         val style = Stylesheet().apply {
-            style2("random") {
-                height2 { 1.vx to 1000.vx }
+            style("random") {
+                height { 1.vx to 1000.vx }
             }
-            style2("parent_seed") {
-                seed2 { inherit() }
+            style("parent_seed") {
+                seed { inherit() }
             }
         }
         val dom = DomRoot(style, seed).apply {
@@ -135,11 +135,11 @@ class DomTest {
     @Test
     fun `dom element with multiple classes`() {
         val style = Stylesheet().apply {
-            style2("height_100") {
-                height2 { 100.vx }
+            style("height_100") {
+                height { 100.vx }
             }
-            style2("width_200") {
-                width2 { 200.vx }
+            style("width_200") {
+                width { 200.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -154,11 +154,11 @@ class DomTest {
     @Test
     fun `multiple styles with the same name`() {
         val style = Stylesheet().apply {
-            style2For<Room> {
-                height2 { 100.vx }
+            styleFor<Room> {
+                height { 100.vx }
             }
-            style2For<Room> {
-                width2 { 200.vx }
+            styleFor<Room> {
+                width { 200.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -173,14 +173,14 @@ class DomTest {
     @Test
     fun `inherit styles from superclasses`() {
         val style = Stylesheet().apply {
-            style2For<Node> {
-                height2 { 100.vx }
+            styleFor<Node> {
+                height { 100.vx }
             }
-            style2For<Room> {
-                width2 { 200.vx }
+            styleFor<Room> {
+                width { 200.vx }
             }
-            style2For<PolygonRoom> {
-                length2 { 300.vx }
+            styleFor<PolygonRoom> {
+                length { 300.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -216,11 +216,11 @@ class DomTest {
     @Test
     fun `inherit style value from parent node`() {
         val style = Stylesheet().apply {
-            style2("parent") {
-                height2 { 100.vx }
+            style("parent") {
+                height { 100.vx }
             }
-            style2("child") {
-                height2 { inherit() }
+            style("child") {
+                height { inherit() }
             }
         }
         val dom = DomRoot(style).apply {

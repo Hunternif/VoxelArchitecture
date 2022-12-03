@@ -13,9 +13,9 @@ class DomWardTest {
     @Test
     fun `square castle ward`() {
         val style = Stylesheet().apply {
-            style2For<Ward> {
-                shape2 { set(SQUARE) }
-                diameter2 { 2.vx }
+            styleFor<Ward> {
+                shape { set(SQUARE) }
+                diameter { 2.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -37,10 +37,10 @@ class DomWardTest {
     @Test
     fun `round castle ward with 6 edges`() {
         val style = Stylesheet().apply {
-            style2For<Ward> {
-                shape2 { set(ROUND) }
-                diameter2 { 10.vx }
-                edgeLength2 { 6.vx }
+            styleFor<Ward> {
+                shape { set(ROUND) }
+                diameter { 10.vx }
+                edgeLength { 6.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -58,10 +58,10 @@ class DomWardTest {
     @Test
     fun `round castle ward with 8 edges`() {
         val style = Stylesheet().apply {
-            style2For<Ward> {
-                shape2 { set(ROUND) }
-                diameter2 { 10.vx }
-                edgeLength2 { 4.vx }
+            styleFor<Ward> {
+                shape { set(ROUND) }
+                diameter { 10.vx }
+                edgeLength { 4.vx }
             }
         }
         val dom = DomRoot(style).apply {
@@ -79,8 +79,8 @@ class DomWardTest {
     @Test
     fun `castle ward with random shape`() {
         val style = Stylesheet().apply {
-            style2For<Ward> {
-                shape2 { random(ROUND, SQUARE) }
+            styleFor<Ward> {
+                shape { random(ROUND, SQUARE) }
             }
         }
         lateinit var ward: Ward

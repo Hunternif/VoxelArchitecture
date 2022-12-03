@@ -50,27 +50,27 @@ val PropBottomShape = newGenProperty<TurretGenerator, Value<BottomShape>> { valu
     gen.bottomShape = value.invoke(baseValue, seed + 10000009)
 }
 
-fun Rule.roofOffset2(block: StyleSize.() -> Dimension) {
+fun Rule.roofOffset(block: StyleSize.() -> Dimension) {
     add(PropRoofOffset, StyleSize().block())
 }
 
-fun Rule.spireRatio2(block: StyleSize.() -> Value<Double>) {
+fun Rule.spireRatio(block: StyleSize.() -> Value<Double>) {
     add(PropSpireRatio, StyleSize().block())
 }
 
-fun Rule.taperRatio2(block: StyleSize.() -> Value<Double>) {
+fun Rule.taperRatio(block: StyleSize.() -> Value<Double>) {
     add(PropTaperRatio, StyleSize().block())
 }
 
-fun Rule.roofShape2(block: StyleTurretRoofShape.() -> Value<RoofShape>) {
+fun Rule.roofShape(block: StyleTurretRoofShape.() -> Value<RoofShape>) {
     add(PropRoofShape, StyleTurretRoofShape().block())
 }
 
-//fun Rule.bodyShape2(block: StyleTurretBodyShape.() -> Value<BodyShape>) {
+//fun Rule.bodyShape(block: StyleTurretBodyShape.() -> Value<BodyShape>) {
 //    add(PropBodyShape, StyleTurretBodyShape().block())
 //}
 
-fun Rule.bottomShape2(block: StyleTurretBottomShape.() -> Value<BottomShape>) {
+fun Rule.bottomShape(block: StyleTurretBottomShape.() -> Value<BottomShape>) {
     add(PropBottomShape, StyleTurretBottomShape().block())
 }
 

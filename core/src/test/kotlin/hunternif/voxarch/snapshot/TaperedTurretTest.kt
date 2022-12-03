@@ -29,18 +29,18 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
     companion object {
         private fun turret(width: Int): Structure {
             val style = defaultStyle.apply {
-                style2For<PolygonRoom>(DOM_TURRET) {
-                    position2(5.vx, 5.vx, 5.vx)
-                    diameter2 { width.vx }
-                    height2 { 5.vx }
-                    shape2 { set(PolygonShape.SQUARE) }
+                styleFor<PolygonRoom>(DOM_TURRET) {
+                    position(5.vx, 5.vx, 5.vx)
+                    diameter { width.vx }
+                    height { 5.vx }
+                    shape { set(PolygonShape.SQUARE) }
                 }
-                style2For<TurretGenerator> {
-                    roofShape2 { set(RoofShape.FLAT_BORDERED) }
-                    bottomShape2 { set(BottomShape.TAPERED) }
-                    roofOffset2 { 1.vx }
-                    spireRatio2 { set(1.5) }
-                    taperRatio2 { set(0.75) }
+                styleFor<TurretGenerator> {
+                    roofShape { set(RoofShape.FLAT_BORDERED) }
+                    bottomShape { set(BottomShape.TAPERED) }
+                    roofOffset { 1.vx }
+                    spireRatio { set(1.5) }
+                    taperRatio { set(0.75) }
                 }
             }
             return DomRoot(style).apply {
