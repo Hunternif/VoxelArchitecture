@@ -7,7 +7,7 @@ class StylePosition : StyleParameter
 
 // ================================ ORIGIN ================================
 
-val PropY = newNodeProperty<Node, Dimension>("offset y") { value ->
+val PropY = newNodeProperty<Node, Double>("offset y") { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000011)
@@ -15,7 +15,7 @@ val PropY = newNodeProperty<Node, Dimension>("offset y") { value ->
     node.origin.y += newValue
 }
 
-val PropX = newNodeProperty<Node, Dimension>("offset x") { value ->
+val PropX = newNodeProperty<Node, Double>("offset x") { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000012)
@@ -23,7 +23,7 @@ val PropX = newNodeProperty<Node, Dimension>("offset x") { value ->
     node.origin.x += newValue
 }
 
-val PropZ = newNodeProperty<Node, Dimension>("offset z") { value ->
+val PropZ = newNodeProperty<Node, Double>("offset z") { value ->
     val baseValue = node.length
     val newValue = value
         .invoke(baseValue, seed + 10000013)
@@ -52,7 +52,7 @@ fun Rule.position(x: Dimension, y: Dimension, z: Dimension) {
 
 // ================================ START ================================
 
-val PropStartY = newNodeProperty<Room, Dimension>("start y") { value ->
+val PropStartY = newNodeProperty<Room, Double>("start y") { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000021)
@@ -61,7 +61,7 @@ val PropStartY = newNodeProperty<Room, Dimension>("start y") { value ->
     node.start.y = newValue
 }
 
-val PropStartX = newNodeProperty<Room, Dimension>("start x") { value ->
+val PropStartX = newNodeProperty<Room, Double>("start x") { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000022)
@@ -70,7 +70,7 @@ val PropStartX = newNodeProperty<Room, Dimension>("start x") { value ->
     node.start.x = newValue
 }
 
-val PropStartZ = newNodeProperty<Room, Dimension>("start z") { value ->
+val PropStartZ = newNodeProperty<Room, Double>("start z") { value ->
     val baseValue = node.length
     val newValue = value
         .invoke(baseValue, seed + 10000023)

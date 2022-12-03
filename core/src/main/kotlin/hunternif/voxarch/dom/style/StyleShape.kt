@@ -5,7 +5,7 @@ import hunternif.voxarch.plan.PolygonShape
 
 class StyleShape : StyleParameter
 
-val PropShape = newNodeProperty<PolygonRoom, Value<PolygonShape>>("shape") { value ->
+val PropShape = newNodeProperty<PolygonRoom, PolygonShape>("shape") { value ->
     val baseValue = when (val parent = node.parent) {
         is PolygonRoom -> parent.shape
         else -> PolygonShape.SQUARE
@@ -13,7 +13,7 @@ val PropShape = newNodeProperty<PolygonRoom, Value<PolygonShape>>("shape") { val
     node.shape = value.invoke(baseValue, seed + 10000004)
 }
 
-val PropEdgeLength = newNodeProperty<PolygonRoom, Dimension>("edge length") { value ->
+val PropEdgeLength = newNodeProperty<PolygonRoom, Double>("edge length") { value ->
     val baseValue = node.width
     node.edgeLength = value.invoke(baseValue, seed + 10000005)
 }
