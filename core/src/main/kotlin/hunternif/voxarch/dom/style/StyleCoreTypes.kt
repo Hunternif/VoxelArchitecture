@@ -18,7 +18,15 @@ class Rule(
 ) {
     val declarations = mutableListOf<Declaration<*>>()
     fun <T> add(prop: Property<T>, value: Value<T>) {
-        declarations.add(Declaration(prop, value))
+        add(Declaration(prop, value))
+    }
+
+    fun add(declaration: Declaration<*>) {
+        declarations.add(declaration)
+    }
+
+    fun remove(declaration: Declaration<*>) {
+        declarations.remove(declaration)
     }
 }
 
@@ -34,6 +42,11 @@ class Declaration<T>(
 ) {
     fun applyTo(styled: StyledElement) {
         property.applyTo(styled, value)
+    }
+
+    companion object {
+        fun <T> defaultForProperty(property: Property<T>) =
+            Declaration(property, set(property.default))
     }
 }
 
@@ -51,6 +64,13 @@ abstract class Property<T>(
     val default: T,
 ) {
     abstract fun applyTo(styled: StyledElement, value: Value<T>)
+    inline fun <reified T2> isType(): Boolean =
+        valType.isAssignableFrom(T2::class.java)
+
+    @Suppress("UNCHECKED_CAST")
+    inline fun <reified T2> asType(): Property<T2>? =
+        if (isType<T2>()) this as Property<T2>
+        else null
 }
 
 /**

@@ -65,6 +65,10 @@ open class Stylesheet {
         rules.put(styleClass, Rule(styleClass, T::class.java).apply(block))
     }
 
+    fun addRule(rule: Rule) {
+        rules.put(rule.styleClass, rule)
+    }
+
     internal open fun apply(
         domBuilder: DomBuilder,
         styleClass: Collection<String>
