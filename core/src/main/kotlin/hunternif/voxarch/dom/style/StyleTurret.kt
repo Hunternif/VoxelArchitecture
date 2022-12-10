@@ -24,13 +24,13 @@ val PropRoofOffset = newGenProperty<TurretGenerator, Double>("roof offset", 1.0)
 /** Y/X ratio of spires for all child turrets. */
 val PropSpireRatio = newGenProperty<TurretGenerator, Double>("spire ratio", 1.5) { value ->
     val baseValue = 1.5
-    gen.spireRatio = value.invoke(baseValue, seed + 10000014)
+    gen.spireRatio = value.invoke(baseValue, seed + 10000019)
 }
 
 /** Y/X ratio of tapered bottoms of turrets. */
 val PropTaperRatio = newGenProperty<TurretGenerator, Double>("taper ratio", 0.75) { value ->
     val baseValue = 0.75
-    gen.taperRatio = value.invoke(baseValue, seed + 10000015)
+    gen.taperRatio = value.invoke(baseValue, seed + 10000020)
 }
 
 val PropRoofShape = newGenProperty<TurretGenerator, RoofShape>("roof shape", RoofShape.FLAT_BORDERED) { value ->

@@ -77,7 +77,7 @@ class TurretGenerator : ChainedGenerator() {
             diameter { 100.pct + 2 * roofOffset() }
             alignXZ { center() }
             alignY { above() }
-            y { 1.vx } // 1 block above parent
+            offsetY { 1.vx } // 1 block above parent
         }
         styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
             visibleIf { hasSpire() }

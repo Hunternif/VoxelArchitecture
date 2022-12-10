@@ -21,6 +21,11 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropZ,
     PropPosition,
 
+    PropOffsetY,
+    PropOffsetX,
+    PropOffsetZ,
+    PropOffsetPosition,
+
     PropEdgeLength,
     PropShape,
 
