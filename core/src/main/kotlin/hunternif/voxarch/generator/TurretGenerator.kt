@@ -2,11 +2,9 @@ package hunternif.voxarch.generator
 
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.dom.builder.asNodeBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
@@ -35,7 +33,7 @@ class TurretGenerator : ChainedGenerator() {
         parentNode: Node,
         nextBlock: DomBuilder.() -> Unit,
     ) {
-        parent.asNodeBuilder<Room>()?.apply {
+        parent.apply {
             val originalStyle = stylesheet
             // Order matters! First apply the default styles, then the custom ones.
             stylesheet = originalStyle + createTurretStyle(parentNode)

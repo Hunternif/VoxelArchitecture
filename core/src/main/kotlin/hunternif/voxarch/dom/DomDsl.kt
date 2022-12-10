@@ -93,7 +93,7 @@ fun DomBuilder.ward(
 }
 
 /** Runs [block] in every corner of this [PolygonRoom]. */
-fun DomNodeBuilder<out PolygonRoom>.allCorners(
+fun DomBuilder.allCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicPolygonCornerBuilder(ctx, block)
@@ -101,7 +101,7 @@ fun DomNodeBuilder<out PolygonRoom>.allCorners(
 }
 
 /** Runs [block] in the 4 corners of this [Room]'s bounding box. */
-fun DomNodeBuilder<out Room>.fourCorners(
+fun DomBuilder.fourCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicFourCornerBuilder(ctx, block)
@@ -109,7 +109,7 @@ fun DomNodeBuilder<out Room>.fourCorners(
 }
 
 /** Runs [block] on every section of this polygon. */
-fun DomNodeBuilder<out Room>.allWalls(
+fun DomBuilder.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomPolygonSegmentBuilder(ctx, block)
@@ -117,7 +117,7 @@ fun DomNodeBuilder<out Room>.allWalls(
 }
 
 /** Runs [block] on one random section of this polygon. */
-fun DomNodeBuilder<out Room>.randomWall(
+fun DomBuilder.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomRandomSegmentBuilder(ctx, block)
@@ -125,7 +125,7 @@ fun DomNodeBuilder<out Room>.randomWall(
 }
 
 /** Runs [block] on every side of this room. */
-fun DomNodeBuilder<out Room>.fourWalls(
+fun DomBuilder.fourWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomFourWallsBuilder(ctx, block)
