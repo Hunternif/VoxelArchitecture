@@ -2,6 +2,8 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.query
+import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -26,5 +28,21 @@ class StylePositionTest {
 
         assertEquals(100.0, parent.height, 0.0)
         assertEquals(47.0, child.origin.y, 0.0)
+    }
+
+    @Test
+    fun `vector offset`() {
+        val style = Stylesheet().apply {
+            style("child") {
+                position { base, _ -> base + Vec3(1, 2, 3) }
+            }
+        }
+        val dom = domRoot(style) {
+            room("child")
+        }.buildDom()
+
+        val child = dom.query<Room>().first()
+
+        assertEquals(Vec3(1, 2, 3), child.origin)
     }
 }

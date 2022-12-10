@@ -2,6 +2,7 @@ package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.round
+import hunternif.voxarch.vector.Vec3
 
 class StylePosition : StyleParameter
 
@@ -31,6 +32,14 @@ val PropZ = newNodeProperty<Node, Double>("offset z", 0.0) { value ->
     node.origin.z += newValue
 }
 
+val PropPosition = newNodeProperty<Node, Vec3>("offset vector", Vec3.ZERO) { value ->
+    val baseValue = node.origin
+    val newValue = value
+        .invoke(baseValue, seed + 10000016)
+        .round()
+    node.origin += newValue
+}
+
 fun Rule.y(block: StylePosition.() -> Dimension) {
     add(PropY, StylePosition().block())
 }
@@ -47,6 +56,10 @@ fun Rule.position(x: Dimension, y: Dimension, z: Dimension) {
     add(PropX, x)
     add(PropY, y)
     add(PropZ, z)
+}
+
+fun Rule.position(block: (base: Vec3, seed: Long) -> Vec3) {
+    add(PropPosition, value(block))
 }
 
 
@@ -79,6 +92,14 @@ val PropStartZ = newNodeProperty<Room, Double>("start z", 0.0) { value ->
     node.start.z = newValue
 }
 
+val PropStart = newNodeProperty<Room, Vec3>("start vector", Vec3.ZERO) { value ->
+    val baseValue = node.start
+    val newValue = value
+        .invoke(baseValue, seed + 10000017)
+        .round()
+    node.start = newValue
+}
+
 fun Rule.startY(block: StylePosition.() -> Dimension) {
     add(PropStartY, StylePosition().block())
 }
@@ -95,4 +116,8 @@ fun Rule.start(x: Dimension, y: Dimension, z: Dimension) {
     add(PropStartX, x)
     add(PropStartY, y)
     add(PropStartZ, z)
+}
+
+fun Rule.start(block: (base: Vec3, seed: Long) -> Vec3) {
+    add(PropStart, value(block))
 }
