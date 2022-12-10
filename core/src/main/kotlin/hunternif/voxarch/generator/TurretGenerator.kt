@@ -38,9 +38,7 @@ class TurretGenerator : ChainedGenerator() {
         parent.asNodeBuilder<Room>()?.apply {
             val originalStyle = stylesheet
             // Order matters! First apply the default styles, then the custom ones.
-            if (parentNode is Room) {
-                stylesheet = originalStyle + createTurretStyle(parentNode)
-            }
+            stylesheet = originalStyle + createTurretStyle(parentNode)
             floor(BLD_FOUNDATION)
             polygonRoom(BLD_TURRET_BOTTOM)
             floor()
@@ -63,7 +61,7 @@ class TurretGenerator : ChainedGenerator() {
      * These styles will apply to the new generated part of the DOM,
      * but not to any children.
      */
-    private fun createTurretStyle(body: Room) = Stylesheet().apply {
+    private fun createTurretStyle(body: Node) = Stylesheet().apply {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }
@@ -104,7 +102,7 @@ class TurretGenerator : ChainedGenerator() {
         RoofShape.FLAT_BORDERED, RoofShape.SPIRE_BORDERED -> true
         else -> false
     }
-    private fun Room.avgRadius() = ((size.x + size.z) / 4).vx
+    private fun Node.avgRadius() = ((size.x + size.z) / 4).vx
     private fun roofOffset() = roofOffset.vx
     private fun spireRatio() = spireRatio
     private fun taperRatio() = taperRatio
