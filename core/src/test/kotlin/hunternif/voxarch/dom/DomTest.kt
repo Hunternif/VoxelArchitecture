@@ -275,4 +275,21 @@ class DomTest {
 //        assertEquals("child", child3.type)
 //        assertEquals(25.0, child3.height, 0.0)
 //    }
+
+    @Test
+    fun `style for instance`() {
+        val dom = domRoot {
+            room("special_room") {
+                stylesheet.styleFor(this) {
+                    height { 35.vx }
+                }
+            }
+            room("second_room")
+        }.buildDom()
+
+        val specialRoom = dom.query<Room>("special_room").first()
+        val secondRoom = dom.query<Room>("second_room").first()
+        assertEquals(35.0, specialRoom.height, 0.0)
+        assertEquals(0.0, secondRoom.height, 0.0)
+    }
 }

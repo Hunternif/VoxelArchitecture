@@ -54,15 +54,26 @@ open class Stylesheet {
     }
 
     /**
+     * Register a style rule applied to specific DOM Builder instance.
+     */
+    fun styleFor(
+        instance: DomBuilder,
+        block: Rule.() -> Unit,
+    ) {
+        rules.put(GLOBAL_STYLE, Rule(destInstance = instance).apply(block))
+    }
+
+    /**
      * Register a style rule i.e. a list of style declarations.
      * These will be limited by type [T].
      * @param styleClass is the "CSS class".
      */
     inline fun <reified T> styleFor(
         styleClass: String = GLOBAL_STYLE,
+        instance: DomBuilder? = null,
         noinline block: Rule.() -> Unit,
     ) {
-        rules.put(styleClass, Rule(styleClass, T::class.java).apply(block))
+        rules.put(styleClass, Rule(styleClass, T::class.java, instance).apply(block))
     }
 
     fun addRule(rule: Rule) {
@@ -80,18 +91,16 @@ open class Stylesheet {
             // TODO: pass StyledGen from DomGenBuilder
             element.domBuilder.generators.forEach { gen ->
                 val styledGen = StyledGen(gen, element.parentNode, element.domBuilder)
-                val genClass = gen.javaClass
                 styleClasses
                     .flatMap { rules[it] }
-                    .filter { it.destType?.isAssignableFrom(genClass) ?: true }
+                    .filter { it.appliesTo(styledGen) }
                     .flatMap { it.declarations }
                     .sortedBy { GlobalStyleOrderIndex[it.property] }
                     .forEach { it.applyTo(styledGen) }
             }
-            val nodeClass = element.node.javaClass
             styleClasses
                 .flatMap { rules[it] }
-                .filter { it.destType?.isAssignableFrom(nodeClass) ?: true }
+                .filter { it.appliesTo(element) }
                 .flatMap { it.declarations }
                 .sortedBy { GlobalStyleOrderIndex[it.property] }
                 .forEach { it.applyTo(element) }
