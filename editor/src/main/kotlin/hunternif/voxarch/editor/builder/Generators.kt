@@ -3,12 +3,12 @@ package hunternif.voxarch.editor.builder
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.generator.GenAddRoom
 import hunternif.voxarch.generator.IGenerator
-import hunternif.voxarch.generator.TurretGenerator
+import hunternif.voxarch.generator.GenTurretDecor
 
 typealias GeneratorFactory = AppState.() -> IGenerator
 
 private val generatorsByClass: Map<Class<out IGenerator>, GeneratorFactory> = mapOf(
-    TurretGenerator::class.java to { TurretGenerator() },
+    GenTurretDecor::class.java to { GenTurretDecor() },
     GenAddRoom::class.java to { GenAddRoom() },
 )
 

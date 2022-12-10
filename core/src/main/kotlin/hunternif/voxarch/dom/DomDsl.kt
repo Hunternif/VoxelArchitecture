@@ -4,7 +4,7 @@ import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.generator.IGenerator
-import hunternif.voxarch.generator.TurretGenerator
+import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
 import hunternif.voxarch.vector.Vec3
@@ -69,7 +69,7 @@ fun DomBuilder.polygonRoom(
     bld.block()
 }
 
-/** Adds child PolygonRoom with a [TurretGenerator]. See [node]. */
+/** Adds child PolygonRoom with a [GenTurretDecor]. See [node]. */
 fun DomBuilder.turret(
     vararg styleClass: String,
     block: DomPolygonRoomBuilder.() -> Unit = {}
@@ -81,7 +81,7 @@ fun DomBuilder.turret(
     addChild(bld)
     // must add generator after the polygon is added as child,
     // so that the generator inherits the stylesheet.
-    bld.gen(TurretGenerator(), *styleClass)
+    bld.gen(GenTurretDecor(), *styleClass)
     bld.block()
 }
 

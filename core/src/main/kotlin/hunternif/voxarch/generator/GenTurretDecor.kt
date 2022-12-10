@@ -11,10 +11,10 @@ import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.sandbox.castle.turret.TurretPosition
 
 /**
- * Adds child elements to make a Room look like a castle turret.
+ * Adds decorative child elements to make a Room look like a castle turret.
  */
 @PublicGenerator("Turret")
-class TurretGenerator : ChainedGenerator() {
+class GenTurretDecor : ChainedGenerator() {
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
     var bottomShape: BottomShape = BottomShape.FLAT
     /** position of this turret in relation to parent turret */

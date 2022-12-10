@@ -5,7 +5,7 @@ import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.plan.PolygonRoom
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_ROOF
@@ -13,11 +13,11 @@ import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import org.junit.Assert.*
 import org.junit.Test
 
-class TurretGeneratorTest {
+class GenTurretDecorTest {
     @Test
     fun `turret adds style rules to itself but not children`() {
         val style = defaultStyle.apply {
-            styleFor<TurretGenerator>(DOM_TURRET) {
+            styleFor<GenTurretDecor>(DOM_TURRET) {
                 // This enables the "roof" element with height 0.0
                 roofShape { set(RoofShape.FLAT_BORDERED) }
             }
@@ -33,7 +33,7 @@ class TurretGeneratorTest {
         }.buildDom()
 
         val turret = dom.query<Room>("turret").first()
-        val roof = turret.query<PolygonRoom>(BLD_TOWER_ROOF).first()
+        val roof = turret.query<PolyRoom>(BLD_TOWER_ROOF).first()
         val room1 = dom.query<Room>("other_room_1").first()
         val room2 = dom.query<Room>("other_room_2").first()
 

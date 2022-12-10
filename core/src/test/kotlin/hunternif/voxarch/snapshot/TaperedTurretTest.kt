@@ -4,7 +4,7 @@ import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.generator.TurretGenerator
+import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
@@ -35,7 +35,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
                     height { 5.vx }
                     shape { set(PolygonShape.SQUARE) }
                 }
-                styleFor<TurretGenerator> {
+                styleFor<GenTurretDecor> {
                     roofShape { set(RoofShape.FLAT_BORDERED) }
                     bottomShape { set(BottomShape.TAPERED) }
                     roofOffset { 1.vx }
