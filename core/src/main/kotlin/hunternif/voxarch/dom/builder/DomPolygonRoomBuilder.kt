@@ -6,7 +6,8 @@ import hunternif.voxarch.util.ellipse
 import hunternif.voxarch.util.rectangle
 import kotlin.math.ceil
 
-open class DomPolygonRoomBuilder : DomNodeBuilder<PolygonRoom>({ PolygonRoom() }) {
+open class DomPolygonRoomBuilder(ctx: DomContext)
+    : DomNodeBuilder<PolygonRoom>(ctx, { PolygonRoom() }) {
     override fun buildNode() = node.createPolygon()
 }
 

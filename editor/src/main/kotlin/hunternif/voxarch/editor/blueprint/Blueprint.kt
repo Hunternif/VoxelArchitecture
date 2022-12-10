@@ -1,6 +1,8 @@
 package hunternif.voxarch.editor.blueprint
 
-import hunternif.voxarch.dom.builder.DomLocalRoot
+import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.generator.ChainedGenerator
@@ -62,16 +64,21 @@ class Blueprint(
         // not removing from the ID registry, in case of undo
     }
 
-    fun execute(root: Node) {
+    fun execute(
+        stylesheet: Stylesheet = defaultStyle,
+        seed: Long = 0,
+        root: Node,
+    ) {
         (start.generator as? ChainedGenerator)?.clearRecursionCounters()
         // Creates a new detached DOM root and generates on it.
         // Not recommended, because this will ignore styles or nested generators.
-        DomLocalRoot(root).apply {
+        domRoot(stylesheet, seed, root) {
             start.generator.generate(this)
         }.build()
     }
 }
 
+//TODO: each node must add a dummy dombuilder and apply styles there!
 class BlueprintNode(
     override val id: Int,
     val name: String,
@@ -126,7 +133,7 @@ sealed class BlueprintSlot(
 
     fun unlinkFrom(other: BlueprintSlot) {
         val link = links.firstOrNull {
-            it.from == this && it.to == other || it.from == other && it.to== this
+            it.from == this && it.to == other || it.from == other && it.to == this
         }
         link?.let {
             this.links.remove(it)

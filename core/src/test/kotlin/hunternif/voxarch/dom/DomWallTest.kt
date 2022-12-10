@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
@@ -17,7 +16,7 @@ class DomWallTest {
             }
         }
         val wallSeeds = mutableListOf<Long>()
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             polygonRoom {
                 allWalls {
                     wall {
@@ -55,7 +54,7 @@ class DomWallTest {
             }
         }
         val wallSeeds = mutableListOf<Long>()
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room {
                 fourWalls {
                     wall {
@@ -78,7 +77,7 @@ class DomWallTest {
             }
         }
         val wallSeeds = mutableListOf<Long>()
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room {
                 allWalls {
                     wall {
@@ -92,7 +91,7 @@ class DomWallTest {
         assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
     }
 
-    private fun verifyFourWalls(dom: Structure) {
+    private fun verifyFourWalls(dom: Node) {
         val room = dom.children[0]
         assertEquals(4, room.children.size)
 

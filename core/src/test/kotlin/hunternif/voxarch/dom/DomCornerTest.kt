@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
@@ -18,7 +17,7 @@ class DomCornerTest {
                 diameter { 2.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             polygonRoom {
                 allCorners {
                     room()
@@ -42,7 +41,7 @@ class DomCornerTest {
                 length { 4.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room {
                 fourCorners {
                     room()

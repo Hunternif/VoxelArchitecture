@@ -1,10 +1,11 @@
 package hunternif.voxarch.dom
 
 import com.nhaarman.mockitokotlin2.*
+import hunternif.voxarch.dom.builder.DomContext
 import hunternif.voxarch.dom.builder.DomNodeBuilder
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.Structure
 import org.junit.Test
 import org.mockito.Mockito
 
@@ -21,8 +22,8 @@ class StyleOrderTest {
             }
         }
         val node: Room = spy(Room())
-        val domBuilder = DomNodeBuilder { node }
-        DomRoot().addChild(domBuilder)
+        val ctx = DomContext(Structure())
+        val domBuilder = DomNodeBuilder(ctx) { node }
 
         style.apply(domBuilder, listOf("class1", "class2"))
 

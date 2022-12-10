@@ -10,7 +10,7 @@ import org.junit.Test
 class DomTest {
     @Test
     fun `nested nodes`() {
-        val dom = DomRoot().apply {
+        val dom = domRoot {
             node("parent") {
                 node("child")
             }
@@ -37,7 +37,7 @@ class DomTest {
                 length { 100.pct }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room("parent") {
                 room("child")
             }
@@ -67,7 +67,7 @@ class DomTest {
                 length { min = 1.vx; 0.pct }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room("parent") {
                 room("child")
             }
@@ -88,7 +88,7 @@ class DomTest {
                 length { 1.vx to 1000.vx }
             }
         }
-        val dom = DomRoot(style, seed).apply {
+        val dom = domRoot(style, seed).apply {
             room("random")
         }.buildDom()
 
@@ -107,7 +107,7 @@ class DomTest {
                 seed { inherit() }
             }
         }
-        val dom = DomRoot(style, seed).apply {
+        val dom = domRoot(style, seed).apply {
             room("random")
             room("random")
             room("parent_seed", "random") {
@@ -142,7 +142,7 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room("height_100", "width_200")
         }.buildDom()
 
@@ -161,7 +161,7 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room()
         }.buildDom()
 
@@ -183,7 +183,7 @@ class DomTest {
                 length { 300.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room()
             polygonRoom()
         }.buildDom()
@@ -196,21 +196,36 @@ class DomTest {
 
     @Test
     fun `find parent node`() {
-        var root: Structure
-        var mid: Node
-        DomRoot().apply {
-            root = node
+        var rootNode: Node
+        var midNode: Node
+        domRoot {
+            rootNode = node
             empty {
-                assertEquals(root, findParentNode())
+                assertEquals(rootNode, findParentNode())
                 node {
-                    assertEquals(root, findParentNode())
-                    mid = node
+                    assertEquals(rootNode, findParentNode())
+                    midNode = node
                     room {
-                        assertEquals(mid, findParentNode())
+                        assertEquals(midNode, findParentNode())
                     }
                 }
             }
         }
+    }
+
+    @Test
+    fun `detect cycles in dom`() {
+        val root = domRoot()
+        val domEmpty = EmptyLogicBuilder(root.ctx)
+        val domNode = DomNodeBuilder(root.ctx) { Node() }
+        assertEquals(root, domEmpty.parent)
+        assertEquals(root, domNode.parent)
+        domEmpty.addChild(domNode)
+        domNode.addChild(domEmpty)
+        assertEquals(domEmpty, domNode.parent)
+        assertEquals(domNode, domEmpty.parent)
+        assertEquals(domNode.node, domEmpty.findParentNode())
+        assertEquals(root.node, domNode.findParentNode())
     }
 
     @Test
@@ -223,7 +238,7 @@ class DomTest {
                 height { inherit() }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room("parent") {
                 room("child")
             }
@@ -237,7 +252,7 @@ class DomTest {
 
     @Test
     fun `do not inherit node tag from style class`() {
-        val dom = DomRoot().apply {
+        val dom = domRoot {
             node("parent") {
                 node("child", "extra class") {
                     node("inner")
@@ -273,7 +288,7 @@ class DomTest {
 //                height { 50.pct }
 //            }
 //        }
-//        val dom = DomRoot(style).apply {
+//        val dom = domRoot(style) {
 //            room("parent") {
 //                room()
 //                room("child", "extra class") {
@@ -301,11 +316,11 @@ class DomTest {
         private fun DomBuilder.empty(
             block: DomBuilder.() -> Unit = {}
         ) {
-            val bld = EmptyLogicBuilder()
+            val bld = EmptyLogicBuilder(ctx)
             addChild(bld)
             bld.block()
         }
 
-        class EmptyLogicBuilder: DomBuilder()
+        class EmptyLogicBuilder(ctx: DomContext) : DomBuilder(ctx)
     }
 }

@@ -1,13 +1,13 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.dom.DOM_TURRET
-import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
 import hunternif.voxarch.generator.TurretGenerator
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.PolygonShape
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
@@ -58,7 +58,7 @@ class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     }
 
     companion object {
-        private fun turret(width: Int): Structure {
+        private fun turret(width: Int): Node {
             val style = defaultStyle.apply {
                 styleFor<PolygonRoom>(DOM_TURRET) {
                     position(1.vx, 0.vx, 1.vx)
@@ -75,7 +75,7 @@ class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                     taperRatio { set(0.75) }
                 }
             }
-            return DomRoot(style).apply {
+            return domRoot(style) {
                 turret()
             }.buildDom()
         }

@@ -1,7 +1,7 @@
 package hunternif.voxarch.generator
 
 import hunternif.voxarch.dom.DOM_TURRET
-import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
@@ -25,7 +25,7 @@ class TurretGeneratorTest {
                 height { 10.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             turret("turret") {
                 room(BLD_TOWER_ROOF, "other_room_1")
             }

@@ -2,6 +2,7 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
@@ -12,6 +13,18 @@ import hunternif.voxarch.vector.Vec3
 // Node, a style will be automatically added to it.
 const val DOM_TURRET = "dom_turret"
 
+
+/** Creates DOM root. */
+fun domRoot(
+    stylesheet: Stylesheet = defaultStyle,
+    seed: Long = 0L,
+    node: Node = Structure(),
+    block: DomRoot.() -> Unit = {}
+): DomRoot {
+    return DomContext(stylesheet, seed, node).rootBuilder.apply {
+        block()
+    }
+}
 
 /**
  * Adds child empty [Node].
@@ -50,7 +63,7 @@ fun DomBuilder.polygonRoom(
     vararg styleClass: String,
     block: DomNodeBuilder<PolygonRoom>.() -> Unit = {}
 ) {
-    val bld = DomPolygonRoomBuilder().apply{ +styleClass }
+    val bld = DomPolygonRoomBuilder(ctx).apply { +styleClass }
     addChild(bld)
     bld.block()
 }
@@ -60,7 +73,7 @@ fun DomBuilder.turret(
     vararg styleClass: String,
     block: DomPolygonRoomBuilder.() -> Unit = {}
 ) {
-    val bld =  DomPolygonRoomBuilder().apply{
+    val bld = DomPolygonRoomBuilder(ctx).apply {
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
@@ -74,7 +87,7 @@ fun DomBuilder.ward(
     vararg styleClass: String,
     block: DomWardBuilder.() -> Unit = {}
 ) {
-    val bld = DomWardBuilder().apply{ +styleClass }
+    val bld = DomWardBuilder(ctx).apply { +styleClass }
     addChild(bld)
     bld.block()
 }
@@ -83,7 +96,7 @@ fun DomBuilder.ward(
 fun DomNodeBuilder<PolygonRoom>.allCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicPolygonCornerBuilder(block)
+    val bld = DomLogicPolygonCornerBuilder(ctx, block)
     addChild(bld)
 }
 
@@ -91,7 +104,7 @@ fun DomNodeBuilder<PolygonRoom>.allCorners(
 fun DomNodeBuilder<Room>.fourCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicFourCornerBuilder(block)
+    val bld = DomLogicFourCornerBuilder(ctx, block)
     addChild(bld)
 }
 
@@ -99,7 +112,7 @@ fun DomNodeBuilder<Room>.fourCorners(
 fun DomNodeBuilder<Room>.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolygonSegmentBuilder(block)
+    val bld = DomPolygonSegmentBuilder(ctx, block)
     addChild(bld)
 }
 
@@ -107,7 +120,7 @@ fun DomNodeBuilder<Room>.allWalls(
 fun DomNodeBuilder<Room>.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomRandomSegmentBuilder(block)
+    val bld = DomRandomSegmentBuilder(ctx, block)
     addChild(bld)
 }
 
@@ -115,7 +128,7 @@ fun DomNodeBuilder<Room>.randomWall(
 fun DomNodeBuilder<Room>.fourWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomFourWallsBuilder(block)
+    val bld = DomFourWallsBuilder(ctx, block)
     addChild(bld)
 }
 
@@ -140,11 +153,11 @@ fun DomLineSegmentBuilder.path(
 annotation class CastleDsl
 
 /** Creates a child [DomBuilder], adds it to parent and returns. */
-private fun <N: Node> DomBuilder.addChildNodeBuilder(
+private fun <N : Node> DomBuilder.addChildNodeBuilder(
     styleClass: Array<out String>,
     createNode: () -> N
-) : DomNodeBuilder<N> {
-    val child = DomNodeBuilder(createNode).apply{ +styleClass }
+): DomNodeBuilder<N> {
+    val child = DomNodeBuilder(ctx, createNode).apply { +styleClass }
     addChild(child)
     return child
 }

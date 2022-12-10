@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.PolygonShape.ROUND
@@ -18,7 +17,7 @@ class DomWardTest {
                 diameter { 2.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             ward {
                 allCorners {
                     room()
@@ -43,7 +42,7 @@ class DomWardTest {
                 edgeLength { 6.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             ward {
                 allCorners {
                     room()
@@ -64,7 +63,7 @@ class DomWardTest {
                 edgeLength { 4.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             ward {
                 allCorners {
                     room()
@@ -85,12 +84,12 @@ class DomWardTest {
         }
         lateinit var ward: Ward
 
-        DomRoot(style, 1).apply {
+        domRoot(style, 1).apply {
             ward { ward = node}
         }.buildDom()
         assertEquals(ROUND, ward.shape)
 
-        DomRoot(style, 2).apply {
+        domRoot(style, 2).apply {
             ward { ward = node}
         }.buildDom()
         assertEquals(SQUARE, ward.shape)

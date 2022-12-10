@@ -5,15 +5,14 @@ import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Structure
 import java.util.*
 
-/** Base class for DOM elements. Build your DOM starting from [DomRoot]! */
+/** Base class for DOM elements. */
 @CastleDsl
-abstract class DomBuilder {
+abstract class DomBuilder(val ctx: DomContext) {
     var stylesheet: Stylesheet = defaultStyle
-    internal var parent: DomBuilder = DetachedRoot
-        private set
+    var parent: DomBuilder = ctx.rootBuilder
+         protected set
     internal var seed: Long = 0
     /** Don't manually add children, use [addChild] instead.*/
     internal val children = mutableListOf<DomBuilder>()
@@ -38,8 +37,17 @@ abstract class DomBuilder {
     }
 }
 
-/** Placeholder for parent when a builder is not yet added as a child. */
-internal object DetachedRoot : DomBuilder()
+/**
+ * Represents context shared by all DOM builders.
+ */
+class DomContext(
+    stylesheet: Stylesheet = defaultStyle,
+    seed: Long = 0L,
+    val rootNode: Node,
+) {
+    constructor(root: Node) : this(defaultStyle, 0L, root)
+    val rootBuilder = DomRoot(stylesheet, seed, ctx=this)
+}
 
 /** Root of the DOM.
  * @param stylesheet this stylesheet will apply to all elements in this DOM.
@@ -49,24 +57,16 @@ internal object DetachedRoot : DomBuilder()
 class DomRoot(
     stylesheet: Stylesheet = defaultStyle,
     seed: Long = 0,
-) : DomLocalRoot<Structure>(Structure(), stylesheet, seed)
-
-/** Used for creating a local DOM within a Node tree,
- * e.g. to change the stylesheet locally. */
-open class DomLocalRoot<out N : Node>(
-    node: N,
-    stylesheet: Stylesheet = defaultStyle,
-    seed: Long = 0,
-) : DomNodeBuilder<N>({ node }) {
+    ctx: DomContext,
+) : DomBuilder(ctx) {
     init {
         this.seed = seed
         this.stylesheet = stylesheet
+        this.parent = this
     }
-    override fun build() {
-        children.forEach { it.build() }
-    }
+    val node: Node get() = ctx.rootNode
     /** Builds the entire DOM tree. */
-    fun buildDom(): N {
+    fun buildDom(): Node {
         build()
         return node
     }
@@ -74,8 +74,9 @@ open class DomLocalRoot<out N : Node>(
 
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<out N: Node>(
+    ctx: DomContext,
     private val createNode: () -> N
-) : DomBuilder() {
+) : DomBuilder(ctx) {
     private val styleClass = LinkedHashSet<String>()
     val node: N by lazy { createNode() }
     override fun build() {
@@ -110,16 +111,19 @@ open class DomNodeBuilder<out N: Node>(
 
 /**
  * Finds the most immediate (lowest) non-null parent [Node].
+ * If there is a cycle, returns the root node.
  * Non-null because root has a non-null node.
  */
 fun DomBuilder.findParentNode(): Node {
-    if (this is DomLocalRoot<*>) return node
-    var domBuilder = this.parent
-    while (domBuilder !is DomNodeBuilder<*>)
-    {
-        domBuilder = domBuilder.parent
+    // detect cycles
+    val visited = mutableSetOf(this)
+    var dom = this.parent
+    while (dom !in visited) {
+        if (dom is DomNodeBuilder<*>) return dom.node
+        visited.add(dom)
+        dom = dom.parent
     }
-    return domBuilder.node
+    return dom.ctx.rootNode
 }
 
 /** Checks if this builder builds the right class of node and casts to it*/

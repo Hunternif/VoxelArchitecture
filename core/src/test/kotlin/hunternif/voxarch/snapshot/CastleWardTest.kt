@@ -1,10 +1,9 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.dom.*
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonShape
-import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.BLD_CURTAIN_WALL
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
@@ -32,7 +31,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
         record(out.sliceX(30))
     }
 
-    private fun castleWard(): Structure {
+    private fun castleWard(): Node {
         val style = defaultStyle.apply {
             style("main_turret") {
                 size(6.vx, 4.vx, 6.vx)
@@ -68,7 +67,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 size(4.vx, 12.vx, 4.vx)
             }
         }
-        return DomRoot(style, 0).apply {
+        return domRoot(style, 0).apply {
             ward("outer_ward") {
                 allCorners { turret("outer_ward_turret") }
                 allWalls { wall(BLD_CURTAIN_WALL) }

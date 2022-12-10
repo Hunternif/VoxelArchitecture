@@ -2,7 +2,10 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.vector.Vec3
 
-class DomTranslateBuilder(private val offset: Vec3) : DomBuilder() {
+class DomTranslateBuilder(
+    ctx: DomContext,
+    private val offset: Vec3,
+) : DomBuilder(ctx) {
     override fun build() {
         children.forEach {
             it.build()

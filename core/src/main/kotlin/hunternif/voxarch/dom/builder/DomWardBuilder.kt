@@ -8,7 +8,7 @@ import kotlin.math.PI
 /** Castle ward. */
 class Ward : PolygonRoom()
 
-class DomWardBuilder : DomNodeBuilder<Ward>({ Ward() }) {
+class DomWardBuilder(ctx: DomContext,) : DomNodeBuilder<Ward>(ctx, { Ward() }) {
     override fun buildNode() = node.run {
         polygon.origin = innerFloorCenter
         when (shape) {

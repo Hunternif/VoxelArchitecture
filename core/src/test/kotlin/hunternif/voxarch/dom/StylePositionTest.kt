@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Room
 import org.junit.Assert.*
@@ -16,7 +15,7 @@ class StylePositionTest {
                 y { 100.pct - 3.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room("parent") {
                 room("child")
             }

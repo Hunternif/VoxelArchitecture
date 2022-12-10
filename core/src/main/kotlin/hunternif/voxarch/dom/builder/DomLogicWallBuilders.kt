@@ -13,7 +13,10 @@ import kotlin.random.Random
  * Children will be translated to [p1] and rotated so that X axis runs along
  * [p1]-[p2].
  */
-class DomLineSegmentBuilder(val p1: Vec3, val p2: Vec3): DomBuilder() {
+class DomLineSegmentBuilder(
+    ctx: DomContext,
+    val p1: Vec3, val p2: Vec3,
+) : DomBuilder(ctx) {
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
     override fun build() {
@@ -35,8 +38,9 @@ class DomLineSegmentBuilder(val p1: Vec3, val p2: Vec3): DomBuilder() {
  * [PolygonRoom]>.
  */
 open class DomPolygonSegmentBuilder(
+    ctx: DomContext,
     private val childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomBuilder() {
+) : DomBuilder(ctx) {
     override fun build() {
         val room = findParentNode()
         val polygon = when (room) {
@@ -53,7 +57,7 @@ open class DomPolygonSegmentBuilder(
 
     protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
         segments.forEachIndexed { i, seg ->
-            val bld = DomLineSegmentBuilder(origin + seg.p1, origin + seg.p2)
+            val bld = DomLineSegmentBuilder(ctx, origin + seg.p1, origin + seg.p2)
             addChild(bld, seed + 20000 + i)
             bld.childBlock()
         }
@@ -66,8 +70,9 @@ open class DomPolygonSegmentBuilder(
  * Will work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
 class DomFourWallsBuilder(
+    ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolygonSegmentBuilder(childBlock) {
+) : DomPolygonSegmentBuilder(ctx, childBlock) {
     override fun build() {
         val room = findParentNode()
         if (room is Room) {
@@ -88,8 +93,9 @@ class DomFourWallsBuilder(
  * [PolygonRoom].
  */
 class DomRandomSegmentBuilder(
+    ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolygonSegmentBuilder(childBlock) {
+) : DomPolygonSegmentBuilder(ctx, childBlock) {
     override fun build() {
         val room = findParentNode()
         val polygon = when (room) {

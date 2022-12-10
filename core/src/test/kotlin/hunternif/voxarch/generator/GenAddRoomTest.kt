@@ -1,10 +1,9 @@
 package hunternif.voxarch.generator
 
-import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.plan.Room
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -20,7 +19,7 @@ class GenAddRoomTest {
                 height { 5.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room("my_room") {
                 generators.add(GenAddRoom("my_child"))
             }
@@ -46,7 +45,7 @@ class GenAddRoomTest {
         }
         val generator = GenAddRoom()
         generator.nextGens.add(GenAddRoom("nested_child"))
-        val dom = DomRoot(style).apply {
+        val dom = domRoot(style) {
             room() {
                 generators.add(generator)
             }
