@@ -93,7 +93,7 @@ fun DomBuilder.ward(
 }
 
 /** Runs [block] in every corner of this [PolygonRoom]. */
-fun DomNodeBuilder<PolygonRoom>.allCorners(
+fun DomNodeBuilder<out PolygonRoom>.allCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicPolygonCornerBuilder(ctx, block)
@@ -101,7 +101,7 @@ fun DomNodeBuilder<PolygonRoom>.allCorners(
 }
 
 /** Runs [block] in the 4 corners of this [Room]'s bounding box. */
-fun DomNodeBuilder<Room>.fourCorners(
+fun DomNodeBuilder<out Room>.fourCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicFourCornerBuilder(ctx, block)
@@ -109,7 +109,7 @@ fun DomNodeBuilder<Room>.fourCorners(
 }
 
 /** Runs [block] on every section of this polygon. */
-fun DomNodeBuilder<Room>.allWalls(
+fun DomNodeBuilder<out Room>.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomPolygonSegmentBuilder(ctx, block)
@@ -117,7 +117,7 @@ fun DomNodeBuilder<Room>.allWalls(
 }
 
 /** Runs [block] on one random section of this polygon. */
-fun DomNodeBuilder<Room>.randomWall(
+fun DomNodeBuilder<out Room>.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomRandomSegmentBuilder(ctx, block)
@@ -125,7 +125,7 @@ fun DomNodeBuilder<Room>.randomWall(
 }
 
 /** Runs [block] on every side of this room. */
-fun DomNodeBuilder<Room>.fourWalls(
+fun DomNodeBuilder<out Room>.fourWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomFourWallsBuilder(ctx, block)
@@ -153,9 +153,9 @@ fun DomLineSegmentBuilder.path(
 annotation class CastleDsl
 
 /** Creates a child [DomBuilder], adds it to parent and returns. */
-private fun <N : Node> DomBuilder.addChildNodeBuilder(
+private inline fun <reified N : Node> DomBuilder.addChildNodeBuilder(
     styleClass: Array<out String>,
-    createNode: () -> N
+    noinline createNode: () -> N
 ): DomNodeBuilder<N> {
     val child = DomNodeBuilder(ctx, createNode).apply { +styleClass }
     addChild(child)

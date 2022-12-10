@@ -73,8 +73,8 @@ class Blueprint(
         // Creates a new detached DOM root and generates on it.
         // Not recommended, because this will ignore styles or nested generators.
         domRoot(stylesheet, seed, root) {
-            start.generator.generate(this)
-        }.build()
+            start.generator.generate(this, root)
+        }.buildDom()
     }
 }
 

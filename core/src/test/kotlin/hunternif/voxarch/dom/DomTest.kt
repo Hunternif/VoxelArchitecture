@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
@@ -195,40 +194,6 @@ class DomTest {
     }
 
     @Test
-    fun `find parent node`() {
-        var rootNode: Node
-        var midNode: Node
-        domRoot {
-            rootNode = node
-            empty {
-                assertEquals(rootNode, findParentNode())
-                node {
-                    assertEquals(rootNode, findParentNode())
-                    midNode = node
-                    room {
-                        assertEquals(midNode, findParentNode())
-                    }
-                }
-            }
-        }
-    }
-
-    @Test
-    fun `detect cycles in dom`() {
-        val root = domRoot()
-        val domEmpty = EmptyLogicBuilder(root.ctx)
-        val domNode = DomNodeBuilder(root.ctx) { Node() }
-        assertEquals(root, domEmpty.parent)
-        assertEquals(root, domNode.parent)
-        domEmpty.addChild(domNode)
-        domNode.addChild(domEmpty)
-        assertEquals(domEmpty, domNode.parent)
-        assertEquals(domNode, domEmpty.parent)
-        assertEquals(domNode.node, domEmpty.findParentNode())
-        assertEquals(root.node, domNode.findParentNode())
-    }
-
-    @Test
     fun `inherit style value from parent node`() {
         val style = Stylesheet().apply {
             style("parent") {
@@ -310,17 +275,4 @@ class DomTest {
 //        assertEquals("child", child3.type)
 //        assertEquals(25.0, child3.height, 0.0)
 //    }
-
-    companion object {
-        /** Creates empty logic element for testing. */
-        private fun DomBuilder.empty(
-            block: DomBuilder.() -> Unit = {}
-        ) {
-            val bld = EmptyLogicBuilder(ctx)
-            addChild(bld)
-            bld.block()
-        }
-
-        class EmptyLogicBuilder(ctx: DomContext) : DomBuilder(ctx)
-    }
 }

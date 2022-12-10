@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Room
@@ -15,12 +16,11 @@ open class DomLogicPolygonCornerBuilder(
     ctx: DomContext,
     private val block: DomBuilder.() -> Unit
 ) : DomBuilder(ctx) {
-    override fun build() {
-        val room = findParentNode()
-        if (room is PolygonRoom) {
-            addCornerBuilders(room.polygon)
+    override fun build(parentNode: Node) {
+        if (parentNode is PolygonRoom) {
+            addCornerBuilders(parentNode.polygon)
         }
-        children.forEach { it.build() }
+        children.forEach { it.build(parentNode) }
     }
 
     protected fun addCornerBuilders(polygon: Path) {
@@ -41,14 +41,13 @@ class DomLogicFourCornerBuilder(
     ctx: DomContext,
     block: DomBuilder.() -> Unit
 ) : DomLogicPolygonCornerBuilder(ctx, block) {
-    override fun build() {
-        val room = findParentNode()
-        if (room is Room) {
+    override fun build(parentNode: Node) {
+        if (parentNode is Room) {
             val polygon = Path().apply {
-                rectangle(room.width, room.length)
+                rectangle(parentNode.width, parentNode.length)
             }
             addCornerBuilders(polygon)
         }
-        children.forEach { it.build() }
+        children.forEach { it.build(parentNode) }
     }
 }

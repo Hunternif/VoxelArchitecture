@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.PolygonShape.ROUND
 import hunternif.voxarch.plan.PolygonShape.SQUARE
+import hunternif.voxarch.plan.query
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
@@ -82,16 +83,17 @@ class DomWardTest {
                 shape { random(ROUND, SQUARE) }
             }
         }
-        lateinit var ward: Ward
 
-        domRoot(style, 1).apply {
-            ward { ward = node}
+        val dom1 = domRoot(style, 1).apply {
+            ward()
         }.buildDom()
-        assertEquals(ROUND, ward.shape)
+        val ward1 = dom1.query<Ward>().first()
+        assertEquals(ROUND, ward1.shape)
 
-        domRoot(style, 2).apply {
-            ward { ward = node}
+        val dom2 = domRoot(style, 2).apply {
+            ward()
         }.buildDom()
-        assertEquals(SQUARE, ward.shape)
+        val ward2 = dom2.query<Ward>().first()
+        assertEquals(SQUARE, ward2.shape)
     }
 }

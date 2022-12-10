@@ -19,13 +19,16 @@ class DomLineSegmentBuilder(
 ) : DomBuilder(ctx) {
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
-    override fun build() {
+    override fun build(parentNode: Node) {
         children.forEach {
-            it.build()
+            it.build(parentNode)
+            // TODO: set offset via style, so that it immediately applies
             if (it is DomNodeBuilder<*>) {
-                //TODO: add node rotation?
-                val angle = MathUtil.atan2Deg(-end.z, end.x)
-                it.node.origin = p1.add(it.node.origin.rotateY(angle))
+                it.lastNode?.let { node ->
+                    //TODO: add node rotation?
+                    val angle = MathUtil.atan2Deg(-end.z, end.x)
+                    node.origin = p1.add(node.origin.rotateY(angle))
+                }
             }
         }
     }
@@ -41,18 +44,17 @@ open class DomPolygonSegmentBuilder(
     ctx: DomContext,
     private val childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomBuilder(ctx) {
-    override fun build() {
-        val room = findParentNode()
-        val polygon = when (room) {
-            is PolygonRoom -> room.polygon
+    override fun build(parentNode: Node) {
+        val polygon = when (parentNode) {
+            is PolygonRoom -> parentNode.polygon
             is Room -> Path().apply {
-                origin = room.innerFloorCenter
-                rectangle(room.width, room.length)
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.length)
             }
             else -> null
         }
         polygon?.let { addSegmentBuilders(it.origin, it.segments) }
-        children.forEach { it.build() }
+        children.forEach { it.build(parentNode) }
     }
 
     protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
@@ -73,16 +75,15 @@ class DomFourWallsBuilder(
     ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolygonSegmentBuilder(ctx, childBlock) {
-    override fun build() {
-        val room = findParentNode()
-        if (room is Room) {
+    override fun build(parentNode: Node) {
+        if (parentNode is Room) {
             val polygon = Path().apply {
-                origin = room.innerFloorCenter
-                rectangle(room.width, room.length)
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.length)
             }
             addSegmentBuilders(polygon.origin, polygon.segments)
         }
-        children.forEach { it.build() }
+        children.forEach { it.build(parentNode) }
     }
 }
 
@@ -96,13 +97,12 @@ class DomRandomSegmentBuilder(
     ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolygonSegmentBuilder(ctx, childBlock) {
-    override fun build() {
-        val room = findParentNode()
-        val polygon = when (room) {
-            is PolygonRoom -> room.polygon
+    override fun build(parentNode: Node) {
+        val polygon = when (parentNode) {
+            is PolygonRoom -> parentNode.polygon
             is Room -> Path().apply {
-                origin = room.innerFloorCenter
-                rectangle(room.width, room.length)
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.length)
             }
             else -> null
         }
@@ -110,6 +110,6 @@ class DomRandomSegmentBuilder(
             val segment = it.segments.random(Random(seed + 21000))
             addSegmentBuilders(it.origin, listOf(segment))
         }
-        children.forEach { it.build() }
+        children.forEach { it.build(parentNode) }
     }
 }

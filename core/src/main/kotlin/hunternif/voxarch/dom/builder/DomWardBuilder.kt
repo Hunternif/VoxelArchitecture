@@ -8,8 +8,10 @@ import kotlin.math.PI
 /** Castle ward. */
 class Ward : PolygonRoom()
 
-class DomWardBuilder(ctx: DomContext,) : DomNodeBuilder<Ward>(ctx, { Ward() }) {
-    override fun buildNode() = node.run {
+class DomWardBuilder(ctx: DomContext)
+    : DomNodeBuilder<Ward>(ctx, Ward::class.java, { Ward() }) {
+
+    override fun buildNode(node: Ward) = node.run {
         polygon.origin = innerFloorCenter
         when (shape) {
             PolygonShape.SQUARE -> polygon.rectangle(width, length)
@@ -17,8 +19,7 @@ class DomWardBuilder(ctx: DomContext,) : DomNodeBuilder<Ward>(ctx, { Ward() }) {
         }
     }
 
-    private val edgeCount: Int get() = node.run {
+    private val PolygonRoom.edgeCount: Int get() =
         ((width + length) / 2 * PI / edgeLength)
             .clampMin(4.0).roundToEven().toInt()
-    }
 }

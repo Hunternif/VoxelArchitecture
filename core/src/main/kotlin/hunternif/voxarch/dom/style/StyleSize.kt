@@ -12,7 +12,7 @@ class StyleSize(
 }
 
 val PropHeight = newNodeProperty<Node, Double>("height", 4.0) { value ->
-    val baseValue = parent.height
+    val baseValue = parentNode.height
     val newValue = value
         .invoke(baseValue, seed + 10000001)
         .round()
@@ -20,7 +20,7 @@ val PropHeight = newNodeProperty<Node, Double>("height", 4.0) { value ->
 }
 
 val PropWidth = newNodeProperty<Node, Double>("width", 4.0) { value ->
-    val baseValue = parent.width
+    val baseValue = parentNode.width
     val newValue = value
         .invoke(baseValue, seed + 10000002)
         .round()
@@ -28,7 +28,7 @@ val PropWidth = newNodeProperty<Node, Double>("width", 4.0) { value ->
 }
 
 val PropLength = newNodeProperty<Node, Double>("length", 4.0) { value ->
-    val baseValue = parent.length
+    val baseValue = parentNode.length
     val newValue = value
         .invoke(baseValue, seed + 10000003)
         .round()

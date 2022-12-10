@@ -3,6 +3,7 @@ package hunternif.voxarch.generator
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.plus
+import hunternif.voxarch.plan.Node
 import java.util.*
 import kotlin.collections.LinkedHashSet
 
@@ -19,20 +20,21 @@ abstract class ChainedGenerator : IGenerator {
      */
     abstract fun generateChained(
         parent: DomBuilder,
+        parentNode: Node,
         nextBlock: DomBuilder.() -> Unit,
     )
 
-    override fun generate(parent: DomBuilder) {
+    override fun generate(parent: DomBuilder, parentNode: Node) {
         recursions++
         if (recursions > RECURSION_CAP) return
         parent.apply {
             // Add custom stylesheet
             val originalStyle = stylesheet
             stylesheet = originalStyle + localStyle
-            generateChained(this) {
+            generateChained(this, parentNode) {
                 // Restore original stylesheet
                 stylesheet = originalStyle
-                nextGens.forEach { it.generate(this) }
+                nextGens.forEach { it.generate(this, parentNode) }
             }
         }
     }

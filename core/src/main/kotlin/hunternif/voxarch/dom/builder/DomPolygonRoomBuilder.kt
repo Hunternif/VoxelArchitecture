@@ -7,8 +7,9 @@ import hunternif.voxarch.util.rectangle
 import kotlin.math.ceil
 
 open class DomPolygonRoomBuilder(ctx: DomContext)
-    : DomNodeBuilder<PolygonRoom>(ctx, { PolygonRoom() }) {
-    override fun buildNode() = node.createPolygon()
+    : DomNodeBuilder<PolygonRoom>(ctx, PolygonRoom::class.java, { PolygonRoom() }) {
+
+    override fun buildNode(node: PolygonRoom) = node.createPolygon()
 }
 
 internal fun PolygonRoom.createPolygon() {

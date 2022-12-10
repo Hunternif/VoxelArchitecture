@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.CastleDsl
+import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.generator.IGenerator
@@ -22,9 +23,9 @@ abstract class DomBuilder(val ctx: DomContext) {
      * Must be called prior to [build], to prevent concurrent modification. */
     internal val generators = mutableListOf<IGenerator>()
     /** Recursively invokes this method on children. */
-    open fun build() {
-        generators.forEach { it.generate(this) }
-        children.forEach { it.build() }
+    open fun build(parentNode: Node) {
+        generators.forEach { it.generate(this, parentNode) }
+        children.forEach { it.build(parentNode) }
     }
     internal open fun addChild(
         child: DomBuilder,
@@ -67,26 +68,40 @@ class DomRoot(
     val node: Node get() = ctx.rootNode
     /** Builds the entire DOM tree. */
     fun buildDom(): Node {
-        build()
+        build(node)
         return node
     }
 }
 
 /** Represents any nodes below the root. */
-open class DomNodeBuilder<out N: Node>(
+open class DomNodeBuilder<N: Node>(
     ctx: DomContext,
+    val nodeClass: Class<N>,
     private val createNode: () -> N
 ) : DomBuilder(ctx) {
+    companion object {
+        inline operator fun <reified N : Node> invoke(
+            ctx: DomContext,
+            noinline createNode: () -> N,
+        ): DomNodeBuilder<N> =
+            DomNodeBuilder(ctx, N::class.java, createNode)
+    }
     private val styleClass = LinkedHashSet<String>()
-    val node: N by lazy { createNode() }
-    override fun build() {
+
+    /** Last node built by this builder during execution. */
+    var lastNode: N? = null
+
+    override fun build(parentNode: Node) {
+        val node = createNode()
+        lastNode = node
         node.tags += styleClass
-        findParentNode().addChild(node)
-        stylesheet.apply(this, styleClass)
+        parentNode.addChild(node)
+        val styled = StyledNode(node, parentNode, this)
+        stylesheet.applyStyle(styled, styleClass)
         if (visibility == Visibility.VISIBLE) {
-            buildNode()
-            generators.forEach { it.generate(this) }
-            children.forEach { it.build() }
+            buildNode(node)
+            generators.forEach { it.generate(this, node) }
+            children.forEach { it.build(node) }
         } else {
             // add and then remove the node, because it needs a parent to
             // calculate styles including visibility.
@@ -95,7 +110,7 @@ open class DomNodeBuilder<out N: Node>(
     }
     /** Any custom initialization code for this node.
      * Don't use it to add child nodes, create a IGenerator for that instead. */
-    open fun buildNode() {}
+    open fun buildNode(node: N) {}
     /** Add given style class name to this builder. */
     fun addStyle(style: String) {
         styleClass.add(style)
@@ -109,27 +124,12 @@ open class DomNodeBuilder<out N: Node>(
     }
 }
 
-/**
- * Finds the most immediate (lowest) non-null parent [Node].
- * If there is a cycle, returns the root node.
- * Non-null because root has a non-null node.
- */
-fun DomBuilder.findParentNode(): Node {
-    // detect cycles
-    val visited = mutableSetOf(this)
-    var dom = this.parent
-    while (dom !in visited) {
-        if (dom is DomNodeBuilder<*>) return dom.node
-        visited.add(dom)
-        dom = dom.parent
-    }
-    return dom.ctx.rootNode
-}
-
 /** Checks if this builder builds the right class of node and casts to it*/
 @Suppress("UNCHECKED_CAST")
 inline fun <reified N2 : Node> DomBuilder.asNodeBuilder(): DomNodeBuilder<N2>? =
-    if (this is DomNodeBuilder<*> && node is N2) this as DomNodeBuilder<N2>
+    if (this is DomNodeBuilder<*> &&
+        N2::class.java.isAssignableFrom(nodeClass)
+    ) this as DomNodeBuilder<N2>
     else null
 
 internal fun DomBuilder.nextChildSeed() = seed + children.size + 1

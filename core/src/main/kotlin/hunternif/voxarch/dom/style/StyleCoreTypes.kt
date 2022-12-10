@@ -95,7 +95,7 @@ internal inline fun <reified N : Node, reified T> newNodeProperty(
     return object : Property<T>(name, N::class.java, T::class.java, default) {
         override fun applyTo(styled: StyledElement, value: Value<T>) {
             if (styled is StyledNode<*> &&
-                destType.isAssignableFrom(styled.domBuilder.node.javaClass)
+                destType.isAssignableFrom(styled.domBuilder.nodeClass)
             ) {
                 @Suppress("UNCHECKED_CAST")
                 (styled as StyledNode<N>).block(value)

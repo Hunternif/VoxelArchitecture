@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.asNodeBuilder
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolygonRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.sandbox.castle.*
@@ -31,12 +32,15 @@ class TurretGenerator : ChainedGenerator() {
 
     override fun generateChained(
         parent: DomBuilder,
+        parentNode: Node,
         nextBlock: DomBuilder.() -> Unit,
     ) {
         parent.asNodeBuilder<Room>()?.apply {
             val originalStyle = stylesheet
             // Order matters! First apply the default styles, then the custom ones.
-            stylesheet = originalStyle + createTurretStyle(node)
+            if (parentNode is Room) {
+                stylesheet = originalStyle + createTurretStyle(parentNode)
+            }
             floor(BLD_FOUNDATION)
             polygonRoom(BLD_TURRET_BOTTOM)
             floor()

@@ -5,32 +5,32 @@ import com.google.common.collect.ListMultimap
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
-import hunternif.voxarch.dom.builder.findParentNode
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 
 /** Represents a DOM element for the purpose of styling. */
 @CastleDsl
 abstract class StyledElement(
+    val parentNode: Node,
     internal open val domBuilder: DomBuilder,
     internal var seed: Long = domBuilder.seed,
 )
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
 @CastleDsl
-class StyledNode<out N : Node>(
+class StyledNode<N : Node>(
+    val node: N,
+    parentNode: Node,
     override val domBuilder: DomNodeBuilder<N>,
-) : StyledElement(domBuilder) {
-    val node: N get() = domBuilder.node
-    val parent: Node get() = domBuilder.findParentNode()
-}
+) : StyledElement(parentNode, domBuilder)
 
 /** Represents a DOM element with a [IGenerator] for the purpose of styling. */
 @CastleDsl
 class StyledGen<out G : IGenerator>(
     internal val gen: G,
+    parentNode: Node,
     domBuilder: DomBuilder
-) : StyledElement(domBuilder)
+) : StyledElement(parentNode, domBuilder)
 
 /** Used as the base for Style DSL. */
 @CastleDsl
@@ -69,32 +69,32 @@ open class Stylesheet {
         rules.put(rule.styleClass, rule)
     }
 
-    internal open fun apply(
-        domBuilder: DomBuilder,
+    open fun applyStyle(
+        element: StyledElement,
         styleClass: Collection<String>
     ) {
         val styleClasses = listOf(GLOBAL_STYLE) + styleClass
-        // apply generator styles
-        domBuilder.generators.forEach { gen ->
-            val styledGen = StyledGen(gen, domBuilder)
-            val genClass = gen.javaClass
-            styleClasses
-                .flatMap { rules[it] }
-                .filter { it.destType?.isAssignableFrom(genClass) ?: true }
-                .flatMap { it.declarations }
-                .sortedBy { GlobalStyleOrderIndex[it.property] }
-                .forEach { it.applyTo(styledGen) }
-        }
         // apply node styles
-        if (domBuilder is DomNodeBuilder<*>) {
-            val styledNode = StyledNode(domBuilder)
-            val nodeClass = domBuilder.node.javaClass
+        if (element is StyledNode<*>) {
+            // apply generator styles
+            // TODO: pass StyledGen from DomGenBuilder
+            element.domBuilder.generators.forEach { gen ->
+                val styledGen = StyledGen(gen, element.parentNode, element.domBuilder)
+                val genClass = gen.javaClass
+                styleClasses
+                    .flatMap { rules[it] }
+                    .filter { it.destType?.isAssignableFrom(genClass) ?: true }
+                    .flatMap { it.declarations }
+                    .sortedBy { GlobalStyleOrderIndex[it.property] }
+                    .forEach { it.applyTo(styledGen) }
+            }
+            val nodeClass = element.node.javaClass
             styleClasses
                 .flatMap { rules[it] }
                 .filter { it.destType?.isAssignableFrom(nodeClass) ?: true }
                 .flatMap { it.declarations }
                 .sortedBy { GlobalStyleOrderIndex[it.property] }
-                .forEach { it.applyTo(styledNode) }
+                .forEach { it.applyTo(element) }
         }
     }
 
@@ -108,11 +108,12 @@ open class Stylesheet {
 }
 
 class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>) : Stylesheet() {
-    override fun apply(
-        domBuilder: DomBuilder,
+    override fun applyStyle(
+        element: StyledElement,
         styleClass: Collection<String>
     ) {
-        stylesheets.forEach { it.apply(domBuilder, styleClass) }
+        stylesheets.forEach { it.applyStyle(element, styleClass) }
+        super.applyStyle(element, styleClass)
     }
 }
 
