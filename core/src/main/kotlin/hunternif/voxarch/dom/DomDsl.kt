@@ -3,6 +3,7 @@ package hunternif.voxarch.dom
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
+import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.generator.TurretGenerator
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
@@ -78,7 +79,9 @@ fun DomBuilder.turret(
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
     addChild(bld)
-    bld.generators.add(TurretGenerator())
+    // must add generator after the polygon is added as child,
+    // so that the generator inherits the stylesheet.
+    bld.gen(TurretGenerator(), *styleClass)
     bld.block()
 }
 
@@ -163,6 +166,17 @@ fun DomBuilder.passthrough(
     block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomBuilder(ctx)
+    addChild(bld)
+    bld.block()
+}
+
+/** Adds generator */
+fun <G : IGenerator> DomBuilder.gen(
+    generator: G,
+    vararg styleClass: String,
+    block: DomGenBuilder<G>.() -> Unit = {}
+) {
+    val bld = DomGenBuilder(ctx, generator).apply { +styleClass }
     addChild(bld)
     bld.block()
 }

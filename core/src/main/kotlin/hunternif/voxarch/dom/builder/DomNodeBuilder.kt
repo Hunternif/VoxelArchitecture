@@ -25,7 +25,6 @@ open class DomNodeBuilder<N : Node>(
         stylesheet.applyStyle(styled, styleClass)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
-            generators.forEach { it.generate(this, node) }
             children.forEach { it.build(node) }
         } else {
             // add and then remove the node, because it needs a parent to

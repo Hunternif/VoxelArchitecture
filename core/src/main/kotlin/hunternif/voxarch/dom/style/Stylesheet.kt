@@ -85,26 +85,12 @@ open class Stylesheet {
         styleClass: Collection<String>
     ) {
         val styleClasses = listOf(GLOBAL_STYLE) + styleClass
-        // apply node styles
-        if (element is StyledNode<*>) {
-            // apply generator styles
-            // TODO: pass StyledGen from DomGenBuilder
-            element.domBuilder.generators.forEach { gen ->
-                val styledGen = StyledGen(gen, element.parentNode, element.domBuilder)
-                styleClasses
-                    .flatMap { rules[it] }
-                    .filter { it.appliesTo(styledGen) }
-                    .flatMap { it.declarations }
-                    .sortedBy { GlobalStyleOrderIndex[it.property] }
-                    .forEach { it.applyTo(styledGen) }
-            }
-            styleClasses
-                .flatMap { rules[it] }
-                .filter { it.appliesTo(element) }
-                .flatMap { it.declarations }
-                .sortedBy { GlobalStyleOrderIndex[it.property] }
-                .forEach { it.applyTo(element) }
-        }
+        styleClasses
+            .flatMap { rules[it] }
+            .filter { it.appliesTo(element) }
+            .flatMap { it.declarations }
+            .sortedBy { GlobalStyleOrderIndex[it.property] }
+            .forEach { it.applyTo(element) }
     }
 
     fun clear() {

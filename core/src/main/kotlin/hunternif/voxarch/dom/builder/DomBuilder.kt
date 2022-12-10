@@ -3,7 +3,6 @@ package hunternif.voxarch.dom.builder
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 
 /** Base class for DOM elements. */
@@ -28,16 +27,11 @@ open class DomBuilder(val ctx: DomContext) {
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
 
-    /** Generators add more child DomBuilders.
-     * Must be called prior to [build], to prevent concurrent modification. */
-    internal val generators = mutableListOf<IGenerator>()
-
     /** List of "CSS classes" applied to this element. */
     internal val styleClass = LinkedHashSet<String>()
 
     /** Recursively invokes this method on children. */
     open fun build(parentNode: Node) {
-        generators.forEach { it.generate(this, parentNode) }
         children.forEach { it.build(parentNode) }
     }
 
