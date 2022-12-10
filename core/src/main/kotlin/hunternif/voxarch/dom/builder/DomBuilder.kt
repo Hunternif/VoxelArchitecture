@@ -8,7 +8,7 @@ import hunternif.voxarch.plan.Node
 
 /** Base class for DOM elements. */
 @CastleDsl
-abstract class DomBuilder(val ctx: DomContext) {
+open class DomBuilder(val ctx: DomContext) {
     /** Stylesheet contains rules for styling nodes and generators.
      * This instance can be modified for each individual DOM builder
      * to make local non-cascading rules. */

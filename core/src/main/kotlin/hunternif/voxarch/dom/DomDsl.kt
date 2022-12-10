@@ -157,6 +157,16 @@ fun DomBuilder.prop(
     this.addChildNodeBuilder(styleClass) { Prop(propType) }.block()
 }
 
+/** Adds an extra element in the DOM that doesn't do anything.
+ * This is useful for wrapping other DOM builders. */
+fun DomBuilder.passthrough(
+    block: DomBuilder.() -> Unit = {}
+) {
+    val bld = DomBuilder(ctx)
+    addChild(bld)
+    bld.block()
+}
+
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
 annotation class CastleDsl

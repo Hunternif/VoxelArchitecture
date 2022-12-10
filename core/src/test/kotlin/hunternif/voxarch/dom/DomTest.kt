@@ -292,4 +292,21 @@ class DomTest {
         assertEquals(35.0, specialRoom.height, 0.0)
         assertEquals(0.0, secondRoom.height, 0.0)
     }
+
+    @Test
+    fun `passthrough node`() {
+        val dom = domRoot {
+            node("parent") {
+                passthrough {
+                    node("child")
+                }
+            }
+        }.buildDom()
+
+        assertEquals(1, dom.children.size)
+        val parent = dom.children.first()
+        assertEquals(1, parent.children.size)
+        val child = parent.children.first()
+        assertEquals(0, child.children.size)
+    }
 }
