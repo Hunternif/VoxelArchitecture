@@ -148,6 +148,15 @@ fun DomLineSegmentBuilder.path(
     this.addChildNodeBuilder(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
 }
 
+/** Adds child [Prop]. See [node]. */
+fun DomBuilder.prop(
+    propType: String,
+    vararg styleClass: String,
+    block: DomNodeBuilder<Prop>.() -> Unit = {}
+) {
+    this.addChildNodeBuilder(styleClass) { Prop(propType) }.block()
+}
+
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
 annotation class CastleDsl
