@@ -4,10 +4,11 @@ import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.util.INested
 
 /** Base class for DOM elements. */
 @CastleDsl
-open class DomBuilder(val ctx: DomContext) {
+open class DomBuilder(val ctx: DomContext) : INested<DomBuilder> {
     /** Stylesheet contains rules for styling nodes and generators.
      * This instance can be modified for each individual DOM builder
      * to make local non-cascading rules. */
@@ -15,34 +16,37 @@ open class DomBuilder(val ctx: DomContext) {
 
     /** DOM builder immediately above this one.
      * In case of a cycle this is not necessarily the previous location! */
-    var parent: DomBuilder = ctx.rootBuilder
-        protected set
+    override var parent: DomBuilder? = null
 
     /** Seed for randomized properties. Can be modified per DOM builder. */
     internal var seed: Long = 0
 
     /** Don't manually add children, use [addChild] instead.*/
-    internal val children = mutableListOf<DomBuilder>()
+    override val children = linkedSetOf<DomBuilder>()
 
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
 
     /** List of "CSS classes" applied to this element. */
-    internal val styleClass = LinkedHashSet<String>()
+    internal val styleClass = linkedSetOf<String>()
 
     /** Recursively invokes this method on children. */
     open fun build(parentNode: Node) {
         children.forEach { it.build(parentNode) }
     }
 
+    override fun addChild(child: DomBuilder) {
+        child.seed = nextChildSeed()
+        child.stylesheet = stylesheet
+        super.addChild(child)
+    }
+
     internal open fun addChild(
         child: DomBuilder,
         childSeed: Long = nextChildSeed()
     ) {
-        child.parent = this
+        addChild(child)
         child.seed = childSeed
-        child.stylesheet = stylesheet
-        children.add(child)
     }
 
     /** Add given style class name to this builder. */

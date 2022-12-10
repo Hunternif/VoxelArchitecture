@@ -17,7 +17,7 @@ class DomRoot(
     init {
         this.seed = seed
         this.stylesheet = stylesheet
-        this.parent = this
+        this.parent = null
     }
 
     val node: Node get() = ctx.rootNode
