@@ -38,3 +38,11 @@ open class DomNodeBuilder<N : Node>(
      * Don't use it to add child nodes, create a IGenerator for that instead. */
     open fun buildNode(node: N) {}
 }
+
+/** Checks if this builder builds the right class of node and casts to it*/
+@Suppress("UNCHECKED_CAST")
+inline fun <reified N2 : Node> DomBuilder.asNodeBuilder(): DomNodeBuilder<N2>? =
+    if (this is DomNodeBuilder<*> &&
+        N2::class.java.isAssignableFrom(nodeClass)
+    ) this as DomNodeBuilder<N2>
+    else null

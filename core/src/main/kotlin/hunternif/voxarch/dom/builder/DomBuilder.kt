@@ -65,14 +65,6 @@ open class DomBuilder(val ctx: DomContext) {
         styleClass.addAll(this)
     }
 
-    /** Checks if this builder builds the right class of node and casts to it*/
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified N2 : Node> asNodeBuilder(): DomNodeBuilder<N2>? =
-        if (this is DomNodeBuilder<*> &&
-            N2::class.java.isAssignableFrom(nodeClass)
-        ) this as DomNodeBuilder<N2>
-        else null
-
     private fun nextChildSeed() = seed + children.size + 1
 }
 
