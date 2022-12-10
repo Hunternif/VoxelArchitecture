@@ -19,12 +19,8 @@ open class DomNodeBuilder<N : Node>(
 
     private val styleClass = LinkedHashSet<String>()
 
-    /** Last node built by this builder during execution. */
-    var lastNode: N? = null
-
     override fun build(parentNode: Node) {
         val node = createNode()
-        lastNode = node
         node.tags += styleClass
         parentNode.addChild(node)
         val styled = StyledNode(node, parentNode, this)
