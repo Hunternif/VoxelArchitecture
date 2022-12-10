@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.position
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.util.rectangle
@@ -20,16 +21,16 @@ class DomLineSegmentBuilder(
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
     override fun build(parentNode: Node) {
+        val p1 = p1
+        val angle = MathUtil.atan2Deg(-end.z, end.x)
         children.forEach {
-            it.build(parentNode)
-            // TODO: set offset via style, so that it immediately applies
-            if (it is DomNodeBuilder<*>) {
-                it.lastNode?.let { node ->
-                    //TODO: add node rotation?
-                    val angle = MathUtil.atan2Deg(-end.z, end.x)
-                    node.origin = p1.add(node.origin.rotateY(angle))
+            stylesheet.styleFor(it) {
+                //TODO: add node rotation?
+                position { origin, _ ->
+                    p1.add(origin.rotateY(angle))
                 }
             }
+            it.build(parentNode)
         }
     }
 }
