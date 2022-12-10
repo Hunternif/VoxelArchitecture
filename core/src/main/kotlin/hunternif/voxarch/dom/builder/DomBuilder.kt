@@ -32,6 +32,9 @@ open class DomBuilder(val ctx: DomContext) {
      * Must be called prior to [build], to prevent concurrent modification. */
     internal val generators = mutableListOf<IGenerator>()
 
+    /** List of "CSS classes" applied to this element. */
+    internal val styleClass = LinkedHashSet<String>()
+
     /** Recursively invokes this method on children. */
     open fun build(parentNode: Node) {
         generators.forEach { it.generate(this, parentNode) }
@@ -46,6 +49,20 @@ open class DomBuilder(val ctx: DomContext) {
         child.seed = childSeed
         child.stylesheet = stylesheet
         children.add(child)
+    }
+
+    /** Add given style class name to this builder. */
+    fun addStyle(style: String) {
+        styleClass.add(style)
+    }
+
+    fun addStyles(vararg styles: String) {
+        styleClass.addAll(styles)
+    }
+
+    /** Add given style class names to this builder. */
+    operator fun Array<out String>.unaryPlus() {
+        styleClass.addAll(this)
     }
 
     /** Checks if this builder builds the right class of node and casts to it*/

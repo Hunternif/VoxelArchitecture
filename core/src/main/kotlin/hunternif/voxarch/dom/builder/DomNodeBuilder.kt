@@ -17,8 +17,6 @@ open class DomNodeBuilder<N : Node>(
             DomNodeBuilder(ctx, N::class.java, createNode)
     }
 
-    private val styleClass = LinkedHashSet<String>()
-
     override fun build(parentNode: Node) {
         val node = createNode()
         node.tags += styleClass
@@ -39,18 +37,4 @@ open class DomNodeBuilder<N : Node>(
     /** Any custom initialization code for this node.
      * Don't use it to add child nodes, create a IGenerator for that instead. */
     open fun buildNode(node: N) {}
-
-    /** Add given style class name to this builder. */
-    fun addStyle(style: String) {
-        styleClass.add(style)
-    }
-
-    fun addStyles(vararg styles: String) {
-        styleClass.addAll(styles)
-    }
-
-    /** Add given style class names to this builder. */
-    operator fun Array<out String>.unaryPlus() {
-        styleClass.addAll(this)
-    }
 }
