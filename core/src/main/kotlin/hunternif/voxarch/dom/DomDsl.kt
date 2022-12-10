@@ -74,15 +74,20 @@ fun DomBuilder.turret(
     vararg styleClass: String,
     block: DomPolyRoomBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolyRoomBuilder(ctx).apply {
+    val bld = DomPolyRoomWithTurretBuilder(ctx).apply {
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
     addChild(bld)
-    // must add generator after the polygon is added as child,
-    // so that the generator inherits the stylesheet.
-    bld.gen(GenTurretDecor(), *styleClass)
     bld.block()
+}
+
+/** Adds decoration to make the parent node look like a turret. */
+fun DomBuilder.turretDecor(
+    vararg styleClass: String,
+    block: DomGenBuilder<GenTurretDecor>.() -> Unit = {}
+) {
+    gen(GenTurretDecor(), *styleClass) { block() }
 }
 
 /** Adds child [Ward] with a perimeter of walls and towers. */

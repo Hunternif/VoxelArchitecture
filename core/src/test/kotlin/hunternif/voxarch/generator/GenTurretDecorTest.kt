@@ -1,15 +1,13 @@
 package hunternif.voxarch.generator
 
-import hunternif.voxarch.dom.DOM_TURRET
-import hunternif.voxarch.dom.domRoot
-import hunternif.voxarch.dom.room
+import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.dom.turret
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_ROOF
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
+import hunternif.voxarch.util.assertNodeTreeEqualsRecursive
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -40,5 +38,25 @@ class GenTurretDecorTest {
         assertEquals(0.0, roof.height, 0.0)
         assertEquals(10.0, room1.height, 0.0)
         assertEquals(10.0, room2.height, 0.0)
+    }
+
+    @Test
+    fun `turret and polyRoom with turret decor are identical`() {
+        val style = defaultStyle.apply {
+            style("turret") {
+                size(4.vx, 6.vx, 4.vx)
+            }
+        }
+        val dom1 = domRoot(style) {
+            turret("turret")
+        }.buildDom()
+
+        val dom2 = domRoot(style) {
+            polyRoom("turret") {
+                turretDecor()
+            }
+        }.buildDom()
+
+        assertNodeTreeEqualsRecursive(dom1, dom2, testTags = false)
     }
 }
