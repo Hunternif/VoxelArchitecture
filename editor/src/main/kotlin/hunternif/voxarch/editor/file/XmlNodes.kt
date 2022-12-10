@@ -20,7 +20,7 @@ import hunternif.voxarch.vector.Vec3
 @JsonSubTypes(value = [
     JsonSubTypes.Type(name = "Structure", value = XmlStructure::class),
     JsonSubTypes.Type(name = "Room", value = XmlRoom::class),
-    JsonSubTypes.Type(name = "PolygonRoom", value = XmlPolygonRoom::class),
+    JsonSubTypes.Type(name = "PolyRoom", value = XmlPolyRoom::class),
     JsonSubTypes.Type(name = "Floor", value = XmlFloor::class),
     JsonSubTypes.Type(name = "Wall", value = XmlWall::class),
     JsonSubTypes.Type(name = "Path", value = XmlPath::class),
@@ -53,13 +53,13 @@ open class XmlRoom(
     var centered: Boolean = true,
 ) : XmlNode()
 
-class XmlPolygonRoom(
+class XmlPolyRoom(
     origin: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
     start: Vec3 = Vec3.ZERO,
     centered: Boolean = true,
     @field:JacksonXmlProperty(isAttribute = true)
-    var shape: PolygonShape = PolygonShape.SQUARE,
+    var shape: PolyShape = PolyShape.SQUARE,
     var polygon: XmlPath = XmlPath()
 ) : XmlRoom(origin, size, start, centered)
 
@@ -91,7 +91,7 @@ internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf(
 internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
     val xmlNode = when (this) {
         is Structure -> XmlStructure(origin)
-        is PolygonRoom -> XmlPolygonRoom(origin, size, start, isCentered(),
+        is PolyRoom -> XmlPolyRoom(origin, size, start, isCentered(),
             shape, polygon.mapToXmlNode() as XmlPath
         )
         is Room -> XmlRoom(origin, size, start, isCentered())
@@ -125,7 +125,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     mapped.add(this)
     val node: Node = when (this) {
         is XmlStructure -> Structure(origin)
-        is XmlPolygonRoom -> PolygonRoom(origin, size).also {
+        is XmlPolyRoom -> PolyRoom(origin, size).also {
             if (!centered) it.start = start
             it.shape = shape
             it.polygon.addPoints(polygon.points ?: emptyList())

@@ -59,22 +59,22 @@ fun DomBuilder.floor(
     this.addChildNodeBuilder(styleClass) { Floor() }.block()
 }
 
-/** Adds child [PolygonRoom]. See [node]. */
-fun DomBuilder.polygonRoom(
+/** Adds child [PolyRoom]. See [node]. */
+fun DomBuilder.polyRoom(
     vararg styleClass: String,
-    block: DomNodeBuilder<PolygonRoom>.() -> Unit = {}
+    block: DomNodeBuilder<PolyRoom>.() -> Unit = {}
 ) {
-    val bld = DomPolygonRoomBuilder(ctx).apply { +styleClass }
+    val bld = DomPolyRoomBuilder(ctx).apply { +styleClass }
     addChild(bld)
     bld.block()
 }
 
-/** Adds child PolygonRoom with a [GenTurretDecor]. See [node]. */
+/** Adds child [PolyRoom] with a [GenTurretDecor]. See [node]. */
 fun DomBuilder.turret(
     vararg styleClass: String,
-    block: DomPolygonRoomBuilder.() -> Unit = {}
+    block: DomPolyRoomBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolygonRoomBuilder(ctx).apply {
+    val bld = DomPolyRoomBuilder(ctx).apply {
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
@@ -95,11 +95,11 @@ fun DomBuilder.ward(
     bld.block()
 }
 
-/** Runs [block] in every corner of this [PolygonRoom]. */
+/** Runs [block] in every corner of this [PolyRoom]. */
 fun DomBuilder.allCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicPolygonCornerBuilder(ctx, block)
+    val bld = DomLogicPolyCornerBuilder(ctx, block)
     addChild(bld)
 }
 
@@ -115,7 +115,7 @@ fun DomBuilder.fourCorners(
 fun DomBuilder.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolygonSegmentBuilder(ctx, block)
+    val bld = DomPolySegmentBuilder(ctx, block)
     addChild(bld)
 }
 

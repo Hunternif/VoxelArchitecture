@@ -6,8 +6,8 @@ import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.turret
 import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.PolygonShape
+import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
@@ -29,11 +29,11 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
     companion object {
         private fun turret(width: Int): Node {
             val style = defaultStyle.apply {
-                styleFor<PolygonRoom>(DOM_TURRET) {
+                styleFor<PolyRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }
                     height { 5.vx }
-                    shape { set(PolygonShape.SQUARE) }
+                    shape { set(PolyShape.SQUARE) }
                 }
                 styleFor<GenTurretDecor> {
                     roofShape { set(RoofShape.FLAT_BORDERED) }

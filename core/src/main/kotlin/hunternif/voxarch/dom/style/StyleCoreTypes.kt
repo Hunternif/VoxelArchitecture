@@ -74,7 +74,7 @@ class Declaration<T>(
  *
  * Accepts only a specific type of value [valType], e.g.:
  * - property 'width' accepts a [Double].
- * - property 'shape' accepts enum [PolygonShape].
+ * - property 'shape' accepts enum [PolyShape].
  */
 abstract class Property<T>(
     val name: String,

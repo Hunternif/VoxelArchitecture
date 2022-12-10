@@ -17,7 +17,7 @@ class XmlSceneObjectSerializerTest {
             <node class="Wall" start="(0.0, 0.0, 1.0)" end="(1.0, 2.0, 1.0)" transparent="false"/>
             <node class="Floor" height="1.0"/>
           </node>
-          <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
+          <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
             <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
           </node>
         </node>
@@ -38,7 +38,7 @@ class XmlSceneObjectSerializerTest {
             <node class="Room" origin="(0.0, 0.0, 0.0)" size="(5.0, 6.0, 7.0)" start="(-2.5, 0.0, -3.5)" centered="true"/>
           </obj>
           <obj class="SceneNode" id="2" generated="false" color="4296fa" alpha="0.2">
-            <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
+            <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
               <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
             </node>
           </obj>
@@ -52,7 +52,7 @@ class XmlSceneObjectSerializerTest {
             wall(Vec3(0, 0, 1), Vec3(1, 2, 1))
             floor(1.0)
         }
-        polygonRoom(Vec3.ZERO, Vec3(7, 8, 9)) { shape = PolygonShape.ROUND }
+        polyRoom(Vec3.ZERO, Vec3(7, 8, 9)) { shape = PolyShape.ROUND }
     }
 
     // Don't clear the registry between runs!
@@ -80,7 +80,7 @@ class XmlSceneObjectSerializerTest {
         val room1 = obj.children.toList()[0] as SceneNode
         val room2 = obj.children.toList()[1] as SceneNode
         assertEquals(Room::class, room1.node::class)
-        assertEquals(PolygonRoom::class, room2.node::class)
+        assertEquals(PolyRoom::class, room2.node::class)
         assertEquals(room1.node, parent.node.children[0])
         assertEquals(room2.node, parent.node.children[1])
 

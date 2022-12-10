@@ -10,14 +10,14 @@ class DomWallTest {
     @Test
     fun `create walls on square polygon`() {
         val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape { set(PolygonShape.SQUARE) }
+            styleFor<PolyRoom> {
+                shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
             }
         }
         val wallSeeds = mutableListOf<Long>()
         val dom = domRoot(style) {
-            polygonRoom {
+            polyRoom {
                 allWalls {
                     wall {
                         wallSeeds.add(seed)

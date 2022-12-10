@@ -178,17 +178,17 @@ class DomTest {
             styleFor<Room> {
                 width { 200.vx }
             }
-            styleFor<PolygonRoom> {
+            styleFor<PolyRoom> {
                 length { 300.vx }
             }
         }
         val dom = domRoot(style) {
             room()
-            polygonRoom()
+            polyRoom()
         }.buildDom()
 
         val room = dom.children[0] as Room
-        val polyRoom = dom.children[1] as PolygonRoom
+        val polyRoom = dom.children[1] as PolyRoom
         assertEquals(Vec3(200, 100, 0), room.size)
         assertEquals(Vec3(200, 100, 300), polyRoom.size)
     }

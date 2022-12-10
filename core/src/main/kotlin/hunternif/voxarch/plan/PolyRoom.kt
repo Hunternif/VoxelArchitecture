@@ -13,7 +13,7 @@ import kotlin.math.max
  * Some rooms are just rectangular boxes.
  * But some have this cylindrical quality, e.g. castle yard or turret.
  */
-open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
+open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
     /**
      * Describes the perimeter on the XZ plane.
      * It's made of 3d points for convenience, but their Y should be 0.
@@ -24,7 +24,7 @@ open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
     var edgeLength: Double = 1.0
         set(value) { field = max(1.0, value) }
     /** For styling. Mimics Turret's body shape. */
-    var shape: PolygonShape = PolygonShape.SQUARE
+    var shape: PolyShape = PolyShape.SQUARE
 
     /** Creates a wall from each edge of the polygon. */
     fun createWalls() {
@@ -38,7 +38,7 @@ open class PolygonRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
 
 }
 
-enum class PolygonShape {
+enum class PolyShape {
     /** axis-aligned walls, 4 towers in corners */
     SQUARE,
     /** rectangular sections project in each axis direction */

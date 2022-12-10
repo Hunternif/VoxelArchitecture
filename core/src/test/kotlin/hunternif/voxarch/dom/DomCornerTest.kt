@@ -1,8 +1,8 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.PolygonShape
+import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert
@@ -12,13 +12,13 @@ class DomCornerTest {
     @Test
     fun `square polygon room`() {
         val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape { set(PolygonShape.SQUARE) }
+            styleFor<PolyRoom> {
+                shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
             }
         }
         val dom = domRoot(style) {
-            polygonRoom {
+            polyRoom {
                 allCorners {
                     room()
                 }

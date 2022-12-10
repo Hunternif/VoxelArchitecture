@@ -4,7 +4,7 @@ import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.line
 import hunternif.voxarch.plan.PathSegment
-import hunternif.voxarch.plan.PolygonRoom
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
@@ -16,8 +16,8 @@ import hunternif.voxarch.vector.Vec3
 class PyramidBuilder(
     private val material: String,
     private val upsideDown: Boolean = false
-): Builder<PolygonRoom>() {
-    override fun build(node: PolygonRoom, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+): Builder<PolyRoom>() {
+    override fun build(node: PolyRoom, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         if (upsideDown) {
             trans.push()
             trans.translate(0, node.height, 0)

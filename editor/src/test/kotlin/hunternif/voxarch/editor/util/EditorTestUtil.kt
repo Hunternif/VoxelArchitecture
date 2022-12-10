@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.util
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Path
-import hunternif.voxarch.plan.PolygonRoom
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
 import org.apache.commons.io.IOUtils
 import org.junit.Assert.assertEquals
@@ -24,8 +24,8 @@ fun assertNodeEquals(
     assertEquals(expected.height, actual.height, 0.0)
     assertEquals(expected.length, actual.length, 0.0)
     when (expected) {
-        is PolygonRoom -> {
-            assertEquals(expected.shape, (actual as PolygonRoom).shape)
+        is PolyRoom -> {
+            assertEquals(expected.shape, (actual as PolyRoom).shape)
             assertEquals(expected.isCentered(), actual.isCentered())
             assertEquals(expected.polygon, actual.polygon)
         }

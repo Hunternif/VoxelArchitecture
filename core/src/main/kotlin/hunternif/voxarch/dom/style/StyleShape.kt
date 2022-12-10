@@ -1,24 +1,24 @@
 package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.PolygonShape
+import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.PolyShape
 
 class StyleShape : StyleParameter
 
-val PropShape = newNodeProperty<PolygonRoom, PolygonShape>("shape", PolygonShape.SQUARE) { value ->
+val PropShape = newNodeProperty<PolyRoom, PolyShape>("shape", PolyShape.SQUARE) { value ->
     val baseValue = when (val parent = node.parent) {
-        is PolygonRoom -> parent.shape
-        else -> PolygonShape.SQUARE
+        is PolyRoom -> parent.shape
+        else -> PolyShape.SQUARE
     }
     node.shape = value.invoke(baseValue, seed + 10000004)
 }
 
-val PropEdgeLength = newNodeProperty<PolygonRoom, Double>("edge length", 1.0) { value ->
+val PropEdgeLength = newNodeProperty<PolyRoom, Double>("edge length", 1.0) { value ->
     val baseValue = node.width
     node.edgeLength = value.invoke(baseValue, seed + 10000005)
 }
 
-fun Rule.shape(block: StyleShape.() -> Value<PolygonShape>) {
+fun Rule.shape(block: StyleShape.() -> Value<PolyShape>) {
     add(PropShape, StyleShape().block())
 }
 

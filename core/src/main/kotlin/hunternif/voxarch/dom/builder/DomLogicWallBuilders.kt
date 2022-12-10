@@ -39,15 +39,15 @@ class DomLineSegmentBuilder(
  * Calls [childBlock] on every segment of the polygon.
  *
  * Will only work when added as a child to a [DomNodeBuilder] for [Room] or
- * [PolygonRoom]>.
+ * [PolyRoom]>.
  */
-open class DomPolygonSegmentBuilder(
+open class DomPolySegmentBuilder(
     ctx: DomContext,
     private val childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomBuilder(ctx) {
     override fun build(parentNode: Node) {
         val polygon = when (parentNode) {
-            is PolygonRoom -> parentNode.polygon
+            is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.length)
@@ -75,7 +75,7 @@ open class DomPolygonSegmentBuilder(
 class DomFourWallsBuilder(
     ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolygonSegmentBuilder(ctx, childBlock) {
+) : DomPolySegmentBuilder(ctx, childBlock) {
     override fun build(parentNode: Node) {
         if (parentNode is Room) {
             val polygon = Path().apply {
@@ -92,15 +92,15 @@ class DomFourWallsBuilder(
  * Calls [childBlock] on one random segment.
  *
  * Will only work when added as a child to a [DomNodeBuilder] for [Room] or
- * [PolygonRoom].
+ * [PolyRoom].
  */
 class DomRandomSegmentBuilder(
     ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolygonSegmentBuilder(ctx, childBlock) {
+) : DomPolySegmentBuilder(ctx, childBlock) {
     override fun build(parentNode: Node) {
         val polygon = when (parentNode) {
-            is PolygonRoom -> parentNode.polygon
+            is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.length)

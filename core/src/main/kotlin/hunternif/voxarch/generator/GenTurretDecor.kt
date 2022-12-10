@@ -4,7 +4,7 @@ import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.PolygonRoom
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
@@ -38,15 +38,15 @@ class GenTurretDecor : ChainedGenerator() {
             // Order matters! First apply the default styles, then the custom ones.
             stylesheet = originalStyle + createTurretStyle(parentNode)
             floor(BLD_FOUNDATION)
-            polygonRoom(BLD_TURRET_BOTTOM)
+            polyRoom(BLD_TURRET_BOTTOM)
             floor()
             allWalls {
                 wall(BLD_TOWER_BODY)
                 path(BLD_TOWER_CORBEL)
                 // TODO: place corbels as separate nodes
             }
-            polygonRoom(BLD_TOWER_SPIRE, "roof")
-            polygonRoom(BLD_TOWER_ROOF, "roof") {
+            polyRoom(BLD_TOWER_SPIRE, "roof")
+            polyRoom(BLD_TOWER_ROOF, "roof") {
                 floor(BLD_TOWER_ROOF)
                 allWalls { wall(BLD_TOWER_ROOF) }
             }
@@ -63,25 +63,25 @@ class GenTurretDecor : ChainedGenerator() {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }
-        styleFor<PolygonRoom>(BLD_TURRET_BOTTOM) {
+        styleFor<PolyRoom>(BLD_TURRET_BOTTOM) {
             shape { inherit() }
             visibleIf { hasTaperedBottom() }
             height { 2 * body.avgRadius() * taperRatio() }
             alignXZ { center() }
             alignY { below() }
         }
-        styleFor<PolygonRoom>("roof") {
+        styleFor<PolyRoom>("roof") {
             shape { inherit() }
             diameter { 100.pct + 2 * roofOffset() }
             alignXZ { center() }
             alignY { above() }
             offsetY { 1.vx } // 1 block above parent
         }
-        styleFor<PolygonRoom>(BLD_TOWER_SPIRE) {
+        styleFor<PolyRoom>(BLD_TOWER_SPIRE) {
             visibleIf { hasSpire() }
             height { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
         }
-        styleFor<PolygonRoom>(BLD_TOWER_ROOF) {
+        styleFor<PolyRoom>(BLD_TOWER_ROOF) {
             visibleIf { hasCrenellation() }
             height { 0.vx }
         }

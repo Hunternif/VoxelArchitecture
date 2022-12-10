@@ -2,8 +2,8 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonShape.ROUND
-import hunternif.voxarch.plan.PolygonShape.SQUARE
+import hunternif.voxarch.plan.PolyShape.ROUND
+import hunternif.voxarch.plan.PolyShape.SQUARE
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
