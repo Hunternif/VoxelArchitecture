@@ -33,7 +33,7 @@ class Blueprint(
         name: String,
         x: Float = 0f,
         y: Float = 0f,
-        createBuilder: (parent: DomBuilder) -> DomBuilder,
+        createBuilder: DomBuilderFactory,
     ): BlueprintNode {
         val node = BlueprintNode(nodeIDs.newID(), name, this, createBuilder)
         node.x = x
@@ -47,7 +47,7 @@ class Blueprint(
         name: String,
         x: Float = 0f,
         y: Float = 0f,
-        createBuilder: (parent: DomBuilder) -> DomBuilder,
+        createBuilder: DomBuilderFactory,
     ): BlueprintNode = createNode(name, x, y, createBuilder).apply {
         addInput("in")
         addOutput("out")
@@ -82,7 +82,7 @@ class BlueprintNode(
     override val id: Int,
     val name: String,
     val bp: Blueprint,
-    private val createBuilder: (parent: DomBuilder) -> DomBuilder,
+    private val createBuilder: DomBuilderFactory,
 ) : WithID {
     val rule: Rule = Rule()
     val inputs = mutableListOf<BlueprintSlot.In>()
@@ -113,7 +113,6 @@ class BlueprintNode(
         visited[this] = bld
         if (parent != bld) parent.addChild(bld)
         // Copy the style rule and apply it to this instance
-        //TODO: use real dom builder
         if (rule.declarations.isNotEmpty()) {
             val instRule = Rule(destInstance = bld)
             instRule.declarations.addAll(rule.declarations)

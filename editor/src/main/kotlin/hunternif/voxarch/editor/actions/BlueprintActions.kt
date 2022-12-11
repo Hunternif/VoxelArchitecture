@@ -1,13 +1,9 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintLink
-import hunternif.voxarch.editor.blueprint.BlueprintNode
-import hunternif.voxarch.editor.blueprint.BlueprintSlot
+import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.generator.IGenerator
 
 
 fun EditorApp.newBlueprint(node: SceneNode) = action {
@@ -42,12 +38,12 @@ fun EditorApp.selectBlueprint(bp: Blueprint?) = historyAction(OpenBlueprint(bp))
 fun EditorApp.newBlueprintNode(
     bp: Blueprint,
     name: String,
-    generator: IGenerator,
     x: Float = 0f,
     y: Float = 0f,
     autoLinkFrom: BlueprintSlot.Out? = null,
+    createBuilder: DomBuilderFactory,
 ): BlueprintNode {
-    val action = BlueprintNewNode(bp, name, generator, x, y, autoLinkFrom)
+    val action = BlueprintNewNode(bp, name, x, y, autoLinkFrom, createBuilder)
     historyAction(action)
     return action.node
 }
