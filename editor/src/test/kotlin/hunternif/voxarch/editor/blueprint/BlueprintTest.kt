@@ -12,6 +12,7 @@ class BlueprintTest {
     private lateinit var node1: BlueprintNode
     private lateinit var node2: BlueprintNode
     private lateinit var node3: BlueprintNode
+    private var generatedCount = 0
 
     @Before
     fun setup() {
@@ -19,6 +20,7 @@ class BlueprintTest {
         node1 = bp.addNode("test", generator)
         node2 = bp.addNode("test", generator)
         node3 = bp.addNode("test", generator)
+        generatedCount = 0
     }
 
     @Test
@@ -103,11 +105,28 @@ class BlueprintTest {
         assertEquals(setOf(link12, link13), node1.outputs[0].links)
     }
 
+    @Test
+    fun `execute a blueprint with a cycle`() {
+        bp.start.outputs[0].linkTo(node1.inputs[0])
+        node1.outputs[0].linkTo(node2.inputs[0])
+        node2.outputs[0].linkTo(node3.inputs[0])
+        node3.outputs[0].linkTo(node1.inputs[0])
+        bp.execute(root = Node())
+        assertEquals(20, generatedCount)
+        // execute twice to ensure the counters are cleared
+        generatedCount = 0
+        bp.execute(root = Node())
+        assertEquals(20, generatedCount)
+    }
+
     private val generator = object : ChainedGenerator() {
         override fun generateChained(
             parent: DomBuilder,
             parentNode: Node,
             nextBlock: DomBuilder.() -> Unit,
-        ) {}
+        ) {
+            generatedCount++
+            parent.nextBlock()
+        }
     }
 }
