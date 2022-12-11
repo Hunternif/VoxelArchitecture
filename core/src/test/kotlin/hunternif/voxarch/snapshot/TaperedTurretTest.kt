@@ -3,6 +3,7 @@ package hunternif.voxarch.snapshot
 import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.turret
 import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.Node

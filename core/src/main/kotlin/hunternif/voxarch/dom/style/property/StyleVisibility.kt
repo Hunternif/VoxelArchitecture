@@ -1,7 +1,8 @@
-package hunternif.voxarch.dom.style
+package hunternif.voxarch.dom.style.property
 
 import hunternif.voxarch.dom.builder.Visibility
 import hunternif.voxarch.dom.builder.Visibility.*
+import hunternif.voxarch.dom.style.*
 
 class StyleVisibility : StyleParameter
 

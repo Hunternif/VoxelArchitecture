@@ -1,5 +1,6 @@
-package hunternif.voxarch.dom.style
+package hunternif.voxarch.dom.style.property
 
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.round
 
@@ -63,3 +64,5 @@ fun Rule.size(x: Dimension, y: Dimension, z: Dimension) {
     add(PropLength, z)
 }
 
+/** Inherit the value from the parent node. */
+fun StyleSize.inherit(): Dimension = dimension { base, _ -> base }

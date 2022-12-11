@@ -5,6 +5,7 @@ import hunternif.voxarch.dom.gen
 import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Room
 import org.junit.Assert.assertEquals
 import org.junit.Test

@@ -3,6 +3,7 @@ package hunternif.voxarch.generator
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.sandbox.castle.*

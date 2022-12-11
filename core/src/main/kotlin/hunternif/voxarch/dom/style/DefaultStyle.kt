@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall

@@ -1,6 +1,6 @@
 package hunternif.voxarch.dom.builder
 
-import hunternif.voxarch.dom.style.position
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
 

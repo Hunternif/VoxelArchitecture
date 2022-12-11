@@ -1,4 +1,6 @@
-package hunternif.voxarch.dom.style
+package hunternif.voxarch.dom.style.property
+
+import hunternif.voxarch.dom.style.*
 
 /** Properties must be evaluated in this order. */
 val GlobalStyleOrder : List<Property<*>> = listOf(

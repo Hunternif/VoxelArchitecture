@@ -4,6 +4,7 @@ import com.nhaarman.mockitokotlin2.*
 import hunternif.voxarch.dom.builder.DomContext
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import org.junit.Test

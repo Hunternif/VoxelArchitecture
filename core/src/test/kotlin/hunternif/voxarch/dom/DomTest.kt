@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*

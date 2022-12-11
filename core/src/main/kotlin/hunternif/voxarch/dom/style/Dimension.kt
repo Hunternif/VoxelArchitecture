@@ -20,9 +20,6 @@ val Float.pct: Dimension get() = dimension { base, _ -> base * 0.01 * this.toDou
 /** percent vs parent size */
 val Double.pct: Dimension get() = dimension { base, _ -> base * 0.01 * this }
 
-/** Inherit the value from the parent node. */
-fun StyleSize.inherit(): Dimension = dimension { base, _ -> base }
-
 /** random value between given min and max, based on seed */
 infix fun Dimension.to(upperBound: Dimension): Dimension = dimension { base, seed ->
     val fromVal = this(base, seed)
@@ -91,7 +88,7 @@ fun max(a: Dimension, b: Dimension): Dimension {
     }
 }
 
-private fun dimension(
+fun dimension(
     method: (base: Double, seed: Long) -> Double,
 ) = object : Dimension {
     override fun invoke(base: Double, seed: Long): Double = method(base, seed)

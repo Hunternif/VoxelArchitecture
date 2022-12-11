@@ -1,5 +1,6 @@
-package hunternif.voxarch.dom.style
+package hunternif.voxarch.dom.style.property
 
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
 

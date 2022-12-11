@@ -1,5 +1,6 @@
-package hunternif.voxarch.dom.style
+package hunternif.voxarch.dom.style.property
 
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
 import hunternif.voxarch.sandbox.castle.turret.BottomShape

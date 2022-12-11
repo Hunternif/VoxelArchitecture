@@ -1,6 +1,8 @@
-package hunternif.voxarch.dom.style
+package hunternif.voxarch.dom.style.property
 
 import hunternif.voxarch.dom.builder.DomLineSegmentBuilder
+import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.newNodeProperty
 import hunternif.voxarch.plan.*
 import kotlin.math.round
 
