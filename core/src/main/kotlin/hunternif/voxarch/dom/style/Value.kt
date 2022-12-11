@@ -3,6 +3,15 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.util.next
 import kotlin.random.Random
 
+/**
+ * At runtime this will be invoked, and the result will be applied to the
+ * styled property of a Node/Generator.
+ */
+interface Value<T> {
+    operator fun invoke(base: T, seed: Long): T
+}
+
+
 fun <T> set(value: T): Value<T> = value { _, _ -> value }
 
 fun <T> random(vararg options: T): Value<T> {
