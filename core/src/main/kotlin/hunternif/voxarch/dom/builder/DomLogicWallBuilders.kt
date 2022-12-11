@@ -20,7 +20,7 @@ class DomLineSegmentBuilder(
 ) : DomBuilder(ctx) {
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         val p1 = p1
         val angle = MathUtil.atan2Deg(-end.z, end.x)
         children.forEach {
@@ -45,7 +45,7 @@ open class DomPolySegmentBuilder(
     ctx: DomContext,
     private val childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomBuilder(ctx) {
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
@@ -76,7 +76,7 @@ class DomFourWallsBuilder(
     ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolySegmentBuilder(ctx, childBlock) {
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         if (parentNode is Room) {
             val polygon = Path().apply {
                 origin = parentNode.innerFloorCenter
@@ -98,7 +98,7 @@ class DomRandomSegmentBuilder(
     ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
 ) : DomPolySegmentBuilder(ctx, childBlock) {
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {

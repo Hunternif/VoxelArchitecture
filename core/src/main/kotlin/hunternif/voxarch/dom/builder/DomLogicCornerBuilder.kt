@@ -16,7 +16,7 @@ open class DomLogicPolyCornerBuilder(
     ctx: DomContext,
     private val block: DomBuilder.() -> Unit
 ) : DomBuilder(ctx) {
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         if (parentNode is PolyRoom) {
             addCornerBuilders(parentNode.polygon)
         }
@@ -41,7 +41,7 @@ class DomLogicFourCornerBuilder(
     ctx: DomContext,
     block: DomBuilder.() -> Unit
 ) : DomLogicPolyCornerBuilder(ctx, block) {
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         if (parentNode is Room) {
             val polygon = Path().apply {
                 rectangle(parentNode.width, parentNode.length)

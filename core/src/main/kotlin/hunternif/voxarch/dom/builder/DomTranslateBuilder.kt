@@ -8,7 +8,7 @@ class DomTranslateBuilder(
     ctx: DomContext,
     private val offset: Vec3,
 ) : DomBuilder(ctx) {
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         val offset = offset
         children.forEach {
             stylesheet.styleFor(it) {

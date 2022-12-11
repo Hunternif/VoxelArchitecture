@@ -4,11 +4,15 @@ import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.util.CycleCounter
 import hunternif.voxarch.util.INested
+import hunternif.voxarch.util.Recursive
 
 /** Base class for DOM elements. */
 @CastleDsl
-open class DomBuilder(val ctx: DomContext) : INested<DomBuilder> {
+open class DomBuilder(val ctx: DomContext)
+    : Recursive(cycleCounter), INested<DomBuilder> {
+
     /** Stylesheet contains rules for styling nodes and generators.
      * This instance can be modified for each individual DOM builder
      * to make local non-cascading rules. */
@@ -31,7 +35,7 @@ open class DomBuilder(val ctx: DomContext) : INested<DomBuilder> {
     internal val styleClass = linkedSetOf<String>()
 
     /** Recursively invokes this method on children. */
-    open fun build(parentNode: Node) {
+    open fun build(parentNode: Node): Unit = guard {
         children.forEach { it.build(parentNode) }
     }
 
@@ -64,6 +68,10 @@ open class DomBuilder(val ctx: DomContext) : INested<DomBuilder> {
     }
 
     private fun nextChildSeed() = seed + children.size + 1
+
+    companion object {
+        val cycleCounter = CycleCounter(20)
+    }
 }
 
 enum class Visibility {

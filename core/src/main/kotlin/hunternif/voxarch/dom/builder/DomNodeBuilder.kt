@@ -17,7 +17,7 @@ open class DomNodeBuilder<N : Node>(
             DomNodeBuilder(ctx, N::class.java, createNode)
     }
 
-    override fun build(parentNode: Node) {
+    override fun build(parentNode: Node) = guard {
         val node = createNode()
         node.tags += styleClass
         parentNode.addChild(node)
