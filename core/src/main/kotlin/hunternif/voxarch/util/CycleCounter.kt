@@ -36,6 +36,10 @@ class CycleCounter(
 
 /**
  * Convenience class for simplifying the [guard] call.
+ *
+ * CAUTION: be careful when calling super(), don't accidentally call
+ * [guard] 2 times.
+ *
  * @param cycleCounter could be in a companion object of your recursive
  *      base class.
  */
