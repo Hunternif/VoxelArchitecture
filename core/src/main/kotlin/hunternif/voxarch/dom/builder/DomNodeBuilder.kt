@@ -22,7 +22,7 @@ open class DomNodeBuilder<N : Node>(
         node.tags += styleClass
         parentNode.addChild(node)
         val styled = StyledNode(node, parentNode, this)
-        stylesheet.applyStyle(styled, styleClass)
+        stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
             children.forEach { it.build(node) }

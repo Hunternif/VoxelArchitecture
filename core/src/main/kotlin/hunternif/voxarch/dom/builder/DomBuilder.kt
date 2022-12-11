@@ -57,6 +57,10 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
         styleClass.addAll(styles)
     }
 
+    fun addAllStyles(styles: Iterable<String>) {
+        styleClass.addAll(styles)
+    }
+
     /** Add given style class names to this builder. */
     operator fun Array<out String>.unaryPlus() {
         styleClass.addAll(this)

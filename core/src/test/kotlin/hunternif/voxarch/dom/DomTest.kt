@@ -310,4 +310,26 @@ class DomTest {
         val child = parent.children.first()
         assertEquals(0, child.children.size)
     }
+
+    @Test
+    fun `apply style on multiple-class selector`() {
+        val style = Stylesheet().apply {
+            style("one") {
+                height { 10.vx }
+            }
+            style("one", "two") {
+                width { 20.vx }
+            }
+        }
+        val dom = domRoot(style) {
+            room("one")
+            room("one", "two")
+            room("one", "two", "three")
+        }.buildDom()
+
+        val (room1, room2, room3) = dom.query<Room>().toList()
+        assertEquals(Vec3(0, 10, 0), room1.size)
+        assertEquals(Vec3(20, 10, 0), room2.size)
+        assertEquals(Vec3(20, 10, 0), room3.size)
+    }
 }

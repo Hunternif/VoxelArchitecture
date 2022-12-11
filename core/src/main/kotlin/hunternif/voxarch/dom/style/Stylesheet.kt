@@ -15,6 +15,7 @@ abstract class StyledElement(
     val parentNode: Node,
     internal open val domBuilder: DomBuilder,
     internal var seed: Long = domBuilder.seed,
+    internal val styleClass: Set<String> = domBuilder.styleClass,
 )
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
@@ -48,20 +49,22 @@ open class Stylesheet {
      * @param styleClass is the "CSS class".
      */
     fun style(
-        styleClass: String,
+        vararg styleClass: String,
         block: Rule.() -> Unit,
     ) {
-        rules.put(styleClass, Rule(styleClass).apply(block))
+        val rule = Rule(select(*styleClass)).apply(block)
+        addRule(rule)
     }
 
     /**
-     * Register a style rule applied to specific DOM Builder instance.
+     * Register a style rule applied to specific DOM Builder instances.
      */
     fun styleFor(
-        instance: DomBuilder,
+        vararg instance: DomBuilder,
         block: Rule.() -> Unit,
     ) {
-        rules.put(GLOBAL_STYLE, Rule(destInstance = instance).apply(block))
+        val rule = Rule(select(*instance)).apply(block)
+        addRule(rule)
     }
 
     /**
@@ -70,24 +73,26 @@ open class Stylesheet {
      * @param styleClass is the "CSS class".
      */
     inline fun <reified T> styleFor(
-        styleClass: String = GLOBAL_STYLE,
-        instance: DomBuilder? = null,
+        vararg styleClass: String,
         noinline block: Rule.() -> Unit,
     ) {
-        rules.put(styleClass, Rule(styleClass, T::class.java, instance).apply(block))
+        val rule = Rule(select(T::class.java).style(*styleClass)).apply(block)
+        addRule(rule)
     }
 
     fun addRule(rule: Rule) {
-        rules.put(rule.styleClass, rule)
+        if (rule.selector.styleClasses.isEmpty()) {
+            rules.put(GLOBAL_STYLE, rule)
+        } else {
+            rule.selector.styleClasses.forEach { rules.put(it, rule) }
+        }
     }
 
-    open fun applyStyle(
-        element: StyledElement,
-        styleClass: Collection<String>
-    ) {
-        val styleClasses = listOf(GLOBAL_STYLE) + styleClass
+    open fun applyStyle(element: StyledElement) {
+        val styleClasses = listOf(GLOBAL_STYLE) + element.styleClass
         styleClasses
             .flatMap { rules[it] }
+            .toSet() // filter duplicates
             .filter { it.appliesTo(element) }
             .flatMap { it.declarations }
             .sortedBy { GlobalStyleOrderIndex[it.property] }
@@ -104,12 +109,9 @@ open class Stylesheet {
 }
 
 class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>) : Stylesheet() {
-    override fun applyStyle(
-        element: StyledElement,
-        styleClass: Collection<String>
-    ) {
-        stylesheets.forEach { it.applyStyle(element, styleClass) }
-        super.applyStyle(element, styleClass)
+    override fun applyStyle(element: StyledElement) {
+        stylesheets.forEach { it.applyStyle(element) }
+        super.applyStyle(element)
     }
 }
 

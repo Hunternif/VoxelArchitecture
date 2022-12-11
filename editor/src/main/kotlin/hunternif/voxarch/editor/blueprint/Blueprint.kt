@@ -2,9 +2,7 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.domRoot
-import hunternif.voxarch.dom.style.Rule
-import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.dom.style.defaultStyle
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.plan.Node
@@ -84,7 +82,7 @@ class BlueprintNode(
     val bp: Blueprint,
     private val createBuilder: DomBuilderFactory,
 ) : WithID {
-    val rule: Rule = Rule("${name}_${id}")
+    val rule: Rule = Rule(select("${name}_${id}"))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
     var x: Float = 0f
@@ -110,7 +108,7 @@ class BlueprintNode(
         visited: MutableMap<BlueprintNode, DomBuilder>,
     ): DomBuilder {
         val bld = createBuilder(parent)
-        bld.addStyle(rule.styleClass)
+        bld.addAllStyles(rule.selector.styleClasses)
         visited[this] = bld
         if (parent != bld) parent.addChild(bld)
         bld.stylesheet.addRule(rule)

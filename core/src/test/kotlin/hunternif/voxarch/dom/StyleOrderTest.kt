@@ -25,9 +25,10 @@ class StyleOrderTest {
         val node: Room = spy(Room())
         val ctx = DomContext(Structure())
         val domBuilder = DomNodeBuilder(ctx) { node }
+        domBuilder.addStyles("class1", "class2")
         val styledNode = StyledNode(node, ctx.rootNode, domBuilder)
 
-        style.applyStyle(styledNode, listOf("class1", "class2"))
+        style.applyStyle(styledNode)
 
         val inOrder = Mockito.inOrder(node)
         inOrder.verify(node).height = 100.0

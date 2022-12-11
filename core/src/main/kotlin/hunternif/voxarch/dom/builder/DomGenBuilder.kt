@@ -12,7 +12,7 @@ open class DomGenBuilder<G : IGenerator>(
 
     override fun build(parentNode: Node) = guard {
         val styled = StyledGen(gen, parentNode, this)
-        stylesheet.applyStyle(styled, styleClass)
+        stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             gen.generate(this, parentNode)
             children.forEach { it.build(parentNode) }
