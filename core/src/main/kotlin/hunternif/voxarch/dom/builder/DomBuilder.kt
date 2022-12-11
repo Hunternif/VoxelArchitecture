@@ -5,13 +5,11 @@ import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.CycleCounter
-import hunternif.voxarch.util.INested
 import hunternif.voxarch.util.Recursive
 
 /** Base class for DOM elements. */
 @CastleDsl
-open class DomBuilder(val ctx: DomContext)
-    : Recursive(cycleCounter), INested<DomBuilder> {
+open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
 
     /** Stylesheet contains rules for styling nodes and generators.
      * This instance can be modified for each individual DOM builder
@@ -20,13 +18,14 @@ open class DomBuilder(val ctx: DomContext)
 
     /** DOM builder immediately above this one.
      * In case of a cycle this is not necessarily the previous location! */
-    override var parent: DomBuilder? = null
+    var parent: DomBuilder? = null
+        protected set
 
     /** Seed for randomized properties. Can be modified per DOM builder. */
     internal var seed: Long = 0
 
     /** Don't manually add children, use [addChild] instead.*/
-    override val children = linkedSetOf<DomBuilder>()
+    protected val children = linkedSetOf<DomBuilder>()
 
     /** Whether the node and its children will be built or ignored. */
     internal var visibility: Visibility = Visibility.VISIBLE
@@ -39,18 +38,14 @@ open class DomBuilder(val ctx: DomContext)
         children.forEach { it.build(parentNode) }
     }
 
-    override fun addChild(child: DomBuilder) {
-        child.seed = nextChildSeed()
-        child.stylesheet = stylesheet
-        super.addChild(child)
-    }
-
-    internal open fun addChild(
+    fun addChild(
         child: DomBuilder,
         childSeed: Long = nextChildSeed()
     ) {
-        addChild(child)
+        child.parent = this
         child.seed = childSeed
+        child.stylesheet = stylesheet
+        children.add(child)
     }
 
     /** Add given style class name to this builder. */
