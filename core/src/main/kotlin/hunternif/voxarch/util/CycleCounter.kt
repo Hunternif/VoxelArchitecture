@@ -33,3 +33,19 @@ class CycleCounter(
         cycles.clear()
     }
 }
+
+/**
+ * Convenience class for simplifying the [guard] call.
+ * @param cycleCounter could be in a companion object of your recursive
+ *      base class.
+ */
+abstract class Recursive(val cycleCounter: CycleCounter) {
+    /**
+     * Guards the executed code against infinite recursion.
+     */
+    inline fun guard(
+        crossinline block: () -> Unit,
+    ) {
+        cycleCounter.guard(this, block)
+    }
+}
