@@ -84,7 +84,7 @@ class BlueprintNode(
     val bp: Blueprint,
     private val createBuilder: DomBuilderFactory,
 ) : WithID {
-    val rule: Rule = Rule()
+    val rule: Rule = Rule("${name}_${id}")
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
     var x: Float = 0f
@@ -110,14 +110,10 @@ class BlueprintNode(
         visited: MutableMap<BlueprintNode, DomBuilder>,
     ): DomBuilder {
         val bld = createBuilder(parent)
+        bld.addStyle(rule.styleClass)
         visited[this] = bld
         if (parent != bld) parent.addChild(bld)
-        // Copy the style rule and apply it to this instance
-        if (rule.declarations.isNotEmpty()) {
-            val instRule = Rule(destInstance = bld)
-            instRule.declarations.addAll(rule.declarations)
-            bld.stylesheet.addRule(instRule)
-        }
+        bld.stylesheet.addRule(rule)
         outputs.flatMap { it.links }.map { it.to.node }.forEach { next ->
             if (next in visited) bld.addChild(visited[next]!!) // cycle
             else next.assembleDomRecursive(bld, visited)
