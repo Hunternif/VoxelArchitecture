@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.generator.GenPassthrough
 import org.junit.Assert.*
 import org.junit.Test
 
