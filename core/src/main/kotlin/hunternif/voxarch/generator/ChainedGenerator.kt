@@ -4,7 +4,7 @@ import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.plus
 import hunternif.voxarch.plan.Node
-import java.util.*
+import hunternif.voxarch.util.CycleCounter
 import kotlin.collections.LinkedHashSet
 
 /**
@@ -25,36 +25,25 @@ abstract class ChainedGenerator : IGenerator {
     )
 
     override fun generate(parent: DomBuilder, parentNode: Node) {
-        recursions++
-        if (recursions > RECURSION_CAP) return
-        parent.apply {
-            // Add custom stylesheet
-            val originalStyle = stylesheet
-            stylesheet = originalStyle + localStyle
-            generateChained(this, parentNode) {
-                // Restore original stylesheet
-                stylesheet = originalStyle
-                nextGens.forEach { it.generate(this, parentNode) }
+        cycleCounter.guard(this) {
+            parent.apply {
+                // Add custom stylesheet
+                val originalStyle = stylesheet
+                stylesheet = originalStyle + localStyle
+                generateChained(this, parentNode) {
+                    // Restore original stylesheet
+                    stylesheet = originalStyle
+                    nextGens.forEach { it.generate(this, parentNode) }
+                }
             }
         }
     }
 
     fun clearRecursionCounters() {
-        val visited = mutableSetOf<ChainedGenerator>()
-        val queue = LinkedList<ChainedGenerator>()
-        queue.add(this)
-        while (queue.isNotEmpty()) {
-            val next = queue.removeFirst()
-            next.recursions = 0
-            visited.add(next)
-            next.nextGens.forEach {
-                if (it !in visited && it is ChainedGenerator)
-                    queue.add(it)
-            }
-        }
+        cycleCounter.clear()
     }
 
     companion object {
-        const val RECURSION_CAP = 20
+        val cycleCounter = CycleCounter(20)
     }
 }
