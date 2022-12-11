@@ -112,6 +112,13 @@ class BlueprintNode(
         val bld = createBuilder(parent)
         visited[this] = bld
         if (parent != bld) parent.addChild(bld)
+        // Copy the style rule and apply it to this instance
+        //TODO: use real dom builder
+        if (rule.declarations.isNotEmpty()) {
+            val instRule = Rule(destInstance = bld)
+            instRule.declarations.addAll(rule.declarations)
+            bld.stylesheet.addRule(instRule)
+        }
         outputs.flatMap { it.links }.map { it.to.node }.forEach { next ->
             if (next in visited) bld.addChild(visited[next]!!) // cycle
             else next.assembleDomRecursive(bld, visited)
