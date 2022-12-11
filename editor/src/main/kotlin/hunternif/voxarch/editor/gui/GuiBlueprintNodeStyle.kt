@@ -12,11 +12,7 @@ import imgui.ImGui
 class GuiBlueprintNodeStyle(
     node: BlueprintNode,
 ) {
-    private val rule = Rule()
-
-    init {
-        (node.generator as? ChainedGenerator)?.localStyle?.addRule(rule)
-    }
+    private val rule = node.rule
 
     @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
     val items: List<Item<*>> = editorStyleProperties.mapNotNull { p ->

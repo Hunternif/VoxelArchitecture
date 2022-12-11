@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.dom.builder.DomGenBuilder
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
@@ -23,7 +24,7 @@ class BlueprintNewNode(
 
     override fun invoke(app: EditorAppImpl) {
         if (!::node.isInitialized) {
-            node = bp.addNode(name, generator, x, y)
+            node = bp.addNode(name, x, y) { DomGenBuilder(it.ctx, generator) }
         }
         bp.nodes.add(node)
         node.applyImNodesPos()

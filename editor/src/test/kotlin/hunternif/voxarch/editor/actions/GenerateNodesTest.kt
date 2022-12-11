@@ -1,10 +1,12 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.DomGenBuilder
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.generator.ChainedGenerator
+import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.plan.prop
@@ -120,9 +122,9 @@ class GenerateNodesTest : BaseActionTest() {
         assertTrue(obj.isGenerated)
     }
 
-    private fun makeBlueprint(gen: ChainedGenerator) =
+    private fun makeBlueprint(gen: IGenerator) =
         Blueprint(0, "test blueprint").apply {
-            val node = addNode("test", gen)
+            val node = addNode("test") { DomGenBuilder(it.ctx, gen) }
             start.outputs[0].linkTo(node.inputs[0])
         }
 

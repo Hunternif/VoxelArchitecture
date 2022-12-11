@@ -1,13 +1,12 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
-import hunternif.voxarch.generator.ChainedGenerator
-import hunternif.voxarch.generator.GenPassthrough
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 import imgui.extension.imnodes.ImNodes
 import kotlin.collections.LinkedHashSet
@@ -26,17 +25,17 @@ class Blueprint(
     val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
-    val start: BlueprintNode = createNode("Start", GenPassthrough(), 100f, 100f).apply {
+    val start: BlueprintNode = createNode("Start", 100f, 100f) { it }.apply {
         addOutput("node")
     }
 
     private fun createNode(
         name: String,
-        generator: IGenerator,
         x: Float = 0f,
-        y: Float = 0f
+        y: Float = 0f,
+        createBuilder: (parent: DomBuilder) -> DomBuilder,
     ): BlueprintNode {
-        val node = BlueprintNode(nodeIDs.newID(), name, generator, this)
+        val node = BlueprintNode(nodeIDs.newID(), name, this, createBuilder)
         node.x = x
         node.y = y
         nodeIDs.save(node)
@@ -46,14 +45,12 @@ class Blueprint(
 
     fun addNode(
         name: String,
-        generator: IGenerator,
         x: Float = 0f,
-        y: Float = 0f
-    ): BlueprintNode = createNode(name, generator, x, y).apply {
+        y: Float = 0f,
+        createBuilder: (parent: DomBuilder) -> DomBuilder,
+    ): BlueprintNode = createNode(name, x, y, createBuilder).apply {
         addInput("in")
-        if (generator is ChainedGenerator) {
-            addOutput("out")
-        }
+        addOutput("out")
     }
 
     fun removeNode(node: BlueprintNode) {
@@ -67,24 +64,27 @@ class Blueprint(
     fun execute(
         stylesheet: Stylesheet = defaultStyle,
         seed: Long = 0,
-        root: Node,
+        rootNode: Node,
     ) {
-        (start.generator as? ChainedGenerator)?.clearRecursionCounters()
+        DomBuilder.cycleCounter.clear()
         // Creates a new detached DOM root and generates on it.
         // Not recommended, because this will ignore styles or nested generators.
-        domRoot(stylesheet, seed, root) {
-            start.generator.generate(this, root)
-        }.buildDom()
+        val root = domRoot(stylesheet, seed, rootNode)
+        start.assembleDom(root)
+        root.buildDom()
     }
 }
 
-//TODO: each node must add a dummy dombuilder and apply styles there!
+/**
+ * [DomBuilder] is the main payload of this node. It will be created at runtime.
+ */
 class BlueprintNode(
     override val id: Int,
     val name: String,
-    val generator: IGenerator,
     val bp: Blueprint,
+    private val createBuilder: (parent: DomBuilder) -> DomBuilder,
 ) : WithID {
+    val rule: Rule = Rule()
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
     var x: Float = 0f
@@ -98,6 +98,25 @@ class BlueprintNode(
 
     fun applyImNodesPos() {
         ImNodes.setNodeGridSpacePos(id, x, y)
+    }
+
+    /** Assembles a DOM tree out of the connected BP nodes. */
+    fun assembleDom(parent: DomBuilder): DomBuilder =
+        assembleDomRecursive(parent, mutableMapOf())
+
+    /** Guards against recursion. */
+    private fun assembleDomRecursive(
+        parent: DomBuilder,
+        visited: MutableMap<BlueprintNode, DomBuilder>,
+    ): DomBuilder {
+        val bld = createBuilder(parent)
+        visited[this] = bld
+        if (parent != bld) parent.addChild(bld)
+        outputs.flatMap { it.links }.map { it.to.node }.forEach { next ->
+            if (next in visited) bld.addChild(visited[next]!!) // cycle
+            else next.assembleDomRecursive(bld, visited)
+        }
+        return bld
     }
 }
 
@@ -124,9 +143,6 @@ sealed class BlueprintSlot(
             bp.links.add(newLink)
             this.links.add(newLink)
             dest.links.add(newLink)
-            val fromGen = node.generator
-            val toGen = dest.node.generator
-            (fromGen as? ChainedGenerator)?.nextGens?.add(toGen)
             return newLink
         }
     }
@@ -141,9 +157,6 @@ sealed class BlueprintSlot(
             // remove from ID Registry, because links are cheap to re-create
             bp.linkIDs.remove(it)
             bp.links.remove(it)
-            val fromGen = it.from.node.generator
-            val toGen = it.to.node.generator
-            (fromGen as? ChainedGenerator)?.nextGens?.remove(toGen)
         }
     }
 }
