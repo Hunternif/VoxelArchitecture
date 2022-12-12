@@ -16,7 +16,13 @@ abstract class StyledElement(
     internal open val domBuilder: DomBuilder,
     internal var seed: Long = domBuilder.seed,
     internal val styleClass: Set<String> = domBuilder.styleClass,
-)
+    internal val inheritedStyleClass: MutableSet<String> = linkedSetOf()
+) {
+    fun inherit(styleClasses: Iterable<String>): StyledElement {
+        inheritedStyleClass.addAll(styleClasses)
+        return this
+    }
+}
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
 @CastleDsl

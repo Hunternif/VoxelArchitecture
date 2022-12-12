@@ -24,6 +24,7 @@ class DomRoot(
     /** Builds the entire DOM tree. */
     fun buildDom(): Node {
         val childCtx = DomBuildContext(this, node)
+            .inherit(styleClass)
         build(childCtx)
         return node
     }

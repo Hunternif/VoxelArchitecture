@@ -22,10 +22,12 @@ open class DomNodeBuilder<N : Node>(
         node.tags += styleClass
         bldCtx.parentNode.addChild(node)
         val styled = StyledNode(node, bldCtx.parentNode, this)
+            .inherit(bldCtx.inheritedStyleClass)
         stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
             val childCtx = DomBuildContext(this, node)
+                .inherit(bldCtx).inherit(styleClass)
             children.forEach { it.build(childCtx) }
         } else {
             // add and then remove the node, because it needs a parent to
