@@ -244,38 +244,33 @@ class DomTest {
         assertEquals(setOf("innermost"), innermost.tags)
     }
 
-//    @Test
-//    fun `inherit style class`() {
-//        val style = Stylesheet().add {
-//            style("parent") {
-//                height { 100.vx }
-//            }
-//            style("child") {
-//                height { 50.pct }
-//            }
-//        }
-//        val dom = domRoot(style) {
-//            room("parent") {
-//                room()
-//                room("child", "extra class") {
-//                    room()
-//                }
-//            }
-//        }.buildDom()
-//
-//        val parent = dom.children.first() as Room
-//        val child1 = parent.children[0] as Room
-//        val child2 = parent.children[1] as Room
-//        val child3 = child2.children[0] as Room
-//        assertEquals("parent", parent.type)
-//        assertEquals(100.0, parent.height, 0.0)
-//        assertEquals("parent", child1.type)
-//        assertEquals(100.0, child1.height, 0.0)
-//        assertEquals("child", child2.type)
-//        assertEquals(50.0, child2.height, 0.0)
-//        assertEquals("child", child3.type)
-//        assertEquals(25.0, child3.height, 0.0)
-//    }
+    @Test
+    fun `apply inherited style classes`() {
+        val style = Stylesheet().add {
+            styleInherit("tall") {
+                height { 10.vx }
+            }
+            style("wide") {
+                width { 20.vx }
+            }
+        }
+        val dom = domRoot(style) {
+            room("parent", "tall") {
+                room("child1")
+                room("child2", "wide")
+            }
+            room("room3", "wide")
+        }.buildDom()
+
+        val parent = dom.query<Room>("parent").first()
+        val child1 = dom.query<Room>("child1").first()
+        val child2 = dom.query<Room>("child2").first()
+        val room3 = dom.query<Room>("room3").first()
+        assertEquals(Vec3(0, 10, 0), parent.size)
+        assertEquals(Vec3(0, 10, 0), child1.size)
+        assertEquals(Vec3(20, 10, 0), child2.size)
+        assertEquals(Vec3(20, 0, 0), room3.size)
+    }
 
     @Test
     fun `style for instance`() {

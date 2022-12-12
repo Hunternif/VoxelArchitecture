@@ -26,6 +26,18 @@ class RuleBuilder(
     }
 
     /**
+     * Register a style rule for class names, which will be applied
+     * to all child elements.
+     */
+    fun styleInherit(
+        vararg styleClass: String,
+        block: Rule.() -> Unit,
+    ) {
+        val rule = Rule(selectInherit(*styleClass)).apply(block)
+        stylesheet.addRule(rule)
+    }
+
+    /**
      * Register a style rule applied to specific DOM Builder instances.
      */
     fun styleFor(
@@ -57,9 +69,11 @@ class RuleBuilder(
      */
     fun styleFamily(
         styleClass: String,
+        inheritStyleClass: String? = null,
         block: RuleBuilder.() -> Unit,
     ) {
         val selector = baseSelector + select(styleClass)
+        inheritStyleClass?.let { selector.inheritStyle(it) }
         RuleBuilder(stylesheet, selector).apply(block)
     }
 }

@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.builder.DomBuilder
 
 /**
  * @param styleClasses are the "CSS classes".
+ * @param inheritedStyleClasses are the "CSS classes" inherited from parents.
  * @param types are the optional "CSS tags" (a node or a generator).
  * @param instances are specific instances of DOM Builder.
  *      //TODO: replace instance with #id.
@@ -12,6 +13,9 @@ class Selector {
     /** the "CSS classes" */
     val styleClasses: MutableSet<String> = linkedSetOf()
 
+    /** the "CSS classes" inherited from parents */
+    val inheritedStyleClasses: MutableSet<String> = linkedSetOf()
+
     /** "CSS tags" (a node or a generator) */
     val types: MutableSet<Class<*>> = linkedSetOf()
 
@@ -19,7 +23,11 @@ class Selector {
     val instances: MutableSet<DomBuilder> = linkedSetOf()
 
     fun appliesToStyleClass(styleClasses: Set<String>) =
-        styleClasses.isEmpty() || styleClasses.containsAll(this.styleClasses)
+        this.styleClasses.isEmpty() || styleClasses.containsAll(this.styleClasses)
+
+    fun appliesToInheritedStyleClass(styleClasses: Set<String>) =
+        inheritedStyleClasses.isEmpty() ||
+            styleClasses.containsAll(inheritedStyleClasses)
 
     fun appliesToType(type: Class<*>) =
         types.isEmpty() || types.any { it.isAssignableFrom(type) }
@@ -35,11 +43,18 @@ class Selector {
         }
         return appliesToInstance(element.domBuilder) &&
             appliesToType(type) &&
-            appliesToStyleClass(element.styleClass)
+            appliesToStyleClass(element.styleClass) &&
+            appliesToInheritedStyleClass(
+                element.inheritedStyleClass + element.styleClass)
     }
 
     fun style(vararg styleClass: String): Selector {
         styleClasses.addAll(styleClass)
+        return this
+    }
+
+    fun inheritStyle(vararg styleClass: String): Selector {
+        inheritedStyleClasses.addAll(styleClass)
         return this
     }
 
@@ -55,6 +70,7 @@ class Selector {
 
     fun isEmpty(): Boolean =
         styleClasses.isEmpty() && types.isEmpty() && instances.isEmpty()
+            && inheritedStyleClasses.isEmpty()
 
     companion object {
         val EMPTY = Selector()
@@ -64,6 +80,11 @@ class Selector {
 /** Creates a selector with style names */
 fun select(vararg styleClass: String) = Selector().apply {
     styleClasses.addAll(styleClass)
+}
+
+/** Creates a selector with inhertied style names */
+fun selectInherit(vararg styleClass: String) = Selector().apply {
+    inheritedStyleClasses.addAll(styleClass)
 }
 
 /** Creates a selector with types */
