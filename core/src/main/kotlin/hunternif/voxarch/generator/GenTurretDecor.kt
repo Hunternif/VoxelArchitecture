@@ -34,10 +34,22 @@ class GenTurretDecor : ChainedGenerator() {
         parentNode: Node,
         nextBlock: DomBuilder.() -> Unit,
     ) {
+        val uniqueClass = "turret_decor_${hashCode()}"
         parent.apply {
-            val originalStyle = stylesheet
-            // Order matters! First apply the default styles, then the custom ones.
-            stylesheet = originalStyle + createTurretStyle(parentNode)
+            // prevent double-adding:
+            if (uniqueClass !in styleClass) {
+                // The unique class name ensures that the following style rules
+                // will only apply to this turret instance:
+                addStyle(uniqueClass)
+                // Create style rules for this instance:
+                stylesheet.add {
+                    styleFamily(selectInherit(uniqueClass)) {
+                        addTurretStyle(parentNode)
+                    }
+                }
+            }
+
+            // Add child elements
             floor(BLD_FOUNDATION)
             polyRoom(BLD_TURRET_BOTTOM)
             floor()
@@ -51,16 +63,15 @@ class GenTurretDecor : ChainedGenerator() {
                 floor(BLD_TOWER_ROOF)
                 allWalls { wall(BLD_TOWER_ROOF) }
             }
-            stylesheet = originalStyle
             nextBlock()
         }
     }
 
     /**
      * These styles will apply to the new generated part of the DOM,
-     * but not to any children.
+     * but not to any children. The unique class name at the root ensures that.
      */
-    private fun createTurretStyle(body: Node) = Stylesheet().add {
+    private fun RuleBuilder.addTurretStyle(body: Node) {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }
