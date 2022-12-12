@@ -25,7 +25,7 @@ class DomTest {
 
     @Test
     fun `nested rooms with styled size`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") {
                 height { 10.vx }
                 width { 20.vx }
@@ -55,7 +55,7 @@ class DomTest {
 
     @Test
     fun `nested rooms with min and max size`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") {
                 height { 10.vx }
                 width { 20.vx }
@@ -81,7 +81,7 @@ class DomTest {
     @Test
     fun `room with random size`() {
         val seed = 0L
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("random") {
                 height { 1.vx to 100.vx }
                 width { 1.vx to 1000.vx }
@@ -99,7 +99,7 @@ class DomTest {
     @Test
     fun `use parent seed`() {
         val seed = 3L
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("random") {
                 height { 1.vx to 1000.vx }
             }
@@ -134,7 +134,7 @@ class DomTest {
 
     @Test
     fun `dom element with multiple classes`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("height_100") {
                 height { 100.vx }
             }
@@ -153,7 +153,7 @@ class DomTest {
 
     @Test
     fun `multiple styles with the same name`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 height { 100.vx }
             }
@@ -172,7 +172,7 @@ class DomTest {
 
     @Test
     fun `inherit styles from superclasses`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Node> {
                 height { 100.vx }
             }
@@ -196,7 +196,7 @@ class DomTest {
 
     @Test
     fun `inherit style value from parent node`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") {
                 height { 100.vx }
             }
@@ -246,7 +246,7 @@ class DomTest {
 
 //    @Test
 //    fun `inherit style class`() {
-//        val style = Stylesheet().apply {
+//        val style = Stylesheet().add {
 //            style("parent") {
 //                height { 100.vx }
 //            }
@@ -281,8 +281,10 @@ class DomTest {
     fun `style for instance`() {
         val dom = domRoot {
             room("special_room") {
-                stylesheet.styleFor(this) {
-                    height { 35.vx }
+                stylesheet.add {
+                    styleFor(this@room) {
+                        height { 35.vx }
+                    }
                 }
             }
             room("second_room")
@@ -313,7 +315,7 @@ class DomTest {
 
     @Test
     fun `apply style on multiple-class selector`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("one") {
                 height { 10.vx }
             }
@@ -331,5 +333,31 @@ class DomTest {
         assertEquals(Vec3(0, 10, 0), room1.size)
         assertEquals(Vec3(20, 10, 0), room2.size)
         assertEquals(Vec3(20, 10, 0), room3.size)
+    }
+
+    @Test
+    fun `style family`() {
+        val style = Stylesheet().add {
+            styleFamily("family") {
+                style("one") {
+                    height { 10.vx }
+                }
+                style("two") {
+                    width { 20.vx }
+                }
+            }
+        }
+        val dom = domRoot(style) {
+            room("one")
+            room("two")
+            room("family", "one")
+            room("family", "two")
+        }.buildDom()
+
+        val (room1, room2, room3, room4) = dom.query<Room>().toList()
+        assertEquals(Vec3(0, 0, 0), room1.size)
+        assertEquals(Vec3(0, 0, 0), room2.size)
+        assertEquals(Vec3(0, 10, 0), room3.size)
+        assertEquals(Vec3(20, 0, 0), room4.size)
     }
 }

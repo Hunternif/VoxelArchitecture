@@ -13,7 +13,7 @@ import org.mockito.Mockito
 class StyleOrderTest {
     @Test
     fun `execute styles in order`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("class1") {
                 width { 98.vx }
             }

@@ -11,8 +11,10 @@ class DomTranslateBuilder(
         val offset = offset
         val childCtx = bldCtx.makeChildCtx()
         children.forEach {
-            stylesheet.styleFor(it) {
-                position { origin, _ -> origin + offset }
+            stylesheet.add {
+                styleFor(it) {
+                    position { origin, _ -> origin + offset }
+                }
             }
             it.build(childCtx)
         }

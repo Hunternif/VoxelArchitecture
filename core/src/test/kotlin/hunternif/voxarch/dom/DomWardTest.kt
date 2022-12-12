@@ -13,7 +13,7 @@ import org.junit.Test
 class DomWardTest {
     @Test
     fun `square castle ward`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { set(SQUARE) }
                 diameter { 2.vx }
@@ -37,7 +37,7 @@ class DomWardTest {
 
     @Test
     fun `round castle ward with 6 edges`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { set(ROUND) }
                 diameter { 10.vx }
@@ -58,7 +58,7 @@ class DomWardTest {
 
     @Test
     fun `round castle ward with 8 edges`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { set(ROUND) }
                 diameter { 10.vx }
@@ -79,7 +79,7 @@ class DomWardTest {
 
     @Test
     fun `castle ward with random shape`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { random(ROUND, SQUARE) }
             }

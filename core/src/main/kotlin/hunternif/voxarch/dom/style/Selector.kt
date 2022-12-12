@@ -52,6 +52,13 @@ class Selector {
         instances.addAll(instance)
         return this
     }
+
+    fun isEmpty(): Boolean =
+        styleClasses.isEmpty() && types.isEmpty() && instances.isEmpty()
+
+    companion object {
+        val EMPTY = Selector()
+    }
 }
 
 /** Creates a selector with style names */
@@ -67,4 +74,17 @@ fun select(vararg type: Class<*>) = Selector().apply {
 /** Creates a selector with instances */
 fun select(vararg instance: DomBuilder) = Selector().apply {
     instances.addAll(instance)
+}
+
+operator fun Selector.plus(other: Selector): Selector {
+    if (this.isEmpty()) return other
+    else if (other.isEmpty()) return this
+    val ret = Selector()
+    ret.styleClasses.addAll(this.styleClasses)
+    ret.styleClasses.addAll(other.styleClasses)
+    ret.types.addAll(this.types)
+    ret.types.addAll(other.types)
+    ret.instances.addAll(this.instances)
+    ret.instances.addAll(other.instances)
+    return ret
 }

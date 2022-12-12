@@ -8,7 +8,7 @@ import org.junit.Test
 class VisibilityTest {
     @Test
     fun `both visible`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") { visible() }
             style("child") { visible() }
         }
@@ -27,7 +27,7 @@ class VisibilityTest {
 
     @Test
     fun `child gone`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") { visible() }
             style("child") { gone() }
         }
@@ -46,7 +46,7 @@ class VisibilityTest {
 
     @Test
     fun `parent gone`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") { gone() }
             style("child") { visible() }
         }

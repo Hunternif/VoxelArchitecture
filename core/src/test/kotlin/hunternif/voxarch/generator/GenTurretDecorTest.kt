@@ -15,7 +15,7 @@ import org.junit.Test
 class GenTurretDecorTest {
     @Test
     fun `turret adds style rules to itself but not children`() {
-        val style = defaultStyle.apply {
+        val style = defaultStyle.add {
             styleFor<GenTurretDecor>(DOM_TURRET) {
                 // This enables the "roof" element with height 0.0
                 roofShape { set(RoofShape.FLAT_BORDERED) }
@@ -43,7 +43,7 @@ class GenTurretDecorTest {
 
     @Test
     fun `turret and polyRoom with turret decor are identical`() {
-        val style = defaultStyle.apply {
+        val style = defaultStyle.add {
             style("turret") {
                 size(4.vx, 6.vx, 4.vx)
             }

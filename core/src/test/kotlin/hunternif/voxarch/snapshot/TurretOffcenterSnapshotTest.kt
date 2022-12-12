@@ -60,7 +60,7 @@ class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
 
     companion object {
         private fun turret(width: Int): Node {
-            val style = defaultStyle.apply {
+            val style = defaultStyle.add {
                 styleFor<PolyRoom>(DOM_TURRET) {
                     position(1.vx, 0.vx, 1.vx)
                     start(0.vx, 0.vx, 0.vx)

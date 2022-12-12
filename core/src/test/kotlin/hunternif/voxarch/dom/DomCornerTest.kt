@@ -12,7 +12,7 @@ import org.junit.Test
 class DomCornerTest {
     @Test
     fun `square polygon room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<PolyRoom> {
                 shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
@@ -36,7 +36,7 @@ class DomCornerTest {
 
     @Test
     fun `rectangle room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 width { 2.vx }
                 length { 4.vx }

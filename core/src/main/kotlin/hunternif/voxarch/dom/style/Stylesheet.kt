@@ -43,41 +43,10 @@ interface StyleParameter
 open class Stylesheet {
     val rules: ListMultimap<String, Rule> = ArrayListMultimap.create()
 
-    /**
-     * Register a style rule i.e. a list of style declarations.
-     * They are not limited by Node type, they will apply wherever possible.
-     * @param styleClass is the "CSS class".
-     */
-    fun style(
-        vararg styleClass: String,
-        block: Rule.() -> Unit,
-    ) {
-        val rule = Rule(select(*styleClass)).apply(block)
-        addRule(rule)
-    }
-
-    /**
-     * Register a style rule applied to specific DOM Builder instances.
-     */
-    fun styleFor(
-        vararg instance: DomBuilder,
-        block: Rule.() -> Unit,
-    ) {
-        val rule = Rule(select(*instance)).apply(block)
-        addRule(rule)
-    }
-
-    /**
-     * Register a style rule i.e. a list of style declarations.
-     * These will be limited by type [T].
-     * @param styleClass is the "CSS class".
-     */
-    inline fun <reified T> styleFor(
-        vararg styleClass: String,
-        noinline block: Rule.() -> Unit,
-    ) {
-        val rule = Rule(select(T::class.java).style(*styleClass)).apply(block)
-        addRule(rule)
+    /** Starting point to new style Rules. */
+    fun add(block: RuleBuilder.() -> Unit): Stylesheet {
+        RuleBuilder(this).apply(block)
+        return this
     }
 
     fun addRule(rule: Rule) {
@@ -108,6 +77,7 @@ open class Stylesheet {
     }
 }
 
+// TODO: CombinedStylesheet should not be used
 class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>) : Stylesheet() {
     override fun applyStyle(element: StyledElement) {
         stylesheets.forEach { it.applyStyle(element) }

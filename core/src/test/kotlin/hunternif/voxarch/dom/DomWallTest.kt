@@ -10,7 +10,7 @@ import org.junit.Test
 class DomWallTest {
     @Test
     fun `create walls on square polygon`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<PolyRoom> {
                 shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
@@ -48,7 +48,7 @@ class DomWallTest {
 
     @Test
     fun `create 4 walls on rectangle room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 width { 2.vx }
                 length { 4.vx }
@@ -71,7 +71,7 @@ class DomWallTest {
 
     @Test
     fun `create all walls on rectangle room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 width { 2.vx }
                 length { 4.vx }

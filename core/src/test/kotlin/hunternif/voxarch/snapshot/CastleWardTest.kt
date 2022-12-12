@@ -33,7 +33,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
     }
 
     private fun castleWard(): Node {
-        val style = defaultStyle.apply {
+        val style = defaultStyle.add {
             style("main_turret") {
                 size(6.vx, 4.vx, 6.vx)
                 alignXZ { center() }

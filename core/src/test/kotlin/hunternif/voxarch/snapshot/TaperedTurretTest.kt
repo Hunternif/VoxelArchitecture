@@ -29,7 +29,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
 
     companion object {
         private fun turret(width: Int): Node {
-            val style = defaultStyle.apply {
+            val style = defaultStyle.add {
                 styleFor<PolyRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }

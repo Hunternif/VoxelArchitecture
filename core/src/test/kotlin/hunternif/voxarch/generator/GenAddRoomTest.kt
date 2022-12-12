@@ -13,7 +13,7 @@ import org.junit.Test
 class GenAddRoomTest {
     @Test
     fun `add room and apply styles`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("my_room") {
                 height { 10.vx }
             }
@@ -40,7 +40,7 @@ class GenAddRoomTest {
 
     @Test
     fun `add room and call next generator`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("nested_child") {
                 height { 2.vx }
             }

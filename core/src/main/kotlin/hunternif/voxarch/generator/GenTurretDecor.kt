@@ -60,7 +60,7 @@ class GenTurretDecor : ChainedGenerator() {
      * These styles will apply to the new generated part of the DOM,
      * but not to any children.
      */
-    private fun createTurretStyle(body: Node) = Stylesheet().apply {
+    private fun createTurretStyle(body: Node) = Stylesheet().add {
         style(BLD_FOUNDATION) {
             visibleIf { hasFoundation() }
         }

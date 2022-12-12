@@ -25,10 +25,12 @@ class DomLineSegmentBuilder(
         val angle = MathUtil.atan2Deg(-end.z, end.x)
         val childCtx = bldCtx.makeChildCtx()
         children.forEach {
-            stylesheet.styleFor(it) {
-                //TODO: add node rotation?
-                position { origin, _ ->
-                    p1.add(origin.rotateY(angle))
+            stylesheet.add {
+                styleFor(it) {
+                    //TODO: add node rotation?
+                    position { origin, _ ->
+                        p1.add(origin.rotateY(angle))
+                    }
                 }
             }
             it.build(childCtx)

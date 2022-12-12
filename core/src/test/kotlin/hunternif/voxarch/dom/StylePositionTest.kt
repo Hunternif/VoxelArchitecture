@@ -11,7 +11,7 @@ import org.junit.Test
 class StylePositionTest {
     @Test
     fun `vertical offset`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") { height { 100.vx } }
             style("child") {
                 height { 50.vx }
@@ -33,7 +33,7 @@ class StylePositionTest {
 
     @Test
     fun `vector offset`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("child") {
                 position { base, _ -> base + Vec3(1, 2, 3) }
             }
