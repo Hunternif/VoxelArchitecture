@@ -82,14 +82,3 @@ open class Stylesheet {
         const val GLOBAL_STYLE = "__global_style__"
     }
 }
-
-// TODO: CombinedStylesheet should not be used
-class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>) : Stylesheet() {
-    override fun applyStyle(element: StyledElement) {
-        stylesheets.forEach { it.applyStyle(element) }
-        super.applyStyle(element)
-    }
-}
-
-operator fun Stylesheet.plus(other: Stylesheet): Stylesheet =
-    CombinedStylesheet(listOf(this, other))
