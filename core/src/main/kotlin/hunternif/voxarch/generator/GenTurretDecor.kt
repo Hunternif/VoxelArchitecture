@@ -1,6 +1,7 @@
 package hunternif.voxarch.generator
 
 import hunternif.voxarch.dom.*
+import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
@@ -30,12 +31,11 @@ class GenTurretDecor : ChainedGenerator() {
     var taperRatio: Double = 0.75
 
     override fun generateChained(
-        parent: DomBuilder,
-        parentNode: Node,
+        bldCtx: DomBuildContext,
         nextBlock: DomBuilder.() -> Unit,
     ) {
         val uniqueClass = "turret_decor_${hashCode()}"
-        parent.apply {
+        bldCtx.parent.apply {
             // prevent double-adding:
             if (uniqueClass !in styleClass) {
                 // The unique class name ensures that the following style rules
@@ -44,7 +44,7 @@ class GenTurretDecor : ChainedGenerator() {
                 // Create style rules for this instance:
                 stylesheet.add {
                     styleFamily(selectInherit(uniqueClass)) {
-                        addTurretStyle(parentNode)
+                        addTurretStyle(bldCtx.parentNode)
                     }
                 }
             }

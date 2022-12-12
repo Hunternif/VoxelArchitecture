@@ -1,7 +1,6 @@
 package hunternif.voxarch.generator
 
-import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.plan.Node
+import hunternif.voxarch.dom.builder.DomBuildContext
 
 /**
  * A program that adds more child nodes to the given node.
@@ -10,7 +9,7 @@ interface IGenerator {
     /**
      * Add new DOM elements.
      */
-    fun generate(parent: DomBuilder, parentNode: Node)
+    fun generate(bldCtx: DomBuildContext)
 }
 
 /** Used to locate generator classes visible in the UI. */

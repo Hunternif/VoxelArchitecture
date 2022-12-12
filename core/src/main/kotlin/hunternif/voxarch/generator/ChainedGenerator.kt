@@ -1,7 +1,7 @@
 package hunternif.voxarch.generator
 
+import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.CycleCounter
 import hunternif.voxarch.util.Recursive
 
@@ -15,16 +15,15 @@ abstract class ChainedGenerator : Recursive(cycleCounter), IGenerator {
      * Add new DOM elements and run the next generators
      */
     abstract fun generateChained(
-        parent: DomBuilder,
-        parentNode: Node,
+        bldCtx: DomBuildContext,
         nextBlock: DomBuilder.() -> Unit,
     )
 
-    override fun generate(parent: DomBuilder, parentNode: Node) = guard {
-        parent.apply {
-            generateChained(this, parentNode) {
-                nextGens.forEach { it.generate(this, parentNode) }
-            }
+    override fun generate(bldCtx: DomBuildContext) = guard {
+        generateChained(bldCtx) {
+            //TODO: the parent node here may be wrong
+            val childCtx = bldCtx.makeChildCtx()
+            nextGens.forEach { it.generate(childCtx) }
         }
     }
 
