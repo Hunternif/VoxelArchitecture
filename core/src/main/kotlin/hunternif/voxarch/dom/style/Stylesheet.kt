@@ -44,7 +44,7 @@ class StyledGen<out G : IGenerator>(
 @CastleDsl
 interface StyleParameter
 
-/** Container for all styles in a DOM. */
+/** Contains for styling DOM elements (nodes and generators). */
 @CastleDsl
 open class Stylesheet {
     val rules: ListMultimap<String, Rule> = ArrayListMultimap.create()

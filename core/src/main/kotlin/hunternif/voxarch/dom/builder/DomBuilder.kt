@@ -2,7 +2,6 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.CycleCounter
 import hunternif.voxarch.util.Recursive
@@ -11,10 +10,8 @@ import hunternif.voxarch.util.Recursive
 @CastleDsl
 open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
 
-    /** Stylesheet contains rules for styling nodes and generators.
-     * This instance can be modified for each individual DOM builder
-     * to make local non-cascading rules. */
-    var stylesheet: Stylesheet = defaultStyle
+    /** Stylesheet contains rules for styling nodes and generators. */
+    val stylesheet: Stylesheet get() = ctx.stylesheet
 
     /** DOM builder immediately above this one.
      * In case of a cycle this is not necessarily the previous location! */
@@ -44,7 +41,6 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
     ) {
         child.parent = this
         child.seed = childSeed
-        child.stylesheet = stylesheet
         children.add(child)
     }
 
