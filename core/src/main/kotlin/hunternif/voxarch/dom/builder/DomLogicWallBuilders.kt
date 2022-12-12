@@ -66,7 +66,7 @@ open class DomPolySegmentBuilder(
     protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
         segments.forEachIndexed { i, seg ->
             val bld = DomLineSegmentBuilder(ctx, origin + seg.p1, origin + seg.p2)
-            addChild(bld, seed + 20000 + i)
+            addChild(bld, seedOffset + 20000 + i)
             bld.childBlock()
         }
     }
@@ -116,7 +116,7 @@ class DomRandomSegmentBuilder(
             else -> null
         }
         polygon?.let {
-            val segment = it.segments.random(Random(seed + 21000))
+            val segment = it.segments.random(Random(ctx.seed + seedOffset + 21000))
             addSegmentBuilders(it.origin, listOf(segment))
         }
         val childCtx = bldCtx.makeChildCtx()

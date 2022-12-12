@@ -18,8 +18,9 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
     var parent: DomBuilder? = null
         protected set
 
-    /** Seed for randomized properties. Can be modified per DOM builder. */
-    internal var seed: Long = 0
+    /** Offset from the main seed for randomized properties.
+     * Can be modified per DOM builder. */
+    internal var seedOffset: Long = 0
 
     /** Don't manually add children, use [addChild] instead.*/
     protected val children = linkedSetOf<DomBuilder>()
@@ -37,10 +38,10 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
 
     fun addChild(
         child: DomBuilder,
-        childSeed: Long = nextChildSeed()
+        seedOffset: Long = nextChildSeedOffset()
     ) {
         child.parent = this
-        child.seed = childSeed
+        child.seedOffset = seedOffset
         children.add(child)
     }
 
@@ -62,7 +63,7 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
         styleClass.addAll(this)
     }
 
-    private fun nextChildSeed() = seed + children.size + 1
+    private fun nextChildSeedOffset(): Long = seedOffset + children.size + 1
 
     /** Creates context to pass into a child, with default parameters. */
     fun DomBuildContext.makeChildCtx() =

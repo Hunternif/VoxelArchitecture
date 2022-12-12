@@ -14,7 +14,7 @@ import hunternif.voxarch.plan.Node
 abstract class StyledElement(
     val parentNode: Node,
     internal open val domBuilder: DomBuilder,
-    internal var seed: Long = domBuilder.seed,
+    internal var seed: Long = domBuilder.run { ctx.seed + seedOffset },
     internal val styleClass: Set<String> = domBuilder.styleClass,
     internal val inheritedStyleClass: MutableSet<String> = linkedSetOf()
 ) {

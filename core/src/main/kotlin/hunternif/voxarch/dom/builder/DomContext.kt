@@ -10,10 +10,14 @@ import hunternif.voxarch.plan.Node
 class DomContext(
     /** this stylesheet will apply to all elements in this DOM. */
     val stylesheet: Stylesheet = defaultStyle,
-    seed: Long = 0L,
+    /**
+     * Each child element will receive a seed value that's derived
+     * from this root seed value by a deterministic arithmetic.
+     */
+    var seed: Long = 0L,
     val rootNode: Node,
 ) {
     constructor(root: Node) : this(defaultStyle, 0L, root)
 
-    val rootBuilder = DomRoot(seed, ctx = this)
+    val rootBuilder = DomRoot(this)
 }

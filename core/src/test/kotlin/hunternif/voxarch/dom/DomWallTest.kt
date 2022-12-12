@@ -21,7 +21,7 @@ class DomWallTest {
             polyRoom {
                 allWalls {
                     wall {
-                        wallSeeds.add(seed)
+                        wallSeeds.add(ctx.seed + seedOffset)
                     }
                 }
             }
@@ -59,7 +59,7 @@ class DomWallTest {
             room {
                 fourWalls {
                     wall {
-                        wallSeeds.add(seed)
+                        wallSeeds.add(ctx.seed + seedOffset)
                     }
                 }
             }
@@ -82,7 +82,7 @@ class DomWallTest {
             room {
                 allWalls {
                     wall {
-                        wallSeeds.add(seed)
+                        wallSeeds.add(ctx.seed + seedOffset)
                     }
                 }
             }
