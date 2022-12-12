@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomContext
 import hunternif.voxarch.plan.Node
@@ -120,9 +121,9 @@ class BlueprintTest {
     }
 
     private class DomBuilderCounter(ctx: DomContext) : DomBuilder(ctx) {
-        override fun build(parentNode: Node) = guard {
+        override fun build(bldCtx: DomBuildContext) = guard {
             generatedCount++
-            children.forEach { it.build(parentNode) }
+            children.forEach { it.build(bldCtx) }
         }
     }
 

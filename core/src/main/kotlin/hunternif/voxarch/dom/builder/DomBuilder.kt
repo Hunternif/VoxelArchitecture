@@ -34,8 +34,8 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
     internal val styleClass = linkedSetOf<String>()
 
     /** Recursively invokes this method on children. */
-    open fun build(parentNode: Node): Unit = guard {
-        children.forEach { it.build(parentNode) }
+    open fun build(bldCtx: DomBuildContext): Unit = guard {
+        children.forEach { it.build(bldCtx) }
     }
 
     fun addChild(
@@ -68,10 +68,21 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
 
     private fun nextChildSeed() = seed + children.size + 1
 
+    /** Creates context to pass into a child, with default parameters. */
+    fun DomBuildContext.makeChildCtx() =
+        DomBuildContext(this@DomBuilder, parentNode)
+
     companion object {
         val cycleCounter = CycleCounter(20)
     }
 }
+
+/** Passed into children during building DOM tree. */
+//TODO: maybe re-use StyledElement for this
+data class DomBuildContext(
+    val parent: DomBuilder,
+    val parentNode: Node,
+)
 
 enum class Visibility {
     VISIBLE,

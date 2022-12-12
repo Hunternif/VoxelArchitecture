@@ -23,7 +23,8 @@ class DomRoot(
 
     /** Builds the entire DOM tree. */
     fun buildDom(): Node {
-        build(node)
+        val childCtx = DomBuildContext(this, node)
+        build(childCtx)
         return node
     }
 }

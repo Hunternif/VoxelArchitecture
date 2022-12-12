@@ -2,7 +2,6 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.style.StyledGen
 import hunternif.voxarch.generator.IGenerator
-import hunternif.voxarch.plan.Node
 
 /** Represents any nodes below the root. */
 open class DomGenBuilder<G : IGenerator>(
@@ -10,12 +9,13 @@ open class DomGenBuilder<G : IGenerator>(
     val gen: G,
 ) : DomBuilder(ctx) {
 
-    override fun build(parentNode: Node) = guard {
-        val styled = StyledGen(gen, parentNode, this)
+    override fun build(bldCtx: DomBuildContext) = guard {
+        val styled = StyledGen(gen, bldCtx.parentNode, this)
         stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
-            gen.generate(this, parentNode)
-            children.forEach { it.build(parentNode) }
+            gen.generate(this, bldCtx.parentNode)
+            val childCtx = bldCtx.makeChildCtx()
+            children.forEach { it.build(childCtx) }
         }
     }
 }
