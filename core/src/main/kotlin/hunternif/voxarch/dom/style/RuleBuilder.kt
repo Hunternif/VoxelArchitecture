@@ -12,6 +12,17 @@ class RuleBuilder(
     val baseSelector: Selector = Selector.EMPTY,
 ) {
     /**
+     * Register a style rule wih the given selector.
+     */
+    fun style(
+        selector: Selector,
+        block: Rule.() -> Unit,
+    ) {
+        val rule = Rule(baseSelector + selector).apply(block)
+        stylesheet.addRule(rule)
+    }
+
+    /**
      * Register a style rule i.e. a list of style declarations.
      * They are not limited by Node type, they will apply wherever possible.
      * @param styleClass is the "CSS class".
@@ -68,12 +79,9 @@ class RuleBuilder(
      * classes in the selector.
      */
     fun styleFamily(
-        styleClass: String,
-        inheritStyleClass: String? = null,
+        selector: Selector,
         block: RuleBuilder.() -> Unit,
     ) {
-        val selector = baseSelector + select(styleClass)
-        inheritStyleClass?.let { selector.inheritStyle(it) }
-        RuleBuilder(stylesheet, selector).apply(block)
+        RuleBuilder(stylesheet, baseSelector + selector).apply(block)
     }
 }

@@ -333,7 +333,7 @@ class DomTest {
     @Test
     fun `style family`() {
         val style = Stylesheet().add {
-            styleFamily("family") {
+            styleFamily(select("family")) {
                 style("one") {
                     height { 10.vx }
                 }

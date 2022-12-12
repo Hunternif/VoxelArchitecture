@@ -3,6 +3,8 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.builder.DomBuilder
 
 /**
+ * CSS-like selector, defines to which DOM elements a rule will apply.
+ *
  * @param styleClasses are the "CSS classes".
  * @param inheritedStyleClasses are the "CSS classes" inherited from parents.
  * @param types are the optional "CSS tags" (a node or a generator).

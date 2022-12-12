@@ -3,7 +3,8 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.CastleDsl
 
 /**
- * The constructor arguments are the "CSS selector" for this rule.
+ * A list of CSS-like style declarations.
+ * [selector] defines to which DOM elements this rule will apply.
  */
 @CastleDsl
 class Rule(
