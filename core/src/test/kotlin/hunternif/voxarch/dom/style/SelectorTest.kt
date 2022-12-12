@@ -18,10 +18,13 @@ class SelectorTest {
         val domBld = domRoot()
         val selA = select("abc").type(Int::class.java)
         val selB = select("123").instance(domBld)
-        val sum = selA + selB
+        val selC = selectInherit("base")
+        val sum = selA + selB + selC
         assertNotEquals(selA, sum)
         assertNotEquals(selB, sum)
+        assertNotEquals(selC, sum)
         assertEquals(setOf("abc", "123"), sum.styleClasses)
+        assertEquals(setOf("base"), sum.inheritedStyleClasses)
         assertEquals(setOf(Int::class.java), sum.types)
         assertEquals(setOf(domBld), sum.instances)
     }

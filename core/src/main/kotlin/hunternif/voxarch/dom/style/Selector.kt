@@ -105,6 +105,8 @@ operator fun Selector.plus(other: Selector): Selector {
     val ret = Selector()
     ret.styleClasses.addAll(this.styleClasses)
     ret.styleClasses.addAll(other.styleClasses)
+    ret.inheritedStyleClasses.addAll(this.inheritedStyleClasses)
+    ret.inheritedStyleClasses.addAll(other.inheritedStyleClasses)
     ret.types.addAll(this.types)
     ret.types.addAll(other.types)
     ret.instances.addAll(this.instances)
