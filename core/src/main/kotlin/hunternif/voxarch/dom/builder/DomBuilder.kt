@@ -6,12 +6,13 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.CycleCounter
 import hunternif.voxarch.util.Recursive
 
-/** Base class for DOM elements. */
+/**
+ * Base class for DOM elements.
+ * DOM Builder should not have any state dependent on which parent it's
+ * attached to. This will allow to execute DOM builder under any root.
+ */
 @CastleDsl
 open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
-
-    /** Stylesheet contains rules for styling nodes and generators. */
-    val stylesheet: Stylesheet get() = ctx.stylesheet
 
     /** DOM builder immediately above this one.
      * In case of a cycle this is not necessarily the previous location! */
@@ -67,7 +68,7 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
 
     /** Creates context to pass into a child, with default parameters. */
     fun DomBuildContext.makeChildCtx() =
-        DomBuildContext(this@DomBuilder, parentNode)
+        DomBuildContext(this@DomBuilder, parentNode, stylesheet, seed)
             .inherit(this)
             .inherit(styleClass)
 
@@ -79,8 +80,22 @@ open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
 /** Passed into children during building DOM tree. */
 //TODO: maybe re-use StyledElement for this
 data class DomBuildContext(
+    /** Immediate parent DOM element. */
     val parent: DomBuilder,
+
+    /** Immediate parent Node that is already built. */
     val parentNode: Node,
+
+    /** this stylesheet will apply to all elements in this DOM. */
+    val stylesheet: Stylesheet,
+
+    /**
+     * Each child element will receive a seed value that's derived
+     * from this root seed value by a deterministic arithmetic.
+     */
+    val seed: Long,
+
+    /** Style classes inherited from all parent DOM elements. */
     val inheritedStyleClass: MutableSet<String> = linkedSetOf(),
 ) {
     fun inherit(bldCtx: DomBuildContext): DomBuildContext {

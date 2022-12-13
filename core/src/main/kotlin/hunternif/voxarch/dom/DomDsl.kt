@@ -2,7 +2,6 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.*
@@ -17,12 +16,10 @@ const val DOM_TURRET = "dom_turret"
 
 /** Creates DOM root. */
 fun domRoot(
-    stylesheet: Stylesheet = defaultStyle,
-    seed: Long = 0L,
     node: Node = Structure(),
     block: DomRoot.() -> Unit = {}
 ): DomRoot {
-    return DomContext(stylesheet, seed, node).rootBuilder.apply {
+    return DomContext(node).rootBuilder.apply {
         block()
     }
 }

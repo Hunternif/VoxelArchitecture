@@ -12,11 +12,11 @@ class VisibilityTest {
             style("parent") { visible() }
             style("child") { visible() }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             node("parent") {
                 node("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.firstOrNull()
         val child = parent?.children?.firstOrNull()
@@ -31,11 +31,11 @@ class VisibilityTest {
             style("parent") { visible() }
             style("child") { gone() }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             node("parent") {
                 node("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.firstOrNull()
         val child = parent?.children?.firstOrNull()
@@ -50,11 +50,11 @@ class VisibilityTest {
             style("parent") { gone() }
             style("child") { visible() }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             node("parent") {
                 node("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.firstOrNull()
         val child = parent?.children?.firstOrNull()

@@ -21,12 +21,13 @@ open class DomNodeBuilder<N : Node>(
         val node = createNode()
         node.tags += styleClass
         bldCtx.parentNode.addChild(node)
-        val styled = StyledNode(node, bldCtx.parentNode, this)
+        val styled = StyledNode(node, bldCtx.parentNode, this,
+            bldCtx.seed + seedOffset)
             .inherit(bldCtx.inheritedStyleClass)
-        stylesheet.applyStyle(styled)
+        bldCtx.stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
-            val childCtx = DomBuildContext(this, node)
+            val childCtx = DomBuildContext(this, node, bldCtx.stylesheet, bldCtx.seed)
                 .inherit(bldCtx).inherit(styleClass)
             children.forEach { it.build(childCtx) }
         } else {

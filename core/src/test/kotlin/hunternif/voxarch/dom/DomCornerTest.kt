@@ -18,13 +18,13 @@ class DomCornerTest {
                 diameter { 2.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             polyRoom {
                 allCorners {
                     room()
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)
@@ -42,13 +42,13 @@ class DomCornerTest {
                 length { 4.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room {
                 fourCorners {
                     room()
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)

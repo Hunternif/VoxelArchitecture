@@ -26,7 +26,7 @@ class StyleOrderTest {
         val ctx = DomContext(Structure())
         val domBuilder = DomNodeBuilder(ctx) { node }
         domBuilder.addStyles("class1", "class2")
-        val styledNode = StyledNode(node, ctx.rootNode, domBuilder)
+        val styledNode = StyledNode(node, ctx.rootNode, domBuilder, 0L)
 
         style.applyStyle(styledNode)
 

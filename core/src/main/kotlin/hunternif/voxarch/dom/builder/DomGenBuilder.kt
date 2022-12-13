@@ -10,9 +10,10 @@ open class DomGenBuilder<G : IGenerator>(
 ) : DomBuilder(ctx) {
 
     override fun build(bldCtx: DomBuildContext) = guard {
-        val styled = StyledGen(gen, bldCtx.parentNode, this)
+        val styled = StyledGen(gen, bldCtx.parentNode, this,
+            bldCtx.seed + seedOffset)
             .inherit(bldCtx.inheritedStyleClass)
-        stylesheet.applyStyle(styled)
+        bldCtx.stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             val childCtx = bldCtx.makeChildCtx()
             gen.generate(childCtx)

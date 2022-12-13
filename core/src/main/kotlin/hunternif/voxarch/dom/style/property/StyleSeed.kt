@@ -4,8 +4,11 @@ import hunternif.voxarch.dom.style.*
 
 class StyleSeed : StyleParameter
 
+//TODO: create seed offset property?
+
 val PropSeed = newDomProperty<Long>("seed", 0) { value ->
-    val baseValue = domBuilder.parent?.run { ctx.seed + seedOffset } ?: 0L
+    // TODO: pass in DomBuildContext and use seed from there
+    val baseValue = seed - domBuilder.seedOffset + (domBuilder.parent?.seedOffset ?: 0L)
     val newValue = value.invoke(baseValue, seed + 10000025)
     seed = newValue
 }

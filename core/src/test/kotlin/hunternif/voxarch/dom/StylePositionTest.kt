@@ -18,11 +18,11 @@ class StylePositionTest {
                 y { 100.pct - 3.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children[0] as Room
         val child = parent.children[0] as Room
@@ -38,9 +38,9 @@ class StylePositionTest {
                 position { base, _ -> base + Vec3(1, 2, 3) }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("child")
-        }.buildDom()
+        }.buildDom(style)
 
         val child = dom.query<Room>().first()
 

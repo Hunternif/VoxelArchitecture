@@ -13,10 +13,10 @@ import hunternif.voxarch.plan.Node
 @CastleDsl
 abstract class StyledElement(
     val parentNode: Node,
-    internal open val domBuilder: DomBuilder,
-    internal var seed: Long = domBuilder.run { ctx.seed + seedOffset },
-    internal val styleClass: Set<String> = domBuilder.styleClass,
-    internal val inheritedStyleClass: MutableSet<String> = linkedSetOf()
+    open val domBuilder: DomBuilder,
+    var seed: Long,
+    val styleClass: Set<String> = domBuilder.styleClass,
+    val inheritedStyleClass: MutableSet<String> = linkedSetOf()
 ) {
     fun inherit(styleClasses: Iterable<String>): StyledElement {
         inheritedStyleClass.addAll(styleClasses)
@@ -30,15 +30,17 @@ class StyledNode<N : Node>(
     val node: N,
     parentNode: Node,
     override val domBuilder: DomNodeBuilder<N>,
-) : StyledElement(parentNode, domBuilder)
+    seed: Long,
+) : StyledElement(parentNode, domBuilder, seed)
 
 /** Represents a DOM element with a [IGenerator] for the purpose of styling. */
 @CastleDsl
 class StyledGen<out G : IGenerator>(
     internal val gen: G,
     parentNode: Node,
-    domBuilder: DomBuilder
-) : StyledElement(parentNode, domBuilder)
+    domBuilder: DomBuilder,
+    seed: Long,
+) : StyledElement(parentNode, domBuilder, seed)
 
 /** Used as the base for Style DSL. */
 @CastleDsl

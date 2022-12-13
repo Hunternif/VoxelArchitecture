@@ -16,16 +16,16 @@ class DomWallTest {
                 diameter { 2.vx }
             }
         }
-        val wallSeeds = mutableListOf<Long>()
-        val dom = domRoot(style) {
+        val wallSeedOffsets = mutableListOf<Long>()
+        val dom = domRoot {
             polyRoom {
                 allWalls {
                     wall {
-                        wallSeeds.add(ctx.seed + seedOffset)
+                        wallSeedOffsets.add(seedOffset)
                     }
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val room = dom.children[0]
         assertEquals(4, room.children.size)
@@ -43,7 +43,7 @@ class DomWallTest {
         assertEquals(Vec3(-1, 0, 1), w4.origin)
         assertEquals(Vec3(1, 0, 1), w4.end)
 
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 
     @Test
@@ -54,19 +54,19 @@ class DomWallTest {
                 length { 4.vx }
             }
         }
-        val wallSeeds = mutableListOf<Long>()
-        val dom = domRoot(style) {
+        val wallSeedOffsets = mutableListOf<Long>()
+        val dom = domRoot {
             room {
                 fourWalls {
                     wall {
-                        wallSeeds.add(ctx.seed + seedOffset)
+                        wallSeedOffsets.add(seedOffset)
                     }
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         verifyFourWalls(dom)
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 
     @Test
@@ -77,19 +77,19 @@ class DomWallTest {
                 length { 4.vx }
             }
         }
-        val wallSeeds = mutableListOf<Long>()
-        val dom = domRoot(style) {
+        val wallSeedOffsets = mutableListOf<Long>()
+        val dom = domRoot {
             room {
                 allWalls {
                     wall {
-                        wallSeeds.add(ctx.seed + seedOffset)
+                        wallSeedOffsets.add(seedOffset)
                     }
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         verifyFourWalls(dom)
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 
     private fun verifyFourWalls(dom: Node) {

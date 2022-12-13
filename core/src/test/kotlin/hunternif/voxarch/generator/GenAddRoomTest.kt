@@ -21,11 +21,11 @@ class GenAddRoomTest {
                 height { 5.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("my_room") {
                 gen(GenAddRoom("my_child"))
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         assertEquals(1, parent.children.size)
@@ -47,11 +47,11 @@ class GenAddRoomTest {
         }
         val generator = GenAddRoom()
         generator.nextGens.add(GenAddRoom("nested_child"))
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room {
                 gen(generator)
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room

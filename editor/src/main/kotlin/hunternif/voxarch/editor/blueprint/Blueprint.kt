@@ -67,9 +67,9 @@ class Blueprint(
         DomBuilder.cycleCounter.clear()
         // Creates a new detached DOM root and generates on it.
         // Not recommended, because this will ignore styles or nested generators.
-        val root = domRoot(stylesheet, seed, rootNode)
-        start.assembleDom(root)
-        root.buildDom()
+        val root = domRoot(rootNode)
+        start.assembleDom(root, stylesheet)
+        root.buildDom(stylesheet, seed)
     }
 }
 
@@ -99,22 +99,23 @@ class BlueprintNode(
     }
 
     /** Assembles a DOM tree out of the connected BP nodes. */
-    fun assembleDom(parent: DomBuilder): DomBuilder =
-        assembleDomRecursive(parent, mutableMapOf())
+    fun assembleDom(parent: DomBuilder, stylesheet: Stylesheet): DomBuilder =
+        assembleDomRecursive(parent, stylesheet, mutableMapOf())
 
     /** Guards against recursion. */
     private fun assembleDomRecursive(
         parent: DomBuilder,
+        stylesheet: Stylesheet,
         visited: MutableMap<BlueprintNode, DomBuilder>,
     ): DomBuilder {
         val bld = createBuilder(parent)
         bld.addAllStyles(rule.selector.styleClasses)
         visited[this] = bld
         if (parent != bld) parent.addChild(bld)
-        bld.stylesheet.addRule(rule)
+        stylesheet.addRule(rule)
         outputs.flatMap { it.links }.map { it.to.node }.forEach { next ->
             if (next in visited) bld.addChild(visited[next]!!) // cycle
-            else next.assembleDomRecursive(bld, visited)
+            else next.assembleDomRecursive(bld, stylesheet, visited)
         }
         return bld
     }

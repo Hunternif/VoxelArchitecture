@@ -42,7 +42,7 @@ class GenTurretDecor : ChainedGenerator() {
                 // will only apply to this turret instance:
                 addStyle(uniqueClass)
                 // Create style rules for this instance:
-                stylesheet.add {
+                bldCtx.stylesheet.add {
                     styleFamily(selectInherit(uniqueClass)) {
                         addTurretStyle(bldCtx.parentNode)
                     }

@@ -24,12 +24,12 @@ class GenTurretDecorTest {
                 height { 10.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             turret("turret") {
                 room(BLD_TOWER_ROOF, "other_room_1")
             }
             room(BLD_TOWER_ROOF, "other_room_2")
-        }.buildDom()
+        }.buildDom(style)
 
         val turret = dom.query<Room>("turret").first()
         val roof = turret.query<PolyRoom>(BLD_TOWER_ROOF).first()
@@ -48,15 +48,15 @@ class GenTurretDecorTest {
                 size(4.vx, 6.vx, 4.vx)
             }
         }
-        val dom1 = domRoot(style) {
+        val dom1 = domRoot {
             turret("turret")
-        }.buildDom()
+        }.buildDom(style)
 
-        val dom2 = domRoot(style) {
+        val dom2 = domRoot {
             polyRoom("turret") {
                 turretDecor()
             }
-        }.buildDom()
+        }.buildDom(style)
 
         assertNodeTreeEqualsRecursive(dom1, dom2, testTags = false)
     }

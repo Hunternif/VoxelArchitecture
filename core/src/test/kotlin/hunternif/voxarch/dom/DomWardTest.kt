@@ -19,13 +19,13 @@ class DomWardTest {
                 diameter { 2.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             ward {
                 allCorners {
                     room()
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val ward = dom.children[0]
         assertEquals(4, ward.children.size)
@@ -44,13 +44,13 @@ class DomWardTest {
                 edgeLength { 6.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             ward {
                 allCorners {
                     room()
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val ward = dom.children[0]
         assertEquals(6, ward.children.size)
@@ -65,13 +65,13 @@ class DomWardTest {
                 edgeLength { 4.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             ward {
                 allCorners {
                     room()
                 }
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val ward = dom.children[0]
         assertEquals(8, ward.children.size)
@@ -85,15 +85,15 @@ class DomWardTest {
             }
         }
 
-        val dom1 = domRoot(style, 1).apply {
+        val dom1 = domRoot {
             ward()
-        }.buildDom()
+        }.buildDom(style, 1)
         val ward1 = dom1.query<Ward>().first()
         assertEquals(ROUND, ward1.shape)
 
-        val dom2 = domRoot(style, 2).apply {
+        val dom2 = domRoot {
             ward()
-        }.buildDom()
+        }.buildDom(style, 2)
         val ward2 = dom2.query<Ward>().first()
         assertEquals(SQUARE, ward2.shape)
     }

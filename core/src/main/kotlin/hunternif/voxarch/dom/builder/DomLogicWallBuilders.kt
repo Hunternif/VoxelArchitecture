@@ -25,7 +25,7 @@ class DomLineSegmentBuilder(
         val angle = MathUtil.atan2Deg(-end.z, end.x)
         val childCtx = bldCtx.makeChildCtx()
         children.forEach {
-            stylesheet.add {
+            bldCtx.stylesheet.add {
                 styleFor(it) {
                     //TODO: add node rotation?
                     position { origin, _ ->
@@ -116,7 +116,7 @@ class DomRandomSegmentBuilder(
             else -> null
         }
         polygon?.let {
-            val segment = it.segments.random(Random(ctx.seed + seedOffset + 21000))
+            val segment = it.segments.random(Random(bldCtx.seed + seedOffset + 21000))
             addSegmentBuilders(it.origin, listOf(segment))
         }
         val childCtx = bldCtx.makeChildCtx()

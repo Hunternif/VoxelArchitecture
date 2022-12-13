@@ -68,7 +68,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 size(4.vx, 12.vx, 4.vx)
             }
         }
-        return domRoot(style, 0).apply {
+        return domRoot {
             ward("outer_ward") {
                 allCorners { turret("outer_ward_turret") }
                 allWalls { wall(BLD_CURTAIN_WALL) }
@@ -78,6 +78,6 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                     randomWall { turret("main_turret") }
                 }
             }
-        }.buildDom()
+        }.buildDom(style, 0)
     }
 }

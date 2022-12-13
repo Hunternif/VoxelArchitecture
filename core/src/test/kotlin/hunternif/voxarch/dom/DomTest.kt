@@ -1,5 +1,7 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.dom.builder.DomBuildContext
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
@@ -37,11 +39,11 @@ class DomTest {
                 length { 100.pct }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -67,11 +69,11 @@ class DomTest {
                 length { min = 1.vx; 0.pct }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -88,9 +90,9 @@ class DomTest {
                 length { 1.vx to 1000.vx }
             }
         }
-        val dom = domRoot(style, seed).apply {
+        val dom = domRoot {
             room("random")
-        }.buildDom()
+        }.buildDom(style, seed)
 
         val room = dom.children.first() as Room
         assertEquals(Vec3(110, 46, 144), room.size)
@@ -107,7 +109,7 @@ class DomTest {
                 seed { inherit() }
             }
         }
-        val dom = domRoot(style, seed).apply {
+        val dom = domRoot {
             room("random")
             room("random")
             room("parent_seed", "random") {
@@ -116,7 +118,7 @@ class DomTest {
             room("parent_seed", "random") {
                 room("random")
             }
-        }.buildDom()
+        }.buildDom(style, seed)
 
         val room1 = dom.children[0] as Room
         val room2 = dom.children[1] as Room
@@ -142,9 +144,9 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("height_100", "width_200")
-        }.buildDom()
+        }.buildDom(style)
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
@@ -161,9 +163,9 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room()
-        }.buildDom()
+        }.buildDom(style)
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
@@ -183,10 +185,10 @@ class DomTest {
                 length { 300.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room()
             polyRoom()
-        }.buildDom()
+        }.buildDom(style)
 
         val room = dom.children[0] as Room
         val polyRoom = dom.children[1] as PolyRoom
@@ -204,11 +206,11 @@ class DomTest {
                 height { inherit() }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -254,13 +256,13 @@ class DomTest {
                 width { 20.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("parent", "tall") {
                 room("child1")
                 room("child2", "wide")
             }
             room("room3", "wide")
-        }.buildDom()
+        }.buildDom(style)
 
         val parent = dom.query<Room>("parent").first()
         val child1 = dom.query<Room>("child1").first()
@@ -274,16 +276,19 @@ class DomTest {
 
     @Test
     fun `style for instance`() {
-        val dom = domRoot {
+        lateinit var instance: DomBuilder
+        val domRoot = domRoot {
             room("special_room") {
-                stylesheet.add {
-                    styleFor(this@room) {
-                        height { 35.vx }
-                    }
-                }
+                instance = this@room
             }
             room("second_room")
-        }.buildDom()
+        }
+        val style = Stylesheet().add {
+            styleFor(instance) {
+                height { 35.vx }
+            }
+        }
+        val dom = domRoot.buildDom(style)
 
         val specialRoom = dom.query<Room>("special_room").first()
         val secondRoom = dom.query<Room>("second_room").first()
@@ -318,11 +323,11 @@ class DomTest {
                 width { 20.vx }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("one")
             room("one", "two")
             room("one", "two", "three")
-        }.buildDom()
+        }.buildDom(style)
 
         val (room1, room2, room3) = dom.query<Room>().toList()
         assertEquals(Vec3(0, 10, 0), room1.size)
@@ -342,12 +347,12 @@ class DomTest {
                 }
             }
         }
-        val dom = domRoot(style) {
+        val dom = domRoot {
             room("one")
             room("two")
             room("family", "one")
             room("family", "two")
-        }.buildDom()
+        }.buildDom(style)
 
         val (room1, room2, room3, room4) = dom.query<Room>().toList()
         assertEquals(Vec3(0, 0, 0), room1.size)

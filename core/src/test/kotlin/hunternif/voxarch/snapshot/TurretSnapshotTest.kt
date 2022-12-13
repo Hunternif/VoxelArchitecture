@@ -74,9 +74,9 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                     taperRatio { set(0.75) }
                 }
             }
-            return domRoot(style) {
+            return domRoot {
                 turret()
-            }.buildDom()
+            }.buildDom(style)
         }
     }
 }
