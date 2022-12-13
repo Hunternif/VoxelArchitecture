@@ -120,9 +120,9 @@ class BlueprintTest {
     }
 
     private class DomBuilderCounter : DomBuilder() {
-        override fun build(bldCtx: DomBuildContext) = guard {
+        override fun build(ctx: DomBuildContext) = guard {
             generatedCount++
-            children.forEach { it.build(bldCtx) }
+            children.forEach { it.build(ctx) }
         }
     }
 

@@ -15,18 +15,18 @@ open class DomNodeBuilder<N : Node>(
             DomNodeBuilder(N::class.java, createNode)
     }
 
-    override fun build(bldCtx: DomBuildContext) = guard {
+    override fun build(ctx: DomBuildContext) = guard {
         val node = createNode()
         node.tags += styleClass
-        bldCtx.parentNode.addChild(node)
-        val styled = StyledNode(node, bldCtx.parentNode, this,
-            bldCtx.seed + seedOffset)
-            .inherit(bldCtx.inheritedStyleClass)
-        bldCtx.stylesheet.applyStyle(styled)
+        ctx.parentNode.addChild(node)
+        val styled = StyledNode(node, ctx.parentNode, this,
+            ctx.seed + seedOffset)
+            .inherit(ctx.inheritedStyleClass)
+        ctx.stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
-            val childCtx = DomBuildContext(this, node, bldCtx.stylesheet, bldCtx.seed)
-                .inherit(bldCtx).inherit(styleClass)
+            val childCtx = DomBuildContext(this, node, ctx.stylesheet, ctx.seed)
+                .inherit(ctx).inherit(styleClass)
             children.forEach { it.build(childCtx) }
         } else {
             // add and then remove the node, because it needs a parent to

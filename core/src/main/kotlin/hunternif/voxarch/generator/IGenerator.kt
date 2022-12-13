@@ -9,7 +9,7 @@ interface IGenerator {
     /**
      * Add new DOM elements.
      */
-    fun generate(bldCtx: DomBuildContext)
+    fun generate(ctx: DomBuildContext)
 }
 
 /** Used to locate generator classes visible in the UI. */

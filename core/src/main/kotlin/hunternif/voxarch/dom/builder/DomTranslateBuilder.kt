@@ -6,11 +6,11 @@ import hunternif.voxarch.vector.Vec3
 class DomTranslateBuilder(
     private val offset: Vec3,
 ) : DomBuilder() {
-    override fun build(bldCtx: DomBuildContext) = guard {
+    override fun build(ctx: DomBuildContext) = guard {
         val offset = offset
-        val childCtx = bldCtx.makeChildCtx()
+        val childCtx = ctx.makeChildCtx()
         children.forEach {
-            bldCtx.stylesheet.add {
+            ctx.stylesheet.add {
                 styleFor(it) {
                     position { origin, _ -> origin + offset }
                 }

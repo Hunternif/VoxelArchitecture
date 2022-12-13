@@ -9,10 +9,10 @@ class GenAddRoom(vararg styleClass: String) : ChainedGenerator() {
     private val styles = styleClass
 
     override fun generateChained(
-        bldCtx: DomBuildContext,
+        ctx: DomBuildContext,
         nextBlock: DomBuilder.() -> Unit,
     ) {
-        bldCtx.parent.room(*styles) {
+        ctx.parent.room(*styles) {
             nextBlock()
         }
     }

@@ -33,8 +33,8 @@ open class DomBuilder : Recursive(cycleCounter) {
     internal val styleClass = linkedSetOf<String>()
 
     /** Recursively invokes this method on children. */
-    open fun build(bldCtx: DomBuildContext): Unit = guard {
-        children.forEach { it.build(bldCtx) }
+    open fun build(ctx: DomBuildContext): Unit = guard {
+        children.forEach { it.build(ctx) }
     }
 
     fun addChild(
@@ -98,8 +98,8 @@ data class DomBuildContext(
     /** Style classes inherited from all parent DOM elements. */
     val inheritedStyleClass: MutableSet<String> = linkedSetOf(),
 ) {
-    fun inherit(bldCtx: DomBuildContext): DomBuildContext {
-        inheritedStyleClass.addAll(bldCtx.inheritedStyleClass)
+    fun inherit(ctx: DomBuildContext): DomBuildContext {
+        inheritedStyleClass.addAll(ctx.inheritedStyleClass)
         return this
     }
     fun inherit(styleClasses: Iterable<String>): DomBuildContext {

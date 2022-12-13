@@ -31,20 +31,20 @@ class GenTurretDecor : ChainedGenerator() {
     var taperRatio: Double = 0.75
 
     override fun generateChained(
-        bldCtx: DomBuildContext,
+        ctx: DomBuildContext,
         nextBlock: DomBuilder.() -> Unit,
     ) {
         val uniqueClass = "turret_decor_${hashCode()}"
-        bldCtx.parent.apply {
+        ctx.parent.apply {
             // prevent double-adding:
             if (uniqueClass !in styleClass) {
                 // The unique class name ensures that the following style rules
                 // will only apply to this turret instance:
                 addStyle(uniqueClass)
                 // Create style rules for this instance:
-                bldCtx.stylesheet.add {
+                ctx.stylesheet.add {
                     styleFamily(selectInherit(uniqueClass)) {
-                        addTurretStyle(bldCtx.parentNode)
+                        addTurretStyle(ctx.parentNode)
                     }
                 }
             }

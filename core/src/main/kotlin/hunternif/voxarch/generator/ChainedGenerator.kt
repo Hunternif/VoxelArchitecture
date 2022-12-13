@@ -15,14 +15,14 @@ abstract class ChainedGenerator : Recursive(cycleCounter), IGenerator {
      * Add new DOM elements and run the next generators
      */
     abstract fun generateChained(
-        bldCtx: DomBuildContext,
+        ctx: DomBuildContext,
         nextBlock: DomBuilder.() -> Unit,
     )
 
-    override fun generate(bldCtx: DomBuildContext) = guard {
-        generateChained(bldCtx) {
+    override fun generate(ctx: DomBuildContext) = guard {
+        generateChained(ctx) {
             //TODO: the parent node here may be wrong
-            val childCtx = bldCtx.makeChildCtx()
+            val childCtx = ctx.makeChildCtx()
             nextGens.forEach { it.generate(childCtx) }
         }
     }
