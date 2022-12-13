@@ -5,9 +5,8 @@ import hunternif.voxarch.generator.IGenerator
 
 /** Represents any nodes below the root. */
 open class DomGenBuilder<G : IGenerator>(
-    ctx: DomContext,
     val gen: G,
-) : DomBuilder(ctx) {
+) : DomBuilder() {
 
     override fun build(bldCtx: DomBuildContext) = guard {
         val styled = StyledGen(gen, bldCtx.parentNode, this,

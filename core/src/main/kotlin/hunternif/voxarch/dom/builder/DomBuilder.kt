@@ -12,7 +12,7 @@ import hunternif.voxarch.util.Recursive
  * attached to. This will allow to execute DOM builder under any root.
  */
 @CastleDsl
-open class DomBuilder(val ctx: DomContext) : Recursive(cycleCounter) {
+open class DomBuilder : Recursive(cycleCounter) {
 
     /** DOM builder immediately above this one.
      * In case of a cycle this is not necessarily the previous location! */

@@ -12,9 +12,8 @@ import hunternif.voxarch.util.round
  * Will only work when added as a child to a [DomNodeBuilder]<[PolyRoom]>.
  */
 open class DomLogicPolyCornerBuilder(
-    ctx: DomContext,
     private val block: DomBuilder.() -> Unit
-) : DomBuilder(ctx) {
+) : DomBuilder() {
     override fun build(bldCtx: DomBuildContext) = guard {
         val parentNode = bldCtx.parentNode
         if (parentNode is PolyRoom) {
@@ -26,7 +25,7 @@ open class DomLogicPolyCornerBuilder(
 
     protected fun addCornerBuilders(polygon: Path) {
         polygon.points.forEachIndexed { i, offset ->
-            val bld = DomTranslateBuilder(ctx, offset.round())
+            val bld = DomTranslateBuilder(offset.round())
             addChild(bld, seedOffset + 10000 + i)
             bld.block()
         }
@@ -39,9 +38,8 @@ open class DomLogicPolyCornerBuilder(
  * Will only work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
 class DomLogicFourCornerBuilder(
-    ctx: DomContext,
     block: DomBuilder.() -> Unit
-) : DomLogicPolyCornerBuilder(ctx, block) {
+) : DomLogicPolyCornerBuilder(block) {
     override fun build(bldCtx: DomBuildContext) = guard {
         val parentNode = bldCtx.parentNode
         if (parentNode is Room) {

@@ -1,7 +1,6 @@
 package hunternif.voxarch.dom
 
 import com.nhaarman.mockitokotlin2.*
-import hunternif.voxarch.dom.builder.DomContext
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
@@ -23,10 +22,9 @@ class StyleOrderTest {
             }
         }
         val node: Room = spy(Room())
-        val ctx = DomContext(Structure())
-        val domBuilder = DomNodeBuilder(ctx) { node }
+        val domBuilder = DomNodeBuilder() { node }
         domBuilder.addStyles("class1", "class2")
-        val styledNode = StyledNode(node, ctx.rootNode, domBuilder, 0L)
+        val styledNode = StyledNode(node, Structure(), domBuilder, 0L)
 
         style.applyStyle(styledNode)
 

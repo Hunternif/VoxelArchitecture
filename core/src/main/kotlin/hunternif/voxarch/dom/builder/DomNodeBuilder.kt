@@ -5,16 +5,14 @@ import hunternif.voxarch.plan.Node
 
 /** Represents any nodes below the root. */
 open class DomNodeBuilder<N : Node>(
-    ctx: DomContext,
     val nodeClass: Class<N>,
     private val createNode: () -> N
-) : DomBuilder(ctx) {
+) : DomBuilder() {
     companion object {
         inline operator fun <reified N : Node> invoke(
-            ctx: DomContext,
             noinline createNode: () -> N,
         ): DomNodeBuilder<N> =
-            DomNodeBuilder(ctx, N::class.java, createNode)
+            DomNodeBuilder(N::class.java, createNode)
     }
 
     override fun build(bldCtx: DomBuildContext) = guard {

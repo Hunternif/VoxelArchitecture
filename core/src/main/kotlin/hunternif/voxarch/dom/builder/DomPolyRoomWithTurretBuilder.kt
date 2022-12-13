@@ -5,7 +5,7 @@ import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.PolyRoom
 
 /** Adds child [PolyRoom] with a [GenTurretDecor]. */
-open class DomPolyRoomWithTurretBuilder(ctx: DomContext) : DomPolyRoomBuilder(ctx) {
+open class DomPolyRoomWithTurretBuilder : DomPolyRoomBuilder() {
     override fun build(bldCtx: DomBuildContext) {
         turretDecor(*styleClass.toTypedArray())
         super.build(bldCtx)

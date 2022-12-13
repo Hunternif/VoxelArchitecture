@@ -6,8 +6,8 @@ import hunternif.voxarch.util.ellipse
 import hunternif.voxarch.util.rectangle
 import kotlin.math.ceil
 
-open class DomPolyRoomBuilder(ctx: DomContext)
-    : DomNodeBuilder<PolyRoom>(ctx, PolyRoom::class.java, { PolyRoom() }) {
+open class DomPolyRoomBuilder
+    : DomNodeBuilder<PolyRoom>(PolyRoom::class.java, { PolyRoom() }) {
 
     override fun buildNode(node: PolyRoom) = node.createPolygon()
 }

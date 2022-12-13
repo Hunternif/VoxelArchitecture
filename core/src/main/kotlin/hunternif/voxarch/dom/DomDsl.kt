@@ -19,7 +19,7 @@ fun domRoot(
     node: Node = Structure(),
     block: DomRoot.() -> Unit = {}
 ): DomRoot {
-    return DomContext(node).rootBuilder.apply {
+    return DomRoot(node).apply {
         block()
     }
 }
@@ -61,7 +61,7 @@ fun DomBuilder.polyRoom(
     vararg styleClass: String,
     block: DomNodeBuilder<PolyRoom>.() -> Unit = {}
 ) {
-    val bld = DomPolyRoomBuilder(ctx).apply { +styleClass }
+    val bld = DomPolyRoomBuilder().apply { +styleClass }
     addChild(bld)
     bld.block()
 }
@@ -71,7 +71,7 @@ fun DomBuilder.turret(
     vararg styleClass: String,
     block: DomPolyRoomBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolyRoomWithTurretBuilder(ctx).apply {
+    val bld = DomPolyRoomWithTurretBuilder().apply {
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
@@ -92,7 +92,7 @@ fun DomBuilder.ward(
     vararg styleClass: String,
     block: DomWardBuilder.() -> Unit = {}
 ) {
-    val bld = DomWardBuilder(ctx).apply { +styleClass }
+    val bld = DomWardBuilder().apply { +styleClass }
     addChild(bld)
     bld.block()
 }
@@ -101,7 +101,7 @@ fun DomBuilder.ward(
 fun DomBuilder.allCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicPolyCornerBuilder(ctx, block)
+    val bld = DomLogicPolyCornerBuilder(block)
     addChild(bld)
 }
 
@@ -109,7 +109,7 @@ fun DomBuilder.allCorners(
 fun DomBuilder.fourCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicFourCornerBuilder(ctx, block)
+    val bld = DomLogicFourCornerBuilder(block)
     addChild(bld)
 }
 
@@ -117,7 +117,7 @@ fun DomBuilder.fourCorners(
 fun DomBuilder.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolySegmentBuilder(ctx, block)
+    val bld = DomPolySegmentBuilder(block)
     addChild(bld)
 }
 
@@ -125,7 +125,7 @@ fun DomBuilder.allWalls(
 fun DomBuilder.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomRandomSegmentBuilder(ctx, block)
+    val bld = DomRandomSegmentBuilder(block)
     addChild(bld)
 }
 
@@ -133,7 +133,7 @@ fun DomBuilder.randomWall(
 fun DomBuilder.fourWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomFourWallsBuilder(ctx, block)
+    val bld = DomFourWallsBuilder(block)
     addChild(bld)
 }
 
@@ -167,7 +167,7 @@ fun DomBuilder.prop(
 fun DomBuilder.passthrough(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomBuilder(ctx)
+    val bld = DomBuilder()
     addChild(bld)
     bld.block()
 }
@@ -178,7 +178,7 @@ fun <G : IGenerator> DomBuilder.gen(
     vararg styleClass: String,
     block: DomGenBuilder<G>.() -> Unit = {}
 ) {
-    val bld = DomGenBuilder(ctx, generator).apply { +styleClass }
+    val bld = DomGenBuilder(generator).apply { +styleClass }
     addChild(bld)
     bld.block()
 }
@@ -192,7 +192,7 @@ private inline fun <reified N : Node> DomBuilder.addChildNodeBuilder(
     styleClass: Array<out String>,
     noinline createNode: () -> N
 ): DomNodeBuilder<N> {
-    val child = DomNodeBuilder(ctx, createNode).apply { +styleClass }
+    val child = DomNodeBuilder(createNode).apply { +styleClass }
     addChild(child)
     return child
 }

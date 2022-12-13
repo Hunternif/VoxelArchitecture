@@ -15,9 +15,8 @@ import kotlin.random.Random
  * [p1]-[p2].
  */
 class DomLineSegmentBuilder(
-    ctx: DomContext,
     val p1: Vec3, val p2: Vec3,
-) : DomBuilder(ctx) {
+) : DomBuilder() {
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
     override fun build(bldCtx: DomBuildContext) = guard {
@@ -45,9 +44,8 @@ class DomLineSegmentBuilder(
  * [PolyRoom]>.
  */
 open class DomPolySegmentBuilder(
-    ctx: DomContext,
     private val childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomBuilder(ctx) {
+) : DomBuilder() {
     override fun build(bldCtx: DomBuildContext) = guard {
         val parentNode = bldCtx.parentNode
         val polygon = when (parentNode) {
@@ -65,7 +63,7 @@ open class DomPolySegmentBuilder(
 
     protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
         segments.forEachIndexed { i, seg ->
-            val bld = DomLineSegmentBuilder(ctx, origin + seg.p1, origin + seg.p2)
+            val bld = DomLineSegmentBuilder( origin + seg.p1, origin + seg.p2)
             addChild(bld, seedOffset + 20000 + i)
             bld.childBlock()
         }
@@ -78,9 +76,8 @@ open class DomPolySegmentBuilder(
  * Will work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
 class DomFourWallsBuilder(
-    ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolySegmentBuilder(ctx, childBlock) {
+) : DomPolySegmentBuilder(childBlock) {
     override fun build(bldCtx: DomBuildContext) = guard {
         val parentNode = bldCtx.parentNode
         if (parentNode is Room) {
@@ -102,9 +99,8 @@ class DomFourWallsBuilder(
  * [PolyRoom].
  */
 class DomRandomSegmentBuilder(
-    ctx: DomContext,
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolySegmentBuilder(ctx, childBlock) {
+) : DomPolySegmentBuilder(childBlock) {
     override fun build(bldCtx: DomBuildContext) = guard {
         val parentNode = bldCtx.parentNode
         val polygon = when (parentNode) {

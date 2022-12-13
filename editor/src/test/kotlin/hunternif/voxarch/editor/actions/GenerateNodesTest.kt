@@ -126,7 +126,7 @@ class GenerateNodesTest : BaseActionTest() {
         }
 
     private val propFactory : DomBuilderFactory = {
-        DomNodeBuilder(it.ctx) {
+        DomNodeBuilder {
             Prop(Vec3(4, 5, 6), "generated prop")
         }
     }

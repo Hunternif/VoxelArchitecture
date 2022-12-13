@@ -20,7 +20,7 @@ import hunternif.voxarch.plan.Room
 typealias DomBuilderFactory = (parent: DomBuilder) -> DomBuilder
 
 val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
-    "Turret" to { DomPolyRoomWithTurretBuilder(it.ctx) },
-    "Turret Decor" to { DomGenBuilder(it.ctx, GenTurretDecor()) },
-    "Room" to { DomNodeBuilder(it.ctx) { Room() } }
+    "Turret" to { DomPolyRoomWithTurretBuilder() },
+    "Turret Decor" to { DomGenBuilder(GenTurretDecor()) },
+    "Room" to { DomNodeBuilder { Room() } }
 )

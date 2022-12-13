@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.dom.builder.DomContext
 import hunternif.voxarch.plan.Node
 import org.junit.Assert.*
 import org.junit.Before
@@ -17,9 +16,9 @@ class BlueprintTest {
     @Before
     fun setup() {
         bp = Blueprint(0, "test blueprint")
-        node1 = bp.addNode("test") { DomBuilderCounter(it.ctx) }
-        node2 = bp.addNode("test") { DomBuilderCounter(it.ctx) }
-        node3 = bp.addNode("test") { DomBuilderCounter(it.ctx) }
+        node1 = bp.addNode("test") { DomBuilderCounter() }
+        node2 = bp.addNode("test") { DomBuilderCounter() }
+        node3 = bp.addNode("test") { DomBuilderCounter() }
         generatedCount = 0
     }
 
@@ -120,7 +119,7 @@ class BlueprintTest {
         assertEquals(60, generatedCount)
     }
 
-    private class DomBuilderCounter(ctx: DomContext) : DomBuilder(ctx) {
+    private class DomBuilderCounter : DomBuilder() {
         override fun build(bldCtx: DomBuildContext) = guard {
             generatedCount++
             children.forEach { it.build(bldCtx) }
