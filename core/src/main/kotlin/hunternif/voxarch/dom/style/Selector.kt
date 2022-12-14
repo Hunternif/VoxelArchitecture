@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.util.ifNotEmpty
 
 /**
  * CSS-like selector, defines to which DOM elements a rule will apply.
@@ -73,6 +74,16 @@ class Selector {
     fun isEmpty(): Boolean =
         styleClasses.isEmpty() && types.isEmpty() && instances.isEmpty()
             && inheritedStyleClasses.isEmpty()
+
+    override fun toString(): String {
+        val inheritedStr = inheritedStyleClasses.joinToString(" ") { ".$it" }
+        return mutableListOf<String>().apply {
+            addAll(types.map { it.simpleName })
+            addAll(styleClasses.map { ".$it" })
+            inheritedStr.ifNotEmpty { add("[$it]") }
+            addAll(instances.map { "#${it.javaClass.simpleName}" })
+        }.joinToString(" ")
+    }
 
     companion object {
         val EMPTY = Selector()
