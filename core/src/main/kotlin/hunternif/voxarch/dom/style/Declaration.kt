@@ -18,4 +18,6 @@ class Declaration<T>(
         fun <T> defaultForProperty(property: Property<T>) =
             Declaration(property, set(property.default))
     }
+
+    override fun toString(): String = "$property: $value"
 }

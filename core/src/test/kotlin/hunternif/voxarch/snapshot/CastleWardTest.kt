@@ -38,7 +38,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 size(6.vx, 4.vx, 6.vx)
                 alignXZ { center() }
                 alignY { bottom() }
-                y { 15.vx }
+                offsetY { 15.vx }
                 shape { set(PolyShape.SQUARE) }
                 roofShape { set(RoofShape.FLAT_BORDERED) }
                 bottomShape { set(BottomShape.FOUNDATION) }
@@ -53,7 +53,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 shape { set(PolyShape.SQUARE) }
                 size(16.vx, 8.vx, 16.vx)
                 alignY { bottom() }
-                y { 4.vx }
+                offsetY { 4.vx }
             }
             style("outer_ward_turret") {
                 shape { set(PolyShape.ROUND) }

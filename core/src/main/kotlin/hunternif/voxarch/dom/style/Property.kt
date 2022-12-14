@@ -25,6 +25,8 @@ abstract class Property<T>(
     inline fun <reified T2> asType(): Property<T2>? =
         if (isType<T2>()) this as Property<T2>
         else null
+
+    override fun toString(): String = name
 }
 
 // ============================================================================

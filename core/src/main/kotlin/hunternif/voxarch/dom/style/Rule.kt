@@ -24,4 +24,10 @@ class Rule(
     }
 
     fun appliesTo(element: StyledElement) = selector.appliesTo(element)
+
+    override fun toString(): String {
+        return "$selector {\n${
+            declarations.joinToString("\n") { "  $it" }
+        }\n}"
+    }
 }
