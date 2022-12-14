@@ -42,4 +42,11 @@ class DimensionTest {
             assertEquals(expectedVal, actualVal, 0.0)
         }
     }
+
+    @Test
+    fun `dimension toString`() {
+        assertEquals("(1 + 2.5%)", (1.vx + 2.5.pct).toString())
+        assertEquals("(1 / 2 - 3 * min(4, 5))", (1.vx / 2 - 3 * min(4.vx, 5.vx)).toString())
+        assertEquals("(1.4 ~ 2.0)", (1.4.vx to 2.0.vx).toString())
+    }
 }
