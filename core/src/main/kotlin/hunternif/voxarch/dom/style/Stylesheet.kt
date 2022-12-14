@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.style
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.ListMultimap
 import hunternif.voxarch.dom.CastleDsl
+import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.style.property.GlobalStyleOrderIndex
@@ -12,35 +13,30 @@ import hunternif.voxarch.plan.Node
 /** Represents a DOM element for the purpose of styling. */
 @CastleDsl
 abstract class StyledElement(
-    val parentNode: Node,
     open val domBuilder: DomBuilder,
-    var seed: Long,
-    val styleClass: Set<String> = domBuilder.styleClass,
-    val inheritedStyleClass: MutableSet<String> = linkedSetOf()
+    val ctx: DomBuildContext,
+    var seed: Long = ctx.seed + domBuilder.seedOffset
 ) {
-    fun inherit(styleClasses: Iterable<String>): StyledElement {
-        inheritedStyleClass.addAll(styleClasses)
-        return this
-    }
+    val parentNode: Node get() = ctx.parentNode
+    val styleClass: Set<String> get() = domBuilder.styleClass
+    val inheritedStyleClass: Set<String> get() = ctx.inheritedStyleClass
 }
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
 @CastleDsl
 class StyledNode<N : Node>(
     val node: N,
-    parentNode: Node,
     override val domBuilder: DomNodeBuilder<N>,
-    seed: Long,
-) : StyledElement(parentNode, domBuilder, seed)
+    ctx: DomBuildContext,
+) : StyledElement(domBuilder, ctx)
 
 /** Represents a DOM element with a [IGenerator] for the purpose of styling. */
 @CastleDsl
 class StyledGen<out G : IGenerator>(
     internal val gen: G,
-    parentNode: Node,
     domBuilder: DomBuilder,
-    seed: Long,
-) : StyledElement(parentNode, domBuilder, seed)
+    ctx: DomBuildContext,
+) : StyledElement(domBuilder, ctx)
 
 /** Used as the base for Style DSL. */
 @CastleDsl

@@ -4,7 +4,6 @@ import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.plan.Node
 
 /** Passed into children during building DOM tree. */
-//TODO: maybe re-use StyledElement for this
 data class DomBuildContext(
     /** Immediate parent DOM element. */
     val parent: DomBuilder,

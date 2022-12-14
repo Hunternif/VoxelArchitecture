@@ -19,9 +19,7 @@ open class DomNodeBuilder<N : Node>(
         val node = createNode()
         node.tags += styleClass
         ctx.parentNode.addChild(node)
-        val styled = StyledNode(node, ctx.parentNode, this,
-            ctx.seed + seedOffset)
-            .inherit(ctx.inheritedStyleClass)
+        val styled = StyledNode(node, this, ctx)
         ctx.stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
