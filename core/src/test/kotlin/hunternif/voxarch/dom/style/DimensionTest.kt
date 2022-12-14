@@ -1,7 +1,6 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.style.*
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
 
 class DimensionTest {

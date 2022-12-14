@@ -1,6 +1,6 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.property.*
 import org.junit.Assert.assertTrue
 import org.junit.Test

@@ -1,6 +1,6 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.query

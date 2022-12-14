@@ -1,4 +1,4 @@
-package hunternif.voxarch.dom
+package hunternif.voxarch.dom.style
 
 import com.nhaarman.mockitokotlin2.*
 import hunternif.voxarch.dom.builder.DomBuildContext
