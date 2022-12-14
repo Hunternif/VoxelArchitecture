@@ -360,4 +360,20 @@ class DomTest {
         assertEquals(Vec3(0, 10, 0), room3.size)
         assertEquals(Vec3(20, 0, 0), room4.size)
     }
+
+    @Test
+    fun `deep-copy DomBuildContext`() {
+        lateinit var domBuilder2: DomBuilder
+        val root = domRoot {
+            node { domBuilder2 = this }
+        }
+        val ctx1 = DomBuildContext(root, Node(), defaultStyle, 0)
+            .inherit(listOf("class1"))
+        val ctx2 = ctx1.copy(parent = domBuilder2)
+        assertEquals(domBuilder2, ctx2.parent)
+        assertEquals(setOf("class1"), ctx2.inheritedStyleClass)
+        ctx2.inherit(listOf("class2"))
+        assertEquals(setOf("class1"), ctx1.inheritedStyleClass)
+        assertEquals(setOf("class1", "class2"), ctx2.inheritedStyleClass)
+    }
 }

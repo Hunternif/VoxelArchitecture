@@ -68,9 +68,7 @@ open class DomBuilder : Recursive(cycleCounter) {
 
     /** Creates context to pass into a child, with default parameters. */
     fun DomBuildContext.makeChildCtx() =
-        DomBuildContext(this@DomBuilder, parentNode, stylesheet, seed)
-            .inherit(this)
-            .inherit(styleClass)
+        copy(this@DomBuilder).inherit(styleClass)
 
     companion object {
         val cycleCounter = CycleCounter(20)
@@ -106,6 +104,13 @@ data class DomBuildContext(
         inheritedStyleClass.addAll(styleClasses)
         return this
     }
+    fun copy(
+        parent: DomBuilder = this.parent,
+        parentNode: Node = this.parentNode,
+        stylesheet: Stylesheet = this.stylesheet,
+        seed: Long = this.seed,
+    ) = DomBuildContext(parent, parentNode, stylesheet, seed)
+        .inherit(inheritedStyleClass)
 }
 
 enum class Visibility {

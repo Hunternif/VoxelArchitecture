@@ -25,8 +25,7 @@ open class DomNodeBuilder<N : Node>(
         ctx.stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
             buildNode(node)
-            val childCtx = DomBuildContext(this, node, ctx.stylesheet, ctx.seed)
-                .inherit(ctx).inherit(styleClass)
+            val childCtx = ctx.copy(this, node).inherit(styleClass)
             children.forEach { it.build(childCtx) }
         } else {
             // add and then remove the node, because it needs a parent to
