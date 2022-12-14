@@ -74,7 +74,7 @@ fun Rule.bottomShape(block: StyleTurretBottomShape.() -> Value<BottomShape>) {
     add(PropBottomShape, StyleTurretBottomShape().block())
 }
 
-fun StyleTurretRoofShape.randomRoof(): Value<RoofShape> = value { _, seed ->
+fun StyleTurretRoofShape.randomRoof(): Value<RoofShape> = value("random") { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, RoofShape.FLAT_BORDERED),
         RandomOption(0.5, RoofShape.SPIRE),
@@ -82,7 +82,7 @@ fun StyleTurretRoofShape.randomRoof(): Value<RoofShape> = value { _, seed ->
     ).value
 }
 
-fun StyleTurretBodyShape.randomBody(): Value<BodyShape> = value { _, seed ->
+fun StyleTurretBodyShape.randomBody(): Value<BodyShape> = value("random") { _, seed ->
     Random(seed).nextWeighted(
         RandomOption(1.0, BodyShape.SQUARE),
         RandomOption(1.0, BodyShape.ROUND)

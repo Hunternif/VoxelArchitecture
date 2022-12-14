@@ -55,7 +55,7 @@ fun Rule.position(x: Dimension, y: Dimension, z: Dimension) {
 }
 
 fun Rule.position(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropPosition, value(block))
+    add(PropPosition, value("...", block))
 }
 
 
@@ -108,7 +108,7 @@ fun Rule.offset(x: Dimension, y: Dimension, z: Dimension) {
 }
 
 fun Rule.offset(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropOffsetPosition, value(block))
+    add(PropOffsetPosition, value("...", block))
 }
 
 
@@ -164,5 +164,5 @@ fun Rule.start(x: Dimension, y: Dimension, z: Dimension) {
 }
 
 fun Rule.start(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropStart, value(block))
+    add(PropStart, value("...", block))
 }
