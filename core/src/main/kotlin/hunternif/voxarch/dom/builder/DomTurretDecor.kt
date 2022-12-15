@@ -1,8 +1,6 @@
-package hunternif.voxarch.generator
+package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.*
-import hunternif.voxarch.dom.builder.DomBuildContext
-import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Node
@@ -15,7 +13,7 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
 /**
  * Adds decorative child elements to make a Room look like a castle turret.
  */
-class GenTurretDecor : DomBuilder() {
+class DomTurretDecor : DomBuilder() {
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
     var bottomShape: BottomShape = BottomShape.FLAT
     /** position of this turret in relation to parent turret */

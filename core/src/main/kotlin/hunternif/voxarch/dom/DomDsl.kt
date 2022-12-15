@@ -2,7 +2,7 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.generator.GenTurretDecor
+import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
 import hunternif.voxarch.vector.Vec3
@@ -65,7 +65,7 @@ fun DomBuilder.polyRoom(
     bld.block()
 }
 
-/** Adds child [PolyRoom] with a [GenTurretDecor]. See [node]. */
+/** Adds child [PolyRoom] with a [DomTurretDecor]. See [node]. */
 fun DomBuilder.turret(
     vararg styleClass: String,
     block: DomPolyRoomBuilder.() -> Unit = {}
@@ -81,9 +81,9 @@ fun DomBuilder.turret(
 /** Adds decoration to make the parent node look like a turret. */
 fun DomBuilder.turretDecor(
     vararg styleClass: String,
-    block: GenTurretDecor.() -> Unit = {}
+    block: DomTurretDecor.() -> Unit = {}
 ) {
-    val bld = GenTurretDecor().apply { +styleClass }
+    val bld = DomTurretDecor().apply { +styleClass }
     addChild(bld)
     bld.block()
 }

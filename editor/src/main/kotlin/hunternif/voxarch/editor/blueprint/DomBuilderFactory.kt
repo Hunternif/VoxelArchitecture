@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.blueprint
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.builder.DomPolyRoomWithTurretBuilder
-import hunternif.voxarch.generator.GenTurretDecor
+import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Room
 
 /**
@@ -20,6 +20,6 @@ typealias DomBuilderFactory = (parent: DomBuilder) -> DomBuilder
 
 val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Turret" to { DomPolyRoomWithTurretBuilder() },
-    "Turret Decor" to { GenTurretDecor() },
+    "Turret Decor" to { DomTurretDecor() },
     "Room" to { DomNodeBuilder { Room() } }
 )
