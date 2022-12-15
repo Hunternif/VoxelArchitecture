@@ -1,12 +1,11 @@
 package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.CastleDsl
 import hunternif.voxarch.dom.builder.DomBuilder
 
 /**
  * Convenience builder for creating Rules.
  */
-@CastleDsl
+@StyleDsl
 class RuleBuilder(
     val stylesheet: Stylesheet,
     val baseSelector: Selector = Selector.EMPTY,

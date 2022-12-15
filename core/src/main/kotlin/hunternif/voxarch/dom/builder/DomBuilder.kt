@@ -1,6 +1,6 @@
 package hunternif.voxarch.dom.builder
 
-import hunternif.voxarch.dom.CastleDsl
+import hunternif.voxarch.dom.DomDsl
 import hunternif.voxarch.util.CycleCounter
 import hunternif.voxarch.util.Recursive
 
@@ -9,7 +9,7 @@ import hunternif.voxarch.util.Recursive
  * DOM Builder should not have any state dependent on which parent it's
  * attached to. This will allow to execute DOM builder under any root.
  */
-@CastleDsl
+@DomDsl
 open class DomBuilder : Recursive(cycleCounter) {
 
     /** Offset from the main seed for randomized properties.

@@ -185,7 +185,7 @@ fun <G : IGenerator> DomBuilder.gen(
 
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
-annotation class CastleDsl
+annotation class DomDsl
 
 /** Creates a child [DomBuilder], adds it to parent and returns. */
 private inline fun <reified N : Node> DomBuilder.addChildNodeBuilder(
