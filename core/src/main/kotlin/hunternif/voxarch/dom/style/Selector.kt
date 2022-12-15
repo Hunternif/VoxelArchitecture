@@ -8,7 +8,7 @@ import hunternif.voxarch.util.ifNotEmpty
  *
  * @param styleClasses are the "CSS classes".
  * @param inheritedStyleClasses are the "CSS classes" inherited from parents.
- * @param types are the optional "CSS tags" (a node or a generator).
+ * @param types are the optional "CSS tags" (a Node or a DomBuilder).
  * @param instances are specific instances of DOM Builder.
  *      //TODO: replace instance with #id.
  */
@@ -19,7 +19,7 @@ class Selector {
     /** the "CSS classes" inherited from parents */
     val inheritedStyleClasses: MutableSet<String> = linkedSetOf()
 
-    /** "CSS tags" (a node or a generator) */
+    /** "CSS tags" (a Node or a DomBuilder) */
     val types: MutableSet<Class<*>> = linkedSetOf()
 
     /** specific instances of DOM Builder */
@@ -38,11 +38,10 @@ class Selector {
     fun appliesToInstance(instance: DomBuilder) =
         instances.isEmpty() || instances.any { it == instance }
 
-    fun appliesTo(element: StyledElement): Boolean {
+    fun appliesTo(element: StyledElement<*>): Boolean {
         val type = when (element) {
             is StyledNode<*> -> element.node.javaClass
-            is StyledGen<*> -> element.gen.javaClass
-            else -> return false
+            else -> element.domBuilder.javaClass
         }
         return appliesToInstance(element.domBuilder) &&
             appliesToType(type) &&

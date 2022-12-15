@@ -15,39 +15,39 @@ class StyleTurretRoofShape : StyleParameter
 class StyleTurretBottomShape : StyleParameter
 
 /** Offset for borders and spires in all child turrets. */
-val PropRoofOffset = newGenProperty<GenTurretDecor, Double>("roof offset", 1.0) { value ->
+val PropRoofOffset = newDomProperty<GenTurretDecor, Double>("roof offset", 1.0) { value ->
     val baseValue = parentNode.width
-    gen.roofOffset = value
+    domBuilder.roofOffset = value
         .invoke(baseValue, seed + 10000006)
         .roundToInt()
 }
 
 /** Y/X ratio of spires for all child turrets. */
-val PropSpireRatio = newGenProperty<GenTurretDecor, Double>("spire ratio", 1.5) { value ->
+val PropSpireRatio = newDomProperty<GenTurretDecor, Double>("spire ratio", 1.5) { value ->
     val baseValue = 1.5
-    gen.spireRatio = value.invoke(baseValue, seed + 10000019)
+    domBuilder.spireRatio = value.invoke(baseValue, seed + 10000019)
 }
 
 /** Y/X ratio of tapered bottoms of turrets. */
-val PropTaperRatio = newGenProperty<GenTurretDecor, Double>("taper ratio", 0.75) { value ->
+val PropTaperRatio = newDomProperty<GenTurretDecor, Double>("taper ratio", 0.75) { value ->
     val baseValue = 0.75
-    gen.taperRatio = value.invoke(baseValue, seed + 10000020)
+    domBuilder.taperRatio = value.invoke(baseValue, seed + 10000020)
 }
 
-val PropRoofShape = newGenProperty<GenTurretDecor, RoofShape>("roof shape", RoofShape.FLAT_BORDERED) { value ->
-    val baseValue = gen.roofShape
-    gen.roofShape = value.invoke(baseValue, seed + 10000007)
+val PropRoofShape = newDomProperty<GenTurretDecor, RoofShape>("roof shape", RoofShape.FLAT_BORDERED) { value ->
+    val baseValue = domBuilder.roofShape
+    domBuilder.roofShape = value.invoke(baseValue, seed + 10000007)
 }
 
 // TODO: this will apply to a turret-with-room generator
-//val PropBodyShape = newGenProperty<GenTurretDecor, BodyShape>("body shape", BodyShape.SQUARE) { value ->
-//    val baseValue = gen.bodyShape
-//    gen.bodyShape = value.invoke(baseValue, seed + 10000008)
+//val PropBodyShape = newDomProperty<GenTurretDecor, BodyShape>("body shape", BodyShape.SQUARE) { value ->
+//    val baseValue = domBuilder.bodyShape
+//    domBuilder.bodyShape = value.invoke(baseValue, seed + 10000008)
 //}
 
-val PropBottomShape = newGenProperty<GenTurretDecor, BottomShape>("bottom shape", BottomShape.FLAT) { value ->
-    val baseValue = gen.bottomShape
-    gen.bottomShape = value.invoke(baseValue, seed + 10000009)
+val PropBottomShape = newDomProperty<GenTurretDecor, BottomShape>("bottom shape", BottomShape.FLAT) { value ->
+    val baseValue = domBuilder.bottomShape
+    domBuilder.bottomShape = value.invoke(baseValue, seed + 10000009)
 }
 
 fun Rule.roofOffset(block: StyleSize.() -> Dimension) {

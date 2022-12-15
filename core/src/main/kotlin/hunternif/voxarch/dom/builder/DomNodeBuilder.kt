@@ -33,7 +33,7 @@ open class DomNodeBuilder<N : Node>(
     }
 
     /** Any custom initialization code for this node.
-     * Don't use it to add child nodes, create a IGenerator for that instead. */
+     * Don't use it to add child nodes, create another DomBuilder for that instead. */
     open fun buildNode(node: N) {}
 }
 

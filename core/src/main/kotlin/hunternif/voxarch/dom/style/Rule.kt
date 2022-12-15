@@ -20,7 +20,7 @@ class Rule(
         declarations.remove(declaration)
     }
 
-    fun appliesTo(element: StyledElement) = selector.appliesTo(element)
+    fun appliesTo(element: StyledElement<*>) = selector.appliesTo(element)
 
     override fun toString(): String {
         return "$selector {\n${

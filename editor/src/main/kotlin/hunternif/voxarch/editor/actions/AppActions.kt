@@ -69,7 +69,7 @@ fun EditorApp.exportVoxFile(path: Path) = action {
 
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
-/** Clear generated nodes and run generators for all nodes that have them. */
+/** Clear generated nodes and run Blueprints for all nodes that have them. */
 fun EditorApp.generateNodes() = historyAction(GenerateNodes())
 
 /** Clear generated voxels and run a Builder on the current root node. */

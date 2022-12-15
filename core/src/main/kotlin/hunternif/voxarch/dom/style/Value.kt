@@ -5,7 +5,7 @@ import kotlin.random.Random
 
 /**
  * At runtime this will be invoked, and the result will be applied to the
- * styled property of a Node/Generator.
+ * styled property of a Node/DomBuilder.
  */
 interface Value<T> {
     operator fun invoke(base: T, seed: Long): T

@@ -2,13 +2,12 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.generator.GenTurretDecor
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
 import hunternif.voxarch.vector.Vec3
 
-// Some DOM elements are built of more basic classes via generators,
+// Some DOM elements are built of more basic classes,
 // e.g. by adding child Nodes to a Room. To help identify this initial parent
 // Node, a style will be automatically added to it.
 const val DOM_TURRET = "dom_turret"
@@ -82,9 +81,11 @@ fun DomBuilder.turret(
 /** Adds decoration to make the parent node look like a turret. */
 fun DomBuilder.turretDecor(
     vararg styleClass: String,
-    block: DomGenBuilder<GenTurretDecor>.() -> Unit = {}
+    block: GenTurretDecor.() -> Unit = {}
 ) {
-    gen(GenTurretDecor(), *styleClass) { block() }
+    val bld = GenTurretDecor().apply { +styleClass }
+    addChild(bld)
+    bld.block()
 }
 
 /** Adds child [Ward] with a perimeter of walls and towers. */
@@ -168,17 +169,6 @@ fun DomBuilder.passthrough(
     block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomBuilder()
-    addChild(bld)
-    bld.block()
-}
-
-/** Adds generator */
-fun <G : IGenerator> DomBuilder.gen(
-    generator: G,
-    vararg styleClass: String,
-    block: DomGenBuilder<G>.() -> Unit = {}
-) {
-    val bld = DomGenBuilder(generator).apply { +styleClass }
     addChild(bld)
     bld.block()
 }

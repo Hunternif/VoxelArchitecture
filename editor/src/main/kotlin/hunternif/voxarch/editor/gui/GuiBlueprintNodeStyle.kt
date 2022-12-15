@@ -6,7 +6,6 @@ import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.editorStyleProperties
-import hunternif.voxarch.generator.ChainedGenerator
 import imgui.ImGui
 
 class GuiBlueprintNodeStyle(

@@ -10,7 +10,7 @@ import imgui.extension.imnodes.ImNodes
 import kotlin.collections.LinkedHashSet
 
 /**
- * Represents a graph of DOM Generators.
+ * Represents a graph of DomBuilders.
  */
 class Blueprint(
     override val id: Int,

@@ -15,8 +15,7 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
 /**
  * Adds decorative child elements to make a Room look like a castle turret.
  */
-@PublicGenerator("Turret")
-class GenTurretDecor : ChainedGenerator() {
+class GenTurretDecor : DomBuilder() {
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
     var bottomShape: BottomShape = BottomShape.FLAT
     /** position of this turret in relation to parent turret */
@@ -30,41 +29,37 @@ class GenTurretDecor : ChainedGenerator() {
     /** Y/X ratio of tapered bottoms of turrets. */
     var taperRatio: Double = 0.75
 
-    override fun generateChained(
-        ctx: DomBuildContext,
-        nextBlock: DomBuilder.() -> Unit,
-    ) {
+    override fun build(ctx: DomBuildContext) = guard {
+        val styled = StyledElement( this, ctx)
+        ctx.stylesheet.applyStyle(styled)
+        // The unique class name ensures that the following style rules
+        // will only apply to this turret instance:
         val uniqueClass = "turret_decor_${hashCode()}"
-        ctx.parent.apply {
-            // prevent double-adding:
-            if (uniqueClass !in styleClass) {
-                // The unique class name ensures that the following style rules
-                // will only apply to this turret instance:
-                addStyle(uniqueClass)
-                // Create style rules for this instance:
-                ctx.stylesheet.add {
-                    styleFamily(selectInherit(uniqueClass)) {
-                        addTurretStyle(ctx.parentNode)
-                    }
+        // prevent double-adding:
+        if (uniqueClass !in styleClass) {
+            addStyle(uniqueClass)
+            // Create style rules for this instance:
+            ctx.stylesheet.add {
+                styleFamily(selectInherit(uniqueClass)) {
+                    addTurretStyle(ctx.parentNode)
                 }
             }
-
-            // Add child elements
-            floor(BLD_FOUNDATION)
-            polyRoom(BLD_TURRET_BOTTOM)
-            floor()
-            allWalls {
-                wall(BLD_TOWER_BODY)
-                path(BLD_TOWER_CORBEL)
-                // TODO: place corbels as separate nodes
-            }
-            polyRoom(BLD_TOWER_SPIRE, "roof")
-            polyRoom(BLD_TOWER_ROOF, "roof") {
-                floor(BLD_TOWER_ROOF)
-                allWalls { wall(BLD_TOWER_ROOF) }
-            }
-            nextBlock()
         }
+        // Add child elements
+        floor(BLD_FOUNDATION)
+        polyRoom(BLD_TURRET_BOTTOM)
+        floor()
+        allWalls {
+            wall(BLD_TOWER_BODY)
+            path(BLD_TOWER_CORBEL)
+            // TODO: place corbels as separate nodes
+        }
+        polyRoom(BLD_TOWER_SPIRE, "roof")
+        polyRoom(BLD_TOWER_ROOF, "roof") {
+            floor(BLD_TOWER_ROOF)
+            allWalls { wall(BLD_TOWER_ROOF) }
+        }
+        children.forEach { it.build(ctx.makeChildCtx()) }
     }
 
     /**
