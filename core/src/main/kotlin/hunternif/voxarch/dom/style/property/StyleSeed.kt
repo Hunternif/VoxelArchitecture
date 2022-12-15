@@ -7,8 +7,7 @@ class StyleSeed : StyleParameter
 //TODO: create seed offset property?
 
 val PropSeed = newDomProperty<Long>("seed", 0) { value ->
-    // TODO: pass in DomBuildContext and use seed from there
-    val baseValue = seed - domBuilder.seedOffset + (domBuilder.parent?.seedOffset ?: 0L)
+    val baseValue = seed - domBuilder.seedOffset + ctx.parent.seedOffset
     val newValue = value.invoke(baseValue, seed + 10000025)
     seed = newValue
 }

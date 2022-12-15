@@ -11,7 +11,6 @@ class DomBuilderFactoryTest {
         domBuilderFactoryByName.forEach { (_, factory) ->
             val domBuilder = factory(root)
             assertNotNull(domBuilder)
-            assertNull(domBuilder.parent)
         }
     }
 }

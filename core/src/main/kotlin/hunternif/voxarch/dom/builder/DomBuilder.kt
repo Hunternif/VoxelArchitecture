@@ -12,11 +12,6 @@ import hunternif.voxarch.util.Recursive
 @CastleDsl
 open class DomBuilder : Recursive(cycleCounter) {
 
-    /** DOM builder immediately above this one.
-     * In case of a cycle this is not necessarily the previous location! */
-    var parent: DomBuilder? = null
-        protected set
-
     /** Offset from the main seed for randomized properties.
      * Can be modified per DOM builder. */
     internal var seedOffset: Long = 0
@@ -39,7 +34,6 @@ open class DomBuilder : Recursive(cycleCounter) {
         child: DomBuilder,
         seedOffset: Long = nextChildSeedOffset()
     ) {
-        child.parent = this
         child.seedOffset = seedOffset
         children.add(child)
     }
