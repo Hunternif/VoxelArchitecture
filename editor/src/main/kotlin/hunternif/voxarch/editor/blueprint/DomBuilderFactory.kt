@@ -7,16 +7,9 @@ import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Room
 
 /**
- * When a Blueprint is executed, it constructs a new DOM tree given a root Node.
- * Each DOM builder in that tree must be a new instance, hence the factory for
- * creating these instances.
- * Reasons why we need new instances:
- * - reference to root
- * - stylesheet is copied from root
- * - seed is modified from the base
- * TODO: fix these reasons and make DOM builders stateless.
+ * Creates a new DomBuilder for a Blueprint node.
  */
-typealias DomBuilderFactory = (parent: DomBuilder) -> DomBuilder
+typealias DomBuilderFactory = () -> DomBuilder
 
 val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Turret" to { DomPolyRoomWithTurretBuilder() },

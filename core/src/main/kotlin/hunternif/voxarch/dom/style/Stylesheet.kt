@@ -69,6 +69,14 @@ open class Stylesheet {
         rules.clear()
     }
 
+    /** Create a copy of this stylesheet with the same rules. */
+    fun copy(): Stylesheet = Stylesheet().also { it.copyRules(this) }
+
+    /** Copy all rules from the [other] stylesheet into this stylesheet. */
+    fun copyRules(other: Stylesheet) {
+        other.rules.forEach { name, rule -> rules.put(name, rule) }
+    }
+
     companion object {
         const val GLOBAL_STYLE = "__global_style__"
     }

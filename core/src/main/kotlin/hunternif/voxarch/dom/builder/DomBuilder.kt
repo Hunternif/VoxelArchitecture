@@ -27,7 +27,7 @@ open class DomBuilder : Recursive(cycleCounter) {
 
     /** Recursively invokes this method on children. */
     open fun build(ctx: DomBuildContext): Unit = guard {
-        children.forEach { it.build(ctx) }
+        children.forEach { it.build(ctx.makeChildCtx()) }
     }
 
     fun addChild(
@@ -36,6 +36,10 @@ open class DomBuilder : Recursive(cycleCounter) {
     ) {
         child.seedOffset = seedOffset
         children.add(child)
+    }
+
+    fun removeChild(child: DomBuilder) {
+        children.remove(child)
     }
 
     /** Add given style class name to this builder. */

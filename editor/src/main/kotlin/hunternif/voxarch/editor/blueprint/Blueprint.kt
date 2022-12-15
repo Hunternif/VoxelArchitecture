@@ -23,7 +23,9 @@ class Blueprint(
     val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
-    val start: BlueprintNode = createNode("Start", 100f, 100f) { it }.apply {
+    private val internalStylesheet = Stylesheet()
+
+    val start: BlueprintNode = createNode("Start", 100f, 100f, DomBuilder()).apply {
         addOutput("node")
     }
 
@@ -31,22 +33,24 @@ class Blueprint(
         name: String,
         x: Float = 0f,
         y: Float = 0f,
-        createBuilder: DomBuilderFactory,
+        domBuilder: DomBuilder,
     ): BlueprintNode {
-        val node = BlueprintNode(nodeIDs.newID(), name, this, createBuilder)
+        val node = BlueprintNode(nodeIDs.newID(), name, this, domBuilder)
         node.x = x
         node.y = y
         nodeIDs.save(node)
         nodes.add(node)
+        domBuilder.addStyle(node.styleClass)
+        internalStylesheet.addRule(node.rule)
         return node
     }
 
     fun addNode(
         name: String,
+        domBuilder: DomBuilder,
         x: Float = 0f,
         y: Float = 0f,
-        createBuilder: DomBuilderFactory,
-    ): BlueprintNode = createNode(name, x, y, createBuilder).apply {
+    ): BlueprintNode = createNode(name, x, y, domBuilder).apply {
         addInput("in")
         addOutput("out")
     }
@@ -60,16 +64,17 @@ class Blueprint(
     }
 
     fun execute(
+        rootNode: Node,
         stylesheet: Stylesheet = defaultStyle,
         seed: Long = 0,
-        rootNode: Node,
     ) {
         DomBuilder.cycleCounter.clear()
-        // Creates a new detached DOM root and generates on it.
-        // Not recommended, because this will ignore styles or nested generators.
+        // copy the incoming stylesheet to keep it clean from generated rules:
+        val finalStylesheet = stylesheet.copy()
+        finalStylesheet.copyRules(internalStylesheet)
         val root = domRoot(rootNode)
-        start.assembleDom(root, stylesheet)
-        root.buildDom(stylesheet, seed)
+        root.addChild(start.domBuilder)
+        root.buildDom(finalStylesheet, seed)
     }
 }
 
@@ -80,9 +85,10 @@ class BlueprintNode(
     override val id: Int,
     val name: String,
     val bp: Blueprint,
-    private val createBuilder: DomBuilderFactory,
+    val domBuilder: DomBuilder,
 ) : WithID {
-    val rule: Rule = Rule(select("${name}_${id}"))
+    val styleClass = "${name}_${id}"
+    val rule: Rule = Rule(select(styleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
     var x: Float = 0f
@@ -96,28 +102,6 @@ class BlueprintNode(
 
     fun applyImNodesPos() {
         ImNodes.setNodeGridSpacePos(id, x, y)
-    }
-
-    /** Assembles a DOM tree out of the connected BP nodes. */
-    fun assembleDom(parent: DomBuilder, stylesheet: Stylesheet): DomBuilder =
-        assembleDomRecursive(parent, stylesheet, mutableMapOf())
-
-    /** Guards against recursion. */
-    private fun assembleDomRecursive(
-        parent: DomBuilder,
-        stylesheet: Stylesheet,
-        visited: MutableMap<BlueprintNode, DomBuilder>,
-    ): DomBuilder {
-        val bld = createBuilder(parent)
-        bld.addAllStyles(rule.selector.styleClasses)
-        visited[this] = bld
-        if (parent != bld) parent.addChild(bld)
-        stylesheet.addRule(rule)
-        outputs.flatMap { it.links }.map { it.to.node }.forEach { next ->
-            if (next in visited) bld.addChild(visited[next]!!) // cycle
-            else next.assembleDomRecursive(bld, stylesheet, visited)
-        }
-        return bld
     }
 }
 
@@ -144,6 +128,7 @@ sealed class BlueprintSlot(
             bp.links.add(newLink)
             this.links.add(newLink)
             dest.links.add(newLink)
+            node.domBuilder.addChild(dest.node.domBuilder)
             return newLink
         }
     }
@@ -158,6 +143,7 @@ sealed class BlueprintSlot(
             // remove from ID Registry, because links are cheap to re-create
             bp.linkIDs.remove(it)
             bp.links.remove(it)
+            it.from.node.domBuilder.removeChild(it.to.node.domBuilder)
         }
     }
 }

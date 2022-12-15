@@ -9,7 +9,7 @@ class GuiBlueprintNodeStyleTest {
     @Test
     fun `create inputs for every property`() {
         val bp = Blueprint(0, "test blueprint")
-        val node = bp.addNode("test") { DomBuilder() }
+        val node = bp.addNode("test", DomBuilder())
         val gui = GuiBlueprintNodeStyle(node)
         assertTrue(gui.items.isNotEmpty())
     }

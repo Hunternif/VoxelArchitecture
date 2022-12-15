@@ -16,9 +16,9 @@ class BlueprintTest {
     @Before
     fun setup() {
         bp = Blueprint(0, "test blueprint")
-        node1 = bp.addNode("test") { DomBuilderCounter() }
-        node2 = bp.addNode("test") { DomBuilderCounter() }
-        node3 = bp.addNode("test") { DomBuilderCounter() }
+        node1 = bp.addNode("test", DomBuilderCounter())
+        node2 = bp.addNode("test", DomBuilderCounter())
+        node3 = bp.addNode("test", DomBuilderCounter())
         generatedCount = 0
     }
 

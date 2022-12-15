@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.DomBuilderFactory
@@ -26,7 +27,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent, undo redo`() = app.state.run {
-        app.addBlueprint(parent, makeBlueprint(propFactory))
+        app.addBlueprint(parent, makeBlueprint(propBuilder))
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -43,7 +44,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on child, undo redo`() = app.state.run {
-        app.addBlueprint(child, makeBlueprint(propFactory))
+        app.addBlueprint(child, makeBlueprint(propBuilder))
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(setOf(child), parent.children.toSet())
@@ -60,8 +61,8 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent and child, undo redo`() = app.state.run {
-        app.addBlueprint(parent, makeBlueprint(propFactory))
-        app.addBlueprint(child, makeBlueprint(propFactory))
+        app.addBlueprint(parent, makeBlueprint(propBuilder))
+        app.addBlueprint(child, makeBlueprint(propBuilder))
         app.generateNodes()
         assertEquals(4, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -80,7 +81,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `after removing blueprint re-generate will remove nodes`() = app.state.run {
-        val blueprint = makeBlueprint(propFactory)
+        val blueprint = makeBlueprint(propBuilder)
         app.addBlueprint(parent, blueprint)
         assertEquals(emptySet<SceneNode>(), generatedNodes.toSet())
         assertEquals(setOf(parent, child), sceneObjects.toSet())
@@ -119,15 +120,13 @@ class GenerateNodesTest : BaseActionTest() {
         assertTrue(obj.isGenerated)
     }
 
-    private fun makeBlueprint(domBuilderFactory: DomBuilderFactory) =
+    private fun makeBlueprint(domBuilder: DomBuilder) =
         Blueprint(0, "test blueprint").apply {
-            val node = addNode("test", createBuilder = domBuilderFactory)
+            val node = addNode("test", domBuilder)
             start.outputs[0].linkTo(node.inputs[0])
         }
 
-    private val propFactory : DomBuilderFactory = {
-        DomNodeBuilder {
-            Prop(Vec3(4, 5, 6), "generated prop")
-        }
+    private val propBuilder = DomNodeBuilder {
+        Prop(Vec3(4, 5, 6), "generated prop")
     }
 }

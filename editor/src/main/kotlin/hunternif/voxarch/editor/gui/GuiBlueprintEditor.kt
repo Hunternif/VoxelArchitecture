@@ -247,9 +247,9 @@ class GuiBlueprintEditor(
     private fun Blueprint.addNodeWithDomElement(name: String, pos: ImVec2) {
         val domBuilderFactory = domBuilderFactoryByName[name]
         domBuilderFactory?.let {
-            app.newBlueprintNode(this, name,
+            app.newBlueprintNode(this, name, it(),
                 // place node higher so that cursor lands on the input slot
-                pos.x, pos.y - 35f, lastOutSlot, it)
+                pos.x, pos.y - 35f, lastOutSlot)
         }
     }
 }
