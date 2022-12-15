@@ -26,7 +26,7 @@ Project folder structure:
     - group_0.vox
     - group_1.vox
     ...
-  / generators
+  / blueprints
     - turret.kt
     - castle.kt
     ...
@@ -69,7 +69,8 @@ MagicaVoxel. The reading and writing works for this project, but viewing in MV
 can cause issues.
 
 
-3. Generators
+3. Blueprints
+(below was designed for DomBuilders, could be adapted to Blueprints)
 Using text format that matches Kotlin "Castle DSL" code.
 - also could be XML, because tree structure.
 Serializers will be code-generated from annotated DSL builder methods.

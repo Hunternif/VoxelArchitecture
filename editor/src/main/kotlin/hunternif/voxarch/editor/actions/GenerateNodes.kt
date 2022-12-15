@@ -8,7 +8,7 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.detached
 import hunternif.voxarch.plan.Node
 
-/** Creates new nodes from all generators attached to nodes in the scene. */
+/** Creates new nodes from all blueprints attached to nodes in the scene. */
 class GenerateNodes : HistoryAction(
     "Generate nodes",
     FontAwesomeIcons.Archway
@@ -23,7 +23,7 @@ class GenerateNodes : HistoryAction(
         app.clearGeneratedNodes()
         if (!::newGenerated.isInitialized) {
             newGenerated = mutableListOf()
-            app.runGeneratorsRecursive(app.state.rootNode)
+            app.runBlueprintsRecursive(app.state.rootNode)
         }
         newGenerated.forEach {
             it.reattach()
@@ -47,15 +47,15 @@ class GenerateNodes : HistoryAction(
         generatedNodes.clear()
     }
 
-    /** Run all generators on the current node, and repeat for all its children.
+    /** Run all blueprints on the current node, and repeat for all its children.
      * Any new [Node]s created in the process are treated as 'generated',
      * and are added to [newGenerated]. */
-    private fun EditorAppImpl.runGeneratorsRecursive(root: SceneNode) {
+    private fun EditorAppImpl.runBlueprintsRecursive(root: SceneNode) {
         val prevChildSet = root.children.filterIsInstance<SceneNode>().map { it.node }.toSet()
         root.blueprints.forEach { it.execute(state.stylesheet, state.seed, root.node) }
         // Create SceneNodes for the new nodes
         val newNodes = root.node.children.filter { it !in prevChildSet }
-        root.children.filterIsInstance<SceneNode>().forEach { runGeneratorsRecursive(it) }
+        root.children.filterIsInstance<SceneNode>().forEach { runBlueprintsRecursive(it) }
         newNodes.forEach { createSceneNodesRecursive(root, it) }
     }
 
