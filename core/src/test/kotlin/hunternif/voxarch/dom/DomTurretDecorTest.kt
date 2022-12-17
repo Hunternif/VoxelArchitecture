@@ -60,4 +60,20 @@ class DomTurretDecorTest {
 
         assertNodeTreeEqualsRecursive(dom1, dom2, testTags = false)
     }
+
+    @Test
+    fun `can execute turret decor multiple times`() {
+        val style = defaultStyle.add {
+            style("turret") {
+                size(4.vx, 6.vx, 4.vx)
+                roofShape { set(RoofShape.SPIRE_BORDERED) }
+            }
+        }
+        val turret = DomTurretDecor().apply { addStyle("turret") }
+
+        val dom1 = domRoot { addChild(turret) }.buildDom(style)
+        val dom2 = domRoot { addChild(turret) }.buildDom(style)
+
+        assertNodeTreeEqualsRecursive(dom1, dom2, testTags = false)
+    }
 }

@@ -56,16 +56,21 @@ open class DomPolySegmentBuilder(
             }
             else -> null
         }
-        polygon?.let { addSegmentBuilders(it.origin, it.segments) }
         val childCtx = ctx.makeChildCtx()
+        polygon?.let { runSegmentBuilders(childCtx, it.origin, it.segments) }
         children.forEach { it.build(childCtx) }
     }
 
-    protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
+    protected fun runSegmentBuilders(
+        ctx: DomBuildContext,
+        origin: Vec3,
+        segments: List<PathSegment>
+    ) {
         segments.forEachIndexed { i, seg ->
             val bld = DomLineSegmentBuilder( origin + seg.p1, origin + seg.p2)
-            addChild(bld, seedOffset + 20000 + i)
+            bld.seedOffset = seedOffset + 20000 + i
             bld.childBlock()
+            bld.build(ctx)
         }
     }
 }
@@ -80,14 +85,14 @@ class DomFourWallsBuilder(
 ) : DomPolySegmentBuilder(childBlock) {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
         if (parentNode is Room) {
             val polygon = Path().apply {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.length)
             }
-            addSegmentBuilders(polygon.origin, polygon.segments)
+            runSegmentBuilders(childCtx, polygon.origin, polygon.segments)
         }
-        val childCtx = ctx.makeChildCtx()
         children.forEach { it.build(childCtx) }
     }
 }
@@ -103,6 +108,7 @@ class DomRandomSegmentBuilder(
 ) : DomPolySegmentBuilder(childBlock) {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
@@ -113,9 +119,8 @@ class DomRandomSegmentBuilder(
         }
         polygon?.let {
             val segment = it.segments.random(Random(ctx.seed + seedOffset + 21000))
-            addSegmentBuilders(it.origin, listOf(segment))
+            runSegmentBuilders(childCtx, it.origin, listOf(segment))
         }
-        val childCtx = ctx.makeChildCtx()
         children.forEach { it.build(childCtx) }
     }
 }

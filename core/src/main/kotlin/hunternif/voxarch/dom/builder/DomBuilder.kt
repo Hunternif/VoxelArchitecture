@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.DomDsl
+import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.util.CycleCounter
 import hunternif.voxarch.util.Recursive
 
@@ -25,8 +26,16 @@ open class DomBuilder : Recursive(cycleCounter) {
     /** List of "CSS classes" applied to this element. */
     internal val styleClass = linkedSetOf<String>()
 
-    /** Recursively invokes this method on children. */
+    /**
+     * Recursively invokes this method on children.
+     * [build] can be called multiple times, so it must not retain any state:
+     * - not allowed to add any child DomBuilders (add them in init instead).
+     * - allowed to modify the stylesheet, but only once.
+     * //TODO: enforce this requirement via strong typing.
+     */
     open fun build(ctx: DomBuildContext): Unit = guard {
+        val styled = StyledElement(this, ctx)
+        ctx.stylesheet.applyStyle(styled)
         children.forEach { it.build(ctx.makeChildCtx()) }
     }
 

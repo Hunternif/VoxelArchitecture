@@ -16,18 +16,19 @@ open class DomLogicPolyCornerBuilder(
 ) : DomBuilder() {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
-        if (parentNode is PolyRoom) {
-            addCornerBuilders(parentNode.polygon)
-        }
         val childCtx = ctx.makeChildCtx()
+        if (parentNode is PolyRoom) {
+            runCornerBuilders(childCtx, parentNode.polygon)
+        }
         children.forEach { it.build(childCtx) }
     }
 
-    protected fun addCornerBuilders(polygon: Path) {
+    protected fun runCornerBuilders(ctx: DomBuildContext, polygon: Path) {
         polygon.points.forEachIndexed { i, offset ->
             val bld = DomTranslateBuilder(offset.round())
-            addChild(bld, seedOffset + 10000 + i)
+            bld.seedOffset = seedOffset + 10000 + i
             bld.block()
+            bld.build(ctx)
         }
     }
 }
@@ -42,13 +43,13 @@ class DomLogicFourCornerBuilder(
 ) : DomLogicPolyCornerBuilder(block) {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
         if (parentNode is Room) {
             val polygon = Path().apply {
                 rectangle(parentNode.width, parentNode.length)
             }
-            addCornerBuilders(polygon)
+            runCornerBuilders(childCtx, polygon)
         }
-        val childCtx = ctx.makeChildCtx()
         children.forEach { it.build(childCtx) }
     }
 }

@@ -68,7 +68,7 @@ fun DomBuilder.polyRoom(
 /** Adds child [PolyRoom] with a [DomTurretDecor]. See [node]. */
 fun DomBuilder.turret(
     vararg styleClass: String,
-    block: DomPolyRoomBuilder.() -> Unit = {}
+    block: DomPolyRoomWithTurretBuilder.() -> Unit = {}
 ) {
     val bld = DomPolyRoomWithTurretBuilder().apply {
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.

@@ -52,4 +52,16 @@ abstract class Recursive(val cycleCounter: CycleCounter) {
     ) {
         cycleCounter.guard(this, block)
     }
+
+    /**
+     * Executes a block only if this instance hasn't been called during
+     * a recursive call.
+     */
+    inline fun onlyOnce(
+        crossinline block: () -> Unit,
+    ) {
+        if (this !in cycleCounter.cycles) {
+            block()
+        }
+    }
 }

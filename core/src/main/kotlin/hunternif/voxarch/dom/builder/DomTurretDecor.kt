@@ -14,6 +14,7 @@ import hunternif.voxarch.sandbox.castle.turret.TurretPosition
  * Adds decorative child elements to make a Room look like a castle turret.
  */
 class DomTurretDecor : DomBuilder() {
+    // TODO: reset properties between runs
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
     var bottomShape: BottomShape = BottomShape.FLAT
     /** position of this turret in relation to parent turret */
@@ -27,23 +28,7 @@ class DomTurretDecor : DomBuilder() {
     /** Y/X ratio of tapered bottoms of turrets. */
     var taperRatio: Double = 0.75
 
-    override fun build(ctx: DomBuildContext) = guard {
-        val styled = StyledElement( this, ctx)
-        ctx.stylesheet.applyStyle(styled)
-        // The unique class name ensures that the following style rules
-        // will only apply to this turret instance:
-        val uniqueClass = "turret_decor_${hashCode()}"
-        // prevent double-adding:
-        if (uniqueClass !in styleClass) {
-            addStyle(uniqueClass)
-            // Create style rules for this instance:
-            ctx.stylesheet.add {
-                styleFamily(selectInherit(uniqueClass)) {
-                    addTurretStyle(ctx.parentNode)
-                }
-            }
-        }
-        // Add child elements
+    init {
         floor(BLD_FOUNDATION)
         polyRoom(BLD_TURRET_BOTTOM)
         floor()
@@ -57,7 +42,22 @@ class DomTurretDecor : DomBuilder() {
             floor(BLD_TOWER_ROOF)
             allWalls { wall(BLD_TOWER_ROOF) }
         }
-        children.forEach { it.build(ctx.makeChildCtx()) }
+    }
+
+    override fun build(ctx: DomBuildContext) {
+        onlyOnce {
+            // The unique class name ensures that the following style rules
+            // will only apply to this turret instance:
+            val uniqueClass = "turret_decor_${hashCode()}"
+            addStyle(uniqueClass)
+            // Create style rules for this instance:
+            ctx.stylesheet.add {
+                styleFamily(selectInherit(uniqueClass)) {
+                    addTurretStyle(ctx.parentNode)
+                }
+            }
+        }
+        super.build(ctx)
     }
 
     /**
