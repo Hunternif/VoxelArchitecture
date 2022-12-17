@@ -17,7 +17,9 @@ fun Rule.visibility(block: StyleVisibility.() -> Value<Visibility>) {
 }
 
 fun Rule.visibleIf(predicate: () -> Boolean) {
-    add(PropVisibility, set(if (predicate()) VISIBLE else GONE))
+    add(PropVisibility, value("condition") { _, _ ->
+        if (predicate()) VISIBLE else GONE
+    })
 }
 
 fun Rule.visible() {
