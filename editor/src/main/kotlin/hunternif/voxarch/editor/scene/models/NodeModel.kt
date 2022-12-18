@@ -1,17 +1,35 @@
 package hunternif.voxarch.editor.scene.models
 
+import hunternif.voxarch.editor.render.IModel
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import org.lwjgl.opengl.GL33.*
+import org.joml.Matrix4f
 
-class NodeModel : BoxInstancedModel<SceneNode>() {
-    override fun render() {
-        glDisable(GL_DEPTH_TEST)
+class NodeModel : IModel {
+    val fillModel = TransparentBoxModel()
+//    val lineModel = BoxFrameModel()
 
-        glEnable(GL_BLEND)
-        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
+    override fun init() {
+        fillModel.init()
+//        lineModel.init()
+    }
 
-        glDisable(GL_CULL_FACE)
+    fun add(node: SceneNode) {
+        fillModel.add(Box(node.start, node.size, node.color.copy(a = 0.1f)))
+//        lineModel.add(node)
+    }
 
-        glDrawArraysInstanced(GL_TRIANGLES, 0, 36, instances.size)
+    fun clear() {
+        fillModel.clear()
+//        lineModel.clear()
+    }
+
+    fun update() {
+        fillModel.uploadInstanceData()
+//        lineModel.update()
+    }
+
+    override fun runFrame(viewProj: Matrix4f) {
+        fillModel.runFrame(viewProj)
+//        lineModel.runFrame(viewProj)
     }
 }

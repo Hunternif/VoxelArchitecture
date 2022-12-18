@@ -43,5 +43,6 @@ void main()
     FragColor = totalLight * VoxColor;
 
     // To use depth correctly with other elements like the grid:
+    //TODO: uncomment this when voxels are stitched into a single mesh
 //    gl_FragDepth = computeDepth(FragPos);
 }

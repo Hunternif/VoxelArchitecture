@@ -54,8 +54,8 @@ class MainScene(private val app: EditorApp) {
 
     private val models3d = listOf(
         gridModel,
-        voxelModel,
         nodeModel,
+        voxelModel,
         highlightedFaceModel,
         selectedNodeModel,
         originsModel,
@@ -135,7 +135,7 @@ class MainScene(private val app: EditorApp) {
             it.update()
             nodeModel.add(it)
         }
-        nodeModel.uploadInstanceData()
+        nodeModel.update()
         updateSelectedNodeModel()
     }
 
