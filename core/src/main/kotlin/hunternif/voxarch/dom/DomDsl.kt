@@ -173,6 +173,15 @@ fun DomBuilder.passthrough(
     bld.block()
 }
 
+/** Extend room in any horizontal direction: North, South, East, West. */
+fun DomBuilder.extend(
+    block: DomExtend.() -> Unit = {}
+) {
+    val bld = DomExtend()
+    addChild(bld)
+    bld.block()
+}
+
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
 annotation class DomDsl
