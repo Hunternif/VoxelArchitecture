@@ -17,7 +17,7 @@ open class DomNodeBuilder<N : Node>(
 
     override fun build(ctx: DomBuildContext) = guard {
         val node = createNode()
-        node.tags += styleClass
+        node.tags += (styleClass - uniqueClass)
         ctx.parentNode.addChild(node)
         val styled = StyledNode(node, this, ctx)
         ctx.stylesheet.applyStyle(styled)

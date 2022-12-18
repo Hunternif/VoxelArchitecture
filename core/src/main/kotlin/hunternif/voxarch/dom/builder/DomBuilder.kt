@@ -29,6 +29,16 @@ open class DomBuilder : Recursive(cycleCounter) {
     /** Extension slots where other DomBuilders attach. */
     val slots = linkedSetOf<Pair<String, DomBuilder>>()
 
+    /** The unique class name ensures that the following style rules
+     * will only apply to this turret instance. */
+    internal val uniqueClass by lazy {
+        "u_${this::class.java.simpleName}_${hashCode()}"
+    }
+
+    init {
+        addStyle(uniqueClass)
+    }
+
     /**
      * Recursively invokes this method on children.
      * [build] can be called multiple times, so it must not retain any state:

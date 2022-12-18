@@ -28,12 +28,7 @@ class DomTurretDecor : DomBuilder() {
     /** Y/X ratio of tapered bottoms of turrets. */
     var taperRatio: Double = 0.75
 
-    /** The unique class name ensures that the following style rules
-     * will only apply to this turret instance. */
-    private val uniqueClass = "turret_decor_${hashCode()}"
-
     init {
-        addStyle(uniqueClass)
         floor(BLD_FOUNDATION)
         polyRoom(BLD_TURRET_BOTTOM)
         floor()
