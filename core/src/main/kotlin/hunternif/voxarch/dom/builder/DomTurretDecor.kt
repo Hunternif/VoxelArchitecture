@@ -75,13 +75,13 @@ class DomTurretDecor : DomBuilder() {
             height { 2 * body.avgRadius() * taperRatio() }
             alignXZ { center() }
             alignY { below() }
+            offsetY { 1.vx } // merge the bottom into the wall a little.
         }
         styleFor<PolyRoom>("roof") {
             shape { inherit() }
             diameter { 100.pct + 2 * roofOffset() }
             alignXZ { center() }
             alignY { above() }
-            offsetY { 1.vx } // 1 block above parent
         }
         styleFor<PolyRoom>(BLD_TOWER_SPIRE) {
             visibleIf { hasSpire() }
@@ -92,7 +92,7 @@ class DomTurretDecor : DomBuilder() {
             height { 0.vx }
         }
         style(BLD_TOWER_CORBEL) {
-            alignY { above() }
+            alignY { top() }
         }
     }
 

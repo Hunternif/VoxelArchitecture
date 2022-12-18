@@ -5,7 +5,6 @@ import com.google.common.collect.ListMultimap
 import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
-import hunternif.voxarch.dom.style.property.GlobalStyleOrderIndex
 import hunternif.voxarch.plan.Node
 
 @DslMarker
