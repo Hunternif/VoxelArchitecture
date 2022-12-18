@@ -2,6 +2,7 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.dom.style.selectInherit
 
 /**
  * Provides slots to attach new DOM elements to 4 walls of a Room.
@@ -36,29 +37,21 @@ class DomExtend : DomBuilder() {
 
         onlyOnce {
             ctx.stylesheet.add {
-                if (north.children.any()) {
-                    styleFor(*north.children.toTypedArray()) {
-                        alignX { center() }
-                        alignZ { northOut() }
-                    }
+                style(selectInherit(north).instances(north.children)) {
+                    alignX { center() }
+                    alignZ { northOut() }
                 }
-                if (south.children.any()) {
-                    styleFor(*south.children.toTypedArray()) {
-                        alignX { center() }
-                        alignZ { southOut() }
-                    }
+                style(selectInherit(south).instances(south.children)) {
+                    alignX { center() }
+                    alignZ { southOut() }
                 }
-                if (east.children.any()) {
-                    styleFor(*east.children.toTypedArray()) {
-                        alignZ { center() }
-                        alignX { eastOut() }
-                    }
+                style(selectInherit(east).instances(east.children)) {
+                    alignZ { center() }
+                    alignX { eastOut() }
                 }
-                if (west.children.any()) {
-                    styleFor(*west.children.toTypedArray()) {
-                        alignZ { center() }
-                        alignX { westOut() }
-                    }
+                style(selectInherit(west).instances(west.children)) {
+                    alignZ { center() }
+                    alignX { westOut() }
                 }
             }
         }

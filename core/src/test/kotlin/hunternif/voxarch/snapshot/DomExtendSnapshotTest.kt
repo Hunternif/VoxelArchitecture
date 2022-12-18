@@ -2,11 +2,13 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.dom.style.property.position
 import hunternif.voxarch.dom.style.property.size
 import hunternif.voxarch.dom.style.property.width
 import hunternif.voxarch.dom.style.vx
+import hunternif.voxarch.plan.Room
 import org.junit.Test
 
 class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
@@ -50,20 +52,25 @@ class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
                 width { 2.vx }
             }
         }
+        val child = DomNodeBuilder { Room() }.apply {
+            addStyle("child")
+            floor()
+            allWalls { wall() }
+        }
         val dom = domRoot {
             roomWithWalls("base") {
                 extend {
                     north.run {
-                        if (buildNorth) roomWithWalls("child")
+                        if (buildNorth) addChild(child)
                     }
                     south.run {
-                        if (buildSouth) roomWithWalls("child")
+                        if (buildSouth) addChild(child)
                     }
                     east.run {
-                        if (buildEast) roomWithWalls("child")
+                        if (buildEast) addChild(child)
                     }
                     west.run {
-                        if (buildWest) roomWithWalls("child")
+                        if (buildWest) addChild(child)
                     }
                 }
             }

@@ -60,6 +60,11 @@ class Selector {
         return this
     }
 
+    fun inherit(parentInstance: DomBuilder): Selector {
+        inheritedStyleClasses.add(parentInstance.uniqueClass)
+        return this
+    }
+
     fun type(vararg type: Class<*>): Selector {
         types.addAll(type)
         return this
@@ -67,6 +72,11 @@ class Selector {
 
     fun instance(vararg instance: DomBuilder): Selector {
         instances.addAll(instance)
+        return this
+    }
+
+    fun instances(instances: Iterable<DomBuilder>): Selector {
+        this.instances.addAll(instances)
         return this
     }
 
@@ -94,9 +104,15 @@ fun select(vararg styleClass: String) = Selector().apply {
     styleClasses.addAll(styleClass)
 }
 
-/** Creates a selector with inhertied style names */
+/** Creates a selector with inherited style names */
 fun selectInherit(vararg styleClass: String) = Selector().apply {
     inheritedStyleClasses.addAll(styleClass)
+}
+
+/** Creates a selector for children of the given instance.
+ * This includes non-immediate children too. */
+fun selectInherit(parentInstance: DomBuilder) = Selector().apply {
+    inheritedStyleClasses.add(parentInstance.uniqueClass)
 }
 
 /** Creates a selector with types */

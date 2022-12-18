@@ -48,7 +48,7 @@ class DomTurretDecor : DomBuilder() {
         onlyOnce {
             // Create style rules for this instance:
             ctx.stylesheet.add {
-                styleFamily(selectInherit(uniqueClass)) {
+                styleFamily(selectInherit(this@DomTurretDecor)) {
                     addTurretStyle(ctx.parentNode)
                 }
             }
