@@ -1,14 +1,13 @@
 package hunternif.voxarch.editor.util
 
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Path
-import hunternif.voxarch.plan.PolyRoom
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.plan.*
 import org.apache.commons.io.IOUtils
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import java.nio.file.Files
 import java.nio.file.Paths
+import java.util.LinkedList
 
 /** Asserts all properties except children. */
 fun assertNodeEquals(
@@ -66,4 +65,21 @@ fun makeTestDir(name: String): java.nio.file.Path {
         Files.createDirectories(path)
     }
     return path
+}
+
+/** Asserts DOM structures are equal, including all children recursively,
+ * but excluding variable properties like visibility and style classes. */
+fun assertDomTreeStructureEqualsRecursive(
+    expected: DomBuilder,
+    actual: DomBuilder,
+) {
+    val queue = LinkedList<Pair<DomBuilder, DomBuilder>>()
+    queue.push(expected to actual)
+    while (queue.isNotEmpty()) {
+        val (exp, act) = queue.pop()
+        assertEquals(exp::class, act::class)
+        assertEquals(exp.seedOffset, act.seedOffset)
+        assertEquals(exp.children.size, act.children.size)
+        exp.children.zip(act.children).forEach { queue.push(it) }
+    }
 }

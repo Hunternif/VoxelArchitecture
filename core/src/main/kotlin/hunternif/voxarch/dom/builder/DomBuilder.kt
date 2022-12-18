@@ -15,16 +15,16 @@ open class DomBuilder : Recursive(cycleCounter) {
 
     /** Offset from the main seed for randomized properties.
      * Can be modified per DOM builder. */
-    internal var seedOffset: Long = 0
+    var seedOffset: Long = 0
 
     /** Don't manually add children, use [addChild] instead.*/
-    protected val children = linkedSetOf<DomBuilder>()
+    val children = linkedSetOf<DomBuilder>()
 
     /** Whether the node and its children will be built or ignored. */
-    internal var visibility: Visibility = Visibility.VISIBLE
+    var visibility: Visibility = Visibility.VISIBLE
 
     /** List of "CSS classes" applied to this element. */
-    internal val styleClass = linkedSetOf<String>()
+    val styleClass = linkedSetOf<String>()
 
     /**
      * Recursively invokes this method on children.
