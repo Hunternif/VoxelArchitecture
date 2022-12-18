@@ -12,6 +12,35 @@ import org.junit.Test
 class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
     @Test
     fun `extend room NSWE`() {
+        testDirections(true, true, true, true)
+    }
+
+    @Test
+    fun `extend room NSW`() {
+        testDirections(true, true, false, true)
+    }
+
+    @Test
+    fun `extend room NSE`() {
+        testDirections(true, true, true, false)
+    }
+
+    @Test
+    fun `extend room NW`() {
+        testDirections(true, false, false, true)
+    }
+
+    @Test
+    fun `extend room N`() {
+        testDirections(true, false, false, false)
+    }
+
+    private fun testDirections(
+        buildNorth: Boolean = false,
+        buildSouth: Boolean = false,
+        buildEast: Boolean = false,
+        buildWest: Boolean = false,
+    ) {
         val style = defaultStyle.add {
             style("base") {
                 position(5.vx, 0.vx, 5.vx)
@@ -25,16 +54,16 @@ class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
             roomWithWalls("base") {
                 extend {
                     north.run {
-                        roomWithWalls("child")
+                        if (buildNorth) roomWithWalls("child")
                     }
                     south.run {
-                        roomWithWalls("child")
+                        if (buildSouth) roomWithWalls("child")
                     }
                     east.run {
-                        roomWithWalls("child")
+                        if (buildEast) roomWithWalls("child")
                     }
                     west.run {
-                        roomWithWalls("child")
+                        if (buildWest) roomWithWalls("child")
                     }
                 }
             }

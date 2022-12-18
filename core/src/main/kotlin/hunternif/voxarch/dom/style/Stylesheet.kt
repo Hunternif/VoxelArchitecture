@@ -53,12 +53,16 @@ open class Stylesheet {
         }
     }
 
-    open fun applyStyle(element: StyledElement<*>) {
+    fun getRulesFor(element: StyledElement<*>): List<Rule> {
         val styleClasses = listOf(GLOBAL_STYLE) + element.styleClass
-        styleClasses
+        return styleClasses
             .flatMap { rules[it] }
             .toSet() // filter duplicates
             .filter { it.appliesTo(element) }
+    }
+
+    open fun applyStyle(element: StyledElement<*>) {
+        getRulesFor(element)
             .flatMap { it.declarations }
             .sortedBy { GlobalStyleOrderIndex[it.property] }
             .forEach { it.applyTo(element) }

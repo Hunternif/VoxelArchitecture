@@ -32,21 +32,29 @@ class DomExtend : DomBuilder() {
 
         onlyOnce {
             ctx.stylesheet.add {
-                styleFor(*north.children.toTypedArray()) {
-                    alignX { center() }
-                    alignZ { northOut() }
+                if (north.children.any()) {
+                    styleFor(*north.children.toTypedArray()) {
+                        alignX { center() }
+                        alignZ { northOut() }
+                    }
                 }
-                styleFor(*south.children.toTypedArray()) {
-                    alignX { center() }
-                    alignZ { southOut() }
+                if (south.children.any()) {
+                    styleFor(*south.children.toTypedArray()) {
+                        alignX { center() }
+                        alignZ { southOut() }
+                    }
                 }
-                styleFor(*east.children.toTypedArray()) {
-                    alignZ { center() }
-                    alignX { eastOut() }
+                if (east.children.any()) {
+                    styleFor(*east.children.toTypedArray()) {
+                        alignZ { center() }
+                        alignX { eastOut() }
+                    }
                 }
-                styleFor(*west.children.toTypedArray()) {
-                    alignZ { center() }
-                    alignX { westOut() }
+                if (west.children.any()) {
+                    styleFor(*west.children.toTypedArray()) {
+                        alignZ { center() }
+                        alignX { westOut() }
+                    }
                 }
             }
         }
