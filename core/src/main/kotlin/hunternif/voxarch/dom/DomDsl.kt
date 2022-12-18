@@ -2,16 +2,26 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.generator.TurretGenerator
+import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
 import hunternif.voxarch.vector.Vec3
 
-// Some DOM elements are built of more basic classes via generators,
+// Some DOM elements are built of more basic classes,
 // e.g. by adding child Nodes to a Room. To help identify this initial parent
 // Node, a style will be automatically added to it.
 const val DOM_TURRET = "dom_turret"
 
+
+/** Creates DOM root. */
+fun domRoot(
+    node: Node = Structure(),
+    block: DomRoot.() -> Unit = {}
+): DomRoot {
+    return DomRoot(node).apply {
+        block()
+    }
+}
 
 /**
  * Adds child empty [Node].
@@ -22,89 +32,98 @@ const val DOM_TURRET = "dom_turret"
  * @param styleClass names of style classes (like in CSS).
  * Class names are also added to node tags.
  */
-fun DomBuilder<Node?>.node(
+fun DomBuilder.node(
     vararg styleClass: String,
-    block: DomBuilder<Node>.() -> Unit = {}
+    block: DomNodeBuilder<Node>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Node() }.block()
+    this.addChildNodeBuilder(styleClass) { Node() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
-fun DomBuilder<Node?>.room(
+fun DomBuilder.room(
     vararg styleClass: String,
-    block: DomBuilder<Room>.() -> Unit = {}
+    block: DomNodeBuilder<Room>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Room() }.block()
+    this.addChildNodeBuilder(styleClass) { Room() }.block()
 }
 
 /** Adds child [Floor]. See [node]. */
-fun DomBuilder<Node?>.floor(
+fun DomBuilder.floor(
     vararg styleClass: String,
-    block: DomBuilder<Floor>.() -> Unit = {}
+    block: DomNodeBuilder<Floor>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Floor() }.block()
+    this.addChildNodeBuilder(styleClass) { Floor() }.block()
 }
 
-/** Adds child [PolygonRoom]. See [node]. */
-fun DomBuilder<Node?>.polygonRoom(
+/** Adds child [PolyRoom]. See [node]. */
+fun DomBuilder.polyRoom(
     vararg styleClass: String,
-    block: DomBuilder<PolygonRoom>.() -> Unit = {}
+    block: DomNodeBuilder<PolyRoom>.() -> Unit = {}
 ) {
-    val bld = DomPolygonRoomBuilder().apply{ +styleClass }
+    val bld = DomPolyRoomBuilder().apply { +styleClass }
     addChild(bld)
     bld.block()
 }
 
-/** Adds child PolygonRoom with a [TurretGenerator]. See [node]. */
-fun DomBuilder<Node?>.turret(
+/** Adds child [PolyRoom] with a [DomTurretDecor]. See [node]. */
+fun DomBuilder.turret(
     vararg styleClass: String,
-    block: DomPolygonRoomBuilder.() -> Unit = {}
+    block: DomPolyRoomWithTurretBuilder.() -> Unit = {}
 ) {
-    val bld =  DomPolygonRoomBuilder().apply{
+    val bld = DomPolyRoomWithTurretBuilder().apply {
         // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
         addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
     }
     addChild(bld)
-    bld.generators.add(TurretGenerator())
+    bld.block()
+}
+
+/** Adds decoration to make the parent node look like a turret. */
+fun DomBuilder.turretDecor(
+    vararg styleClass: String,
+    block: DomTurretDecor.() -> Unit = {}
+) {
+    val bld = DomTurretDecor().apply { +styleClass }
+    addChild(bld)
     bld.block()
 }
 
 /** Adds child [Ward] with a perimeter of walls and towers. */
-fun DomBuilder<Node?>.ward(
+fun DomBuilder.ward(
     vararg styleClass: String,
     block: DomWardBuilder.() -> Unit = {}
 ) {
-    val bld = DomWardBuilder().apply{ +styleClass }
+    val bld = DomWardBuilder().apply { +styleClass }
     addChild(bld)
     bld.block()
 }
 
-/** Runs [block] in every corner of this [PolygonRoom]. */
-fun DomBuilder<PolygonRoom>.allCorners(
-    block: DomBuilder<Node?>.() -> Unit = {}
+/** Runs [block] in every corner of this [PolyRoom]. */
+fun DomBuilder.allCorners(
+    block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicPolygonCornerBuilder(block)
+    val bld = DomLogicPolyCornerBuilder(block)
     addChild(bld)
 }
 
 /** Runs [block] in the 4 corners of this [Room]'s bounding box. */
-fun DomBuilder<Room>.fourCorners(
-    block: DomBuilder<Node?>.() -> Unit = {}
+fun DomBuilder.fourCorners(
+    block: DomBuilder.() -> Unit = {}
 ) {
     val bld = DomLogicFourCornerBuilder(block)
     addChild(bld)
 }
 
 /** Runs [block] on every section of this polygon. */
-fun DomBuilder<Room>.allWalls(
+fun DomBuilder.allWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolygonSegmentBuilder(block)
+    val bld = DomPolySegmentBuilder(block)
     addChild(bld)
 }
 
 /** Runs [block] on one random section of this polygon. */
-fun DomBuilder<Room>.randomWall(
+fun DomBuilder.randomWall(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomRandomSegmentBuilder(block)
@@ -112,7 +131,7 @@ fun DomBuilder<Room>.randomWall(
 }
 
 /** Runs [block] on every side of this room. */
-fun DomBuilder<Room>.fourWalls(
+fun DomBuilder.fourWalls(
     block: DomLineSegmentBuilder.() -> Unit = {}
 ) {
     val bld = DomFourWallsBuilder(block)
@@ -122,40 +141,57 @@ fun DomBuilder<Room>.fourWalls(
 /** Creates a [Wall] on the line segment. */
 fun DomLineSegmentBuilder.wall(
     vararg styleClass: String,
-    block: DomBuilder<Wall>.() -> Unit = {}
+    block: DomNodeBuilder<Wall>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Wall(Vec3.ZERO, end) }.block()
+    this.addChildNodeBuilder(styleClass) { Wall(Vec3.ZERO, end) }.block()
 }
 
 /** Creates a [Path] on the line segment. */
 fun DomLineSegmentBuilder.path(
     vararg styleClass: String,
-    block: DomBuilder<Path>.() -> Unit = {}
+    block: DomNodeBuilder<Path>.() -> Unit = {}
 ) {
-    this.createChild(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
+    this.addChildNodeBuilder(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
 }
 
-/** Creates a "local root" in the DOM. This doesn't create any new nodes, but
- * it can be used to modify the stylesheet only for this subtree and no others. */
-fun <N: Node?> DomBuilder<N>.newRoot(
-    newStylesheet: Stylesheet? = null,
-    block: DomBuilder<N>.() -> Unit = {}
+/** Adds child [Prop]. See [node]. */
+fun DomBuilder.prop(
+    propType: String,
+    vararg styleClass: String,
+    block: DomNodeBuilder<Prop>.() -> Unit = {}
 ) {
-    val child = DomLocalRoot(node, newStylesheet ?: stylesheet, seed)
-    addChild(child)
-    child.block()
+    this.addChildNodeBuilder(styleClass) { Prop(propType) }.block()
+}
+
+/** Adds an extra element in the DOM that doesn't do anything.
+ * This is useful for wrapping other DOM builders. */
+fun DomBuilder.passthrough(
+    block: DomBuilder.() -> Unit = {}
+) {
+    val bld = DomBuilder()
+    addChild(bld)
+    bld.block()
+}
+
+/** Extend room in any horizontal direction: North, South, East, West. */
+fun DomBuilder.extend(
+    block: DomExtend.() -> Unit = {}
+) {
+    val bld = DomExtend()
+    addChild(bld)
+    bld.block()
 }
 
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
-annotation class CastleDsl
+annotation class DomDsl
 
 /** Creates a child [DomBuilder], adds it to parent and returns. */
-private fun <N: Node> DomBuilder<Node?>.createChild(
+private inline fun <reified N : Node> DomBuilder.addChildNodeBuilder(
     styleClass: Array<out String>,
-    createNode: () -> N
-) : DomBuilder<N> {
-    val child = DomNodeBuilder(createNode).apply{ +styleClass }
+    noinline createNode: () -> N
+): DomNodeBuilder<N> {
+    val child = DomNodeBuilder(createNode).apply { +styleClass }
     addChild(child)
     return child
 }

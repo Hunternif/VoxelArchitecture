@@ -21,6 +21,7 @@ interface INested<T : INested<T>> {
 
     /** Attach a child to this object */
     fun addChild(child: T) {
+        if (child == this) return
         child.parent?.removeChild(child)
         child.parent = this as T
         children.add(child)

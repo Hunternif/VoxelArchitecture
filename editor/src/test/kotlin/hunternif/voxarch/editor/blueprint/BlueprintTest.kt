@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
-import hunternif.voxarch.generator.ChainedGenerator
 import hunternif.voxarch.plan.Node
 import org.junit.Assert.*
 import org.junit.Before
@@ -16,9 +16,10 @@ class BlueprintTest {
     @Before
     fun setup() {
         bp = Blueprint(0, "test blueprint")
-        node1 = bp.addNode("test", generator)
-        node2 = bp.addNode("test", generator)
-        node3 = bp.addNode("test", generator)
+        node1 = bp.addNode("test", DomBuilderCounter())
+        node2 = bp.addNode("test", DomBuilderCounter())
+        node3 = bp.addNode("test", DomBuilderCounter())
+        generatedCount = 0
     }
 
     @Test
@@ -103,10 +104,29 @@ class BlueprintTest {
         assertEquals(setOf(link12, link13), node1.outputs[0].links)
     }
 
-    private val generator = object : ChainedGenerator() {
-        override fun generateChained(
-            parent: DomBuilder<Node?>,
-            nextBlock: DomBuilder<Node?>.() -> Unit,
-        ) {}
+    @Test
+    fun `execute a blueprint with a cycle`() {
+        bp.start.outputs[0].linkTo(node1.inputs[0])
+        node1.outputs[0].linkTo(node2.inputs[0])
+        node2.outputs[0].linkTo(node3.inputs[0])
+        node3.outputs[0].linkTo(node1.inputs[0])
+        assertEquals(0, generatedCount)
+        bp.execute(rootNode = Node())
+        assertEquals(60, generatedCount)
+        // execute twice to ensure the counters are cleared
+        generatedCount = 0
+        bp.execute(rootNode = Node())
+        assertEquals(60, generatedCount)
+    }
+
+    private class DomBuilderCounter : DomBuilder() {
+        override fun build(ctx: DomBuildContext) = guard {
+            generatedCount++
+            children.forEach { it.build(ctx) }
+        }
+    }
+
+    companion object {
+        private var generatedCount = 0
     }
 }

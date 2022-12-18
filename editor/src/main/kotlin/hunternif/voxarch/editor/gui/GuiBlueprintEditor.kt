@@ -5,7 +5,7 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
-import hunternif.voxarch.editor.builder.createGeneratorByName
+import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.util.ColorRGBa
 import imgui.ImColor
 import imgui.ImGui
@@ -84,11 +84,11 @@ class GuiBlueprintEditor(
             }
             popup("node_editor_context") {
                 menu("Add..") {
-                    text("Generator:")
-                    listbox("##generator_type") {
-                        app.state.generatorNames.forEach { name ->
+                    text("DOM element:")
+                    listbox("##dom_elem_type") {
+                        app.state.domBuilderNames.forEach { name ->
                             selectable(name) {
-                                addNodeWithGenerator(name, clickPos)
+                                addNodeWithDomElement(name, clickPos)
                                 ImGui.closeCurrentPopup()
                             }
                         }
@@ -244,10 +244,10 @@ class GuiBlueprintEditor(
         clickPos.y = ImGui.getMousePosY() - editorPos.y - panPos.y
     }
 
-    private fun Blueprint.addNodeWithGenerator(classname: String, pos: ImVec2) {
-        val generator = app.state.createGeneratorByName(classname)
-        generator?.let {
-            app.newBlueprintNode(this, it.javaClass.simpleName, it,
+    private fun Blueprint.addNodeWithDomElement(name: String, pos: ImVec2) {
+        val domBuilderFactory = domBuilderFactoryByName[name]
+        domBuilderFactory?.let {
+            app.newBlueprintNode(this, name, it(),
                 // place node higher so that cursor lands on the input slot
                 pos.x, pos.y - 35f, lastOutSlot)
         }

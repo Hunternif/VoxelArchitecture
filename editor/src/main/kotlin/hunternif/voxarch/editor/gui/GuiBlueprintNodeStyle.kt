@@ -1,46 +1,35 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.Declaration
+import hunternif.voxarch.dom.style.Property
+import hunternif.voxarch.dom.style.Rule
+import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.editor.blueprint.BlueprintNode
-import hunternif.voxarch.editor.blueprint.StyleRuleInfo
-import hunternif.voxarch.editor.blueprint.StyleRuleInfoAny
-import hunternif.voxarch.editor.blueprint.allRules
-import hunternif.voxarch.generator.ChainedGenerator
-import hunternif.voxarch.plan.PolygonShape
-import hunternif.voxarch.sandbox.castle.turret.BodyShape
-import hunternif.voxarch.sandbox.castle.turret.BottomShape
-import hunternif.voxarch.sandbox.castle.turret.RoofShape
+import hunternif.voxarch.editor.blueprint.editorStyleProperties
 import imgui.ImGui
 
 class GuiBlueprintNodeStyle(
-    private val node: BlueprintNode
+    node: BlueprintNode,
 ) {
-    val items: List<Item<*>> = allRules.mapNotNull {
-        when (it.parameterClass) {
-            StylePosition::class -> ItemNumber(this, it)
-            StyleSize::class -> ItemNumber(this, it, min = 0f)
-            StyleShape::class -> ItemEnum(this, it, PolygonShape.SQUARE)
-            StyleTurretBodyShape::class -> ItemEnum(this, it, BodyShape.SQUARE)
-            StyleTurretRoofShape::class -> ItemEnum(this, it, RoofShape.FLAT_BORDERED)
-            StyleTurretBottomShape::class -> ItemEnum(this, it, BottomShape.FLAT)
+    private val rule = node.rule
+
+    @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
+    val items: List<Item<*>> = editorStyleProperties.mapNotNull { p ->
+        when (p.default) {
+            is Number -> ItemNumber(rule, p as Property<Number>)
+            is Enum<*> -> ItemEnum(rule, p as Property<Enum<*>>)
             else -> null
         }
     }
 
-    fun updateStylesheet() {
-        val gen = node.generator as? ChainedGenerator ?: return
-        gen.localStyle.clear()
-        items.filter { it.enabled }
-            .forEach { it.addStyle(gen.localStyle) }
-    }
-
-    abstract class Item<V: Any>(
-        protected val style: GuiBlueprintNodeStyle,
-        val rule: StyleRuleInfo<*, *, V>,
+    abstract class Item<V : Any>(
+        private val rule: Rule,
+        private val property: Property<V>,
     ) {
-        private val checkbox = GuiCheckbox("##enabled_${rule.name}")
-        abstract val value: Any
-        var stringRepr: String = "${rule.name}:"
+        private val checkbox = GuiCheckbox("##enabled_${property.name}")
+        abstract val value: V
+        protected val declaration = Declaration.defaultForProperty(property)
+        var stringRepr: String = "${property.name}:"
             private set
 
         var enabled: Boolean = false
@@ -48,73 +37,66 @@ class GuiBlueprintNodeStyle(
         fun render() {
             checkbox.render(enabled) {
                 enabled = it
-                style.updateStylesheet()
+                if (enabled) rule.add(declaration)
+                else rule.remove(declaration)
             }
             ImGui.sameLine()
             disabled(!enabled) {
                 renderInput()
             }
         }
+
         protected abstract fun renderInput()
 
-        fun addStyle(stylesheet: Stylesheet) {
-            rule.addStyleForNodeClass(stylesheet) {
-                applyStyle()
-            }
-        }
-        abstract fun StyleParameter.applyStyle(): V
-
         protected fun updateStringRepr() {
-            stringRepr = "${rule.name}: ${valueToString()}"
+            stringRepr = "${property.name}: ${valueToString()}"
         }
+
         protected open fun valueToString(): String = value.toString()
     }
 
     class ItemNumber(
-        style: GuiBlueprintNodeStyle,
-        rule: StyleRuleInfoAny,
+        rule: Rule,
+        property: Property<Number>,
         min: Float = -999f,
         max: Float = 999f,
-    ) : Item<Dimension>(style, rule as StyleRuleInfo<*, *, Dimension>) {
-        val gui = GuiInputFloat(rule.name, min, max)
-        override var value: Float = 0f
-        init { updateStringRepr() }
+    ) : Item<Number>(rule, property) {
+        private val gui = GuiInputFloat(property.name, min, max)
+        override var value: Number = 0.0
+
+        init {
+            updateStringRepr()
+        }
+
         override fun renderInput() {
-            gui.render(value) {
+            gui.render(value.toFloat()) {
                 value = gui.newValue
                 updateStringRepr()
-                style.updateStylesheet()
+                declaration.value = set(value)
             }
         }
-        /** Returns value in voxels */
-        override fun StyleParameter.applyStyle(): Dimension = value.vx
+
         override fun valueToString() = gui.format.format(value)
     }
 
-    class ItemEnum<E: Enum<E>>(
-        style: GuiBlueprintNodeStyle,
-        rule: StyleRuleInfoAny,
-        initialValue: E,
-        values: Array<E>,
-    ) : Item<Option<E>>(style, rule as StyleRuleInfo<*, *, Option<E>>) {
-        companion object {
-            inline operator fun <reified E: Enum<E>> invoke(
-                style: GuiBlueprintNodeStyle,
-                rule: StyleRuleInfoAny,
-                initialValue: E,
-            ): ItemEnum<E> =
-                ItemEnum(style, rule, initialValue, enumValues())
+    class ItemEnum<E : Enum<E>>(
+        rule: Rule,
+        property: Property<E>,
+    ) : Item<E>(rule, property) {
+        private val values = property.valType.enumConstants
+        private val gui = GuiCombo(property.name, *values)
+        override var value: E = property.default
+
+        init {
+            updateStringRepr()
         }
-        val gui = GuiCombo(rule.name, *values)
-        override var value: E = initialValue
-        init { updateStringRepr() }
+
         override fun renderInput() {
             gui.render(value) {
                 value = it
                 updateStringRepr()
-                style.updateStylesheet()
+                declaration.value = set(value)
             }
         }
-        override fun StyleParameter.applyStyle(): Option<E> = set(value)
     }
 }

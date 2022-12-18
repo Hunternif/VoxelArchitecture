@@ -1,11 +1,14 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.dom.DOM_TURRET
-import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.Structure
+import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
@@ -25,23 +28,25 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
     }
 
     companion object {
-        private fun turret(width: Int): Structure {
-            val style = defaultStyle.apply {
-                styleFor<PolygonRoom>(DOM_TURRET) {
+        private fun turret(width: Int): Node {
+            val style = defaultStyle.add {
+                styleFor<PolyRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }
                     height { 5.vx }
-                    roofShape = RoofShape.FLAT_BORDERED
-                    bodyShape = BodyShape.SQUARE
-                    bottomShape = BottomShape.TAPERED
+                    shape { set(PolyShape.SQUARE) }
+                }
+                styleFor<DomTurretDecor> {
+                    roofShape { set(RoofShape.FLAT_BORDERED) }
+                    bottomShape { set(BottomShape.TAPERED) }
                     roofOffset { 1.vx }
-                    spireRatio = 1.5
-                    taperRatio = 0.75
+                    spireRatio { set(1.5) }
+                    taperRatio { set(0.75) }
                 }
             }
-            return DomRoot(style).apply {
+            return domRoot {
                 turret()
-            }.build()
+            }.buildDom(style)
         }
     }
 }

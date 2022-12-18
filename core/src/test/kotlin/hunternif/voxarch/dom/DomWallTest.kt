@@ -1,7 +1,7 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
@@ -10,22 +10,22 @@ import org.junit.Test
 class DomWallTest {
     @Test
     fun `create walls on square polygon`() {
-        val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape = PolygonShape.SQUARE
+        val style = Stylesheet().add {
+            styleFor<PolyRoom> {
+                shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
             }
         }
-        val wallSeeds = mutableListOf<Long>()
-        val dom = DomRoot(style).apply {
-            polygonRoom {
+        val wallSeedOffsets = mutableListOf<Long>()
+        val dom = domRoot {
+            polyRoom {
                 allWalls {
                     wall {
-                        wallSeeds.add(seed)
+                        wallSeedOffsets.add(seedOffset)
                     }
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         val room = dom.children[0]
         assertEquals(4, room.children.size)
@@ -43,56 +43,56 @@ class DomWallTest {
         assertEquals(Vec3(-1, 0, 1), w4.origin)
         assertEquals(Vec3(1, 0, 1), w4.end)
 
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 
     @Test
     fun `create 4 walls on rectangle room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 width { 2.vx }
                 length { 4.vx }
             }
         }
-        val wallSeeds = mutableListOf<Long>()
-        val dom = DomRoot(style).apply {
+        val wallSeedOffsets = mutableListOf<Long>()
+        val dom = domRoot {
             room {
                 fourWalls {
                     wall {
-                        wallSeeds.add(seed)
+                        wallSeedOffsets.add(seedOffset)
                     }
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         verifyFourWalls(dom)
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 
     @Test
     fun `create all walls on rectangle room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 width { 2.vx }
                 length { 4.vx }
             }
         }
-        val wallSeeds = mutableListOf<Long>()
-        val dom = DomRoot(style).apply {
+        val wallSeedOffsets = mutableListOf<Long>()
+        val dom = domRoot {
             room {
                 allWalls {
                     wall {
-                        wallSeeds.add(seed)
+                        wallSeedOffsets.add(seedOffset)
                     }
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         verifyFourWalls(dom)
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeeds)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 
-    private fun verifyFourWalls(dom: Structure) {
+    private fun verifyFourWalls(dom: Node) {
         val room = dom.children[0]
         assertEquals(4, room.children.size)
 

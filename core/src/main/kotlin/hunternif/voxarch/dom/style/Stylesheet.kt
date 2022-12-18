@@ -1,130 +1,86 @@
 package hunternif.voxarch.dom.style
 
 import com.google.common.collect.ArrayListMultimap
-import hunternif.voxarch.dom.CastleDsl
+import com.google.common.collect.ListMultimap
+import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.plan.Node
-import kotlin.reflect.KClass
 
-/** Defines a sequence of cosmetic modifications to a DOM element. */
-typealias StyleRule<N> = StyledNode<N>.() -> Unit
+@DslMarker
+annotation class StyleDsl
 
 /** Represents a DOM element for the purpose of styling. */
-@CastleDsl
-class StyledNode<out N: Node>(
-    internal val domBuilder: DomBuilder<N>,
-    internal var seed: Long = domBuilder.seed
+@StyleDsl
+open class StyledElement<D : DomBuilder>(
+    val domBuilder: D,
+    val ctx: DomBuildContext,
+    var seed: Long = ctx.seed + domBuilder.seedOffset
 ) {
-    val node: N get() = domBuilder.node
-    /**
-     * Use the seed of the parent [DomBuilder] to calculate random values.
-     * This makes the _immediate_ children appear identical, but the children's
-     * children's seeds can still be different.
-     */
-    fun useParentSeed() {
-        seed = domBuilder.parent.seed
-    }
+    val parentNode: Node get() = ctx.parentNode
+    val styleClass: Set<String> get() = domBuilder.styleClass
+    val inheritedStyleClass: Set<String> get() = ctx.inheritedStyleClass
 }
 
-@CastleDsl
+/** Represents a DOM element with a [Node] for the purpose of styling. */
+@StyleDsl
+class StyledNode<N : Node>(
+    val node: N,
+    domBuilder: DomNodeBuilder<N>,
+    ctx: DomBuildContext,
+) : StyledElement<DomNodeBuilder<N>>(domBuilder, ctx)
+
+/** Used as the base for Style DSL. */
+@StyleDsl
 interface StyleParameter
 
-/** Container for all styles in a DOM. */
-@CastleDsl
+/** Contains for styling DOM elements. */
+@StyleDsl
 open class Stylesheet {
-    private val styleMap = ArrayListMultimap.create<String, TypedStyleRule<*>>()
+    val rules: ListMultimap<String, Rule> = ArrayListMultimap.create()
 
-    /**
-     * Register a style for the given class name, for specific Java class
-     * and its subclasses.
-     */
-    inline fun <reified N: Node> styleFor(
-        styleClass: String,
-        noinline block: StyleRule<N>
-    ) {
-        styleFor(N::class.java, styleClass, block)
+    /** Starting point to new style Rules. */
+    fun add(block: RuleBuilder.() -> Unit): Stylesheet {
+        RuleBuilder(this).apply(block)
+        return this
     }
 
-    /**
-     * Register a style for all subclasses.
-     */
-    inline fun <reified N: Node> styleFor(
-        noinline block: StyleRule<N>
-    ) {
-        styleFor(N::class.java, GLOBAL_STYLE, block)
+    fun addRule(rule: Rule) {
+        if (rule.selector.styleClasses.isEmpty()) {
+            rules.put(GLOBAL_STYLE, rule)
+        } else {
+            rule.selector.styleClasses.forEach { rules.put(it, rule) }
+        }
     }
 
-    /**
-     * Register a style for all subclasses.
-     */
-    fun <N: Node> styleFor(
-        nodeClass: Class<N>,
-        block: StyleRule<N>,
-    ) {
-        styleFor(nodeClass, GLOBAL_STYLE, block)
+    fun getRulesFor(element: StyledElement<*>): List<Rule> {
+        val styleClasses = listOf(GLOBAL_STYLE) + element.styleClass
+        return styleClasses
+            .flatMap { rules[it] }
+            .toSet() // filter duplicates
+            .filter { it.appliesTo(element) }
     }
 
-    /**
-     * Register a style for all subclasses.
-     */
-    fun <N: Node> styleFor(
-        nodeClass: KClass<N>,
-        block: StyleRule<N>,
-    ) {
-        styleFor(nodeClass.java, GLOBAL_STYLE, block)
-    }
-
-    /** Register a style for the given class name for all [Node] subclasses. */
-    fun style(styleClass: String, block: StyleRule<Node>) {
-        styleFor(Node::class.java, styleClass, block)
-    }
-
-    /**
-     * Register a style for the given class name, for specific Java class
-     * and its subclasses.
-     */
-    fun <N: Node> styleFor(nodeClass: Class<N>, styleClass: String, block: StyleRule<N>) {
-        styleMap.put(styleClass, TypedStyleRule(nodeClass, block))
-    }
-
-    internal open fun <N: Node> apply(
-        domBuilder: DomBuilder<N>,
-        styleClass: Collection<String>
-    ) {
-        val styled = StyledNode(domBuilder, domBuilder.seed)
-        val nodeClass = domBuilder.node.javaClass
-        (listOf(GLOBAL_STYLE) + styleClass)
-            .flatMap { styleMap[it] }
-            .filter { it.nodeClass.isAssignableFrom(nodeClass) }
-            .forEach {
-                @Suppress("UNCHECKED_CAST")
-                val rule = it.rule as StyleRule<Node>
-                rule.invoke(styled)
-            }
+    open fun applyStyle(element: StyledElement<*>) {
+        getRulesFor(element)
+            .flatMap { it.declarations }
+            .sortedBy { GlobalStyleOrderIndex[it.property] }
+            .forEach { it.applyTo(element) }
     }
 
     fun clear() {
-        styleMap.clear()
+        rules.clear()
+    }
+
+    /** Create a copy of this stylesheet with the same rules. */
+    fun copy(): Stylesheet = Stylesheet().also { it.copyRules(this) }
+
+    /** Copy all rules from the [other] stylesheet into this stylesheet. */
+    fun copyRules(other: Stylesheet) {
+        other.rules.forEach { name, rule -> rules.put(name, rule) }
     }
 
     companion object {
         const val GLOBAL_STYLE = "__global_style__"
-
-        private data class TypedStyleRule<N: Node>(
-            val nodeClass: Class<N>,
-            val rule: StyleRule<N>
-        )
     }
 }
-
-class CombinedStylesheet(private val stylesheets: Collection<Stylesheet>): Stylesheet() {
-    override fun <N : Node> apply(
-        domBuilder: DomBuilder<N>,
-        styleClass: Collection<String>
-    ) {
-        stylesheets.forEach { it.apply(domBuilder, styleClass) }
-    }
-}
-
-operator fun Stylesheet.plus(other: Stylesheet): Stylesheet =
-    CombinedStylesheet(listOf(this, other))

@@ -1,11 +1,14 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.dom.DOM_TURRET
-import hunternif.voxarch.dom.builder.DomRoot
+import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.Structure
+import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
@@ -56,24 +59,26 @@ class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     }
 
     companion object {
-        private fun turret(width: Int): Structure {
-            val style = defaultStyle.apply {
-                styleFor<PolygonRoom>(DOM_TURRET) {
+        private fun turret(width: Int): Node {
+            val style = defaultStyle.add {
+                styleFor<PolyRoom>(DOM_TURRET) {
                     position(1.vx, 0.vx, 1.vx)
                     start(0.vx, 0.vx, 0.vx)
                     diameter { width.vx }
                     height { 5.vx }
-                    roofShape = RoofShape.SPIRE_BORDERED
-                    bodyShape = BodyShape.SQUARE
-                    bottomShape = BottomShape.FLAT
+                    shape { set(PolyShape.SQUARE) }
+                }
+                styleFor<DomTurretDecor> {
+                    roofShape { set(RoofShape.SPIRE_BORDERED) }
+                    bottomShape { set(BottomShape.FLAT) }
                     roofOffset { 1.vx }
-                    spireRatio = 1.5
-                    taperRatio = 0.75
+                    spireRatio { set(1.5) }
+                    taperRatio { set(0.75) }
                 }
             }
-            return DomRoot(style).apply {
+            return domRoot {
                 turret()
-            }.build()
+            }.buildDom(style)
         }
     }
 }

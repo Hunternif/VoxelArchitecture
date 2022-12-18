@@ -1,10 +1,11 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonShape.ROUND
-import hunternif.voxarch.plan.PolygonShape.SQUARE
+import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.plan.PolyShape.ROUND
+import hunternif.voxarch.plan.PolyShape.SQUARE
+import hunternif.voxarch.plan.query
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
@@ -12,19 +13,19 @@ import org.junit.Test
 class DomWardTest {
     @Test
     fun `square castle ward`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
-                shape = SQUARE
+                shape { set(SQUARE) }
                 diameter { 2.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             ward {
                 allCorners {
                     room()
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         val ward = dom.children[0]
         assertEquals(4, ward.children.size)
@@ -36,20 +37,20 @@ class DomWardTest {
 
     @Test
     fun `round castle ward with 6 edges`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
-                shape = ROUND
+                shape { set(ROUND) }
                 diameter { 10.vx }
                 edgeLength { 6.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             ward {
                 allCorners {
                     room()
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         val ward = dom.children[0]
         assertEquals(6, ward.children.size)
@@ -57,20 +58,20 @@ class DomWardTest {
 
     @Test
     fun `round castle ward with 8 edges`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
-                shape = ROUND
+                shape { set(ROUND) }
                 diameter { 10.vx }
                 edgeLength { 4.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             ward {
                 allCorners {
                     room()
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         val ward = dom.children[0]
         assertEquals(8, ward.children.size)
@@ -78,21 +79,22 @@ class DomWardTest {
 
     @Test
     fun `castle ward with random shape`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { random(ROUND, SQUARE) }
             }
         }
-        lateinit var ward: Ward
 
-        DomRoot(style, 1).apply {
-            ward { ward = node}
-        }.build()
-        assertEquals(ROUND, ward.shape)
+        val dom1 = domRoot {
+            ward()
+        }.buildDom(style, 1)
+        val ward1 = dom1.query<Ward>().first()
+        assertEquals(ROUND, ward1.shape)
 
-        DomRoot(style, 2).apply {
-            ward { ward = node}
-        }.build()
-        assertEquals(SQUARE, ward.shape)
+        val dom2 = domRoot {
+            ward()
+        }.buildDom(style, 2)
+        val ward2 = dom2.query<Ward>().first()
+        assertEquals(SQUARE, ward2.shape)
     }
 }

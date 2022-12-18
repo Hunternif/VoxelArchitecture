@@ -1,9 +1,9 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.DomRoot
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.PolygonShape
+import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert
@@ -12,19 +12,19 @@ import org.junit.Test
 class DomCornerTest {
     @Test
     fun `square polygon room`() {
-        val style = Stylesheet().apply {
-            styleFor<PolygonRoom> {
-                shape = PolygonShape.SQUARE
+        val style = Stylesheet().add {
+            styleFor<PolyRoom> {
+                shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
             }
         }
-        val dom = DomRoot(style).apply {
-            polygonRoom {
+        val dom = domRoot {
+            polyRoom {
                 allCorners {
                     room()
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)
@@ -36,19 +36,19 @@ class DomCornerTest {
 
     @Test
     fun `rectangle room`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 width { 2.vx }
                 length { 4.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room {
                 fourCorners {
                     room()
                 }
             }
-        }.build()
+        }.buildDom(style)
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)

@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.util.rectangle
@@ -13,50 +14,63 @@ import kotlin.random.Random
  * Children will be translated to [p1] and rotated so that X axis runs along
  * [p1]-[p2].
  */
-class DomLineSegmentBuilder(val p1: Vec3, val p2: Vec3): DomLogicBuilder() {
+class DomLineSegmentBuilder(
+    val p1: Vec3, val p2: Vec3,
+) : DomBuilder() {
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
-    override fun build(): Node? {
+    override fun build(ctx: DomBuildContext) = guard {
+        val p1 = p1
+        val angle = MathUtil.atan2Deg(-end.z, end.x)
+        val childCtx = ctx.makeChildCtx()
         children.forEach {
-            it.build()?.apply {
-                //TODO: add node rotation?
-                val angle = MathUtil.atan2Deg(-end.z, end.x)
-                origin = p1.add(origin.rotateY(angle))
+            ctx.stylesheet.add {
+                styleFor(it) {
+                    //TODO: add node rotation?
+                    position { origin, _ ->
+                        p1.add(origin.rotateY(angle))
+                    }
+                }
             }
+            it.build(childCtx)
         }
-        return null
     }
 }
 
 /**
  * Calls [childBlock] on every segment of the polygon.
  *
- * Will only work when added as a child to a [DomBuilder] for [Room] or
- * [PolygonRoom]>.
+ * Will only work when added as a child to a [DomNodeBuilder] for [Room] or
+ * [PolyRoom]>.
  */
-open class DomPolygonSegmentBuilder(
+open class DomPolySegmentBuilder(
     private val childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomLogicBuilder() {
-    override fun build(): Node? {
-        val room = parent.node
-        val polygon = when (room) {
-            is PolygonRoom -> room.polygon
+) : DomBuilder() {
+    override fun build(ctx: DomBuildContext) = guard {
+        val parentNode = ctx.parentNode
+        val polygon = when (parentNode) {
+            is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
-                origin = room.innerFloorCenter
-                rectangle(room.width, room.length)
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.length)
             }
             else -> null
         }
-        polygon?.let { addSegmentBuilders(it.origin, it.segments) }
-        children.forEach { it.build() }
-        return null
+        val childCtx = ctx.makeChildCtx()
+        polygon?.let { runSegmentBuilders(childCtx, it.origin, it.segments) }
+        children.forEach { it.build(childCtx) }
     }
 
-    protected fun addSegmentBuilders(origin: Vec3, segments: List<PathSegment>) {
+    protected fun runSegmentBuilders(
+        ctx: DomBuildContext,
+        origin: Vec3,
+        segments: List<PathSegment>
+    ) {
         segments.forEachIndexed { i, seg ->
-            val bld = DomLineSegmentBuilder(origin + seg.p1, origin + seg.p2)
-            addChild(bld, seed + 20000 + i)
+            val bld = DomLineSegmentBuilder( origin + seg.p1, origin + seg.p2)
+            bld.seedOffset = seedOffset + 20000 + i
             bld.childBlock()
+            bld.build(ctx)
         }
     }
 }
@@ -64,49 +78,49 @@ open class DomPolygonSegmentBuilder(
 /**
  * Calls [childBlock] on every side of the room.
  *
- * Will work when added as a child to a [DomBuilder]<[Room]>.
+ * Will work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
 class DomFourWallsBuilder(
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolygonSegmentBuilder(childBlock) {
-    override fun build(): Node? {
-        val room = parent.node
-        if (room is Room) {
+) : DomPolySegmentBuilder(childBlock) {
+    override fun build(ctx: DomBuildContext) = guard {
+        val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
+        if (parentNode is Room) {
             val polygon = Path().apply {
-                origin = room.innerFloorCenter
-                rectangle(room.width, room.length)
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.length)
             }
-            addSegmentBuilders(polygon.origin, polygon.segments)
+            runSegmentBuilders(childCtx, polygon.origin, polygon.segments)
         }
-        children.forEach { it.build() }
-        return null
+        children.forEach { it.build(childCtx) }
     }
 }
 
 /**
  * Calls [childBlock] on one random segment.
  *
- * Will only work when added as a child to a [DomBuilder] for [Room] or
- * [PolygonRoom].
+ * Will only work when added as a child to a [DomNodeBuilder] for [Room] or
+ * [PolyRoom].
  */
 class DomRandomSegmentBuilder(
     childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolygonSegmentBuilder(childBlock) {
-    override fun build(): Node? {
-        val room = parent.node
-        val polygon = when (room) {
-            is PolygonRoom -> room.polygon
+) : DomPolySegmentBuilder(childBlock) {
+    override fun build(ctx: DomBuildContext) = guard {
+        val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
+        val polygon = when (parentNode) {
+            is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
-                origin = room.innerFloorCenter
-                rectangle(room.width, room.length)
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.length)
             }
             else -> null
         }
         polygon?.let {
-            val segment = it.segments.random(Random(seed + 21000))
-            addSegmentBuilders(it.origin, listOf(segment))
+            val segment = it.segments.random(Random(ctx.seed + seedOffset + 21000))
+            runSegmentBuilders(childCtx, it.origin, listOf(segment))
         }
-        children.forEach { it.build() }
-        return null
+        children.forEach { it.build(childCtx) }
     }
 }

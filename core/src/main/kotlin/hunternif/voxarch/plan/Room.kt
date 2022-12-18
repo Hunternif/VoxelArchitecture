@@ -71,7 +71,7 @@ open class Room(
     /**
      * Add to children 4 walls matching room edges
      */
-    @Deprecated("Use PolygonRoom")
+    @Deprecated("Use PolyRoom")
     fun createFourWalls() {
         val a = size.x/2
         val b = size.z/2
@@ -98,7 +98,7 @@ open class Room(
     /** Adds to children [count] walls arranged in an oval inscribed within room edges.
      * @param count the number of vertices on the oval, has to be >= 3.
      */
-    @Deprecated("Use PolygonRoom")
+    @Deprecated("Use PolyRoom")
     fun createRoundWalls(count: Int) {
         //TODO: check the round walls, they have protruding ends sticking out.
         if (count < 3) return

@@ -19,3 +19,15 @@ inline fun <T> MutableList<T?>.getOrInsert(i: Int, crossinline newValue: () -> T
         value
     }
 }
+
+inline fun <T> Collection<T>.ifNotEmpty(
+    crossinline block: (Collection<T>) -> Unit,
+) {
+    if (isNotEmpty()) block(this)
+}
+
+inline fun String.ifNotEmpty(
+    crossinline block: (String) -> Unit,
+) {
+    if (isNotEmpty()) block(this)
+}

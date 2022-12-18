@@ -82,12 +82,14 @@ class Snapshots {
 
     /** Returns errors */
     private fun compareVox(ref: Path, test: Path): List<String> {
-        val refVox = readVoxFile(ref)
-        val testVox = readVoxFile(test)
         try {
+            val refVox = readVoxFile(ref)
+            val testVox = readVoxFile(test)
             assertStorageEquals(refVox, testVox)
         } catch (e: AssertionError) {
             return listOf("vox file mismatch in $ref, ${e.message ?: ""}")
+        } catch (e: Exception) {
+            return listOf("error comparing $ref, ${e.message ?: ""}")
         }
         return emptyList()
     }

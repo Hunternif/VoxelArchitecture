@@ -1,13 +1,13 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.generator.ChainedGenerator
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Prop
-import hunternif.voxarch.plan.prop
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 import org.junit.Assert.*
@@ -23,12 +23,11 @@ class GenerateNodesTest : BaseActionTest() {
         parent = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         parentNode = parent
         child = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
-
     }
 
     @Test
     fun `generate nodes on parent, undo redo`() = app.state.run {
-        app.addBlueprint(parent, makeBlueprint(PropGenerator()))
+        app.addBlueprint(parent, makeBlueprint(propBuilder))
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -45,7 +44,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on child, undo redo`() = app.state.run {
-        app.addBlueprint(child, makeBlueprint(PropGenerator()))
+        app.addBlueprint(child, makeBlueprint(propBuilder))
         app.generateNodes()
         assertEquals(3, sceneObjects.size)
         assertEquals(setOf(child), parent.children.toSet())
@@ -62,8 +61,8 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `generate nodes on parent and child, undo redo`() = app.state.run {
-        app.addBlueprint(parent, makeBlueprint(PropGenerator()))
-        app.addBlueprint(child, makeBlueprint(PropGenerator()))
+        app.addBlueprint(parent, makeBlueprint(propBuilder))
+        app.addBlueprint(child, makeBlueprint(propBuilder))
         app.generateNodes()
         assertEquals(4, sceneObjects.size)
         assertEquals(2, parent.children.size)
@@ -82,7 +81,7 @@ class GenerateNodesTest : BaseActionTest() {
 
     @Test
     fun `after removing blueprint re-generate will remove nodes`() = app.state.run {
-        val blueprint = makeBlueprint(PropGenerator())
+        val blueprint = makeBlueprint(propBuilder)
         app.addBlueprint(parent, blueprint)
         assertEquals(emptySet<SceneNode>(), generatedNodes.toSet())
         assertEquals(setOf(parent, child), sceneObjects.toSet())
@@ -116,22 +115,18 @@ class GenerateNodesTest : BaseActionTest() {
         assertEquals(emptySet<SceneObject>(), obj.children.toSet())
         assertEquals(emptySet<Node>(), node.children.toSet())
         assertEquals(Vec3(4, 5, 6), node.origin)
-        assertEquals(setOf("generated prop"), node.tags)
+        // Blueprint will add some extra style class to the tags
+        assertTrue(node.tags.contains("generated prop"))
         assertTrue(obj.isGenerated)
     }
 
-    private fun makeBlueprint(gen: ChainedGenerator) =
+    private fun makeBlueprint(domBuilder: DomBuilder) =
         Blueprint(0, "test blueprint").apply {
-            val node = addNode("test", gen)
+            val node = addNode("test", domBuilder)
             start.outputs[0].linkTo(node.inputs[0])
         }
 
-    private class PropGenerator : ChainedGenerator() {
-        override fun generateChained(
-            parent: DomBuilder<Node?>,
-            nextBlock: DomBuilder<Node?>.() -> Unit
-        ) {
-            parent.node?.prop(Vec3(4, 5, 6), "generated prop")
-        }
+    private val propBuilder = DomNodeBuilder {
+        Prop(Vec3(4, 5, 6), "generated prop")
     }
 }

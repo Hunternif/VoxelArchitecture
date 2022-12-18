@@ -1,7 +1,7 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.plan.centeredPolygonRoom
+import hunternif.voxarch.plan.centeredPolyRoom
 import hunternif.voxarch.sandbox.castle.MAT_ROOF
 import hunternif.voxarch.sandbox.castle.builder.PyramidBuilder
 import hunternif.voxarch.util.circle
@@ -58,7 +58,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
     @Test
     fun `square 45deg pyramid upside down`() {
         val pyramid = Structure().apply {
-            centeredPolygonRoom(Vec3(4, 4, 4), Vec3(8, 4, 8)) {
+            centeredPolyRoom(Vec3(4, 4, 4), Vec3(8, 4, 8)) {
                 tags += TYPE_PYRAMID_UPSIDE_DOWN
                 polygon.square(8.0)
                 walls.forEach { it.transparent = true }
@@ -70,7 +70,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
     }
 
     private fun squarePyramid(height: Int) = Structure().apply {
-        centeredPolygonRoom(Vec3(4, 0, 4), Vec3(8, height, 8)) {
+        centeredPolyRoom(Vec3(4, 0, 4), Vec3(8, height, 8)) {
             tags += TYPE_PYRAMID
             polygon.square(8.0)
             walls.forEach { it.transparent = true }
@@ -78,7 +78,7 @@ class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
     }
 
     private fun roundPyramid(height: Int, sides: Int) = Structure().apply {
-        centeredPolygonRoom(Vec3(4, 0, 4), Vec3(8, height, 8)) {
+        centeredPolyRoom(Vec3(4, 0, 4), Vec3(8, height, 8)) {
             tags += TYPE_PYRAMID
             polygon.circle(8.0, sides)
             walls.forEach { it.transparent = true }

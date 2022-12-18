@@ -1,7 +1,9 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.*
+import hunternif.voxarch.dom.builder.DomBuildContext
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
@@ -10,11 +12,11 @@ import org.junit.Test
 class DomTest {
     @Test
     fun `nested nodes`() {
-        val dom = DomRoot().apply {
+        val dom = domRoot {
             node("parent") {
                 node("child")
             }
-        }.build()
+        }.buildDom()
 
         assertEquals(1, dom.children.size)
         val parent = dom.children.first()
@@ -25,7 +27,7 @@ class DomTest {
 
     @Test
     fun `nested rooms with styled size`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") {
                 height { 10.vx }
                 width { 20.vx }
@@ -37,11 +39,11 @@ class DomTest {
                 length { 100.pct }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -55,23 +57,23 @@ class DomTest {
 
     @Test
     fun `nested rooms with min and max size`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") {
                 height { 10.vx }
                 width { 20.vx }
                 length { 30.vx }
             }
             style("child") {
-                height {  min = 8.vx; 75.pct }
+                height { min = 8.vx; 75.pct }
                 width { max = 21.vx; 120.pct }
                 length { min = 1.vx; 0.pct }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -81,16 +83,16 @@ class DomTest {
     @Test
     fun `room with random size`() {
         val seed = 0L
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("random") {
                 height { 1.vx to 100.vx }
                 width { 1.vx to 1000.vx }
                 length { 1.vx to 1000.vx }
             }
         }
-        val dom = DomRoot(style, seed).apply {
+        val dom = domRoot {
             room("random")
-        }.build()
+        }.buildDom(style, seed)
 
         val room = dom.children.first() as Room
         assertEquals(Vec3(110, 46, 144), room.size)
@@ -99,15 +101,15 @@ class DomTest {
     @Test
     fun `use parent seed`() {
         val seed = 3L
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("random") {
                 height { 1.vx to 1000.vx }
             }
             style("parent_seed") {
-                useParentSeed()
+                seed { inherit() }
             }
         }
-        val dom = DomRoot(style, seed).apply {
+        val dom = domRoot {
             room("random")
             room("random")
             room("parent_seed", "random") {
@@ -116,7 +118,7 @@ class DomTest {
             room("parent_seed", "random") {
                 room("random")
             }
-        }.build()
+        }.buildDom(style, seed)
 
         val room1 = dom.children[0] as Room
         val room2 = dom.children[1] as Room
@@ -134,7 +136,7 @@ class DomTest {
 
     @Test
     fun `dom element with multiple classes`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("height_100") {
                 height { 100.vx }
             }
@@ -142,9 +144,9 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room("height_100", "width_200")
-        }.build()
+        }.buildDom(style)
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
@@ -153,7 +155,7 @@ class DomTest {
 
     @Test
     fun `multiple styles with the same name`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Room> {
                 height { 100.vx }
             }
@@ -161,9 +163,9 @@ class DomTest {
                 width { 200.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room()
-        }.build()
+        }.buildDom(style)
 
         val room = dom.children.first() as Room
         assertEquals(100.0, room.height, 0.0)
@@ -172,50 +174,31 @@ class DomTest {
 
     @Test
     fun `inherit styles from superclasses`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             styleFor<Node> {
                 height { 100.vx }
             }
             styleFor<Room> {
                 width { 200.vx }
             }
-            styleFor<PolygonRoom> {
+            styleFor<PolyRoom> {
                 length { 300.vx }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room()
-            polygonRoom()
-        }.build()
+            polyRoom()
+        }.buildDom(style)
 
         val room = dom.children[0] as Room
-        val polyRoom = dom.children[1] as PolygonRoom
+        val polyRoom = dom.children[1] as PolyRoom
         assertEquals(Vec3(200, 100, 0), room.size)
         assertEquals(Vec3(200, 100, 300), polyRoom.size)
     }
 
     @Test
-    fun `find parent node`() {
-        var root: Structure
-        var mid: Node
-        DomRoot().apply {
-            root = node
-            empty {
-                assertEquals(root, findParentNode())
-                node {
-                    assertEquals(root, findParentNode())
-                    mid = node
-                    room {
-                        assertEquals(mid, findParentNode())
-                    }
-                }
-            }
-        }
-    }
-
-    @Test
     fun `inherit style value from parent node`() {
-        val style = Stylesheet().apply {
+        val style = Stylesheet().add {
             style("parent") {
                 height { 100.vx }
             }
@@ -223,11 +206,11 @@ class DomTest {
                 height { inherit() }
             }
         }
-        val dom = DomRoot(style).apply {
+        val dom = domRoot {
             room("parent") {
                 room("child")
             }
-        }.build()
+        }.buildDom(style)
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
@@ -237,7 +220,7 @@ class DomTest {
 
     @Test
     fun `do not inherit node tag from style class`() {
-        val dom = DomRoot().apply {
+        val dom = domRoot {
             node("parent") {
                 node("child", "extra class") {
                     node("inner")
@@ -247,7 +230,7 @@ class DomTest {
                     }
                 }
             }
-        }.build()
+        }.buildDom()
 
         val parent = dom.children.first()
         val child = parent.children.first()
@@ -263,49 +246,134 @@ class DomTest {
         assertEquals(setOf("innermost"), innermost.tags)
     }
 
-//    @Test
-//    fun `inherit style class`() {
-//        val style = Stylesheet().apply {
-//            style("parent") {
-//                height { 100.vx }
-//            }
-//            style("child") {
-//                height { 50.pct }
-//            }
-//        }
-//        val dom = DomRoot(style).apply {
-//            room("parent") {
-//                room()
-//                room("child", "extra class") {
-//                    room()
-//                }
-//            }
-//        }.build()
-//
-//        val parent = dom.children.first() as Room
-//        val child1 = parent.children[0] as Room
-//        val child2 = parent.children[1] as Room
-//        val child3 = child2.children[0] as Room
-//        assertEquals("parent", parent.type)
-//        assertEquals(100.0, parent.height, 0.0)
-//        assertEquals("parent", child1.type)
-//        assertEquals(100.0, child1.height, 0.0)
-//        assertEquals("child", child2.type)
-//        assertEquals(50.0, child2.height, 0.0)
-//        assertEquals("child", child3.type)
-//        assertEquals(25.0, child3.height, 0.0)
-//    }
-
-    companion object {
-        /** Creates empty logic element for testing. */
-        private fun DomBuilder<Node?>.empty(
-            block: DomBuilder<Node?>.() -> Unit = {}
-        ) {
-            val bld = EmptyLogicBuilder()
-            addChild(bld)
-            bld.block()
+    @Test
+    fun `apply inherited style classes`() {
+        val style = Stylesheet().add {
+            styleInherit("tall") {
+                height { 10.vx }
+            }
+            style("wide") {
+                width { 20.vx }
+            }
         }
+        val dom = domRoot {
+            room("parent", "tall") {
+                room("child1")
+                room("child2", "wide")
+            }
+            room("room3", "wide")
+        }.buildDom(style)
 
-        class EmptyLogicBuilder: DomLogicBuilder()
+        val parent = dom.query<Room>("parent").first()
+        val child1 = dom.query<Room>("child1").first()
+        val child2 = dom.query<Room>("child2").first()
+        val room3 = dom.query<Room>("room3").first()
+        assertEquals(Vec3(0, 10, 0), parent.size)
+        assertEquals(Vec3(0, 10, 0), child1.size)
+        assertEquals(Vec3(20, 10, 0), child2.size)
+        assertEquals(Vec3(20, 0, 0), room3.size)
+    }
+
+    @Test
+    fun `style for instance`() {
+        lateinit var instance: DomBuilder
+        val domRoot = domRoot {
+            room("special_room") {
+                instance = this@room
+            }
+            room("second_room")
+        }
+        val style = Stylesheet().add {
+            styleFor(instance) {
+                height { 35.vx }
+            }
+        }
+        val dom = domRoot.buildDom(style)
+
+        val specialRoom = dom.query<Room>("special_room").first()
+        val secondRoom = dom.query<Room>("second_room").first()
+        assertEquals(35.0, specialRoom.height, 0.0)
+        assertEquals(0.0, secondRoom.height, 0.0)
+    }
+
+    @Test
+    fun `passthrough node`() {
+        val dom = domRoot {
+            node("parent") {
+                passthrough {
+                    node("child")
+                }
+            }
+        }.buildDom()
+
+        assertEquals(1, dom.children.size)
+        val parent = dom.children.first()
+        assertEquals(1, parent.children.size)
+        val child = parent.children.first()
+        assertEquals(0, child.children.size)
+    }
+
+    @Test
+    fun `apply style on multiple-class selector`() {
+        val style = Stylesheet().add {
+            style("one") {
+                height { 10.vx }
+            }
+            style("one", "two") {
+                width { 20.vx }
+            }
+        }
+        val dom = domRoot {
+            room("one")
+            room("one", "two")
+            room("one", "two", "three")
+        }.buildDom(style)
+
+        val (room1, room2, room3) = dom.query<Room>().toList()
+        assertEquals(Vec3(0, 10, 0), room1.size)
+        assertEquals(Vec3(20, 10, 0), room2.size)
+        assertEquals(Vec3(20, 10, 0), room3.size)
+    }
+
+    @Test
+    fun `style family`() {
+        val style = Stylesheet().add {
+            styleFamily(select("family")) {
+                style("one") {
+                    height { 10.vx }
+                }
+                style("two") {
+                    width { 20.vx }
+                }
+            }
+        }
+        val dom = domRoot {
+            room("one")
+            room("two")
+            room("family", "one")
+            room("family", "two")
+        }.buildDom(style)
+
+        val (room1, room2, room3, room4) = dom.query<Room>().toList()
+        assertEquals(Vec3(0, 0, 0), room1.size)
+        assertEquals(Vec3(0, 0, 0), room2.size)
+        assertEquals(Vec3(0, 10, 0), room3.size)
+        assertEquals(Vec3(20, 0, 0), room4.size)
+    }
+
+    @Test
+    fun `deep-copy DomBuildContext`() {
+        lateinit var domBuilder2: DomBuilder
+        val root = domRoot {
+            node { domBuilder2 = this }
+        }
+        val ctx1 = DomBuildContext(root, Node(), defaultStyle, 0)
+            .inherit(listOf("class1"))
+        val ctx2 = ctx1.copy(parent = domBuilder2)
+        assertEquals(domBuilder2, ctx2.parent)
+        assertEquals(setOf("class1"), ctx2.inheritedStyleClass)
+        ctx2.inherit(listOf("class2"))
+        assertEquals(setOf("class1"), ctx1.inheritedStyleClass)
+        assertEquals(setOf("class1", "class2"), ctx2.inheritedStyleClass)
     }
 }

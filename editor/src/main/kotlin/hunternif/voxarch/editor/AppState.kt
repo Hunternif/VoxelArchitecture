@@ -7,7 +7,7 @@ import hunternif.voxarch.editor.actions.History
 import hunternif.voxarch.editor.actions.HistoryAction
 import hunternif.voxarch.editor.actions.ReadOnlyHistory
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.builder.generatorsByName
+import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.builder.mapVoxelToSolidColor
 import hunternif.voxarch.editor.builder.setDefaultBuilders
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
@@ -40,7 +40,7 @@ interface AppState {
     val buildContext: BuildContext
     val stylesheet: Stylesheet
     val seed: Long
-    val generatorNames: List<String>
+    val domBuilderNames: List<String>
     val generatedNodes: Subset<SceneNode>
     val generatedVoxels: Subset<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
@@ -105,7 +105,7 @@ class AppStateImpl(
     }
     override val stylesheet = defaultStyle
     override var seed: Long = 0
-    override val generatorNames = generatorsByName.keys.toList()
+    override val domBuilderNames = domBuilderFactoryByName.keys.toList()
     override val voxelColorMap = ::mapVoxelToSolidColor
 
     override var parentNode: SceneNode = rootNode

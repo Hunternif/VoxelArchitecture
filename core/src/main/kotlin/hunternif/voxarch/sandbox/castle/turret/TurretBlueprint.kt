@@ -88,7 +88,7 @@ fun createTurret(
             floor { tags +=  BLD_FOUNDATION }
         }
         if (hasTaperedBottom) {
-            centeredPolygonRoom(
+            centeredPolyRoom(
                 innerFloorCenter.addY(-taperedBottomHeight),
                 taperedBottomSize
             ) {
@@ -111,7 +111,7 @@ fun createTurret(
 
         // spire:
         if (hasSpire) {
-            centeredPolygonRoom(spireOrigin, spireSize) {
+            centeredPolyRoom(spireOrigin, spireSize) {
                 createPolygon(bodyShape)
                 tags += BLD_TOWER_SPIRE
             }
@@ -119,7 +119,7 @@ fun createTurret(
 
         // overhanging roof:
         if (withCrenellation) {
-            centeredPolygonRoom(roofOrigin, roofSize) {
+            centeredPolyRoom(roofOrigin, roofSize) {
                 tags += BLD_TOWER_ROOF
                 ceiling()
                 createPolygon(bodyShape)
@@ -129,7 +129,7 @@ fun createTurret(
     }
 }
 
-private fun PolygonRoom.createPolygon(bodyShape: BodyShape) {
+private fun PolyRoom.createPolygon(bodyShape: BodyShape) {
     when (bodyShape) {
         BodyShape.SQUARE -> polygon.square(width)
         BodyShape.ROUND -> {

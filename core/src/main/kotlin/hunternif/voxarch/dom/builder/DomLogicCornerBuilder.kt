@@ -1,34 +1,34 @@
 package hunternif.voxarch.dom.builder
 
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Path
-import hunternif.voxarch.plan.PolygonRoom
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.util.round
 
 /**
- * Calls [block] in every corner of the [PolygonRoom]
+ * Calls [block] in every corner of the [PolyRoom]
  *
- * Will only work when added as a child to a [DomBuilder]<[PolygonRoom]>.
+ * Will only work when added as a child to a [DomNodeBuilder]<[PolyRoom]>.
  */
-open class DomLogicPolygonCornerBuilder(
-    private val block: DomBuilder<Node?>.() -> Unit
-) : DomLogicBuilder() {
-    override fun build(): Node? {
-        val room = parent.node
-        if (room is PolygonRoom) {
-            addCornerBuilders(room.polygon)
+open class DomLogicPolyCornerBuilder(
+    private val block: DomBuilder.() -> Unit
+) : DomBuilder() {
+    override fun build(ctx: DomBuildContext) = guard {
+        val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
+        if (parentNode is PolyRoom) {
+            runCornerBuilders(childCtx, parentNode.polygon)
         }
-        children.forEach { it.build() }
-        return null
+        children.forEach { it.build(childCtx) }
     }
 
-    protected fun addCornerBuilders(polygon: Path) {
+    protected fun runCornerBuilders(ctx: DomBuildContext, polygon: Path) {
         polygon.points.forEachIndexed { i, offset ->
             val bld = DomTranslateBuilder(offset.round())
-            addChild(bld, seed + 10000 + i)
+            bld.seedOffset = seedOffset + 10000 + i
             bld.block()
+            bld.build(ctx)
         }
     }
 }
@@ -36,20 +36,20 @@ open class DomLogicPolygonCornerBuilder(
 /**
  * Calls [block] in every corner of the [Room]
  *
- * Will only work when added as a child to a [DomBuilder]<[Room]>.
+ * Will only work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
 class DomLogicFourCornerBuilder(
-    block: DomBuilder<Node?>.() -> Unit
-) : DomLogicPolygonCornerBuilder(block) {
-    override fun build(): Node? {
-        val room = parent.node
-        if (room is Room) {
+    block: DomBuilder.() -> Unit
+) : DomLogicPolyCornerBuilder(block) {
+    override fun build(ctx: DomBuildContext) = guard {
+        val parentNode = ctx.parentNode
+        val childCtx = ctx.makeChildCtx()
+        if (parentNode is Room) {
             val polygon = Path().apply {
-                rectangle(room.width, room.length)
+                rectangle(parentNode.width, parentNode.length)
             }
-            addCornerBuilders(polygon)
+            runCornerBuilders(childCtx, polygon)
         }
-        children.forEach { it.build() }
-        return null
+        children.forEach { it.build(childCtx) }
     }
 }

@@ -1,10 +1,9 @@
 package hunternif.voxarch.sandbox.castle.turret
 
-import hunternif.voxarch.plan.PolygonRoom
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.vector.Vec3
 
-@Deprecated("Use TurretGenerator on a PolygonRoom")
+@Deprecated("Use GenTurretDecor on a PolyRoom")
 class Turret(
     /** maps to the center of the floor */
     origin: Vec3,
@@ -23,7 +22,7 @@ class Turret(
     /** Level in a hierarchy of nested turrets.
      * Usually equal to recursion depth, but not always. */
     val level: Int = 0
-) : PolygonRoom(origin, size) {
+) : PolyRoom(origin, size) {
 
     /** Offset for borders and spires in all child turrets. */
     var roofOffset: Int = 1

@@ -30,7 +30,7 @@ class XmlSerializersTest {
             <node class="Wall" start="(0.0, 0.0, 1.0)" end="(1.0, 2.0, 1.0)" transparent="false"/>
             <node class="Floor" height="1.0"/>
           </node>
-          <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
+          <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
             <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
           </node>
         </node>
@@ -44,11 +44,11 @@ class XmlSerializersTest {
             floor(1.0)
             addChild(Gate()) // missing node class
         }
-        polygonRoom(Vec3.ZERO, Vec3(7, 8, 9)) { shape = PolygonShape.ROUND }
+        polyRoom(Vec3.ZERO, Vec3(7, 8, 9)) { shape = PolyShape.ROUND }
     }
 
-    private val polygonRoomXml = """
-        <node class="PolygonRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
+    private val polyRoomXml = """
+        <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
           <polygon class="Path" origin="(0.0, 0.0, 0.0)">
             <point>(0.0, 0.0, 0.0)</point>
             <point>(1.0, 2.0, 3.0)</point>
@@ -56,9 +56,9 @@ class XmlSerializersTest {
         </node>
         """.trimIndent()
 
-    private val polygonRoom = PolygonRoom(Vec3.ZERO, Vec3(7, 8, 9)).apply {
+    private val polygonRoom = PolyRoom(Vec3.ZERO, Vec3(7, 8, 9)).apply {
         start = Vec3.ZERO
-        shape = PolygonShape.ROUND
+        shape = PolyShape.ROUND
         polygon.apply {
             addPoint(Vec3.ZERO)
             addPoint(Vec3(1, 2, 3))
@@ -78,23 +78,23 @@ class XmlSerializersTest {
         assertEquals(Structure::class, node::class)
         assertEquals(2, node.children.size)
         assertEquals(Room::class, node.children[0]::class)
-        assertEquals(PolygonRoom::class, node.children[1]::class)
+        assertEquals(PolyRoom::class, node.children[1]::class)
         val reserialized = serializeToXmlStr(node, true)
         assertEquals(structureXml, reserialized.trimXml())
     }
 
     @Test
-    fun `serialize PolygonRoom`() {
+    fun `serialize PolyRoom`() {
         val xml = serializeToXmlStr(polygonRoom, true)
-        assertEquals(polygonRoomXml, xml.trimXml())
+        assertEquals(polyRoomXml, xml.trimXml())
     }
 
     @Test
-    fun `deserialize PolygonRoom`() {
-        val node = deserializeXml(polygonRoomXml, Node::class)
-        assertEquals(PolygonRoom::class, node::class)
+    fun `deserialize PolyRoom`() {
+        val node = deserializeXml(polyRoomXml, Node::class)
+        assertEquals(PolyRoom::class, node::class)
         val reserialized = serializeToXmlStr(node, true)
-        assertEquals(polygonRoomXml, reserialized.trimXml())
+        assertEquals(polyRoomXml, reserialized.trimXml())
     }
 }
 

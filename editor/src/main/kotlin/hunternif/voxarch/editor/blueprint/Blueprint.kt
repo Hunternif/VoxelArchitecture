@@ -1,16 +1,16 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
-import hunternif.voxarch.generator.ChainedGenerator
-import hunternif.voxarch.generator.GenPassthrough
-import hunternif.voxarch.generator.IGenerator
 import hunternif.voxarch.plan.Node
 import imgui.extension.imnodes.ImNodes
 import kotlin.collections.LinkedHashSet
 
 /**
- * Represents a graph of DOM Generators.
+ * Represents a graph of DomBuilders.
  */
 class Blueprint(
     override val id: Int,
@@ -23,33 +23,38 @@ class Blueprint(
     val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
-    val start: BlueprintNode = createNode("Start", GenPassthrough(), 100f, 100f).apply {
+    private val internalStylesheet = Stylesheet()
+
+    val start: BlueprintNode = createNode("Start", 100f, 100f, DomBuilder()).apply {
         addOutput("node")
     }
 
     private fun createNode(
         name: String,
-        generator: IGenerator,
         x: Float = 0f,
-        y: Float = 0f
+        y: Float = 0f,
+        domBuilder: DomBuilder,
     ): BlueprintNode {
-        val node = BlueprintNode(nodeIDs.newID(), name, generator, this)
+        val node = BlueprintNode(nodeIDs.newID(), name, this, domBuilder)
         node.x = x
         node.y = y
         nodeIDs.save(node)
         nodes.add(node)
+        domBuilder.addStyle(node.styleClass)
+        internalStylesheet.addRule(node.rule)
         return node
     }
 
     fun addNode(
         name: String,
-        generator: IGenerator,
+        domBuilder: DomBuilder,
         x: Float = 0f,
-        y: Float = 0f
-    ): BlueprintNode = createNode(name, generator, x, y).apply {
+        y: Float = 0f,
+    ): BlueprintNode = createNode(name, x, y, domBuilder).apply {
         addInput("in")
-        if (generator is ChainedGenerator) {
-            addOutput("out")
+        addOutput("out", domBuilder)
+        domBuilder.slots.forEach { (name, domSlot) ->
+            addOutput(name, domSlot)
         }
     }
 
@@ -61,18 +66,32 @@ class Blueprint(
         // not removing from the ID registry, in case of undo
     }
 
-    fun execute(root: Node) {
-        (start.generator as? ChainedGenerator)?.clearRecursionCounters()
-        start.generator.generateFinal(root)
+    fun execute(
+        rootNode: Node,
+        stylesheet: Stylesheet = defaultStyle,
+        seed: Long = 0,
+    ) {
+        DomBuilder.cycleCounter.clear()
+        // copy the incoming stylesheet to keep it clean from generated rules:
+        val finalStylesheet = stylesheet.copy()
+        finalStylesheet.copyRules(internalStylesheet)
+        val root = domRoot(rootNode)
+        root.addChild(start.domBuilder)
+        root.buildDom(finalStylesheet, seed)
     }
 }
 
+/**
+ * [DomBuilder] is the main payload of this node. It will be created at runtime.
+ */
 class BlueprintNode(
     override val id: Int,
     val name: String,
-    val generator: IGenerator,
     val bp: Blueprint,
+    val domBuilder: DomBuilder,
 ) : WithID {
+    val styleClass = "${name}_${id}"
+    val rule: Rule = Rule(select(styleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
     var x: Float = 0f
@@ -81,8 +100,8 @@ class BlueprintNode(
     internal fun addInput(name: String): BlueprintSlot.In =
         BlueprintSlot.In(name, this).also { inputs.add(it) }
 
-    internal fun addOutput(name: String): BlueprintSlot.Out =
-        BlueprintSlot.Out(name, this).also { outputs.add(it) }
+    internal fun addOutput(name: String, domSlot: DomBuilder = domBuilder): BlueprintSlot.Out =
+        BlueprintSlot.Out(name, this, domSlot).also { outputs.add(it) }
 
     fun applyImNodesPos() {
         ImNodes.setNodeGridSpacePos(id, x, y)
@@ -102,7 +121,11 @@ sealed class BlueprintSlot(
 
     class In(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node)
 
-    class Out(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node) {
+    class Out(
+        name: String,
+        node: BlueprintNode,
+        val domSlot: DomBuilder,
+    ) : BlueprintSlot(name, node.bp, node) {
         fun linkTo(dest: In): BlueprintLink {
             val existingLink = links.firstOrNull { it.from == this && it.to == dest }
             if (existingLink != null) return existingLink
@@ -112,16 +135,14 @@ sealed class BlueprintSlot(
             bp.links.add(newLink)
             this.links.add(newLink)
             dest.links.add(newLink)
-            val fromGen = node.generator
-            val toGen = dest.node.generator
-            (fromGen as? ChainedGenerator)?.nextGens?.add(toGen)
+            domSlot.addChild(dest.node.domBuilder)
             return newLink
         }
     }
 
     fun unlinkFrom(other: BlueprintSlot) {
         val link = links.firstOrNull {
-            it.from == this && it.to == other || it.from == other && it.to== this
+            it.from == this && it.to == other || it.from == other && it.to == this
         }
         link?.let {
             this.links.remove(it)
@@ -129,9 +150,7 @@ sealed class BlueprintSlot(
             // remove from ID Registry, because links are cheap to re-create
             bp.linkIDs.remove(it)
             bp.links.remove(it)
-            val fromGen = it.from.node.generator
-            val toGen = it.to.node.generator
-            (fromGen as? ChainedGenerator)?.nextGens?.remove(toGen)
+            it.from.domSlot.removeChild(it.to.node.domBuilder)
         }
     }
 }
