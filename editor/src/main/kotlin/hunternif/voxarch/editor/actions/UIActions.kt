@@ -51,9 +51,10 @@ fun EditorApp.setTool(tool: Tool) = action {
 
 fun EditorApp.centerCamera() = action {
     state.run {
-        if (selectedObjects.isNotEmpty()) {
+        val selectedObjectsExceptRoot = selectedObjects - rootNode
+        if (selectedObjectsExceptRoot.isNotEmpty()) {
             // 1. look at selected objects
-            scene.lookAtObjects(selectedObjects)
+            scene.lookAtObjects(selectedObjectsExceptRoot)
         } else if (parentNode != rootNode) {
             // 2. look at parent node
             scene.lookAtObjects(listOf(parentNode))
