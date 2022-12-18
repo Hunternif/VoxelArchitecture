@@ -52,7 +52,10 @@ class Blueprint(
         y: Float = 0f,
     ): BlueprintNode = createNode(name, x, y, domBuilder).apply {
         addInput("in")
-        addOutput("out")
+        addOutput("out", domBuilder)
+        domBuilder.slots.forEach { (name, domSlot) ->
+            addOutput(name, domSlot)
+        }
     }
 
     fun removeNode(node: BlueprintNode) {
@@ -97,8 +100,8 @@ class BlueprintNode(
     internal fun addInput(name: String): BlueprintSlot.In =
         BlueprintSlot.In(name, this).also { inputs.add(it) }
 
-    internal fun addOutput(name: String): BlueprintSlot.Out =
-        BlueprintSlot.Out(name, this).also { outputs.add(it) }
+    internal fun addOutput(name: String, domSlot: DomBuilder = domBuilder): BlueprintSlot.Out =
+        BlueprintSlot.Out(name, this, domSlot).also { outputs.add(it) }
 
     fun applyImNodesPos() {
         ImNodes.setNodeGridSpacePos(id, x, y)
@@ -118,7 +121,11 @@ sealed class BlueprintSlot(
 
     class In(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node)
 
-    class Out(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node) {
+    class Out(
+        name: String,
+        node: BlueprintNode,
+        val domSlot: DomBuilder,
+    ) : BlueprintSlot(name, node.bp, node) {
         fun linkTo(dest: In): BlueprintLink {
             val existingLink = links.firstOrNull { it.from == this && it.to == dest }
             if (existingLink != null) return existingLink
@@ -128,7 +135,7 @@ sealed class BlueprintSlot(
             bp.links.add(newLink)
             this.links.add(newLink)
             dest.links.add(newLink)
-            node.domBuilder.addChild(dest.node.domBuilder)
+            domSlot.addChild(dest.node.domBuilder)
             return newLink
         }
     }
@@ -143,7 +150,7 @@ sealed class BlueprintSlot(
             // remove from ID Registry, because links are cheap to re-create
             bp.linkIDs.remove(it)
             bp.links.remove(it)
-            it.from.node.domBuilder.removeChild(it.to.node.domBuilder)
+            it.from.domSlot.removeChild(it.to.node.domBuilder)
         }
     }
 }

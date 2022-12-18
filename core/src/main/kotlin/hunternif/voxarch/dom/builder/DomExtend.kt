@@ -24,6 +24,10 @@ class DomExtend : DomBuilder() {
         addChild(south)
         addChild(east)
         addChild(west)
+        addSlot("north", north)
+        addSlot("south", south)
+        addSlot("east", east)
+        addSlot("west", west)
     }
 
     override fun build(ctx: DomBuildContext) {

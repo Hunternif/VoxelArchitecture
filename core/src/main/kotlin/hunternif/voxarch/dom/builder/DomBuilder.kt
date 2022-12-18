@@ -26,6 +26,9 @@ open class DomBuilder : Recursive(cycleCounter) {
     /** List of "CSS classes" applied to this element. */
     val styleClass = linkedSetOf<String>()
 
+    /** Extension slots where other DomBuilders attach. */
+    val slots = linkedSetOf<Pair<String, DomBuilder>>()
+
     /**
      * Recursively invokes this method on children.
      * [build] can be called multiple times, so it must not retain any state:
@@ -67,6 +70,10 @@ open class DomBuilder : Recursive(cycleCounter) {
     /** Add given style class names to this builder. */
     operator fun Array<out String>.unaryPlus() {
         styleClass.addAll(this)
+    }
+
+    fun addSlot(name: String, domSlot: DomBuilder) {
+        slots.add(name to domSlot)
     }
 
     private fun nextChildSeedOffset(): Long = seedOffset + children.size + 1
