@@ -102,16 +102,18 @@ fun DomBuilder.ward(
 fun DomBuilder.allCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicPolyCornerBuilder(block)
+    val bld = DomLogicPolyCornerBuilder()
     addChild(bld)
+    bld.block()
 }
 
 /** Runs [block] in the 4 corners of this [Room]'s bounding box. */
 fun DomBuilder.fourCorners(
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomLogicFourCornerBuilder(block)
+    val bld = DomLogicFourCornerBuilder()
     addChild(bld)
+    bld.block()
 }
 
 /** Runs [block] on every section of this polygon. */

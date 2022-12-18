@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.*
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.*
 
 /**
  * Creates a new DomBuilder for a Blueprint node.
@@ -9,8 +9,13 @@ import hunternif.voxarch.plan.Room
 typealias DomBuilderFactory = () -> DomBuilder
 
 val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
+    "Room" to { DomNodeBuilder { Room() } },
+    "PolyRoom" to { DomPolyRoomBuilder() },
+    "Floor" to { DomNodeBuilder { Floor() } },
+    "Wall" to { DomNodeBuilder { Wall() } },
     "Turret" to { DomPolyRoomWithTurretBuilder() },
     "Turret Decor" to { DomTurretDecor() },
-    "Room" to { DomNodeBuilder { Room() } },
     "Extend" to { DomExtend() },
+    "All Corners" to { DomLogicPolyCornerBuilder() },
+    "Four Corners" to { DomLogicFourCornerBuilder() },
 )
