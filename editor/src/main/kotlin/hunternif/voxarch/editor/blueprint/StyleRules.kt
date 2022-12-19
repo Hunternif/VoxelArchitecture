@@ -6,8 +6,8 @@ import hunternif.voxarch.dom.style.property.*
 /** Ordered as they would be in UI. */
 val editorStyleProperties: List<Property<*>> = listOf(
     PropHeight,
-    PropWidth,
     PropLength,
+    PropWidth,
 
     PropAlignY,
     PropAlignXZ,

@@ -64,9 +64,9 @@ fun Rule.diameter(block: StyleSize.() -> Dimension) {
 }
 
 fun Rule.size(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropWidth, x)
+    add(PropLength, x)
     add(PropHeight, y)
-    add(PropLength, z)
+    add(PropWidth, z)
 }
 
 /** Inherit the value from the parent node. */

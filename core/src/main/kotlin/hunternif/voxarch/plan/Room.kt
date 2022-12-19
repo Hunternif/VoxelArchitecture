@@ -37,16 +37,16 @@ open class Room(
         startDelegate.innerValue = if (value) null else start
     }
 
-    override var width: Double
+    override var length: Double
         get() = size.x
         set(value) { size.x = value }
     override var height: Double
         get() = size.y
         set(value) { size.y = value }
-    override var length: Double
+    override var width: Double
         get() = size.z
         set(value) { size.z = value }
-    /** Vector (width, height, length), doesn't take rotation into account.
+    /** Vector (length, height, width), doesn't take rotation into account.
      * Components of this vector are equal to distances between corner blocks
      * of the room. It would take that number + 1 blocks to build each boundary
      * of the room in a world. */
@@ -157,7 +157,7 @@ open class Room(
         private class CenteredStartDelegate: ReadWriteProperty<Room, Vec3> {
             var innerValue: Vec3? = null
             override fun getValue(thisRef: Room, property: KProperty<*>): Vec3 =
-                innerValue ?: Vec3(-thisRef.width / 2, 0.0, -thisRef.length / 2)
+                innerValue ?: Vec3(-thisRef.length / 2, 0.0, -thisRef.width / 2)
 
             override fun setValue(thisRef: Room, property: KProperty<*>, value: Vec3) {
                 this.innerValue = value

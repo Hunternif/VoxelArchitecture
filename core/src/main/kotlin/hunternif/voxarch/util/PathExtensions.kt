@@ -5,9 +5,9 @@ import hunternif.voxarch.vector.Vec3
 import kotlin.math.round
 
 /** Adds points on a rectangle, centered at origin */
-fun Path.rectangle(width: Double, length: Double) {
-    val a = width / 2
-    val b = length / 2
+fun Path.rectangle(length: Double, width: Double) {
+    val a = length / 2
+    val b = width / 2
     /*
      * (Wall indices)
      * +---------> X
@@ -32,10 +32,10 @@ fun Path.square(width: Double) = rectangle(width, width)
 
 /** Adds [count] points on an ellipse, centered at origin.
  * Works best with even count. */
-fun Path.ellipse(width: Double, length: Double, count: Int) {
+fun Path.ellipse(length: Double, width: Double, count: Int) {
     if (count < 3) return
-    val a = width / 2
-    val b = length / 2
+    val a = length / 2
+    val b = width / 2
     val angleStep = 360.0 / count
     // Going counterclockwise:
     var angle = angleStep / 2

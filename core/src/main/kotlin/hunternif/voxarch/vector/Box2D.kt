@@ -15,9 +15,9 @@ import hunternif.voxarch.util.Direction.*
  * ```
  */
 data class Box2D(val start: IntVec2, val end: IntVec2): Iterable<IntVec2> {
-    val width: Int get() = end.x - start.x
-    val length: Int get() = end.y - start.y
-    val center: Vec2 get() = Vec2(0.5*width + start.x, 0.5*length + start.y)
+    val length: Int get() = end.x - start.x
+    val width: Int get() = end.y - start.y
+    val center: Vec2 get() = Vec2(0.5*length + start.x, 0.5*width + start.y)
 
     fun expand(dir: Direction): Box2D = when (dir) {
         NORTH -> Box2D(start.next(NORTH), end)

@@ -3,9 +3,9 @@ package hunternif.voxarch.vector
 import hunternif.voxarch.storage.IArray3D
 
 class Array3D<T>(
-    override val width : Int,
-    override val height: Int,
     override val length: Int,
+    override val height: Int,
+    override val width : Int,
     private val data: Array<T>
 ) : IArray3D<T> {
 
@@ -14,20 +14,20 @@ class Array3D<T>(
 
     companion object {
         inline operator fun <reified T> invoke(
-            width: Int,
-            height: Int,
             length: Int,
+            height: Int,
+            width: Int,
             init: (x: Int, y: Int, z: Int) -> T
         ): Array3D<T> {
             var size = 0
             val result = Array3D(
-                width,
-                height,
                 length,
-                Array(width * height * length) { index ->
+                height,
+                width,
+                Array(length * height * width) { index ->
                     val y = index % height
-                    val z = (index - y)/height % length
-                    val x = ((index - y)/height - z)/length
+                    val z = (index - y)/height % width
+                    val x = ((index - y)/height - z)/width
                     val value = init(x, y, z)
                     if (value != null) size++
                     value
@@ -38,18 +38,18 @@ class Array3D<T>(
         }
 
         inline operator fun <reified T> invoke(
-            width: Int,
-            height: Int,
             length: Int,
+            height: Int,
+            width: Int,
             init: T
         ): Array3D<T> {
             val result = Array3D(
-                width,
-                height,
                 length,
-                Array(width * height * length) { init }
+                height,
+                width,
+                Array(length * height * width) { init }
             )
-            result._size = if (init == null) 0 else width * height * length
+            result._size = if (init == null) 0 else length * height * width
             return result
         }
 
@@ -57,10 +57,10 @@ class Array3D<T>(
 
     @Suppress("NOTHING_TO_INLINE")
     private inline fun index(x: Int, y: Int, z: Int): Int {
-        if (x < 0 || x >= width) throw ArrayIndexOutOfBoundsException("x = $x is out of bounds")
+        if (x < 0 || x >= length) throw ArrayIndexOutOfBoundsException("x = $x is out of bounds")
         if (y < 0 || y >= height) throw ArrayIndexOutOfBoundsException("y = $y is out of bounds")
-        if (z < 0 || z >= length) throw ArrayIndexOutOfBoundsException("z = $z is out of bounds")
-        return (x * length + z) * height + y
+        if (z < 0 || z >= width) throw ArrayIndexOutOfBoundsException("z = $z is out of bounds")
+        return (x * width + z) * height + y
     }
 
     override operator fun get(x: Int, y: Int, z: Int): T = data[index(x, y, z)]

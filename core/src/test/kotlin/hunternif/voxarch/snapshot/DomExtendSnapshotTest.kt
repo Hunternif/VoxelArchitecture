@@ -4,9 +4,7 @@ import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.style.defaultStyle
-import hunternif.voxarch.dom.style.property.position
-import hunternif.voxarch.dom.style.property.size
-import hunternif.voxarch.dom.style.property.width
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.plan.Room
 import org.junit.Test
@@ -49,7 +47,7 @@ class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
                 size(4.vx, 2.vx, 3.vx)
             }
             style("child") {
-                width { 2.vx }
+                length { 2.vx }
             }
         }
         val child = DomNodeBuilder { Room() }.apply {

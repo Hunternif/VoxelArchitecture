@@ -30,13 +30,13 @@ class DomTest {
         val style = Stylesheet().add {
             style("parent") {
                 height { 10.vx }
-                width { 20.vx }
-                length { 30.vx }
+                length { 20.vx }
+                width { 30.vx }
             }
             style("child") {
                 height { 75.pct }
-                width { 120.pct }
-                length { 100.pct }
+                length { 120.pct }
+                width { 100.pct }
             }
         }
         val dom = domRoot {
@@ -48,11 +48,11 @@ class DomTest {
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
         assertEquals(10.0, parent.height, 0.0)
-        assertEquals(20.0, parent.width, 0.0)
-        assertEquals(30.0, parent.length, 0.0)
+        assertEquals(20.0, parent.length, 0.0)
+        assertEquals(30.0, parent.width, 0.0)
         assertEquals(8.0, child.height, 0.0) // rounded
-        assertEquals(24.0, child.width, 0.0)
-        assertEquals(30.0, child.length, 0.0)
+        assertEquals(24.0, child.length, 0.0)
+        assertEquals(30.0, child.width, 0.0)
     }
 
     @Test
@@ -60,13 +60,13 @@ class DomTest {
         val style = Stylesheet().add {
             style("parent") {
                 height { 10.vx }
-                width { 20.vx }
-                length { 30.vx }
+                length { 20.vx }
+                width { 30.vx }
             }
             style("child") {
                 height { min = 8.vx; 75.pct }
-                width { max = 21.vx; 120.pct }
-                length { min = 1.vx; 0.pct }
+                length { max = 21.vx; 120.pct }
+                width { min = 1.vx; 0.pct }
             }
         }
         val dom = domRoot {
@@ -86,8 +86,8 @@ class DomTest {
         val style = Stylesheet().add {
             style("random") {
                 height { 1.vx to 100.vx }
-                width { 1.vx to 1000.vx }
                 length { 1.vx to 1000.vx }
+                width { 1.vx to 1000.vx }
             }
         }
         val dom = domRoot {
@@ -95,7 +95,7 @@ class DomTest {
         }.buildDom(style, seed)
 
         val room = dom.children.first() as Room
-        assertEquals(Vec3(110, 46, 144), room.size)
+        assertEquals(Vec3(144, 46, 110), room.size)
     }
 
     @Test
@@ -179,10 +179,10 @@ class DomTest {
                 height { 100.vx }
             }
             styleFor<Room> {
-                width { 200.vx }
+                length { 200.vx }
             }
             styleFor<PolyRoom> {
-                length { 300.vx }
+                width { 300.vx }
             }
         }
         val dom = domRoot {
@@ -253,7 +253,7 @@ class DomTest {
                 height { 10.vx }
             }
             style("wide") {
-                width { 20.vx }
+                length { 20.vx }
             }
         }
         val dom = domRoot {
@@ -320,7 +320,7 @@ class DomTest {
                 height { 10.vx }
             }
             style("one", "two") {
-                width { 20.vx }
+                length { 20.vx }
             }
         }
         val dom = domRoot {
@@ -343,7 +343,7 @@ class DomTest {
                     height { 10.vx }
                 }
                 style("two") {
-                    width { 20.vx }
+                    length { 20.vx }
                 }
             }
         }

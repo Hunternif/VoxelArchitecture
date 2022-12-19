@@ -15,7 +15,7 @@ val PropShape = newNodeProperty<PolyRoom, PolyShape>("shape", PolyShape.SQUARE) 
 }
 
 val PropEdgeLength = newNodeProperty<PolyRoom, Double>("edge length", 1.0) { value ->
-    val baseValue = node.width
+    val baseValue = node.length
     node.edgeLength = value.invoke(baseValue, seed + 10000005)
 }
 

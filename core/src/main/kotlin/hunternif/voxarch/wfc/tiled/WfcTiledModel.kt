@@ -28,16 +28,16 @@ import hunternif.voxarch.wfc.WfcModel
 // It would be composed of 2 tiles, each with a wall in the middle.
 
 class WfcTiledModel<T: WfcTile>(
-    width: Int,
-    height: Int,
     length: Int,
+    height: Int,
+    width: Int,
     tileset: Collection<T>,
     seed: Long = 0L
-) : WfcModel<T, T, WfcSlot<T>>(width, height, length, tileset, seed),
+) : WfcModel<T, T, WfcSlot<T>>(length, height, width, tileset, seed),
     IArray3D<T?>
 {
     override val wave: Array3D<WfcSlot<T>> =
-        Array3D(width, height, length) {
+        Array3D(length, height, width) {
             x, y, z ->
             WfcSlot(IntVec3(x, y, z), patternSet.toMutableSet()).also {
                 it.entropy = initialEntropy
@@ -124,8 +124,8 @@ class WfcTiledModel<T: WfcTile>(
             if (y > 0) yield(wave[x, y-1, z])
             if (y < height-1) yield(wave[x, y+1, z])
             if (z > 0) yield(wave[x, y, z-1])
-            if (x < width-1) yield(wave[x+1, y, z])
-            if (z < length-1) yield(wave[x, y, z+1])
+            if (x < length-1) yield(wave[x+1, y, z])
+            if (z < width-1) yield(wave[x, y, z+1])
             if (x > 0) yield(wave[x-1, y, z])
         }
     }

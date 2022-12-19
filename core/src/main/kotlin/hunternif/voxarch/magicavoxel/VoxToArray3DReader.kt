@@ -16,7 +16,7 @@ inline fun <reified C: Any> readVoxFile(
 ): Array3D<C> {
     val voxFile = VoxReader(Files.newInputStream(path)).use { it.read() }
     val storage = VoxFileStorage.fromFile(voxFile)
-    return Array3D(storage.width, storage.height, storage.length) { x, y, z ->
+    return Array3D(storage.length, storage.height, storage.width) { x, y, z ->
         colorMap(storage[x, y, z])
     }
 }

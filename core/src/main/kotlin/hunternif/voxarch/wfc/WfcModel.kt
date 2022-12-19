@@ -34,14 +34,14 @@ open class WfcSlot<P>(
  *          for the Overlap model it's a pattern.
  */
 abstract class WfcModel<S, P : IRandomOption, Slot : WfcSlot<P>>(
-    val width: Int,
-    val height: Int,
     val length: Int,
+    val height: Int,
+    val width: Int,
     protected val patternSet: Collection<P>,
     seed: Long = 0L
 ) {
     protected var rand = Random(seed)
-    private val totalCount = width * height * length
+    private val totalCount = length * height * width
     protected val initialEntropy = calculateEntropy(patternSet)
     protected abstract val wave: Array3D<Slot>
 

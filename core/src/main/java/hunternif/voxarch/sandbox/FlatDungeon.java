@@ -210,7 +210,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		 * @param totalLength
 		 */
 		public Corridor(Vec3 origin, int length, double rotationY, int totalLength) {
-			super(FlatDungeon.this, origin, new Vec3(corridorWidth, corridorHeight, length), rotationY);
+			super(FlatDungeon.this, origin, new Vec3(length, corridorHeight, corridorWidth), rotationY);
 			this.totalLength = totalLength;
 			endPoint = origin.add(
 					length/2*MathUtil.sinDeg(rotationY),

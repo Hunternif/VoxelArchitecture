@@ -274,9 +274,9 @@ class WfcOverlapTest {
     ) {
         override fun toString(): String {
             val sb = StringBuilder()
-            for (z in 0 until length) {
+            for (z in 0 until width) {
                 if (z > 0) sb.append('\n')
-                for (x in 0 until width)
+                for (x in 0 until length)
                     sb.append(get(x, 0, z))
             }
             return sb.toString()

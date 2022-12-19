@@ -63,40 +63,40 @@ class ChunkedStorage3DTest {
     @Test
     fun `update bounds when adding points`() {
         val a = ChunkedStorage3D<Char>(2, 3, 4)
-        assertEquals(0, a.width)
-        assertEquals(0, a.height)
         assertEquals(0, a.length)
+        assertEquals(0, a.height)
+        assertEquals(0, a.width)
 
         a[0, 0, 0] = 'a'
-        assertEquals(1, a.width)
-        assertEquals(1, a.height)
         assertEquals(1, a.length)
+        assertEquals(1, a.height)
+        assertEquals(1, a.width)
 
         a[-1, 0, 0] = 'b'
-        assertEquals(2, a.width)
+        assertEquals(2, a.length)
         assertEquals(1, a.height)
-        assertEquals(1, a.length)
+        assertEquals(1, a.width)
 
         a[1, 2, 3] = 'c'
-        assertEquals(3, a.width)
+        assertEquals(3, a.length)
         assertEquals(3, a.height)
-        assertEquals(4, a.length)
+        assertEquals(4, a.width)
 
         a[-123, 456, -1] = 'd'
-        assertEquals(125, a.width)
+        assertEquals(125, a.length)
         assertEquals(457, a.height)
-        assertEquals(5, a.length)
+        assertEquals(5, a.width)
 
         a[-123, 456, -1] = 'e'
-        assertEquals(125, a.width)
+        assertEquals(125, a.length)
         assertEquals(457, a.height)
-        assertEquals(5, a.length)
+        assertEquals(5, a.width)
 
         a[1, 2, 3] = null
         // this needs to be corrected after the shrink fix!
-        assertEquals(125, a.width)
+        assertEquals(125, a.length)
         assertEquals(457, a.height)
-        assertEquals(5, a.length)
+        assertEquals(5, a.width)
     }
 
     @Ignore
@@ -109,32 +109,32 @@ class ChunkedStorage3DTest {
         a[-123, 456, -1] = 'd'
         a[-123, 456, -1] = 'e'
         assertEquals(4, a.size)
-        assertEquals(125, a.width)
+        assertEquals(125, a.length)
         assertEquals(457, a.height)
-        assertEquals(5, a.length)
+        assertEquals(5, a.width)
 
         a[1, 2, 3] = null
         assertEquals(3, a.size)
-        assertEquals(124, a.width)
+        assertEquals(124, a.length)
         assertEquals(457, a.height)
-        assertEquals(5, a.length)
+        assertEquals(5, a.width)
 
         a[-123, 456, -1] = null
         assertEquals(2, a.size)
-        assertEquals(2, a.width)
+        assertEquals(2, a.length)
         assertEquals(1, a.height)
-        assertEquals(1, a.length)
+        assertEquals(1, a.width)
 
         a[-1, 0, 0] = null
         assertEquals(1, a.size)
-        assertEquals(1, a.width)
-        assertEquals(1, a.height)
         assertEquals(1, a.length)
+        assertEquals(1, a.height)
+        assertEquals(1, a.width)
 
         a[0, 0, 0] = null
         assertEquals(0, a.size)
-        assertEquals(0, a.width)
-        assertEquals(0, a.height)
         assertEquals(0, a.length)
+        assertEquals(0, a.height)
+        assertEquals(0, a.width)
     }
 }

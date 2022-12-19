@@ -30,24 +30,24 @@ import kotlin.random.Random
  *          Must be non-null to distinguish observed empty state.
  */
 class WfcOverlapModel<C: Any>(
-    width: Int,
-    height: Int,
     length: Int,
+    height: Int,
+    width: Int,
     patternSet: Collection<WfcPattern<C>>,
     seed: Long = 0L
 ) : WfcModel<WfcPattern<C>, WfcPattern<C>, WfcVoxel<C>>(
-    width, height, length, patternSet, seed
+    length, height, width, patternSet, seed
 ), IArray3D<C?> {
 
     private val patternSize = patternSet.first().let {
-        IntVec3(it.width, it.height, it.length)
+        IntVec3(it.length, it.height, it.width)
     }
 
     //TODO: set edge conditions. We can't have patterns on voxels on the edge,
     // because the pattern wouldn't fit in the output.
     // But in the beginning this is fine, it just leads to extra processing.
     override val wave: Array3D<WfcVoxel<C>> =
-        Array3D(width, height, length) { x, y, z ->
+        Array3D(length, height, width) { x, y, z ->
             WfcVoxel(IntVec3(x, y, z), patternSet.toMutableSet()).also {
                 it.entropy = initialEntropy
                 unobservedSet.add(it)
@@ -98,7 +98,7 @@ class WfcOverlapModel<C: Any>(
         // iterate over pattern domain space, assuming all patterns are equal size
         possiblePatterns.first().forEachPos { x, y, z, _ ->
             // ensure we are within wave bounds
-            if (pos.x + x >= width || pos.y + y >= height || pos.z + z >= length)
+            if (pos.x + x >= length || pos.y + y >= height || pos.z + z >= width)
                 return@forEachPos
             possiblePatterns.removeIf { pattern ->
                 val patternColor = pattern[x, y, z]
@@ -157,7 +157,7 @@ class WfcOverlapModel<C: Any>(
     private fun WfcVoxel<C>.setPattern(pattern: WfcPattern<C>) {
         state = pattern
         pattern.forEachPos { x, y, z, patternColor ->
-            if (pos.x + x < wave.width && pos.y + y < wave.height && pos.z + z < wave.length) {
+            if (pos.x + x < wave.length && pos.y + y < wave.height && pos.z + z < wave.width) {
                 wave[pos.x + x, pos.y + y, pos.z + z].setColor(patternColor)
             }
         }

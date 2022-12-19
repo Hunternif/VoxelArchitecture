@@ -20,8 +20,8 @@ fun Area.expandBoxAt(pos: IntVec2, sizeLimit: IntVec2): Box2D {
     /** returns true if expanded successfully */
     fun expand(dir: Direction): Boolean {
         when (dir) {
-            EAST, WEST -> if (box.width >= sizeLimit.x) return false
-            NORTH, SOUTH -> if (box.length >= sizeLimit.y) return false
+            EAST, WEST -> if (box.length >= sizeLimit.x) return false
+            NORTH, SOUTH -> if (box.width >= sizeLimit.y) return false
         }
         box.expand(dir).let {
             if (fits(it)) { box = it; return true }

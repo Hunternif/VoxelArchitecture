@@ -12,14 +12,14 @@ class WangTile(
     override var probability: Double = 1.0
 ): WfcCachingTile(), IArray3D<WfcColor> by data {
     constructor (
-        width: Int,
-        height: Int,
         length: Int,
+        height: Int,
+        width: Int,
         init: (x: Int, y: Int, z: Int) -> WfcColor
-    ) : this(Array3D(width, height, length, init))
+    ) : this(Array3D(length, height, width, init))
 
-    constructor(width: Int, height: Int, length: Int, vx: WfcColor):
-        this(width, height, length, { _, _, _ -> vx })
+    constructor(length: Int, height: Int, width: Int, vx: WfcColor):
+        this(length, height, width, { _, _, _ -> vx })
 
     fun mirrorX() = WangTile(data.mirrorX(), probability)
     fun mirrorY() = WangTile(data.mirrorY(), probability)
@@ -47,8 +47,8 @@ class WangTile(
         when(dir) {
             UP -> {
                 if (other.width != width || other.length != length) return false
-                for (x in 0 until width) {
-                    for (z in 0 until length) {
+                for (x in 0 until length) {
+                    for (z in 0 until width) {
                         if (this[x, height-1, z] != other[x, 0, z]) return false
                     }
                 }
@@ -56,8 +56,8 @@ class WangTile(
             }
             DOWN -> {
                 if (other.width != width || other.length != length) return false
-                for (x in 0 until width) {
-                    for (z in 0 until length) {
+                for (x in 0 until length) {
+                    for (z in 0 until width) {
                         if (this[x, 0, z] != other[x, other.height-1, z]) return false
                     }
                 }
@@ -66,17 +66,17 @@ class WangTile(
             EAST -> {
                 if (other.height != height || other.length != length) return false
                 for (y in 0 until height) {
-                    for (z in 0 until length) {
-                        if (this[width-1, y, z] != other[0, y, z]) return false
+                    for (z in 0 until width) {
+                        if (this[length-1, y, z] != other[0, y, z]) return false
                     }
                 }
                 return true
             }
             SOUTH -> {
                 if (other.height != height || other.width != width) return false
-                for (x in 0 until width) {
+                for (x in 0 until length) {
                     for (y in 0 until height) {
-                        if (this[x, y, length-1] != other[x, y, 0]) return false
+                        if (this[x, y, width-1] != other[x, y, 0]) return false
                     }
                 }
                 return true
@@ -84,17 +84,17 @@ class WangTile(
             WEST -> {
                 if (other.height != height || other.length != length) return false
                 for (y in 0 until height) {
-                    for (z in 0 until length) {
-                        if (this[0, y, z] != other[other.width-1, y, z]) return false
+                    for (z in 0 until width) {
+                        if (this[0, y, z] != other[other.length-1, y, z]) return false
                     }
                 }
                 return true
             }
             NORTH -> {
                 if (other.height != height || other.width != width) return false
-                for (x in 0 until width) {
+                for (x in 0 until length) {
                     for (y in 0 until height) {
-                        if (this[x, y, 0] != other[x, y, other.length-1]) return false
+                        if (this[x, y, 0] != other[x, y, other.width-1]) return false
                     }
                 }
                 return true

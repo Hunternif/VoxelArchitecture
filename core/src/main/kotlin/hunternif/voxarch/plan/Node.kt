@@ -4,6 +4,19 @@ import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 
 /**
+ * Coordinate system:
+ * ```
+ * Y
+ *  +--> X (East)
+ *  |
+ *  V
+ *  Z
+ *  (South)
+ * ```
+ * - X: length - the longer side, defines direction.
+ * - Y: height (up)
+ * - Z: width
+ *
  * @param origin coordinates of nodes inside this Node are counted
  *               from this origin.
  */
@@ -23,11 +36,11 @@ open class Node(
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance
     // By default, individual dimensions are read-only
-    open var width: Double get() = size.x
+    open var length: Double get() = size.x
         set(value) {}
     open var height: Double get() = size.y
         set(value) {}
-    open var length: Double get() = size.z
+    open var width: Double get() = size.z
         set(value) {}
 
     /**

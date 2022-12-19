@@ -66,8 +66,8 @@ abstract class BaseSnapshotTest(
     }
 
     private fun getImage(slice: Slice):BufferedImage {
-        val image = BufferedImage(slice.width, slice.height, BufferedImage.TYPE_INT_RGB)
-        for (x in 0 until slice.width) {
+        val image = BufferedImage(slice.length, slice.height, BufferedImage.TYPE_INT_RGB)
+        for (x in 0 until slice.length) {
             for (y in 0 until slice.height) {
                 val block = slice.getBlock(x, y)
                 val color = keyToColorMap.getOrDefault(block?.key ?: ID_AIR, BG_COLOR)

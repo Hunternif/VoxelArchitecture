@@ -50,8 +50,8 @@ class DomWallTest {
     fun `create 4 walls on rectangle room`() {
         val style = Stylesheet().add {
             styleFor<Room> {
-                width { 2.vx }
-                length { 4.vx }
+                length { 2.vx }
+                width { 4.vx }
             }
         }
         val wallSeedOffsets = mutableListOf<Long>()
@@ -73,8 +73,8 @@ class DomWallTest {
     fun `create all walls on rectangle room`() {
         val style = Stylesheet().add {
             styleFor<Room> {
-                width { 2.vx }
-                length { 4.vx }
+                length { 2.vx }
+                width { 4.vx }
             }
         }
         val wallSeedOffsets = mutableListOf<Long>()

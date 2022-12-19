@@ -6,8 +6,8 @@ open class ArrayBlockStorage(
     val data: IArray3D<BlockData?>,
 ) : IBlockStorage, IArray3D<BlockData?> by data {
 
-    constructor(width: Int, height: Int, length: Int):
-        this(Array3D(width, height, length, null))
+    constructor(length: Int, height: Int, width: Int):
+        this(Array3D(length, height, width, null))
 
     /** If true, getting or setting blocks outside the array will not throw. */
     var safeBoundary = false

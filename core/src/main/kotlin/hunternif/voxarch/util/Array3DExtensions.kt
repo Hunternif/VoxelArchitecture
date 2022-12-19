@@ -44,10 +44,10 @@ inline fun IntAABB.forEachXZ(
 
 /** Checks if this array has mirror symmetry vs the YZ plane */
 fun <T> IArray3D<T>.isSymmetricX(): Boolean {
-    for (x in 0 until width/2) {
+    for (x in 0 until length/2) {
         for (y in 0 until height) {
-            for (z in 0 until length) {
-                if (this[x, y, z] != this[width-1-x, y, z]) {
+            for (z in 0 until width) {
+                if (this[x, y, z] != this[length-1-x, y, z]) {
                     return false
                 }
             }
@@ -58,10 +58,10 @@ fun <T> IArray3D<T>.isSymmetricX(): Boolean {
 
 /** Checks if this array has mirror symmetry vs the XY plane */
 fun <T> IArray3D<T>.isSymmetricZ(): Boolean {
-    for (x in 0 until width) {
+    for (x in 0 until length) {
         for (y in 0 until height) {
-            for (z in 0 until length/2) {
-                if (this[x, y, z] != this[x, y, length-1-z]) {
+            for (z in 0 until width/2) {
+                if (this[x, y, z] != this[x, y, width-1-z]) {
                     return false
                 }
             }
@@ -71,31 +71,31 @@ fun <T> IArray3D<T>.isSymmetricZ(): Boolean {
 }
 
 inline fun <reified T> Array3D<T>.mirrorX(): Array3D<T> =
-    Array3D(width, height, length) {
-        x, y, z -> this[width-1-x, y, z]
+    Array3D(length, height, width) {
+        x, y, z -> this[length-1-x, y, z]
     }
 
 inline fun <reified T> Array3D<T>.mirrorY(): Array3D<T> =
-    Array3D(width, height, length) {
+    Array3D(length, height, width) {
         x, y, z -> this[x, height-1-y, z]
     }
 
 inline fun <reified T> Array3D<T>.mirrorZ(): Array3D<T> =
-    Array3D(width, height, length) {
-        x, y, z -> this[x, y, length-1-z]
+    Array3D(length, height, width) {
+        x, y, z -> this[x, y, width-1-z]
     }
 
 /**
  * Creates a new array by rotating this 90 degrees clockwise around the Y axis.
- * Will throw if length < width.
+ * Will throw if width < length.
  */
 inline fun <reified T> Array3D<T>.rotateY90CW(): Array3D<T> =
-    Array3D(width, height, length) {
-        x, y, z -> this[z, y, length-1-x]
+    Array3D(length, height, width) {
+        x, y, z -> this[z, y, width-1-x]
     }
 
 inline fun <reified T> Array3D<T>.copy(): Array3D<T> =
-    Array3D(width, height, length) {
+    Array3D(length, height, width) {
         x, y, z -> this[x, y, z]
     }
 

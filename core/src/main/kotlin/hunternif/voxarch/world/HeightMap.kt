@@ -17,10 +17,10 @@ class HeightMap private constructor(
     val center3: Vec3 get() = Vec3(center.x, at(middle), center.y)
     /** Low-XZ corner of the map, relative to the world */
     val start: IntVec2 get() = IntVec2(center.x - middle.x, center.y - middle.y)
-    /** Internal middle point of the map, i.e. between (0,0) and (width, length) */
-    private val middle: IntVec2 get() = IntVec2((width-1)/2, (length-1)/2)
+    /** Internal middle point of the map, i.e. between (0,0) and (length, width) */
+    private val middle: IntVec2 get() = IntVec2((length-1)/2, (height-1)/2)
 
-    constructor(width: Int, length: Int): this(Array2D(width, length, 0))
+    constructor(length: Int, width: Int): this(Array2D(length, width, 0))
 
     /** [list] must be a valid 2d list. */
     internal constructor(list: List<List<Int>>): this(
@@ -40,7 +40,7 @@ class HeightMap private constructor(
         for (p in this) {
             total += at(p)
         }
-        return total/width/length
+        return total/length/height
     }
 
     //TODO: test this

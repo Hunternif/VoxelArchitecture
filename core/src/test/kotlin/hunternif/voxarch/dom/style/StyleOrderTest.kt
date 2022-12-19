@@ -16,10 +16,10 @@ class StyleOrderTest {
     fun `execute styles in order`() {
         val style = Stylesheet().add {
             style("class1") {
-                width { 98.vx }
+                length { 98.vx }
             }
             style("class2") {
-                length { 50.vx }
+                width { 50.vx }
                 height { 100.vx }
             }
         }
@@ -33,7 +33,7 @@ class StyleOrderTest {
 
         val inOrder = Mockito.inOrder(node)
         inOrder.verify(node).height = 100.0
-        inOrder.verify(node).width = 98.0
-        inOrder.verify(node).length = 50.0
+        inOrder.verify(node).length = 98.0
+        inOrder.verify(node).width = 50.0
     }
 }

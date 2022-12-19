@@ -39,7 +39,7 @@ class DomLogicFourCornerBuilder : DomLogicPolyCornerBuilder() {
         val parentNode = ctx.parentNode
         if (parentNode is Room) {
             val polygon = Path().apply {
-                rectangle(parentNode.width, parentNode.length)
+                rectangle(parentNode.length, parentNode.width)
             }
             runCornerBuilders(ctx, polygon)
         }

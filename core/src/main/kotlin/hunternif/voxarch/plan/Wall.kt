@@ -48,9 +48,9 @@ open class Wall(
     val p2: Vec2 get() = Vec2.fromXZ(end)
 
     override var size: Vec3 = Vec3(0, 0, 0)
-        get() = field.set(0.0, height, length)
+        get() = field.set(length, height, 0.0)
         set(value) {
-            length = value.z
+            length = value.x
             height = value.y
         }
     override var length: Double

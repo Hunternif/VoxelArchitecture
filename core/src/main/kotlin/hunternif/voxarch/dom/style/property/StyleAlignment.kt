@@ -96,12 +96,12 @@ val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value
     val baseValue = AlignX.ORIGIN
     val align = value.invoke(baseValue, seed)
     var newX = when (align) {
-        AlignX.EAST_OUTSIDE -> p.width
-        AlignX.EAST_INSIDE -> p.width - node.width
-        AlignX.WEST_OUTSIDE -> -node.width
+        AlignX.EAST_OUTSIDE -> p.length
+        AlignX.EAST_INSIDE -> p.length - node.length
+        AlignX.WEST_OUTSIDE -> -node.length
         AlignX.WEST_INSIDE -> 0.0
         AlignX.ORIGIN -> 0.0
-        AlignX.CENTER -> p.width / 2 - node.width / 2
+        AlignX.CENTER -> p.length / 2 - node.length / 2
     }
     if (p is Room && align != AlignX.ORIGIN) newX += p.start.x
     node.origin.x = newX
@@ -116,12 +116,12 @@ val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value
     val baseValue = AlignZ.ORIGIN
     val align = value.invoke(baseValue, seed)
     var newZ = when (align) {
-        AlignZ.SOUTH_OUTSIDE -> p.length
-        AlignZ.SOUTH_INSIDE -> p.length - node.length
-        AlignZ.NORTH_OUTSIDE -> -node.length
+        AlignZ.SOUTH_OUTSIDE -> p.width
+        AlignZ.SOUTH_INSIDE -> p.width - node.width
+        AlignZ.NORTH_OUTSIDE -> -node.width
         AlignZ.NORTH_INSIDE -> 0.0
         AlignZ.ORIGIN -> 0.0
-        AlignZ.CENTER -> p.length / 2 - node.length / 2
+        AlignZ.CENTER -> p.width / 2 - node.width / 2
     }
     if (p is Room && align != AlignZ.ORIGIN) newZ += p.start.z
     node.origin.z = newZ
@@ -146,8 +146,8 @@ val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { v
                 node.origin.z = p.innerFloorCenter.z
             }
             else -> {
-                node.origin.x = round(p.width / 2)
-                node.origin.z = round(p.length / 2)
+                node.origin.x = round(p.length / 2)
+                node.origin.z = round(p.width / 2)
             }
         }
     }

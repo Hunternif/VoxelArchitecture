@@ -16,8 +16,8 @@ inline fun <reified C> IArray3D<C>.findPatterns(
     // The hashCode & equals will automatically remove duplicates
     // Maps pattern to number of occurrences
     val patterns = LinkedHashMap<PatternData<C>, Int>()
-    for (x in 0 .. width-patternWidth)
-        for (z in 0 .. length-patternWidth)
+    for (x in 0 .. length-patternWidth)
+        for (z in 0 .. width-patternWidth)
             for (y in 0 .. height-patternHeight) {
                 val pattern = PatternData(copySection(
                     IntVec3(x, y, z),
@@ -45,9 +45,9 @@ internal class PatternData<C>(
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
         if (other !is PatternData<*>) return false
-        if (other.width != this.width ||
+        if (other.length != this.length ||
             other.height != this.height ||
-            other.length != this.length
+            other.width != this.width
         ) return false
         var matches = true
         forEachPos { x, y, z, c ->

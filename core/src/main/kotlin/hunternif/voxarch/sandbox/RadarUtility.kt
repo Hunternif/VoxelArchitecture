@@ -24,7 +24,7 @@ fun HeightMap.image(): BufferedImage {
     val mountains = detectMountains()
     minHeight -= 10 // to see the ocean color clearly
 
-    val image = BufferedImage(width, length, BufferedImage.TYPE_INT_RGB)
+    val image = BufferedImage(length, height, BufferedImage.TYPE_INT_RGB)
     for (p in this) {
         val baseColor = when {
             mountains.any { p in it.perimeter } -> when {

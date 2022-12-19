@@ -103,7 +103,7 @@ internal enum class Segment {
 
 /** Map every point to a [Segment] based on slope. */
 internal fun HeightMap.segments(config: MountainDetectorConfig): Array2D<Segment> {
-    val segments = Array2D(width, length, GROUND)
+    val segments = Array2D(length, height, GROUND)
     val slopeQueue = LinkedList<IntVec2>() // candidates for SLOPE or TOP
 
     // 1. Begin SLOPEs
@@ -153,7 +153,7 @@ internal fun HeightMap.segments(config: MountainDetectorConfig): Array2D<Segment
 
 /** Each value points in the direction of greatest height */
 fun HeightMap.gradient(): Array2D<Slope> {
-    val gradient = Array2D(width, length, Slope(EAST, 0.0))
+    val gradient = Array2D(length, height, Slope(EAST, 0.0))
     for (p in this) {
         val dx = midSlope(p, EAST)
         val dz = midSlope(p, SOUTH)
