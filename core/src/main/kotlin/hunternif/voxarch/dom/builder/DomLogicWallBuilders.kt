@@ -33,9 +33,6 @@ class DomLineSegmentBuilder(
                     position { origin, _ ->
                         p1.add(origin.rotateY(angle))
                     }
-                }
-                //TODO: fix paths
-                style(select(it).type<Wall>().inherit(this@DomLineSegmentBuilder)) {
                     length { 100.pct }
                     rotation { set(angle) }
                 }

@@ -8,8 +8,8 @@ import kotlin.math.ceil
 
 open class DomPolyRoomBuilder
     : DomNodeBuilder<PolyRoom>(PolyRoom::class.java, { PolyRoom() }) {
-
-    override fun buildNode(node: PolyRoom) = node.createPolygon()
+    override fun buildNode(ctx: DomBuildContext, node: PolyRoom) =
+        node.createPolygon()
 }
 
 internal fun PolyRoom.createPolygon() {

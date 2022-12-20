@@ -22,7 +22,7 @@ open class DomNodeBuilder<N : Node>(
         val styled = StyledNode(node, this, ctx)
         ctx.stylesheet.applyStyle(styled)
         if (visibility == Visibility.VISIBLE) {
-            buildNode(node)
+            buildNode(ctx, node)
             val childCtx = ctx.copy(this, node).inherit(styleClass)
             children.forEach { it.build(childCtx) }
         } else {
@@ -34,7 +34,7 @@ open class DomNodeBuilder<N : Node>(
 
     /** Any custom initialization code for this node.
      * Don't use it to add child nodes, create another DomBuilder for that instead. */
-    open fun buildNode(node: N) {}
+    open fun buildNode(ctx: DomBuildContext, node: N) {}
 }
 
 /** Checks if this builder builds the right class of node and casts to it*/

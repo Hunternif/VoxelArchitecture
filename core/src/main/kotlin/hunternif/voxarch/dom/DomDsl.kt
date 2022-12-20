@@ -153,7 +153,9 @@ fun DomLineSegmentBuilder.path(
     vararg styleClass: String,
     block: DomNodeBuilder<Path>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Path(Vec3.ZERO, Vec3.ZERO, end) }.block()
+    val bld = DomPathBuilder().apply { +styleClass }
+    addChild(bld)
+    bld.block()
 }
 
 /** Adds child [Prop]. See [node]. */
