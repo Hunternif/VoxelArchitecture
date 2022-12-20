@@ -54,8 +54,9 @@ class MainScene(private val app: EditorApp) {
 
     private val models3d = listOf(
         gridModel,
-        nodeModel,
+        nodeModel.fillModel,
         voxelModel,
+        nodeModel.lineModel,
         highlightedFaceModel,
         selectedNodeModel,
         originsModel,
