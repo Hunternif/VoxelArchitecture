@@ -1,6 +1,9 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.pct
 import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.dom.style.select
+import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.util.rectangle
@@ -19,17 +22,22 @@ class DomLineSegmentBuilder(
 ) : DomBuilder() {
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
+    val length: Double = end.length()
     override fun build(ctx: DomBuildContext) = guard {
         val p1 = p1
         val angle = MathUtil.atan2Deg(-end.z, end.x)
         val childCtx = ctx.makeChildCtx()
         children.forEach {
             ctx.stylesheet.add {
-                styleFor(it) {
-                    //TODO: add node rotation?
+                style(select(it).inherit(this@DomLineSegmentBuilder)) {
                     position { origin, _ ->
                         p1.add(origin.rotateY(angle))
                     }
+                }
+                //TODO: fix paths
+                style(select(it).type<Wall>().inherit(this@DomLineSegmentBuilder)) {
+                    length { 100.pct }
+                    rotation { set(angle) }
                 }
             }
             it.build(childCtx)

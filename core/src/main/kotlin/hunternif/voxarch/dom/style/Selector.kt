@@ -70,6 +70,11 @@ class Selector {
         return this
     }
 
+    inline fun <reified T> type(): Selector {
+        types.add(T::class.java)
+        return this
+    }
+
     fun instance(vararg instance: DomBuilder): Selector {
         instances.addAll(instance)
         return this

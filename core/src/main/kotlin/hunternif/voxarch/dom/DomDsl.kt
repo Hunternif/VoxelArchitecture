@@ -145,7 +145,7 @@ fun DomLineSegmentBuilder.wall(
     vararg styleClass: String,
     block: DomNodeBuilder<Wall>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Wall(Vec3.ZERO, end) }.block()
+    this.addChildNodeBuilder(styleClass) { Wall() }.block()
 }
 
 /** Creates a [Path] on the line segment. */
