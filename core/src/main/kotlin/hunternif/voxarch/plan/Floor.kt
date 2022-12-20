@@ -7,8 +7,8 @@ import hunternif.voxarch.vector.Vec3
  *
  * Should only be added as a child to a [Room].
  *
- * The floor's origin is at parent's (0, [height], 0).
+ * The floor's origin is at parent's (0, [y], 0).
  */
 open class Floor(
-    override var height: Double = 0.0
-) : Node(Vec3(0.0, height, 0.0))
+    y: Double = 0.0
+) : Node(Vec3(0.0, y, 0.0))

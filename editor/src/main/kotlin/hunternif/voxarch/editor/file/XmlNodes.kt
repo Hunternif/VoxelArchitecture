@@ -74,7 +74,7 @@ class XmlWall(
 
 class XmlFloor(
     @field:JacksonXmlProperty(isAttribute = true)
-    var height: Double = 0.0,
+    var y: Double = 0.0,
 ) : XmlNode()
 
 class XmlPath(
@@ -96,7 +96,7 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
         )
         is Room -> XmlRoom(origin, size, start, isCentered())
         is Wall -> XmlWall(origin, end, transparent)
-        is Floor -> XmlFloor(height)
+        is Floor -> XmlFloor(origin.y)
         is Path -> XmlPath(points, origin)
         else -> null
     }
@@ -134,7 +134,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
             if (!centered) it.start = start
         }
         is XmlWall -> Wall(start, end, transparent)
-        is XmlFloor -> Floor(height)
+        is XmlFloor -> Floor(y)
         is XmlPath -> Path(origin ?: Vec3.ZERO).also {
             it.addPoints(points ?: emptyList())
         }

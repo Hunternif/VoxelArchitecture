@@ -28,7 +28,7 @@ class XmlSerializersTest {
             <tag>my_tag</tag>
             <node class="Wall" start="(0.0, 0.0, 0.0)" end="(1.0, 2.0, 0.0)" transparent="true"/>
             <node class="Wall" start="(0.0, 0.0, 1.0)" end="(1.0, 2.0, 1.0)" transparent="false"/>
-            <node class="Floor" height="1.0"/>
+            <node class="Floor" y="1.0"/>
           </node>
           <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
             <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>

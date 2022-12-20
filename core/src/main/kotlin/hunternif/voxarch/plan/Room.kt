@@ -16,6 +16,11 @@ import kotlin.reflect.KProperty
  *  V
  *  Z
  * ```
+ *
+ * Components of [size] vector are equal to distances between corner blocks
+ * of the room. It would take that number + 1 blocks to build each boundary
+ * of the room in a world.
+ *
  * @param origin coordinates of nodes inside this Node are counted
  *            from this origin.
  * @param size size in centric coordinates,
@@ -25,6 +30,10 @@ open class Room(
     origin: Vec3,
     size: Vec3
 ) : Node(origin) {
+
+    init {
+        this.size = size
+    }
 
     private val startDelegate = CenteredStartDelegate()
     /**
@@ -36,22 +45,6 @@ open class Room(
     fun setCentered(value: Boolean) {
         startDelegate.innerValue = if (value) null else start
     }
-
-    override var length: Double
-        get() = size.x
-        set(value) { size.x = value }
-    override var height: Double
-        get() = size.y
-        set(value) { size.y = value }
-    override var width: Double
-        get() = size.z
-        set(value) { size.z = value }
-    /** Vector (length, height, width), doesn't take rotation into account.
-     * Components of this vector are equal to distances between corner blocks
-     * of the room. It would take that number + 1 blocks to build each boundary
-     * of the room in a world. */
-    override var size: Vec3 = size.clone()
-        set(value) { field.set(value) } // keep the same instance
 
     /** Vs local origin */
     val innerFloorCenter: Vec3 get() = start.add(size.x/2, 0.0, size.z/2)

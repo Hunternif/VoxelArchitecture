@@ -22,22 +22,21 @@ import hunternif.voxarch.vector.Vec4
  */
 open class Hatch(
     origin: Vec3,
-    var sizeXZ: Vec2
+    sizeXZ: Vec2
 ) : Node(origin) {
 
-    override var size: Vec3
-        get() = super.size.set(sizeXZ.x, 0.0, sizeXZ.y)
-        set(value) {
-            sizeXZ.x = value.x
-            sizeXZ.y = value.z
-        }
+    init {
+        size.set(sizeXZ.x, 0.0, sizeXZ.y)
+    }
+
+    val sizeXZ: Vec2 get() = Vec2(size.x, size.z)
 
     /** Center at floor level, relative to parent's origin. For legacy tests. */
     val center: Vec3
         get() = origin.add(
             Matrix4.rotationY(rotationY)
                 .multiplyLocal(
-                    Vec4(sizeXZ.x/2, 0.0, sizeXZ.y/2, 1.0)
+                    Vec4(size.x/2, 0.0, size.z/2, 1.0)
                 ).let { Vec3.from(it) }
         )
 

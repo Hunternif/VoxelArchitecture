@@ -15,7 +15,7 @@ class XmlSceneObjectSerializerTest {
           <node class="Room" origin="(0.0, 0.0, 0.0)" size="(5.0, 6.0, 7.0)" start="(-2.5, 0.0, -3.5)" centered="true">
             <node class="Wall" start="(0.0, 0.0, 0.0)" end="(1.0, 2.0, 0.0)" transparent="true"/>
             <node class="Wall" start="(0.0, 0.0, 1.0)" end="(1.0, 2.0, 1.0)" transparent="false"/>
-            <node class="Floor" height="1.0"/>
+            <node class="Floor" y="1.0"/>
           </node>
           <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" start="(0.0, 0.0, 0.0)" centered="false" shape="ROUND">
             <polygon class="Path" origin="(0.0, 0.0, 0.0)"/>
@@ -33,7 +33,7 @@ class XmlSceneObjectSerializerTest {
               <node class="Wall" start="(0.0, 0.0, 1.0)" end="(1.0, 2.0, 1.0)" transparent="false"/>
             </obj>
             <obj class="SceneNode" id="5" generated="false" color="4296fa" alpha="0.2">
-              <node class="Floor" height="1.0"/>
+              <node class="Floor" y="1.0"/>
             </obj>
             <node class="Room" origin="(0.0, 0.0, 0.0)" size="(5.0, 6.0, 7.0)" start="(-2.5, 0.0, -3.5)" centered="true"/>
           </obj>

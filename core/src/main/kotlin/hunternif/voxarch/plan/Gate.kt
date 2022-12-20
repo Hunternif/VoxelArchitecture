@@ -22,15 +22,14 @@ import hunternif.voxarch.vector.Vec4
  */
 open class Gate(
     origin: Vec3,
-    var sizeXY: Vec2
+    sizeXY: Vec2
 ) : Node(origin) {
 
-    override var size: Vec3
-        get() = super.size.set(sizeXY.x, sizeXY.y, 0.0)
-        set(value) {
-            sizeXY.x = value.x
-            sizeXY.y = value.y
-        }
+    init {
+        size.set(sizeXY.x, sizeXY.y, 0.0)
+    }
+
+    val sizeXY: Vec2 get() = Vec2(size.x, size.y)
 
     /** Center at floor level, relative to parent's origin. For legacy tests. */
     val center: Vec3

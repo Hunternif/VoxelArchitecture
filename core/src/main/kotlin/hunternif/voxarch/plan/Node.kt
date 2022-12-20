@@ -27,21 +27,26 @@ open class Node(
         set(value) {
             field.set(value) // keep the same instance
         }
-    override var parent: Node? = null
+    final override var parent: Node? = null
     /** Rotation around Y axis in degrees */
     open var rotationY = 0.0
 
     override val children: MutableList<Node> = mutableListOf()
 
+    /**
+     * Vector (length, height, width), doesn't take rotation into account.
+     */
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance
-    // By default, individual dimensions are read-only
-    open var length: Double get() = size.x
-        set(value) {}
-    open var height: Double get() = size.y
-        set(value) {}
-    open var width: Double get() = size.z
-        set(value) {}
+    open var length: Double
+        get() = size.x
+        set(value) { size.x = value }
+    open var height: Double
+        get() = size.y
+        set(value) { size.y = value }
+    open var width: Double
+        get() = size.z
+        set(value) { size.z = value }
 
     /**
      * Tags can be Style class names, or building part names etc.
