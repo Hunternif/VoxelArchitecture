@@ -2,6 +2,7 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.util.rotateY
+import hunternif.voxarch.util.snapTo
 import hunternif.voxarch.vector.Vec2
 import hunternif.voxarch.vector.Vec3
 
@@ -34,6 +35,8 @@ open class Wall(
         get() = super.rotationY
         set(value) {
             super.rotationY = value
+                .snapTo(0, 90, -90, 180, -180, delta = 0.1)
+                .snapTo(45, 135, -45, -135, delta = 0.01)
             direction.set(Vec3.UNIT_X.rotateY(rotationY))
         }
 

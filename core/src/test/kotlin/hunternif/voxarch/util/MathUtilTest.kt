@@ -131,4 +131,11 @@ class MathUtilTest {
         assertEquals(135.0, segmentAngleY(Vec3.ZERO, Vec3(-1, 0, -1)), 0.0001)
         assertEquals(-135.0, segmentAngleY(Vec3.ZERO, Vec3(-1, 0, 1)), 0.0001)
     }
+
+    @Test
+    fun `snap to values`() {
+        assertEquals(10.0, 10.01.snapTo(5.0, 10.0, 15.0, delta = 0.1), 0.0)
+        assertEquals(10.01, 10.01.snapTo(5.0, 10.0, 15.0, delta = 0.001), 0.0)
+        assertEquals(10.01, 10.01.snapTo(), 0.0)
+    }
 }

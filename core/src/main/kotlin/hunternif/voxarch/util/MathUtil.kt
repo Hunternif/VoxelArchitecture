@@ -56,12 +56,12 @@ fun symmetricSpacing(
 }
 
 /**
- * Returns a new [Vec3] rotated by [angle] degrees.
+ * Returns a new [Vec3] rotated by [angle] degrees CCW.
  */
 fun Vec3.rotateY(angle: Int): Vec3 = rotateY(angle.toDouble())
 
 /**
- * Returns a new [Vec3] rotated by [angle] degrees.
+ * Returns a new [Vec3] rotated by [angle] degrees CCW.
  */
 fun Vec3.rotateY(angle: Double): Vec3 {
     val vec4 = Vec4(x, y, z, 1.0)
@@ -103,3 +103,13 @@ fun Float.clamp(min: Float, max: Float): Float {
 
 fun Double.round(): Double = this.roundToInt().toDouble()
 fun Double.roundToEven() = round(this / 2)*2
+
+/** If the value comes within [delta] to any of the [values],
+ * the result snaps to the value. */
+fun Double.snapTo(vararg values: Number, delta: Double = 0.000001): Double {
+    values.forEach {
+        val doubleValue = it.toDouble()
+        if (abs(this - doubleValue) <= delta) return@snapTo doubleValue
+    }
+    return this
+}
