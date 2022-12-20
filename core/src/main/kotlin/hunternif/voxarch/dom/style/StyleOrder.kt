@@ -6,6 +6,8 @@ import hunternif.voxarch.dom.style.property.*
 val GlobalStyleOrder : List<Property<*>> = listOf(
     PropSeed,
 
+    PropRotation,
+
     // Size is needed for alignment
     PropHeight,
     PropLength,

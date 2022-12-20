@@ -12,6 +12,8 @@ val editorStyleProperties: List<Property<*>> = listOf(
     PropAlignY,
     PropAlignXZ,
 
+    PropRotation,
+
     PropShape,
 
     PropRoofShape,
