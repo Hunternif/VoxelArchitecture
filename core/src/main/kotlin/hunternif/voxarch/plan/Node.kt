@@ -59,6 +59,11 @@ open class Node(
         set(value) {
             field.set(value) // keep the same instance
         }
+
+    /** Center point vs origin, in local coordinates,
+     * not accounting for rotation. */
+    open val localCenter: Vec3 get() = size / 2
+
     final override var parent: Node? = null
 
     /** Rotation around Y axis CCW in degrees */

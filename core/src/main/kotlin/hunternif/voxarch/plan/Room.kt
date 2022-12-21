@@ -49,6 +49,7 @@ open class Room(
     val innerFloorCenter: Vec3 get() = start.add(size.x/2, 0.0, size.z/2)
     /** Vs parent's origin */
     val floorCenter: Vec3 get() = origin.add(innerFloorCenter)
+    override val localCenter: Vec3 get() = start + size / 2
 
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))

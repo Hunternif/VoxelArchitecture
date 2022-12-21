@@ -3,6 +3,7 @@ package hunternif.voxarch.util
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.vector.Array3D
+import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
@@ -27,6 +28,12 @@ fun <T> Array3D<T>.printSliceY(y: Int): String {
         }
     }
     return sb.toString()
+}
+
+fun assertVec3Equals(expected: Vec3, actual: Vec3, delta: Double = 0.0000001) {
+    assertEquals(expected.x, actual.x, delta)
+    assertEquals(expected.y, actual.y, delta)
+    assertEquals(expected.z, actual.z, delta)
 }
 
 fun <T> assertStorageEquals(

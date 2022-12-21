@@ -1,5 +1,8 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.util.ellipse
+import hunternif.voxarch.util.assertVec3Equals
+import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
@@ -76,5 +79,46 @@ class NodeExtensionTest {
             listOf(child1),
             root.query<Room>("child").toList()
         )
+    }
+
+    @Test
+    fun `local center`() {
+        val origin = Vec3(11, 34, 76)
+        val node = Node(origin).apply {
+            size = Vec3(2, 4, 6)
+        }
+        assertEquals(Vec3(1, 2, 3), node.localCenter)
+
+        val room = Room(origin, Vec3(2, 4, 6)).apply {
+            start = Vec3(1, 1, 1)
+        }
+        assertEquals(Vec3(2, 3, 4), room.localCenter)
+
+        val polyRoom = PolyRoom(origin, Vec3(2, 4, 6)).apply {
+            start = Vec3(1, 1, 1)
+        }
+        assertEquals(Vec3(2, 3, 4), polyRoom.localCenter)
+
+        val roundPath = Path(origin).apply {
+            ellipse(2.0, 6.0, 8)
+        }
+        assertVec3Equals(Vec3(0, 0, 0), roundPath.localCenter, 0.0000001)
+
+        val rectPath = Path(origin).apply {
+            rectangle(2.0, 6.0)
+        }
+        assertEquals(Vec3(0, 0, 0), rectPath.localCenter)
+
+        val wall = Wall(Vec3(10, 20, 30), Vec3(10, 24, 32))
+        assertEquals(Vec3(1, 2, 0), wall.localCenter)
+
+        val floor = Floor()
+        assertEquals(Vec3(0, 0, 0), floor.localCenter)
+
+        Room().addChild(floor)
+        assertEquals(Vec3(0, 0, 0), floor.localCenter)
+
+        room.addChild(floor)
+        assertEquals(Vec3(2, 3, 4), floor.localCenter)
     }
 }

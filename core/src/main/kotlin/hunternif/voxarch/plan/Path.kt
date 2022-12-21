@@ -21,6 +21,11 @@ open class Path(origin: Vec3) : Node(origin) {
     val segments: List<PathSegment>
         get() = _segments
 
+    override val localCenter: Vec3
+        get() = if (points.isEmpty()) Vec3.ZERO
+        else points.fold(Vec3(0, 0, 0))
+        { out, p -> out.add(p) } / points.size
+
     /** Alternative constructor to add */
     constructor(origin: Vec3, vararg points: Vec3) : this(origin) {
         points.forEach { addPoint(it) }
@@ -59,7 +64,7 @@ open class Path(origin: Vec3) : Node(origin) {
     fun mapX(x: Double): PathSegment? {
         if (x < 0 || x > totalLength) return null
         val i = _segments.binarySearch { it.distanceFromStart.compareTo(x) }
-        val index = if (i < 0) -2-i else i
+        val index = if (i < 0) -2 - i else i
         if (index < 0 || index >= _segments.size) return null
         return _segments[index]
     }
@@ -70,5 +75,5 @@ open class Path(origin: Vec3) : Node(origin) {
             distanceFromStart + length
         } ?: 0.0
 
-    constructor(): this(Vec3.ZERO)
+    constructor() : this(Vec3.ZERO)
 }

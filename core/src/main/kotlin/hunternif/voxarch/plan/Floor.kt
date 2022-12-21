@@ -11,4 +11,7 @@ import hunternif.voxarch.vector.Vec3
  */
 open class Floor(
     y: Double = 0.0
-) : Node(Vec3(0.0, y, 0.0))
+) : Node(Vec3(0.0, y, 0.0)) {
+    override val localCenter: Vec3
+        get() = parent?.localCenter?.minus(origin) ?: Vec3.ZERO
+}
