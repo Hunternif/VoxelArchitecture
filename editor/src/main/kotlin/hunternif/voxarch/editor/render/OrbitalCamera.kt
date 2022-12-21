@@ -305,14 +305,14 @@ class OrbitalCamera : MouseListener {
      * Optional [resultNearPoint] stores the near intersection point.
      */
     fun projectToBox(
-        posX: Float,
-        posY: Float,
+        posX: Number,
+        posY: Number,
         aabMin: Vector3f,
         aabMax: Vector3f,
         resultDistance: Vector2f = screenPos,
         resultNearPoint: Vector3f? = null,
     ): Boolean {
-        unprojectPoint(posX, posY)
+        unprojectPoint(posX.toFloat(), posY.toFloat())
         val hit = Intersectionf.intersectRayAab(
             pointRayOrigin,
             pointRayDir,
@@ -327,23 +327,6 @@ class OrbitalCamera : MouseListener {
         }
         return hit
     }
-
-    /** @see [projectToBox] */
-    fun projectToBox(
-        posX: Int,
-        posY: Int,
-        aabMin: Vector3f,
-        aabMax: Vector3f,
-        resultDistance: Vector2f = screenPos,
-        resultNearPoint: Vector3f? = null,
-    ) = projectToBox(
-        posX.toFloat(),
-        posY.toFloat(),
-        aabMin,
-        aabMax,
-        resultDistance,
-        resultNearPoint,
-    )
 
     /**
      * Unproject the given screen coordinates to world coordinates.

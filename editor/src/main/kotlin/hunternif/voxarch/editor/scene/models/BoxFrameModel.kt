@@ -23,13 +23,13 @@ class BoxFrameModel(
     override val shader = SolidColorInstancedShader()
 
     private var instanceVboID = 0
-    private val instances = mutableListOf<Box>()
+    private val instances = mutableListOf<AABBoxMesh>()
 
     private val instanceVertexBuffer = FloatBufferWrapper()
 
-    fun add(box: Box) {
+    fun add(box: AABBoxMesh) {
         if (singleColor != null) {
-            instances.add(Box(box.start, box.size, singleColor))
+            instances.add(AABBoxMesh(box.start, box.size, singleColor))
         } else {
             instances.add(box)
         }

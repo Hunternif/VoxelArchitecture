@@ -14,8 +14,8 @@ class NodeModel : IModel {
     }
 
     fun add(node: SceneNode) {
-        fillModel.add(Box(node.start, node.size, node.color.copy(a = 0.1f)))
-        lineModel.add(node)
+        fillModel.add(AABBoxMesh(node.aabb.start, node.aabb.size, node.color.copy(a = 0.1f)))
+        lineModel.add(node.aabb)
     }
 
     fun clear() {

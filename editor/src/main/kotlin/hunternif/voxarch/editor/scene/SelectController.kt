@@ -130,8 +130,8 @@ class SelectController(
                 }
                 hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
                     for (y in minY..maxY step marqueeTestStep) {
-                        val end = Vector3f(obj.start).add(obj.size)
-                        if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.start, end)) {
+                        val end = Vector3f(obj.aabb.start).add(obj.aabb.size)
+                        if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.aabb.start, end)) {
                             onHitObject(obj)
                             break@hitTestLoop
                         } else {
@@ -184,15 +184,17 @@ class SelectController(
     private fun updateAABBs() {
         app.state.sceneObjects.forEach {
             it.screenAABB.run {
-                setMin(camera.projectToViewport(it.start))
-                setMax(camera.projectToViewport(it.end))
-                correctBounds()
-                union(camera.projectToViewport(it.start.x, it.start.y, it.end.z))
-                union(camera.projectToViewport(it.start.x, it.end.y, it.start.z))
-                union(camera.projectToViewport(it.start.x, it.end.y, it.end.z))
-                union(camera.projectToViewport(it.end.x, it.start.y, it.start.z))
-                union(camera.projectToViewport(it.end.x, it.start.y, it.end.z))
-                union(camera.projectToViewport(it.end.x, it.end.y, it.start.z))
+                it.aabb.let {
+                    setMin(camera.projectToViewport(it.start))
+                    setMax(camera.projectToViewport(it.end))
+                    correctBounds()
+                    union(camera.projectToViewport(it.start.x, it.start.y, it.end.z))
+                    union(camera.projectToViewport(it.start.x, it.end.y, it.start.z))
+                    union(camera.projectToViewport(it.start.x, it.end.y, it.end.z))
+                    union(camera.projectToViewport(it.end.x, it.start.y, it.start.z))
+                    union(camera.projectToViewport(it.end.x, it.start.y, it.end.z))
+                    union(camera.projectToViewport(it.end.x, it.end.y, it.start.z))
+                }
             }
         }
     }

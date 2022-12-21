@@ -15,7 +15,7 @@ class VoxelModel(
     private val colorMap: (IVoxel) -> ColorRGBa,
 ) : BoxInstancedModel<VoxelInstance>() {
     class VoxelInstance(x: Float, y: Float, z: Float, color: ColorRGBa) :
-        Box(
+        AABBoxMesh(
             Vector3f(-0.5f + x, -0.5f + y, -0.5f + z),
             Vector3f(1f, 1f, 1f),
             color

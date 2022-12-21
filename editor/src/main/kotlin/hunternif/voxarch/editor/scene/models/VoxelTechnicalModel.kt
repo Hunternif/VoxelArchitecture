@@ -5,7 +5,7 @@ import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 
 /** For rendering technical elements that look like voxels, e.g. origin point. */
-class VoxelTechnicalModel : BoxInstancedModel<Box>() {
+class VoxelTechnicalModel : BoxInstancedModel<AABBoxMesh>() {
     fun addVoxel(
         pos: Vector3f,
         color: ColorRGBa,
@@ -15,7 +15,7 @@ class VoxelTechnicalModel : BoxInstancedModel<Box>() {
     ) {
         val start = Vector3f(pos).add(-w, -w, -w)
         val end = Vector3f(pos).add(w, w, w)
-        instances.add(Box(start, end.sub(start), color))
+        instances.add(AABBoxMesh(start, end.sub(start), color))
     }
 
     override fun render() {

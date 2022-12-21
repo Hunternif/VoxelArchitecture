@@ -115,8 +115,8 @@ class MainScene(private val app: EditorApp) {
         val minCorner = Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
         val maxCorner = Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
         for (obj in objs) {
-            minCorner.set(min(minCorner, obj.start))
-            maxCorner.set(max(maxCorner, obj.end))
+            minCorner.set(min(minCorner, obj.aabb.start))
+            maxCorner.set(max(maxCorner, obj.aabb.end))
         }
         val center = Vector3f(minCorner).add(maxCorner).mul(0.5f)
         camera.setPosition(center)
@@ -162,7 +162,7 @@ class MainScene(private val app: EditorApp) {
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
             if (obj != app.state.rootNode && obj != app.state.voxelRoot) {
-                selectedNodeModel.add(obj)
+                selectedNodeModel.add(obj.aabb)
                 if (obj is SceneNode) {
                     val origin = obj.node.findGlobalPosition().toVector3f()
                     originsModel.addPoint(origin)

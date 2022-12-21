@@ -9,7 +9,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
-open class BoxInstancedModel<T : Box> : BaseModel() {
+open class BoxInstancedModel<T : AABBoxMesh> : BaseModel() {
     private var instanceVboID = 0
     val instances = mutableListOf<T>()
 

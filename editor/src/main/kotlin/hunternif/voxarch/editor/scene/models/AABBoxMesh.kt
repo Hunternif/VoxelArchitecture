@@ -19,7 +19,7 @@ import org.joml.Vector3f
  * @param size size of the object in natural coordinates.
  * @param color the color that is used to render its AABB.
  */
-open class Box(
+open class AABBoxMesh(
     val start: Vector3f = Vector3f(),
     val size: Vector3f = Vector3f(),
     var color: ColorRGBa = Colors.defaultNodeBox,
@@ -40,15 +40,12 @@ open class Box(
     val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.1f) }
     fun updateFaces() = boxFaces(start, end, 0.1f).copyInto(faces)
 
-    /** Recalculate [start] and [size] based on underlying data. */
-    open fun update() {}
-
     /**
      * Set this object's boundaries to wrap around the given voxel AABB.
      * @param minVox lower corner of the box, in voxel-centric coordinates.
      * @param sizeVox size of the box, in voxel-centric coordinates.
      */
-    protected fun wrapVoxels(minVox: Vec3, sizeVox: Vec3) {
+    fun wrapVoxels(minVox: Vec3, sizeVox: Vec3) {
         start.set(minVox).sub(0.5f, 0.5f, 0.5f)
         size.set(sizeVox).add(1f, 1f, 1f)
     }

@@ -81,7 +81,7 @@ class ResizeController(
         pickedNode = null
         for (obj in app.state.selectedObjects) {
             if (obj !is SceneNode) continue
-            val hit = camera.projectToBox(posX, posY, obj.start, obj.end, result)
+            val hit = camera.projectToBox(posX, posY, obj.aabb.start, obj.aabb.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 pickedNode = obj
@@ -91,7 +91,7 @@ class ResizeController(
         // 2. Test which face we hit on it
         pickedNode?.apply {
             minDistance = Float.MAX_VALUE
-            for (face in faces) {
+            for (face in aabb.faces) {
                 val hit = camera.projectToBox(posX, posY, face.min, face.max, result)
                 if (hit && result.x < minDistance) {
                     minDistance = result.x
@@ -132,8 +132,8 @@ class ResizeController(
             resizeBuilder?.dragFace(face.dir, delta, symmetric)
             pickedNode?.run {
                 // update face instance
-                updateFaces()
-                pickedFace = faces[face.dir.ordinal]
+                aabb.updateFaces()
+                pickedFace = aabb.faces[face.dir.ordinal]
                 app.highlightFace(pickedFace)
             }
         }

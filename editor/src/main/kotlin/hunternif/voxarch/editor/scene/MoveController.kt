@@ -46,14 +46,14 @@ class MoveController(
         }
         var pickedNode = pickClickedObject(movingList)
         if (pickedNode == null) {
-            val midNode = movingList.run { sortedBy { it.start.y }[size / 2] }
+            val midNode = movingList.run { sortedBy { it.aabb.start.y }[size / 2] }
             // set 2D offset
             cursorOffset
-                .set(camera.projectToViewport(midNode.floorCenter))
+                .set(camera.projectToViewport(midNode.aabb.floorCenter))
                 .sub(mouseX, mouseY)
             pickedNode = midNode
         }
-        floorY = round(pickedNode.start.y)
+        floorY = round(pickedNode.aabb.start.y)
         dragStartWorldPos.set(projectToFloorWithOffset(mouseX, mouseY))
         if (mods and GLFW_MOD_ALT != 0) {
             direction = Y
@@ -83,7 +83,7 @@ class MoveController(
         var minDistance = Float.MAX_VALUE
         var hitObj: SceneObject? = null
         for (obj in movingList) {
-            val hit = camera.projectToBox(mouseX, mouseY, obj.start, obj.end, result)
+            val hit = camera.projectToBox(mouseX, mouseY, obj.aabb.start, obj.aabb.end, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 hitObj = obj
