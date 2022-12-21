@@ -183,19 +183,7 @@ class SelectController(
     /** Updates AABBs of all objects in the scene. */
     private fun updateAABBs() {
         app.state.sceneObjects.forEach {
-            it.screenAABB.run {
-                it.aabb.let {
-                    setMin(camera.projectToViewport(it.start))
-                    setMax(camera.projectToViewport(it.end))
-                    correctBounds()
-                    union(camera.projectToViewport(it.start.x, it.start.y, it.end.z))
-                    union(camera.projectToViewport(it.start.x, it.end.y, it.start.z))
-                    union(camera.projectToViewport(it.start.x, it.end.y, it.end.z))
-                    union(camera.projectToViewport(it.end.x, it.start.y, it.start.z))
-                    union(camera.projectToViewport(it.end.x, it.start.y, it.end.z))
-                    union(camera.projectToViewport(it.end.x, it.end.y, it.start.z))
-                }
-            }
+            it.updateAABB(camera)
         }
     }
 }

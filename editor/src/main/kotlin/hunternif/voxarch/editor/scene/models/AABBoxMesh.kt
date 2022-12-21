@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.AABB2Df
 import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -24,6 +25,7 @@ open class AABBoxMesh(
     val size: Vector3f = Vector3f(),
     var color: ColorRGBa = Colors.defaultNodeBox,
 ) {
+    //TODO: add AABBf instance
     /** Read-only! Corner of the AAB in "natural" coordinates (not in voxels),
      * absolute position in the scene. */
     val end: Vector3f = Vector3f()
@@ -50,5 +52,18 @@ open class AABBoxMesh(
     fun wrapVoxels(minVox: Vec3, sizeVox: Vec3) {
         start.set(minVox).sub(0.5f, 0.5f, 0.5f)
         size.set(sizeVox).add(1f, 1f, 1f)
+    }
+
+    /** Recalculate on-screen 2D AABB. */
+    fun updateAABB(camera: OrbitalCamera) = screenAABB.run {
+        setMin(camera.projectToViewport(start))
+        setMax(camera.projectToViewport(end))
+        correctBounds()
+        union(camera.projectToViewport(start.x, start.y, end.z))
+        union(camera.projectToViewport(start.x, end.y, start.z))
+        union(camera.projectToViewport(start.x, end.y, end.z))
+        union(camera.projectToViewport(end.x, start.y, start.z))
+        union(camera.projectToViewport(end.x, start.y, end.z))
+        union(camera.projectToViewport(end.x, end.y, start.z))
     }
 }

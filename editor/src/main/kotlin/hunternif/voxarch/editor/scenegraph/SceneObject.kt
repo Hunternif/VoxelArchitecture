@@ -1,7 +1,9 @@
 package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.AABBoxMesh
+import hunternif.voxarch.editor.scene.models.box.BoxMeshWithFaces
 import hunternif.voxarch.editor.util.AABB2Df
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.WithID
@@ -24,13 +26,19 @@ import org.joml.Vector3f
  */
 open class SceneObject(
     override val id: Int,
+    center: Vector3f = Vector3f(),
+    //TODO: deprecate [start]
     start: Vector3f = Vector3f(),
     size: Vector3f = Vector3f(),
+    angleY: Float = 0f,
     val color: ColorRGBa = Colors.defaultNodeBox,
     val isGenerated: Boolean = false,
 ) : INested<SceneObject>, WithID {
     /** Axis-aligned bounding box. */
     val aabb = AABBoxMesh(start, size, color)
+
+    /** More accurate bounding box with rotation. */
+    val box = BoxMeshWithFaces(center, size, angleY)
 
     /** AABB in screen coordinates relative to viewport. */
     val screenAABB: AABB2Df get() = aabb.screenAABB
@@ -53,7 +61,16 @@ open class SceneObject(
     }
 
     /** Recalculate [aabb] based on underlying data. */
-    open fun update() {}
+    open fun update() {
+        aabb.updateFaces()
+        box.updateMesh()
+    }
+
+    /** Recalculate on-screen 2D AABB. */
+    fun updateAABB(camera: OrbitalCamera) {
+        aabb.updateAABB(camera)
+        box.updateAABB(camera)
+    }
 
     private val strRepr: String by lazy { "${javaClass.simpleName} $id" }
     override fun toString() = strRepr

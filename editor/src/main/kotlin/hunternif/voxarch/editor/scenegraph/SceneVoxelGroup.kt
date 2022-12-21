@@ -24,7 +24,7 @@ class SceneVoxelGroup(
     }
 
     override fun update() {
-        aabb.updateFaces()
+        super.update()
         aabb.wrapVoxels(
             origin.toVec3() + Vec3(data.minX, data.minY, data.minZ),
             data.sizeVec.toVec3()

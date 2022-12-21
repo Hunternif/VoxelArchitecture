@@ -44,7 +44,7 @@ class SceneNode(
     }
 
     override fun update() {
-        aabb.updateFaces()
+        super.update()
         val origin = node.findGlobalPosition()
         when (node) {
             is Room -> {
