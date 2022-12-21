@@ -23,8 +23,7 @@ import kotlin.reflect.KProperty
  *
  * @param origin coordinates of nodes inside this Node are counted
  *            from this origin.
- * @param size size in centric coordinates,
- * see [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
+ * @param size size in centric coordinates, see [Node].
  */
 open class Room(
     origin: Vec3,

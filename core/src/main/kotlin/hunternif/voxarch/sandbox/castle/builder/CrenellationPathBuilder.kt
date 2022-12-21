@@ -22,7 +22,7 @@ data class CrenellationSizes(
  * "Merlon" is the rising part, "crenel" is the dip.
  *
  * Sizes are defined using the "natural" convention, see
- * [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
+ * [hunternif.voxarch.plan.Node].
  */
 class CrenellationPathBuilder(
     private val material: String,
@@ -42,7 +42,7 @@ class CrenellationPathBuilder(
  * "Merlon" is the rising part, "crenel" is the dip.
  *
  * Sizes are defined using the "natural" convention, see
- * [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
+ * [hunternif.voxarch.plan.Node].
  */
 class CrenellationWallBuilder(
     private val material: String,

@@ -16,7 +16,7 @@ import kotlin.math.floor
  * They support the structure above, where it hangs over the top of the wall.
  *
  * Sizes are defined using the "natural" convention, see
- * [wiki](https://github.com/Hunternif/VoxelArchitecture/wiki/Definitions).
+ * [hunternif.voxarch.plan.Node].
  */
 class CorbelBuilder(
     private val material: String,
