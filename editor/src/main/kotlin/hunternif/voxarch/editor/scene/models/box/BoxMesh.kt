@@ -1,7 +1,10 @@
 package hunternif.voxarch.editor.scene.models.box
 
+import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.AABB2Df
+import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
 
@@ -10,12 +13,14 @@ import org.joml.Vector3f
  *
  * @param center center point of the box across all axes, in natural absolute coordinates.
  * @param size (length, height, width) in natural coordinates.
- * @param angleY angle around the Y axis.
+ * @param angleY angle around the Y axis, in degrees.
+ * @param color the box is rendered with this solid color (can be transparent).
  */
 open class BoxMesh(
     val center: Vector3f = Vector3f(),
     val size: Vector3f = Vector3f(),
     var angleY: Float = 0f,
+    var color: ColorRGBa = Colors.defaultNodeBox,
 ) {
     /** AABB in screen coordinates relative to viewport. */
     val screenAABB: AABB2Df = AABB2Df()
@@ -39,7 +44,7 @@ open class BoxMesh(
         vertices[7].set(-1f, 1f, 1f)
         val m = Matrix4f()
             .translation(center)
-            .rotateY(angleY)
+            .rotateY(angleY.toRadians())
             .scale(size.x / 2, size.y / 2, size.z/ 2)
         vertices.forEach { it.mulProject(m) }
     }

@@ -9,6 +9,7 @@ import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.util.INested
 import hunternif.voxarch.util.forEachSubtree
+import hunternif.voxarch.util.toRadians
 import org.joml.Vector3f
 
 /**
@@ -38,7 +39,7 @@ open class SceneObject(
     val aabb = AABBoxMesh(start, size, color)
 
     /** More accurate bounding box with rotation. */
-    val box = BoxMeshWithFaces(center, size, angleY)
+    val box = BoxMeshWithFaces(center, size, angleY.toRadians())
 
     /** AABB in screen coordinates relative to viewport. */
     val screenAABB: AABB2Df get() = aabb.screenAABB

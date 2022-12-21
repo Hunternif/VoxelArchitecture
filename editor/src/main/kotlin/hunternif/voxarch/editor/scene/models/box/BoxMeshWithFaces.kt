@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene.models.box
 
 import hunternif.voxarch.editor.util.AADirection3D
 import hunternif.voxarch.editor.util.AADirection3D.*
+import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
 
@@ -47,7 +48,7 @@ class BoxMeshWithFaces(
         faceNegZ.center.set(0f, 0f, -(size.z - w) / 2)
         val m = Matrix4f()
             .translation(center)
-            .rotateY(angleY)
+            .rotateY(angleY.toRadians())
         faces.forEach {
             it.angleY = angleY
             it.center.mulProject(m)

@@ -75,9 +75,14 @@ fun Vec3.roundToInt() = IntVec3(x.roundToInt(), y.roundToInt(), z.roundToInt())
 fun max(a: Vec3, b: Vec3) = Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
 fun min(a: Vec3, b: Vec3) = Vec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
 
+fun Float.toRadians(): Float = this / 180f * Math.PI.toFloat()
+fun Double.toRadians(): Double = this / 180f * Math.PI
+fun Float.toDegrees(): Float = this * 180f / Math.PI.toFloat()
+fun Double.toDegrees(): Double = this * 180f / Math.PI
+
 /** Angle in degrees of a line segment [start]-[end] vs X axis. */
-fun segmentAngleY(start: Vec3, end: Vec3) =
-    atan2(-end.z + start.z, end.x - start.x) * 180 / Math.PI
+fun segmentAngleY(start: Vec3, end: Vec3): Double =
+    atan2(-end.z + start.z, end.x - start.x).toDegrees()
 
 /**
  * Ensures the result is between [min] (incl.) and [max] (incl.).
