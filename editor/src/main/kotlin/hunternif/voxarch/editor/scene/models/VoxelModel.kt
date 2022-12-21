@@ -13,7 +13,7 @@ import org.lwjgl.opengl.GL33.*
 class VoxelModel(
     private val voxels: SceneVoxelGroup,
     private val colorMap: (IVoxel) -> ColorRGBa,
-) : BoxInstancedModel<VoxelInstance>() {
+) : AABBoxInstancedModel<VoxelInstance>() {
     class VoxelInstance(x: Float, y: Float, z: Float, color: ColorRGBa) :
         AABBoxMesh(
             Vector3f(-0.5f + x, -0.5f + y, -0.5f + z),

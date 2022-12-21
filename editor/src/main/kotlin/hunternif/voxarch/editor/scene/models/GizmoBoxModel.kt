@@ -10,8 +10,8 @@ import org.joml.Vector3f
  */
 class GizmoBoxModel : IModel {
     private lateinit var gizmoModel: GizmoModel
-    private lateinit var outlineModel: BoxFrameModel
-    private lateinit var boxModel: BoxInstancedModel<AABBoxMesh>
+    private lateinit var outlineModel: AABBoxFrameModel
+    private lateinit var boxModel: AABBoxInstancedModel<AABBoxMesh>
 
     override fun init() {
         gizmoModel = GizmoModel(
@@ -22,7 +22,7 @@ class GizmoBoxModel : IModel {
             addPos(Vector3f(0f, 0f, 0f))
             init()
         }
-        outlineModel = BoxFrameModel(
+        outlineModel = AABBoxFrameModel(
             lineWidth = 2f
         ).apply {
             add(AABBoxMesh(
@@ -32,7 +32,7 @@ class GizmoBoxModel : IModel {
             ))
             init()
         }
-        boxModel = BoxInstancedModel<AABBoxMesh>().apply {
+        boxModel = AABBoxInstancedModel<AABBoxMesh>().apply {
             add(AABBoxMesh(
                 Vector3f(-0.5f, -0.5f, -0.5f),
                 Vector3f(1f, 1f, 1f),

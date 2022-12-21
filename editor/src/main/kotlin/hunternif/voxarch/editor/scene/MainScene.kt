@@ -27,7 +27,7 @@ class MainScene(private val app: EditorApp) {
     private val voxelModel = VoxelGroupsModel { v -> app.state.voxelColorMap(v) }
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel()
-    private val selectedNodeModel = BoxFrameModel(Colors.selectedNodeOutline)
+    private val selectedNodeModel = AABBoxFrameModel(Colors.selectedNodeOutline)
     private val originsModel = PointSpriteModel("textures/point-circle.png")
     private val highlightedFaceModel = ResizeNodeModel()
     // special 3d model with a separate camera

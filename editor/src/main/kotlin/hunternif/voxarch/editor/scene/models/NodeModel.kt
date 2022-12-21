@@ -5,8 +5,8 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import org.joml.Matrix4f
 
 class NodeModel : IModel {
-    val fillModel = TransparentBoxModel()
-    val lineModel = BoxFrameModel()
+    val fillModel = AABBoxTransparentModel()
+    val lineModel = AABBoxFrameModel()
 
     override fun init() {
         fillModel.init()

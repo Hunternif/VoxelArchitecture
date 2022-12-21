@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.scene.models
 
 import org.lwjgl.opengl.GL33.*
 
-class TransparentBoxModel : BoxInstancedModel<AABBoxMesh>() {
+class AABBoxTransparentModel : AABBoxInstancedModel<AABBoxMesh>() {
     override fun render() {
         glDisable(GL_DEPTH_TEST)
 

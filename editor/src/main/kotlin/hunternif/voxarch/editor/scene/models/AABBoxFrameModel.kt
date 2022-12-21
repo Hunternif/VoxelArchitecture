@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryStack
 /**
  * Renders the frame outline of a node that's currently selected
  */
-class BoxFrameModel(
+class AABBoxFrameModel(
     private val singleColor: ColorRGBa? = null,
     private val lineWidth: Float = 1f,
 ) : BaseModel() {
