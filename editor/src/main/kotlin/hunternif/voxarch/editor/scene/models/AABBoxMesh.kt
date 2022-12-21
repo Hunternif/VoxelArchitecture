@@ -38,6 +38,8 @@ open class AABBoxMesh(
     val screenAABB: AABB2Df = AABB2Df()
 
     val faces: Array<AABBFace> by lazy { boxFaces(start, end, 0.1f) }
+
+    /** Recalculate face positions and sizes. */
     fun updateFaces() = boxFaces(start, end, 0.1f).copyInto(faces)
 
     /**
