@@ -1,6 +1,9 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.IModel
+import hunternif.voxarch.editor.scene.models.box.AABBoxFrameModel
+import hunternif.voxarch.editor.scene.models.box.AABBoxInstancedModel
+import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Matrix4f
 import org.joml.Vector3f

@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.scene.models
+package hunternif.voxarch.editor.scene.models.box
 
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.OrbitalCamera

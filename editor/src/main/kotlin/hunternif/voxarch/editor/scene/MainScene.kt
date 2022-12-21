@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
+import hunternif.voxarch.editor.scene.models.box.AABBoxFrameModel
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup

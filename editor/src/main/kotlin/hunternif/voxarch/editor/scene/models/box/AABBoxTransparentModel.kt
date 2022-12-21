@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.scene.models
+package hunternif.voxarch.editor.scene.models.box
 
 import org.lwjgl.opengl.GL33.*
 

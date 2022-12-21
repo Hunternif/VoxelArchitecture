@@ -2,6 +2,8 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.scene.models.VoxelModel.VoxelInstance
+import hunternif.voxarch.editor.scene.models.box.AABBoxInstancedModel
+import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos

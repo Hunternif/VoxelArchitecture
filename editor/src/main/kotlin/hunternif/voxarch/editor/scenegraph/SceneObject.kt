@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.AABBoxMesh
+import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.scene.models.box.BoxMeshWithFaces
 import hunternif.voxarch.editor.util.AABB2Df
 import hunternif.voxarch.editor.util.ColorRGBa

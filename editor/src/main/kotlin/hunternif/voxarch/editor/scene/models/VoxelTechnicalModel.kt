@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.scene.models
 
+import hunternif.voxarch.editor.scene.models.box.AABBoxInstancedModel
+import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
