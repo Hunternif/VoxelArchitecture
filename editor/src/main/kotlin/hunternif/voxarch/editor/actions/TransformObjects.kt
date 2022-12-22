@@ -32,6 +32,7 @@ class TransformObjects(
                 is SceneNode -> {
                     obj.node.run {
                         origin = data.origin
+                        rotationY = data.rotationY
                         size = data.size
                         (this as? Room)?.run {
                             setCentered(data.isCentered)
@@ -57,6 +58,7 @@ data class TransformData(
     val start: Vec3,
     /** If [isCentered] is true, [start] is ignored. */
     val isCentered: Boolean,
+    val rotationY: Double,
 )
 
 /** Creates an instance of [TransformData] using current values.
@@ -67,18 +69,21 @@ fun SceneObject.transformData(
     start: Vec3? = null,
     /** If [isCentered] is true, [start] is ignored. */
     isCentered: Boolean? = null,
+    rotationY: Double? = null,
 ) = when(this) {
     is SceneNode -> TransformData(
         (origin ?: node.origin).clone(),
         (size ?: node.size).clone(),
         (start ?: (node as? Room)?.start ?: Vec3.ZERO).clone(),
         isCentered ?: (node as? Room)?.isCentered() ?: false,
+        rotationY ?: node.rotationY,
     )
     is SceneVoxelGroup -> TransformData(
         origin ?: this.origin.toVec3(),
         Vec3.ZERO,
         Vec3.ZERO,
         false,
+        0.0
     )
-    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, false)
+    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, false, 0.0)
 }

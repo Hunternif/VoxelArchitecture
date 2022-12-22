@@ -5,6 +5,7 @@ import imgui.ImGui
 /** Encapsulates ImGui.dragFloat3 with some convenience methods */
 class GuiInputFloat(
     val label: String,
+    val speed: Float = 0.1f,
     val min: Float = -999f,
     val max: Float = 999f,
 ) {
@@ -36,12 +37,15 @@ class GuiInputFloat(
 
     inline fun render(
         initialValue: Float,
-        crossinline onEditFinished: GuiInputFloat.() -> Unit = {}
+        crossinline onUpdated: GuiInputFloat.() -> Unit = {},
+        crossinline onEditFinished: GuiInputFloat.() -> Unit = {},
     ) {
         setInitialValue(initialValue)
         updateFormat()
-        if (ImGui.dragFloat(label, data, 0.1f, min, max, format)) {
+        if (ImGui.dragFloat(label, data, speed, min, max, format)) {
             dirty = true
+            newValue = data[0]
+            this.onUpdated()
         }
         if (isBeingChanged && !ImGui.isItemActive()) {
             // Apply the new value

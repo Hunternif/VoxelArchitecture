@@ -21,6 +21,7 @@ class GuiObjectProperties(
     private val originInput = GuiInputVec3("origin")
     private val sizeInput = GuiInputVec3("size", min = 0f)
     private val startInput = GuiInputVec3("start")
+    private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
     private val centeredInput = GuiCheckbox("centered")
 
     // Update timer
@@ -41,6 +42,7 @@ class GuiObjectProperties(
             redrawNodesIfNeeded()
         }
     }
+
     private fun renderNode(sceneNode: SceneNode) {
         val node = sceneNode.node
         // By passing the original Vec3 ref into render(), its value will be
@@ -49,10 +51,11 @@ class GuiObjectProperties(
             app.transformNodeOrigin(sceneNode, original, newValue)
         }
 
+        sizeInput.render(node.size) {
+            app.transformNodeSize(sceneNode, original, newValue)
+        }
+
         if (node is Room) {
-            sizeInput.render(node.size) {
-                app.transformNodeSize(sceneNode, original, newValue)
-            }
 
             disabled(node.isCentered()) {
                 startInput.render(node.start) {
@@ -64,6 +67,12 @@ class GuiObjectProperties(
                 app.transformNodeCentered(sceneNode, it)
             }
         }
+
+        rotationInput.render(node.rotationY.toFloat(), onUpdated = {
+            node.rotationY = newValue.toDouble()
+        }, onEditFinished = {
+            app.transformNodeRotation(sceneNode, original.toDouble(), newValue.toDouble())
+        })
 
         ImGui.separator()
         ImGui.text("Blueprints")
@@ -138,7 +147,8 @@ class GuiObjectProperties(
 
     /** Apply the modified values to the node. */
     private fun redrawNodesIfNeeded() = redrawTimer.runAtInterval {
-        if (originInput.dirty || sizeInput.dirty || startInput.dirty) {
+        if (originInput.dirty || sizeInput.dirty || startInput.dirty
+            || rotationInput.dirty) {
             app.redrawNodes()
         }
     }

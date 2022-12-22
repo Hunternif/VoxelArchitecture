@@ -132,6 +132,7 @@ fun EditorApp.moveBuilder(objs: Collection<SceneObject>) =
 fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) =
     ResizeNodesBuilder(this as EditorAppImpl, objs.toList())
 
+/** Passing in [oldOrigin] because the node could be already moved in the scene. */
 fun EditorApp.transformNodeOrigin(
     obj: SceneNode,
     oldOrigin: Vec3,
@@ -144,6 +145,7 @@ fun EditorApp.transformNodeOrigin(
     )
 )
 
+/** Passing in [oldSize] because the node could be already resized in the scene. */
 fun EditorApp.transformNodeSize(
     obj: SceneNode,
     oldSize: Vec3,
@@ -156,6 +158,7 @@ fun EditorApp.transformNodeSize(
     )
 )
 
+/** Passing in [oldStart] because the node could be already moved in the scene. */
 fun EditorApp.transformNodeStart(
     obj: SceneNode,
     oldStart: Vec3,
@@ -165,6 +168,19 @@ fun EditorApp.transformNodeStart(
         mapOf(obj to obj.transformData(start = oldStart)),
         mapOf(obj to obj.transformData(start = newStart)),
         "Transform node (start)",
+    )
+)
+
+/** Passing in [oldRotation] because the node could be already rotated in the scene. */
+fun EditorApp.transformNodeRotation(
+    obj: SceneNode,
+    oldRotation: Double,
+    newRotation: Double,
+) = historyAction(
+    TransformObjects(
+        mapOf(obj to obj.transformData(rotationY = oldRotation)),
+        mapOf(obj to obj.transformData(rotationY = newRotation)),
+        "Transform node (rotation)",
     )
 )
 

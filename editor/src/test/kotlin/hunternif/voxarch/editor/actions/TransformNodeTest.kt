@@ -215,4 +215,21 @@ class TransformNodeTest : BaseActionTest() {
         assertEquals(true, room.isCentered())
         assertEquals(Vec3(-706, -801, -916), child.origin)
     }
+
+    @Test
+    fun `transform rotation undo redo`() {
+        assertEquals(0.0, room.rotationY, 0.00000001)
+
+        app.transformNodeRotation(node, 0.0, 45.0)
+        assertEquals(45.0, room.rotationY, 0.00000001)
+
+        app.transformNodeRotation(node, 45.0, 99.0)
+        assertEquals(99.0, room.rotationY, 0.00000001)
+
+        app.undo()
+        assertEquals(45.0, room.rotationY, 0.00000001)
+
+        app.redo()
+        assertEquals(99.0, room.rotationY, 0.00000001)
+    }
 }

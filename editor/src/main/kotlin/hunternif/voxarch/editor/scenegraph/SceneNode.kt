@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.util.add
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.max
 import hunternif.voxarch.util.min
+import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.vector.Vec3
 
 class SceneNode(

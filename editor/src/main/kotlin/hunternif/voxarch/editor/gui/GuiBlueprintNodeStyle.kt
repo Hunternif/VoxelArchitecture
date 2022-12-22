@@ -61,7 +61,7 @@ class GuiBlueprintNodeStyle(
         min: Float = -999f,
         max: Float = 999f,
     ) : Item<Number>(rule, property) {
-        private val gui = GuiInputFloat(property.name, min, max)
+        private val gui = GuiInputFloat(property.name, min = min, max = max)
         override var value: Number = 0.0
 
         init {
