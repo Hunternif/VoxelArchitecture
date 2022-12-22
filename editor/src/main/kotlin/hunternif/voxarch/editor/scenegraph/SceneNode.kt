@@ -2,8 +2,7 @@ package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
-import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.editor.util.add
+import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.max
 import hunternif.voxarch.util.min
@@ -46,6 +45,9 @@ class SceneNode(
 
     override fun update() {
         super.update()
+        box.angleY = node.findGlobalRotation().toFloat()
+        box.center.set(node.findGlobalPosition() + node.localCenter.rotateY(node.rotationY))
+        box.size.set(node.size).add(1f, 1f, 1f)
         val origin = node.findGlobalPosition()
         when (node) {
             is Room -> {

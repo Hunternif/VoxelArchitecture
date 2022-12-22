@@ -1,15 +1,15 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.IModel
-import hunternif.voxarch.editor.scene.models.box.AABBoxFrameModel
-import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
-import hunternif.voxarch.editor.scene.models.box.AABBoxTransparentModel
+import hunternif.voxarch.editor.scene.models.box.BoxMesh
+import hunternif.voxarch.editor.scene.models.box.BoxTransparentModel
+import hunternif.voxarch.editor.scene.models.box.BoxFrameModel
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import org.joml.Matrix4f
 
 class NodeModel : IModel {
-    val fillModel = AABBoxTransparentModel()
-    val lineModel = AABBoxFrameModel()
+    val fillModel = BoxTransparentModel()
+    val lineModel = BoxFrameModel()
 
     override fun init() {
         fillModel.init()
@@ -17,8 +17,8 @@ class NodeModel : IModel {
     }
 
     fun add(node: SceneNode) {
-        fillModel.add(AABBoxMesh(node.aabb.start, node.aabb.size, node.color.copy(a = 0.1f)))
-        lineModel.add(node.aabb)
+        fillModel.add(BoxMesh(node.box.center, node.box.size, node.box.angleY, node.color.copy(a = 0.1f)))
+        lineModel.add(node.box)
     }
 
     fun clear() {
