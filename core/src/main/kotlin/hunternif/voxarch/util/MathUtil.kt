@@ -69,6 +69,16 @@ fun Vec3.rotateY(angle: Double): Vec3 {
     return Vec3.from(vec4)
 }
 
+/**
+ * Returns a new [Vec3] rotated by [angle] degrees CCW.
+ */
+fun Vec3.rotateYLocal(angle: Double): Vec3 {
+    val vec4 = Vec4(x, y, z, 1.0)
+    Matrix4.rotationY(angle).multiplyLocal(vec4)
+    set(vec4.x, vec4.y, vec4.z)
+    return this
+}
+
 fun Vec3.round() = Vec3(x.roundToInt(), y.roundToInt(), z.roundToInt())
 fun Vec3.roundLocal(): Vec3 = set(x.roundToInt(), y.roundToInt(), z.roundToInt())
 fun Vec3.roundToInt() = IntVec3(x.roundToInt(), y.roundToInt(), z.roundToInt())

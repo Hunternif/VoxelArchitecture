@@ -6,10 +6,11 @@ import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
+import kotlin.math.sqrt
 
 class NodeExtensionTest {
     @Test
-    fun finGlobalPosition() {
+    fun `find global position forward`() {
         val root = Node(Vec3(1, 0, 0))
         val child1 = Node(Vec3(-1, 2, 3))
         val child2 = Node(Vec3(3, 1, -6))
@@ -23,6 +24,55 @@ class NodeExtensionTest {
         child1.origin.y += 10
         assertEquals(Vec3(0, 12, 3), child1.findGlobalPosition())
         assertEquals(Vec3(3, 13, -3), child2.findGlobalPosition())
+    }
+
+    @Test
+    fun `find global position and rotation in rotated nodes`() {
+        val root1 = Node(Vec3(1, 0, 0)).apply { rotationY = 45.0 }
+        val child1 = Node(Vec3(1, 0, 0)).apply { rotationY = 180.0 }
+        val child2 = Node(Vec3(1, 0, 0))
+        root1.addChild(child1)
+        child1.addChild(child2)
+
+        assertEquals(Vec3(1, 0, 0), root1.findGlobalPosition())
+        assertEquals(Vec3(1 + 1.0 / sqrt(2.0), 0.0, -1.0 / sqrt(2.0)), child1.findGlobalPosition())
+        assertEquals(Vec3(1, 0, 0), child2.findGlobalPosition())
+        assertEquals(45.0, root1.findGlobalRotation(), 0.000000001)
+        assertEquals(225.0, child1.findGlobalRotation(), 0.000000001)
+        assertEquals(225.0, child2.findGlobalRotation(), 0.000000001)
+
+        val root90 = Node(Vec3(1, 0, 0)).apply { rotationY = 90.0 }
+        val child90 = Node(Vec3(1, 0, 0)).apply { rotationY = -90.0 }
+        val child3 = Node(Vec3(1, 0, 0))
+        root90.addChild(child90)
+        child90.addChild(child3)
+
+        assertEquals(Vec3(1, 0, 0), root90.findGlobalPosition())
+        assertEquals(Vec3(1, 0, -1), child90.findGlobalPosition())
+        assertEquals(Vec3(2, 0, -1), child3.findGlobalPosition())
+        assertEquals(90.0, root90.findGlobalRotation(), 0.000000001)
+        assertEquals(0.0, child90.findGlobalRotation(), 0.000000001)
+        assertEquals(0.0, child3.findGlobalRotation(), 0.000000001)
+    }
+
+    @Test
+    fun `find global position and rotation in a loop`() {
+        val wall1 = Node(Vec3(1, 0, 0)).apply { rotationY = 90.0 }
+        val wall2 = Node(Vec3(1, 0, 0)).apply { rotationY = 90.0 }
+        val wall3 = Node(Vec3(1, 0, 0)).apply { rotationY = 90.0 }
+        val wall4 = Node(Vec3(1, 0, 0)).apply { rotationY = 90.0 }
+        wall1.addChild(wall2)
+        wall2.addChild(wall3)
+        wall3.addChild(wall4)
+
+        assertEquals(Vec3(1, 0, 0), wall1.findGlobalPosition())
+        assertEquals(Vec3(1, 0, -1), wall2.findGlobalPosition())
+        assertEquals(Vec3(0, 0, -1), wall3.findGlobalPosition())
+        assertEquals(Vec3(0, 0, 0), wall4.findGlobalPosition())
+        assertEquals(90.0, wall1.findGlobalRotation(), 0.000000001)
+        assertEquals(180.0, wall2.findGlobalRotation(), 0.000000001)
+        assertEquals(270.0, wall3.findGlobalRotation(), 0.000000001)
+        assertEquals(0.0, wall4.findGlobalRotation(), 0.000000001)
     }
 
     @Test

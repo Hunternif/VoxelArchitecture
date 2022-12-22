@@ -1,5 +1,7 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.util.MathUtil.clampAngle
+import hunternif.voxarch.util.rotateYLocal
 import hunternif.voxarch.vector.Vec3
 
 /** Finds offset of this node's origin in global coordinates, i.e.
@@ -16,10 +18,28 @@ fun Node.findGlobalPosition(): Vec3 {
             println("Possibly infinite recursion!")
             return result
         }
+        result.rotateYLocal(parent.rotationY)
         result.addLocal(parent.origin)
         parent = parent.parent
     }
     return result
+}
+
+/** Finds this node's rotation vs global coordinates. */
+fun Node.findGlobalRotation(): Double {
+    var depth = 0
+    var result = rotationY
+    var parent = this.parent
+    while (parent != null) {
+        depth++
+        if (depth > 10000) {
+            println("Possibly infinite recursion!")
+            return result
+        }
+        result += parent.rotationY
+        parent = parent.parent
+    }
+    return clampAngle(result)
 }
 
 /** Finds children in the subtree matching the given class and tags. */
