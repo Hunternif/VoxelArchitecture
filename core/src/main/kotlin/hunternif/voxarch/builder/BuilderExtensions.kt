@@ -91,23 +91,16 @@ fun Room.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAAB
 typealias RoomGroundBoundary = Pair<Vec3, Vec3>
 
 /**
- * If the room has walls, returns wall vectors at floor level.
- * Otherwise, returns boundaries defined by room size.
+ * Returns boundaries defined by room size and its walls, if it has any.
  */
-fun Room.getGroundBoundaries(): List<RoomGroundBoundary> {
-    return if (walls.isNotEmpty()) {
-        walls.map { it.bottomStart to it.bottomEnd }
-    } else {
-        // No walls, use the room size:
-        listOf(
-            start,
-            start.addZ(size.z),
-            start.add(size.x, 0.0, size.z),
-            start.addX(size.x),
-            start
-        ).zipWithNext()
-    }
-}
+fun Room.getGroundBoundaries(): List<RoomGroundBoundary> =
+    walls.map { it.bottomStart to it.bottomEnd } + listOf(
+        start,
+        start.addZ(size.z),
+        start.add(size.x, 0.0, size.z),
+        start.addX(size.x),
+        start
+    ).zipWithNext()
 
 /**
  * Runs [buildAt] at every point on the line from [p1] to [p2].
