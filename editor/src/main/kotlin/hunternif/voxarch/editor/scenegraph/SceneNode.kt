@@ -44,10 +44,11 @@ class SceneNode(
     }
 
     override fun update() {
-        super.update()
         box.angleY = node.findGlobalRotation().toFloat()
         box.center.set(node.findGlobalPosition() + node.localCenter.rotateY(node.rotationY))
         box.size.set(node.size).add(1f, 1f, 1f)
+        box.updateMesh()
+        aabb.updateFaces()
         val origin = node.findGlobalPosition()
         when (node) {
             is Room -> {

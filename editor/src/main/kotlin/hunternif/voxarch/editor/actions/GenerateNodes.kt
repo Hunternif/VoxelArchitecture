@@ -65,7 +65,6 @@ class GenerateNodes : HistoryAction(
         parent: SceneNode, newNode: Node
     ) {
         val sceneNode = state.registry.newNode(newNode, Colors.defaultGeneratedNodeBox, true)
-        sceneNode.update()
         sceneNode.parent = parent
         newGenerated.add(sceneNode.detached())
         newNode.children.forEach { createSceneNodesRecursive(sceneNode, it) }

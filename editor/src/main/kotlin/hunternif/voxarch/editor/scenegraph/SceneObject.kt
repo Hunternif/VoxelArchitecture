@@ -36,7 +36,7 @@ open class SceneObject(
     val isGenerated: Boolean = false,
 ) : INested<SceneObject>, WithID {
     /** Axis-aligned bounding box. */
-    val aabb = AABBoxMesh(start, size, color)
+    val aabb = AABBoxMesh(color = color)
 
     /** More accurate bounding box with rotation. */
     val box = BoxMeshWithFaces(center, size, angleY.toRadians())

@@ -45,7 +45,7 @@ open class BoxMesh(
         val m = Matrix4f()
             .translation(center)
             .rotateY(angleY.toRadians())
-            .scale(size.x / 2, size.y / 2, size.z/ 2)
+            .scale(size.x / 2, size.y / 2, size.z / 2)
         vertices.forEach { it.mulProject(m) }
     }
 
