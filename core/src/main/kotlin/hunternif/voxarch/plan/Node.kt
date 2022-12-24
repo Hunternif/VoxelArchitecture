@@ -74,7 +74,7 @@ open class Node(
     /**
      * Vector (length, height, width), doesn't take rotation into account.
      */
-    var size: Vec3 = Vec3(0, 0, 0)
+    open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance
     var length: Double
         get() = size.x

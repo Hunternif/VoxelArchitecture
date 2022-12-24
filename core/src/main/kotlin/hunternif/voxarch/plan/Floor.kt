@@ -19,4 +19,15 @@ open class Floor(
                 y = origin.y
             } - origin
         } ?: Vec3.ZERO
+
+    // Return parent's size
+    override var size: Vec3
+        get() {
+            parent?.let {
+                super.size.set(it.size)
+                super.size.y = 0.0
+            }
+            return super.size
+        }
+        set(value) { super.size = value }
 }
