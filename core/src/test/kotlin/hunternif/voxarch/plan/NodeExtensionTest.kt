@@ -162,13 +162,13 @@ class NodeExtensionTest {
         val wall = Wall(Vec3(10, 20, 30), Vec3(10, 24, 32))
         assertEquals(Vec3(1, 2, 0), wall.localCenter)
 
-        val floor = Floor()
+        val floor = Floor(3.0)
         assertEquals(Vec3(0, 0, 0), floor.localCenter)
 
         Room().addChild(floor)
         assertEquals(Vec3(0, 0, 0), floor.localCenter)
 
         room.addChild(floor)
-        assertEquals(Vec3(2, 3, 4), floor.localCenter)
+        assertEquals(Vec3(2, 0, 4), floor.localCenter)
     }
 }
