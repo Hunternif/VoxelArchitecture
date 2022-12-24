@@ -44,8 +44,9 @@ class SceneNode(
     }
 
     override fun update() {
-        box.angleY = node.findGlobalRotation().toFloat()
-        box.center.set(node.findGlobalPosition() + node.localCenter.rotateY(node.rotationY))
+        val globalRotation = node.findGlobalRotation()
+        box.angleY = globalRotation.toFloat()
+        box.center.set(node.findGlobalPosition() + node.localCenter.rotateY(globalRotation))
         box.size.set(node.size).add(1f, 1f, 1f)
         box.updateMesh()
         aabb.updateFaces()
