@@ -57,13 +57,13 @@ open class AABBoxMesh(
     /** Recalculate on-screen 2D AABB. */
     fun updateAABB(camera: OrbitalCamera) = screenAABB.run {
         reset()
-        setMin(camera.projectToViewport(start))
+        union(camera.projectToViewport(start))
         union(camera.projectToViewport(start.x, start.y, end.z))
         union(camera.projectToViewport(start.x, end.y, start.z))
         union(camera.projectToViewport(start.x, end.y, end.z))
         union(camera.projectToViewport(end.x, start.y, start.z))
         union(camera.projectToViewport(end.x, start.y, end.z))
         union(camera.projectToViewport(end.x, end.y, start.z))
-        setMax(camera.projectToViewport(end))
+        union(camera.projectToViewport(end))
     }
 }
