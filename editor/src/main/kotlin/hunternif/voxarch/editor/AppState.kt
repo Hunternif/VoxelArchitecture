@@ -12,8 +12,8 @@ import hunternif.voxarch.editor.builder.mapVoxelToSolidColor
 import hunternif.voxarch.editor.builder.setDefaultBuilders
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.scene.NewNodeFrame
+import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scenegraph.*
-import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.*
@@ -70,7 +70,7 @@ interface AppState {
     val currentTool: Tool
     val newNodeFrame: NewNodeFrame
     val history: ReadOnlyHistory<HistoryAction>
-    val highlightedFace: AABBFace?
+    val highlightedFace: BoxFace?
 
 
     //============================= GUI STATE ===============================
@@ -124,7 +124,7 @@ class AppStateImpl(
     override var currentTool: Tool = Tool.ADD_NODE
     override val newNodeFrame = NewNodeFrame()
     override val history = History<HistoryAction>()
-    override var highlightedFace: AABBFace? = null
+    override var highlightedFace: BoxFace? = null
 
     override val DEBUG = true
     override var isMainWindowFocused = false

@@ -4,10 +4,10 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
+import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.LogMessage
 import hunternif.voxarch.editor.util.openFileDialog
 import hunternif.voxarch.editor.util.saveFileDialog
@@ -126,7 +126,7 @@ fun EditorApp.clearNewNodeFrame() = action {
 }
 
 /** Highlight the given face on a node. Passing null removes the highlight. */
-fun EditorApp.highlightFace(face: AABBFace?) = action {
+fun EditorApp.highlightFace(face: BoxFace?) = action {
     state.highlightedFace = face
     scene.updateHighlightedFaces()
 }

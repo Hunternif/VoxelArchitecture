@@ -17,12 +17,12 @@ class BoxMeshWithFaces(
     /** Thickness of a face. */
     private val w = 0.1f
 
-    private val facePosX = BoxFace(POS_X)
-    private val facePosY = BoxFace(POS_Y)
-    private val facePosZ = BoxFace(POS_Z)
-    private val faceNegX = BoxFace(NEG_X)
-    private val faceNegY = BoxFace(NEG_Y)
-    private val faceNegZ = BoxFace(NEG_Z)
+    private val facePosX = vertices.let { BoxFace.new(POS_X, it[0], it[4], it[5], it[1]) }
+    private val facePosY = vertices.let { BoxFace.new(POS_Y, it[4], it[5], it[6], it[7]) }
+    private val facePosZ = vertices.let { BoxFace.new(POS_Z, it[0], it[4], it[7], it[3]) }
+    private val faceNegX = vertices.let { BoxFace.new(NEG_X, it[2], it[3], it[7], it[6]) }
+    private val faceNegY = vertices.let { BoxFace.new(NEG_Y, it[0], it[3], it[2], it[1]) }
+    private val faceNegZ = vertices.let { BoxFace.new(NEG_Z, it[1], it[5], it[6], it[2]) }
 
     /** A thin lid attached to each face, facing outwards. */
     val faces: Array<BoxFace> = arrayOf(
@@ -52,6 +52,7 @@ class BoxMeshWithFaces(
         faces.forEach {
             it.angleY = angleY
             it.center.mulProject(m)
+            it.updateMesh()
         }
     }
 }
@@ -59,10 +60,17 @@ class BoxMeshWithFaces(
 /**
  * A face on a [BoxMeshWithFaces].
  * Remembers its initial orientation [dir] after rotations.
+ * The part it inherits from [BoxMesh] acts as a hit box,
+ * but the actual rendered quad is defined by [quadVertices].
  */
 class BoxFace(
     val dir: AADirection3D,
-    center: Vector3f = Vector3f(),
-    size: Vector3f = Vector3f(),
-    angleY: Float = 0f,
-) : BoxMesh(center, size, angleY)
+    val quadVertices: Array<out Vector3f>,
+) : BoxMesh() {
+    companion object {
+        fun new(
+            dir: AADirection3D,
+            vararg quadVertices: Vector3f,
+        ) = BoxFace(dir, quadVertices)
+    }
+}

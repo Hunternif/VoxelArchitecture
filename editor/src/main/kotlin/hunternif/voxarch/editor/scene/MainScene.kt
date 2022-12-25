@@ -180,6 +180,7 @@ class MainScene(private val app: EditorApp) {
 
     fun updateHighlightedFaces() {
         highlightedFaceModel.face = app.state.highlightedFace
+        highlightedFaceModel.update()
     }
 
     fun render() {

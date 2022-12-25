@@ -6,8 +6,8 @@ import hunternif.voxarch.editor.actions.ResizeNodesBuilder
 import hunternif.voxarch.editor.actions.highlightFace
 import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
+import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room
 import org.joml.Vector2f
@@ -27,7 +27,7 @@ class ResizeController(
     private var symmetric = false
 
     private var pickedNode: SceneNode? = null
-    var pickedFace: AABBFace? = null
+    var pickedFace: BoxFace? = null
 
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val dragWorldPos: Vector3f = Vector3f()
@@ -55,7 +55,7 @@ class ResizeController(
         pickedFace?.let { face ->
             dragging = true
             // set start position:
-            camera.projectToAABox(mouseX, mouseY, face.min, face.max, Vector2f(),
+            camera.projectToBox(mouseX, mouseY, face, Vector2f(),
                 dragStartWorldPos
             )
             resizeBuilder = app.resizeBuilder(resizingRooms)
@@ -91,8 +91,8 @@ class ResizeController(
         // 2. Test which face we hit on it
         pickedNode?.apply {
             minDistance = Float.MAX_VALUE
-            for (face in aabb.faces) {
-                val hit = camera.projectToAABox(posX, posY, face.min, face.max, result)
+            for (face in box.faces) {
+                val hit = camera.projectToBox(posX, posY, face, result)
                 if (hit && result.x < minDistance) {
                     minDistance = result.x
                     pickedFace = face
@@ -131,9 +131,7 @@ class ResizeController(
             }
             resizeBuilder?.dragFace(face.dir, delta, symmetric)
             pickedNode?.run {
-                // update face instance
-                aabb.updateFaces()
-                pickedFace = aabb.faces[face.dir.ordinal]
+                // update the highlight position
                 app.highlightFace(pickedFace)
             }
         }

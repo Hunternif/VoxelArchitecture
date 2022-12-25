@@ -1,8 +1,8 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
+import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
-import hunternif.voxarch.editor.util.AABBFace
 import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import org.lwjgl.opengl.GL33.*
@@ -16,7 +16,7 @@ class ResizeNodeModel : BaseModel() {
 
     override val shader = SolidColorShader(0xffffff, 0.2f)
 
-    var face: AABBFace? = null
+    var face: BoxFace? = null
         set(value) {
             if (field != value) {
                 field = value
@@ -31,13 +31,17 @@ class ResizeNodeModel : BaseModel() {
         }
     }
 
+    fun update() {
+        uploadVertexData()
+    }
+
     private fun uploadVertexData() {
         bufferSize = if (face != null) 4 * 3 else 0
 
         vertexBuffer.prepare(bufferSize).run {
             // Store line positions in the vertex buffer
             face?.apply {
-                vertices.forEach { put(it) }
+                quadVertices.forEach { put(it) }
                 flip() // rewind
             }
         }
