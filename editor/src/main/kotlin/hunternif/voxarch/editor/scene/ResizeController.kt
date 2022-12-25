@@ -106,17 +106,9 @@ class ResizeController(
 
     override fun drag(posX: Float, posY: Float) {
         pickedFace?.let { face ->
-            when (face.dir) {
-                POS_X, NEG_X -> dragWorldPos.set(
-                    camera.projectToX(posX, posY, dragStartWorldPos)
-                )
-                POS_Y, NEG_Y -> dragWorldPos.set(
-                    camera.projectToY(posX, posY, dragStartWorldPos)
-                )
-                POS_Z, NEG_Z -> dragWorldPos.set(
-                    camera.projectToZ(posX, posY, dragStartWorldPos)
-                )
-            }
+            dragWorldPos.set(
+                camera.projectToAxis(posX, posY, face.normal, dragStartWorldPos)
+            )
             // round() so that it snaps to grid
             translation.set(dragWorldPos).sub(dragStartWorldPos).round()
             val delta = translation.run {

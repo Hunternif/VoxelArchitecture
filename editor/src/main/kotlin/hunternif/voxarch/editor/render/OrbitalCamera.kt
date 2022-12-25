@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.render
 
 import hunternif.voxarch.editor.scene.MouseListener
 import hunternif.voxarch.editor.scene.models.box.BoxMesh
+import hunternif.voxarch.editor.util.AADirection3D
 import hunternif.voxarch.util.clamp
 import org.joml.*
 import org.joml.Math.*
@@ -33,6 +34,7 @@ class OrbitalCamera : MouseListener {
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val projectedWorldPos: Vector3f = Vector3f()
     private val planeNormal: Vector3f = Vector3f()
+    private val dirNormal: Vector3f = Vector3f()
     private val pos4: Vector4f = Vector4f()
     private val screenPos: Vector2f = Vector2f()
 
@@ -225,64 +227,29 @@ class OrbitalCamera : MouseListener {
      * Used for dragging voxels vertically.
      * [posX], [posY] are screen coordinates relative to window (not viewport).
      */
-    fun projectToY(posX: Float, posY: Float, point: Vector3f): Vector3f {
-        unprojectPoint(posX, posY)
-        // create the plane normal
-        planeNormal.apply {
-            set(pointRayDir)
-            y = 0f
-            normalize()
-            negate()
-        }
-        val t = Intersectionf.intersectRayPlane(
-            pointRayOrigin,
-            pointRayDir,
-            point,
-            planeNormal,
-            1E-5f
-        )
-        projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
-        return projectedWorldPos
-    }
+    fun projectToY(posX: Float, posY: Float, point: Vector3f): Vector3f =
+        projectToAxis(posX, posY, AADirection3D.POS_Y.vec, point)
 
     /**
-     * Projects screen coordinates to world coordinates on a horizontal plane
-     * running through [point] and away from the camera along the X axis.
-     * Used for dragging voxels horizontally.
+     * Projects screen coordinates to world coordinates on a plane that's
+     * almost parallel to the screen, running through [point] and away from
+     * the camera along [dir].
+     * Used for dragging voxels along the XYZ axes.
      * [posX], [posY] are screen coordinates relative to window (not viewport).
+     * [dir] is the direction of the axis.
      */
-    fun projectToX(posX: Float, posY: Float, point: Vector3f): Vector3f {
+    fun projectToAxis(posX: Float, posY: Float, dir: Vector3fc, point: Vector3f): Vector3f {
         unprojectPoint(posX, posY)
-        // create the plane normal
-        planeNormal.apply {
-            set(pointRayDir)
-            x = 0f
+        // normalize [dir]
+        dirNormal.apply {
+            set(dir)
             normalize()
-            negate()
         }
-        val t = Intersectionf.intersectRayPlane(
-            pointRayOrigin,
-            pointRayDir,
-            point,
-            planeNormal,
-            1E-5f
-        )
-        projectedWorldPos.set(pointRayDir).mul(t).add(pointRayOrigin)
-        return projectedWorldPos
-    }
-
-    /**
-     * Projects screen coordinates to world coordinates on a horizontal plane
-     * running through [point] and away from the camera along the Z axis.
-     * Used for dragging voxels horizontally.
-     * [posX], [posY] are screen coordinates relative to window (not viewport).
-     */
-    fun projectToZ(posX: Float, posY: Float, point: Vector3f): Vector3f {
-        unprojectPoint(posX, posY)
         // create the plane normal
         planeNormal.apply {
             set(pointRayDir)
-            z = 0f
+            // remove the normal component along [dir]
+            sub(dirNormal.mul(this.dot(dirNormal)))
             normalize()
             negate()
         }
@@ -370,13 +337,14 @@ class OrbitalCamera : MouseListener {
     }
 
     /**
-     * Unproject the given screen coordinates to world coordinates.
+     * Unproject the given SCREEN coordinates to world coordinates.
      * Screen coordinates are assumed to be global, e.g. not accounting for
      * the viewport.
      * The result will be stored in [pointRayOrigin] and [pointRayDir].
      * [posX], [posY] are screen coordinates relative to window (not viewport).
+     * @return [pointRayOrigin]
      */
-    private fun unprojectPoint(posX: Float, posY: Float) {
+    private fun unprojectPoint(posX: Float, posY: Float): Vector3f {
         vpMat.unprojectRay(
             posX - vp.x,
             vp.height - posY + vp.y,
@@ -384,6 +352,7 @@ class OrbitalCamera : MouseListener {
             pointRayOrigin,
             pointRayDir
         )
+        return pointRayOrigin
     }
 
     /** Returns screen coordinates of the given point, relative to viewport. */

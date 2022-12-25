@@ -67,6 +67,15 @@ class BoxFace(
     val dir: AADirection3D,
     val quadVertices: Array<out Vector3f>,
 ) : BoxMesh() {
+    val normal: Vector3f = Vector3f(dir.vec)
+
+    override fun updateMesh() {
+        super.updateMesh()
+        normal.set(dir.vec)
+        val m = Matrix4f().rotateY(angleY.toRadians())
+        normal.mulProject(m)
+    }
+
     companion object {
         fun new(
             dir: AADirection3D,
