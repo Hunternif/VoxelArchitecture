@@ -7,14 +7,25 @@ import kotlin.math.min
 
 /** AABB that snaps to integer coordinates, but its edges are at 0.5 offset. */
 open class VoxelAABBf {
-    var minX: Int = 0
-    var maxX: Int = 0
-    var minY: Int = 0
-    var maxY: Int = 0
-    var minZ: Int = 0
-    var maxZ: Int = 0
+    var minX: Int = Int.MAX_VALUE
+    var minY: Int = Int.MAX_VALUE
+    var minZ: Int = Int.MAX_VALUE
+    var maxX: Int = Int.MIN_VALUE
+    var maxY: Int = Int.MIN_VALUE
+    var maxZ: Int = Int.MIN_VALUE
     
     private val edgeAABB = AABBf()
+
+    /** Resets min and max to infinity */
+    fun reset() {
+        edgeAABB.reset()
+        minX =  Int.MAX_VALUE
+        minY =  Int.MAX_VALUE
+        minZ =  Int.MAX_VALUE
+        maxX =  Int.MIN_VALUE
+        maxY =  Int.MIN_VALUE
+        maxZ =  Int.MIN_VALUE
+    }
 
     fun set(other: VoxelAABBf) {
         minX = other.minX

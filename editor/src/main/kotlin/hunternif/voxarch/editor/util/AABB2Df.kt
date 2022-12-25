@@ -6,10 +6,18 @@ import kotlin.math.min
 
 /** Axis-aligned bounding box in 2D, e.g. in screen coordinates. */
 class AABB2Df {
-    var minX: Float = 0f
-    var maxX: Float = 0f
-    var minY: Float = 0f
-    var maxY: Float = 0f
+    var minX: Float = Float.POSITIVE_INFINITY
+    var minY: Float = Float.POSITIVE_INFINITY
+    var maxX: Float = Float.NEGATIVE_INFINITY
+    var maxY: Float = Float.NEGATIVE_INFINITY
+
+    /** Resets min and max to infinity */
+    fun reset() {
+        minX = Float.POSITIVE_INFINITY
+        minY = Float.POSITIVE_INFINITY
+        maxX = Float.NEGATIVE_INFINITY
+        maxY = Float.NEGATIVE_INFINITY
+    }
 
     fun setMin(x: Float, y: Float) {
         minX = x

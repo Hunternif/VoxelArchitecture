@@ -65,6 +65,16 @@ fun Vector3f.fromFloorToVoxCoords() = Vector3i(
     round(z).toInt()
 )
 
+/** Resets min and max to infinity */
+fun AABBf.reset() {
+    minX = Float.POSITIVE_INFINITY
+    minY = Float.POSITIVE_INFINITY
+    minZ = Float.POSITIVE_INFINITY
+    maxX = Float.NEGATIVE_INFINITY
+    maxY = Float.NEGATIVE_INFINITY
+    maxZ = Float.NEGATIVE_INFINITY
+}
+
 data class Vertex(
     val pos: Vector3f,
     val normal: Vector3f,
