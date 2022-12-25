@@ -10,10 +10,9 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.AADirection3D.*
-import hunternif.voxarch.editor.util.max
-import hunternif.voxarch.editor.util.min
 import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.plan.findGlobalPosition
+import org.joml.AABBf
 import org.joml.Vector2i
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -113,12 +112,12 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun lookAtObjects(objs: Collection<SceneObject>) {
-        val minCorner = Vector3f(Float.MAX_VALUE, Float.MAX_VALUE, Float.MAX_VALUE)
-        val maxCorner = Vector3f(-Float.MAX_VALUE, -Float.MAX_VALUE, -Float.MAX_VALUE)
+        val aabb = AABBf()
         for (obj in objs) {
-            minCorner.set(min(minCorner, obj.aabb.start))
-            maxCorner.set(max(maxCorner, obj.aabb.end))
+            aabb.union(obj.box.aabb)
         }
+        val minCorner = aabb.run { Vector3f(minX, minY, minZ) }
+        val maxCorner = aabb.run { Vector3f(maxX, maxY, maxZ) }
         val center = Vector3f(minCorner).add(maxCorner).mul(0.5f)
         camera.setPosition(center)
         camera.zoomToFitBox(minCorner, maxCorner, true)

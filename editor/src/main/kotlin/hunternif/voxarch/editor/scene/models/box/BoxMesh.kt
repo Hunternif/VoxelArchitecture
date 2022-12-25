@@ -4,7 +4,9 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.AABB2Df
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.reset
 import hunternif.voxarch.util.toRadians
+import org.joml.AABBf
 import org.joml.Matrix4f
 import org.joml.Vector3f
 
@@ -22,6 +24,9 @@ open class BoxMesh(
     var angleY: Float = 0f,
     var color: ColorRGBa = Colors.defaultNodeBox,
 ) {
+    /** Axis-aligned bounding box, accounting for rotation. */
+    val aabb: AABBf = AABBf()
+
     /** AABB in screen coordinates relative to viewport. */
     val screenAABB: AABB2Df = AABB2Df()
 
@@ -46,7 +51,11 @@ open class BoxMesh(
             .translation(center)
             .rotateY(angleY.toRadians())
             .scale(size.x / 2, size.y / 2, size.z / 2)
-        vertices.forEach { it.mulProject(m) }
+        aabb.reset()
+        vertices.forEach {
+            it.mulProject(m)
+            aabb.union(it)
+        }
     }
 
     /** Recalculate on-screen 2D AABB. */
