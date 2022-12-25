@@ -55,7 +55,7 @@ class ResizeController(
         pickedFace?.let { face ->
             dragging = true
             // set start position:
-            camera.projectToBox(mouseX, mouseY, face.min, face.max, Vector2f(),
+            camera.projectToAABox(mouseX, mouseY, face.min, face.max, Vector2f(),
                 dragStartWorldPos
             )
             resizeBuilder = app.resizeBuilder(resizingRooms)
@@ -81,7 +81,7 @@ class ResizeController(
         pickedNode = null
         for (obj in app.state.selectedObjects) {
             if (obj !is SceneNode) continue
-            val hit = camera.projectToBox(posX, posY, obj.aabb.start, obj.aabb.end, result)
+            val hit = camera.projectToBox(posX, posY, obj.box, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 pickedNode = obj
@@ -92,7 +92,7 @@ class ResizeController(
         pickedNode?.apply {
             minDistance = Float.MAX_VALUE
             for (face in aabb.faces) {
-                val hit = camera.projectToBox(posX, posY, face.min, face.max, result)
+                val hit = camera.projectToAABox(posX, posY, face.min, face.max, result)
                 if (hit && result.x < minDistance) {
                     minDistance = result.x
                     pickedFace = face

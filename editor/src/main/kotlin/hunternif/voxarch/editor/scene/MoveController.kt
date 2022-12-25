@@ -83,7 +83,7 @@ class MoveController(
         var minDistance = Float.MAX_VALUE
         var hitObj: SceneObject? = null
         for (obj in movingList) {
-            val hit = camera.projectToBox(mouseX, mouseY, obj.aabb.start, obj.aabb.end, result)
+            val hit = camera.projectToBox(mouseX, mouseY, obj.box, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 hitObj = obj

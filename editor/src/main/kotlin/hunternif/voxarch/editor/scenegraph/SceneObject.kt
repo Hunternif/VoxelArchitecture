@@ -67,10 +67,10 @@ open class SceneObject(
         box.updateMesh()
     }
 
-    /** Recalculate on-screen 2D AABB. */
-    fun updateAABB(camera: OrbitalCamera) {
+    /** Recalculate on-screen 2D coordinates. */
+    fun updateScreenProjection(camera: OrbitalCamera) {
         aabb.updateAABB(camera)
-        box.updateAABB(camera)
+        box.updateScreenProjection(camera)
     }
 
     private val strRepr: String by lazy { "${javaClass.simpleName} $id" }

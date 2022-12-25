@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.render
 
 import hunternif.voxarch.editor.scene.MouseListener
+import hunternif.voxarch.editor.scene.models.box.BoxMesh
 import hunternif.voxarch.util.clamp
 import org.joml.*
 import org.joml.Math.*
@@ -304,7 +305,7 @@ class OrbitalCamera : MouseListener {
      *      points.
      * Optional [resultNearPoint] stores the near intersection point.
      */
-    fun projectToBox(
+    fun projectToAABox(
         posX: Number,
         posY: Number,
         aabMin: Vector3f,
@@ -321,6 +322,46 @@ class OrbitalCamera : MouseListener {
             resultDistance
         )
         if (hit) {
+            resultNearPoint?.apply {
+                set(pointRayDir).mul(resultDistance.x).add(pointRayOrigin)
+            }
+        }
+        return hit
+    }
+
+    /**
+     * Projects point onto a box. Returns true if the point hits the AAB.
+     * [posX], [posY] are screen coordinates relative to window (not viewport).
+     * [resultDistance] stores the distances to the near and far intersection
+     *      points.
+     * Optional [resultNearPoint] stores the near intersection point.
+     */
+    fun projectToBox(
+        posX: Number,
+        posY: Number,
+        box: BoxMesh,
+        resultDistance: Vector2f = screenPos,
+        resultNearPoint: Vector3f? = null,
+    ): Boolean {
+        unprojectPoint(posX.toFloat(), posY.toFloat())
+        var hit = false
+        var tNear = Float.POSITIVE_INFINITY
+        var tFar = Float.NEGATIVE_INFINITY
+        box.triangles.forEach {
+            val distance = Intersectionf.intersectRayTriangle(
+                pointRayOrigin,
+                pointRayDir,
+                it.p1, it.p2, it.p3,
+                0.1f
+            )
+            if (distance > -1f) {
+                hit = true
+                tNear = min(distance, tNear)
+                tFar = max(distance, tFar)
+            }
+        }
+        if (hit) {
+            resultDistance.set(tNear, tFar)
             resultNearPoint?.apply {
                 set(pointRayDir).mul(resultDistance.x).add(pointRayOrigin)
             }

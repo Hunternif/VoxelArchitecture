@@ -43,6 +43,7 @@ class Points2DModel : BaseModel() {
     override fun render() {
         glDisable(GL_DEPTH_TEST)
 
+        glPointSize(4f)
         glDrawArrays(GL_POINTS, 0, points.size)
 
         glEnable(GL_DEPTH_TEST)

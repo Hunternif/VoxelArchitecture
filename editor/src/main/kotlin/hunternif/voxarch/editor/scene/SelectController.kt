@@ -5,9 +5,10 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.gui.Timer
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectController.Mode.*
+import hunternif.voxarch.editor.scene.models.Points2DModel
 import hunternif.voxarch.editor.scene.models.SelectionMarqueeModel
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import org.joml.Vector3f
+import org.joml.Vector2f
 import org.lwjgl.glfw.GLFW.*
 import kotlin.math.max
 import kotlin.math.min
@@ -27,6 +28,10 @@ class SelectController(
     /** Optimization: size of step in pixels when testing whether an object
      * falls within the marquee rectangle. */
     private val marqueeTestStep = 8
+    val pointsDebugModel = Points2DModel()
+
+    /** Whether to display debug dots */
+    private val DEBUG_SELECT = false
 
     // corners of the marquee, relative to viewport
     private var minX = 0
@@ -66,6 +71,8 @@ class SelectController(
             mode = SUBTRACT
             origSelectedSet.addAll(app.state.selectedObjects)
         }
+        if (DEBUG_SELECT) pointsDebugModel.points.clear()
+        if (DEBUG_SELECT) pointsDebugModel.update()
         selectedSet.clear()
         selectionBuilder = app.selectionBuilder()
     }
@@ -117,8 +124,14 @@ class SelectController(
             maxY = max(marqueeModel.start.y, marqueeModel.end.y).toInt()
 
             selectedSet.clear()
+            if (DEBUG_SELECT) pointsDebugModel.points.clear()
 
             for (obj in app.state.sceneObjects) {
+                obj.box.screenTriangles.forEach {
+                    debugPoint(it.p1)
+                    debugPoint(it.p2)
+                    debugPoint(it.p3)
+                }
                 if (obj in selectedSet || obj in app.state.hiddenObjects) continue
                 if (isAABBOutsideMarquee(obj)) {
                     onMissObject(obj)
@@ -130,8 +143,8 @@ class SelectController(
                 }
                 hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
                     for (y in minY..maxY step marqueeTestStep) {
-                        val end = Vector3f(obj.aabb.start).add(obj.aabb.size)
-                        if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.aabb.start, end)) {
+                        debugPoint(x, y)
+                        if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.box)) {
                             onHitObject(obj)
                             break@hitTestLoop
                         } else {
@@ -141,6 +154,7 @@ class SelectController(
                 }
             }
         }
+        if (DEBUG_SELECT) pointsDebugModel.update()
     }
 
     /** When the selection marquee includes [obj] */
@@ -166,24 +180,31 @@ class SelectController(
         }
     }
 
+    private fun debugPoint(p: Vector2f) {
+        if (DEBUG_SELECT) pointsDebugModel.points.add(p)
+    }
+    private fun debugPoint(x: Number, y: Number) {
+        debugPoint(Vector2f(x.toFloat(), y.toFloat()))
+    }
+
     /** Returns true if the screen AABB is completely outside the marquee. */
     private fun isAABBOutsideMarquee(obj: SceneObject) =
-        obj.screenAABB.maxX < minX ||
-        obj.screenAABB.maxY < minY ||
-        obj.screenAABB.minX > maxX ||
-        obj.screenAABB.minY > maxY
+        obj.box.screenAABB.maxX < minX ||
+        obj.box.screenAABB.maxY < minY ||
+        obj.box.screenAABB.minX > maxX ||
+        obj.box.screenAABB.minY > maxY
 
     /** Returns true if the screen AABB is entirely contained inside the marquee. */
     private fun isAABBInsideMarquee(obj: SceneObject) =
-        obj.screenAABB.minX >= minX &&
-        obj.screenAABB.minY >= minY &&
-        obj.screenAABB.maxX <= maxX &&
-        obj.screenAABB.maxY <= maxY
+        obj.box.screenAABB.minX >= minX &&
+        obj.box.screenAABB.minY >= minY &&
+        obj.box.screenAABB.maxX <= maxX &&
+        obj.box.screenAABB.maxY <= maxY
 
     /** Updates AABBs of all objects in the scene. */
     private fun updateAABBs() {
         app.state.sceneObjects.forEach {
-            it.updateAABB(camera)
+            it.updateScreenProjection(camera)
         }
     }
 }

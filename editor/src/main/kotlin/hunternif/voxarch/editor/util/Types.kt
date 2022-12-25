@@ -94,6 +94,18 @@ data class Edge(
     val end: Vector3f,
 )
 
+data class Triangle(
+    val p1: Vector3f,
+    val p2: Vector3f,
+    val p3: Vector3f,
+)
+
+data class Triangle2D(
+    val p1: Vector2f,
+    val p2: Vector2f,
+    val p3: Vector2f,
+)
+
 enum class AADirection3D(val vec: Vector3fc) {
     POS_X(Vector3f(1f, 0f, 0f)),
     POS_Y(Vector3f(0f, 1f, 0f)),

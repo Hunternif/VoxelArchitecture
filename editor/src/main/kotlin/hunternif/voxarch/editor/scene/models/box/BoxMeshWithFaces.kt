@@ -17,12 +17,12 @@ class BoxMeshWithFaces(
     /** Thickness of a face. */
     private val w = 0.1f
 
-    val facePosX = BoxFace(POS_X)
-    val facePosY = BoxFace(POS_Y)
-    val facePosZ = BoxFace(POS_Z)
-    val faceNegX = BoxFace(NEG_X)
-    val faceNegY = BoxFace(NEG_Y)
-    val faceNegZ = BoxFace(NEG_Z)
+    private val facePosX = BoxFace(POS_X)
+    private val facePosY = BoxFace(POS_Y)
+    private val facePosZ = BoxFace(POS_Z)
+    private val faceNegX = BoxFace(NEG_X)
+    private val faceNegY = BoxFace(NEG_Y)
+    private val faceNegZ = BoxFace(NEG_Z)
 
     /** A thin lid attached to each face, facing outwards. */
     val faces: Array<BoxFace> = arrayOf(
