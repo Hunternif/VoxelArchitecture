@@ -1,6 +1,8 @@
 package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.util.add
+import hunternif.voxarch.editor.util.set
 import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
@@ -24,7 +26,12 @@ class SceneVoxelGroup(
     }
 
     override fun update() {
-        super.update()
+        box.center.set(origin)
+            .add(data.minX, data.minY, data.minZ)
+            .add(data.sizeVec.toVec3() / 2)
+            .add(-0.5, -0.5, -0.5)
+        box.size.set(data.sizeVec)
+        box.updateMesh()
         aabb.wrapVoxels(
             origin.toVec3() + Vec3(data.minX, data.minY, data.minZ),
             data.sizeVec.toVec3()

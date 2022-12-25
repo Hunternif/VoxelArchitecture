@@ -14,7 +14,10 @@ fun Vec3.toVector3i() = Vector3i(x.toInt(), y.toInt(), z.toInt())
 fun Vec3.toVector3f() = Vector3f(x.toFloat(), y.toFloat(), z.toFloat())
 
 fun Vector3f.set(v: Vec3): Vector3f = set(v.x, v.y, v.z)
+fun Vector3f.set(v: IntVec3): Vector3f = set(v.x.toFloat(), v.y.toFloat(), v.z.toFloat())
 fun Vector3f.add(v: Vec3): Vector3f = add(v.x.toFloat(), v.y.toFloat(), v.z.toFloat())
+fun Vector3f.add(v: IntVec3): Vector3f = add(v.x.toFloat(), v.y.toFloat(), v.z.toFloat())
+fun Vector3f.add(x: Number, y: Number, z: Number): Vector3f = add(x.toFloat(), y.toFloat(), z.toFloat())
 fun Vector3f.sub(v: Vec3): Vector3f = sub(v.x.toFloat(), v.y.toFloat(), v.z.toFloat())
 fun Vec3.set(v: Vector3f): Vec3 = set(v.x, v.y, v.z)
 

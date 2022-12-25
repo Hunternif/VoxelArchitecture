@@ -42,10 +42,39 @@ public class IntVec3 {
 		return new IntVec3(x + dx, y + dy, z + dz);
 	}
 
+	/** Modifies and returns itself. */
+	public IntVec3 addLocal(int dx, int dy, int dz) {
+		this.x += dx;
+		this.y += dy;
+		this.z += dz;
+		return this;
+	}
+
 	public IntVec3 subtract(IntVec3 p) {
 		return new IntVec3(x - p.x, y - p.y, z - p.z);
 	}
-	
+
+	/** Modifies and returns itself. */
+	public IntVec3 subtractLocal(double dx, double dy, double dz) {
+		this.x -= dx;
+		this.y -= dy;
+		this.z -= dz;
+		return this;
+	}
+
+	/** Returns a new vector. */
+	public IntVec3 multiply(double m) {
+		return new IntVec3(x*m, y*m, z*m);
+	}
+
+	/** Modifies and returns itself. */
+	public IntVec3 multiplyLocal(double m) {
+		this.x *= m;
+		this.y *= m;
+		this.z *= m;
+		return this;
+	}
+
 	@Override
 	public String toString() {
 		return "(" + x + ", " + y + ", " + z + ")";
@@ -86,7 +115,36 @@ public class IntVec3 {
 	public IntVec2 toXZ() {
 		return new IntVec2(x, z);
 	}
+
 	public Vec3 toVec3() {
 		return new Vec3(x, y, z);
+	}
+
+	public IntVec3 unaryMinus() {
+		return multiply(-1);
+	}
+
+	public IntVec3 plus(IntVec3 vec) {
+		return add(vec);
+	}
+
+	public IntVec3 minus(IntVec3 vec) {
+		return subtract(vec);
+	}
+
+	public IntVec3 times(double t) {
+		return new IntVec3(x * t, y * t, z * t);
+	}
+
+	public IntVec3 div(double t) {
+		return new IntVec3(x / t, y / t, z / t);
+	}
+
+	public IntVec3 times(int t) {
+		return new IntVec3(x * t, y * t, z * t);
+	}
+
+	public IntVec3 div(int t) {
+		return new IntVec3(x / t, y / t, z / t);
 	}
 }
