@@ -78,6 +78,17 @@ class FileSpecTest : BaseActionTest() {
         val zipfsTest = newZipFileSystem(testPath)
         zipfsRef.use {
             zipfsTest.use {
+                // for comparing entire file tree recursively:
+//                val refFiles = Files.walk(zipfsRef.getPath("/"), 2)
+//                    .filter { it.isRegularFile() }
+//                    .collect(Collectors.toList())
+//                refFiles.forEach {
+//                    assertTextFilesEqual(it, zipfsTest.getPath(it.toString()))
+//                }
+                assertTextFilesEqual(
+                    zipfsRef.getPath("/metadata.yaml"),
+                    zipfsTest.getPath("/metadata.yaml")
+                )
                 assertTextFilesEqual(
                     zipfsRef.getPath("/scenetree.xml"),
                     zipfsTest.getPath("/scenetree.xml")

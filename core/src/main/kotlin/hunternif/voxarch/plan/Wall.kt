@@ -44,6 +44,7 @@ open class Wall(
     protected val direction: Vec3 = Vec3(0, 0, 0)
 
     init {
+        //TODO move this to an extra constructor
         length = origin.toXZ().distanceTo(end.toXZ())
         height = end.y - origin.y
         rotationY = MathUtil.atan2Deg(-end.z + origin.z, end.x - origin.x)

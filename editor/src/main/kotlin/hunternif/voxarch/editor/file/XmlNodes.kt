@@ -28,7 +28,14 @@ import hunternif.voxarch.vector.Vec3
 @JacksonXmlRootElement(localName = "node")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-abstract class XmlNode {
+abstract class XmlNode(
+    @field:JacksonXmlProperty(isAttribute = true)
+    var origin: Vec3 = Vec3.ZERO,
+    @field:JacksonXmlProperty(isAttribute = true)
+    var size: Vec3 = Vec3.ZERO,
+    @field:JacksonXmlProperty(isAttribute = true)
+    var rotationY: Double = 0.0,
+) {
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "tag")
     var tags = mutableListOf<String>()
@@ -38,39 +45,38 @@ abstract class XmlNode {
 }
 
 class XmlStructure(
-    @field:JacksonXmlProperty(isAttribute = true)
-    var origin: Vec3 = Vec3.ZERO,
-) : XmlNode()
+    origin: Vec3 = Vec3.ZERO,
+    rotationY: Double = 0.0,
+) : XmlNode(origin, rotationY = rotationY)
 
 open class XmlRoom(
-    @field:JacksonXmlProperty(isAttribute = true)
-    var origin: Vec3 = Vec3.ZERO,
-    @field:JacksonXmlProperty(isAttribute = true)
-    var size: Vec3 = Vec3.ZERO,
+    origin: Vec3 = Vec3.ZERO,
+    size: Vec3 = Vec3.ZERO,
     @field:JacksonXmlProperty(isAttribute = true)
     var start: Vec3 = Vec3.ZERO,
     @field:JacksonXmlProperty(isAttribute = true)
     var centered: Boolean = true,
-) : XmlNode()
+    rotationY: Double = 0.0,
+) : XmlNode(origin, size, rotationY)
 
 class XmlPolyRoom(
     origin: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
     start: Vec3 = Vec3.ZERO,
     centered: Boolean = true,
+    rotationY: Double = 0.0,
     @field:JacksonXmlProperty(isAttribute = true)
     var shape: PolyShape = PolyShape.SQUARE,
     var polygon: XmlPath = XmlPath()
-) : XmlRoom(origin, size, start, centered)
+) : XmlRoom(origin, size, start, centered, rotationY)
 
 class XmlWall(
-    @field:JacksonXmlProperty(isAttribute = true)
-    var start: Vec3 = Vec3.ZERO,
-    @field:JacksonXmlProperty(isAttribute = true)
-    var end: Vec3 = Vec3.ZERO,
+    origin: Vec3 = Vec3.ZERO,
+    size: Vec3 = Vec3.ZERO,
+    rotationY: Double = 0.0,
     @field:JacksonXmlProperty(isAttribute = true)
     var transparent: Boolean = false
-) : XmlNode()
+) : XmlNode(origin, size, rotationY)
 
 class XmlFloor(
     @field:JacksonXmlProperty(isAttribute = true)
@@ -78,26 +84,26 @@ class XmlFloor(
 ) : XmlNode()
 
 class XmlPath(
+    origin: Vec3 = Vec3.ZERO,
+    rotationY: Double = 0.0,
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "point")
     var points: List<Vec3>? = null,
-    @field:JacksonXmlProperty(isAttribute = true)
-    var origin: Vec3? = null,
-) : XmlNode()
+) : XmlNode(origin, rotationY = rotationY)
 
 
 internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf())
 /** Maps to XML without mapping any of the children. */
 internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
     val xmlNode = when (this) {
-        is Structure -> XmlStructure(origin)
-        is PolyRoom -> XmlPolyRoom(origin, size, start, isCentered(),
+        is Structure -> XmlStructure(origin, rotationY)
+        is PolyRoom -> XmlPolyRoom(origin, size, start, isCentered(), rotationY,
             shape, polygon.mapToXmlNode() as XmlPath
         )
-        is Room -> XmlRoom(origin, size, start, isCentered())
-        is Wall -> XmlWall(origin, end, transparent)
+        is Room -> XmlRoom(origin, size, start, isCentered(), rotationY)
+        is Wall -> XmlWall(origin, size, rotationY, transparent)
         is Floor -> XmlFloor(origin.y)
-        is Path -> XmlPath(points, origin)
+        is Path -> XmlPath(origin, rotationY, points)
         else -> null
     }
     xmlNode?.tags?.addAll(tags)
@@ -127,16 +133,22 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
         is XmlStructure -> Structure(origin)
         is XmlPolyRoom -> PolyRoom(origin, size).also {
             if (!centered) it.start = start
+            it.rotationY = rotationY
             it.shape = shape
             it.polygon.addPoints(polygon.points ?: emptyList())
         }
         is XmlRoom -> Room(origin, size).also {
             if (!centered) it.start = start
+            it.rotationY = rotationY
         }
-        is XmlWall -> Wall(start, end, transparent)
+        is XmlWall -> Wall(origin, origin + size, transparent).also {
+            it.size = size
+            it.rotationY = rotationY
+        }
         is XmlFloor -> Floor(y)
-        is XmlPath -> Path(origin ?: Vec3.ZERO).also {
+        is XmlPath -> Path(origin).also {
             it.addPoints(points ?: emptyList())
+            it.rotationY = rotationY
         }
         else -> null
     } ?: return null
