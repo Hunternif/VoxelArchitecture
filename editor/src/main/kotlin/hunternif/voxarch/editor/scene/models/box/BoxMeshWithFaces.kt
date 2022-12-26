@@ -1,7 +1,9 @@
 package hunternif.voxarch.editor.scene.models.box
 
+import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.AADirection3D
 import hunternif.voxarch.editor.util.AADirection3D.*
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -13,7 +15,8 @@ class BoxMeshWithFaces(
     center: Vector3f = Vector3f(),
     size: Vector3f = Vector3f(),
     angleY: Float = 0f,
-) : BoxMesh(center, size, angleY) {
+    color: ColorRGBa = Colors.defaultNodeBox,
+) : BoxMesh(center, size, angleY, color) {
     /** Thickness of a face. */
     private val w = 0.1f
 

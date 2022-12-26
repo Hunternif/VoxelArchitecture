@@ -39,7 +39,7 @@ open class SceneObject(
     val aabb = AABBoxMesh(color = color)
 
     /** More accurate bounding box with rotation. */
-    val box = BoxMeshWithFaces(center, size, angleY.toRadians())
+    val box = BoxMeshWithFaces(center, size, angleY.toRadians(), color)
 
     /** AABB in screen coordinates relative to viewport. */
     val screenAABB: AABB2Df get() = aabb.screenAABB
