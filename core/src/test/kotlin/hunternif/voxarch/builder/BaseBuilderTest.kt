@@ -77,6 +77,7 @@ abstract class BaseBuilderTest(
         const val ID_WALL_DECO = "4"
 
         val DEFAULT_ENV = object : Environment {
+            override val minY: Int = 0
             override fun isTerrain(block: BlockData?): Boolean = true
             override fun shouldBuildThrough(block: BlockData?): Boolean = false
         }

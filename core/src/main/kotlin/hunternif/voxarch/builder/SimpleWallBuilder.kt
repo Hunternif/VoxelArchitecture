@@ -25,10 +25,12 @@ open class SimpleWallBuilder(
             for (x in 0 .. length) {
                 var y = -1
                 while(true) {
-                    val b = localWorld.getBlock(x, y, 0)
+                    val p = trans.transform(x, y, 0)
+                    if (p.y < context.env.minY) break
+                    val b = world.getBlock(p)
                     if (b != null && !context.env.shouldBuildThrough(b)) break
                     val block = context.materials.get(material)
-                    localWorld.setBlock(x, y, 0, block)
+                    world.setBlock(p, block)
                     y--
                 }
             }

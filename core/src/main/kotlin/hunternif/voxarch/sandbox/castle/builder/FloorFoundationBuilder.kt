@@ -36,7 +36,7 @@ class FloorFoundationBuilder(
         context: BuildContext
     ) {
         var dy = 0
-        while(true) {
+        while(y + dy >= context.env.minY) {
             val b = world.getBlock(x, y + dy, z)
             if (b != null && !context.env.shouldBuildThrough(b)) break
             val block = context.materials.get(material)
