@@ -9,7 +9,7 @@ import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.plan.Room
 import org.junit.Test
 
-class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
+class DomExtendSnapshotTest : BaseSnapshotTest(16, 10, 16) {
     @Test
     fun `extend room NSWE`() {
         testDirections(true, true, true, true)
@@ -43,11 +43,11 @@ class DomExtendSnapshotTest : BaseSnapshotTest(12, 10, 12) {
     ) {
         val style = defaultStyle.add {
             style("base") {
-                position(5.vx, 0.vx, 5.vx)
+                position(7.vx, 0.vx, 7.vx)
                 size(4.vx, 2.vx, 3.vx)
             }
             style("child") {
-                length { 2.vx }
+                width { 2.vx }
             }
         }
         val child = DomNodeBuilder { Room() }.apply {
