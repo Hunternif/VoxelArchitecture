@@ -54,7 +54,7 @@ fun Node.findAABB(trans: ITransformation): AABB {
         aabb.union(trans.transform(b.first))
         aabb.union(trans.transform(b.second))
     }
-    aabb.maxY += height // we assume Y is always up
+    aabb.maxY = aabb.minY + height // we assume Y is always up
     aabb.correctBounds()
     return aabb
 }
@@ -62,18 +62,25 @@ fun Node.findAABB(trans: ITransformation): AABB {
 /**
  * See [findAABB], determines transformation by traversing parent tree.
  */
-fun Node.findAABB(): AABB {
+fun Node.findGlobalAABB(): AABB {
     val trans = LinearTransformation()
     trans.translate(findGlobalPosition())
     trans.rotateY(findGlobalRotation())
     return findAABB(trans)
 }
 
-/** See [findAABB] */
-fun Node.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAABB()
+/**
+ * Finds AABB of this node relative to its parent, accounting for rotation.
+ */
+fun Node.findLocalAABB(): AABB {
+    val trans = LinearTransformation()
+    trans.translate(origin)
+    trans.rotateY(rotationY)
+    return findAABB(trans)
+}
 
 /** See [findAABB] */
-fun Node.findIntAABB(): IntAABB = findAABB().toIntAABB()
+fun Node.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAABB()
 
 
 /** Finds children in the subtree matching the given class and tags. */

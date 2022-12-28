@@ -6,13 +6,14 @@ import kotlin.math.max
 import kotlin.math.min
 
 /** Axis-aligned bounding box in 3D, in integer coordinates. */
-class IntAABB {
-    var minX: Int = Int.MAX_VALUE
-    var minY: Int = Int.MAX_VALUE
-    var minZ: Int = Int.MAX_VALUE
-    var maxX: Int = Int.MIN_VALUE
-    var maxY: Int = Int.MIN_VALUE
-    var maxZ: Int = Int.MIN_VALUE
+data class IntAABB(
+    var minX: Int = Int.MAX_VALUE,
+    var minY: Int = Int.MAX_VALUE,
+    var minZ: Int = Int.MAX_VALUE,
+    var maxX: Int = Int.MIN_VALUE,
+    var maxY: Int = Int.MIN_VALUE,
+    var maxZ: Int = Int.MIN_VALUE,
+) {
 
     fun setMin(x: Int, y: Int, z: Int) {
         minX = x

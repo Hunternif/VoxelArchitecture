@@ -3,8 +3,11 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.util.ellipse
 import hunternif.voxarch.util.assertVec3Equals
 import hunternif.voxarch.util.rectangle
+import hunternif.voxarch.vector.AABB
+import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.LinearTransformation
 import hunternif.voxarch.vector.Vec3
+import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.math.sqrt
@@ -180,13 +183,13 @@ class NodeExtensionTest {
         )
         val trans = LinearTransformation()
             .translate(room.origin)
+        val ref = IntAABB(1, 2, 3, 10, 20, 30)
         val aabb = room.findIntAABB(trans)
-        assertEquals(1, aabb.minX)
-        assertEquals(2, aabb.minY)
-        assertEquals(3, aabb.minZ)
-        assertEquals(10, aabb.maxX)
-        assertEquals(20, aabb.maxY)
-        assertEquals(30, aabb.maxZ)
+        val globalAABB = room.findGlobalAABB().toIntAABB()
+        val localAABB = room.findLocalAABB().toIntAABB()
+        assertEquals(ref, aabb)
+        assertEquals(ref, globalAABB)
+        assertEquals(ref, localAABB)
     }
 
     @Test
@@ -198,13 +201,13 @@ class NodeExtensionTest {
         }
         val trans = LinearTransformation()
             .translate(room.origin)
+        val ref = IntAABB(1, 2, 3, 10, 20, 30)
         val aabb = room.findIntAABB(trans)
-        assertEquals(1, aabb.minX)
-        assertEquals(2, aabb.minY)
-        assertEquals(3, aabb.minZ)
-        assertEquals(10, aabb.maxX)
-        assertEquals(20, aabb.maxY)
-        assertEquals(30, aabb.maxZ)
+        val globalAABB = room.findGlobalAABB().toIntAABB()
+        val localAABB = room.findLocalAABB().toIntAABB()
+        assertEquals(ref, aabb)
+        assertEquals(ref, globalAABB)
+        assertEquals(ref, localAABB)
     }
 
     @Test
@@ -219,20 +222,50 @@ class NodeExtensionTest {
             .translate(room.origin)
             .rotateY(room.rotationY)
 
+        val ref = AABB(
+            -sqrt(2.0), 0.0, -sqrt(2.0),
+            sqrt(2.0), 1.0, sqrt(2.0)
+        )
         val aabb = room.findAABB(trans)
-        assertEquals(-sqrt(2.0), aabb.minX, 0.0001)
-        assertEquals(0.0, aabb.minY, 0.0001)
-        assertEquals(-sqrt(2.0), aabb.minZ, 0.0001)
-        assertEquals(sqrt(2.0), aabb.maxX, 0.0001)
-        assertEquals(1.0, aabb.maxY, 0.0001)
-        assertEquals(sqrt(2.0), aabb.maxZ, 0.0001)
+        val globalAABB = room.findGlobalAABB()
+        val localAABB = room.findLocalAABB()
+        assertEquals(ref, aabb)
+        assertEquals(ref, globalAABB)
+        assertEquals(ref, localAABB)
 
         val iaabb = room.findIntAABB(trans)
-        assertEquals(-2, iaabb.minX)
-        assertEquals(0, iaabb.minY)
-        assertEquals(-2, iaabb.minZ)
-        assertEquals(2, iaabb.maxX)
-        assertEquals(1, iaabb.maxY)
-        assertEquals(2, iaabb.maxZ)
+        val iref = IntAABB(-2, 0, -2, 2, 1, 2)
+        assertEquals(iref, iaabb)
+    }
+
+    private fun assertEquals(ref: AABB, actual: AABB, delta: Double = 0.0001) {
+        assertEquals(ref.minX, actual.minX, delta)
+        assertEquals(ref.minY, actual.minY, delta)
+        assertEquals(ref.minY, actual.minY, delta)
+        assertEquals(ref.maxX, actual.maxX, delta)
+        assertEquals(ref.maxY, actual.maxY, delta)
+        assertEquals(ref.maxZ, actual.maxZ, delta)
+    }
+
+    @Test
+    fun `find local AABB of rotated child`() {
+        val parent = Room(Vec3(1, 20, 0), Vec3(2, 2, 4))
+        val child = Room(Vec3(0, 100, 5), Vec3(10, 1, 1))
+        parent.start = Vec3(0, 0, 0)
+        child.start = Vec3(0, 0, 0)
+        child.rotationY = 90.0
+
+        val childLocalRef1 = IntAABB(0, 100, -5, 1, 101, 5)
+        assertEquals(childLocalRef1, child.findGlobalAABB().toIntAABB())
+        assertEquals(childLocalRef1, child.findLocalAABB().toIntAABB())
+
+        val parentRef = IntAABB(1, 20, 0, 3, 22, 4)
+        assertEquals(parentRef, parent.findGlobalAABB().toIntAABB())
+        assertEquals(parentRef, parent.findLocalAABB().toIntAABB())
+
+        parent.addChild(child)
+        val childGlobalRef2 = IntAABB(1, 120, -5, 2, 121, 5)
+        assertEquals(childGlobalRef2, child.findGlobalAABB().toIntAABB())
+        assertEquals(childLocalRef1, child.findLocalAABB().toIntAABB())
     }
 }
