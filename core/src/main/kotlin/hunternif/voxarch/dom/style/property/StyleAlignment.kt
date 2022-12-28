@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.builder.DomLineSegmentBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.findLocalAABB
 import kotlin.math.round
 
 class StyleAlignmentY : StyleParameter
@@ -78,13 +79,14 @@ enum class AlignZ {
 
 val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value ->
     val p = parentNode
+    val nodeAABB = node.findLocalAABB()
     val baseValue = AlignY.ORIGIN
     val align = value.invoke(baseValue, seed)
     var newY = when (align) {
-        AlignY.ABOVE -> p.height
-        AlignY.TOP -> p.height - node.height
-        AlignY.BOTTOM -> 0.0
-        AlignY.BELOW -> -node.height
+        AlignY.ABOVE -> p.height - nodeAABB.minY
+        AlignY.TOP -> p.height - nodeAABB.maxY
+        AlignY.BOTTOM -> -nodeAABB.minY
+        AlignY.BELOW -> -nodeAABB.maxY
         AlignY.ORIGIN -> 0.0
     }
     if (p is Room && align != AlignY.ORIGIN) newY += p.start.y
@@ -93,42 +95,38 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value
 
 val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value ->
     val p = parentNode
+    val nodeAABB = node.findLocalAABB()
     val baseValue = AlignX.ORIGIN
     val align = value.invoke(baseValue, seed)
+    val length = nodeAABB.maxX - nodeAABB.minX
     var newX = when (align) {
-        AlignX.EAST_OUTSIDE -> p.length
-        AlignX.EAST_INSIDE -> p.length - node.length
-        AlignX.WEST_OUTSIDE -> -node.length
-        AlignX.WEST_INSIDE -> 0.0
+        AlignX.EAST_OUTSIDE -> p.length - nodeAABB.minX
+        AlignX.EAST_INSIDE -> p.length - nodeAABB.maxX
+        AlignX.WEST_OUTSIDE -> -nodeAABB.maxX
+        AlignX.WEST_INSIDE -> -nodeAABB.minX
         AlignX.ORIGIN -> 0.0
-        AlignX.CENTER -> p.length / 2 - node.length / 2
+        AlignX.CENTER -> p.length / 2 - length / 2 - nodeAABB.minX
     }
     if (p is Room && align != AlignX.ORIGIN) newX += p.start.x
     node.origin.x = newX
-    if (node is Room) {
-        // We assumed the room had start at (0, 0, 0). Fix that:
-        node.origin.x -= node.start.x
-    }
 }
 
 val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value ->
     val p = parentNode
+    val nodeAABB = node.findLocalAABB()
     val baseValue = AlignZ.ORIGIN
     val align = value.invoke(baseValue, seed)
+    val width = nodeAABB.maxZ - nodeAABB.minZ
     var newZ = when (align) {
-        AlignZ.SOUTH_OUTSIDE -> p.width
-        AlignZ.SOUTH_INSIDE -> p.width - node.width
-        AlignZ.NORTH_OUTSIDE -> -node.width
-        AlignZ.NORTH_INSIDE -> 0.0
+        AlignZ.SOUTH_OUTSIDE -> p.width - nodeAABB.minZ
+        AlignZ.SOUTH_INSIDE -> p.width - nodeAABB.maxZ
+        AlignZ.NORTH_OUTSIDE -> -nodeAABB.maxZ
+        AlignZ.NORTH_INSIDE -> -nodeAABB.minZ
         AlignZ.ORIGIN -> 0.0
-        AlignZ.CENTER -> p.width / 2 - node.width / 2
+        AlignZ.CENTER -> p.width / 2 - width / 2 - nodeAABB.minZ
     }
     if (p is Room && align != AlignZ.ORIGIN) newZ += p.start.z
     node.origin.z = newZ
-    if (node is Room) {
-        // We assumed the room had start at (0, 0, 0). Fix that:
-        node.origin.z -= node.start.z
-    }
 }
 
 val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { value ->
