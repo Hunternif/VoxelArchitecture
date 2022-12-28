@@ -1,6 +1,7 @@
 package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.findIntAABB
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.storage.TransformedBlockStorage
 import hunternif.voxarch.util.forEachXZ
@@ -66,41 +67,6 @@ fun line(
         x += step
     }
 }
-
-/**
- * Finds the GLOBAL axis-aligned bounding box that contains this room's walls.
- * The returned result is in global coordinates.
- * [trans] must rotate and translate (0, 0, 0) to room's origin.
- */
-fun Room.findAABB(trans: ITransformation): AABB {
-    val aabb = AABB()
-    val boundaries = getGroundBoundaries()
-    for (b in boundaries) {
-        aabb.union(trans.transform(b.first))
-        aabb.union(trans.transform(b.second))
-    }
-    aabb.maxY += height // we assume Y is always up
-    aabb.correctBounds()
-    return aabb
-}
-
-/** See [findAABB] */
-fun Room.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAABB()
-
-
-typealias RoomGroundBoundary = Pair<Vec3, Vec3>
-
-/**
- * Returns boundaries defined by room size and its walls, if it has any.
- */
-fun Room.getGroundBoundaries(): List<RoomGroundBoundary> =
-    walls.map { it.bottomStart to it.bottomEnd } + listOf(
-        start,
-        start.addZ(size.z),
-        start.add(size.x, 0.0, size.z),
-        start.addX(size.x),
-        start
-    ).zipWithNext()
 
 /**
  * Runs [buildAt] at every point on the line from [p1] to [p2].

@@ -118,6 +118,12 @@ open class Room(
         }
     }
 
+    override fun getGroundBoundaries(): List<GroundBoundary> {
+        // add walls
+        return super.getGroundBoundaries() +
+            walls.map { it.bottomStart to it.bottomEnd }
+    }
+
 
     /** legacy constructor */
     constructor(

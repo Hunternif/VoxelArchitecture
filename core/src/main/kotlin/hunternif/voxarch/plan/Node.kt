@@ -60,8 +60,8 @@ open class Node(
             field.set(value) // keep the same instance
         }
 
-    /** Center point vs origin, in local coordinates,
-     * not accounting for rotation. */
+    /** Center point vs origin, on all XYZ axes,
+     * in local coordinates, not accounting for rotation. */
     open val localCenter: Vec3 get() = size / 2
 
     final override var parent: Node? = null
@@ -103,5 +103,22 @@ open class Node(
         child.origin = position
     }
 
+    /**
+     * Returns boundaries defined by node size and its walls, if it has any.
+     * In local coordinates, not accounting for rotation.
+     */
+    open fun getGroundBoundaries(): List<GroundBoundary> {
+        val corner = localCenter - size / 2
+        return listOf(
+            corner,
+            corner.addZ(size.z),
+            corner.add(size.x, 0.0, size.z),
+            corner.addX(size.x),
+            corner,
+        ).zipWithNext()
+    }
+
     constructor() : this(Vec3.ZERO)
 }
+
+typealias GroundBoundary = Pair<Vec3, Vec3>

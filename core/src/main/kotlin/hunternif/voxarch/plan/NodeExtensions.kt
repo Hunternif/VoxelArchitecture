@@ -2,7 +2,7 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.util.MathUtil.clampAngle
 import hunternif.voxarch.util.rotateYLocal
-import hunternif.voxarch.vector.Vec3
+import hunternif.voxarch.vector.*
 
 /** Finds offset of this node's origin in global coordinates, i.e.
  * in the coordinate space where its highest parent node exists.
@@ -41,6 +41,40 @@ fun Node.findGlobalRotation(): Double {
     }
     return clampAngle(result)
 }
+
+/**
+ * Finds the GLOBAL axis-aligned bounding box that contains this room's walls.
+ * The returned result is in global coordinates.
+ * [trans] must rotate and translate (0, 0, 0) to room's origin.
+ */
+fun Node.findAABB(trans: ITransformation): AABB {
+    val aabb = AABB()
+    val boundaries = getGroundBoundaries()
+    for (b in boundaries) {
+        aabb.union(trans.transform(b.first))
+        aabb.union(trans.transform(b.second))
+    }
+    aabb.maxY += height // we assume Y is always up
+    aabb.correctBounds()
+    return aabb
+}
+
+/**
+ * See [findAABB], determines transformation by traversing parent tree.
+ */
+fun Node.findAABB(): AABB {
+    val trans = LinearTransformation()
+    trans.translate(findGlobalPosition())
+    trans.rotateY(findGlobalRotation())
+    return findAABB(trans)
+}
+
+/** See [findAABB] */
+fun Node.findIntAABB(trans: ITransformation): IntAABB = findAABB(trans).toIntAABB()
+
+/** See [findAABB] */
+fun Node.findIntAABB(): IntAABB = findAABB().toIntAABB()
+
 
 /** Finds children in the subtree matching the given class and tags. */
 inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = sequence {
