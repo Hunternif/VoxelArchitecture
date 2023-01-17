@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.editor.scene.models.VoxelModel.VoxelInstance
+import hunternif.voxarch.editor.scene.models.VoxelInstancedModel.VoxelInstance
 import hunternif.voxarch.editor.scene.models.box.AABBoxInstancedModel
 import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -12,7 +12,7 @@ import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 
 /** For rendering final world voxels. */
-class VoxelModel(
+class VoxelInstancedModel(
     private val voxels: SceneVoxelGroup,
     private val colorMap: (IVoxel) -> ColorRGBa,
 ) : AABBoxInstancedModel<VoxelInstance>() {

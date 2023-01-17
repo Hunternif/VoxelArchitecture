@@ -38,16 +38,19 @@ fun min(a: Vector3i, b: Vector3i) = Vector3i(
     min(a.y, b.y),
     min(a.z, b.z),
 )
+
 fun min(a: Vector3f, b: Vector3f) = Vector3f(
     min(a.x, b.x),
     min(a.y, b.y),
     min(a.z, b.z),
 )
+
 fun max(a: Vector3i, b: Vector3i) = Vector3i(
     max(a.x, b.x),
     max(a.y, b.y),
     max(a.z, b.z),
 )
+
 fun max(a: Vector3f, b: Vector3f) = Vector3f(
     max(a.x, b.x),
     max(a.y, b.y),
@@ -76,8 +79,10 @@ fun AABBf.reset() {
 }
 
 data class Vertex(
-    val pos: Vector3f,
-    val normal: Vector3f,
+    val pos: Vector3f = Vector3f(),
+    val normal: Vector3f = Vector3f(),
+    val uv: Vector2f = Vector2f(),
+    var color: ColorRGBa = ColorRGBa(1f, 1f, 1f, 1f)
 ) {
     constructor(
         posX: Float,
@@ -95,16 +100,43 @@ data class Edge(
 )
 
 data class Triangle(
-    val p1: Vector3f,
-    val p2: Vector3f,
-    val p3: Vector3f,
-)
+    val v1: Vertex,
+    val v2: Vertex,
+    val v3: Vertex,
+) {
+    val p1: Vector3f get() = v1.pos
+    val p2: Vector3f get() = v2.pos
+    val p3: Vector3f get() = v3.pos
+    val vertices = arrayOf(v1, v2, v3)
+
+    constructor(p1: Vector3f, p2: Vector3f, p3: Vector3f) :
+        this(Vertex(p1), Vertex(p2), Vertex(p3)) {
+        // calculate normal, assuming CCW winding
+        val normal = Vector3f(p2).sub(p1).cross(Vector3f(p3).sub(p1)).normalize()
+        this.v1.normal.set(normal)
+        this.v2.normal.set(normal)
+        this.v3.normal.set(normal)
+    }
+
+    companion object {
+        fun asCopy(p1: Vector3f, p2: Vector3f, p3: Vector3f) =
+            Triangle(Vector3f(p1), Vector3f(p2), Vector3f(p3))
+    }
+}
 
 data class Triangle2D(
     val p1: Vector2f,
     val p2: Vector2f,
     val p3: Vector2f,
 )
+
+/** Generic 3D triangle mesh. */
+class Mesh {
+    val triangles = mutableListOf<Triangle>()
+    val vertices = sequence {
+        triangles.forEach { t -> t.vertices.forEach { yield(it) } }
+    }
+}
 
 enum class AADirection3D(val vec: Vector3fc) {
     POS_X(Vector3f(1f, 0f, 0f)),
@@ -146,9 +178,11 @@ class AABBFace(
 fun FloatBuffer.put(vec: Vector3f): FloatBuffer = this.run {
     put(vec.x).put(vec.y).put(vec.z)
 }
+
 fun FloatBuffer.put(vec: Vector4f): FloatBuffer = this.run {
     put(vec.x).put(vec.y).put(vec.z).put(vec.w)
 }
+
 fun FloatBuffer.put(m: Matrix4f): FloatBuffer = this.run {
     put(m.m00())
     put(m.m01())

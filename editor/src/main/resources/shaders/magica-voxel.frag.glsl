@@ -5,7 +5,7 @@ in vec3 Normal;
 in vec3 FragPos;
 in vec4 VoxColor;
 
-//uniform mat4 uViewProj;
+uniform mat4 uViewProj;
 
 uniform vec3 uSkylightDir;
 uniform vec3 uSkylightColor;
@@ -19,10 +19,10 @@ uniform vec3 uAmbientColor;
 uniform float uAmbientPower;
 
 
-//float computeDepth(vec3 pos) {
-//    vec4 clip_space_pos = uViewProj * vec4(pos, 1.0);
-//    return (clip_space_pos.z / clip_space_pos.w);
-//}
+float computeDepth(vec3 pos) {
+    vec4 clip_space_pos = uViewProj * vec4(pos, 1.0);
+    return (clip_space_pos.z / clip_space_pos.w);
+}
 
 void main()
 {
@@ -43,6 +43,5 @@ void main()
     FragColor = totalLight * VoxColor;
 
     // To use depth correctly with other elements like the grid:
-    //TODO: uncomment this when voxels are stitched into a single mesh
-//    gl_FragDepth = computeDepth(FragPos);
+    gl_FragDepth = computeDepth(FragPos);
 }
