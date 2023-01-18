@@ -30,7 +30,7 @@ class VoxelColoredMeshModel(
     override val shader: Shader = MagicaVoxelShader()
 
     fun updateVoxels() {
-        val mesh = meshFromVoxels(voxels.data, colorMap)
+        val mesh = coloredMeshFromVoxels(voxels.data, colorMap)
         uploadMesh(mesh)
     }
 
@@ -70,7 +70,7 @@ class VoxelColoredMeshModel(
     }
 
     private fun uploadMesh(mesh: Mesh) {
-        val vertices = mesh.vertices.toList()
+        val vertices = mesh.iterateTriangleVertices().toList()
         // 10 = 3f pos + 3f normal + 4f color
         vertBufferSize = vertices.size * 10
         vertexBuffer.prepare(vertBufferSize).run {

@@ -10,14 +10,32 @@ import hunternif.voxarch.vector.IntVec3
 import org.joml.Vector3f
 import java.util.EnumMap
 
-/** Merges voxels into a single mesh, preserving vertex colors. */
-fun meshFromVoxels(
+/** Merges voxels into a single mesh, storing colors in vertices. */
+fun coloredMeshFromVoxels(
     voxels: IStorage3D<out IVoxel?>,
     colorMap: (IVoxel) -> ColorRGBa,
 ): Mesh {
     // 1. Find all visible faces.
+    val faces = findVisibleFaces(voxels)
 
-    /** Remembers positions of all faces per direction. */
+    // 2. Reconstruct the mesh by creating triangles for each visible face.
+    val mesh = Mesh()
+    faces.forEach { (dir, points) ->
+        points.forEach { p ->
+            val v = voxels[p]!!
+            val color = colorMap(v)
+            val vertices = makeVerticesForVoxelFace(p, dir)
+            vertices.forEach { it.color = color }
+            mesh.triangles.addAll(makeFaceTriangles(vertices))
+        }
+    }
+
+    return mesh
+}
+
+/** Returns a map from a direction to faces looking into that direction. */
+private fun findVisibleFaces(voxels: IStorage3D<out IVoxel?>)
+    : Map<Direction3D, LinkedHashSet<IntVec3>> {
     val faces = EnumMap<Direction3D, LinkedHashSet<IntVec3>>(Direction3D::class.java)
     values().forEach { faces[it] = linkedSetOf() }
 
@@ -34,20 +52,7 @@ fun meshFromVoxels(
             }
         }
     }
-
-    // 2. Reconstruct the mesh by creating triangles for each visible face.
-    val mesh = Mesh()
-    faces.forEach { (dir, points) ->
-        points.forEach { p ->
-            val v = voxels[p]!!
-            val color = colorMap(v)
-            val triangles = makeTrianglesForVoxelFace(p, dir)
-            triangles.forEach { t -> t.vertices.forEach { it.color = color } }
-            mesh.triangles.addAll(triangles)
-        }
-    }
-
-    return mesh
+    return faces
 }
 
 /** Corners of a box from (-0.5, -0.5, -0.5) to (0.5, 0.5, 0.5). */
@@ -71,30 +76,35 @@ private val baseBoxCorners: Array<Vector3f> by lazy {
 private val baseFaceVertices by lazy {
     baseBoxCorners.let {
         mapOf(
-            UP to arrayOf(it[5], it[7], it[4], it[6]),
-            DOWN to arrayOf(it[0], it[2], it[1], it[3]),
-            EAST to arrayOf(it[1], it[4], it[0], it[5]),
-            SOUTH to arrayOf(it[0], it[7], it[3], it[4]),
-            WEST to arrayOf(it[3], it[6], it[2], it[7]),
-            NORTH to arrayOf(it[2], it[5], it[1], it[6]),
+            UP    to arrayOf(it[6], it[7], it[4], it[5]),
+            DOWN  to arrayOf(it[3], it[2], it[1], it[0]),
+            EAST  to arrayOf(it[5], it[4], it[0], it[1]),
+            SOUTH to arrayOf(it[4], it[7], it[3], it[0]),
+            WEST  to arrayOf(it[7], it[6], it[2], it[3]),
+            NORTH to arrayOf(it[6], it[5], it[1], it[2]),
         )
     }
 }
 
 /**
- * Creates 2 new triangles for a face of a voxel.
+ * Creates 4 vertices for a face of a voxel, ordered CCW.
  * @param p position of the voxel.
  * @param dir direction of the face.
  */
-fun makeTrianglesForVoxelFace(p: IntVec3, dir: Direction3D): Array<Triangle> {
+fun makeVerticesForVoxelFace(p: IntVec3, dir: Direction3D): List<Vertex> {
     val points = baseFaceVertices[dir]!!
     val vertices = points.map { Vertex(Vector3f(it).add(p)) }
-    val (v0, v1, v2, v3) = vertices
     val (p0, p1, p2) = points
     val normal = Vector3f(p1).sub(p0).cross(Vector3f(p2).sub(p0)).normalize()
     vertices.forEach { it.normal.set(normal) }
+    return vertices
+}
+
+/** Assuming vertices to be ordered CCW. */
+fun makeFaceTriangles(vertices: List<Vertex>): Array<Triangle> {
+    val (v0, v1, v2, v3) = vertices
     return arrayOf(
         Triangle(v0, v1, v2),
-        Triangle(v0, v3, v1),
+        Triangle(v0, v2, v3),
     )
 }

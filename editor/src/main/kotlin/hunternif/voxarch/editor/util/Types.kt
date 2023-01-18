@@ -133,7 +133,7 @@ data class Triangle2D(
 /** Generic 3D triangle mesh. */
 class Mesh {
     val triangles = mutableListOf<Triangle>()
-    val vertices = sequence {
+    fun iterateTriangleVertices() = sequence {
         triangles.forEach { t -> t.vertices.forEach { yield(it) } }
     }
 }
