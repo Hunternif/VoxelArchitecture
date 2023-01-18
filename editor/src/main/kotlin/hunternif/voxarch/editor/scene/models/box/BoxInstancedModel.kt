@@ -10,6 +10,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
+/** Renders instances of colored oriented boxes (not axis-aligned). */
 open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
     private var instanceVboID = 0
     val instances = mutableListOf<T>()

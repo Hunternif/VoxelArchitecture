@@ -10,10 +10,10 @@ import org.joml.Matrix4f
 class VoxelGroupsModel(
     private val colorMap: (IVoxel) -> ColorRGBa,
 ) : IModel {
-    private val models = LinkedHashMap<SceneVoxelGroup, VoxelMeshModel>()
+    private val models = LinkedHashMap<SceneVoxelGroup, VoxelColoredMeshModel>()
 
     private fun getModel(group: SceneVoxelGroup) = models.getOrPut(group) {
-        VoxelMeshModel(group, colorMap).apply {
+        VoxelColoredMeshModel(group, colorMap).apply {
             init()
             updateVoxels()
         }

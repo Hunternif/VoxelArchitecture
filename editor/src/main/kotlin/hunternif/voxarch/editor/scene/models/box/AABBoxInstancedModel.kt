@@ -9,6 +9,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
+/** Renders instances of colored axis-aligned boxes. */
 open class AABBoxInstancedModel<T : AABBoxMesh> : BaseModel() {
     private var instanceVboID = 0
     val instances = mutableListOf<T>()

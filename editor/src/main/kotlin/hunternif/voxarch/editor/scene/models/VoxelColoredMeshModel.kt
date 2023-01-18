@@ -3,32 +3,43 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
-import hunternif.voxarch.editor.util.FloatBufferWrapper
-import hunternif.voxarch.editor.util.Mesh
-import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.util.*
+import hunternif.voxarch.storage.IVoxel
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 
 /**
- * Renders a triangle mesh.
+ * Renders colored voxels (like in MagicaVoxel),
+ * using a unified triangle mesh.
  */
-open class MeshModel : BaseModel() {
+class VoxelColoredMeshModel(
+    private val voxels: SceneVoxelGroup,
+    private val colorMap: (IVoxel) -> ColorRGBa,
+) : BaseModel() {
     private var instanceVboID = 0
-    private val vertexBuffer = FloatBufferWrapper()
     private var vertBufferSize = 0
+
+    private val vertexBuffer = FloatBufferWrapper()
     private val instanceVertexBuffer = FloatBufferWrapper()
+
+    /** For quickly moving the whole model without changing its geometry. */
+    private val modelMat = Matrix4f()
+    var visible = true
 
     override val shader: Shader = MagicaVoxelShader()
 
-    var mesh: Mesh? = null
-        set(value) {
-            field = value
-            if (value != null) {
-                uploadMesh(value)
-            } else {
-                vertBufferSize = 0
-            }
+    fun updateVoxels() {
+        val mesh = meshFromVoxels(voxels.data, colorMap)
+        uploadMesh(mesh)
+    }
+
+    fun updatePosition() {
+        modelMat.translation(voxels.origin)
+        shader.use {
+            uploadMat4f("uModel", modelMat)
         }
+    }
 
     override fun init() {
         super.init()
@@ -60,7 +71,7 @@ open class MeshModel : BaseModel() {
 
     private fun uploadMesh(mesh: Mesh) {
         val vertices = mesh.vertices.toList()
-        // 9 = 3f pos + 3f normal + 4f color
+        // 10 = 3f pos + 3f normal + 4f color
         vertBufferSize = vertices.size * 10
         vertexBuffer.prepare(vertBufferSize).run {
             for (v in vertices) {
@@ -76,6 +87,7 @@ open class MeshModel : BaseModel() {
     }
 
     override fun render() {
+        if (!visible) return
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
