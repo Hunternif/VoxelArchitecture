@@ -68,40 +68,33 @@ private val baseBoxCorners: Array<Vector3f> by lazy {
     points
 }
 
+private val baseFaceVertices by lazy {
+    baseBoxCorners.let {
+        mapOf(
+            UP to arrayOf(it[5], it[7], it[4], it[6]),
+            DOWN to arrayOf(it[0], it[2], it[1], it[3]),
+            EAST to arrayOf(it[1], it[4], it[0], it[5]),
+            SOUTH to arrayOf(it[0], it[7], it[3], it[4]),
+            WEST to arrayOf(it[3], it[6], it[2], it[7]),
+            NORTH to arrayOf(it[2], it[5], it[1], it[6]),
+        )
+    }
+}
+
 /**
  * Creates 2 new triangles for a face of a voxel.
  * @param p position of the voxel.
  * @param dir direction of the face.
  */
 fun makeTrianglesForVoxelFace(p: IntVec3, dir: Direction3D): Array<Triangle> {
-    val triangles = baseBoxCorners.let {
-        when (dir) {
-            UP -> arrayOf(
-                Triangle.asCopy(it[4], it[5], it[7]),
-                Triangle.asCopy(it[5], it[6], it[7]),
-            )
-            DOWN -> arrayOf(
-                Triangle.asCopy(it[0], it[2], it[1]),
-                Triangle.asCopy(it[0], it[3], it[2]),
-            )
-            EAST -> arrayOf(
-                Triangle.asCopy(it[1], it[4], it[0]),
-                Triangle.asCopy(it[1], it[5], it[4]),
-            )
-            SOUTH -> arrayOf(
-                Triangle.asCopy(it[0], it[4], it[7]),
-                Triangle.asCopy(it[0], it[7], it[3]),
-            )
-            WEST -> arrayOf(
-                Triangle.asCopy(it[3], it[6], it[2]),
-                Triangle.asCopy(it[3], it[7], it[6]),
-            )
-            NORTH -> arrayOf(
-                Triangle.asCopy(it[1], it[2], it[5]),
-                Triangle.asCopy(it[2], it[6], it[5]),
-            )
-        }
-    }
-    triangles.forEach { t -> t.vertices.forEach { it.pos.add(p) } }
-    return triangles
+    val points = baseFaceVertices[dir]!!
+    val vertices = points.map { Vertex(Vector3f(it).add(p)) }
+    val (v0, v1, v2, v3) = vertices
+    val (p0, p1, p2) = points
+    val normal = Vector3f(p1).sub(p0).cross(Vector3f(p2).sub(p0)).normalize()
+    vertices.forEach { it.normal.set(normal) }
+    return arrayOf(
+        Triangle(v0, v1, v2),
+        Triangle(v0, v3, v1),
+    )
 }
