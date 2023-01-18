@@ -53,8 +53,6 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
     }
 
     override fun render() {
-        glActiveTexture(GL_TEXTURE0)
-        shader.texture.bind()
         glDisable(GL_DEPTH_TEST)
 
         glEnable(GL_POINT_SPRITE)

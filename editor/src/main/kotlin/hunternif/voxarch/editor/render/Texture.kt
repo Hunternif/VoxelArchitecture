@@ -6,7 +6,10 @@ import org.lwjgl.stb.STBImage.stbi_load
 import org.lwjgl.system.MemoryStack
 
 class Texture(private val filepath: String) {
+    /** This texture's ID for OpenGL */
     var texID = 0
+
+    /** For file-based textures, returns true if the file is loaded into video memory. */
     var isLoaded = false
         private set
 
@@ -80,6 +83,7 @@ class Texture(private val filepath: String) {
         isLoaded = true
     }
 
+    /** Set OpenGL to sample from this texture. */
     fun bind() {
         glBindTexture(GL_TEXTURE_2D, texID)
     }

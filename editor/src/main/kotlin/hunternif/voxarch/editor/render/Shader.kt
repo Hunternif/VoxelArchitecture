@@ -23,11 +23,17 @@ abstract class Shader {
 
     inline fun render(viewProj: Matrix4f, crossinline action: () -> Unit) {
         use {
+            startFrame()
             uploadMat4f("uViewProj", viewProj)
             action()
         }
     }
 
+    /** Called before a frame */
+    @PublishedApi
+    internal open fun startFrame() {}
+
+    /** Tells OpenGL to use this shader while performing [action] */
     inline fun use(crossinline action: Shader.() -> Unit) {
         glUseProgram(shaderProgramID)
         this.action()
