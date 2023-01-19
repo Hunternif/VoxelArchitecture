@@ -5,7 +5,7 @@ import org.lwjgl.stb.STBImage.stbi_image_free
 import org.lwjgl.stb.STBImage.stbi_load
 import org.lwjgl.system.MemoryStack
 
-class Texture(private val filepath: String) {
+class Texture(val filepath: String) {
     /** This texture's ID for OpenGL */
     var texID = 0
 
