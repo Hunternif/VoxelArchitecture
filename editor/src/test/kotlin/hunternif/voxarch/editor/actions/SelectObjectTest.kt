@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.util.emptyArray3D
@@ -8,7 +9,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class SelectObjectTest : BaseActionTest() {
+class SelectObjectTest : BaseAppTest() {
     private lateinit var node1: SceneNode
     private lateinit var node2: SceneNode
     private lateinit var voxels1: SceneVoxelGroup

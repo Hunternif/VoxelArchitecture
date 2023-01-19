@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.toVector3i
 import hunternif.voxarch.plan.Room
@@ -9,7 +10,7 @@ import org.junit.Before
 import org.junit.Test
 
 @Suppress("PrivatePropertyName")
-class TransformNodeTest : BaseActionTest() {
+class TransformNodeTest : BaseAppTest() {
     private lateinit var node: SceneNode
     private lateinit var childNode: SceneNode
     private lateinit var room: Room

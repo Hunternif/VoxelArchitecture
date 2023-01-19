@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.toVec3
@@ -11,7 +12,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class MoveObjectsTest : BaseActionTest() {
+class MoveObjectsTest : BaseAppTest() {
     private lateinit var node: SceneNode
     private lateinit var voxels: SceneVoxelGroup
 

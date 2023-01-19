@@ -2,8 +2,8 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.DomNodeBuilder
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
@@ -14,7 +14,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class GenerateNodesTest : BaseActionTest() {
+class GenerateNodesTest : BaseAppTest() {
     private lateinit var parent: SceneNode
     private lateinit var child: SceneNode
 

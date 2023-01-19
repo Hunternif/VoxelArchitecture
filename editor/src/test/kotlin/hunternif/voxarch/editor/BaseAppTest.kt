@@ -1,9 +1,9 @@
-package hunternif.voxarch.editor.actions
+package hunternif.voxarch.editor
 
-import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.newProject
 import org.junit.Before
 
-abstract class BaseActionTest {
+abstract class BaseAppTest {
     @Before
     fun resetState() {
         app.newProject()

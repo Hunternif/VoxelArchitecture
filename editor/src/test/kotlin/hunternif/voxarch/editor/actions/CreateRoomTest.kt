@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
@@ -8,7 +9,7 @@ import org.joml.Vector3i
 import org.junit.Assert.*
 import org.junit.Test
 
-class CreateRoomTest : BaseActionTest() {
+class CreateRoomTest : BaseAppTest() {
     @Test
     fun `create room, undo redo`() = app.state.run {
         val node = app.createRoom(Vector3i(1, 2, 3), Vector3i(11, 22, 33), false)

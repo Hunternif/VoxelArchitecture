@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -10,7 +11,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class DeleteObjectsTest : BaseActionTest() {
+class DeleteObjectsTest : BaseAppTest() {
     private lateinit var node: SceneNode
     private lateinit var childNode: SceneNode
     private lateinit var voxels: SceneVoxelGroup

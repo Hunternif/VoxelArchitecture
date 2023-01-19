@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
@@ -15,7 +16,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-class FileSpecTest : BaseActionTest() {
+class FileSpecTest : BaseAppTest() {
     private lateinit var root: Structure
     private lateinit var room1: Room
     private lateinit var room2: Room

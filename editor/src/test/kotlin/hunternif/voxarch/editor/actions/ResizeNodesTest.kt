@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room
@@ -9,7 +10,7 @@ import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 
-class ResizeNodesTest : BaseActionTest() {
+class ResizeNodesTest : BaseAppTest() {
     private lateinit var node1: SceneNode
     private lateinit var node2: SceneNode
     private lateinit var room1: Room

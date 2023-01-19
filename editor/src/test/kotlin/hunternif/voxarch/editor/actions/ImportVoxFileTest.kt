@@ -1,10 +1,11 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.util.resourcePath
 import org.junit.Assert.*
 import org.junit.Test
 
-class ImportVoxFileTest : BaseActionTest() {
+class ImportVoxFileTest : BaseAppTest() {
     @Test
     fun `test importVoxFile undo redo`() {
         app.importVoxFile(resourcePath("vox/voxarch-wfc-10x10x10-2021-12-05_19_16_49.vox"))
