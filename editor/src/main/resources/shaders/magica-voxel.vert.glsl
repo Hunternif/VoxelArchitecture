@@ -15,8 +15,12 @@ void main()
 {
     vec4 fragPos4 = uModel * aModel * vec4(aPos, 1.0);
     FragPos = fragPos4.xyz;
-    Normal = aNormal;
     VoxColor = aVoxColor;
+
+    // assuming that uModel can rotate and translate, we must rotate the normal:
+    // see https://stackoverflow.com/questions/14196252/rotate-normals-in-shader
+    mat3 normalMat = mat3(uModel);
+    Normal = normalize(aNormal * normalMat);
 
     gl_Position = uViewProj * fragPos4;
 }
