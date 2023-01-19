@@ -50,9 +50,9 @@ class Texture(private val filepath: String) {
         // Repeat image in both directions
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-        // When stretching the image, pixelate
+        // When shrinking the image, pixelate
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        // When shrinking an image, pixelate
+        // When stretching an image, pixelate
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         val width = stack.mallocInt(1)
         val height = stack.mallocInt(1)
