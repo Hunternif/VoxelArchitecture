@@ -33,6 +33,31 @@ fun coloredMeshFromVoxels(
     return mesh
 }
 
+/** Merges voxels into a single mesh, storing texture UVs in vertices. */
+fun texturedMeshFromVoxels(
+    voxels: IStorage3D<out IVoxel?>,
+): Mesh {
+    // 1. Find all visible faces.
+    val faces = findVisibleFaces(voxels)
+
+    // 2. Reconstruct the mesh by creating triangles for each visible face.
+    val mesh = Mesh()
+    faces.forEach { (dir, points) ->
+        points.forEach { p ->
+            val vertices = makeVerticesForVoxelFace(p, dir)
+            vertices.let {
+                it[0].uv.set(1f, 0f)
+                it[1].uv.set(0f, 0f)
+                it[2].uv.set(0f, 1f)
+                it[3].uv.set(1f, 1f)
+            }
+            mesh.triangles.addAll(makeFaceTriangles(vertices))
+        }
+    }
+
+    return mesh
+}
+
 /** Returns a map from a direction to faces looking into that direction. */
 private fun findVisibleFaces(voxels: IStorage3D<out IVoxel?>)
     : Map<Direction3D, LinkedHashSet<IntVec3>> {

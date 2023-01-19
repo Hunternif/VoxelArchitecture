@@ -175,6 +175,10 @@ class AABBFace(
     )
 }
 
+fun FloatBuffer.put(vec: Vector2f): FloatBuffer = this.run {
+    put(vec.x).put(vec.y)
+}
+
 fun FloatBuffer.put(vec: Vector3f): FloatBuffer = this.run {
     put(vec.x).put(vec.y).put(vec.z)
 }
