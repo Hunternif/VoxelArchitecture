@@ -8,7 +8,12 @@ import kotlin.math.max
 /**
  * Stitches textures together row by row.
  */
-class TextureAtlas(val width: Int, val height: Int) {
+class TextureAtlas(
+    val width: Int,
+    val height: Int,
+    /** To prevent texture bleeding. */
+    val padding: Int = 0,
+) {
     val sheet = Texture("sheet")
     private var mainFboID: Int = 0
 
@@ -43,14 +48,14 @@ class TextureAtlas(val width: Int, val height: Int) {
 
         copyTexture(entry)
 
-        cursor.x += texture.width
-        rowHeight = max(rowHeight, texture.height)
+        cursor.x += entry.sizePadded.x
+        rowHeight = max(rowHeight, entry.sizePadded.y)
         return entry
     }
 
     /** Shifts cursor to accommodate a given new texture. */
     private fun updateCursor(newTexture: Texture) {
-        if (cursor.x + newTexture.width > width) {
+        if (cursor.x + newTexture.width + padding * 2 > width) {
             // start a new row
             if (cursor.y + rowHeight > height) {
                 throw ArrayIndexOutOfBoundsException(
@@ -61,34 +66,55 @@ class TextureAtlas(val width: Int, val height: Int) {
             cursor.x = 0
             rowHeight = 0
         }
-        if (cursor.y + newTexture.height > height) {
+        if (cursor.y + newTexture.height + padding * 2 > height) {
             throw ArrayIndexOutOfBoundsException(
                 "Texture ${newTexture.filepath} doesn't fit into atlas."
             )
         }
     }
 
-    /** Renders the entry's texture onto the main sheet texture at [cursor]. */
+    /** Renders the entry's texture onto the main sheet texture at [cursor],
+     * adding an extra layer of [padding] to prevent bleeding. */
     private fun copyTexture(entry: AtlasEntry) {
-        val texWidth = entry.texture.width
-        val texHeight = entry.texture.height
-
-        val texFboID = glGenFramebuffers()
         glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mainFboID)
-        glBindFramebuffer(GL_READ_FRAMEBUFFER, texFboID)
-        glFramebufferTexture2D(
-            GL_READ_FRAMEBUFFER,
-            GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_2D,
-            entry.texture.texID,
-            0
-        )
-        glBlitFramebuffer(
-            0, 0, texWidth, texHeight,
-            entry.start.x, entry.start.y,
-            entry.end.x, entry.end.y,
-            GL_COLOR_BUFFER_BIT, GL_NEAREST,
-        )
+
+        glEnable(GL_TEXTURE_2D)
+        glDisable(GL_LIGHTING)
+        glDisable(GL_BLEND)
+        glDisable(GL_DEPTH_TEST)
+        glColor4f(1f, 1f, 1f, 1f)
+
+        entry.texture.bind()
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+
+        glViewport(0, 0, sheet.width, sheet.height)
+        glMatrixMode(GL_PROJECTION)
+        glPushMatrix()
+        glLoadIdentity()
+        glOrtho(0.0, sheet.width.toDouble(), 0.0, sheet.height.toDouble(), 0.0, 100.0)
+
+        // UVs on the source texture including padding:
+        val uvPadding = Vector2f(padding.toFloat(), padding.toFloat())
+            .mul(1f / entry.texture.width, 1f / entry.texture.height)
+        val uvStartPadded = Vector2f(0f, 0f).sub(uvPadding)
+        val uvEndPadded = Vector2f(1f, 1f).add(uvPadding)
+
+        glBegin(GL_QUADS)
+        glTexCoord2f(uvEndPadded.x, uvStartPadded.y)
+        glVertex3i(entry.endPadded.x, entry.startPadded.y, 0)
+        glTexCoord2f(uvEndPadded.x, uvEndPadded.y)
+        glVertex3i(entry.endPadded.x, entry.endPadded.y, 0)
+        glTexCoord2f(uvStartPadded.x, uvEndPadded.y)
+        glVertex3i(entry.startPadded.x, entry.endPadded.y, 0)
+        glTexCoord2f(uvStartPadded.x, uvStartPadded.y)
+        glVertex3i(entry.startPadded.x, entry.startPadded.y, 0)
+        glEnd()
+
+        glPopMatrix()
+
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
     }
 }
@@ -98,23 +124,31 @@ class AtlasEntry(
     atlas: TextureAtlas,
     /** The original texture file. */
     val texture: Texture,
-    start: Vector2i,
+    cursor: Vector2i,
 ) {
-    /** Start corner in absolute texture coordinates. */
-    val start: Vector2i = Vector2i(start)
+    /** Start corner on atlas including padding. */
+    val startPadded = Vector2i(cursor)
 
-    /** End corner in absolute texture coordinates. */
-    val end: Vector2i = Vector2i(start).add(texture.width, texture.height)
+    /** Start corner on atlas. */
+    val start = Vector2i(startPadded).add(atlas.padding, atlas.padding)
 
-    /** UV of the start corner on the atlas texture. */
-    val uvStart: Vector2f = Vector2f(
-        start.x.toFloat() / atlas.sheet.width.toFloat(),
-        start.y.toFloat() / atlas.sheet.height.toFloat(),
+    /** End corner on atlas. */
+    val end = Vector2i(start).add(texture.width, texture.height)
+
+    /** End corner on atlas including padding. */
+    val endPadded = Vector2i(end).add(atlas.padding, atlas.padding)
+
+    val sizePadded = Vector2i(endPadded).sub(startPadded)
+
+    /** UV of the start corner on atlas. */
+    val uvStart: Vector2f = Vector2f(start).mul(
+        1f / atlas.sheet.width.toFloat(),
+        1f / atlas.sheet.height.toFloat(),
     )
 
-    /** UV of the end corner on the atlas texture. */
-    val uvEnd: Vector2f = Vector2f(
-        end.x.toFloat() / atlas.sheet.width.toFloat(),
-        end.y.toFloat() / atlas.sheet.height.toFloat(),
+    /** UV of the end corner on atlas. */
+    val uvEnd: Vector2f = Vector2f(end).mul(
+        1f / atlas.sheet.width.toFloat(),
+        1f / atlas.sheet.height.toFloat(),
     )
 }

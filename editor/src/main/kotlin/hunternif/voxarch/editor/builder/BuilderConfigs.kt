@@ -71,7 +71,7 @@ fun MaterialConfig.setMinecraftMaterials() {
 }
 
 val minecraftTexAtlas by lazy {
-    TextureAtlas(256, 256).apply { init() }
+    TextureAtlas(64, 64, 2).apply { init() }
 }
 
 private fun loadTexturedBlock(name: String): TexturedBlock {

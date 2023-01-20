@@ -34,6 +34,25 @@ class TextureAtlasTest : BaseAppTest() {
     }
 
     @Test
+    fun `use padding`() {
+        val atlas = TextureAtlas(8, 8, 1)
+        atlas.init()
+        val e1 = atlas.add(tex1x1)
+        val e2 = atlas.add(tex1x1)
+        val e3 = atlas.add(tex1x1)
+        assertEquals(Vector2i(0, 0), e1.startPadded)
+        assertEquals(Vector2i(1, 1), e1.start)
+        assertEquals(Vector2i(2, 2), e1.end)
+        assertEquals(Vector2i(3, 3), e1.endPadded)
+        assertEquals(Vector2f(0.125f, 0.125f), e1.uvStart)
+        assertEquals(Vector2f(0.25f, 0.25f), e1.uvEnd)
+        assertEquals(Vector2i(3, 0), e2.startPadded)
+        assertEquals(Vector2i(6, 3), e2.endPadded)
+        assertEquals(Vector2i(0, 3), e3.startPadded)
+        assertEquals(Vector2i(3, 6), e3.endPadded)
+    }
+
+    @Test
     fun `uniform size`() {
         val atlas = TextureAtlas(2, 2)
         val e1 = atlas.add(tex1x1)
