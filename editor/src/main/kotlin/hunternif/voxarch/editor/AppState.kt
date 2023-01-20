@@ -8,9 +8,7 @@ import hunternif.voxarch.editor.actions.HistoryAction
 import hunternif.voxarch.editor.actions.ReadOnlyHistory
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
-import hunternif.voxarch.editor.builder.mapVoxelToSolidColor
-import hunternif.voxarch.editor.builder.setDefaultBuilders
-import hunternif.voxarch.editor.builder.setSolidColorMaterials
+import hunternif.voxarch.editor.builder.*
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scenegraph.*
@@ -99,7 +97,7 @@ class AppStateImpl(
 
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
-        materials.setSolidColorMaterials()
+        materials.setMinecraftMaterials()
         builders.setDefaultBuilders()
         builders.setCastleBuilders()
     }

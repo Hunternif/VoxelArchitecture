@@ -1,8 +1,8 @@
 package hunternif.voxarch.editor.scene.models
 
+import hunternif.voxarch.editor.builder.minecraftTexAtlas
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.render.Shader
-import hunternif.voxarch.editor.render.Texture
 import hunternif.voxarch.editor.scene.shaders.MinecraftShader
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
@@ -26,10 +26,7 @@ class VoxelTexturedMeshModel(
     private val modelMat = Matrix4f()
     var visible = true
 
-    // temporary test texture
-    private val texture = Texture(resourcePath("textures/minecraft/block/stone_bricks.png").toString())
-
-    override val shader: Shader = MinecraftShader(texture)
+    override val shader: Shader = MinecraftShader(minecraftTexAtlas.sheet)
 
     fun updateVoxels() {
         val mesh = texturedMeshFromVoxels(voxels.data)

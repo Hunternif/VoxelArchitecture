@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.util
 
+import hunternif.voxarch.editor.builder.TexturedBlock
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.Direction3D
@@ -7,6 +8,7 @@ import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.util.forEachFilledPos
 import hunternif.voxarch.util.opposite
 import hunternif.voxarch.vector.IntVec3
+import org.joml.Vector2f
 import org.joml.Vector3f
 import java.util.EnumMap
 
@@ -45,11 +47,18 @@ fun texturedMeshFromVoxels(
     faces.forEach { (dir, points) ->
         points.forEach { p ->
             val vertices = makeVerticesForVoxelFace(p, dir)
+            val uvStart = Vector2f(0f, 0f)
+            val uvEnd = Vector2f(1f, 1f)
+            val v = voxels[p]!!
+            if (v is TexturedBlock) {
+                uvStart.set(v.atlasEntry.uvStart)
+                uvEnd.set(v.atlasEntry.uvEnd)
+            }
             vertices.let {
-                it[0].uv.set(1f, 0f)
-                it[1].uv.set(0f, 0f)
-                it[2].uv.set(0f, 1f)
-                it[3].uv.set(1f, 1f)
+                it[0].uv.set(uvEnd.x, uvStart.y)
+                it[1].uv.set(uvStart.x, uvStart.y)
+                it[2].uv.set(uvStart.x, uvEnd.y)
+                it[3].uv.set(uvEnd.x, uvEnd.y)
             }
             mesh.triangles.addAll(makeFaceTriangles(vertices))
         }

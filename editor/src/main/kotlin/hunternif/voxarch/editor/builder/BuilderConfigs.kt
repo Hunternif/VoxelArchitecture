@@ -1,7 +1,11 @@
 package hunternif.voxarch.editor.builder
 
 import hunternif.voxarch.builder.*
+import hunternif.voxarch.editor.render.AtlasEntry
+import hunternif.voxarch.editor.render.Texture
+import hunternif.voxarch.editor.render.TextureAtlas
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.resourcePath
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.sandbox.castle.*
@@ -17,15 +21,18 @@ fun BuilderConfig.setDefaultBuilders() {
     setDefault<Node>(Builder())
 }
 
+
+// ============================ Solid color voxels ============================
+
 class SolidColorBlock(val color: Int) : BlockData(color.toString(16)) {
     override fun clone() = SolidColorBlock(color)
 }
 
-private val stoneBrick = SolidColorBlock(0x797979)
-private val stone = SolidColorBlock(0x6C6C6C)
-private val cobblestone = SolidColorBlock(0x626162)
-private val darkOak = SolidColorBlock(0x3F2813)
-private val torch = SolidColorBlock(0xFCE6A3)
+private val solidStoneBrick = SolidColorBlock(0x797979)
+private val solidStone = SolidColorBlock(0x6C6C6C)
+private val solidCobblestone = SolidColorBlock(0x626162)
+private val solidDarkOak = SolidColorBlock(0x3F2813)
+private val solidTorch = SolidColorBlock(0xFCE6A3)
 
 fun mapVoxelToSolidColor(voxel: IVoxel): ColorRGBa = when (voxel) {
     is SolidColorBlock -> ColorRGBa.fromHex(voxel.color)
@@ -34,10 +41,43 @@ fun mapVoxelToSolidColor(voxel: IVoxel): ColorRGBa = when (voxel) {
 }
 
 fun MaterialConfig.setSolidColorMaterials() {
-    set(MAT_FLOOR) { stone }
-    set(MAT_WALL) { arrayOf(stone, cobblestone).random() }
-    set(MAT_WALL_DECORATION) { stoneBrick }
-    set(MAT_ROOF) { darkOak }
-    set(MAT_TORCH) { torch }
-    set(MAT_POST) { darkOak }
+    set(MAT_FLOOR) { solidStone }
+    set(MAT_WALL) { arrayOf(solidStone, solidCobblestone).random() }
+    set(MAT_WALL_DECORATION) { solidStoneBrick }
+    set(MAT_ROOF) { solidDarkOak }
+    set(MAT_TORCH) { solidTorch }
+    set(MAT_POST) { solidDarkOak }
 }
+
+
+// ============================= Textured voxels ==============================
+
+class TexturedBlock(key: String, val atlasEntry: AtlasEntry) : BlockData(key) {
+    override fun clone() = TexturedBlock(key, atlasEntry)
+}
+
+private val texStone by lazy { loadTexturedBlock("stone") }
+private val texStoneBrick by lazy { loadTexturedBlock("stone_bricks") }
+private val texCobblestone by lazy { loadTexturedBlock("cobblestone") }
+private val texDarkOak by lazy { loadTexturedBlock("dark_oak_planks") }
+
+fun MaterialConfig.setMinecraftMaterials() {
+    set(MAT_FLOOR) { texStone }
+    set(MAT_WALL) { arrayOf(texStone, texCobblestone).random() }
+    set(MAT_WALL_DECORATION) { texStoneBrick }
+    set(MAT_ROOF) { texDarkOak }
+//    set(MAT_TORCH) { solidTorch }
+    set(MAT_POST) { texDarkOak }
+}
+
+val minecraftTexAtlas by lazy {
+    TextureAtlas(256, 256).apply { init() }
+}
+
+private fun loadTexturedBlock(name: String): TexturedBlock {
+    val path = minecraftTexAtlas.resourcePath("textures/minecraft/block/$name.png")
+    val texture = Texture(path.toString())
+    val entry = minecraftTexAtlas.add(texture)
+    return TexturedBlock(name, entry)
+}
+
