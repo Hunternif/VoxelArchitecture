@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.util.add
 import hunternif.voxarch.editor.util.set
 import hunternif.voxarch.editor.util.toVec3
@@ -13,6 +14,7 @@ class SceneVoxelGroup(
     id: Int,
     val label: String,
     val data: IStorage3D<out IVoxel?>,
+    val renderMode: VoxelRenderMode = VoxelRenderMode.COLORED,
     isGenerated: Boolean = false,
     /** Voxel centric coordinates of the lower corner */
     val origin: Vector3f = Vector3f(),

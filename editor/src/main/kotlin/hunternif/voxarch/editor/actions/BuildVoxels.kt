@@ -26,7 +26,7 @@ class BuildVoxels : HistoryAction(
                 rootNode.node.setNotBuiltRecursive()
                 builder.build(rootNode.node, world, buildContext)
                 newGenerated = listOf(
-                    registry.newVoxelGroup("Built voxels", world, true)
+                    registry.newVoxelGroup("Built voxels", world, renderMode, true)
                 )
             }
         }

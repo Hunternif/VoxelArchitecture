@@ -11,6 +11,7 @@ import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.builder.*
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.box.BoxFace
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Structure
@@ -42,6 +43,7 @@ interface AppState {
     val generatedNodes: Subset<SceneNode>
     val generatedVoxels: Subset<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
+    val renderMode: VoxelRenderMode
 
 
     //=========================== SCENE OBJECTS =============================
@@ -105,6 +107,7 @@ class AppStateImpl(
     override var seed: Long = 0
     override val domBuilderNames = domBuilderFactoryByName.keys.toList()
     override val voxelColorMap = ::mapVoxelToSolidColor
+    override var renderMode = VoxelRenderMode.TEXTURED
 
     override var parentNode: SceneNode = rootNode
     override val sceneTree = SceneTree(sceneRoot).apply {

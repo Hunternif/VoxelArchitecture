@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.magicavoxel.readVoxFile
 import java.nio.file.Path
@@ -17,7 +18,8 @@ class ImportVoxFile(
     override fun invoke(app: EditorAppImpl) = app.run {
         if (!::voxelGroup.isInitialized) {
             val file = readVoxFile(path)
-            voxelGroup = state.registry.newVoxelGroup(path.fileName.toString(), file)
+            voxelGroup = state.registry.newVoxelGroup(
+                path.fileName.toString(), file, VoxelRenderMode.COLORED)
         }
         state.voxelRoot.addChild(voxelGroup)
         scene.updateVoxelModel()

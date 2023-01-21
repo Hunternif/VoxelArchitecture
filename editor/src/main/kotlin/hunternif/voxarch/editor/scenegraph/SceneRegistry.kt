@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.plan.Node
@@ -44,10 +45,11 @@ class SceneRegistry {
     fun newVoxelGroup(
         label: String,
         data: IStorage3D<out IVoxel?>,
+        renderMode: VoxelRenderMode = VoxelRenderMode.COLORED,
         isGenerated: Boolean = false,
     ) : SceneVoxelGroup {
         val id = objectIDs.newID()
-        val obj = SceneVoxelGroup(id, label, data, isGenerated)
+        val obj = SceneVoxelGroup(id, label, data, renderMode, isGenerated)
         objectIDs.save(obj)
         return obj
     }

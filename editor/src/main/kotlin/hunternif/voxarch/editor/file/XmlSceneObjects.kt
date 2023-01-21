@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -77,6 +78,9 @@ class XmlSceneVoxelGroup(
     /** Populated during deserialization */
     @field:JsonIgnore
     var data: IStorage3D<out IVoxel?> = emptyArray3D(),
+
+    @field:JacksonXmlProperty(isAttribute = true)
+    var renderMode: VoxelRenderMode = VoxelRenderMode.COLORED,
 ) : XmlSceneObject(id, generated = generated)
 
 
@@ -111,7 +115,7 @@ private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): 
             val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
             SceneNode(id, node?.mapXmlNode() ?: return null, color, generated)
         }
-        is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, data, generated, origin.toVector3f())
+        is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, data, renderMode, generated, origin.toVector3f())
         else -> SceneObject(id, isGenerated = generated)
     }
     children.forEach { xmlChild ->
