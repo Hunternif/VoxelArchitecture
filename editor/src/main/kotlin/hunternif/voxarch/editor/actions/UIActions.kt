@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
+import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -65,6 +66,11 @@ fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
         }
         if (state.generatedVoxels.isNotEmpty()) buildVoxels()
     }
+}
+
+fun EditorApp.setShadingMode(mode: VoxelShadingMode) = action {
+    state.shadingMode = mode
+    scene.updateShadingMode()
 }
 
 fun EditorApp.centerCamera() = action {

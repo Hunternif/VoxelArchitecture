@@ -10,6 +10,8 @@ abstract class Shader {
     @PublishedApi
     internal var shaderProgramID = 0
 
+    private var isInitialized = false
+
     abstract fun init()
 
     fun init(
@@ -17,8 +19,10 @@ abstract class Shader {
         fragment: Path,
         action: Shader.() -> Unit = {}
     ) {
+        if (isInitialized) return
         shaderProgramID = loadShaderProgram(vertex, fragment)
         use(action)
+        isInitialized = true
     }
 
     inline fun render(viewProj: Matrix4f, crossinline action: () -> Unit) {
@@ -37,12 +41,14 @@ abstract class Shader {
 
     /** Tells OpenGL to use this shader while performing [action] */
     inline fun use(crossinline action: Shader.() -> Unit) {
+        var shouldReset = false
         if (shaderInUse != this) {
             glUseProgram(shaderProgramID)
             shaderInUse = this
+            shouldReset = true
         }
         this.action()
-        if (inUse) {
+        if (inUse && shouldReset) {
             glUseProgram(0)
             shaderInUse = null
         }

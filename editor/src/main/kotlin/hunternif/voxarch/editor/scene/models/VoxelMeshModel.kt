@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scene.shaders.VoxelShader
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -17,6 +16,7 @@ import org.lwjgl.opengl.GL33.*
 class VoxelMeshModel(
     private val voxels: SceneVoxelGroup,
     private val colorMap: (IVoxel) -> ColorRGBa,
+    public override var shader: VoxelShader
 ) : BaseModel() {
     private var instanceVboID = 0
     private var vertBufferSize = 0
@@ -27,8 +27,6 @@ class VoxelMeshModel(
     /** For quickly moving the whole model without changing its geometry. */
     private val modelMat = Matrix4f()
     var visible = true
-
-    override val shader: VoxelShader = MagicaVoxelShader()
 
     fun updateVoxels() {
         val mesh = when (voxels.renderMode) {
@@ -97,6 +95,7 @@ class VoxelMeshModel(
         if (!visible) return
         // Other voxel models could be reusing this shader and change render mode:
         shader.updateRenderMode(voxels.renderMode)
+        shader.uploadMat4f("uModel", modelMat)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)

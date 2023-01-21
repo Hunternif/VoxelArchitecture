@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode.*
+import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode.*
 import imgui.ImGui
 import imgui.flag.ImGuiStyleVar
 
@@ -55,6 +56,15 @@ fun MainGui.mainMenu() {
                 if (ImGui.menuItem("Texture", "",
                         app.state.renderMode == TEXTURED
                     )) app.setRenderMode(TEXTURED)
+                ImGui.endMenu()
+            }
+            if (ImGui.beginMenu("Shading mode")) {
+                if (ImGui.menuItem("MagicaVoxel", "",
+                        app.state.shadingMode == MAGICA_VOXEL
+                    )) app.setShadingMode(MAGICA_VOXEL)
+                if (ImGui.menuItem("Minecraft", "",
+                        app.state.shadingMode == MINECRAFT
+                    )) app.setShadingMode(MINECRAFT)
                 ImGui.endMenu()
             }
             ImGui.endMenu()

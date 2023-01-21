@@ -35,3 +35,8 @@ enum class VoxelRenderMode(val id: Int) {
     COLORED(1),
     TEXTURED(2),
 }
+
+enum class VoxelShadingMode {
+    MAGICA_VOXEL,
+    MINECRAFT,
+}

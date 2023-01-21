@@ -1,6 +1,11 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.IModel
+import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
+import hunternif.voxarch.editor.scene.shaders.MinecraftShader
+import hunternif.voxarch.editor.scene.shaders.VoxelShader
+import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
+import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode.*
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.storage.IVoxel
@@ -12,9 +17,31 @@ class VoxelGroupsModel(
 ) : IModel {
     private val models = LinkedHashMap<SceneVoxelGroup, VoxelMeshModel>()
 
+    private val minecraftShader = MinecraftShader()
+    private val magicaVoxelShader = MagicaVoxelShader()
+
+    private var selectedShader: VoxelShader = magicaVoxelShader
+
+    var shadingMode: VoxelShadingMode = MAGICA_VOXEL
+        private set
+
+    override fun init() {
+        minecraftShader.init()
+        magicaVoxelShader.init()
+    }
+
+    fun setShadingMode(mode: VoxelShadingMode) {
+        shadingMode = mode
+        selectedShader = when (mode) {
+            MAGICA_VOXEL -> magicaVoxelShader
+            MINECRAFT -> minecraftShader
+        }
+        models.forEach { (_, v) -> v.shader = selectedShader }
+    }
+
     /** Creates model and voxel mesh. */
     private fun getModel(group: SceneVoxelGroup) = models.getOrPut(group) {
-        VoxelMeshModel(group, colorMap).apply {
+        VoxelMeshModel(group, colorMap, selectedShader).apply {
             init()
             updateVoxels()
         }

@@ -143,6 +143,10 @@ class MainScene(private val app: EditorApp) {
         updateSelectedNodeModel()
     }
 
+    fun updateShadingMode() {
+        voxelModel.setShadingMode(app.state.shadingMode)
+    }
+
     /** Returns all children of [root] that are not hidden directly or
      * indirectly (i.e. by a hidden parent), excluding the root itself. */
     private fun findVisibleChildren(root: SceneObject) : List<SceneObject> {
