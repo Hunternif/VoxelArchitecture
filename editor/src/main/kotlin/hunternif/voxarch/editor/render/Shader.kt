@@ -33,11 +33,19 @@ abstract class Shader {
     @PublishedApi
     internal open fun startFrame() {}
 
+    val inUse get() = shaderInUse == this
+
     /** Tells OpenGL to use this shader while performing [action] */
     inline fun use(crossinline action: Shader.() -> Unit) {
-        glUseProgram(shaderProgramID)
+        if (shaderInUse != this) {
+            glUseProgram(shaderProgramID)
+            shaderInUse = this
+        }
         this.action()
-        glUseProgram(0)
+        if (inUse) {
+            glUseProgram(0)
+            shaderInUse = null
+        }
     }
 
     fun uploadMat4f(varName: String, mat4: Matrix4f) = MemoryStack.stackPush().use { stack ->
@@ -87,6 +95,10 @@ abstract class Shader {
     fun uploadInt(varName: String, value: Int) {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
         glUniform1i(varLocation, value)
+    }
+
+    companion object {
+        var shaderInUse: Shader? = null
     }
 }
 

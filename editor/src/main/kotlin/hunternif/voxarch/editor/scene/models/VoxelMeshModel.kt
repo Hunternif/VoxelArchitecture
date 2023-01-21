@@ -1,8 +1,9 @@
 package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
+import hunternif.voxarch.editor.scene.shaders.VoxelShader
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.storage.IVoxel
@@ -10,10 +11,10 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 
 /**
- * Renders colored voxels (like in MagicaVoxel),
+ * Renders colored or textured voxels,
  * using a unified triangle mesh.
  */
-class VoxelColoredMeshModel(
+class VoxelMeshModel(
     private val voxels: SceneVoxelGroup,
     private val colorMap: (IVoxel) -> ColorRGBa,
 ) : BaseModel() {
@@ -27,10 +28,13 @@ class VoxelColoredMeshModel(
     private val modelMat = Matrix4f()
     var visible = true
 
-    override val shader: Shader = MagicaVoxelShader()
+    override val shader: VoxelShader = MagicaVoxelShader()
 
     fun updateVoxels() {
-        val mesh = coloredMeshFromVoxels(voxels.data, colorMap)
+        val mesh = when (voxels.renderMode) {
+            VoxelRenderMode.COLORED -> coloredMeshFromVoxels(voxels.data, colorMap)
+            VoxelRenderMode.TEXTURED -> texturedMeshFromVoxels(voxels.data)
+        }
         uploadMesh(mesh)
     }
 
@@ -46,7 +50,7 @@ class VoxelColoredMeshModel(
         initVertexAttributes {
             vector3f(0) // position attribute
             vector3f(1) // normal attribute
-            vector4f(2) // color instance attribute
+            vector4f(2) // color or UV attribute
         }
 
         // The shader is instanced, but it will only render 1 instance:
@@ -71,13 +75,16 @@ class VoxelColoredMeshModel(
 
     private fun uploadMesh(mesh: Mesh) {
         val vertices = mesh.iterateTriangleVertices().toList()
-        // 10 = 3f pos + 3f normal + 4f color
-        vertBufferSize = vertices.size * 10
+        // 10 = 3f pos + 3f normal + 4f color or UV
+        vertBufferSize = vertices.size * 8
         vertexBuffer.prepare(vertBufferSize).run {
             for (v in vertices) {
                 put(v.pos)
                 put(v.normal)
-                put(v.color.toVector4f())
+                when (voxels.renderMode) {
+                    VoxelRenderMode.COLORED -> put(v.color.toVector4f())
+                    VoxelRenderMode.TEXTURED -> put(v.uv).put(0f).put(0f)
+                }
             }
             flip()
         }
@@ -88,6 +95,8 @@ class VoxelColoredMeshModel(
 
     override fun render() {
         if (!visible) return
+        // Other voxel models could be reusing this shader and change render mode:
+        shader.updateRenderMode(voxels.renderMode)
         glEnable(GL_DEPTH_TEST)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)
