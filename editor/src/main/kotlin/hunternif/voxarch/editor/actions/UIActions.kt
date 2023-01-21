@@ -53,14 +53,17 @@ fun EditorApp.setTool(tool: Tool) = action {
 }
 
 fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
-    state.renderMode = mode
-    when (mode) {
-        VoxelRenderMode.COLORED -> {
-            state.buildContext.materials.setSolidColorMaterials()
+    if (state.renderMode != mode) {
+        state.renderMode = mode
+        when (mode) {
+            VoxelRenderMode.COLORED -> {
+                state.buildContext.materials.setSolidColorMaterials()
+            }
+            VoxelRenderMode.TEXTURED -> {
+                state.buildContext.materials.setMinecraftMaterials()
+            }
         }
-        VoxelRenderMode.TEXTURED -> {
-            state.buildContext.materials.setMinecraftMaterials()
-        }
+        if (state.generatedVoxels.isNotEmpty()) buildVoxels()
     }
 }
 
