@@ -124,6 +124,8 @@ class MainScene(private val app: EditorApp) {
         camera.zoomToFitBox(minCorner, maxCorner, true)
     }
 
+    /** Updates high-level properties like position, size, visibility.
+     * Doesn't update the voxel mesh. */
     fun updateVoxelModel() = app.state.run {
         val visibleVoxels = findVisibleChildren(voxelRoot).filterIsInstance<SceneVoxelGroup>()
         visibleVoxels.forEach { it.update() }

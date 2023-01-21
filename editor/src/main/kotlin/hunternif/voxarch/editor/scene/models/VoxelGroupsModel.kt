@@ -12,6 +12,7 @@ class VoxelGroupsModel(
 ) : IModel {
     private val models = LinkedHashMap<SceneVoxelGroup, VoxelMeshModel>()
 
+    /** Creates model and voxel mesh. */
     private fun getModel(group: SceneVoxelGroup) = models.getOrPut(group) {
         VoxelMeshModel(group, colorMap).apply {
             init()
@@ -19,18 +20,25 @@ class VoxelGroupsModel(
         }
     }
 
-    fun updateModel(group: SceneVoxelGroup) {
-        getModel(group).apply {
-            if (!visible) visible = true
-            updatePosition()
-        }
-    }
-
+    /** Updates high-level properties like position, size, visibility.
+     * Doesn't update the voxel meshes. */
     fun updateVisible(groups: Collection<SceneVoxelGroup>) {
-        groups.forEach { updateModel(it) }
+        groups.forEach { group ->
+            getModel(group).apply {
+                if (!visible) visible = true
+                updatePosition()
+            }
+        }
         val visibleSet = groups.toSet()
         for ((group, model) in models) {
             if (group !in visibleSet) model.visible = false
+        }
+    }
+
+    /** Re-creates voxel mesh. */
+    fun updateVoxels(groups: Collection<SceneVoxelGroup>) {
+        groups.forEach {
+            getModel(it).updateVoxels()
         }
     }
 
