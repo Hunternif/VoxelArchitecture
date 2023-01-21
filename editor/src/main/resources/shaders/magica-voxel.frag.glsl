@@ -3,7 +3,14 @@ out vec4 FragColor;
 
 in vec3 Normal;
 in vec3 FragPos;
-in vec4 VoxColor;
+in vec4 ColorOrUV;
+
+uniform int uRenderMode; // colored or textured
+const int MODE_COLORED = 1;
+const int MODE_TEXTURED = 2;
+const vec4 UNKNOWN_COLOR = vec4(1, 0, 1, 1); // pink
+
+uniform sampler2D uTexSampler;
 
 uniform mat4 uViewProj;
 
@@ -24,6 +31,16 @@ float computeDepth(vec3 pos) {
     return (clip_space_pos.z / clip_space_pos.w);
 }
 
+vec4 getColor() {
+    if (uRenderMode == MODE_COLORED) {
+        return ColorOrUV;
+    } else if (uRenderMode == MODE_TEXTURED) {
+        return texture(uTexSampler, ColorOrUV.xy);
+    } else {
+        return UNKNOWN_COLOR;
+    }
+}
+
 void main()
 {
     // ambient
@@ -40,7 +57,7 @@ void main()
 
     // sum up everything
     vec4 totalLight = vec4(ambientLight + skyDiffLight + backDiffLight, 1.0);
-    FragColor = totalLight * VoxColor;
+    FragColor = totalLight * getColor();
 
     // To use depth correctly with other elements like the grid:
     gl_FragDepth = computeDepth(FragPos);

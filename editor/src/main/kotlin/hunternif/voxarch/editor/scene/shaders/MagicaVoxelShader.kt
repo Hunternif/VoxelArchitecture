@@ -1,15 +1,15 @@
 package hunternif.voxarch.editor.scene.shaders
 
-import hunternif.voxarch.editor.render.Shader
+import hunternif.voxarch.editor.builder.minecraftTexAtlas
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.resourcePath
 import org.joml.Matrix4f
 import org.joml.Vector3f
 
-class MagicaVoxelShader: Shader() {
+class MagicaVoxelShader: VoxelShader() {
     override fun init() {
         super.init(
-            resourcePath("shaders/magica-voxel.vert.glsl"),
+            resourcePath("shaders/base-voxel.vert.glsl"),
             resourcePath("shaders/magica-voxel.frag.glsl")
         ) {
             // Skylight falls uniformly in this direction
@@ -26,6 +26,11 @@ class MagicaVoxelShader: Shader() {
             uploadFloat("uAmbientPower", 1.0f)
 
             uploadMat4f("uModel", Matrix4f())
+
+            uploadTexture("uTexSampler", 0)
+            updateRenderMode(VoxelRenderMode.COLORED)
+
+            texture = minecraftTexAtlas.sheet
         }
     }
 }

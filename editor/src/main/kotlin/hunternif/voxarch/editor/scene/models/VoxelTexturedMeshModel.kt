@@ -1,6 +1,5 @@
 package hunternif.voxarch.editor.scene.models
 
-import hunternif.voxarch.editor.builder.minecraftTexAtlas
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.scene.shaders.MinecraftShader
@@ -26,7 +25,7 @@ class VoxelTexturedMeshModel(
     private val modelMat = Matrix4f()
     var visible = true
 
-    override val shader: Shader = MinecraftShader(minecraftTexAtlas.sheet)
+    override val shader: Shader = MinecraftShader()
 
     fun updateVoxels() {
         val mesh = texturedMeshFromVoxels(voxels.data)
@@ -45,7 +44,7 @@ class VoxelTexturedMeshModel(
         initVertexAttributes {
             vector3f(0) // position attribute
             vector3f(1) // normal attribute
-            vector2f(2) // uv attribute
+            vector4f(2) // color or UV attribute
         }
 
         // The shader is instanced, but it will only render 1 instance:
@@ -70,13 +69,16 @@ class VoxelTexturedMeshModel(
 
     private fun uploadMesh(mesh: Mesh) {
         val vertices = mesh.iterateTriangleVertices().toList()
-        // 8 = 3f pos + 3f normal + 2f UV
+        // 10 = 3f pos + 3f normal + 4f color or UV
         vertBufferSize = vertices.size * 8
         vertexBuffer.prepare(vertBufferSize).run {
             for (v in vertices) {
                 put(v.pos)
                 put(v.normal)
                 put(v.uv)
+                // we're only using 2 out of 4 floats for UV, need padding:
+                put(0f)
+                put(0f)
             }
             flip()
         }

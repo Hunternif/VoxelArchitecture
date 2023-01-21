@@ -83,6 +83,11 @@ abstract class Shader {
         val varLocation = glGetUniformLocation(shaderProgramID, varName)
         glUniform1i(varLocation, if (bool) 1 else 0)
     }
+
+    fun uploadInt(varName: String, value: Int) {
+        val varLocation = glGetUniformLocation(shaderProgramID, varName)
+        glUniform1i(varLocation, value)
+    }
 }
 
 /** Returns shader program id */
