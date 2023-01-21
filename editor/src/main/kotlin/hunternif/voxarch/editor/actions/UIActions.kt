@@ -2,9 +2,12 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.builder.setMinecraftMaterials
+import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
 import hunternif.voxarch.editor.scene.*
 import hunternif.voxarch.editor.scene.models.box.BoxFace
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -47,6 +50,18 @@ fun EditorApp.openDialogExportVoxFile() = action {
 
 fun EditorApp.setTool(tool: Tool) = action {
     state.currentTool = tool
+}
+
+fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
+    state.renderMode = mode
+    when (mode) {
+        VoxelRenderMode.COLORED -> {
+            state.buildContext.materials.setSolidColorMaterials()
+        }
+        VoxelRenderMode.TEXTURED -> {
+            state.buildContext.materials.setMinecraftMaterials()
+        }
+    }
 }
 
 fun EditorApp.centerCamera() = action {

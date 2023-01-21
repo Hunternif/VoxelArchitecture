@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import imgui.ImGui
 import imgui.flag.ImGuiStyleVar
 
@@ -44,6 +45,18 @@ fun MainGui.mainMenu() {
                     false,
                     app.state.history.hasFutureItems()
                 )) app.redo()
+            ImGui.endMenu()
+        }
+        if (ImGui.beginMenu("Options")) {
+            if (ImGui.beginMenu("Render mode")) {
+                if (ImGui.menuItem("Solid color")) {
+                    app.setRenderMode(VoxelRenderMode.COLORED)
+                }
+                if (ImGui.menuItem("Texture")) {
+                    app.setRenderMode(VoxelRenderMode.TEXTURED)
+                }
+                ImGui.endMenu()
+            }
             ImGui.endMenu()
         }
         ImGui.endMainMenuBar()
