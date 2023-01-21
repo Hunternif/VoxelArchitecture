@@ -99,7 +99,7 @@ class AppStateImpl(
 
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
-        materials.setMinecraftMaterials()
+        materials.setSolidColorMaterials()
         builders.setDefaultBuilders()
         builders.setCastleBuilders()
     }
@@ -107,7 +107,7 @@ class AppStateImpl(
     override var seed: Long = 0
     override val domBuilderNames = domBuilderFactoryByName.keys.toList()
     override val voxelColorMap = ::mapVoxelToSolidColor
-    override var renderMode = VoxelRenderMode.TEXTURED
+    override var renderMode = VoxelRenderMode.COLORED
 
     override var parentNode: SceneNode = rootNode
     override val sceneTree = SceneTree(sceneRoot).apply {
