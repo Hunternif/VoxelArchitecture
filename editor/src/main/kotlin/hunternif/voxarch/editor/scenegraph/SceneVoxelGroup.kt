@@ -4,11 +4,9 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.util.add
 import hunternif.voxarch.editor.util.set
-import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.vector.Vec3
-import org.joml.Vector3f
 
 class SceneVoxelGroup(
     id: Int,
@@ -17,7 +15,7 @@ class SceneVoxelGroup(
     val renderMode: VoxelRenderMode = VoxelRenderMode.COLORED,
     isGenerated: Boolean = false,
     /** Voxel centric coordinates of the lower corner */
-    val origin: Vector3f = Vector3f(),
+    val origin: Vec3 = Vec3(0, 0, 0),
 ) : SceneObject(
     id,
     color = Colors.transparent,
@@ -35,7 +33,7 @@ class SceneVoxelGroup(
         box.size.set(data.sizeVec)
         box.updateMesh()
         aabb.wrapVoxels(
-            origin.toVec3() + Vec3(data.minX, data.minY, data.minZ),
+            origin + Vec3(data.minX, data.minY, data.minZ),
             data.sizeVec.toVec3()
         )
     }

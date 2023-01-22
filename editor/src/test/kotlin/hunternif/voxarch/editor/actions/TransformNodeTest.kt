@@ -43,7 +43,7 @@ class TransformNodeTest : BaseAppTest() {
         assertEquals(false, room.isCentered())
         assertEquals(CHILD_ORIGIN, child.origin)
         
-        app.transformNodeOrigin(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
+        app.transformObjOrigin(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
         assertEquals(Vec3(4, 5, 6), room.origin)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)

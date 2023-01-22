@@ -79,7 +79,7 @@ fun SceneObject.transformData(
         rotationY ?: node.rotationY,
     )
     is SceneVoxelGroup -> TransformData(
-        origin ?: this.origin.toVec3(),
+        (origin ?: this.origin).clone(),
         Vec3.ZERO,
         Vec3.ZERO,
         false,

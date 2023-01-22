@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.scene.models.VoxelColoredInstancedModel.VoxelIns
 import hunternif.voxarch.editor.scene.models.box.AABBoxInstancedModel
 import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.toVector3f
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
 import org.joml.Matrix4f
@@ -44,7 +45,7 @@ class VoxelColoredInstancedModel(
     }
 
     fun updatePosition() {
-        modelMat.translation(voxels.origin)
+        modelMat.translation(voxels.origin.toVector3f())
         shader.use {
             uploadMat4f("uModel", modelMat)
         }

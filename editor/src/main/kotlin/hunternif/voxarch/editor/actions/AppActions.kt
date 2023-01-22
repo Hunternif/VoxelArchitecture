@@ -7,7 +7,6 @@ import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.plan.*
@@ -51,7 +50,7 @@ fun EditorApp.exportVoxFile(path: Path) = action {
     val mergedStorage = ChunkedStorage3D<IVoxel>()
     state.voxelRoot.forEachSubtree {
         if (it is SceneVoxelGroup) {
-            it.data.copyTo(mergedStorage, it.origin.toVec3().toIntVec3())
+            it.data.copyTo(mergedStorage, it.origin.toIntVec3())
         }
     }
     val boundedView = mergedStorage.boundedView()
@@ -133,8 +132,8 @@ fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) =
     ResizeNodesBuilder(this as EditorAppImpl, objs.toList())
 
 /** Passing in [oldOrigin] because the node could be already moved in the scene. */
-fun EditorApp.transformNodeOrigin(
-    obj: SceneNode,
+fun EditorApp.transformObjOrigin(
+    obj: SceneObject,
     oldOrigin: Vec3,
     newOrigin: Vec3,
 ) = historyAction(
