@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.render
 
+import org.joml.Vector2f
 import kotlin.math.sqrt
 
 /**
@@ -19,6 +20,10 @@ data class Viewport(
     inline val top get() = y
     /** Distance from the top of the window to the BOTTOM of this viewport */
     inline val bottom get() = y + height
+
+    /** Returns offset in GLFW window coordinates */
+    val windowOffset: Vector2f = Vector2f()
+        get() = field.set(x.toFloat(), -y.toFloat())
 
     constructor(vp: Viewport) : this(vp.x, vp.y, vp.width, vp.height)
 
