@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.util
 import imgui.ImGui
 import org.joml.Vector3f
 import org.joml.Vector4f
+import java.nio.ByteBuffer
 import kotlin.math.min
 import kotlin.math.round
 
@@ -50,12 +51,23 @@ data class ColorRGBa(
         )
     }
 
+    override fun toString(): String {
+        return String.format("0x%06X %.0f%%", hex, a * 100)
+    }
+
     companion object {
         fun fromHex(hex: Int, alpha: Float = 1f): ColorRGBa {
             val r = hex and (0xff0000) shr 16
             val g = hex and (0x00ff00) shr 8
             val b = hex and (0x0000ff)
             return ColorRGBa(r / 255f, g / 255f, b / 255f, alpha)
+        }
+
+        fun fromRGBBytes(buffer: ByteBuffer): ColorRGBa {
+            val r = buffer.get().toInt() and 0xff
+            val g = buffer.get().toInt() and 0xff
+            val b = buffer.get().toInt() and 0xff
+            return ColorRGBa(r / 255f, g / 255f, b / 255f)
         }
     }
 }

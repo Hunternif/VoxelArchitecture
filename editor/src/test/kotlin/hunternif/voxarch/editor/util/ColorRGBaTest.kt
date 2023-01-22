@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.util
 
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import org.lwjgl.system.MemoryUtil
 import hunternif.voxarch.editor.util.ColorRGBa.Companion.fromHex as rgb
 
 class ColorRGBaTest {
@@ -49,5 +50,22 @@ class ColorRGBaTest {
             rgb(0xAA0055, 0.75f),
             rgb(0x0000ff, 0.5f).blend(rgb(0xff0000, 0.5f))
         )
+    }
+
+    @Test
+    fun `color to string`() {
+        assertEquals("0x00CC99 75%", ColorRGBa.fromHex(0x00cc99, 0.751f).toString())
+    }
+
+    @Test
+    fun `read color from buffer`() {
+        val buffer = MemoryUtil.memAlloc(3)
+        buffer.put(0x00.toByte())
+        buffer.put(0xcc.toByte())
+        buffer.put(0x99.toByte())
+        buffer.flip()
+        val colorFromBytes = ColorRGBa.fromRGBBytes(buffer)
+        val expected = ColorRGBa.fromHex(0x00cc99)
+        assertEquals(expected, colorFromBytes)
     }
 }

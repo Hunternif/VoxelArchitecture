@@ -1,9 +1,13 @@
 package hunternif.voxarch.editor.render
 
+import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.util.ByteBufferWrapper
+import hunternif.voxarch.editor.util.ColorRGBa
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.stb.STBImage.stbi_image_free
 import org.lwjgl.stb.STBImage.stbi_load
 import org.lwjgl.system.MemoryStack
+import org.lwjgl.system.MemoryUtil
 import java.nio.ByteBuffer
 
 class Texture(val filepath: String) {
@@ -20,10 +24,15 @@ class Texture(val filepath: String) {
         private set
     var channels: Int = 0
         private set
+    var format: Int = GL_RGB
+        private set
+
+    private val pixelBuffer = MemoryUtil.memAlloc(4)
 
     fun generate(width: Int, height: Int) {
         this.width = width
         this.height = height
+        this.format = GL_RGB
         this.channels = 3
         // Generate texture on GPU
         texID = glGenTextures()
@@ -31,8 +40,8 @@ class Texture(val filepath: String) {
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         glTexImage2D(
-            GL_TEXTURE_2D, 0, GL_RGB, width, height,
-            0, GL_RGB, GL_UNSIGNED_BYTE, 0
+            GL_TEXTURE_2D, 0, format, width, height,
+            0, format, GL_UNSIGNED_BYTE, 0
         )
         isLoaded = true
     }
@@ -89,19 +98,35 @@ class Texture(val filepath: String) {
         // When stretching an image, pixelate
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
         if (channels == 3) {
+            format = GL_RGB
             glTexImage2D(
-                GL_TEXTURE_2D, 0, GL_RGB,
+                GL_TEXTURE_2D, 0, format,
                 width, height,
-                0, GL_RGB, GL_UNSIGNED_BYTE, bytes
+                0, format, GL_UNSIGNED_BYTE, bytes
             )
         } else if (channels == 4) {
+            format = GL_RGBA
             glTexImage2D(
-                GL_TEXTURE_2D, 0, GL_RGBA,
+                GL_TEXTURE_2D, 0, format,
                 width, height,
-                0, GL_RGBA, GL_UNSIGNED_BYTE, bytes
+                0, format, GL_UNSIGNED_BYTE, bytes
             )
         }
         isLoaded = true
+    }
+
+    /** Reads data from the GPU */
+    fun readPixels(bufferWrapper: ByteBufferWrapper) {
+        val buffer = bufferWrapper.prepare(width * height * channels)
+        glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, buffer)
+    }
+
+    /** Reads a single pixel from the GPU */
+    fun readPixel(x: Int, y: Int): ColorRGBa {
+        if (x < 0 || x >= width || y < 0 || y >= height) return Colors.debug
+        pixelBuffer.clear()
+        glReadPixels(x, y, 1, 1, format, GL_UNSIGNED_BYTE, pixelBuffer)
+        return ColorRGBa.fromRGBBytes(pixelBuffer)
     }
 
 

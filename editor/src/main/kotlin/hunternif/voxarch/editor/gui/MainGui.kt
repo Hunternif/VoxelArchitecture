@@ -55,7 +55,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
-        debugTexture((app as EditorAppImpl).scene.voxelModel.selectionFbo.texture)
+//        debugTexture((app as EditorAppImpl).scene.hitTester.voxelsFbo.texture)
         logWindow()
         fpsCounter.run()
         mainMenu()

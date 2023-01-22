@@ -41,7 +41,7 @@ class MainScene(private val app: EditorApp) {
 
 
     // 3d models
-    val voxelModel = VoxelGroupsModel(vp) { v -> app.state.voxelColorMap(v) }
+    private val voxelModel = VoxelGroupsModel(hitTester) { v -> app.state.voxelColorMap(v) }
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel(camera)
     private val selectedNodeModel = BoxFrameModel(Colors.selectedNodeOutline)
@@ -84,6 +84,7 @@ class MainScene(private val app: EditorApp) {
         models3d.forEach { it.init() }
         models2d.forEach { it.init() }
         gizmoModel.init()
+        hitTester.init()
         inputController.run {
             init(window)
             addListener(keyController)
