@@ -6,18 +6,18 @@ import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.resourcePath
 import org.joml.Vector4f
 
-class SolidColorShader(
+/**
+ * Courtesy of http://www.opengl-tutorial.org/miscellaneous/clicking-on-objects/picking-with-an-opengl-hack/
+ * Renders the silhouette of a model using the given color.
+ */
+class VoxelPickShader(
     color: ColorRGBa = Colors.debug,
 ): Shader() {
-    constructor(
-        colorHex: Int,
-        alpha: Float = 1f,
-    ): this(ColorRGBa.fromHex(colorHex, alpha))
 
     override fun init() {
         super.init(
-            resourcePath("shaders/solid-color.vert.glsl"),
-            resourcePath("shaders/solid-color.frag.glsl")
+            resourcePath("shaders/voxel-pick.vert.glsl"),
+            resourcePath("shaders/voxel-pick.frag.glsl")
         ) {
             updateColor(color)
         }
@@ -29,6 +29,6 @@ class SolidColorShader(
     /** Must be called when shader is in use. */
     fun updateColor(newColor: ColorRGBa) {
         color = newColor
-        uploadVec4f("uColor", Vector4f(color.r, color.g, color.b, color.a))
+        uploadVec4f("uPickingColor", Vector4f(color.r, color.g, color.b, color.a))
     }
 }

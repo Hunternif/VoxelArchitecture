@@ -72,6 +72,7 @@ class FrameBufferMSAA(var samples: Int = 4) : FrameBuffer() {
 
     override fun startFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, fboMSAAID)
+        fboIDInUse = fboMSAAID
     }
 
     override fun endFrame() {

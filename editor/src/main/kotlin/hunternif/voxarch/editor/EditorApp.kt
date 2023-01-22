@@ -31,7 +31,7 @@ class EditorAppImpl : EditorApp {
     private var width: Int = 1000
     private var height: Int = 600
     internal val gui = MainGui(this)
-    internal val scene = MainScene(this)
+    val scene = MainScene(this)
 
     override lateinit var state: AppStateImpl
     override val logs = LinkedList<LogMessage>()

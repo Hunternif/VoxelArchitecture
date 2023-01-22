@@ -40,7 +40,7 @@ class MainScene(private val app: EditorApp) {
 
 
     // 3d models
-    private val voxelModel = VoxelGroupsModel { v -> app.state.voxelColorMap(v) }
+    val voxelModel = VoxelGroupsModel(vp) { v -> app.state.voxelColorMap(v) }
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel(camera)
     private val selectedNodeModel = BoxFrameModel(Colors.selectedNodeOutline)

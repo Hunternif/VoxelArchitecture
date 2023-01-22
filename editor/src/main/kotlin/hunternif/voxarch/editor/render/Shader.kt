@@ -41,6 +41,7 @@ abstract class Shader {
 
     /** Tells OpenGL to use this shader while performing [action] */
     inline fun use(crossinline action: Shader.() -> Unit) {
+        val prevShaderInUse = shaderInUse
         var shouldReset = false
         if (shaderInUse != this) {
             glUseProgram(shaderProgramID)
@@ -49,7 +50,7 @@ abstract class Shader {
         }
         this.action()
         if (inUse && shouldReset) {
-            glUseProgram(0)
+            glUseProgram(prevShaderInUse?.shaderProgramID ?: 0)
             shaderInUse = null
         }
     }

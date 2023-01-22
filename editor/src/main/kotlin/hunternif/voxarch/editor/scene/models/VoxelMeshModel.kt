@@ -28,12 +28,17 @@ class VoxelMeshModel(
     private val modelMat = Matrix4f()
     var visible = true
 
+    var mesh: Mesh = Mesh()
+
+    val pickModel = VoxelPickMeshModel(voxels.id)
+
     fun updateVoxels() {
-        val mesh = when (voxels.renderMode) {
+        mesh = when (voxels.renderMode) {
             VoxelRenderMode.COLORED -> coloredMeshFromVoxels(voxels.data, colorMap)
             VoxelRenderMode.TEXTURED -> texturedMeshFromVoxels(voxels.data)
         }
         uploadMesh(mesh)
+        pickModel.uploadMesh(mesh)
     }
 
     fun updatePosition() {
@@ -41,6 +46,7 @@ class VoxelMeshModel(
         shader.use {
             uploadMat4f("uModel", modelMat)
         }
+        pickModel.updateMatrix(modelMat)
     }
 
     override fun init() {
@@ -58,6 +64,7 @@ class VoxelMeshModel(
             mat4f(3) // model matrix instance attribute, uses ids 3-6
         }
         uploadInstanceData()
+        pickModel.init()
     }
 
     // A left-over from the instanced shader, uploads the Model matrix

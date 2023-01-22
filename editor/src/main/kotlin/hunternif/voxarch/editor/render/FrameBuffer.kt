@@ -46,6 +46,7 @@ open class FrameBuffer {
     @PublishedApi
     internal open fun startFrame() {
         glBindFramebuffer(GL_FRAMEBUFFER, fboID)
+        fboIDInUse = fboID
     }
 
     @PublishedApi
@@ -54,8 +55,15 @@ open class FrameBuffer {
     }
 
     inline fun render(crossinline renderCall: () -> Unit) {
+        val prevFboID = fboIDInUse
         startFrame()
         renderCall()
         endFrame()
+        glBindFramebuffer(GL_FRAMEBUFFER, prevFboID)
+        fboIDInUse = prevFboID
+    }
+
+    companion object {
+        var fboIDInUse: Int = 0
     }
 }

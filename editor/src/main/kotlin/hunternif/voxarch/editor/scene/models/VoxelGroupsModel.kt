@@ -1,18 +1,19 @@
 package hunternif.voxarch.editor.scene.models
 
+import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.IModel
-import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
-import hunternif.voxarch.editor.scene.shaders.MinecraftShader
-import hunternif.voxarch.editor.scene.shaders.VoxelShader
-import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
+import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.scene.shaders.*
 import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode.*
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.storage.IVoxel
 import org.joml.Matrix4f
+import org.lwjgl.opengl.GL32.*
 
 /** Contains all models for individual [SceneVoxelGroup] instances. */
 class VoxelGroupsModel(
+    private val vp: Viewport,
     private val colorMap: (IVoxel) -> ColorRGBa,
 ) : IModel {
     private val models = LinkedHashMap<SceneVoxelGroup, VoxelMeshModel>()
@@ -22,12 +23,15 @@ class VoxelGroupsModel(
 
     private var selectedShader: VoxelShader = magicaVoxelShader
 
+    val selectionFbo = FrameBuffer()
+
     var shadingMode: VoxelShadingMode = MAGICA_VOXEL
         private set
 
     override fun init() {
         minecraftShader.init()
         magicaVoxelShader.init()
+        selectionFbo.init(vp)
     }
 
     fun setShadingMode(mode: VoxelShadingMode) {
@@ -42,6 +46,7 @@ class VoxelGroupsModel(
     /** Creates model and voxel mesh. */
     private fun getModel(group: SceneVoxelGroup) = models.getOrPut(group) {
         VoxelMeshModel(group, colorMap, selectedShader).apply {
+            group.model = this
             init()
             updateVoxels()
         }
@@ -72,6 +77,15 @@ class VoxelGroupsModel(
     override fun runFrame(viewProj: Matrix4f) {
         for ((_, model) in models) {
             model.runFrame(viewProj)
+        }
+        // Render selection texture
+        selectionFbo.setViewport(vp)
+        selectionFbo.render {
+            glClearColor(0f, 0f, 0f, 1f)
+            glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
+            for ((_, model) in models) {
+                model.pickModel.runFrame(viewProj)
+            }
         }
     }
 
