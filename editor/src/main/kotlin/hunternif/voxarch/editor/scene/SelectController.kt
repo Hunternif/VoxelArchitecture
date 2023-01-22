@@ -71,8 +71,7 @@ class SelectController(
             mode = SUBTRACT
             origSelectedSet.addAll(app.state.selectedObjects)
         }
-        if (DEBUG_SELECT) pointsDebugModel.points.clear()
-        if (DEBUG_SELECT) pointsDebugModel.update()
+        if (DEBUG_SELECT) pointsDebugModel.clear()
         selectedSet.clear()
         selectionBuilder = app.selectionBuilder()
     }
@@ -124,7 +123,7 @@ class SelectController(
             maxY = max(marqueeModel.start.y, marqueeModel.end.y).toInt()
 
             selectedSet.clear()
-            if (DEBUG_SELECT) pointsDebugModel.points.clear()
+            if (DEBUG_SELECT) pointsDebugModel.clear()
 
             for (obj in app.state.sceneObjects) {
                 obj.box.screenTriangles.forEach {
@@ -154,7 +153,6 @@ class SelectController(
                 }
             }
         }
-        if (DEBUG_SELECT) pointsDebugModel.update()
     }
 
     /** When the selection marquee includes [obj] */
@@ -181,7 +179,7 @@ class SelectController(
     }
 
     private fun debugPoint(p: Vector2f) {
-        if (DEBUG_SELECT) pointsDebugModel.points.add(p)
+        if (DEBUG_SELECT) pointsDebugModel.add(p)
     }
     private fun debugPoint(x: Number, y: Number) {
         debugPoint(Vector2f(x.toFloat(), y.toFloat()))

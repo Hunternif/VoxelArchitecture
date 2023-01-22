@@ -1,18 +1,21 @@
 package hunternif.voxarch.editor.scene.models
 
+import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.FloatBufferWrapper
 import org.joml.Vector2f
 import org.lwjgl.opengl.GL33.*
 import kotlin.math.round
 
-class Points2DModel : BaseModel() {
+class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
     private var bufferSize = 0
 
-    override val shader = SolidColorShader(0xffffff)
+    override val shader = SolidColorShader(color)
 
-    val points = mutableListOf<Vector2f>()
+    private var isDirty = false
+    private val points = mutableListOf<Vector2f>()
 
     private val vertexBuffer = FloatBufferWrapper()
 
@@ -21,6 +24,16 @@ class Points2DModel : BaseModel() {
         initVertexAttributes {
             vector3f(0) // position attribute
         }
+        update()
+    }
+
+    fun add(point: Vector2f) {
+        points.add(Vector2f(point))
+        isDirty = true
+    }
+
+    fun clear() {
+        points.clear()
         update()
     }
 
@@ -38,9 +51,11 @@ class Points2DModel : BaseModel() {
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
+        isDirty = false
     }
 
     override fun render() {
+        if (isDirty) update()
         glDisable(GL_DEPTH_TEST)
 
         glPointSize(4f)
