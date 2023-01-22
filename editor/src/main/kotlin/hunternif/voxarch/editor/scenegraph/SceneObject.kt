@@ -2,9 +2,7 @@ package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.OrbitalCamera
-import hunternif.voxarch.editor.scene.models.box.AABBoxMesh
 import hunternif.voxarch.editor.scene.models.box.BoxMeshWithFaces
-import hunternif.voxarch.editor.util.AABB2Df
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.util.INested
@@ -21,8 +19,9 @@ import org.joml.Vector3f
  * It also ensures the dual hierarchy of SceneNodes and Nodes is maintained
  * (see subclass [SceneNode]).
  *
- * For parameters [start], [size], [color] - see [AABBoxMesh].
- *
+ * @param center absolute position in the scene (not relative to parent).
+ * @param size size of the object in natural coordinates.
+ * @param color the color that is used to render its AABB.
  * @param isGenerated whether this object is generated (for UI).
  */
 open class SceneObject(
@@ -33,14 +32,9 @@ open class SceneObject(
     val color: ColorRGBa = Colors.defaultNodeBox,
     val isGenerated: Boolean = false,
 ) : INested<SceneObject>, WithID {
-    /** Axis-aligned bounding box. */
-    val aabb = AABBoxMesh(color = color)
 
-    /** More accurate bounding box with rotation. */
+    /** Oriented bounding box with rotation. */
     val box = BoxMeshWithFaces(center, size, angleY.toRadians(), color)
-
-    /** AABB in screen coordinates relative to viewport. */
-    val screenAABB: AABB2Df get() = aabb.screenAABB
 
     override var parent: SceneObject? = null
     override val children: LinkedHashSet<SceneObject> = LinkedHashSet()
@@ -59,15 +53,13 @@ open class SceneObject(
         return super.removeChild(child)
     }
 
-    /** Recalculate [aabb] based on underlying data. */
+    /** Recalculate [box] based on underlying data. */
     open fun update() {
-        aabb.updateFaces()
         box.updateMesh()
     }
 
     /** Recalculate on-screen 2D coordinates. */
     fun updateScreenProjection(camera: OrbitalCamera) {
-        aabb.updateAABB(camera)
         box.updateScreenProjection(camera)
     }
 

@@ -33,10 +33,6 @@ class SceneVoxelGroup(
             .add(-0.5, -0.5, -0.5)
         box.size.set(data.sizeVec)
         box.updateMesh()
-        aabb.wrapVoxels(
-            origin + Vec3(data.minX, data.minY, data.minZ),
-            data.sizeVec.toVec3()
-        )
     }
 
     /** Finds offset of this node's origin in global coordinates, i.e.

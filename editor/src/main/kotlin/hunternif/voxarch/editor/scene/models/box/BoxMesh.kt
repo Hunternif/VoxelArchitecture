@@ -11,7 +11,7 @@ import org.joml.Vector2f
 import org.joml.Vector3f
 
 /**
- * A rectangular box with faces. Not axis-aligned!
+ * Oriented rectangular box with faces. Not axis-aligned!
  *
  * @param center center point of the box across all axes, in natural absolute coordinates.
  * @param size (length, height, width) in natural coordinates.
@@ -24,6 +24,10 @@ open class BoxMesh(
     var angleY: Float = 0f,
     var color: ColorRGBa = Colors.defaultNodeBox,
 ) {
+    /** Convenience: absolute position of the point in the middle of the floor. */
+    val floorCenter: Vector3f = Vector3f()
+        get() = field.set(center).sub(0f, size.y, 0f)
+
     /** Axis-aligned bounding box, accounting for rotation. */
     val aabb: AABBf = AABBf()
 

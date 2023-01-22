@@ -46,14 +46,14 @@ class MoveController(
         }
         var pickedNode = pickClickedObject(movingList)
         if (pickedNode == null) {
-            val midNode = movingList.run { sortedBy { it.aabb.start.y }[size / 2] }
+            val midNode = movingList.run { sortedBy { it.box.floorCenter.y }[size / 2] }
             // set 2D offset
             cursorOffset
-                .set(camera.projectToViewport(midNode.aabb.floorCenter))
+                .set(camera.projectToViewport(midNode.box.floorCenter))
                 .sub(mouseX, mouseY)
             pickedNode = midNode
         }
-        floorY = round(pickedNode.aabb.start.y)
+        floorY = round(pickedNode.box.floorCenter.y)
         dragStartWorldPos.set(projectToFloorWithOffset(mouseX, mouseY))
         if (mods and GLFW_MOD_ALT != 0) {
             direction = Y
