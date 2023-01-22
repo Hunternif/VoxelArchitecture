@@ -56,9 +56,7 @@ fun MainGui.mainMenu() {
                 if (ImGui.menuItem("Texture", "",
                         app.state.renderMode == TEXTURED
                     )) app.setRenderMode(TEXTURED)
-                ImGui.endMenu()
-            }
-            if (ImGui.beginMenu("Shading mode")) {
+                ImGui.separator()
                 if (ImGui.menuItem("MagicaVoxel", "",
                         app.state.shadingMode == MAGICA_VOXEL
                     )) app.setShadingMode(MAGICA_VOXEL)
