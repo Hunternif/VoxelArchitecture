@@ -17,7 +17,8 @@ import kotlin.math.min
 class SelectController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-) : BaseSelectionController(app, camera, Tool.SELECT) {
+    hitTester: HitTester,
+) : BaseSelectionController(app, hitTester, Tool.SELECT) {
     /** How to modify the existing selection. */
     private enum class Mode {
         REPLACE, ADD, SUBTRACT
@@ -143,7 +144,7 @@ class SelectController(
                 hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
                     for (y in minY..maxY step marqueeTestStep) {
                         debugPoint(x, y)
-                        if (obj.hitTest(camera, camera.vp.x + x, camera.vp.y + y)) {
+                        if (hitTester.hitTest(obj, camera.vp.x + x, camera.vp.y + y)) {
                             onHitObject(obj)
                             break@hitTestLoop
                         } else {

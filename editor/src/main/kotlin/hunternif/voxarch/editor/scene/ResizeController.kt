@@ -19,7 +19,8 @@ import org.lwjgl.glfw.GLFW.*
 class ResizeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-) : BaseSelectionController(app, camera, Tool.RESIZE) {
+    hitTester: HitTester,
+) : BaseSelectionController(app, hitTester, Tool.RESIZE) {
 
     /** Builder for the action that will be written to history. */
     private var resizeBuilder: ResizeNodesBuilder? = null
@@ -81,7 +82,7 @@ class ResizeController(
         pickedNode = null
         for (obj in app.state.selectedObjects) {
             if (obj !is SceneNode) continue
-            val hit = obj.hitTest(camera, posX, posY, result)
+            val hit = hitTester.hitTest(obj, posX, posY, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 pickedNode = obj

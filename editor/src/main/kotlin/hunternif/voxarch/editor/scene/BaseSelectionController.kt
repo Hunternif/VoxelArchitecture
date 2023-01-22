@@ -3,7 +3,6 @@ package hunternif.voxarch.editor.scene
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.setSelectedObject
-import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import org.joml.Vector2f
 import org.lwjgl.glfw.GLFW.*
@@ -14,7 +13,7 @@ import org.lwjgl.glfw.GLFW.*
  */
 abstract class BaseSelectionController(
     private val app: EditorApp,
-    private val camera: OrbitalCamera,
+    val hitTester: HitTester,
     private val tool: Tool,
 ) : MouseListener {
     // mouse coordinates are relative to window
@@ -63,7 +62,7 @@ abstract class BaseSelectionController(
         var hitObj: SceneObject? = null
         for (obj in app.state.sceneObjects) {
             if (obj in app.state.hiddenObjects) continue
-            val hit = obj.hitTest(camera, mouseX, mouseY, result)
+            val hit = hitTester.hitTest(obj, mouseX, mouseY, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 hitObj = obj

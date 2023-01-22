@@ -8,7 +8,6 @@ import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.util.INested
 import hunternif.voxarch.util.forEachSubtree
 import hunternif.voxarch.util.toRadians
-import org.joml.Vector2f
 import org.joml.Vector3f
 
 /**
@@ -58,24 +57,6 @@ open class SceneObject(
     open fun update() {
         box.updateMesh()
     }
-
-    /**
-     * Returns true if the given point on screen hits this object.
-     * [posX], [posY] are screen coordinates relative to window (not viewport).
-     * Optional [resultDistance] stores the distances to the near and far intersection
-     *      points.
-     * Optional [resultNearPoint] stores the near intersection point.
-     */
-    open fun hitTest(
-        camera: OrbitalCamera,
-        posX: Number,
-        posY: Number,
-        resultDistance: Vector2f? = null,
-        resultNearPoint: Vector3f? = null,
-    ): Boolean =
-        camera.projectToAABox(
-            posX, posY, box.aabb.minVec, box.aabb.maxVec,
-            resultDistance, resultNearPoint)
 
     /** Recalculate on-screen 2D coordinates. */
     fun updateScreenProjection(camera: OrbitalCamera) {

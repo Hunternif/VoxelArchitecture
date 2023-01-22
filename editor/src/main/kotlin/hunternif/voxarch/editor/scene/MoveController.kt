@@ -16,7 +16,8 @@ import kotlin.math.round
 class MoveController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
-) : BaseSelectionController(app, camera, Tool.MOVE) {
+    hitTester: HitTester,
+) : BaseSelectionController(app, hitTester, Tool.MOVE) {
     private enum class Direction {
         XZ, Y
     }
@@ -83,7 +84,7 @@ class MoveController(
         var minDistance = Float.MAX_VALUE
         var hitObj: SceneObject? = null
         for (obj in movingList) {
-            val hit = obj.hitTest(camera, mouseX, mouseY, result)
+            val hit = hitTester.hitTest(obj, mouseX, mouseY, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 hitObj = obj

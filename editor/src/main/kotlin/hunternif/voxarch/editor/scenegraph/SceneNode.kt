@@ -2,12 +2,9 @@ package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
-import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.rotateY
-import org.joml.Vector2f
-import org.joml.Vector3f
 
 class SceneNode(
     id: Int,
@@ -50,15 +47,6 @@ class SceneNode(
         box.size.set(node.size).add(1f, 1f, 1f)
         box.updateMesh()
     }
-
-    override fun hitTest(
-        camera: OrbitalCamera,
-        posX: Number,
-        posY: Number,
-        resultDistance: Vector2f?,
-        resultNearPoint: Vector3f?,
-    ): Boolean =
-        camera.projectToBox(posX, posY, box, resultDistance, resultNearPoint)
 
     val nodeClassName: String = node.javaClass.simpleName
     private val strRepr: String by lazy { "$nodeClassName $id" }

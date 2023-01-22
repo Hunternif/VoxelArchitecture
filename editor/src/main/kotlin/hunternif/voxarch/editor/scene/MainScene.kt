@@ -31,12 +31,13 @@ class MainScene(private val app: EditorApp) {
     private val gizmoCamera = GizmoCamera(camera)
     /** For drawing overlays on screen */
     private val orthoCamera = OrthoCamera()
+    private val hitTester = HitTester(camera)
 
     // Tool controllers
     private val newNodeController = NewNodeController(app, camera)
-    private val selectController = SelectController(app, camera)
-    private val moveController = MoveController(app, camera)
-    private val resizeController = ResizeController(app, camera)
+    private val selectController = SelectController(app, camera, hitTester)
+    private val moveController = MoveController(app, camera, hitTester)
+    private val resizeController = ResizeController(app, camera, hitTester)
 
 
     // 3d models

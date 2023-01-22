@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.scenegraph
 
 import hunternif.voxarch.editor.gui.Colors
-import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.VoxelMeshModel
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.util.add
