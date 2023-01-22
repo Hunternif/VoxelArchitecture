@@ -23,19 +23,6 @@ class MainScene(private val app: EditorApp) {
     // data
     private val vp = Viewport(0, 0, 0, 0)
 
-    // 3d models
-    private val voxelModel = VoxelGroupsModel { v -> app.state.voxelColorMap(v) }
-    private val gridModel = InfiniteGridModel()
-    private val nodeModel = NodeModel()
-    private val selectedNodeModel = BoxFrameModel(Colors.selectedNodeOutline)
-    private val originsModel = PointSpriteModel("textures/point-circle.png")
-    private val highlightedFaceModel = ResizeNodeModel()
-    // special 3d model with a separate camera
-    private val gizmoModel = GizmoBoxModel()
-
-    // 2d models
-
-
     // core controllers
     private val inputController = InputController(app)
     private val keyController = KeyController(app)
@@ -52,6 +39,19 @@ class MainScene(private val app: EditorApp) {
     private val resizeController = ResizeController(app, camera)
 
 
+    // 3d models
+    private val voxelModel = VoxelGroupsModel { v -> app.state.voxelColorMap(v) }
+    private val gridModel = InfiniteGridModel()
+    private val nodeModel = NodeModel(camera)
+    private val selectedNodeModel = BoxFrameModel(Colors.selectedNodeOutline)
+    private val originsModel = PointSpriteModel("textures/point-circle.png")
+    private val highlightedFaceModel = ResizeNodeModel()
+    // special 3d model with a separate camera
+    private val gizmoModel = GizmoBoxModel()
+
+    // 2d models
+
+
     private val models3d = listOf(
         gridModel,
         nodeModel.fillModel,
@@ -66,6 +66,7 @@ class MainScene(private val app: EditorApp) {
     private val models2d = listOf(
         selectController.marqueeModel,
         selectController.pointsDebugModel,
+        nodeModel.pointsDebugModel,
     )
 
     // misc technical fields

@@ -26,7 +26,7 @@ open class BoxMesh(
 ) {
     /** Convenience: absolute position of the point in the middle of the floor. */
     val floorCenter: Vector3f = Vector3f()
-        get() = field.set(center).sub(0f, size.y, 0f)
+        get() = field.set(center).sub(0f, size.y / 2f, 0f)
 
     /** Axis-aligned bounding box, accounting for rotation. */
     val aabb: AABBf = AABBf()
