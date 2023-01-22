@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.plan.Room
 import imgui.ImGui
 import imgui.flag.ImGuiTableColumnFlags
@@ -37,10 +38,13 @@ class GuiObjectProperties(
         checkSelectedNodes()
         renderHeaderText()
 
-        (obj as? SceneNode)?.let {
-            renderNode(it)
-            redrawNodesIfNeeded()
+        obj?.let { obj ->
+            when (obj) {
+                is SceneNode -> renderNode(obj)
+                is SceneVoxelGroup -> renderVoxelGroup(obj)
+            }
         }
+        redrawIfNeeded()
     }
 
     private fun renderNode(sceneNode: SceneNode) {
@@ -48,7 +52,7 @@ class GuiObjectProperties(
         // By passing the original Vec3 ref into render(), its value will be
         // updated in real time.
         originInput.render(node.origin) {
-            app.transformNodeOrigin(sceneNode, original, newValue)
+            app.transformObjOrigin(sceneNode, original, newValue)
         }
 
         sizeInput.render(node.size) {
@@ -110,6 +114,12 @@ class GuiObjectProperties(
         curBlueprints.addAll(sceneNode.blueprints)
     }
 
+    private fun renderVoxelGroup(group: SceneVoxelGroup) {
+        originInput.render(group.origin) {
+            app.transformObjOrigin(group, original, newValue)
+        }
+    }
+
     /** Check which nodes are currently selected, and update the state of gui */
     private fun checkSelectedNodes() = nodeTimer.runAtInterval {
         app.state.selectedObjects.run {
@@ -146,10 +156,15 @@ class GuiObjectProperties(
     }
 
     /** Apply the modified values to the node. */
-    private fun redrawNodesIfNeeded() = redrawTimer.runAtInterval {
+    private fun redrawIfNeeded() = redrawTimer.runAtInterval {
         if (originInput.dirty || sizeInput.dirty || startInput.dirty
             || rotationInput.dirty) {
-            app.redrawNodes()
+            obj?.let { obj ->
+                when (obj) {
+                    is SceneNode -> app.redrawNodes()
+                    is SceneVoxelGroup -> app.redrawVoxels()
+                }
+            }
         }
     }
 }
