@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.render.FrameBuffer
+import hunternif.voxarch.editor.render.Texture
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.util.LogMessage
@@ -54,6 +55,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
+//        debugTexture(minecraftTexAtlas.sheet)
         logWindow()
         fpsCounter.run()
         mainMenu()
@@ -195,6 +197,14 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 }
             }
         }
+    }
+
+    @PublishedApi
+    internal fun debugTexture(texture: Texture) {
+        ImGui.image(
+            texture.texID,
+            texture.width.toFloat(), texture.height.toFloat(),
+            0f, 1f, 1f, 0f)
     }
 
     @PublishedApi
