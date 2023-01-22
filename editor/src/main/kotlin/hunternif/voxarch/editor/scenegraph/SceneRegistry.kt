@@ -19,14 +19,13 @@ class SceneRegistry {
 
     fun newObject(
         center: Vector3f = Vector3f(),
-        start: Vector3f = Vector3f(),
         size: Vector3f = Vector3f(),
         angleY: Float = 0f,
         color: ColorRGBa = Colors.defaultNodeBox,
         isGenerated: Boolean = false,
     ) : SceneObject {
         val id = objectIDs.newID()
-        val obj = SceneObject(id, center, start, size, angleY, color, isGenerated)
+        val obj = SceneObject(id, center, size, angleY, color, isGenerated)
         objectIDs.save(obj)
         return obj
     }

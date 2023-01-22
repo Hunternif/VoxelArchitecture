@@ -28,8 +28,6 @@ import org.joml.Vector3f
 open class SceneObject(
     override val id: Int,
     center: Vector3f = Vector3f(),
-    //TODO: deprecate [start]
-    start: Vector3f = Vector3f(),
     size: Vector3f = Vector3f(),
     angleY: Float = 0f,
     val color: ColorRGBa = Colors.defaultNodeBox,
