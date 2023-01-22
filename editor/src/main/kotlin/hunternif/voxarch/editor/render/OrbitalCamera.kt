@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.render
 import hunternif.voxarch.editor.scene.MouseListener
 import hunternif.voxarch.editor.scene.models.box.BoxMesh
 import hunternif.voxarch.editor.util.AADirection3D
+import hunternif.voxarch.editor.util.Triangle
 import hunternif.voxarch.util.clamp
 import org.joml.*
 import org.joml.Math.*
@@ -277,7 +278,7 @@ class OrbitalCamera : MouseListener {
         posY: Number,
         aabMin: Vector3f,
         aabMax: Vector3f,
-        resultDistance: Vector2f = screenPos,
+        resultDistance: Vector2f? = null,
         resultNearPoint: Vector3f? = null,
     ): Boolean {
         unprojectPoint(posX.toFloat(), posY.toFloat())
@@ -286,12 +287,13 @@ class OrbitalCamera : MouseListener {
             pointRayDir,
             aabMin,
             aabMax,
-            resultDistance
+            screenPos
         )
         if (hit) {
             resultNearPoint?.apply {
-                set(pointRayDir).mul(resultDistance.x).add(pointRayOrigin)
+                set(pointRayDir).mul(screenPos.x).add(pointRayOrigin)
             }
+            resultDistance?.set(screenPos)
         }
         return hit
     }
@@ -299,22 +301,32 @@ class OrbitalCamera : MouseListener {
     /**
      * Projects point onto a box. Returns true if the point hits the AAB.
      * [posX], [posY] are screen coordinates relative to window (not viewport).
-     * [resultDistance] stores the distances to the near and far intersection
-     *      points.
+     * Optional [resultDistance] stores the distances to the near and far
+     * intersection points.
      * Optional [resultNearPoint] stores the near intersection point.
      */
     fun projectToBox(
         posX: Number,
         posY: Number,
         box: BoxMesh,
-        resultDistance: Vector2f = screenPos,
+        resultDistance: Vector2f? = null,
+        resultNearPoint: Vector3f? = null,
+    ): Boolean =
+        projectToMesh(posX, posY, box.triangles, resultDistance, resultNearPoint)
+
+    /** See [projectToBox] */
+    fun projectToMesh(
+        posX: Number,
+        posY: Number,
+        triangles: Iterable<Triangle>,
+        resultDistance: Vector2f? = null,
         resultNearPoint: Vector3f? = null,
     ): Boolean {
         unprojectPoint(posX.toFloat(), posY.toFloat())
         var hit = false
         var tNear = Float.POSITIVE_INFINITY
         var tFar = Float.NEGATIVE_INFINITY
-        box.triangles.forEach {
+        triangles.forEach {
             val distance = Intersectionf.intersectRayTriangle(
                 pointRayOrigin,
                 pointRayDir,
@@ -328,10 +340,11 @@ class OrbitalCamera : MouseListener {
             }
         }
         if (hit) {
-            resultDistance.set(tNear, tFar)
+            screenPos.set(tNear, tFar)
             resultNearPoint?.apply {
-                set(pointRayDir).mul(resultDistance.x).add(pointRayOrigin)
+                set(pointRayDir).mul(screenPos.x).add(pointRayOrigin)
             }
+            resultDistance?.set(screenPos)
         }
         return hit
     }

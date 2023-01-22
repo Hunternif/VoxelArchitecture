@@ -143,7 +143,7 @@ class SelectController(
                 hitTestLoop@ for (x in minX..maxX step marqueeTestStep) {
                     for (y in minY..maxY step marqueeTestStep) {
                         debugPoint(x, y)
-                        if (camera.projectToBox(camera.vp.x + x, camera.vp.y + y, obj.box)) {
+                        if (obj.hitTest(camera, camera.vp.x + x, camera.vp.y + y)) {
                             onHitObject(obj)
                             break@hitTestLoop
                         } else {

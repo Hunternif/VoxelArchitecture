@@ -81,7 +81,7 @@ class ResizeController(
         pickedNode = null
         for (obj in app.state.selectedObjects) {
             if (obj !is SceneNode) continue
-            val hit = camera.projectToBox(posX, posY, obj.box, result)
+            val hit = obj.hitTest(camera, posX, posY, result)
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 pickedNode = obj

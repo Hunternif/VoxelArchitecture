@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.util.toRadians
-import org.joml.AABBf
 import org.joml.Intersectionf
 import org.joml.Matrix4f
 import org.joml.Vector2f
@@ -29,7 +28,7 @@ open class BoxMesh(
         get() = field.set(center).sub(0f, size.y / 2f, 0f)
 
     /** Axis-aligned bounding box, accounting for rotation. */
-    val aabb: AABBf = AABBf()
+    val aabb: AABBfv = AABBfv()
 
     /** AABB in screen coordinates relative to viewport. */
     val screenAABB: AABB2Df = AABB2Df()
@@ -47,9 +46,9 @@ open class BoxMesh(
     )
 
     /** Triangles that make this mesh. */
-    val triangles: Array<Triangle> by lazy {
+    val triangles: List<Triangle> by lazy {
         vertices.let {
-            arrayOf(
+            listOf(
                 // ordered CCW
                 // bottom face
                 Triangle(it[0], it[2], it[1]),
