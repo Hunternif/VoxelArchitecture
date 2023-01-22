@@ -50,7 +50,7 @@ fun EditorApp.exportVoxFile(path: Path) = action {
     val mergedStorage = ChunkedStorage3D<IVoxel>()
     state.voxelRoot.forEachSubtree {
         if (it is SceneVoxelGroup) {
-            it.data.copyTo(mergedStorage, it.origin.toIntVec3())
+            it.data.copyTo(mergedStorage, it.findGlobalPosition().toIntVec3())
         }
     }
     val boundedView = mergedStorage.boundedView()

@@ -37,7 +37,7 @@ class VoxelMeshModel(
     }
 
     fun updatePosition() {
-        modelMat.translation(voxels.origin.toVector3f())
+        modelMat.translation(voxels.findGlobalPosition().toVector3f())
         shader.use {
             uploadMat4f("uModel", modelMat)
         }
