@@ -52,7 +52,7 @@ class WfcMagicaVoxelOverlapTest {
 
     @Test
     fun `stripe pattern`() {
-        val wave = WfcOverlapModel(8, 1, 8, patterns)
+        val wave = WfcOverlapModel(8, 1, 7, patterns)
         wave.observe()
         println("WFC complete!")
 

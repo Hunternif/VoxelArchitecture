@@ -20,17 +20,17 @@ class ChunkedStorage3D<T>(
         }
     }
 
-    override var minX: Int = 0
+    override var minX: Int = Int.MAX_VALUE
         private set
-    override var maxX: Int = 0
+    override var maxX: Int = Int.MIN_VALUE
         private set
-    override var minY: Int = 0
+    override var minY: Int = Int.MAX_VALUE
         private set
-    override var maxY: Int = 0
+    override var maxY: Int = Int.MIN_VALUE
         private set
-    override var minZ: Int = 0
+    override var minZ: Int = Int.MAX_VALUE
         private set
-    override var maxZ: Int = 0
+    override var maxZ: Int = Int.MIN_VALUE
         private set
 
     @PublishedApi internal var _size = 0
@@ -58,12 +58,14 @@ class ChunkedStorage3D<T>(
         if (v == null && prevVal != null) _size--
         if (v != null && prevVal == null) _size++
         // TODO: shrink bounds when item is removed, un-ignore unit test.
-        minX = min(minX, x)
-        minY = min(minY, y)
-        minZ = min(minZ, z)
-        maxX = max(maxX, x)
-        maxY = max(maxY, y)
-        maxZ = max(maxZ, z)
+        if (v != null) {
+            minX = min(minX, x)
+            minY = min(minY, y)
+            minZ = min(minZ, z)
+            maxX = max(maxX, x)
+            maxY = max(maxY, y)
+            maxZ = max(maxZ, z)
+        }
     }
 
     /** Maps voxel coordinates to the key of the chunk that contains them.
