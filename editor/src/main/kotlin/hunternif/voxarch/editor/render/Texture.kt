@@ -38,6 +38,8 @@ class Texture(val filepath: String) {
     }
 
     fun resize(width: Int, height: Int) {
+        this.width = width
+        this.height = height
         glBindTexture(GL_TEXTURE_2D, texID)
         glTexImage2D(
             GL_TEXTURE_2D, 0, GL_RGB, width, height,
