@@ -59,7 +59,7 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		}
 		if (wall != null) {
 			angle = wall.getRotationY() + wall.getParent().getRotationY();
-			size.x = wall.getLength();
+			size.x = wall.getWidth();
 			//TODO test gate size when walls are present.
 		} else {
 			// The 1st room doesn't have any walls either. Align and resize to

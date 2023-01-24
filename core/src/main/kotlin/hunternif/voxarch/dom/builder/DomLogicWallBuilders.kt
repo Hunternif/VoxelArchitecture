@@ -33,7 +33,7 @@ class DomLineSegmentBuilder(
                     position { origin, _ ->
                         p1.add(origin.rotateY(angle))
                     }
-                    length { 100.pct }
+                    width { 100.pct }
                     rotation { set(angle) }
                 }
             }
@@ -57,7 +57,7 @@ open class DomPolySegmentBuilder(
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
                 origin = parentNode.innerFloorCenter
-                rectangle(parentNode.length, parentNode.width)
+                rectangle(parentNode.width, parentNode.depth)
             }
             else -> null
         }
@@ -94,7 +94,7 @@ class DomFourWallsBuilder(
         if (parentNode is Room) {
             val polygon = Path().apply {
                 origin = parentNode.innerFloorCenter
-                rectangle(parentNode.length, parentNode.width)
+                rectangle(parentNode.width, parentNode.depth)
             }
             runSegmentBuilders(childCtx, polygon.origin, polygon.segments)
         }
@@ -118,7 +118,7 @@ class DomRandomSegmentBuilder(
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
                 origin = parentNode.innerFloorCenter
-                rectangle(parentNode.length, parentNode.width)
+                rectangle(parentNode.width, parentNode.depth)
             }
             else -> null
         }

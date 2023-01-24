@@ -176,7 +176,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
                 setAirAndGroundBoundary(air, groundedAir, ground)
                 observe()
             }
-            pos.addLocal(-wfc.length * air.width/2, -air.height, -wfc.width * air.length/2)
+            pos.addLocal(-wfc.width* air.width/2, -air.height, -wfc.depth* air.depth/2)
             for (p in wfc) {
                 val tile = wfc[p] ?: continue
                 for (v in tile) {
@@ -185,9 +185,9 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
                         .add(v)
                         .add(
                             Vec3(p).apply {
-                                x *= air.length
+                                x *= air.width
                                 y *= air.height
-                                z *= air.width
+                                z *= air.depth
                             }
                         )
                         .toBlockPos()

@@ -156,7 +156,7 @@ open class Room(
         private class CenteredStartDelegate: ReadWriteProperty<Room, Vec3> {
             var innerValue: Vec3? = null
             override fun getValue(thisRef: Room, property: KProperty<*>): Vec3 =
-                innerValue ?: Vec3(-thisRef.length / 2, 0.0, -thisRef.width / 2)
+                innerValue ?: Vec3(-thisRef.width / 2, 0.0, -thisRef.depth / 2)
 
             override fun setValue(thisRef: Room, property: KProperty<*>, value: Vec3) {
                 this.innerValue = value

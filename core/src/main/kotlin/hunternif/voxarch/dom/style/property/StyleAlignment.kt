@@ -98,14 +98,14 @@ val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignX.ORIGIN
     val align = value.invoke(baseValue, seed)
-    val length = nodeAABB.maxX - nodeAABB.minX
+    val width = nodeAABB.maxX - nodeAABB.minX
     var newX = when (align) {
-        AlignX.EAST_OUTSIDE -> p.length - nodeAABB.minX
-        AlignX.EAST_INSIDE -> p.length - nodeAABB.maxX
+        AlignX.EAST_OUTSIDE -> p.width - nodeAABB.minX
+        AlignX.EAST_INSIDE -> p.width - nodeAABB.maxX
         AlignX.WEST_OUTSIDE -> -nodeAABB.maxX
         AlignX.WEST_INSIDE -> -nodeAABB.minX
         AlignX.ORIGIN -> 0.0
-        AlignX.CENTER -> p.length / 2 - length / 2 - nodeAABB.minX
+        AlignX.CENTER -> p.width / 2 - width / 2 - nodeAABB.minX
     }
     if (p is Room && align != AlignX.ORIGIN) newX += p.start.x
     node.origin.x = newX
@@ -116,14 +116,14 @@ val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignZ.ORIGIN
     val align = value.invoke(baseValue, seed)
-    val width = nodeAABB.maxZ - nodeAABB.minZ
+    val length = nodeAABB.maxZ - nodeAABB.minZ
     var newZ = when (align) {
-        AlignZ.SOUTH_OUTSIDE -> p.width - nodeAABB.minZ
-        AlignZ.SOUTH_INSIDE -> p.width - nodeAABB.maxZ
+        AlignZ.SOUTH_OUTSIDE -> p.depth - nodeAABB.minZ
+        AlignZ.SOUTH_INSIDE -> p.depth - nodeAABB.maxZ
         AlignZ.NORTH_OUTSIDE -> -nodeAABB.maxZ
         AlignZ.NORTH_INSIDE -> -nodeAABB.minZ
         AlignZ.ORIGIN -> 0.0
-        AlignZ.CENTER -> p.width / 2 - width / 2 - nodeAABB.minZ
+        AlignZ.CENTER -> p.depth / 2 - length / 2 - nodeAABB.minZ
     }
     if (p is Room && align != AlignZ.ORIGIN) newZ += p.start.z
     node.origin.z = newZ
@@ -144,8 +144,8 @@ val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { v
                 node.origin.z = p.innerFloorCenter.z
             }
             else -> {
-                node.origin.x = round(p.length / 2)
-                node.origin.z = round(p.width / 2)
+                node.origin.x = round(p.width / 2)
+                node.origin.z = round(p.depth / 2)
             }
         }
     }

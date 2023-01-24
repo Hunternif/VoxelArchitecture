@@ -19,9 +19,9 @@ fun WfcTiledModel<WangTile>.writeToVoxFile(
         return
     }
     val sampleTile = this[samplePos]!!
-    val tx = sampleTile.length
+    val tx = sampleTile.width
     val ty = sampleTile.height
-    val tz = sampleTile.width
+    val tz = sampleTile.depth
 
     val voxStorage = VoxFileStorage()
     for (tilePos in this) {

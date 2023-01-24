@@ -42,7 +42,7 @@ fun <T> assertStorageEquals(
 ) {
     assertEquals(expected.width, actual.width)
     assertEquals(expected.height, actual.height)
-    assertEquals(expected.length, actual.length)
+    assertEquals(expected.depth, actual.depth)
     assertEquals(expected.minX, actual.minX)
     assertEquals(expected.minY, actual.minY)
     assertEquals(expected.minZ, actual.minZ)
@@ -67,7 +67,7 @@ fun assertNodeEquals(
     assertEquals(expected.size, actual.size)
     assertEquals(expected.width, actual.width, 0.0)
     assertEquals(expected.height, actual.height, 0.0)
-    assertEquals(expected.length, actual.length, 0.0)
+    assertEquals(expected.depth, actual.depth, 0.0)
     when (expected) {
         is PolyRoom -> {
             assertEquals(expected.shape, (actual as PolyRoom).shape)

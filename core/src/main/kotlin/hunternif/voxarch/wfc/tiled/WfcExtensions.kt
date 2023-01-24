@@ -14,8 +14,8 @@ fun <T: WfcTile> WfcTiledModel<T>.setAirAndGroundBoundary(air: T, groundedAir: T
     for (p in this) {
         if (p.y >= height-1) this[p] = air
         else if (p.y <= 0) this[p] = ground
-        else if (p.x <= 0 || p.x >= length-1 ||
-            p.z <= 0 || p.z >= width-1) {
+        else if (p.x <= 0 || p.x >= width-1 ||
+            p.z <= 0 || p.z >= depth-1) {
             if (p.y <= 1) this[p] = groundedAir
             else this[p] = air
         }

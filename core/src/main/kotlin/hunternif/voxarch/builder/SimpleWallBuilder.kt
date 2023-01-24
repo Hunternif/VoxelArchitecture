@@ -11,10 +11,10 @@ open class SimpleWallBuilder(
     override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         if (node.transparent) return
         val localWorld = world.toLocal(trans)
-        val length = node.length.toInt()
+        val wallLength = node.width.toInt()
         val height = node.height.toInt()
         // 1. base wall
-        for (x in 0..length) {
+        for (x in 0..wallLength) {
             for (y in 0..height) {
                 val block = context.materials.get(material)
                 localWorld.setBlock(x, y, 0, block)
@@ -22,7 +22,7 @@ open class SimpleWallBuilder(
         }
         // 2. optional foundation
         if (downToGround) {
-            for (x in 0 .. length) {
+            for (x in 0 .. wallLength) {
                 var y = -1
                 while(true) {
                     val p = trans.transform(x, y, 0)

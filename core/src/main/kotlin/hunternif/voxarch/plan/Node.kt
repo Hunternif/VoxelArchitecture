@@ -5,9 +5,9 @@ import hunternif.voxarch.vector.Vec3
 
 /**
  * **Coordinate axes** are like in Minecraft, i.e. Y is up.
- *  * X: length - the longer side, defines direction.
+ *  * X: width - the longer side, defines direction.
  *  * Y: height (up)
- *  * Z: width
+ *  * Z: depth
  *
  *  **Rotations** are counterclockwise, 0 degrees is East. (Minecraft rotations
  *  are clockwise.) This was done for consistency with mainstream vector math.
@@ -36,7 +36,7 @@ import hunternif.voxarch.vector.Vec3
  *
  * * Distance between adjacent blocks is 1.
  * * A room of "centric" size 0 occupies 1 block.
- * * A wall of "centric" length 2 will occupy 3 points, i.e. 3 blocks.
+ * * A wall of "centric" width 2 will occupy 3 points, i.e. 3 blocks.
  * * In a room of "centric" size 2, its cross-section will look like this:
  * 1 block of wall, 1 block of empty space, 1 block of wall.
  *
@@ -72,17 +72,17 @@ open class Node(
     override val children: MutableList<Node> = mutableListOf()
 
     /**
-     * Vector (length, height, width), doesn't take rotation into account.
+     * Vector (width, height, depth), doesn't take rotation into account.
      */
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance
-    var length: Double
+    var width: Double
         get() = size.x
         set(value) { size.x = value }
     var height: Double
         get() = size.y
         set(value) { size.y = value }
-    var width: Double
+    var depth: Double
         get() = size.z
         set(value) { size.z = value }
 

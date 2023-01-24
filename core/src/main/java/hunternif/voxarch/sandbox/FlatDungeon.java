@@ -190,7 +190,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 			// Determine how many corridors can fit on each wall, except where we just came from.
 			int totalPotentialCorridors = 0;
 			for (Wall wall : node.getWalls()) {
-				totalPotentialCorridors += MathUtil.roundDown(wall.getLength() / corridorWidth);
+				totalPotentialCorridors += MathUtil.roundDown(wall.getWidth() / corridorWidth);
 			}
 			// Pick a random number of corridors (including the current node)
 			// and assign each one to a wall at random.
@@ -210,7 +210,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		 * @param totalLength
 		 */
 		public Corridor(Vec3 origin, int length, double rotationY, int totalLength) {
-			super(FlatDungeon.this, origin, new Vec3(length, corridorHeight, corridorWidth), rotationY);
+			super(FlatDungeon.this, origin, new Vec3(corridorWidth, corridorHeight, length), rotationY);
 			this.totalLength = totalLength;
 			endPoint = origin.add(
 					length/2*MathUtil.sinDeg(rotationY),

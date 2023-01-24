@@ -54,9 +54,9 @@ class CrenellationWallBuilder(
         if (node.transparent) return
         super.build(node, trans, world, context)
         val height = node.height.toInt()
-        val length = node.length.toInt()
+        val wallLength = node.width.toInt()
         val localWorld = world.toLocal(trans)
-        buildCrenellations(0, length, height+1, sizes, material, localWorld, context)
+        buildCrenellations(0, wallLength, height+1, sizes, material, localWorld, context)
     }
 }
 

@@ -15,10 +15,10 @@ open class DomPolyRoomBuilder
 internal fun PolyRoom.createPolygon() {
     polygon.origin = innerFloorCenter
     when (shape) {
-        PolyShape.SQUARE -> polygon.rectangle(length, width)
+        PolyShape.SQUARE -> polygon.rectangle(width, depth)
         PolyShape.ROUND -> {
             val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
-            polygon.ellipse(length, width, sideCount)
+            polygon.ellipse(width, depth, sideCount)
         }
     }
 }

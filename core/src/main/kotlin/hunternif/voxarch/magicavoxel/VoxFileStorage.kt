@@ -81,7 +81,7 @@ class VoxFileStorage(
     }
 
     private fun makeSizeChunk() = VoxSizeChunk(
-        IntVec3(length, height, width).toGridPoint3()
+        IntVec3(width, height, depth).toGridPoint3()
     )
     private fun makeVoxelChunk() = VoxXYZIChunk(voxelCount).apply {
         var i = 0
@@ -123,9 +123,9 @@ class VoxFileStorage(
         /** Only reads 1 model */
         fun fromFile(file: VoxFile): VoxFileStorage {
             val model = file.modelInstances.first().model
-            val length = model.size.y
+            val width = model.size.y
             val height = model.size.z
-            val width = model.size.x
+            val length = model.size.x
             val storage = VoxFileStorage()
             file.palette.forEach {
                 //TODO check if VoxFileParser stores colors correctly

@@ -50,7 +50,7 @@ class CastleBlueprint(
         // TODO have a global collection of towers to reduce clustering from adjacent mountains
         val towers = mutableListOf<Room>()
         for (box in boxes) {
-            if (box.width < config.wallTowerWidth || box.length < config.wallTowerWidth) continue
+            if (box.width < config.wallTowerWidth || box.depth < config.wallTowerWidth) continue
             towers.add(towerFromBox(box, config.wallTowerHeight, terrain))
         }
         // elevate all towers to the same height
@@ -106,7 +106,7 @@ class CastleBlueprint(
      */
     private fun Structure.bigTower(m: Mountain, terrain: HeightMap): Room? {
         val box = m.topWithFlatPerimeter.fitBox()
-        if (box.width < config.bigTowerMinWidth || box.length < config.bigTowerMinWidth) return null
+        if (box.width < config.bigTowerMinWidth || box.depth < config.bigTowerMinWidth) return null
         return towerFromBox(box, config.bigTowerHeight, terrain)
     }
 

@@ -76,9 +76,9 @@ class PatternAnalyzerTest {
 
 private fun <C : Char?> assertPattern(expected: String, pattern: WfcPattern<C>) {
     val sb = StringBuilder()
-    for (z in 0 until pattern.width) {
+    for (z in 0 until pattern.depth) {
         if (z > 0) sb.append('\n')
-        for (x in 0 until pattern.length)
+        for (x in 0 until pattern.width)
             sb.append(pattern[x, 0, z] ?: ' ')
     }
     assertEquals(expected, sb.toString())

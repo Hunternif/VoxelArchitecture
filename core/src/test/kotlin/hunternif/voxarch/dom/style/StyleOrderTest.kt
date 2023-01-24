@@ -16,10 +16,10 @@ class StyleOrderTest {
         val calls = mutableListOf<String>()
         val style = Stylesheet().add {
             style("class1") {
-                length { dimension { _, _ -> calls.add("length"); 1.0 } }
+                width { dimension { _, _ -> calls.add("width"); 1.0 } }
             }
             style("class2") {
-                width { dimension { _, _ -> calls.add("width"); 2.0 } }
+                depth { dimension { _, _ -> calls.add("length"); 2.0 } }
                 height { dimension { _, _ -> calls.add("height"); 3.0 } }
             }
         }
@@ -31,6 +31,6 @@ class StyleOrderTest {
 
         style.applyStyle(styledNode)
 
-        assertEquals(listOf("height", "length", "width"), calls)
+        assertEquals(listOf("height", "width", "length"), calls)
     }
 }

@@ -32,7 +32,7 @@ class WfcMagicaVoxelTest {
 
         val path = Paths.get(
             "./out/voxarch-wfc-" +
-            "${wave.length}x${wave.height}x${wave.width}-" +
+            "${wave.width}x${wave.height}x${wave.depth}-" +
             "${today()}.vox"
         )
         wave.writeToVoxFile(path) { colorMap[it] }

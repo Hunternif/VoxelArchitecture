@@ -10,8 +10,8 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
 
     // Size is needed for alignment
     PropHeight,
-    PropLength,
     PropWidth,
+    PropDepth,
 
     // Start defines where the origin sits, but it shouldn't affect alignment
     PropStartY,

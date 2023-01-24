@@ -16,14 +16,14 @@ val PropY = newNodeProperty<Node, Double>("origin y", 0.0) { value ->
 }
 
 val PropX = newNodeProperty<Node, Double>("origin x", 0.0) { value ->
-    val baseValue = node.length
+    val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000012)
     node.origin.x = newValue
 }
 
 val PropZ = newNodeProperty<Node, Double>("origin z", 0.0) { value ->
-    val baseValue = node.width
+    val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000013)
     node.origin.z = newValue
@@ -69,14 +69,14 @@ val PropOffsetY = newNodeProperty<Node, Double>("offset y", 0.0) { value ->
 }
 
 val PropOffsetX = newNodeProperty<Node, Double>("offset x", 0.0) { value ->
-    val baseValue = node.length
+    val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000016)
     node.origin.x += newValue
 }
 
 val PropOffsetZ = newNodeProperty<Node, Double>("offset z", 0.0) { value ->
-    val baseValue = node.width
+    val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000017)
     node.origin.z += newValue
@@ -123,7 +123,7 @@ val PropStartY = newNodeProperty<Room, Double>("start y", 0.0) { value ->
 }
 
 val PropStartX = newNodeProperty<Room, Double>("start x", 0.0) { value ->
-    val baseValue = node.length
+    val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000022)
     node.setCentered(false)
@@ -131,7 +131,7 @@ val PropStartX = newNodeProperty<Room, Double>("start x", 0.0) { value ->
 }
 
 val PropStartZ = newNodeProperty<Room, Double>("start z", 0.0) { value ->
-    val baseValue = node.width
+    val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000023)
     node.setCentered(false)

@@ -15,7 +15,7 @@ import org.junit.Before
 abstract class BaseBuilderTest(
     internal val outWidth: Int,
     internal val outHeight: Int,
-    internal val outLength: Int
+    internal val outDepth: Int
 ) {
     lateinit var out: ArrayBlockStorage
     lateinit var trans: TransformationStack
@@ -24,7 +24,7 @@ abstract class BaseBuilderTest(
 
     @Before
     open fun setup() {
-        out = ArrayBlockStorage(outWidth, outHeight, outLength)
+        out = ArrayBlockStorage(outWidth, outHeight, outDepth)
 //        out.safeBoundary = true
         trans = TransformationStack()
         context = BuildContext(DEFAULT_ENV)

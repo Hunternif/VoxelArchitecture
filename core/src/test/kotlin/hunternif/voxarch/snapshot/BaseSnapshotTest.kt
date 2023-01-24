@@ -28,9 +28,9 @@ import javax.imageio.ImageIO
 abstract class BaseSnapshotTest(
     outWidth: Int,
     outHeight: Int,
-    outLength: Int,
+    outDepth: Int,
     private val keyToColorMap: Map<String, Int> = DEFAULT_COLORMAP
-) : BaseBuilderTest(outWidth, outHeight, outLength) {
+) : BaseBuilderTest(outWidth, outHeight, outDepth) {
     @get:Rule
     val name = TestName()
 
@@ -66,8 +66,8 @@ abstract class BaseSnapshotTest(
     }
 
     private fun getImage(slice: Slice):BufferedImage {
-        val image = BufferedImage(slice.length, slice.height, BufferedImage.TYPE_INT_RGB)
-        for (x in 0 until slice.length) {
+        val image = BufferedImage(slice.width, slice.height, BufferedImage.TYPE_INT_RGB)
+        for (x in 0 until slice.width) {
             for (y in 0 until slice.height) {
                 val block = slice.getBlock(x, y)
                 val color = keyToColorMap.getOrDefault(block?.key ?: ID_AIR, BG_COLOR)
@@ -78,7 +78,7 @@ abstract class BaseSnapshotTest(
     }
 
     fun Node.ground() {
-        room(Vec3.ZERO, Vec3(outWidth - 1, 0, outLength - 1)) {
+        room(Vec3.ZERO, Vec3(outWidth - 1, 0, outDepth - 1)) {
             floor {
                 tags += TYPE_FLOOR
             }

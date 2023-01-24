@@ -376,7 +376,7 @@ fun Random.randomBody(): BodyShape = nextWeighted(
 /** Checks if the roof fits [offset] + [space] + [offset] on both X & Z axes. */
 private fun Turret.hasSpace(space: Double, offset: Double = 0.0): Boolean =
     width + style.roofOffset * 2 >= offset * 2 + space &&
-    length + style.roofOffset * 2 >= offset * 2 + space
+    depth + style.roofOffset * 2 >= offset * 2 + space
 
 /**
  * Calculate how much sq.b. area there is on top, minus the [offset] from sides.

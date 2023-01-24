@@ -37,8 +37,8 @@ class FloorGridModel : BaseModel() {
     }
 
     private fun uploadVertexData() {
-        val length = toX - fromX
-        val width = toZ - fromZ
+        val width = toX - fromX
+        val length = toZ - fromZ
         val vertexCount = (width + 1)*2 + (length + 1)*2
         bufferSize = vertexCount * 3
 

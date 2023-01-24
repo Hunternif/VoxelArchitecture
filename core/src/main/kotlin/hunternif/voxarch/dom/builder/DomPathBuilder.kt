@@ -16,7 +16,7 @@ class DomPathBuilder : DomNodeBuilder<Path>(Path::class.java, { Path() }) {
                 node.addPoint(Vec3.UNIT_X * ctx.parent.length)
             }
             p is PolyRoom -> node.addPoints(p.polygon.points)
-            p is Room -> node.rectangle(p.length, p.width)
+            p is Room -> node.rectangle(p.width, p.depth)
             p is Wall -> {
                 node.addPoint(Vec3.ZERO)
                 node.addPoint(p.innerEnd)

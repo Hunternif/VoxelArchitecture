@@ -43,7 +43,7 @@ fun defaultCastle(terrain: HeightMap, seed:Long): Node {
     val w = towerWidth
     // top left corner is such that the castle is close to center
     val topLeft = IntVec2(
-        terrain.length/2 + w,
+        terrain.width/2 + w,
         terrain.height/2 + w
     )
     val boxes = topLeft.run { listOf(

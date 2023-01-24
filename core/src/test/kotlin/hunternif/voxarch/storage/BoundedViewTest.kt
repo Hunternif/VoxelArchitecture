@@ -13,9 +13,9 @@ class BoundedViewTest {
         storage[2, 3, 4] = 'b'
 
         val bounded = storage.boundedView()
-        assertEquals(4, bounded.length)
+        assertEquals(4, bounded.width)
         assertEquals(5, bounded.height)
-        assertEquals(6, bounded.width)
+        assertEquals(6, bounded.depth)
         assertEquals(0, bounded.minX)
         assertEquals(0, bounded.minY)
         assertEquals(0, bounded.minZ)

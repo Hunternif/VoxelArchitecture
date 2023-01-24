@@ -18,7 +18,7 @@ import hunternif.voxarch.vector.Vec3
  *  Z
  * ```
  *
- * Internally the state is represented via rotation + length + height.
+ * Internally the state is represented via rotation + width + height.
  * The rest is computed!
  *
  * @param start relative to _parent's origin_, Y = floor level, will be copied.
@@ -45,7 +45,7 @@ open class Wall(
 
     init {
         //TODO move this to an extra constructor
-        length = origin.toXZ().distanceTo(end.toXZ())
+        width = origin.toXZ().distanceTo(end.toXZ())
         height = end.y - origin.y
         rotationY = MathUtil.atan2Deg(-end.z + origin.z, end.x - origin.x)
     }
@@ -54,10 +54,10 @@ open class Wall(
     val bottomStart: Vec3 get() = origin
 
     /** End point on the ground, vs parent origin. Read-only. */
-    val bottomEnd: Vec3 get() = origin + direction * length
+    val bottomEnd: Vec3 get() = origin + direction * width
 
     /** Top far point relative to local origin. Read-only. */
-    val innerEnd: Vec3 get() = direction * length + Vec3.UNIT_Y * height
+    val innerEnd: Vec3 get() = direction * width + Vec3.UNIT_Y * height
 
     /** Top far point relative to parent origin. Read-only. */
     val end: Vec3 get() = origin + innerEnd

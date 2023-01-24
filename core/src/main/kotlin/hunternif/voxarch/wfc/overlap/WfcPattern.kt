@@ -15,16 +15,16 @@ open class WfcPattern<C>(
 ) : IRandomOption, IArray3D<C> by data {
     companion object {
         inline operator fun <reified C> invoke(
-            length: Int,
-            height: Int,
             width: Int,
+            height: Int,
+            depth: Int,
             init: C
-        ) = WfcPattern(Array3D(length, height, width, init))
+        ) = WfcPattern(Array3D(width, height, depth, init))
         inline operator fun <reified C> invoke(
-            length: Int,
-            height: Int,
             width: Int,
+            height: Int,
+            depth: Int,
             init: (x: Int, y: Int, z: Int) -> C
-        ) = WfcPattern(Array3D(length, height, width, init))
+        ) = WfcPattern(Array3D(width, height, depth, init))
     }
 }

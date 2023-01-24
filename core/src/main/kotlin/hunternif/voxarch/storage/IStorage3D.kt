@@ -9,10 +9,10 @@ interface IStorage3D<T> : Iterable<IntVec3> {
     val maxX: Int
     val maxY: Int
     val maxZ: Int
-    val length: Int get() = if (size == 0) 0 else maxX - minX + 1
+    val width: Int get() = if (size == 0) 0 else maxX - minX + 1
     val height: Int get() = if (size == 0) 0 else maxY - minY + 1
-    val width: Int get() = if (size == 0) 0 else maxZ - minZ + 1
-    val sizeVec: IntVec3 get() = IntVec3(length, height, width)
+    val depth: Int get() = if (size == 0) 0 else maxZ - minZ + 1
+    val sizeVec: IntVec3 get() = IntVec3(width, height, depth)
     operator fun get(x: Int, y: Int, z: Int): T
     operator fun set(x: Int, y: Int, z: Int, v: T)
     /** The number of non-null elements */

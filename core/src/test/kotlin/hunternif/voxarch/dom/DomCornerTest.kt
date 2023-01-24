@@ -38,8 +38,8 @@ class DomCornerTest {
     fun `rectangle room`() {
         val style = Stylesheet().add {
             styleFor<Room> {
-                length { 2.vx }
-                width { 4.vx }
+                width { 2.vx }
+                depth { 4.vx }
             }
         }
         val dom = domRoot {

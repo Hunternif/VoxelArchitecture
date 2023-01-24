@@ -18,7 +18,7 @@ import hunternif.voxarch.vector.Vec4
  * A vertical hatch between two [Room]s.
  * The gate's generator should clear the passage and may add decorations.
  * @param origin the lower-left point, will be copied
- * @param sizeXZ X=length, Y=width (Z)
+ * @param sizeXZ X=width, Y=length (Z)
  */
 open class Hatch(
     origin: Vec3,

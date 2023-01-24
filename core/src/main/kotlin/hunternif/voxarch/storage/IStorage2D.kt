@@ -3,7 +3,7 @@ package hunternif.voxarch.storage
 import hunternif.voxarch.vector.IntVec2
 
 interface IStorage2D<T> : Iterable<IntVec2> {
-    val length: Int
+    val width: Int
     val height: Int
     operator fun get(x: Int, y: Int): T
     operator fun get(p: IntVec2): T

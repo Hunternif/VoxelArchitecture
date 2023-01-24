@@ -91,7 +91,7 @@ inline fun Wall.path(
 ): Path = Path(Vec3(0.0, y, 0.0)).also {
     it.addPoint(Vec3.ZERO)
     // move only along x because Wall overrides rotationY
-    it.addPoint(Vec3(length, 0.0, 0.0))
+    it.addPoint(Vec3(depth, 0.0, 0.0))
     this.addChild(it)
     action.invoke(it)
 }

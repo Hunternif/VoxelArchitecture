@@ -20,7 +20,7 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
      */
     val polygon: Path = Path(Vec3.ZERO)
 
-    /** For styling: approximate expected length of edges on the polygon. */
+    /** For styling: approximate expected length of edges on the the polygon. */
     var edgeLength: Double = 1.0
         set(value) { field = max(1.0, value) }
     /** For styling. Mimics Turret's body shape. */

@@ -102,9 +102,9 @@ class Array3DTest {
         { x, y, z -> x*100 + y*10 + z }
 
         val b = a.copySection(IntVec3(0, 1, 1), IntVec3(2, 1, 3))
-        assertEquals(2, b.length)
+        assertEquals(2, b.width)
         assertEquals(1, b.height)
-        assertEquals(3, b.width)
+        assertEquals(3, b.depth)
         assertEquals(11, b[0, 0, 0])
         assertEquals(12, b[0, 0, 1])
         assertEquals(13, b[0, 0, 2])

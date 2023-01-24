@@ -26,7 +26,7 @@ public class WholeWallHorGateFactory implements IGateFactory {
 		Vec3 wallCenter = new Vec3((wall.getP1().x + wall.getP2().x)/2, 0, (wall.getP1().y + wall.getP2().y)/2);
 		Vec3 origin = roomUtil.translateToParent(to, wallCenter);
 		
-		Vec2 size = new Vec2(wall.getLength(), wall.getHeight());
+		Vec2 size = new Vec2(wall.getWidth(), wall.getHeight());
 		
 		// Find angle
 		//TODO: make sure the direction of the gate is correct
