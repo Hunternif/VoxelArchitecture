@@ -14,6 +14,7 @@ private val BlockData.mcBlock: Block
     }
 
 object MCEnvironment : Environment {
+    override val minY: Int = 0
     private val buildThroughBlocks = mutableSetOf<Block>()
     private val seaBlocks = mutableSetOf<Block>()
 
