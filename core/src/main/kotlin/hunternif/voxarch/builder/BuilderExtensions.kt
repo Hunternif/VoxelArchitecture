@@ -3,6 +3,7 @@ package hunternif.voxarch.builder
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.findIntAABB
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.storage.SymmetricStorageX
 import hunternif.voxarch.storage.TransformedBlockStorage
 import hunternif.voxarch.util.forEachXZ
 import hunternif.voxarch.util.round
@@ -14,6 +15,12 @@ import hunternif.voxarch.vector.*
  */
 fun IBlockStorage.toLocal(trans: ILinearTransformation) =
     TransformedBlockStorage(this, trans)
+
+/**
+ * Returns symmetric storage that sets blocks in 2 directions on the X axis.
+ */
+fun IBlockStorage.asSymmetricX(midPoint: Int) =
+    SymmetricStorageX(this, midPoint)
 
 /**
  * Runs the function [buildAt] at every (x, y, z) point inside the room's walls,
