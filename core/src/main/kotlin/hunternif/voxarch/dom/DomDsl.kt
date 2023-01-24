@@ -141,7 +141,7 @@ fun DomBuilder.fourWalls(
 }
 
 /** Creates a [Wall] on the line segment. */
-fun DomLineSegmentBuilder.wall(
+fun DomBuilder.wall(
     vararg styleClass: String,
     block: DomNodeBuilder<Wall>.() -> Unit = {}
 ) {
@@ -149,7 +149,7 @@ fun DomLineSegmentBuilder.wall(
 }
 
 /** Creates a [Path] on the line segment. */
-fun DomLineSegmentBuilder.path(
+fun DomBuilder.path(
     vararg styleClass: String,
     block: DomNodeBuilder<Path>.() -> Unit = {}
 ) {
