@@ -10,7 +10,7 @@ import hunternif.voxarch.dom.wall
 import hunternif.voxarch.sandbox.castle.builder.ArchedWindowBuilder
 import org.junit.Test
 
-class ArchedWindowBuilderTest : BaseSnapshotTest(9, 9, 1) {
+class ArchedWindowBuilderTest : BaseSnapshotTest(19, 19, 1) {
     override fun setup() {
         super.setup()
         context.builders.set("window" to ArchedWindowBuilder())
@@ -42,6 +42,11 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(9, 9, 1) {
     }
 
     @Test
+    fun `window 3x4`() {
+        testWindow(3, 4)
+    }
+
+    @Test
     fun `window 4x2`() {
         testWindow(4, 2)
     }
@@ -52,6 +57,11 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(9, 9, 1) {
     }
 
     @Test
+    fun `window 5x6`() {
+        testWindow(5, 6)
+    }
+
+    @Test
     fun `window 6x6`() {
         testWindow(6, 6)
     }
@@ -59,6 +69,16 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(9, 9, 1) {
     @Test
     fun `window 8x6`() {
         testWindow(8, 6)
+    }
+
+    @Test
+    fun `window 12x16`() {
+        testWindow(12, 16)
+    }
+
+    @Test
+    fun `window 16x16`() {
+        testWindow(16, 16)
     }
 
     fun testWindow(width: Int, height: Int) {

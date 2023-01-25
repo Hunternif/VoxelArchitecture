@@ -24,11 +24,13 @@ class ArchedWindowBuilder : Builder<Wall>() {
                 local.clearBlock(midPoint, y, z)
             }
         }
-        // for the top, fill an upside down circle
-        val r = midPoint.toDouble()
+        // for the top, fill an upside down circle.
+        // use a larger radius for testing to get a nicer round arch.
+        val r1 = midPoint.toDouble()
+        val r2 = r1 + 0.4
         for (x in 0 until midPoint) {
             for (y in 0..height) {
-                if (y > (height - r + sqrt(r*r - (r - x)*(r - x)).toInt()))
+                if (y > (height - r1 + sqrt(r2*r2 - (r1 - x)*(r1 - x))))
                     continue
                 for (z in 0..depth) {
                     local.clearBlock(x, y, z)
