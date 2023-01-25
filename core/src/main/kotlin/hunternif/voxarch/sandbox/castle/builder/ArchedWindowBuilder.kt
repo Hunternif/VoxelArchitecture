@@ -6,6 +6,7 @@ import hunternif.voxarch.builder.asSymmetricX
 import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.util.step
 import hunternif.voxarch.vector.TransformationStack
 import kotlin.math.sqrt
 
@@ -14,25 +15,20 @@ import kotlin.math.sqrt
  */
 class ArchedWindowBuilder : Builder<Wall>() {
     override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        val midPoint = (node.width / 2).toInt()
-        val height = node.height.toInt()
-        val depth = node.depth.toInt()
+        val midPoint = node.width / 2
+        val height = node.height
+        val depth = node.depth
         val local = world.toLocal(trans).asSymmetricX(midPoint)
-        // fill center line
-        for (y in 0..height) {
-            for (z in 0..depth) {
-                local.clearBlock(midPoint, y, z)
-            }
-        }
+
         // for the top, fill an upside down circle.
         // use a larger radius for testing to get a nicer round arch.
-        val r1 = midPoint.toDouble()
+        val r1 = midPoint
         val r2 = r1 + 0.4
-        for (x in 0 until midPoint) {
-            for (y in 0..height) {
-                if (y > (height - r1 + sqrt(r2*r2 - (r1 - x)*(r1 - x))))
+        for (x in 0.0 .. midPoint step 1) {
+            for (y in 0.0..height step 1) {
+                if (y > (height - r1 + sqrt(r2 * r2 - (r1 - x) * (r1 - x))))
                     continue
-                for (z in 0..depth) {
+                for (z in 0.0..depth step 1) {
                     local.clearBlock(x, y, z)
                 }
             }

@@ -19,7 +19,7 @@ fun IBlockStorage.toLocal(trans: ILinearTransformation) =
 /**
  * Returns symmetric storage that sets blocks in 2 directions on the X axis.
  */
-fun IBlockStorage.asSymmetricX(midPoint: Int) =
+fun IBlockStorage.asSymmetricX(midPoint: Number) =
     SymmetricStorageX(this, midPoint)
 
 /**
