@@ -43,6 +43,7 @@ class DomWallTest {
         assertEquals(Vec3(-1, 0, 1), w4.origin)
         assertEquals(Vec3(1, 0, 1), w4.end)
 
+        //TODO: bug: seed offset is not modified for children
         assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
     }
 

@@ -43,14 +43,12 @@ class DomLineSegmentBuilder(
 }
 
 /**
- * Calls [childBlock] on every segment of the polygon.
+ * Executes child elements on every segment of the polygon.
  *
  * Will only work when added as a child to a [DomNodeBuilder] for [Room] or
  * [PolyRoom]>.
  */
-open class DomPolySegmentBuilder(
-    private val childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomBuilder() {
+open class DomPolySegmentBuilder : DomBuilder() {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
         val polygon = when (parentNode) {
@@ -61,9 +59,7 @@ open class DomPolySegmentBuilder(
             }
             else -> null
         }
-        val childCtx = ctx.makeChildCtx()
-        polygon?.let { runSegmentBuilders(childCtx, it.origin, it.segments) }
-        children.forEach { it.build(childCtx) }
+        polygon?.let { runSegmentBuilders(ctx, it.origin, it.segments) }
     }
 
     protected fun runSegmentBuilders(
@@ -74,46 +70,39 @@ open class DomPolySegmentBuilder(
         segments.forEachIndexed { i, seg ->
             val bld = DomLineSegmentBuilder( origin + seg.p1, origin + seg.p2)
             bld.seedOffset = seedOffset + 20000 + i
-            bld.childBlock()
+            bld.children.addAll(children)
             bld.build(ctx)
         }
     }
 }
 
 /**
- * Calls [childBlock] on every side of the room.
+ * Executes child elements on every side of the room.
  *
  * Will work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
-class DomFourWallsBuilder(
-    childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolySegmentBuilder(childBlock) {
+class DomFourWallsBuilder : DomPolySegmentBuilder() {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
-        val childCtx = ctx.makeChildCtx()
         if (parentNode is Room) {
             val polygon = Path().apply {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
-            runSegmentBuilders(childCtx, polygon.origin, polygon.segments)
+            runSegmentBuilders(ctx, polygon.origin, polygon.segments)
         }
-        children.forEach { it.build(childCtx) }
     }
 }
 
 /**
- * Calls [childBlock] on one random segment.
+ * Executes child elements on one random segment.
  *
  * Will only work when added as a child to a [DomNodeBuilder] for [Room] or
  * [PolyRoom].
  */
-class DomRandomSegmentBuilder(
-    childBlock: DomLineSegmentBuilder.() -> Unit
-) : DomPolySegmentBuilder(childBlock) {
+class DomRandomSegmentBuilder : DomPolySegmentBuilder() {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
-        val childCtx = ctx.makeChildCtx()
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
@@ -124,8 +113,7 @@ class DomRandomSegmentBuilder(
         }
         polygon?.let {
             val segment = it.segments.random(Random(ctx.seed + seedOffset + 21000))
-            runSegmentBuilders(childCtx, it.origin, listOf(segment))
+            runSegmentBuilders(ctx, it.origin, listOf(segment))
         }
-        children.forEach { it.build(childCtx) }
     }
 }

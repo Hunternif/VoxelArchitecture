@@ -118,26 +118,29 @@ fun DomBuilder.fourCorners(
 
 /** Runs [block] on every section of this polygon. */
 fun DomBuilder.allWalls(
-    block: DomLineSegmentBuilder.() -> Unit = {}
+    block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomPolySegmentBuilder(block)
+    val bld = DomPolySegmentBuilder()
     addChild(bld)
+    bld.block()
 }
 
 /** Runs [block] on one random section of this polygon. */
 fun DomBuilder.randomWall(
-    block: DomLineSegmentBuilder.() -> Unit = {}
+    block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomRandomSegmentBuilder(block)
+    val bld = DomRandomSegmentBuilder()
     addChild(bld)
+    bld.block()
 }
 
 /** Runs [block] on every side of this room. */
 fun DomBuilder.fourWalls(
-    block: DomLineSegmentBuilder.() -> Unit = {}
+    block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomFourWallsBuilder(block)
+    val bld = DomFourWallsBuilder()
     addChild(bld)
+    bld.block()
 }
 
 /** Creates a [Wall] on the line segment. */
