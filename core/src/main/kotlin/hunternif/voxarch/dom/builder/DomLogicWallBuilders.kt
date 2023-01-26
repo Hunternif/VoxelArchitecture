@@ -14,9 +14,6 @@ import kotlin.random.Random
 class DomLineSegmentBuilder(
     val p1: Vec3, val p2: Vec3,
 ) : DomBuilder() {
-    /** Vector of this segment, from [p1] to [p2] */
-    val end: Vec3 = p2.subtract(p1)
-    val length: Double = end.length()
     override fun build(ctx: DomBuildContext) = guard {
         val dummyWall = ctx.parentNode.wall(p1, p2.addY(ctx.parentNode.height)) {
             transparent = true

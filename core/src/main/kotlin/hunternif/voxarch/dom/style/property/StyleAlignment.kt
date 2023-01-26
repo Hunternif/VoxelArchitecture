@@ -135,11 +135,8 @@ val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { v
     val baseValue = AlignXZ.ORIGIN
     val align = value.invoke(baseValue, seed)
     if (align == AlignXZ.CENTER) {
-        when {
-            domParent is DomLineSegmentBuilder -> {
-                node.origin.x = round(domParent.end.length() / 2)
-            }
-            p is Room -> {
+        when (p) {
+            is Room -> {
                 node.origin.x = p.innerFloorCenter.x
                 node.origin.z = p.innerFloorCenter.z
             }
