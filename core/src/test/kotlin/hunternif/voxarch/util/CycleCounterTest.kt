@@ -6,7 +6,9 @@ import org.junit.Test
 class CycleCounterTest {
     @Test
     fun `guard against recursion`() {
-        var num = 0
+        var totalExecCount = 0
+        var aExecCount = 0
+        var bExecCount = 0
         val counter = CycleCounter(20)
 
         val a = TestNode()
@@ -16,16 +18,22 @@ class CycleCounterTest {
 
         fun recursiveCode(node: TestNode) {
             counter.guard(node) {
-                num++
+                totalExecCount++
+                when (node) {
+                    a -> aExecCount++
+                    b -> bExecCount++
+                }
                 node.children.forEach { recursiveCode(it) }
             }
         }
 
         recursiveCode(a)
 
-        assertEquals(40, num)
-        assertEquals(21, counter.cycles[a])
-        assertEquals(20, counter.cycles[b])
+        assertEquals(40, totalExecCount)
+        assertEquals(20, aExecCount)
+        assertEquals(20, bExecCount)
+        assertEquals(0, counter.cycles[a])
+        assertEquals(0, counter.cycles[b])
 
         counter.clear()
 

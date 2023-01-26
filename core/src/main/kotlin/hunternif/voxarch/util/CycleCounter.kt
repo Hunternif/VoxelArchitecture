@@ -26,6 +26,7 @@ class CycleCounter(
         if (count + 1 <= limit) {
             block()
         }
+        cycles[graphNode] = count
     }
 
     /** Resets all counts. */
