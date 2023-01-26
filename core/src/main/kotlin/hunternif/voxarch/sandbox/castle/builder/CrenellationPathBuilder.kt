@@ -51,8 +51,8 @@ class CrenellationWallBuilder(
 ) : SimpleWallBuilder(material, downToGround) {
 
     override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        if (node.transparent) return
         super.build(node, trans, world, context)
+        if (node.transparent) return
         val height = node.height.toInt()
         val wallLength = node.width.toInt()
         val localWorld = world.toLocal(trans)

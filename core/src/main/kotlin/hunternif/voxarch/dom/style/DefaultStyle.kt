@@ -11,6 +11,7 @@ val defaultStyle get() = Stylesheet().add {
         height { 100.pct }
     }
     styleFor<Wall> {
+        width { 100.pct }
         height { 100.pct }
     }
     styleFor<DomTurretDecor> {
