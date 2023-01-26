@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.vector.AABB
 import hunternif.voxarch.vector.Vec3
 
 data class PathSegment(
@@ -26,6 +27,11 @@ open class Path(origin: Vec3) : Node(origin) {
         else points.fold(Vec3(0, 0, 0))
         { out, p -> out.add(p) } / points.size
 
+    val aabb = AABB()
+    override var size: Vec3
+        get() = if (points.isEmpty()) super.size else aabb.size
+        set(value) {}
+
     /** Alternative constructor to add */
     constructor(origin: Vec3, vararg points: Vec3) : this(origin) {
         points.forEach { addPoint(it) }
@@ -42,6 +48,7 @@ open class Path(origin: Vec3) : Node(origin) {
         }
         if (point != points.firstOrNull()) { // Don't add the looping point
             _points.add(point)
+            aabb.union(point)
         }
     }
 

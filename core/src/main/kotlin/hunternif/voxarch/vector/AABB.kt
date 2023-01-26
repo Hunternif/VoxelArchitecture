@@ -12,6 +12,8 @@ data class AABB(
     var maxY: Double = Double.NEGATIVE_INFINITY,
     var maxZ: Double = Double.NEGATIVE_INFINITY,
 ) {
+    val size: Vec3 = Vec3(0, 0, 0)
+        get() = field.set(maxX - minX, maxY - minY, maxZ - minZ)
 
     fun setMin(x: Double, y: Double, z: Double) {
         minX = x
