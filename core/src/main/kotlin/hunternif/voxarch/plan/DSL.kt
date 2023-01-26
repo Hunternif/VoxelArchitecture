@@ -3,6 +3,17 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.vector.Vec3
 
 /** Adds a child [Room], measured from corner */
+inline fun Node.node(
+    origin: Vec3,
+    size: Vec3 = Vec3.ZERO,
+    crossinline action: Node.() -> Unit = {}
+): Node = Node(origin).also {
+    it.size = size
+    this.addChild(it)
+    action.invoke(it)
+}
+
+/** Adds a child [Room], measured from corner */
 inline fun Node.room(
     start: Vec3,
     end: Vec3,
