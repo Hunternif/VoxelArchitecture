@@ -331,7 +331,7 @@ class OrbitalCamera : MouseListener {
                 pointRayOrigin,
                 pointRayDir,
                 it.p1, it.p2, it.p3,
-                0.1f
+                0.01f
             )
             if (distance > -1f) {
                 hit = true
