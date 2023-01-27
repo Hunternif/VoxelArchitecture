@@ -5,12 +5,12 @@ import kotlin.math.min
 
 /** Axis-aligned bounding box in 3D. */
 data class AABB(
-    var minX: Double = Double.MAX_VALUE,
-    var minY: Double = Double.MAX_VALUE,
-    var minZ: Double = Double.MAX_VALUE,
-    var maxX: Double = Double.MIN_VALUE,
-    var maxY: Double = Double.MIN_VALUE,
-    var maxZ: Double = Double.MIN_VALUE,
+    var minX: Double = Double.POSITIVE_INFINITY,
+    var minY: Double = Double.POSITIVE_INFINITY,
+    var minZ: Double = Double.POSITIVE_INFINITY,
+    var maxX: Double = Double.NEGATIVE_INFINITY,
+    var maxY: Double = Double.NEGATIVE_INFINITY,
+    var maxZ: Double = Double.NEGATIVE_INFINITY,
 ) {
 
     fun setMin(x: Double, y: Double, z: Double) {
