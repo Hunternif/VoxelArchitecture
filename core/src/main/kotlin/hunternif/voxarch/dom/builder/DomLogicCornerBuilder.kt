@@ -14,9 +14,15 @@ import hunternif.voxarch.util.round
 open class DomLogicPolyCornerBuilder() : DomBuilder() {
     override fun build(ctx: DomBuildContext) = guard {
         val parentNode = ctx.parentNode
-        if (parentNode is PolyRoom) {
-            runCornerBuilders(ctx, parentNode.polygon)
+        val polygon = when (parentNode) {
+            is PolyRoom -> parentNode.polygon
+            is Room -> Path().apply {
+                origin = parentNode.innerFloorCenter
+                rectangle(parentNode.width, parentNode.depth)
+            }
+            else -> null
         }
+        polygon?.let { runCornerBuilders(ctx, it) }
     }
 
     protected fun runCornerBuilders(ctx: DomBuildContext, polygon: Path) {
