@@ -119,6 +119,9 @@ open class Node(
     }
 
     constructor() : this(Vec3.ZERO)
+
+    override fun toString(): String =
+        "${this::class.java.simpleName} [${tags.joinToString(", ")}]"
 }
 
 typealias GroundBoundary = Pair<Vec3, Vec3>

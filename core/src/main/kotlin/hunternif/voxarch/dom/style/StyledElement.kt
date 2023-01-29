@@ -26,6 +26,9 @@ open class StyledElement<D : DomBuilder>(
 
     open fun makeChildCtx(): DomBuildContext =
         ctx.makeChildCtx(domBuilder).inherit(styleClass)
+
+    override fun toString(): String =
+        "Styled<${domBuilder::class.java.simpleName}>"
 }
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
@@ -46,4 +49,6 @@ class StyledNode<N : Node>(
 
     override fun makeChildCtx(): DomBuildContext =
         ctx.makeChildCtx(domBuilder, node).inherit(styleClass)
+
+    override fun toString(): String = "Styled<${node::class.java.simpleName}>"
 }
