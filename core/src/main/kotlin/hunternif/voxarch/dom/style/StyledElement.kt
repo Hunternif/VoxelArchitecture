@@ -13,6 +13,19 @@ open class StyledElement<D : DomBuilder>(
     val parentNode: Node get() = ctx.parentNode
     val styleClass: Set<String> get() = domBuilder.styleClass
     val inheritedStyleClass: Set<String> get() = ctx.inheritedStyleClass
+
+    val isVisible: Boolean get() = domBuilder.visibility == Visibility.VISIBLE
+
+    /** Finalizes this element. */
+    open fun postLayout() {
+        domBuilder.postLayout(this)
+    }
+
+    /** Clean up any changes it caused to the node tree. */
+    open fun cleanup() {}
+
+    open fun makeChildCtx(): DomBuildContext =
+        ctx.makeChildCtx(domBuilder).inherit(styleClass)
 }
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */
@@ -21,4 +34,16 @@ class StyledNode<N : Node>(
     val node: N,
     domBuilder: DomNodeBuilder<N>,
     ctx: DomBuildContext,
-) : StyledElement<DomNodeBuilder<N>>(domBuilder, ctx)
+) : StyledElement<DomNodeBuilder<N>>(domBuilder, ctx) {
+
+    override fun postLayout() {
+        domBuilder.postLayout(this)
+    }
+
+    override fun cleanup() {
+        node.remove()
+    }
+
+    override fun makeChildCtx(): DomBuildContext =
+        ctx.makeChildCtx(domBuilder, node).inherit(styleClass)
+}

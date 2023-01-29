@@ -32,10 +32,7 @@ class DomExtend : DomBuilder() {
         addSlot("west", west)
     }
 
-    override fun build(ctx: DomBuildContext) {
-        val styled = StyledElement(this, ctx)
-        ctx.stylesheet.applyStyle(styled)
-
+    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
         onlyOnce {
             ctx.stylesheet.add {
                 style(selectInherit(north).instances(north.children)) {
@@ -61,6 +58,6 @@ class DomExtend : DomBuilder() {
             }
         }
 
-        children.forEach { it.build(ctx.makeChildCtx()) }
+        return super.prepareForLayout(ctx)
     }
 }

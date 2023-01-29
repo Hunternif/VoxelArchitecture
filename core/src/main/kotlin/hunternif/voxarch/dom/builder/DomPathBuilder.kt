@@ -1,11 +1,12 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.vector.Vec3
 
 class DomPathBuilder : DomNodeBuilder<Path>(Path::class.java, { Path() }) {
-    override fun buildNode(ctx: DomBuildContext, node: Path) {
+    override fun postLayout(element: StyledNode<Path>) = element.run {
         // match the shape of parent
         val p = ctx.parentNode
         when {

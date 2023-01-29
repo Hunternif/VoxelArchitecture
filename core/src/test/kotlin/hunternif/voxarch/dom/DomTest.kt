@@ -369,7 +369,7 @@ class DomTest {
         }
         val ctx1 = DomBuildContext(root, Node(), defaultStyle, 0)
             .inherit(listOf("class1"))
-        val ctx2 = ctx1.copy(parent = domBuilder2)
+        val ctx2 = ctx1.makeChildCtx(parent = domBuilder2)
         assertEquals(domBuilder2, ctx2.parent)
         assertEquals(setOf("class1"), ctx2.inheritedStyleClass)
         ctx2.inherit(listOf("class2"))

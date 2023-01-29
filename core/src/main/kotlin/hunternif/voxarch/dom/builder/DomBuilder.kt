@@ -40,17 +40,35 @@ open class DomBuilder : Recursive(cycleCounter) {
     }
 
     /**
-     * Recursively invokes this method on children.
-     * [build] can be called multiple times, so it must not retain any state:
-     * - not allowed to add any child DomBuilders (add them in init instead).
-     * - allowed to modify the stylesheet, but only once.
-     * //TODO: enforce this requirement via strong typing.
+     * Layout pass 0: select children that will be rendered.
+     * - Can override to return different instances.
      */
-    open fun build(ctx: DomBuildContext): Unit = guard {
-        val styled = StyledElement(this, ctx)
-        ctx.stylesheet.applyStyle(styled)
-        children.forEach { it.build(ctx.makeChildCtx()) }
-    }
+    open fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> =
+        children
+
+    /**
+     * Layout pass 1: create an element for styling and measuring.
+     * - Can create nodes and add them to parent, without setting size.
+     * - Can add styles to stylesheet, but only once.
+     * - Must not add new child DOM builders.
+     * - Must be called only once per DOM tree, because it can modify parent node.
+     */
+    open fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> =
+        StyledElement(this, ctx)
+
+    /**
+     * Layout pass 2: modify child position & size as necessary.
+     * - Can override to return different instances.
+     */
+    open fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> =
+        children
+
+    /**
+     * Layout pass 3: any final adjustments after this element has been styled
+     * and laid out inside the parent.
+     * Its children have not been prepared yet.
+     */
+    open fun postLayout(element: StyledElement<*>) {}
 
     fun addChild(
         child: DomBuilder,
@@ -87,10 +105,6 @@ open class DomBuilder : Recursive(cycleCounter) {
     }
 
     private fun nextChildSeedOffset(): Long = seedOffset + children.size + 1
-
-    /** Creates context to pass into a child, with default parameters. */
-    fun DomBuildContext.makeChildCtx() =
-        copy(this@DomBuilder).inherit(styleClass)
 
     companion object {
         val cycleCounter = CycleCounter(20)

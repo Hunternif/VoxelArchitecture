@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.plan.PolyRoom
 
 /** Adds child [PolyRoom] with a [DomTurretDecor]. */
@@ -11,8 +12,8 @@ open class DomPolyRoomWithTurretBuilder : DomPolyRoomBuilder() {
         addChild(decor)
     }
 
-    override fun build(ctx: DomBuildContext) {
+    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
         decor.addAllStyles(styleClass)
-        super.build(ctx)
+        return super.prepareForLayout(ctx)
     }
 }

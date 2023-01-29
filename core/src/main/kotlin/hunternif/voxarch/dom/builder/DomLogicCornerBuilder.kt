@@ -7,12 +7,12 @@ import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.util.round
 
 /**
- * Executes child elements in every corner of the [PolyRoom]
+ * Lays out child elements in every corner of the [PolyRoom]
  *
  * Will only work when added as a child to a [DomNodeBuilder]<[PolyRoom]>.
  */
-open class DomLogicPolyCornerBuilder() : DomBuilder() {
-    override fun build(ctx: DomBuildContext) = guard {
+open class DomLogicPolyCornerBuilder : DomBuilder() {
+    override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         val parentNode = ctx.parentNode
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
@@ -20,34 +20,34 @@ open class DomLogicPolyCornerBuilder() : DomBuilder() {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
-            else -> null
+            else -> return children
         }
-        polygon?.let { runCornerBuilders(ctx, it) }
+        return createCornerBuilders(polygon)
     }
 
-    protected fun runCornerBuilders(ctx: DomBuildContext, polygon: Path) {
-        polygon.points.forEachIndexed { i, offset ->
+    protected fun createCornerBuilders(polygon: Path): List<DomBuilder> =
+        polygon.points.mapIndexed { i, offset ->
             val bld = DomTranslateBuilder(offset.round())
             bld.seedOffset = seedOffset + 10000 + i
             bld.children.addAll(children)
-            bld.build(ctx)
+            bld
         }
-    }
 }
 
 /**
- * Executes child elements in every corner of the [Room]
+ * Lays out child elements in every corner of the [Room]
  *
  * Will only work when added as a child to a [DomNodeBuilder]<[Room]>.
  */
 class DomLogicFourCornerBuilder : DomLogicPolyCornerBuilder() {
-    override fun build(ctx: DomBuildContext) = guard {
+    override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         val parentNode = ctx.parentNode
         if (parentNode is Room) {
             val polygon = Path().apply {
                 rectangle(parentNode.width, parentNode.depth)
             }
-            runCornerBuilders(ctx, polygon)
+            return createCornerBuilders(polygon)
         }
+        return children
     }
 }

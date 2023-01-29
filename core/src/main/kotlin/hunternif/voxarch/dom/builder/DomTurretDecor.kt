@@ -44,7 +44,7 @@ class DomTurretDecor : DomBuilder() {
         }
     }
 
-    override fun build(ctx: DomBuildContext) {
+    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
         onlyOnce {
             // Create style rules for this instance:
             ctx.stylesheet.add {
@@ -53,7 +53,7 @@ class DomTurretDecor : DomBuilder() {
                 }
             }
         }
-        super.build(ctx)
+        return super.prepareForLayout(ctx)
     }
 
     /**

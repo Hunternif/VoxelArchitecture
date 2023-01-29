@@ -20,6 +20,9 @@ data class DomBuildContext(
      */
     val seed: Long,
 
+    /** Chain of execution up to this point. */
+    val lineage: List<DomBuilder> = listOf(),
+
     /** Style classes inherited from all parent DOM elements. */
     val inheritedStyleClass: MutableSet<String> = linkedSetOf(),
 ) {
@@ -31,11 +34,18 @@ data class DomBuildContext(
         inheritedStyleClass.addAll(styleClasses)
         return this
     }
-    fun copy(
+
+    /** Make a copy of this context and add the new parent to the lineage. */
+    fun makeChildCtx(
         parent: DomBuilder = this.parent,
         parentNode: Node = this.parentNode,
         stylesheet: Stylesheet = this.stylesheet,
         seed: Long = this.seed,
-    ) = DomBuildContext(parent, parentNode, stylesheet, seed)
-        .inherit(inheritedStyleClass)
+    ) = DomBuildContext(
+        parent,
+        parentNode,
+        stylesheet,
+        seed,
+        lineage + parent,
+    ).inherit(inheritedStyleClass)
 }

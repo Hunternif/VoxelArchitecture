@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.util.ellipse
@@ -8,8 +9,8 @@ import kotlin.math.ceil
 
 open class DomPolyRoomBuilder
     : DomNodeBuilder<PolyRoom>(PolyRoom::class.java, { PolyRoom() }) {
-    override fun buildNode(ctx: DomBuildContext, node: PolyRoom) =
-        node.createPolygon()
+    override fun postLayout(element: StyledNode<PolyRoom>) =
+        element.node.createPolygon()
 }
 
 internal fun PolyRoom.createPolygon() {

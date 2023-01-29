@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuildContext
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.plan.Node
 import org.junit.Assert.*
 import org.junit.Before
@@ -16,9 +17,9 @@ class BlueprintTest {
     @Before
     fun setup() {
         bp = Blueprint(0, "test blueprint")
-        node1 = bp.addNode("test", DomBuilderCounter())
-        node2 = bp.addNode("test", DomBuilderCounter())
-        node3 = bp.addNode("test", DomBuilderCounter())
+        node1 = bp.addNode("test", DomBuilderCounter("one"))
+        node2 = bp.addNode("test", DomBuilderCounter("two"))
+        node3 = bp.addNode("test", DomBuilderCounter("three"))
         generatedCount = 0
     }
 
@@ -119,14 +120,17 @@ class BlueprintTest {
         assertEquals(60, generatedCount)
     }
 
-    private class DomBuilderCounter : DomBuilder() {
-        override fun build(ctx: DomBuildContext) = guard {
+    private class DomBuilderCounter(val name: String) : DomBuilder() {
+        override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
             generatedCount++
-            children.forEach { it.build(ctx) }
+            val count = generatedCountMap.getOrDefault(this, 0)
+            generatedCountMap[this] = count + 1
+            return super.prepareForLayout(ctx)
         }
     }
 
     companion object {
         private var generatedCount = 0
+        private val generatedCountMap = mutableMapOf<DomBuilder, Int>()
     }
 }

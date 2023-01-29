@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.plan.Node
 
@@ -15,26 +16,15 @@ open class DomNodeBuilder<N : Node>(
             DomNodeBuilder(N::class.java, createNode)
     }
 
-    override fun build(ctx: DomBuildContext) = guard {
+    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
         val node = createNode()
         node.tags += (styleClass - uniqueClass)
         ctx.parentNode.addChild(node)
-        val styled = StyledNode(node, this, ctx)
-        ctx.stylesheet.applyStyle(styled)
-        if (visibility == Visibility.VISIBLE) {
-            buildNode(ctx, node)
-            val childCtx = ctx.copy(this, node).inherit(styleClass)
-            children.forEach { it.build(childCtx) }
-        } else {
-            // add and then remove the node, because it needs a parent to
-            // calculate styles including visibility.
-            node.parent?.removeChild(node)
-        }
+        return StyledNode(node, this, ctx)
     }
 
-    /** Any custom initialization code for this node.
-     * Don't use it to add child nodes, create another DomBuilder for that instead. */
-    open fun buildNode(ctx: DomBuildContext, node: N) {}
+    /** See [DomBuilder.postLayout] */
+    open fun postLayout(element: StyledNode<N>) {}
 }
 
 /** Checks if this builder builds the right class of node and casts to it*/
