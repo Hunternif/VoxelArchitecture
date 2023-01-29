@@ -65,7 +65,9 @@ open class Stylesheet {
         getRulesFor(element)
             .flatMap { it.declarations }
             .sortedBy { GlobalStyleOrderIndex[it.property] }
-            .forEach { it.applyTo(element) }
+            // keep only the latest declaration per property:
+            .associateBy { it.property }
+            .values.forEach { it.applyTo(element) }
     }
 
     fun clear() {
