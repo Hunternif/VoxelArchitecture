@@ -9,18 +9,12 @@ class DomPathBuilder : DomNodeBuilder<Path>(Path::class.java, { Path() }) {
     override fun postLayout(element: StyledNode<Path>) = element.run {
         // match the shape of parent
         val p = ctx.parentNode
-        when {
-            ctx.parent is DomLineSegmentBuilder -> {
-                // this builder rotates its children,
-                // so the path lies along the X axis
+        when (p) {
+            is PolyRoom -> node.addPoints(p.polygon.points)
+            is Room -> node.rectangle(p.width, p.depth)
+            is Wall -> {
                 node.addPoint(Vec3.ZERO)
-                node.addPoint(Vec3.UNIT_X * ctx.parent.length)
-            }
-            p is PolyRoom -> node.addPoints(p.polygon.points)
-            p is Room -> node.rectangle(p.width, p.depth)
-            p is Wall -> {
-                node.addPoint(Vec3.ZERO)
-                node.addPoint(p.innerEnd)
+                node.addPoint(Vec3.UNIT_X * p.width)
             }
         }
     }

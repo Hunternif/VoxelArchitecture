@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom.style.property
 
-import hunternif.voxarch.dom.builder.DomLineSegmentBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 
@@ -25,12 +24,7 @@ val PropHeight = newNodeProperty<Node, Double>("height", 4.0) { value ->
 }
 
 val PropWidth = newNodeProperty<Node, Double>("width", 4.0) { value ->
-    val parent = ctx.parent
-    val baseValue =
-        if (parent is DomLineSegmentBuilder) {
-            parent.length
-        }
-        else parentNode.width
+    val baseValue = parentNode.width
     val newValue = value
         .invoke(baseValue, seed + 10000002)
     node.width = newValue
