@@ -34,6 +34,13 @@ public class IntVec3 {
 		return this;
 	}
 
+	public IntVec3 set(IntVec3 vec) {
+		this.x = vec.x;
+		this.y = vec.y;
+		this.z = vec.z;
+		return this;
+	}
+
 	public IntVec3 add(IntVec3 p) {
 		return new IntVec3(x + p.x, y + p.y, z + p.z);
 	}

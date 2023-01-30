@@ -9,6 +9,7 @@ import hunternif.voxarch.storage.ChunkedStorage3D
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
+import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.IntVec3
 
 
@@ -25,7 +26,7 @@ data class VoxColor(val color: Int) : IVoxel {
 
 class VoxFileStorage(
     private val data: IStorage3D<VoxColor?> = ChunkedStorage3D()
-) : IStorage3D<VoxColor?> by data {
+) : IStorage3D<VoxColor?> {
 
     private val palette = LinkedHashSet<VoxColor>()
         // add the 0 color to shift the index. MagicaVoxel uses indices 1+.
@@ -33,6 +34,24 @@ class VoxFileStorage(
     private val colorIndex = mutableMapOf<VoxColor, Byte>()
     private var voxelCount = 0
 
+    override val minX: Int = 0
+    override val minY: Int = 0
+    override val minZ: Int = 0
+    // -1 because coordinates are centric
+    override val maxX: Int get() = containerSize.x - 1
+    override val maxY: Int get() = containerSize.y - 1
+    override val maxZ: Int get() = containerSize.z - 1
+
+    var containerSize: IntVec3 = data.sizeVec
+        set(value) { field.set(value) }
+
+    constructor(width: Int, height: Int, depth: Int):
+        this(Array3D<VoxColor?>(width, height, depth, null)) {
+            containerSize.set(width, height, depth)
+        }
+
+    override val size: Int get() = data.size
+    override fun get(x: Int, y: Int, z: Int): VoxColor? = data[x, y, z]
     override operator fun set(p: IntVec3, v: VoxColor?) { set(p.x, p.y, p.z, v) }
     override operator fun set(x: Int, y: Int, z: Int, v: VoxColor?) {
         if (v == null) {
@@ -125,8 +144,8 @@ class VoxFileStorage(
             val model = file.modelInstances.first().model
             val width = model.size.y
             val height = model.size.z
-            val length = model.size.x
-            val storage = VoxFileStorage()
+            val depth = model.size.x
+            val storage = VoxFileStorage(width, height, depth)
             file.palette.forEach {
                 //TODO check if VoxFileParser stores colors correctly
                 val unsignedColor = it and 0xffffff
