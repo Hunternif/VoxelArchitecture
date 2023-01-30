@@ -4,8 +4,8 @@ import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.sandbox.castle.BLD_ARCHED_WINDOW
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
-import hunternif.voxarch.vector.Vec3
 
 // Some DOM elements are built of more basic classes,
 // e.g. by adding child Nodes to a Room. To help identify this initial parent
@@ -149,6 +149,14 @@ fun DomBuilder.wall(
     block: DomNodeBuilder<Wall>.() -> Unit = {}
 ) {
     this.addChildNodeBuilder(styleClass) { Wall() }.block()
+}
+
+/** Adds a wall with a window type assigned to it. */
+fun DomBuilder.archedWindow(
+    vararg styleClass: String,
+    block: DomNodeBuilder<Wall>.() -> Unit = {}
+) {
+    wall(BLD_ARCHED_WINDOW)
 }
 
 /** Creates a [Path] on the line segment. */

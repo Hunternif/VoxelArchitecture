@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.sandbox.castle.BLD_ARCHED_WINDOW
 
 /**
  * Creates a new DomBuilder for a Blueprint node.
@@ -13,6 +14,7 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "PolyRoom" to { DomPolyRoomBuilder() },
     "Floor" to { DomNodeBuilder { Floor() } },
     "Wall" to { DomNodeBuilder { Wall() } },
+    "Arched Window" to { DomNodeBuilder { Wall() }.addStyle(BLD_ARCHED_WINDOW) },
     "Turret" to { DomPolyRoomWithTurretBuilder() },
     "Turret Decor" to { DomTurretDecor() },
     "Extend" to { DomExtend() },

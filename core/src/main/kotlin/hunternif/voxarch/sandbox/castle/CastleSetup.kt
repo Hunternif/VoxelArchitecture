@@ -24,6 +24,8 @@ const val BLD_TOWER_CORBEL = "tower_corbel"
 const val BLD_TOWER_ROOF = "tower_roof"
 const val BLD_TOWER_SPIRE = "tower_spire"
 
+const val BLD_ARCHED_WINDOW = "arched_window"
+
 /**
  * Register all the builders for my original castle style.
  */
@@ -34,6 +36,7 @@ fun BuilderConfig.setCastleBuilders() {
     set<Wall>(BLD_TOWER_BODY to SimpleWallBuilder(MAT_WALL))
     set<Path>(BLD_TOWER_CORBEL to CorbelBuilder(MAT_WALL_DECORATION))
     set<Wall>(BLD_TOWER_ROOF to CrenellationWallBuilder(MAT_WALL_DECORATION))
+    set<Wall>(BLD_ARCHED_WINDOW to ArchedWindowBuilder())
     set(BLD_TOWER_SPIRE to PyramidBuilder(MAT_ROOF))
     set(BLD_TURRET_BOTTOM to PyramidBuilder(MAT_WALL, upsideDown = true))
 }

@@ -83,16 +83,19 @@ open class DomBuilder : Recursive(cycleCounter) {
     }
 
     /** Add given style class name to this builder. */
-    fun addStyle(style: String) {
+    fun addStyle(style: String): DomBuilder {
         styleClass.add(style)
+        return this
     }
 
-    fun addStyles(vararg styles: String) {
+    fun addStyles(vararg styles: String): DomBuilder {
         styleClass.addAll(styles)
+        return this
     }
 
-    fun addAllStyles(styles: Iterable<String>) {
+    fun addAllStyles(styles: Iterable<String>): DomBuilder {
         styleClass.addAll(styles)
+        return this
     }
 
     /** Add given style class names to this builder. */
