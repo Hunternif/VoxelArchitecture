@@ -1,11 +1,8 @@
 package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.util.rectangle
-import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.vector.Vec3
 import kotlin.random.Random
 
@@ -21,20 +18,13 @@ class DomLineSegmentBuilder(
     /** Vector of this segment, from [p1] to [p2] */
     val end: Vec3 = p2.subtract(p1)
     val length: Double = end.length()
-    val angle = MathUtil.atan2Deg(-end.z, end.x)
+
     override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
-        children.forEach {
-            ctx.stylesheet.add {
-                style(select(it).inherit(this@DomLineSegmentBuilder)) {
-                    position { origin, _ ->
-                        p1.add(origin.rotateY(angle))
-                    }
-                    width { 100.pct }
-                    rotation { set(angle) }
-                }
-            }
+        val dummyWall = ctx.parentNode.wall(p1, p2.addY(ctx.parentNode.height)) {
+            transparent = true
         }
-        return super.prepareForLayout(ctx)
+        // Using a generic StyledElement avoids calling styles on dummyWall:
+        return StyledElement(this, ctx.copy(parentNode = dummyWall))
     }
 }
 
