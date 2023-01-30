@@ -16,11 +16,22 @@ open class DomNodeBuilder<N : Node>(
             DomNodeBuilder(N::class.java, createNode)
     }
 
-    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
+    override fun prepareForLayout(ctx: DomBuildContext): StyledNode<N> {
         val node = createNode()
         node.tags += (styleClass - uniqueClass)
         ctx.parentNode.addChild(node)
         return StyledNode(node, this, ctx)
+    }
+
+    override fun postLayout(element: StyledElement<*>) {
+        if (element is StyledNode<*> &&
+            element.node::class.java == nodeClass
+        ) {
+            @Suppress("UNCHECKED_CAST")
+            postLayout(element as StyledNode<N>)
+        } else {
+            super.postLayout(element)
+        }
     }
 
     /** See [DomBuilder.postLayout] */
