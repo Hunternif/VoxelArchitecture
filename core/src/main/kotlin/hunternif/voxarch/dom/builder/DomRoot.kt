@@ -16,7 +16,7 @@ class DomRoot(
     fun buildDom(
         stylesheet: Stylesheet = defaultStyle,
         seed: Long = 0L,
-        maxRecursions: Int = 20,
+        maxRecursions: Int = 4,
     ): Node {
         // Building happens in multiple passes:
         // 1. Measure: each of the immediate children produces its StyledElement.

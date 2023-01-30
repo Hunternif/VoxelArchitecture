@@ -70,6 +70,7 @@ class Blueprint(
         rootNode: Node,
         stylesheet: Stylesheet = defaultStyle,
         seed: Long = 0,
+        maxRecursions: Int = 4,
     ) {
         DomBuilder.cycleCounter.clear()
         // copy the incoming stylesheet to keep it clean from generated rules:
@@ -77,7 +78,7 @@ class Blueprint(
         finalStylesheet.copyRules(internalStylesheet)
         val root = domRoot(rootNode)
         root.addChild(start.domBuilder)
-        root.buildDom(finalStylesheet, seed)
+        root.buildDom(finalStylesheet, seed, maxRecursions)
     }
 }
 

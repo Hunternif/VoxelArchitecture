@@ -112,11 +112,11 @@ class BlueprintTest {
         node2.outputs[0].linkTo(node3.inputs[0])
         node3.outputs[0].linkTo(node1.inputs[0])
         assertEquals(0, generatedCount)
-        bp.execute(rootNode = Node())
+        bp.execute(rootNode = Node(), maxRecursions = 20)
         assertEquals(60, generatedCount)
         // execute twice to ensure the counters are cleared
         generatedCount = 0
-        bp.execute(rootNode = Node())
+        bp.execute(rootNode = Node(), maxRecursions = 20)
         assertEquals(60, generatedCount)
     }
 
