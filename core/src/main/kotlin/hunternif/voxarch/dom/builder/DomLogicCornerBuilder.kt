@@ -17,6 +17,7 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
             is Room -> Path().apply {
+                // polygon is assumed to be in the center
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
@@ -26,8 +27,10 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
     }
 
     protected fun createCornerBuilders(polygon: Path): List<DomBuilder> =
-        polygon.points.map { offset ->
-            val bld = DomTranslateBuilder(offset.round())
+        polygon.points.map { point ->
+            // Add origin because points are defined vs polygon origin
+            val bld = DomTranslateBuilder((point + polygon.origin).round())
+            //TODO: round to global voxels, not local
             bld.seedOffset = 10000
             bld.children.addAll(children)
             bld
@@ -44,6 +47,8 @@ class DomLogicFourCornerBuilder : DomLogicPolyCornerBuilder() {
         val parentNode = ctx.parentNode
         if (parentNode is Room) {
             val polygon = Path().apply {
+                // polygon is assumed to be in the center
+                origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
             return createCornerBuilders(polygon)
