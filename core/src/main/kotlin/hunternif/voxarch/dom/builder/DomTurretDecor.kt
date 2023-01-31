@@ -45,12 +45,12 @@ class DomTurretDecor : DomBuilder() {
     }
 
     override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
-        onlyOnce {
-            // Create style rules for this instance:
-            ctx.stylesheet.add {
-                styleFamily(selectInherit(this@DomTurretDecor)) {
-                    addTurretStyle(ctx.parentNode)
-                }
+        //TODO: make sure stylesheet is modified only once
+
+        // Create style rules for this instance:
+        ctx.stylesheet.add {
+            styleFamily(selectInherit(this@DomTurretDecor)) {
+                addTurretStyle(ctx.parentNode)
             }
         }
         return super.prepareForLayout(ctx)

@@ -2,8 +2,6 @@ package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.DomDsl
 import hunternif.voxarch.dom.style.StyledElement
-import hunternif.voxarch.util.CycleCounter
-import hunternif.voxarch.util.Recursive
 
 /**
  * Base class for DOM elements.
@@ -11,7 +9,7 @@ import hunternif.voxarch.util.Recursive
  * attached to. This will allow to execute DOM builder under any root.
  */
 @DomDsl
-open class DomBuilder : Recursive(cycleCounter) {
+open class DomBuilder {
 
     /** Offset from the main seed for randomized properties.
      * Can be modified per DOM builder. */
@@ -108,10 +106,6 @@ open class DomBuilder : Recursive(cycleCounter) {
     }
 
     private fun nextChildSeedOffset(): Long = seedOffset + children.size + 1
-
-    companion object {
-        val cycleCounter = CycleCounter(20)
-    }
 }
 
 enum class Visibility {

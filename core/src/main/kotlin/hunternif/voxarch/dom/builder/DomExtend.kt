@@ -33,28 +33,27 @@ class DomExtend : DomBuilder() {
     }
 
     override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
-        onlyOnce {
-            ctx.stylesheet.add {
-                style(selectInherit(north).instances(north.children)) {
-                    alignX { center() }
-                    alignZ { northOut() }
-                    rotation { set(90.0) }
-                }
-                style(selectInherit(south).instances(south.children)) {
-                    alignX { center() }
-                    alignZ { southOut() }
-                    rotation { set(-90.0) }
-                }
-                style(selectInherit(east).instances(east.children)) {
-                    alignZ { center() }
-                    alignX { eastOut() }
-                    // default rotation
-                }
-                style(selectInherit(west).instances(west.children)) {
-                    alignZ { center() }
-                    alignX { westOut() }
-                    rotation { set(180.0) }
-                }
+        //TODO: make sure stylesheet is modified only once
+        ctx.stylesheet.add {
+            style(selectInherit(north).instances(north.children)) {
+                alignX { center() }
+                alignZ { northOut() }
+                rotation { set(90.0) }
+            }
+            style(selectInherit(south).instances(south.children)) {
+                alignX { center() }
+                alignZ { southOut() }
+                rotation { set(-90.0) }
+            }
+            style(selectInherit(east).instances(east.children)) {
+                alignZ { center() }
+                alignX { eastOut() }
+                // default rotation
+            }
+            style(selectInherit(west).instances(west.children)) {
+                alignZ { center() }
+                alignX { westOut() }
+                rotation { set(180.0) }
             }
         }
 

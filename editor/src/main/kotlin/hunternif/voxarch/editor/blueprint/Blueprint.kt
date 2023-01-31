@@ -72,7 +72,6 @@ class Blueprint(
         seed: Long = 0,
         maxRecursions: Int = 4,
     ) {
-        DomBuilder.cycleCounter.clear()
         // copy the incoming stylesheet to keep it clean from generated rules:
         val finalStylesheet = stylesheet.copy()
         finalStylesheet.copyRules(internalStylesheet)
