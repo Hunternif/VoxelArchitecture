@@ -28,7 +28,7 @@ class DomRoot(
         // General invariant: when a parent element is built, it becomes
         // immutable, i.e. its children will never modify it.
 
-        val rootCtx = DomBuildContext(this, node, stylesheet, seed)
+        val rootCtx = DomBuildContext(node, stylesheet, seed)
             .inherit(styleClass)
         val rootElement = prepareForLayout(rootCtx)
 
@@ -67,7 +67,7 @@ class DomRoot(
         val childCtx = makeChildCtx()
         val children = domBuilder.getChildrenForLayout(childCtx)
         val childrenBelowLimit = children.filter { child ->
-            val recursions = childCtx.lineage.count { it == child }
+            val recursions = childCtx.lineage.count { it.domBuilder == child }
             recursions < maxRecursions
         }
         return childrenBelowLimit.map { it.prepareForLayout(childCtx) }

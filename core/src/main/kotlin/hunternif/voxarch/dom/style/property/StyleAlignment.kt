@@ -130,7 +130,6 @@ val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value
 
 val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { value ->
     val p = parentNode
-    val domParent = ctx.parent
     val baseValue = AlignXZ.ORIGIN
     val align = value.invoke(baseValue, seed)
     if (align == AlignXZ.CENTER) {

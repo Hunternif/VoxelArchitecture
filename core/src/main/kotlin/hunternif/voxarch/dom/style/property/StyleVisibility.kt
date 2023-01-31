@@ -8,7 +8,7 @@ import hunternif.voxarch.dom.style.*
 class StyleVisibility : StyleParameter
 
 val PropVisibility = newDomProperty<DomBuilder, Visibility>("visibility", VISIBLE) { value ->
-    val baseValue = ctx.parent.visibility
+    val baseValue = ctx.parent?.domBuilder?.visibility ?: VISIBLE
     domBuilder.visibility = value.invoke(baseValue, seed + 10000010)
 }
 
