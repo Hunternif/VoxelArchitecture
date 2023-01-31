@@ -130,8 +130,8 @@ class DomTest {
         assertEquals(5.0, room2.height, 0.0)
         assertEquals(144.0, room3.height, 0.0)
         assertEquals(144.0, room4.height, 0.0)
-        assertEquals(814.0, nested1.height, 0.0)
-        assertEquals(163.0, nested2.height, 0.0)
+        assertEquals(804.0, nested1.height, 0.0)
+        assertEquals(804.0, nested2.height, 0.0)
     }
 
     @Test

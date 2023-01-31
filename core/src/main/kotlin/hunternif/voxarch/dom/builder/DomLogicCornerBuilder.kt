@@ -26,9 +26,9 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
     }
 
     protected fun createCornerBuilders(polygon: Path): List<DomBuilder> =
-        polygon.points.mapIndexed { i, offset ->
+        polygon.points.map { offset ->
             val bld = DomTranslateBuilder(offset.round())
-            bld.seedOffset = seedOffset + 10000 + i
+            bld.seedOffset = 10000
             bld.children.addAll(children)
             bld
         }

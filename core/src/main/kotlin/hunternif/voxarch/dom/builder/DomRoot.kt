@@ -64,12 +64,16 @@ class DomRoot(
         maxRecursions: Int,
     ): List<StyledElement<*>> {
         if (children.isEmpty()) return emptyList()
-        val childCtx = makeChildCtx()
-        val children = domBuilder.getChildrenForLayout(childCtx)
-        val childrenBelowLimit = children.filter { child ->
-            val recursions = childCtx.lineage.count { it.domBuilder == child }
-            recursions < maxRecursions
+        val ctx = makeChildCtx()
+        val children = domBuilder.getChildrenForLayout(ctx)
+        val result = ArrayList<StyledElement<*>>(children.count())
+        children.forEachIndexed { i, child ->
+            val recursions = ctx.lineage.count { it.domBuilder == child }
+            if (recursions < maxRecursions) {
+                val childCtx = ctx.copy(seed = seed + i + 1)
+                result.add(child.prepareForLayout(childCtx))
+            }
         }
-        return childrenBelowLimit.map { it.prepareForLayout(childCtx) }
+        return result
     }
 }

@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
@@ -16,13 +17,11 @@ class DomWallTest {
                 diameter { 2.vx }
             }
         }
-        val wallSeedOffsets = mutableListOf<Long>()
+        val seedCounter = DomBuilderSeedCounter()
         val dom = domRoot {
             polyRoom {
                 allWalls {
-                    wall {
-                        wallSeedOffsets.add(seedOffset)
-                    }
+                    addChild(seedCounter)
                 }
             }
         }.buildDom(style)
@@ -43,8 +42,7 @@ class DomWallTest {
         assertEquals(Vec3(-1, 0, 1), w4.origin)
         assertEquals(Vec3(1, 0, 1), w4.end)
 
-        //TODO: bug: seed offset is not modified for children
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), seedCounter.seeds)
     }
 
     @Test
@@ -55,19 +53,17 @@ class DomWallTest {
                 depth { 4.vx }
             }
         }
-        val wallSeedOffsets = mutableListOf<Long>()
+        val seedCounter = DomBuilderSeedCounter()
         val dom = domRoot {
             room {
                 fourWalls {
-                    wall {
-                        wallSeedOffsets.add(seedOffset)
-                    }
+                    addChild(seedCounter)
                 }
             }
         }.buildDom(style)
 
         verifyFourWalls(dom)
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), seedCounter.seeds)
     }
 
     @Test
@@ -78,19 +74,17 @@ class DomWallTest {
                 depth { 4.vx }
             }
         }
-        val wallSeedOffsets = mutableListOf<Long>()
+        val seedCounter = DomBuilderSeedCounter()
         val dom = domRoot {
             room {
                 allWalls {
-                    wall {
-                        wallSeedOffsets.add(seedOffset)
-                    }
+                    addChild(seedCounter)
                 }
             }
         }.buildDom(style)
 
         verifyFourWalls(dom)
-        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), wallSeedOffsets)
+        assertEquals(listOf(20003L, 20004L, 20005L, 20006L), seedCounter.seeds)
     }
 
     private fun verifyFourWalls(dom: Node) {
@@ -109,5 +103,12 @@ class DomWallTest {
         assertEquals(Vec3(-1, 0, 2), w3.end)
         assertEquals(Vec3(-1, 0, 2), w4.origin)
         assertEquals(Vec3(1, 0, 2), w4.end)
+    }
+
+    private class DomBuilderSeedCounter : DomBuilder() {
+        val seeds = mutableListOf<Long>()
+        override fun postLayout(element: StyledElement<*>) {
+            seeds.add(element.parent?.seed ?: 0L)
+        }
     }
 }

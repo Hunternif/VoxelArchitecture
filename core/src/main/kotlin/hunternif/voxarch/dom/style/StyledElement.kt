@@ -10,6 +10,7 @@ open class StyledElement<D : DomBuilder>(
     val ctx: DomBuildContext,
     var seed: Long = ctx.seed + domBuilder.seedOffset
 ) {
+    val parent: StyledElement<*>? get() = ctx.parent
     val parentNode: Node get() = ctx.parentNode
     val styleClass: Set<String> get() = domBuilder.styleClass
     val inheritedStyleClass: Set<String> get() = ctx.inheritedStyleClass

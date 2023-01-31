@@ -51,9 +51,9 @@ open class DomPolySegmentBuilder : DomBuilder() {
     protected fun createSegmentBuilders(
         origin: Vec3,
         segments: List<PathSegment>,
-    ): List<DomBuilder> = segments.mapIndexed { i, seg ->
+    ): List<DomBuilder> = segments.map { seg ->
         val bld = DomLineSegmentBuilder( origin + seg.p1, origin + seg.p2)
-        bld.seedOffset = seedOffset + 20000 + i
+        bld.seedOffset = 20000
         bld.children.addAll(children)
         bld
     }

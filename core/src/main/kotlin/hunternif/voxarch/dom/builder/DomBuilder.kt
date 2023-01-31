@@ -68,11 +68,7 @@ open class DomBuilder {
      */
     open fun postLayout(element: StyledElement<*>) {}
 
-    fun addChild(
-        child: DomBuilder,
-        seedOffset: Long = nextChildSeedOffset()
-    ) {
-        child.seedOffset = seedOffset
+    fun addChild(child: DomBuilder) {
         children.add(child)
     }
 
@@ -104,8 +100,6 @@ open class DomBuilder {
     fun addSlot(name: String, domSlot: DomBuilder) {
         slots.add(name to domSlot)
     }
-
-    private fun nextChildSeedOffset(): Long = seedOffset + children.size + 1
 }
 
 enum class Visibility {

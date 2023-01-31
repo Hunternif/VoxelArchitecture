@@ -45,7 +45,7 @@ data class DomBuildContext(
         parent: StyledElement<*>,
         parentNode: Node = this.parentNode,
         stylesheet: Stylesheet = this.stylesheet,
-        seed: Long = this.seed,
+        seed: Long = this.seed + parent.domBuilder.seedOffset,
     ) = DomBuildContext(
         parentNode,
         stylesheet,
