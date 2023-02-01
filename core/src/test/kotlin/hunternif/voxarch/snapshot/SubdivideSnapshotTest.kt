@@ -113,6 +113,23 @@ class SubdivideSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     }
 
     @Test
+    fun `subdivide y with flat node`() {
+        val style = makeStyle {
+            style("a") { height { 5.vx } }
+            style("b") { height { 100.pct } }
+            style("c") { height { 3.vx } }
+        }
+        doTest(style) {
+            wall("b")
+            wall("a")
+            wall("b")
+            wall("b")
+            wall("c")
+            wall("b")
+        }
+    }
+
+    @Test
     fun `subdivide y mixed 2`() {
         val style = makeStyle {
             style("a") { height { 0.vx } }
