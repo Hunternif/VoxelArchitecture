@@ -23,6 +23,20 @@ class DimensionTest {
     }
 
     @Test
+    fun `dimension isPct`() {
+        assertFalse((1.vx + 2.vx).isPct)
+        assertTrue((1.vx + 25.pct).isPct)
+        assertTrue((10.pct - 25.pct).isPct)
+        assertTrue((10.pct * 2).isPct)
+        assertTrue((10.pct * 2.5).isPct)
+        assertTrue((2 * 10.pct).isPct)
+        assertTrue((2.5 * 10.pct).isPct)
+        assertFalse((100.vx to 1000.vx).isPct)
+        assertTrue((100.vx to 200.pct).isPct)
+        assertTrue((10.vx.clamp(1.pct, 5.pct)).isPct)
+    }
+
+    @Test
     fun `dimension clamp`() {
         assertEquals(5.vx, 10.vx.clamp(1.vx, 5.vx))
         assertEquals(1.vx, 1.vx.clamp(1.vx, 10.vx))

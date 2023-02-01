@@ -9,6 +9,8 @@ import kotlin.random.Random
  */
 interface Value<T> {
     operator fun invoke(base: T, seed: Long): T
+    /** True if the value is a percentage from the parent Node's value. */
+    val isPct: Boolean
 }
 
 
@@ -27,5 +29,6 @@ fun <T> value(
     method: (base: T, seed: Long) -> T,
 ) = object : Value<T> {
     override fun invoke(base: T, seed: Long): T = method(base, seed)
+    override val isPct: Boolean = false
     override fun toString(): String = strValue
 }
