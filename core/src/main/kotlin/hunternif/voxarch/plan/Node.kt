@@ -72,7 +72,8 @@ open class Node(
     override val children: MutableList<Node> = mutableListOf()
 
     /**
-     * Vector (width, height, depth), doesn't take rotation into account.
+     * Vector (width, height, depth) in "centric" coordinates,
+     * not accounting for rotation.
      */
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance

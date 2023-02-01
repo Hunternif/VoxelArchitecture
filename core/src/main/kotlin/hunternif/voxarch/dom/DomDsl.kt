@@ -197,6 +197,15 @@ fun DomBuilder.extend(
     bld.block()
 }
 
+/** */
+fun DomBuilder.subdivideY(
+    block: DomBuilder.() -> Unit = {}
+) {
+    val bld = DomSubdivideY()
+    addChild(bld)
+    bld.block()
+}
+
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
 annotation class DomDsl
