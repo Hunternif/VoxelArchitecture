@@ -11,7 +11,7 @@ import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
-class HairyPathBuilderTest : BaseSnapshotTest(10, 10, 10) {
+class HairyPathBuilderTest : BaseSnapshotTest(10, 1, 10) {
 
     @Test
     fun `hairy square path`() {

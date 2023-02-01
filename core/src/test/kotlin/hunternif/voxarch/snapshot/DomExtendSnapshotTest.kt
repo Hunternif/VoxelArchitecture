@@ -9,7 +9,7 @@ import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.plan.Room
 import org.junit.Test
 
-class DomExtendSnapshotTest : BaseSnapshotTest(16, 10, 16) {
+class DomExtendSnapshotTest : BaseSnapshotTest(16, 3, 16) {
     @Test
     fun `extend room NSWE`() {
         testDirections(true, true, true, true)

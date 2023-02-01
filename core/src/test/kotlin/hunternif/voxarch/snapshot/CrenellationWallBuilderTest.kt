@@ -7,7 +7,7 @@ import hunternif.voxarch.sandbox.castle.builder.CrenellationWallBuilder
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
-class CrenellationWallBuilderTest : BaseSnapshotTest(10, 10, 10) {
+class CrenellationWallBuilderTest : BaseSnapshotTest(10, 10, 1) {
     @Test
     fun `crenel 1 with wall height 0`() {
         val wall = Wall(Vec3(0, 0, 0), Vec3(9, 0, 0))

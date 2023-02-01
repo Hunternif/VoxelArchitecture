@@ -6,7 +6,7 @@ import hunternif.voxarch.sandbox.castle.MAT_WALL
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
-class PathBuilderTest : BaseSnapshotTest(10, 10, 10) {
+class PathBuilderTest : BaseSnapshotTest(10, 1, 10) {
 
     @Test
     fun `square path`() {

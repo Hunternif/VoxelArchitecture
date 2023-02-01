@@ -7,7 +7,7 @@ import hunternif.voxarch.sandbox.castle.builder.CrenellationSizes
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
-class CrenellationPathBuilderTest : BaseSnapshotTest(10, 10, 10) {
+class CrenellationPathBuilderTest : BaseSnapshotTest(10, 10, 1) {
     @Test
     fun `crenel 1`() {
         val path = Path(Vec3.ZERO,
