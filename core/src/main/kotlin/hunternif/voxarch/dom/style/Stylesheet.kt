@@ -2,6 +2,7 @@ package hunternif.voxarch.dom.style
 
 import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.ListMultimap
+import hunternif.voxarch.dom.style.PropertyMap.Companion.toPropertyMap
 
 @DslMarker
 annotation class StyleDsl
@@ -29,21 +30,19 @@ open class Stylesheet {
         }
     }
 
-    fun getRulesFor(element: StyledElement<*>): List<Rule> {
+    fun getProperties(element: StyledElement<*>): PropertyMap {
         val styleClasses = listOf(GLOBAL_STYLE) + element.styleClass
-        return styleClasses
+        val rules = styleClasses
             .flatMap { rules[it] }
             .toSet() // filter duplicates
             .filter { it.appliesTo(element) }
+        return rules.flatMap { it.declarations }
+            .sortedBy { GlobalStyleOrderIndex[it.property] }
+            .toPropertyMap()
     }
 
     open fun applyStyle(element: StyledElement<*>) {
-        getRulesFor(element)
-            .flatMap { it.declarations }
-            .sortedBy { GlobalStyleOrderIndex[it.property] }
-            // keep only the latest declaration per property:
-            .associateBy { it.property }
-            .values.forEach { it.applyTo(element) }
+        getProperties(element).forEach { it.applyTo(element) }
     }
 
     fun clear() {
