@@ -92,3 +92,21 @@ inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = seq
         }
     }
 }
+
+/** Convenience property that gets and sets low-XYZ point vs parent origin.
+ * Accounts for rotation. Setting it moves origin. */
+var Node.minPoint: Vec3
+    get() = findLocalAABB().minVec
+    set(value) {
+        val delta = value - minPoint
+        origin += delta
+    }
+
+/** Convenience property that gets and sets high-XYZ point vs parent origin.
+ * Accounts for rotation. Setting it moves origin. */
+var Node.maxPoint: Vec3
+    get() = findLocalAABB().maxVec
+    set(value) {
+        val delta = value - maxPoint
+        origin += delta
+    }

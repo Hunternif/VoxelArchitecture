@@ -7,7 +7,6 @@ import hunternif.voxarch.vector.AABB
 import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.LinearTransformation
 import hunternif.voxarch.vector.Vec3
-import org.junit.Assert
 import org.junit.Assert.*
 import org.junit.Test
 import kotlin.math.sqrt
@@ -136,44 +135,83 @@ class NodeExtensionTest {
     }
 
     @Test
-    fun `local center`() {
-        val origin = Vec3(11, 34, 76)
+    fun `local center, min & max points`() {
+        val origin = Vec3(10, 20, 30)
         val node = Node(origin).apply {
             size = Vec3(2, 4, 6)
         }
         assertEquals(Vec3(1, 2, 3), node.localCenter)
+        assertEquals(Vec3(10, 20, 30), node.minPoint)
+        assertEquals(Vec3(12, 24, 36), node.maxPoint)
 
-        val room = Room(origin, Vec3(2, 4, 6)).apply {
-            start = Vec3(1, 1, 1)
-        }
+        val room = Room(origin, Vec3(2, 4, 6))
+        room.setCentered(true)
+        assertEquals(Vec3(0, 2, 0), room.localCenter)
+        assertEquals(Vec3(9, 20, 27), room.minPoint)
+        assertEquals(Vec3(11, 24, 33), room.maxPoint)
+
+        room.start = Vec3(1, 1, 1)
         assertEquals(Vec3(2, 3, 4), room.localCenter)
+        assertEquals(Vec3(11, 21, 31), room.minPoint)
+        assertEquals(Vec3(13, 25, 37), room.maxPoint)
 
         val polyRoom = PolyRoom(origin, Vec3(2, 4, 6)).apply {
             start = Vec3(1, 1, 1)
         }
         assertEquals(Vec3(2, 3, 4), polyRoom.localCenter)
+        assertEquals(Vec3(11, 21, 31), polyRoom.minPoint)
+        assertEquals(Vec3(13, 25, 37), polyRoom.maxPoint)
 
         val roundPath = Path(origin).apply {
             ellipse(2.0, 6.0, 8)
         }
         assertVec3Equals(Vec3(0, 0, 0), roundPath.localCenter, 0.0000001)
+        assertVec3Equals(Vec3(9, 20, 27), roundPath.minPoint, 0.3)
+        assertVec3Equals(Vec3(11, 20, 33), roundPath.maxPoint, 0.3)
 
         val rectPath = Path(origin).apply {
             rectangle(2.0, 6.0)
         }
         assertEquals(Vec3(0, 0, 0), rectPath.localCenter)
+        assertEquals(Vec3(9, 20, 27), rectPath.minPoint)
+        assertEquals(Vec3(11, 20, 33), rectPath.maxPoint)
 
+        // wall is oriented towards pos Z
         val wall = Wall(Vec3(10, 20, 30), Vec3(10, 24, 32))
         assertEquals(Vec3(1, 2, 0), wall.localCenter)
+        assertEquals(Vec3(10, 20, 30), wall.minPoint)
+        assertEquals(Vec3(10, 24, 32), wall.maxPoint)
+
+        // wall is oriented towards neg X
+        wall.rotationY = 180.0
+        assertEquals(Vec3(1, 2, 0), wall.localCenter)
+        assertEquals(Vec3(8, 20, 30), wall.minPoint)
+        assertEquals(Vec3(10, 24, 30), wall.maxPoint)
 
         val floor = Floor(3.0)
         assertEquals(Vec3(0, 0, 0), floor.localCenter)
+        assertEquals(Vec3(0, 3, 0), floor.minPoint)
+        assertEquals(Vec3(0, 3, 0), floor.maxPoint)
 
         Room().addChild(floor)
         assertEquals(Vec3(0, 0, 0), floor.localCenter)
+        assertEquals(Vec3(0, 3, 0), floor.minPoint)
+        assertEquals(Vec3(0, 3, 0), floor.maxPoint)
 
         room.addChild(floor)
         assertEquals(Vec3(2, 0, 4), floor.localCenter)
+        assertEquals(Vec3(1, 3, 1), floor.minPoint)
+        assertEquals(Vec3(3, 3, 7), floor.maxPoint)
+
+        node.maxPoint += Vec3(1, 2, 3)
+        assertEquals(Vec3(11, 22, 33), node.origin)
+        assertEquals(Vec3(11, 22, 33), node.minPoint)
+        assertEquals(Vec3(13, 26, 39), node.maxPoint)
+
+        node.minPoint -= Vec3(1, 2, 3)
+        assertEquals(Vec3(10, 20, 30), node.origin)
+        assertEquals(Vec3(10, 20, 30), node.minPoint)
+        assertEquals(Vec3(12, 24, 36), node.maxPoint)
     }
 
     @Test

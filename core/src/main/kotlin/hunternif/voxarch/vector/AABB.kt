@@ -15,6 +15,14 @@ data class AABB(
     val size: Vec3 = Vec3(0, 0, 0)
         get() = field.set(maxX - minX, maxY - minY, maxZ - minZ)
 
+    var minVec: Vec3 = Vec3(0, 0, 0)
+        get() = field.set(minX, minY, minZ)
+        set(value) { setMin(value) }
+
+    var maxVec: Vec3 = Vec3(0, 0, 0)
+        get() = field.set(maxX, maxY, maxZ)
+        set(value) { setMax(value) }
+
     fun setMin(x: Double, y: Double, z: Double) {
         minX = x
         minY = y
