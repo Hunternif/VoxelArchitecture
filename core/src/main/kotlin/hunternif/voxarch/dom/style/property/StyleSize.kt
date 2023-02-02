@@ -66,4 +66,4 @@ fun Rule.size(x: Dimension, y: Dimension, z: Dimension) {
 }
 
 /** Inherit the value from the parent node. */
-fun StyleSize.inherit(): Dimension = dimension("inherit") { base, _ -> base }
+fun StyleSize.inherit(): Dimension = dimension("inherit", true) { base, _ -> base }

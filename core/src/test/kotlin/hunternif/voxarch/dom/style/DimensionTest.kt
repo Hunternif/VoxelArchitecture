@@ -1,5 +1,7 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.dom.style.property.StyleSize
+import hunternif.voxarch.dom.style.property.inherit
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -34,6 +36,7 @@ class DimensionTest {
         assertFalse((100.vx to 1000.vx).isPct)
         assertTrue((100.vx to 200.pct).isPct)
         assertTrue((10.vx.clamp(1.pct, 5.pct)).isPct)
+        assertTrue(StyleSize().inherit().isPct)
     }
 
     @Test
