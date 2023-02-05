@@ -6,6 +6,7 @@ import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.BLD_ARCHED_WINDOW
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
+import hunternif.voxarch.util.Direction3D
 
 // Some DOM elements are built of more basic classes,
 // e.g. by adding child Nodes to a Room. To help identify this initial parent
@@ -197,11 +198,12 @@ fun DomBuilder.extend(
     bld.block()
 }
 
-/** */
-fun DomBuilder.subdivideY(
+/** Subdivides space and lays out children along the Y axis up. */
+fun DomBuilder.subdivide(
+    dir: Direction3D,
     block: DomBuilder.() -> Unit = {}
 ) {
-    val bld = DomSubdivideY()
+    val bld = DomSubdivide(dir)
     addChild(bld)
     bld.block()
 }

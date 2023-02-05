@@ -7,12 +7,14 @@ import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.height
 import hunternif.voxarch.dom.style.property.size
-import hunternif.voxarch.dom.subdivideY
+import hunternif.voxarch.dom.subdivide
 import hunternif.voxarch.dom.wall
 import hunternif.voxarch.storage.BlockData
+import hunternif.voxarch.util.Direction3D
+import hunternif.voxarch.util.Direction3D.*
 import org.junit.Test
 
-class SubdivideSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
+class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     "a" to 0x77B249,
     "b" to 0xD7CAB5,
     "c" to 0x4F6FD7,
@@ -146,6 +148,23 @@ class SubdivideSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
         }
     }
 
+    @Test
+    fun `subdivide y mixed 2 down`() {
+        val style = makeStyle {
+            style("a") { height { 0.vx } }
+            style("b") { height { 100.pct } }
+            style("c") { height { 1.vx } }
+        }
+        doTest(style, DOWN) {
+            wall("b")
+            wall("c")
+            wall("a")
+            wall("b")
+            wall("b")
+            wall("a")
+        }
+    }
+
     private fun makeStyle(
         height: Int = 9,
         block: RuleBuilder.() -> Unit = {},
@@ -158,11 +177,12 @@ class SubdivideSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
 
     private fun doTest(
         style: Stylesheet = makeStyle(),
+        dir: Direction3D = UP,
         block: DomBuilder.() -> Unit = {},
     ) {
         val dom = domRoot {
             node("container") {
-                subdivideY {
+                subdivide(dir) {
                     block()
                 }
             }
