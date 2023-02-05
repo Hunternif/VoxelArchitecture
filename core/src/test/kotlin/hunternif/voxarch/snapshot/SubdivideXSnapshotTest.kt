@@ -5,10 +5,13 @@ import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.depth
+import hunternif.voxarch.dom.style.property.rotation
 import hunternif.voxarch.dom.style.property.width
 import hunternif.voxarch.dom.style.property.size
 import hunternif.voxarch.dom.subdivide
 import hunternif.voxarch.dom.wall
+import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
@@ -50,6 +53,42 @@ class SubdivideXSnapshotTest : BaseSnapshotTest(10, 5, 1, mapOf(
             style("a") { width { 0.vx } }
             style("b") { width { 100.pct } }
             style("c") { width { 1.vx } }
+        }
+        doTest(style, WEST) {
+            wall("b")
+            wall("c")
+            wall("a")
+            wall("b")
+            wall("b")
+            wall("a")
+        }
+    }
+
+    @Test
+    fun `subdivide x mixed east rotated`() {
+        val style = makeStyle {
+            style("a") { depth { 0.vx } }
+            style("b") { depth { 100.pct } }
+            style("c") { depth { 1.vx } }
+            styleFor<Wall> { rotation { set(90.0) } }
+        }
+        doTest(style, EAST) {
+            wall("b")
+            wall("c")
+            wall("a")
+            wall("b")
+            wall("b")
+            wall("a")
+        }
+    }
+
+    @Test
+    fun `subdivide x mixed west rotated`() {
+        val style = makeStyle {
+            style("a") { depth { 0.vx } }
+            style("b") { depth { 100.pct } }
+            style("c") { depth { 1.vx } }
+            styleFor<Wall> { rotation { set(90.0) } }
         }
         doTest(style, WEST) {
             wall("b")

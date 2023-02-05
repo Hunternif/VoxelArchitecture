@@ -36,6 +36,27 @@ fun Direction3D.opposite() = when (this) {
     NORTH -> SOUTH
 }
 
+fun Direction3D.to2D(): Direction = when(this) {
+    EAST, UP, DOWN -> Direction.EAST
+    WEST  -> Direction.WEST
+    SOUTH ->  Direction.SOUTH
+    NORTH ->  Direction.NORTH
+}
+
+fun Direction.to3D(): Direction3D = when(this) {
+    Direction.EAST -> EAST
+    Direction.WEST -> WEST
+    Direction.SOUTH -> SOUTH
+    Direction.NORTH -> NORTH
+}
+
+/** Rotates the direction's vector and returns the direction closest to it.
+ * @param angleDeg angle around the Y axis in degrees. */
+fun Direction3D.rotateY(angleDeg: Double): Direction3D {
+    if (this == UP || this == DOWN) return this
+    return this.to2D().rotate(angleDeg).to3D()
+}
+
 
 fun IntVec3.allDirections(): Sequence<IntVec3> = sequence {
     yield(facing(DOWN))

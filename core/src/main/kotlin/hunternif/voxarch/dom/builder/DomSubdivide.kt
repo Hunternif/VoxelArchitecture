@@ -5,6 +5,7 @@ import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
+import hunternif.voxarch.util.rotateY
 import kotlin.math.min
 import kotlin.math.round
 
@@ -23,6 +24,7 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
             if (it is StyledNode<*>) {
                 allNodes.add(it.node)
                 val props = it.ctx.stylesheet.getProperties(it)
+                val prop = it.node.propertyForDir
                 val size = props[prop]?.value ?: 100.pct
                 if (size.isPct) pctNodes.add(it.node)
                 else solidNodes.add(it.node)
@@ -31,7 +33,7 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
 
         val parentNode = children.first().parentNode
         // + 1 to get "natural" size
-        val total = parentNode.dirSize + 1
+        val total = parentNode.localSizeInDir(dir) + 1
 
         // Get "natural" sizes pre-layout
         val solidTotal = solidNodes.fold(0.0) { o, node -> o + node.dirSize + 1 }
@@ -82,22 +84,22 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
         }
     }
 
-    private val prop: Property<Double>
-        get() = when (dir) {
+    private val Node.propertyForDir: Property<Double>
+        get() = when (dir.rotateY(rotationY)) {
             UP, DOWN -> PropHeight
             EAST, WEST -> PropWidth
             NORTH, SOUTH -> PropDepth
         }
 
-    /** Node size in the direction [dir] */
+    /** Node size in the direction [dir], accounting for its rotation. */
     private var Node.dirSize: Double
-        get() = when (dir) {
+        get() = when (dir.rotateY(rotationY)) {
             UP, DOWN -> height
             EAST, WEST -> width
             NORTH, SOUTH -> depth
         }
         set(value) {
-            when (dir) {
+            when (dir.rotateY(rotationY)) {
                 UP, DOWN -> height = value
                 EAST, WEST -> width = value
                 NORTH, SOUTH -> depth = value

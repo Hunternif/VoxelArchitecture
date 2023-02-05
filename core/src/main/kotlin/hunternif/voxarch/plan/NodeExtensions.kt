@@ -1,5 +1,7 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.util.Direction3D
+import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.util.MathUtil.clampAngle
 import hunternif.voxarch.util.rotateYLocal
 import hunternif.voxarch.vector.*
@@ -134,3 +136,10 @@ var Node.maxY: Double
 var Node.maxZ: Double
     get() = maxPoint.z
     set(value) { origin.z += value - maxZ }
+
+/** Node size in the direction [dir], NOT accounting for its rotation. */
+fun Node.localSizeInDir(dir: Direction3D): Double = when (dir) {
+    UP, DOWN -> height
+    EAST, WEST -> width
+    NORTH, SOUTH -> depth
+}
