@@ -37,7 +37,6 @@ class CreateRoomTest : BaseAppTest() {
         assertEquals(Vec3(1, 2, 3), room.origin)
         assertEquals(Vec3(10, 20, 30), room.size)
         assertEquals(Vec3(0, 0, 0), room.start)
-        assertEquals(false, room.isCentered())
     }
 
     @Test
@@ -49,7 +48,6 @@ class CreateRoomTest : BaseAppTest() {
         assertEquals(Vec3(6, 2, 18), room.origin)
         assertEquals(Vec3(10, 20, 30), room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
-        assertEquals(true, room.isCentered())
     }
 
     @Test

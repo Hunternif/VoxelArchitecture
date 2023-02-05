@@ -118,7 +118,6 @@ val PropStartY = newNodeProperty<Node, Double>("start y", 0.0) { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000021)
-    if (node is Room) node.setCentered(false)
     node.start.y = newValue
 }
 
@@ -126,7 +125,6 @@ val PropStartX = newNodeProperty<Node, Double>("start x", 0.0) { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000022)
-    if (node is Room) node.setCentered(false)
     node.start.x = newValue
 }
 
@@ -134,7 +132,6 @@ val PropStartZ = newNodeProperty<Node, Double>("start z", 0.0) { value ->
     val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000023)
-    if (node is Room) node.setCentered(false)
     node.start.z = newValue
 }
 

@@ -1,5 +1,7 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.util.OriginSnap
+import hunternif.voxarch.util.snapStart
 import hunternif.voxarch.vector.Vec3
 
 /** Adds a child [Room], measured from corner */
@@ -19,7 +21,7 @@ inline fun Node.room(
     end: Vec3,
     crossinline action: Room.() -> Unit = {}
 ): Room = Room(start, end - start).also {
-    it.start = Vec3(0, 0, 0)
+    it.snapStart(OriginSnap.CORNER)
     this.addChild(it)
     action.invoke(it)
 }
@@ -30,6 +32,7 @@ inline fun Node.centeredRoom(
     size: Vec3,
     crossinline action: Room.() -> Unit = {}
 ): Room = Room(center, size).also {
+    it.snapStart(OriginSnap.FLOOR_CENTER)
     this.addChild(it)
     action.invoke(it)
 }
@@ -40,7 +43,7 @@ inline fun Node.polyRoom(
     end: Vec3,
     crossinline action: PolyRoom.() -> Unit = {}
 ): PolyRoom = PolyRoom(start, end - start).also {
-    it.start = Vec3(0, 0, 0)
+    it.snapStart(OriginSnap.CORNER)
     this.addChild(it)
     action.invoke(it)
 }
@@ -51,6 +54,7 @@ inline fun Node.centeredPolyRoom(
     size: Vec3,
     crossinline action: PolyRoom.() -> Unit = {}
 ): PolyRoom = PolyRoom(center, size).also {
+    it.snapStart(OriginSnap.FLOOR_CENTER)
     this.addChild(it)
     action.invoke(it)
 }

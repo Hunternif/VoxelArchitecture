@@ -24,13 +24,13 @@ class XmlSerializersTest {
 
     private val structureXml = """
         <node class="Structure" origin="(1.0, 2.0, 3.0)" start="(0.0, 0.0, 0.0)" size="(0.0, 0.0, 0.0)" rotationY="0.0">
-          <node class="Room" origin="(0.0, 0.0, 0.0)" start="(-2.5, 0.0, -3.5)" size="(5.0, 6.0, 7.0)" rotationY="0.0" centered="true">
+          <node class="Room" origin="(0.0, 0.0, 0.0)" start="(-2.5, 0.0, -3.5)" size="(5.0, 6.0, 7.0)" rotationY="0.0">
             <tag>my_tag</tag>
             <node class="Wall" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="0.0" transparent="true"/>
             <node class="Wall" origin="(0.0, 0.0, 1.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="-90.0" transparent="false"/>
             <node class="Floor" origin="(0.0, 0.0, 0.0)" start="(-2.5, 0.0, -3.5)" size="(0.0, 0.0, 0.0)" rotationY="0.0" y="1.0"/>
           </node>
-          <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" rotationY="0.0" centered="false" shape="ROUND">
+          <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" rotationY="0.0" shape="ROUND">
             <polygon class="Path" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(0.0, 0.0, 0.0)" rotationY="0.0"/>
           </node>
         </node>
@@ -48,7 +48,7 @@ class XmlSerializersTest {
     }
 
     private val polyRoomXml = """
-        <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" rotationY="0.0" centered="false" shape="ROUND">
+        <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" rotationY="0.0" shape="ROUND">
           <polygon class="Path" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(0.0, 0.0, 0.0)" rotationY="0.0">
             <point>(0.0, 0.0, 0.0)</point>
             <point>(1.0, 2.0, 3.0)</point>

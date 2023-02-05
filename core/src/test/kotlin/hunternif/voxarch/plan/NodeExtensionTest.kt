@@ -1,8 +1,6 @@
 package hunternif.voxarch.plan
 
-import hunternif.voxarch.util.ellipse
-import hunternif.voxarch.util.assertVec3Equals
-import hunternif.voxarch.util.rectangle
+import hunternif.voxarch.util.*
 import hunternif.voxarch.vector.AABB
 import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.LinearTransformation
@@ -145,7 +143,7 @@ class NodeExtensionTest {
         assertEquals(Vec3(12, 24, 36), node.maxPoint)
 
         val room = Room(origin, Vec3(2, 4, 6))
-        room.setCentered(true)
+        room.start = Vec3(-1, 0, -3)
         assertEquals(Vec3(0, 2, 0), room.localCenter)
         assertEquals(Vec3(9, 20, 27), room.minPoint)
         assertEquals(Vec3(11, 24, 33), room.maxPoint)

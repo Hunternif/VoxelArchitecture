@@ -57,8 +57,6 @@ open class XmlRoom(
     origin: Vec3 = Vec3.ZERO,
     start: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
-    @field:JacksonXmlProperty(isAttribute = true)
-    var centered: Boolean = true,
     rotationY: Double = 0.0,
 ) : XmlNode(origin, start, size, rotationY)
 
@@ -66,12 +64,11 @@ class XmlPolyRoom(
     origin: Vec3 = Vec3.ZERO,
     start: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
-    centered: Boolean = true,
     rotationY: Double = 0.0,
     @field:JacksonXmlProperty(isAttribute = true)
     var shape: PolyShape = PolyShape.SQUARE,
     var polygon: XmlPath = XmlPath()
-) : XmlRoom(origin, start, size, centered, rotationY)
+) : XmlRoom(origin, start, size, rotationY)
 
 class XmlWall(
     origin: Vec3 = Vec3.ZERO,
@@ -102,10 +99,10 @@ internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf(
 internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
     val xmlNode = when (this) {
         is Structure -> XmlStructure(origin, start, size, rotationY)
-        is PolyRoom -> XmlPolyRoom(origin, start, size, isCentered(), rotationY,
+        is PolyRoom -> XmlPolyRoom(origin, start, size, rotationY,
             shape, polygon.mapToXmlNode() as XmlPath
         )
-        is Room -> XmlRoom(origin, start, size, isCentered(), rotationY)
+        is Room -> XmlRoom(origin, start, size, rotationY)
         is Wall -> XmlWall(origin, start, size, rotationY, transparent)
         is Floor -> XmlFloor(origin.y, start)
         is Path -> XmlPath(origin, rotationY, points)
@@ -135,32 +132,22 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     if (this in mapped) return null
     mapped.add(this)
     val node: Node = when (this) {
-        is XmlStructure -> Structure(origin).also { it.start = start }
+        is XmlStructure -> Structure(origin)
         is XmlPolyRoom -> PolyRoom(origin, size).also {
-            it.start = start
-            it.setCentered(centered)
-            it.rotationY = rotationY
             it.shape = shape
             it.polygon.addPoints(polygon.points ?: emptyList())
         }
-        is XmlRoom -> Room(origin, size).also {
-            it.start = start
-            it.setCentered(centered)
-            it.rotationY = rotationY
-        }
-        is XmlWall -> Wall(origin, origin + size, transparent).also {
-            it.size = size
-            it.rotationY = rotationY
-            it.start = start
-        }
-        is XmlFloor -> Floor(y).also { it.start = start }
+        is XmlRoom -> Room(origin, size)
+        is XmlWall -> Wall(origin, origin + size, transparent)
+        is XmlFloor -> Floor(y)
         is XmlPath -> Path(origin).also {
             it.addPoints(points ?: emptyList())
-            it.rotationY = rotationY
-            it.start = start
         }
         else -> null
     } ?: return null
+    node.start = start
+    node.rotationY = rotationY
+    node.size = size
     node.tags += tags
     children.forEach { xmlChild ->
         xmlChild.mapXmlNodeRecursive(mapped)?.let { child ->

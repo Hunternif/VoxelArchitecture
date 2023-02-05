@@ -115,7 +115,7 @@ class StyleAlignmentTest {
         val parent = Room(Vec3.ZERO, Vec3(3, 3, 3))
         if (!centeredParent) parent.start = Vec3.ZERO
 
-        val style = Stylesheet().add {
+        val style = defaultStyle.add {
             style("child") {
                 size(2.vx, 2.vx, 2.vx)
                 if (!centeredChild) start(0.vx, 0.vx, 0.vx)

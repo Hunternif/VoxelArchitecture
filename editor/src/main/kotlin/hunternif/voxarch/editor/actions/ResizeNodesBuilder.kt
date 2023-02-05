@@ -53,36 +53,17 @@ class ResizeNodesBuilder(
                 if (room.rotationY == 0.0) {
                     //TODO: should we move origin for rotated boxes too?
                     val center = data.origin + data.start + data.size / 2
-                    if (room.isCentered()) {
-                        // Need to move origin when resizing vertically
-                        room.origin = center.addY(-room.size.y / 2)
-                    } else {
-                        // Move [origin] to keep the center in place
-                        room.origin = center - (room.size) / 2 - data.start
-                    }
+                    // Move [origin] to keep the center in place
+                    room.origin = center - (room.size) / 2 - data.start
                 }
             } else {
                 room.size = max(Vec3.ZERO, data.size + deltaVec)
                 if (room.rotationY == 0.0) {
-                    if (room.isCentered()) {
-                        // Move [origin] to keep the opposite face in place.
-                        when (dir) {
-                            POS_X, POS_Y, POS_Z -> room.origin
-                                .set(data.origin)
-                                .addLocal(data.start)
-                                .addLocal(room.size.x / 2, 0.0, room.size.z / 2)
-                            NEG_X, NEG_Y, NEG_Z -> room.origin
-                                .set(data.origin)
-                                .addLocal(data.size.x / 2, data.size.y, data.size.z / 2)
-                                .addLocal(-room.size.x / 2, -room.size.y, -room.size.z / 2)
-                        }
-                    } else {
-                        // Move [origin] to keep the opposite face in place.
-                        when (dir) {
-                            POS_X, POS_Y, POS_Z -> {}
-                            NEG_X, NEG_Y, NEG_Z -> room.origin =
-                                data.origin + data.size - room.size
-                        }
+                    // Move [origin] to keep the opposite face in place.
+                    when (dir) {
+                        POS_X, POS_Y, POS_Z -> {}
+                        NEG_X, NEG_Y, NEG_Z -> room.origin =
+                            data.origin + data.size - room.size
                     }
                 }
             }

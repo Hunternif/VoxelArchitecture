@@ -2,9 +2,9 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.util.Box
 import hunternif.voxarch.util.MathUtil
+import hunternif.voxarch.util.OriginSnap
+import hunternif.voxarch.util.snapStart
 import hunternif.voxarch.vector.Vec3
-import kotlin.properties.ReadWriteProperty
-import kotlin.reflect.KProperty
 
 /**
  * ```
@@ -32,17 +32,8 @@ open class Room(
 
     init {
         this.size = size
-    }
-
-    private val startDelegate = CenteredStartDelegate()
-    /**
-     * Internal offset of the low-XZ corner of the room.
-     * By default it's set so that origin is at the center of the floor.
-     */
-    override var start: Vec3 by startDelegate
-    fun isCentered() = startDelegate.innerValue == null
-    fun setCentered(value: Boolean) {
-        startDelegate.innerValue = if (value) null else start
+        // for legacy tests to pass:
+        snapStart(OriginSnap.FLOOR_CENTER)
     }
 
     /** Vs local origin */
@@ -148,17 +139,4 @@ open class Room(
             field = value
             if (value) floor()
         }
-
-    companion object {
-        private class CenteredStartDelegate: ReadWriteProperty<Room, Vec3> {
-            var innerValue: Vec3? = null
-            override fun getValue(thisRef: Room, property: KProperty<*>): Vec3 =
-                innerValue ?: Vec3(-thisRef.width / 2, 0.0, -thisRef.depth / 2)
-
-            override fun setValue(thisRef: Room, property: KProperty<*>, value: Vec3) {
-                this.innerValue = value
-            }
-
-        }
-    }
 }

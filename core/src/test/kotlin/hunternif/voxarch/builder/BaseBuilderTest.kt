@@ -7,6 +7,8 @@ import hunternif.voxarch.plan.floor
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.ArrayBlockStorage
+import hunternif.voxarch.util.OriginSnap
+import hunternif.voxarch.util.snapStart
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 import hunternif.voxarch.world.Environment
@@ -68,6 +70,7 @@ abstract class BaseBuilderTest(
 
     fun testRoom(origin: Vec3, size: Vec3) =
         Room(null, origin, size, 0.0).apply {
+            snapStart(OriginSnap.FLOOR_CENTER)
             floor { tags += TYPE_FLOOR }
             ceiling { tags += TYPE_ROOF }
             createFourWalls()

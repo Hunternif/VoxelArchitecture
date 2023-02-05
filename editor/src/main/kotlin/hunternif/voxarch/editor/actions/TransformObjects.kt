@@ -5,9 +5,6 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.editor.util.set
-import hunternif.voxarch.editor.util.toVec3
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 
 class TransformObjects(
@@ -35,9 +32,6 @@ class TransformObjects(
                         start = data.start
                         rotationY = data.rotationY
                         size = data.size
-                        (this as? Room)?.run {
-                            setCentered(data.isCentered)
-                        }
                     }
                 }
                 is SceneVoxelGroup -> {
@@ -56,8 +50,6 @@ data class TransformData(
     val origin: Vec3,
     val size: Vec3,
     val start: Vec3,
-    /** If [isCentered] is true, [start] is ignored. */
-    val isCentered: Boolean,
     val rotationY: Double,
 )
 
@@ -67,23 +59,19 @@ fun SceneObject.transformData(
     origin: Vec3? = null,
     size: Vec3? = null,
     start: Vec3? = null,
-    /** If [isCentered] is true, [start] is ignored. */
-    isCentered: Boolean? = null,
     rotationY: Double? = null,
 ) = when(this) {
     is SceneNode -> TransformData(
         (origin ?: node.origin).clone(),
         (size ?: node.size).clone(),
         (start ?: node.start).clone(),
-        isCentered ?: (node as? Room)?.isCentered() ?: false,
         rotationY ?: node.rotationY,
     )
     is SceneVoxelGroup -> TransformData(
         (origin ?: this.origin).clone(),
         Vec3.ZERO,
         Vec3.ZERO,
-        false,
         0.0
     )
-    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, false, 0.0)
+    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, 0.0)
 }

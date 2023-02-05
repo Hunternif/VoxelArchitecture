@@ -72,11 +72,7 @@ fun assertNodeEquals(
     when (expected) {
         is PolyRoom -> {
             assertEquals(expected.shape, (actual as PolyRoom).shape)
-            assertEquals(expected.isCentered(), actual.isCentered())
             assertNodeEquals(expected.polygon, actual.polygon)
-        }
-        is Room -> {
-            assertEquals(expected.isCentered(), (actual as Room).isCentered())
         }
         is Path -> {
             assertEquals(expected.points, (actual as Path).points)

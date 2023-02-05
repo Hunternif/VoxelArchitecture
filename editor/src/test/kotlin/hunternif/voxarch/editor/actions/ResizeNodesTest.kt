@@ -74,20 +74,19 @@ class ResizeNodesTest : BaseAppTest() {
     private fun assertUnchangedStartOriginUncentered() {
         assertEquals(Vec3(0, 0, 0), room1.origin)
         assertEquals(Vec3(0, 0, 0), room1.start)
-        assertEquals(false, room1.isCentered())
 
         assertEquals(Vec3(100, 200, 300), room2.origin)
         assertEquals(Vec3(0, 0, 0), room2.start)
-        assertEquals(false, room2.isCentered())
     }
 
     @Test
     fun `resize centered & uncentered node, undo redo`() {
-        room2.setCentered(true)
+        //TODO: add origin snap here
+//        room2.setCentered(true)
         assertEquals(Vec3(100, 200, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
 
         app.resizeBuilder(listOf(node1, node2)).apply {
             dragFace(POS_X, 6f)
@@ -96,110 +95,114 @@ class ResizeNodesTest : BaseAppTest() {
         assertEquals(Vec3(0, 0, 0), room1.origin)
         assertEquals(Vec3(0, 0, 0), room1.start)
         assertEquals(Vec3(7, 1, 1), room1.size)
-        assertEquals(false, room1.isCentered())
+//        assertEquals(false, room1.isCentered())
         assertEquals(Vec3(103, 200, 300), room2.origin)
         assertEquals(Vec3(-8, 0, -5), room2.start)
         assertEquals(Vec3(16, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
 
         app.undo()
         assertEquals(Vec3(0, 0, 0), room1.origin)
         assertEquals(Vec3(0, 0, 0), room1.start)
         assertEquals(Vec3(1, 1, 1), room1.size)
-        assertEquals(false, room1.isCentered())
+//        assertEquals(false, room1.isCentered())
         assertEquals(Vec3(100, 200, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
 
         app.redo()
         assertEquals(Vec3(0, 0, 0), room1.origin)
         assertEquals(Vec3(0, 0, 0), room1.start)
         assertEquals(Vec3(7, 1, 1), room1.size)
-        assertEquals(false, room1.isCentered())
+//        assertEquals(false, room1.isCentered())
         assertEquals(Vec3(103, 200, 300), room2.origin)
         assertEquals(Vec3(-8, 0, -5), room2.start)
         assertEquals(Vec3(16, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
     }
 
     @Test
     fun `resize symmetric centered node horizontal`() {
-        room2.setCentered(true)
+        //TODO: add origin snap here
+//        room2.setCentered(true)
         val builder = app.resizeBuilder(listOf(node2))
         // grow
         builder.dragFace(POS_X, 1f, true)
         assertEquals(Vec3(100, 200, 300), room2.origin)
         assertEquals(Vec3(-6, 0, -5), room2.start)
         assertEquals(Vec3(12, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
         // shrink
         builder.dragFace(NEG_X, -1f, true)
         assertEquals(Vec3(100, 200, 300), room2.origin)
         assertEquals(Vec3(-4, 0, -5), room2.start)
         assertEquals(Vec3(8, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
     }
 
     @Test
     fun `resize symmetric centered node vertical`() {
         // when resizing symmetrically vertically, origin can change too
-        room2.setCentered(true)
+        //TODO: add origin snap here
+//        room2.setCentered(true)
         val builder = app.resizeBuilder(listOf(node2))
         // grow
         builder.dragFace(POS_Y, 1f, true)
         assertEquals(Vec3(100, 199, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 12, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
         // shrink
         builder.dragFace(NEG_Y, -1f, true)
         assertEquals(Vec3(100, 201, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 8, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
     }
 
     @Test
     fun `resize asymmetric centered node horizontal`() {
-        room2.setCentered(true)
+        //TODO: add origin snap here
+//        room2.setCentered(true)
         val builder = app.resizeBuilder(listOf(node2))
         // grow
         builder.dragFace(POS_X, 1f, false)
         assertEquals(Vec3(100.5, 200.0, 300.0), room2.origin)
         assertEquals(Vec3(-5.5, 0.0, -5.0), room2.start)
         assertEquals(Vec3(11, 10, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
         // shrink
         builder.dragFace(NEG_Z, -1f, false)
         assertEquals(Vec3(100.0, 200.0, 300.5), room2.origin)
         assertEquals(Vec3(-5.0, 0.0, -4.5), room2.start)
         assertEquals(Vec3(10, 10, 9), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
     }
 
     @Test
     fun `resize asymmetric centered node vertical`() {
-        room2.setCentered(true)
+        //TODO: add origin snap here
+//        room2.setCentered(true)
         val builder = app.resizeBuilder(listOf(node2))
         // grow
         builder.dragFace(POS_Y, 1f, false)
         assertEquals(Vec3(100, 200, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 11, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
         // grow
         builder.dragFace(NEG_Y, 1f, false)
         assertEquals(Vec3(100, 199, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 11, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
         // shrink
         builder.dragFace(NEG_Y, -1f, false)
         assertEquals(Vec3(100, 201, 300), room2.origin)
         assertEquals(Vec3(-5, 0, -5), room2.start)
         assertEquals(Vec3(10, 9, 10), room2.size)
-        assertEquals(true, room2.isCentered())
+//        assertEquals(true, room2.isCentered())
     }
 
     @Test

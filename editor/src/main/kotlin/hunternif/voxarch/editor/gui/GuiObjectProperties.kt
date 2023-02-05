@@ -6,7 +6,6 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.plan.Room
 import imgui.ImGui
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
@@ -23,7 +22,6 @@ class GuiObjectProperties(
     private val sizeInput = GuiInputVec3("size", min = 0f)
     private val startInput = GuiInputVec3("start")
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
-    private val centeredInput = GuiCheckbox("centered")
 
     // Update timer
     private val nodeTimer = Timer(0.02)
@@ -59,17 +57,8 @@ class GuiObjectProperties(
             app.transformNodeSize(sceneNode, original, newValue)
         }
 
-        if (node is Room) {
-
-            disabled(node.isCentered()) {
-                startInput.render(node.start) {
-                    app.transformNodeStart(sceneNode, original, newValue)
-                }
-            }
-
-            centeredInput.render(node.isCentered()) {
-                app.transformNodeCentered(sceneNode, it)
-            }
+        startInput.render(node.start) {
+            app.transformNodeStart(sceneNode, original, newValue)
         }
 
         rotationInput.render(node.rotationY.toFloat(), onUpdated = {

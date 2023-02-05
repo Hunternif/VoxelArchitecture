@@ -13,7 +13,7 @@ import org.junit.Test
 class DomWardTest {
     @Test
     fun `square castle ward`() {
-        val style = Stylesheet().add {
+        val style = defaultStyle.add {
             styleFor<Ward> {
                 shape { set(SQUARE) }
                 diameter { 2.vx }
