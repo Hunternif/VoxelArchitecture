@@ -13,6 +13,9 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropWidth,
     PropDepth,
 
+    // "snap origin" modifies both origin and start
+    PropSnapOrigin,
+
     // Start defines where the origin sits, but it shouldn't affect alignment
     PropStartY,
     PropStartX,

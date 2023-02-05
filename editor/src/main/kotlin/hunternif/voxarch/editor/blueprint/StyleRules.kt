@@ -9,6 +9,8 @@ val editorStyleProperties: List<Property<*>> = listOf(
     PropHeight,
     PropDepth,
 
+    PropSnapOrigin,
+
     PropAlignY,
     PropAlignXZ,
     PropAlignX,
