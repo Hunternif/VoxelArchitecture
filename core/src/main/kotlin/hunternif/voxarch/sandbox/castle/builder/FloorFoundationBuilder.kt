@@ -11,16 +11,13 @@ class FloorFoundationBuilder(
     private val material: String
 ) : Builder<Floor>() {
     override fun build(node: Floor, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        // A floor must have a parent room
-        val room = (node.parent as? Room) ?: return
-
-        // 1. Fill space inside the room
-        room.fillXZ(trans) { x, y, z ->
+        // 1. Fill space inside
+        node.fillXZ(trans) { x, y, z ->
             buildDownToGround(x, y, z, world, context)
         }
 
         // 2. Fill walls too, because at odd room sizes they can be 1 block away
-        room.walls.forEach { wall ->
+        (node.parent as? Room)?.walls?.forEach { wall ->
             line(wall.bottomStart, wall.bottomEnd) { p ->
                 val pos = trans.transform(p).roundToInt()
                 buildDownToGround(pos.x, pos.y, pos.z, world, context)

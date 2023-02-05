@@ -1,6 +1,6 @@
 package hunternif.voxarch.builder
 
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.findIntAABB
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.storage.SymmetricStorageX
@@ -31,7 +31,7 @@ fun IBlockStorage.asSymmetricX(midPoint: Number) =
  * @param buildAt the arguments (x, y, z) are global coordinates,
  *      i.e. relative to the storage, NOT to the room. Y is floor level.
  */
-fun Room.fillXZ(
+fun Node.fillXZ(
     trans: ITransformation,
     buildAt: (x: Int, y: Int, z: Int) -> Unit
 ) {

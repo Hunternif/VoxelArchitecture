@@ -31,4 +31,11 @@ open class Floor(
             return super.size
         }
         set(value) { super.size = value }
+
+    override fun getGroundBoundaries(): List<GroundBoundary> {
+        val originXZ = origin.clone().apply { y = 0.0 }
+        return parent?.getGroundBoundaries()?.map {
+            it.first - originXZ to it.second - originXZ
+        } ?: super.getGroundBoundaries()
+    }
 }

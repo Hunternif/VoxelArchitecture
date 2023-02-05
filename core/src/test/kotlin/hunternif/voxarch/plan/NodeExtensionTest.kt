@@ -203,8 +203,8 @@ class NodeExtensionTest {
         room.addChild(floor)
         assertEquals(Vec3(1, 0, 1), floor.start)
         assertEquals(Vec3(2, 0, 4), floor.localCenter)
-        assertEquals(Vec3(1, 3, 1), floor.minPoint)
-        assertEquals(Vec3(3, 3, 7), floor.maxPoint)
+        assertEquals(Vec3(1, 4, 1), floor.minPoint)
+        assertEquals(Vec3(3, 4, 7), floor.maxPoint)
 
         room.start = Vec3(0, 0, 0)
         assertEquals(Vec3(0, 0, 0), floor.start)

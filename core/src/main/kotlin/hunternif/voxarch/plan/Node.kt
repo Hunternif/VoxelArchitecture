@@ -107,7 +107,7 @@ open class Node(
 
     /**
      * Returns boundaries defined by node size and its walls, if it has any.
-     * In local coordinates, not accounting for rotation.
+     * Relative to local origin, not accounting for rotation.
      */
     open fun getGroundBoundaries(): List<GroundBoundary> {
         val corner = start
