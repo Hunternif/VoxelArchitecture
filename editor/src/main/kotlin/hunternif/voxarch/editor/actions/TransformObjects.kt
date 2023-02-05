@@ -32,11 +32,11 @@ class TransformObjects(
                 is SceneNode -> {
                     obj.node.run {
                         origin = data.origin
+                        start = data.start
                         rotationY = data.rotationY
                         size = data.size
                         (this as? Room)?.run {
                             setCentered(data.isCentered)
-                            if (!data.isCentered) start = data.start
                         }
                     }
                 }
@@ -74,7 +74,7 @@ fun SceneObject.transformData(
     is SceneNode -> TransformData(
         (origin ?: node.origin).clone(),
         (size ?: node.size).clone(),
-        (start ?: (node as? Room)?.start ?: Vec3.ZERO).clone(),
+        (start ?: node.start).clone(),
         isCentered ?: (node as? Room)?.isCentered() ?: false,
         rotationY ?: node.rotationY,
     )

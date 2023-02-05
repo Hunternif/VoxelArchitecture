@@ -65,12 +65,13 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
     }
 
     private fun layoutInDir(parent: Node, nodes: Iterable<Node>) {
-        // TODO: use start for Rooms (make it a base Node property)
         val initPos = when (dir) {
-            UP, EAST, SOUTH -> 0.0
-            DOWN -> parent.height
-            WEST -> parent.width
-            NORTH -> parent.depth
+            UP -> parent.start.y
+            EAST -> parent.start.x
+            SOUTH -> parent.start.z
+            DOWN -> parent.start.y + parent.height
+            WEST -> parent.start.x + parent.width
+            NORTH -> parent.start.z + parent.depth
         }
         val sign = when (dir) {
             UP, EAST, SOUTH -> 1.0

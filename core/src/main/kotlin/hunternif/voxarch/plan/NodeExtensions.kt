@@ -6,6 +6,11 @@ import hunternif.voxarch.util.MathUtil.clampAngle
 import hunternif.voxarch.util.rotateYLocal
 import hunternif.voxarch.vector.*
 
+
+// The file Node.kt contains the minimum number of properties that define it.
+// This file contains extensions and operations that derive additional info
+// from the basic properties, or modify them.
+
 /** Finds offset of this node's origin in global coordinates, i.e.
  * in the coordinate space where its highest parent node exists.
  */

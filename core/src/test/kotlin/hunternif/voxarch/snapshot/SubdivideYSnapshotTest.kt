@@ -7,6 +7,7 @@ import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.height
 import hunternif.voxarch.dom.style.property.size
+import hunternif.voxarch.dom.style.property.startY
 import hunternif.voxarch.dom.subdivide
 import hunternif.voxarch.dom.wall
 import hunternif.voxarch.storage.BlockData
@@ -45,6 +46,18 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     @Test
     fun `subdivide y 4 by equal 3`() {
         doTest(makeStyle(4)) {
+            wall("a")
+            wall("b")
+            wall("c")
+        }
+    }
+
+    @Test
+    fun `subdivide y 4 by equal 3 offset`() {
+        val style = makeStyle(4) {
+            style("container") { startY { 2.vx } }
+        }
+        doTest(style) {
             wall("a")
             wall("b")
             wall("c")

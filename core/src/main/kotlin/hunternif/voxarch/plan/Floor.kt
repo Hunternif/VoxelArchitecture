@@ -13,12 +13,12 @@ open class Floor(
     y: Double = 0.0
 ) : Node(Vec3(0.0, y, 0.0)) {
     override val localCenter: Vec3
-        get() = parent?.let {
+        get() = (parent?.let {
             // centered at parent
             it.localCenter.clone().apply {
                 y = origin.y
             } - origin
-        } ?: Vec3.ZERO
+        } ?: Vec3.ZERO) + start
 
     // Return parent's size
     override var size: Vec3

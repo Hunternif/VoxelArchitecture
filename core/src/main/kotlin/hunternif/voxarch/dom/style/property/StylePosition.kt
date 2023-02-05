@@ -114,31 +114,31 @@ fun Rule.offset(block: (base: Vec3, seed: Long) -> Vec3) {
 
 // =========================== ABSOLUTE START ===========================
 
-val PropStartY = newNodeProperty<Room, Double>("start y", 0.0) { value ->
+val PropStartY = newNodeProperty<Node, Double>("start y", 0.0) { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000021)
-    node.setCentered(false)
+    if (node is Room) node.setCentered(false)
     node.start.y = newValue
 }
 
-val PropStartX = newNodeProperty<Room, Double>("start x", 0.0) { value ->
+val PropStartX = newNodeProperty<Node, Double>("start x", 0.0) { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000022)
-    node.setCentered(false)
+    if (node is Room) node.setCentered(false)
     node.start.x = newValue
 }
 
-val PropStartZ = newNodeProperty<Room, Double>("start z", 0.0) { value ->
+val PropStartZ = newNodeProperty<Node, Double>("start z", 0.0) { value ->
     val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000023)
-    node.setCentered(false)
+    if (node is Room) node.setCentered(false)
     node.start.z = newValue
 }
 
-val PropStart = newNodeProperty<Room, Vec3>("start vector", Vec3.ZERO) { value ->
+val PropStart = newNodeProperty<Node, Vec3>("start vector", Vec3.ZERO) { value ->
     val baseValue = node.start
     val newValue = value
         .invoke(baseValue, seed + 10000024)

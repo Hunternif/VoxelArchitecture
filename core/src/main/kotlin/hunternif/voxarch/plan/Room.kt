@@ -39,7 +39,7 @@ open class Room(
      * Internal offset of the low-XZ corner of the room.
      * By default it's set so that origin is at the center of the floor.
      */
-    var start: Vec3 by startDelegate
+    override var start: Vec3 by startDelegate
     fun isCentered() = startDelegate.innerValue == null
     fun setCentered(value: Boolean) {
         startDelegate.innerValue = if (value) null else start
@@ -47,9 +47,6 @@ open class Room(
 
     /** Vs local origin */
     val innerFloorCenter: Vec3 get() = start.add(size.x/2, 0.0, size.z/2)
-    /** Vs parent's origin */
-    val floorCenter: Vec3 get() = origin.add(innerFloorCenter)
-    override val localCenter: Vec3 get() = start + size / 2
 
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))

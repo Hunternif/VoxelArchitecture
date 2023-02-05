@@ -23,9 +23,9 @@ open class Path(origin: Vec3) : Node(origin) {
         get() = _segments
 
     override val localCenter: Vec3
-        get() = if (points.isEmpty()) Vec3.ZERO
-        else points.fold(Vec3(0, 0, 0))
-        { out, p -> out.add(p) } / points.size
+        get() = if (points.isEmpty()) start
+        else (points.fold(Vec3(0, 0, 0))
+        { out, p -> out.add(p) } / points.size) + start
 
     val aabb = AABB()
     override var size: Vec3

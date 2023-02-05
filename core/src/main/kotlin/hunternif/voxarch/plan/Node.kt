@@ -56,13 +56,16 @@ open class Node(
     origin: Vec3
 ) : INested<Node> {
     var origin: Vec3 = origin.clone()
-        set(value) {
-            field.set(value) // keep the same instance
-        }
+        set(value) { field.set(value) }  // keep the same instance
+
+    /** Internal offset of the low-XZ corner.
+     * By default, it's set so that origin is at the low-XYZ corner. */
+    open var start: Vec3 = Vec3(0, 0, 0)
+        set(value) { field.set(value) }  // keep the same instance
 
     /** Center point vs origin, on all XYZ axes,
      * in local coordinates, not accounting for rotation. */
-    open val localCenter: Vec3 get() = size / 2
+    open val localCenter: Vec3 get() = start + size / 2
 
     final override var parent: Node? = null
 

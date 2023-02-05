@@ -62,6 +62,7 @@ fun assertNodeEquals(
 ) {
     assertEquals(expected::class, actual::class)
     assertEquals(expected.origin, actual.origin)
+    assertEquals(expected.start, actual.start)
     if (testTags) assertEquals(expected.tags, actual.tags)
     assertEquals(expected.rotationY, actual.rotationY, 0.0)
     assertEquals(expected.size, actual.size)
