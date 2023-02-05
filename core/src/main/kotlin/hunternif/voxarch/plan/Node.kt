@@ -59,13 +59,11 @@ open class Node(
         set(value) { field.set(value) }  // keep the same instance
 
     /** Internal offset of the low-XZ corner.
+     * Children are placed relative to parent's [origin], but parent's [start]
+     * suggests where children should be placed.
      * By default, it's set so that origin is at the low-XYZ corner. */
     open var start: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) }  // keep the same instance
-
-    /** Center point vs origin, on all XYZ axes,
-     * in local coordinates, not accounting for rotation. */
-    open val localCenter: Vec3 get() = start + size / 2
 
     final override var parent: Node? = null
 
@@ -112,7 +110,7 @@ open class Node(
      * In local coordinates, not accounting for rotation.
      */
     open fun getGroundBoundaries(): List<GroundBoundary> {
-        val corner = localCenter - size / 2
+        val corner = start
         return listOf(
             corner,
             corner.addZ(size.z),

@@ -22,11 +22,11 @@ open class Path(origin: Vec3) : Node(origin) {
     val segments: List<PathSegment>
         get() = _segments
 
-    override val localCenter: Vec3
-        get() = if (points.isEmpty()) start
-        else (points.fold(Vec3(0, 0, 0))
-        { out, p -> out.add(p) } / points.size) + start
+    override var start: Vec3
+        get() = if (points.isEmpty()) Vec3(0, 0, 0) else aabb.minVec
+        set(value) {}
 
+    /** Local AABB relative to origin, not accounting for rotation. */
     val aabb = AABB()
     override var size: Vec3
         get() = if (points.isEmpty()) super.size else aabb.size

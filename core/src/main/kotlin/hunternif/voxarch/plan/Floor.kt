@@ -12,13 +12,14 @@ import hunternif.voxarch.vector.Vec3
 open class Floor(
     y: Double = 0.0
 ) : Node(Vec3(0.0, y, 0.0)) {
-    override val localCenter: Vec3
-        get() = (parent?.let {
-            // centered at parent
-            it.localCenter.clone().apply {
-                y = origin.y
-            } - origin
-        } ?: Vec3.ZERO) + start
+
+    override var start: Vec3
+        get() = parent?.let {
+            val corner = it.start - origin
+            corner.y = 0.0
+            corner
+        } ?: Vec3(0, 0, 0)
+        set(value) {}
 
     // Return parent's size
     override var size: Vec3

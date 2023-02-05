@@ -100,6 +100,10 @@ inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = seq
     }
 }
 
+/** Center point relative to origin, on all XYZ axes,
+ * in local coordinates, not accounting for rotation. */
+val Node.localCenter: Vec3 get() = start + size / 2
+
 /** Convenience property that gets and sets low-XYZ point vs parent origin.
  * Accounts for rotation. Setting it moves origin. */
 var Node.minPoint: Vec3

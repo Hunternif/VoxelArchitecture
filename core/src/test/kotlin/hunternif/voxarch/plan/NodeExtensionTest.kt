@@ -189,19 +189,28 @@ class NodeExtensionTest {
         assertEquals(Vec3(10, 24, 30), wall.maxPoint)
 
         val floor = Floor(3.0)
+        assertEquals(Vec3(0, 0, 0), floor.start)
         assertEquals(Vec3(0, 0, 0), floor.localCenter)
         assertEquals(Vec3(0, 3, 0), floor.minPoint)
         assertEquals(Vec3(0, 3, 0), floor.maxPoint)
 
         Room().addChild(floor)
+        assertEquals(Vec3(0, 0, 0), floor.start)
         assertEquals(Vec3(0, 0, 0), floor.localCenter)
         assertEquals(Vec3(0, 3, 0), floor.minPoint)
         assertEquals(Vec3(0, 3, 0), floor.maxPoint)
 
         room.addChild(floor)
+        assertEquals(Vec3(1, 0, 1), floor.start)
         assertEquals(Vec3(2, 0, 4), floor.localCenter)
         assertEquals(Vec3(1, 3, 1), floor.minPoint)
         assertEquals(Vec3(3, 3, 7), floor.maxPoint)
+
+        room.start = Vec3(0, 0, 0)
+        assertEquals(Vec3(0, 0, 0), floor.start)
+        assertEquals(Vec3(1, 0, 3), floor.localCenter)
+        assertEquals(Vec3(0, 3, 0), floor.minPoint)
+        assertEquals(Vec3(2, 3, 6), floor.maxPoint)
 
         node.maxPoint += Vec3(1, 2, 3)
         assertEquals(Vec3(11, 22, 33), node.origin)
