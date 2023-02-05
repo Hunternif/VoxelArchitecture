@@ -212,6 +212,11 @@ class NodeExtensionTest {
         assertEquals(Vec3(10, 20, 30), node.origin)
         assertEquals(Vec3(10, 20, 30), node.minPoint)
         assertEquals(Vec3(12, 24, 36), node.maxPoint)
+
+        node.maxX += 1
+        assertEquals(Vec3(11, 20, 30), node.origin)
+        assertEquals(Vec3(11, 20, 30), node.minPoint)
+        assertEquals(Vec3(13, 24, 36), node.maxPoint)
     }
 
     @Test

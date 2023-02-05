@@ -97,16 +97,40 @@ inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = seq
  * Accounts for rotation. Setting it moves origin. */
 var Node.minPoint: Vec3
     get() = findLocalAABB().minVec
-    set(value) {
-        val delta = value - minPoint
-        origin += delta
-    }
+    set(value) { origin += value - minPoint }
 
 /** Convenience property that gets and sets high-XYZ point vs parent origin.
  * Accounts for rotation. Setting it moves origin. */
 var Node.maxPoint: Vec3
     get() = findLocalAABB().maxVec
-    set(value) {
-        val delta = value - maxPoint
-        origin += delta
-    }
+    set(value) { origin += value - maxPoint }
+
+/** See [minPoint] */
+var Node.minX: Double
+    get() = minPoint.x
+    set(value) { origin.x += value - minX }
+
+/** See [minPoint] */
+var Node.minY: Double
+    get() = minPoint.y
+    set(value) { origin.y += value - minY }
+
+/** See [minPoint] */
+var Node.minZ: Double
+    get() = minPoint.z
+    set(value) { origin.z += value - minZ }
+
+/** See [maxPoint] */
+var Node.maxX: Double
+    get() = maxPoint.x
+    set(value) { origin.x += value - maxX }
+
+/** See [maxPoint] */
+var Node.maxY: Double
+    get() = maxPoint.y
+    set(value) { origin.y += value - maxY }
+
+/** See [maxPoint] */
+var Node.maxZ: Double
+    get() = maxPoint.z
+    set(value) { origin.z += value - maxZ }
