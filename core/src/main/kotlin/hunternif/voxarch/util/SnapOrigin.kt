@@ -25,16 +25,16 @@ enum class SnapOrigin {
  * Moves children to preserve their absolute positions.
  */
 fun Node.snapOrigin(method: SnapOrigin) {
-    val newOriginVsCorner = when(method) {
+    val newStart = when(method) {
         OFF -> return
         CORNER -> Vec3(0, 0, 0)
-        FLOOR_CENTER -> Vec3(size.x / 2, 0.0, size.z / 2)
-        CENTER -> size / 2
+        FLOOR_CENTER -> Vec3(-size.x / 2, 0.0, -size.z / 2)
+        CENTER -> -size / 2
     }
-    val delta = newOriginVsCorner + start
-    origin += delta
-    children.forEach { it.origin -= delta }
-    start = -newOriginVsCorner
+    val delta = newStart - start
+    origin -= delta
+    children.forEach { it.origin += delta }
+    start = newStart
 }
 
 /**
