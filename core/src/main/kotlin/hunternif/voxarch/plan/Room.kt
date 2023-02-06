@@ -2,7 +2,7 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.util.Box
 import hunternif.voxarch.util.MathUtil
-import hunternif.voxarch.util.OriginSnap
+import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.snapStart
 import hunternif.voxarch.vector.Vec3
 
@@ -33,7 +33,7 @@ open class Room(
     init {
         this.size = size
         // for legacy tests to pass:
-        snapStart(OriginSnap.FLOOR_CENTER)
+        snapStart(SnapOrigin.FLOOR_CENTER)
     }
 
     /** Vs local origin */

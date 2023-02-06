@@ -1,12 +1,12 @@
 package hunternif.voxarch.util
 
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.util.OriginSnap.*
+import hunternif.voxarch.util.SnapOrigin.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class OriginSnapTest {
+class SnapOriginTest {
     @Test
     fun `snap origin`() {
         val node = Node()

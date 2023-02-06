@@ -1,14 +1,14 @@
 package hunternif.voxarch.util
 
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.util.OriginSnap.*
+import hunternif.voxarch.util.SnapOrigin.*
 import hunternif.voxarch.vector.Vec3
 
 /**
  * Standard places where a node's origin could automatically snap to,
  * relative to its bounding box.
  */
-enum class OriginSnap {
+enum class SnapOrigin {
     /** Not snapping */
     OFF,
     /** Low-XYZ corner */
@@ -24,7 +24,7 @@ enum class OriginSnap {
  * without moving the box.
  * Moves children to preserve their absolute positions.
  */
-fun Node.snapOrigin(method: OriginSnap) {
+fun Node.snapOrigin(method: SnapOrigin) {
     val newOriginVsCorner = when(method) {
         OFF -> return
         CORNER -> Vec3(0, 0, 0)
@@ -42,7 +42,7 @@ fun Node.snapOrigin(method: OriginSnap) {
  * without moving origin.
  * This results in the box moving.
  */
-fun Node.snapStart(method: OriginSnap) {
+fun Node.snapStart(method: SnapOrigin) {
     start = when(method) {
         OFF -> return
         CORNER -> Vec3(0, 0, 0)
