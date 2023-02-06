@@ -5,17 +5,18 @@ import hunternif.voxarch.dom.style.newNodeProperty
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.OriginSnap
 import hunternif.voxarch.util.OriginSnap.*
-import hunternif.voxarch.util.snapOrigin
+import hunternif.voxarch.util.snapStart
 
 class StyleSnapOrigin : StyleParameter
 
 val PropSnapOrigin = newNodeProperty<Node, OriginSnap>("snap origin", OFF) { value ->
     val newValue = value.invoke(OFF, seed + 10000027)
-    node.snapOrigin(newValue)
+    // Don't move origin, because this can mess up offsets added by other styles
+    node.snapStart(newValue)
 }
 
 /**
- * Standard places where a node's origin could automatically snap to,
+ * Set a standard places where the node's origin will be
  * relative to its bounding box.
  */
 fun Rule.snapOrigin(block: StyleSnapOrigin.() -> Value<OriginSnap>) {
