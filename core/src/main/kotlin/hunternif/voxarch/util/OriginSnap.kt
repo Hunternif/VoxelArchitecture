@@ -36,3 +36,17 @@ fun Node.snapOrigin(method: OriginSnap) {
     children.forEach { it.origin -= delta }
     start = -newOriginVsCorner
 }
+
+/**
+ * Changes [Node.start] so that origin matches the snap [method],
+ * without moving origin.
+ * This results in the box moving.
+ */
+fun Node.snapStart(method: OriginSnap) {
+    start = when(method) {
+        OFF -> return
+        CORNER -> Vec3(0, 0, 0)
+        FLOOR_CENTER -> Vec3(-size.x / 2, 0.0, -size.z / 2)
+        CENTER -> -size / 2
+    }
+}
