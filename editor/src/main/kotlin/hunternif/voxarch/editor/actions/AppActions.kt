@@ -9,10 +9,10 @@ import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.writeToVoxFile
-import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.ChunkedStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.storage.boundedView
+import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.copyTo
 import hunternif.voxarch.util.forEachSubtree
 import hunternif.voxarch.vector.Vec3
@@ -162,13 +162,18 @@ fun EditorApp.transformNodeStart(
     obj: SceneNode,
     oldStart: Vec3,
     newStart: Vec3,
-) = historyAction(
-    TransformObjects(
-        mapOf(obj to obj.transformData(start = oldStart)),
-        mapOf(obj to obj.transformData(start = newStart)),
-        "Transform node (start)",
+) {
+    // Changing snap origin potentially moves origins of children:
+    val oldData = obj.children.associateWithTo(mutableMapOf()) { it.transformData() }
+    oldData[obj] = obj.transformData(start = oldStart)
+    historyAction(
+        TransformObjects(
+            oldData,
+            mapOf(obj to obj.transformData(start = newStart, snapOrigin = SnapOrigin.OFF)),
+            "Transform node (start)",
+        )
     )
-)
+}
 
 /** Passing in [oldRotation] because the node could be already rotated in the scene. */
 fun EditorApp.transformNodeRotation(
@@ -182,6 +187,22 @@ fun EditorApp.transformNodeRotation(
         "Transform node (rotation)",
     )
 )
+
+/** Snap node origin to one of the standard places */
+fun EditorApp.transformNodeSnapOrigin(
+    obj: SceneNode,
+    snapOrigin: SnapOrigin,
+) {
+    // This potentially moves origins of children:
+    val oldData = (obj.children + obj).associateWith { it.transformData() }
+    obj.snapOrigin = snapOrigin
+    val newData = (obj.children + obj).associateWith { it.transformData() }
+    historyAction(
+        TransformObjects(oldData, newData,
+            "Transform node (snap origin)",
+        )
+    )
+}
 
 
 //=========================== CREATE & DELETE ===========================

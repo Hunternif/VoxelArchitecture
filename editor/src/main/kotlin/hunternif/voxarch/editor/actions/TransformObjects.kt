@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
 
 class TransformObjects(
@@ -33,6 +34,7 @@ class TransformObjects(
                         rotationY = data.rotationY
                         size = data.size
                     }
+                    obj.snapOrigin = data.snapOrigin
                 }
                 is SceneVoxelGroup -> {
                     obj.origin.set(data.origin)
@@ -51,6 +53,7 @@ data class TransformData(
     val size: Vec3,
     val start: Vec3,
     val rotationY: Double,
+    val snapOrigin: SnapOrigin,
 )
 
 /** Creates an instance of [TransformData] using current values.
@@ -60,18 +63,21 @@ fun SceneObject.transformData(
     size: Vec3? = null,
     start: Vec3? = null,
     rotationY: Double? = null,
+    snapOrigin: SnapOrigin? = null,
 ) = when(this) {
     is SceneNode -> TransformData(
         (origin ?: node.origin).clone(),
         (size ?: node.size).clone(),
         (start ?: node.start).clone(),
         rotationY ?: node.rotationY,
+        snapOrigin ?: this.snapOrigin
     )
     is SceneVoxelGroup -> TransformData(
         (origin ?: this.origin).clone(),
         Vec3.ZERO,
         Vec3.ZERO,
-        0.0
+        0.0,
+        SnapOrigin.OFF
     )
-    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, 0.0)
+    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, 0.0, SnapOrigin.OFF)
 }

@@ -10,6 +10,7 @@ import hunternif.voxarch.editor.util.toVec3
 import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.plan.room
+import hunternif.voxarch.util.SnapOrigin
 import org.joml.Vector3i
 
 class CreateRoom(
@@ -50,6 +51,7 @@ class CreateRoom(
             }
         }
         node = registry.newNode(room)
+        if (centered) node.snapOrigin = SnapOrigin.FLOOR_CENTER
         parent = parentNode
     }
 }

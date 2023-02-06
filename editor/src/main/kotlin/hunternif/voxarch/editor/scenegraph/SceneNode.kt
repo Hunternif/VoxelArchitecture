@@ -4,7 +4,9 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.rotateY
+import hunternif.voxarch.util.snapOrigin
 
 class SceneNode(
     id: Int,
@@ -17,6 +19,13 @@ class SceneNode(
     isGenerated = isGenerated,
 ) {
     val blueprints = mutableListOf<Blueprint>()
+
+    // TODO: store Style declarations and apply them to the node
+    var snapOrigin: SnapOrigin = SnapOrigin.CORNER
+        set(value) {
+            field = value
+            node.snapOrigin(value)
+        }
 
     init {
         update()

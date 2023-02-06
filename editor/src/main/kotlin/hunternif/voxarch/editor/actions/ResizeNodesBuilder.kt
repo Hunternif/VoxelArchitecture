@@ -6,8 +6,8 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.util.AADirection3D
 import hunternif.voxarch.editor.util.AADirection3D.*
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.util.max
+import hunternif.voxarch.util.snapOrigin
 import hunternif.voxarch.vector.Vec3
 import kotlin.collections.Collection
 import kotlin.collections.LinkedHashMap
@@ -15,6 +15,7 @@ import kotlin.collections.any
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
+import kotlin.math.abs
 
 class ResizeNodesBuilder(
     app: EditorAppImpl,
@@ -26,7 +27,7 @@ class ResizeNodesBuilder(
 
     init {
         for (obj in objs) {
-            if (obj is SceneNode && obj.node is Room) {
+            if (obj is SceneNode) {
                 oldData[obj] = obj.transformData()
                 newData[obj] = obj.transformData()
             }
@@ -34,43 +35,45 @@ class ResizeNodesBuilder(
     }
 
     /**
-     * Called when dragging one of the room's faces along its normal.
+     * Called when dragging one of the node's faces along its normal.
      * @param dir determines the face that was dragged.
      * @param delta how far it was dragged (in the direction [dir])
      *              vs the initial position.
      * @param symmetric whether to resize the opposite side symmetrically.
      */
     fun dragFace(dir: AADirection3D, delta: Float, symmetric: Boolean = false) {
+        if (abs(delta) < 1f) return
         val deltaVec = when (dir) {
             POS_X, NEG_X -> Vec3(delta, 0f, 0f)
             POS_Y, NEG_Y -> Vec3(0f, delta, 0f)
             POS_Z, NEG_Z -> Vec3(0f, 0f, delta)
         }
         for ((obj, data) in oldData) {
-            val room = obj.node as Room
+            val node = obj.node
             if (symmetric) {
-                room.size = max(Vec3.ZERO, data.size + deltaVec * 2)
-                if (room.rotationY == 0.0) {
+                node.size = max(Vec3.ZERO, data.size + deltaVec * 2)
+                if (node.rotationY == 0.0) {
                     //TODO: should we move origin for rotated boxes too?
-                    val center = data.origin + data.start + data.size / 2
-                    // Move [origin] to keep the center in place
-                    room.origin = center - (room.size) / 2 - data.start
+                    val localCenter = data.start + data.size / 2
+                    // Move [start] to keep the center in place
+                    node.start = localCenter - (node.size) / 2 + data.origin - node.origin
                 }
             } else {
-                room.size = max(Vec3.ZERO, data.size + deltaVec)
-                if (room.rotationY == 0.0) {
-                    // Move [origin] to keep the opposite face in place.
+                node.size = max(Vec3.ZERO, data.size + deltaVec)
+                if (node.rotationY == 0.0) {
+                    // Move [start] to keep the opposite face in place.
                     when (dir) {
                         POS_X, POS_Y, POS_Z -> {}
-                        NEG_X, NEG_Y, NEG_Z -> room.origin =
-                            data.origin + data.size - room.size
+                        NEG_X, NEG_Y, NEG_Z -> node.start =
+                            data.start + data.size - node.size + data.origin - node.origin
                     }
                 }
             }
+            node.snapOrigin(data.snapOrigin)
             newData[obj]!!.run {
-                origin.set(room.origin)
-                size.set(room.size)
-                start.set(room.start)
+                origin.set(node.origin)
+                size.set(node.size)
+                start.set(node.start)
             }
             obj.update()
         }
