@@ -8,8 +8,8 @@ import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.util.toRadians
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
@@ -28,11 +28,16 @@ class ResizeController(
     private var symmetric = false
 
     private var pickedNode: SceneNode? = null
+    /** Global rotation of picked node in radians */
+    private var nodeAngleRad: Float = 0f
     var pickedFace: BoxFace? = null
 
+    // Temporary vectors
     private val dragStartWorldPos: Vector3f = Vector3f()
     private val dragWorldPos: Vector3f = Vector3f()
     private val translation: Vector3f = Vector3f()
+    /** Holds the normal to the picked face in world coordinates */
+    private val faceNormal: Vector3f = Vector3f()
 
     @Suppress("UNUSED_PARAMETER")
     override fun onMouseMove(posX: Double, posY: Double) {
@@ -86,6 +91,7 @@ class ResizeController(
             if (hit && result.x < minDistance) {
                 minDistance = result.x
                 pickedNode = obj
+                nodeAngleRad = obj.node.findGlobalRotation().toRadians().toFloat()
             }
         }
 
@@ -97,6 +103,7 @@ class ResizeController(
                 if (hit && result.x < minDistance) {
                     minDistance = result.x
                     pickedFace = face
+                    face.dir.vec.rotateY(nodeAngleRad, faceNormal)
                 }
             }
         }
@@ -112,16 +119,8 @@ class ResizeController(
             )
             // round() so that it snaps to grid
             translation.set(dragWorldPos).sub(dragStartWorldPos).round()
-            val delta = translation.run {
-                when (face.dir) {
-                    POS_X -> x
-                    POS_Y -> y
-                    POS_Z -> z
-                    NEG_X -> -x
-                    NEG_Y -> -y
-                    NEG_Z -> -z
-                }
-            }
+            // find how far we've moved away from the face:
+            val delta = translation.dot(faceNormal)
             resizeBuilder?.dragFace(face.dir, delta, symmetric)
             pickedNode?.run {
                 // update the highlight position

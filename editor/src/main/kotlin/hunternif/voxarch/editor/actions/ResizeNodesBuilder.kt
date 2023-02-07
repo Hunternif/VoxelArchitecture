@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.util.AADirection3D
 import hunternif.voxarch.editor.util.AADirection3D.*
 import hunternif.voxarch.util.max
+import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.util.snapOrigin
 import hunternif.voxarch.vector.Vec3
 import kotlin.collections.Collection
@@ -22,6 +23,7 @@ class ResizeNodesBuilder(
     objs: Collection<SceneObject>,
 ) : HistoryActionBuilder(app) {
 
+    // TODO: include children in old data because snap origin can change their origins
     private val oldData = LinkedHashMap<SceneNode, TransformData>()
     private val newData = LinkedHashMap<SceneNode, TransformData>()
 
@@ -50,23 +52,20 @@ class ResizeNodesBuilder(
         }
         for ((obj, data) in oldData) {
             val node = obj.node
+            // in local space:
+            val originDelta = (node.origin - data.origin).rotateY(-node.rotationY)
             if (symmetric) {
                 node.size = max(Vec3.ZERO, data.size + deltaVec * 2)
-                if (node.rotationY == 0.0) {
-                    //TODO: should we move origin for rotated boxes too?
-                    val localCenter = data.start + data.size / 2
-                    // Move [start] to keep the center in place
-                    node.start = localCenter - (node.size) / 2 + data.origin - node.origin
-                }
+                val localCenter = data.start + data.size / 2
+                // Move [start] to keep the center in place
+                node.start = localCenter - (node.size) / 2  - originDelta
             } else {
                 node.size = max(Vec3.ZERO, data.size + deltaVec)
-                if (node.rotationY == 0.0) {
-                    // Move [start] to keep the opposite face in place.
-                    when (dir) {
-                        POS_X, POS_Y, POS_Z -> {}
-                        NEG_X, NEG_Y, NEG_Z -> node.start =
-                            data.start + data.size - node.size + data.origin - node.origin
-                    }
+                // Move [start] to keep the opposite face in place.
+                when (dir) {
+                    POS_X, POS_Y, POS_Z -> {}
+                    NEG_X, NEG_Y, NEG_Z -> node.start =
+                        data.start + data.size - node.size - originDelta
                 }
             }
             node.snapOrigin(data.snapOrigin)
