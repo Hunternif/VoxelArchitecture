@@ -32,7 +32,7 @@ fun Node.snapOrigin(method: SnapOrigin) {
         CENTER -> -size / 2
     }
     val delta = newStart - start
-    origin -= delta
+    origin -= delta.rotateY(rotationY)
     children.forEach { it.origin += delta }
     start = newStart
 }
