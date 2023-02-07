@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.util.SnapOrigin
 import imgui.ImGui
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
@@ -21,6 +22,7 @@ class GuiObjectProperties(
     private val originInput = GuiInputVec3("origin")
     private val sizeInput = GuiInputVec3("size", min = 0f)
     private val startInput = GuiInputVec3("start")
+    private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
 
     // Update timer
@@ -59,6 +61,10 @@ class GuiObjectProperties(
 
         startInput.render(node.start) {
             app.transformNodeStart(sceneNode, original, newValue)
+        }
+
+        snapOriginInput.render(sceneNode.snapOrigin) {
+            app.transformNodeSnapOrigin(sceneNode, it)
         }
 
         rotationInput.render(node.rotationY.toFloat(), onUpdated = {
