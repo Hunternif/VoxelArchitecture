@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.builder
 import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
+import hunternif.voxarch.plan.innerFloorCenter
 import hunternif.voxarch.util.ellipse
 import hunternif.voxarch.util.rectangle
 import kotlin.math.ceil

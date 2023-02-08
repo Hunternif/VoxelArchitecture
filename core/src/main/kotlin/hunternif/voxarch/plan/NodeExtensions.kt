@@ -104,6 +104,9 @@ inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = seq
  * in local coordinates, not accounting for rotation. */
 val Node.localCenter: Vec3 get() = start + size / 2
 
+/** Vs local origin */
+val Node.innerFloorCenter: Vec3 get() = start.add(size.x / 2, 0.0, size.z / 2)
+
 /** Convenience property that gets and sets low-XYZ point vs parent origin.
  * Accounts for rotation. Setting it moves origin. */
 var Node.minPoint: Vec3

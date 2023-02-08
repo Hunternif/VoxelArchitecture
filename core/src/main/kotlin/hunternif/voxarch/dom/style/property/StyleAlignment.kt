@@ -2,9 +2,8 @@ package hunternif.voxarch.dom.style.property
 
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.findLocalAABB
-import kotlin.math.round
+import hunternif.voxarch.plan.innerFloorCenter
 
 class StyleAlignmentY : StyleParameter
 class StyleAlignmentX : StyleParameter
@@ -88,7 +87,7 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value
         AlignY.BELOW -> -nodeAABB.maxY
         AlignY.ORIGIN -> 0.0
     }
-    if (p is Room && align != AlignY.ORIGIN) newY += p.start.y
+    if (align != AlignY.ORIGIN) newY += p.start.y
     node.origin.y = newY
 }
 
@@ -106,7 +105,7 @@ val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value
         AlignX.ORIGIN -> 0.0
         AlignX.CENTER -> p.width / 2 - width / 2 - nodeAABB.minX
     }
-    if (p is Room && align != AlignX.ORIGIN) newX += p.start.x
+    if (align != AlignX.ORIGIN) newX += p.start.x
     node.origin.x = newX
 }
 
@@ -124,7 +123,7 @@ val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value
         AlignZ.ORIGIN -> 0.0
         AlignZ.CENTER -> p.depth / 2 - length / 2 - nodeAABB.minZ
     }
-    if (p is Room && align != AlignZ.ORIGIN) newZ += p.start.z
+    if (align != AlignZ.ORIGIN) newZ += p.start.z
     node.origin.z = newZ
 }
 
@@ -133,22 +132,8 @@ val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { v
     val baseValue = AlignXZ.ORIGIN
     val align = value.invoke(baseValue, seed)
     if (align == AlignXZ.CENTER) {
-        when (p) {
-            is Room -> {
-                node.origin.x = p.innerFloorCenter.x
-                node.origin.z = p.innerFloorCenter.z
-            }
-            else -> {
-                node.origin.x = round(p.width / 2)
-                node.origin.z = round(p.depth / 2)
-            }
-        }
-    }
-    if (node is Room) {
-        // We assumed the Node was 0 size, and centered it as a single point.
-        // Now account for start:
-        node.origin.x -= node.innerFloorCenter.x
-        node.origin.z -= node.innerFloorCenter.z
+        node.origin.x = p.innerFloorCenter.x - node.innerFloorCenter.x
+        node.origin.z = p.innerFloorCenter.z - node.innerFloorCenter.z
     }
 }
 

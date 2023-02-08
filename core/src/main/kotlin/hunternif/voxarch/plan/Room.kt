@@ -36,9 +36,6 @@ open class Room(
         snapStart(SnapOrigin.FLOOR_CENTER)
     }
 
-    /** Vs local origin */
-    val innerFloorCenter: Vec3 get() = start.add(size.x/2, 0.0, size.z/2)
-
     /** Relative to the parent's origin. Doesn't take into account rotation! */
     val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
 

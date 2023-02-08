@@ -36,11 +36,10 @@ open class DomPolySegmentBuilder : DomBuilder() {
         val parentNode = ctx.parentNode
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
-            is Room -> Path().apply {
+            else -> Path().apply {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
-            else -> return children
         }
         return createSegmentBuilders(polygon)
     }
@@ -67,14 +66,11 @@ open class DomPolySegmentBuilder : DomBuilder() {
 class DomFourWallsBuilder : DomPolySegmentBuilder() {
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         val parentNode = ctx.parentNode
-        if (parentNode is Room) {
-            val polygon = Path().apply {
-                origin = parentNode.innerFloorCenter
-                rectangle(parentNode.width, parentNode.depth)
-            }
-            return createSegmentBuilders(polygon)
+        val polygon = Path().apply {
+            origin = parentNode.innerFloorCenter
+            rectangle(parentNode.width, parentNode.depth)
         }
-        return children
+        return createSegmentBuilders(polygon)
     }
 }
 
@@ -89,11 +85,10 @@ class DomRandomSegmentBuilder : DomPolySegmentBuilder() {
         val parentNode = ctx.parentNode
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
-            is Room -> Path().apply {
+            else -> Path().apply {
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
-            else -> return children
         }
         val segment = polygon.segments.random(Random(ctx.seed + seedOffset + 21000))
         return createSegmentBuilders(polygon.origin, listOf(segment))

@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.builder
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.innerFloorCenter
 import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.util.round
 
@@ -16,12 +17,11 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
         val parentNode = ctx.parentNode
         val polygon = when (parentNode) {
             is PolyRoom -> parentNode.polygon
-            is Room -> Path().apply {
+            else -> Path().apply {
                 // polygon is assumed to be in the center
                 origin = parentNode.innerFloorCenter
                 rectangle(parentNode.width, parentNode.depth)
             }
-            else -> return children
         }
         return createCornerBuilders(polygon)
     }
@@ -45,14 +45,11 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
 class DomLogicFourCornerBuilder : DomLogicPolyCornerBuilder() {
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         val parentNode = ctx.parentNode
-        if (parentNode is Room) {
-            val polygon = Path().apply {
-                // polygon is assumed to be in the center
-                origin = parentNode.innerFloorCenter
-                rectangle(parentNode.width, parentNode.depth)
-            }
-            return createCornerBuilders(polygon)
+        val polygon = Path().apply {
+            // polygon is assumed to be in the center
+            origin = parentNode.innerFloorCenter
+            rectangle(parentNode.width, parentNode.depth)
         }
-        return children
+        return createCornerBuilders(polygon)
     }
 }

@@ -8,7 +8,7 @@ import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.findGlobalRotation
 import hunternif.voxarch.util.toRadians
 import org.joml.Vector2f
 import org.joml.Vector3f
@@ -51,7 +51,7 @@ class ResizeController(
 
     override fun onMouseDown(mods: Int) {
         val resizingRooms = app.state.selectedObjects
-            .filter { it is SceneNode && it.node is Room }
+            .filterIsInstance<SceneNode>()
 
         if (resizingRooms.isEmpty()) {
             selectOneObjectIfEmpty()
