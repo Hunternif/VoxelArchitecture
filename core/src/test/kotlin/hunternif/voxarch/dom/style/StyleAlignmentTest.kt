@@ -107,7 +107,7 @@ class StyleAlignmentTest {
     }
 
     private fun testAlignment(
-        expectedOrigin: Vec3,
+        expectedPos: Vec3,
         centeredParent: Boolean = false,
         centeredChild: Boolean = false,
         styleBlock: Rule.() -> Unit,
@@ -125,6 +125,6 @@ class StyleAlignmentTest {
         val dom = domRoot(parent) { room("child") }.buildDom(style)
         val child = dom.query<Room>("child").first()
 
-        assertEquals(expectedOrigin, child.origin)
+        assertEquals(expectedPos, child.position)
     }
 }

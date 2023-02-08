@@ -15,7 +15,7 @@ open class DomPolyRoomBuilder
 }
 
 internal fun PolyRoom.createPolygon() {
-    polygon.origin = innerFloorCenter
+    polygon.position = innerFloorCenter
     when (shape) {
         PolyShape.SQUARE -> polygon.rectangle(width, depth)
         PolyShape.ROUND -> {

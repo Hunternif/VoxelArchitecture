@@ -9,21 +9,21 @@ import hunternif.voxarch.vector.Vec4
  * ```
  *  Y
  *  /\
- *  |           outside
- *  |  origin == gate ==
- *  |           inside
+ *  |        outside
+ *  |  pos == gate ==
+ *  |        inside
  *  +---------------------> X
  * Z
  * ```
  * A vertical hatch between two [Room]s.
  * The gate's generator should clear the passage and may add decorations.
- * @param origin the lower-left point, will be copied
+ * @param position the lower-left point, will be copied
  * @param sizeXZ X=width, Y=length (Z)
  */
 open class Hatch(
-    origin: Vec3,
+    position: Vec3,
     sizeXZ: Vec2
-) : Node(origin) {
+) : Node(position) {
 
     init {
         size.set(sizeXZ.x, 0.0, sizeXZ.y)
@@ -33,7 +33,7 @@ open class Hatch(
 
     /** Center at floor level, relative to parent's origin. For legacy tests. */
     val center: Vec3
-        get() = origin.add(
+        get() = position.add(
             Matrix4.rotationY(rotationY)
                 .multiplyLocal(
                     Vec4(size.x/2, 0.0, size.z/2, 1.0)
@@ -42,18 +42,18 @@ open class Hatch(
 
     /**
      * legacy constructor
-     * @param origin center
+     * @param position center
      */
     constructor(
         parent: Node?,
         room1: Room,
         room2: Room,
-        origin: Vec3,
+        position: Vec3,
         sizeXZ: Vec2,
         rotationY: Double
     ): this(
-        // move origin from center to corner
-        origin.add(
+        // move position from center to corner
+        position.add(
             Matrix4.rotationY(rotationY)
                 .multiplyLocal(
                     Vec4(-sizeXZ.x/2, 0.0, -sizeXZ.y/2, 1.0)

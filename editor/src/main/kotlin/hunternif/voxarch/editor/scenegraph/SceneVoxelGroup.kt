@@ -16,7 +16,7 @@ class SceneVoxelGroup(
     val renderMode: VoxelRenderMode = VoxelRenderMode.COLORED,
     isGenerated: Boolean = false,
     /** Voxel centric coordinates of the lower corner */
-    val origin: Vec3 = Vec3(0, 0, 0),
+    val position: Vec3 = Vec3(0, 0, 0),
 ) : SceneObject(
     id,
     color = Colors.transparent,
@@ -40,7 +40,7 @@ class SceneVoxelGroup(
      */
     fun findGlobalPosition(): Vec3 {
         var depth = 0
-        val result = origin.clone()
+        val result = position.clone()
         var parent = this.parent
         while (parent != null) {
             depth++
@@ -49,7 +49,7 @@ class SceneVoxelGroup(
                 return result
             }
             when (parent) {
-                is SceneVoxelGroup -> result.addLocal(parent.origin)
+                is SceneVoxelGroup -> result.addLocal(parent.position)
                 is SceneNode -> {
                     result.addLocal(parent.node.findGlobalPosition())
                     break

@@ -18,7 +18,7 @@ public class WholeWallHorGateFactory implements IGateFactory {
 	@Override
 	public Gate create(Room from, Room to) {
 		RoomUtil roomUtil = new RoomUtil();
-		Wall wall = roomUtil.findClosestWall(to, new Vec2(from.getOrigin().x, from.getOrigin().z));
+		Wall wall = roomUtil.findClosestWall(to, new Vec2(from.getPosition().x, from.getPosition().z));
 		if (wall == null) return null;
 		Node parent = roomUtil.findLowestCommonParent(from, to);
 		

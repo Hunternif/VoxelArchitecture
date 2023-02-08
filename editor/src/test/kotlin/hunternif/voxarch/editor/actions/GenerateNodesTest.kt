@@ -114,7 +114,7 @@ class GenerateNodesTest : BaseAppTest() {
         assertEquals(Prop::class.java, node.javaClass)
         assertEquals(emptySet<SceneObject>(), obj.children.toSet())
         assertEquals(emptySet<Node>(), node.children.toSet())
-        assertEquals(Vec3(4, 5, 6), node.origin)
+        assertEquals(Vec3(4, 5, 6), node.position)
         // Blueprint will add some extra style class to the tags
         assertTrue(node.tags.contains("generated prop"))
         assertTrue(obj.isGenerated)

@@ -20,7 +20,7 @@ private const val minPlazaWidth = 12.0
 private const val maxOverhang = 4.0
 
 fun createCastleFromTurrets(
-    origin: Vec3,
+    position: Vec3,
     seed: Long = 0
 ): Turret {
     val size = Random(seed).run {
@@ -29,7 +29,7 @@ fun createCastleFromTurrets(
         Vec3(width, height, width)
     }
     return createTurret(
-        origin = origin,
+        position = position,
         size = size,
         // start with flat so we can build on top
         roofShape = FLAT_BORDERED,
@@ -169,7 +169,7 @@ private fun Turret.singleTurret(shape: BodyShape, seed: Long) {
     val roofShape = randomRoof(seed+1002)
 
     turret(
-        origin = origin,
+        position = position,
         size = Vec3(width, height, width),
         roofShape = roofShape,
         bodyShape = shape,
@@ -197,7 +197,7 @@ private fun Turret.centerTower(seed: Long) {
     val roofShape = randomRoof(seed+1002)
 
     turret(
-        origin = Vec3(0.0, this.height + 1, 0.0),
+        position = Vec3(0.0, this.height + 1, 0.0),
         size = Vec3(width, height, width),
         roofShape = roofShape,
         bodyShape = this.bodyShape,
@@ -232,7 +232,7 @@ private fun Turret.randomTowerOnTop(seed: Long) {
     val bodyShape = Random(seed+10000006).randomBody()
 
     turret(
-        origin = Vec3(x, this.height + 1, z),
+        position = Vec3(x, this.height + 1, z),
         size = Vec3(width, height, width),
         roofShape = roofShape,
         bodyShape = bodyShape,
@@ -259,14 +259,14 @@ private fun Turret.balcony(shape: BodyShape, seed: Long) {
         .nextDoubleOrMax(width, this.height - minInteriorHeight))
 
     // TODO: proper attachment to square walls
-    val origin = Vec3.UNIT_X.rotateY(angle).also {
+    val position = Vec3.UNIT_X.rotateY(angle).also {
         it.y = yOffset
         it.x = round(it.x * this.size.x * 0.6)
         it.z = round(it.z * this.size.z * 0.6)
     }
     // TODO: add entrance
     turret(
-        origin = origin,
+        position = position,
         size = Vec3(width, 0.0, width),
         roofShape = FLAT_BORDERED,
         bodyShape = shape,
@@ -322,13 +322,13 @@ private fun Turret.turretsInCorners(seed: Long) {
     }
 
     for (angle in 45..(360-45) step 90) {
-        val origin = Vec3.UNIT_X.rotateY(angle).also {
+        val position = Vec3.UNIT_X.rotateY(angle).also {
             it.y = yOffset
             it.x = round((it.x * radius).clamp(-maxRadius, maxRadius))
             it.z = round((it.z * radius).clamp(-maxRadius, maxRadius))
         }
         turret(
-            origin = origin,
+            position = position,
             size = Vec3(width, height, width),
             roofShape = roofShape,
             bodyShape = bodyShape,

@@ -39,176 +39,176 @@ class TransformNodeTest : BaseAppTest() {
     
     @Test
     fun `transform origin undo redo`() {
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
         
-        app.transformObjOrigin(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
-        assertEquals(Vec3(4, 5, 6), room.origin)
+        app.transformObjPosition(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
+        assertEquals(Vec3(4, 5, 6), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.undo()
-        assertEquals(Vec3(1, 2, 3), room.origin)
+        assertEquals(Vec3(1, 2, 3), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
         
         app.redo()
-        assertEquals(Vec3(4, 5, 6), room.origin)
+        assertEquals(Vec3(4, 5, 6), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
     }
 
     @Test
     fun `transform size undo redo`() {
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.transformNodeSize(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(Vec3(4, 5, 6), room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.undo()
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(Vec3(1, 2, 3), room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.redo()
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(Vec3(4, 5, 6), room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
     }
 
     @Test
     fun `transform start undo redo`() {
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(SIZE, room.size)
         assertEquals(START, room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         room.start = Vec3(1, 2, 3)
         node.snapOrigin = SnapOrigin.OFF
         app.transformNodeStart(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(4, 5, 6), room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.undo()
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(1, 2, 3), room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.redo()
-        assertEquals(ORIGIN, room.origin)
+        assertEquals(ORIGIN, room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(4, 5, 6), room.start)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
     }
 
     @Test
     fun `transform centered true undo redo`() {
-        assertEquals(Vec3(17, 18, 19), room.origin)
+        assertEquals(Vec3(17, 18, 19), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(0, 0, 0), room.start)
         assertEquals(SnapOrigin.CORNER, node.snapOrigin)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.transformNodeSnapOrigin(node, SnapOrigin.FLOOR_CENTER)
-        assertEquals(Vec3(22, 18, 34), room.origin)
+        assertEquals(Vec3(22, 18, 34), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(SnapOrigin.FLOOR_CENTER, node.snapOrigin)
-        assertEquals(Vec3(-6, -1, -16), child.origin)
+        assertEquals(Vec3(-6, -1, -16), child.position)
 
         app.undo()
-        assertEquals(Vec3(17, 18, 19), room.origin)
+        assertEquals(Vec3(17, 18, 19), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(0, 0, 0), room.start)
         assertEquals(SnapOrigin.CORNER, node.snapOrigin)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.redo()
-        assertEquals(Vec3(22, 18, 34), room.origin)
+        assertEquals(Vec3(22, 18, 34), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(SnapOrigin.FLOOR_CENTER, node.snapOrigin)
-        assertEquals(Vec3(-6, -1, -16), child.origin)
+        assertEquals(Vec3(-6, -1, -16), child.position)
     }
 
     @Test
     fun `transform centered false undo redo`() {
         room.snapStart(SnapOrigin.FLOOR_CENTER)
         node.snapOrigin = SnapOrigin.FLOOR_CENTER
-        assertEquals(Vec3(17, 18, 19), room.origin)
+        assertEquals(Vec3(17, 18, 19), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(SnapOrigin.FLOOR_CENTER, node.snapOrigin)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.transformNodeSnapOrigin(node, SnapOrigin.CORNER)
-        assertEquals(Vec3(12, 18, 4), room.origin)
+        assertEquals(Vec3(12, 18, 4), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(0, 0, 0), room.start)
         assertEquals(SnapOrigin.CORNER, node.snapOrigin)
-        assertEquals(Vec3(4, -1, 14), child.origin)
+        assertEquals(Vec3(4, -1, 14), child.position)
 
         app.undo()
-        assertEquals(Vec3(17, 18, 19), room.origin)
+        assertEquals(Vec3(17, 18, 19), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(SnapOrigin.FLOOR_CENTER, node.snapOrigin)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.redo()
-        assertEquals(Vec3(12, 18, 4), room.origin)
+        assertEquals(Vec3(12, 18, 4), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(0, 0, 0), room.start)
         assertEquals(SnapOrigin.CORNER, node.snapOrigin)
-        assertEquals(Vec3(4, -1, 14), child.origin)
+        assertEquals(Vec3(4, -1, 14), child.position)
     }
 
     @Test
     fun `transform centered with modified start undo redo`() {
         room.start = Vec3(700, 800, 900)
         node.snapOrigin = SnapOrigin.OFF
-        assertEquals(Vec3(17, 18, 19), room.origin)
+        assertEquals(Vec3(17, 18, 19), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(700, 800, 900), room.start)
         assertEquals(SnapOrigin.OFF, node.snapOrigin)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.transformNodeSnapOrigin(node, SnapOrigin.FLOOR_CENTER)
-        assertEquals(Vec3(722, 818, 934), room.origin)
+        assertEquals(Vec3(722, 818, 934), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(SnapOrigin.FLOOR_CENTER, node.snapOrigin)
-        assertEquals(Vec3(-706, -801, -916), child.origin)
+        assertEquals(Vec3(-706, -801, -916), child.position)
 
         app.undo()
-        assertEquals(Vec3(17, 18, 19), room.origin)
+        assertEquals(Vec3(17, 18, 19), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(700, 800, 900), room.start)
         assertEquals(SnapOrigin.OFF, node.snapOrigin)
-        assertEquals(CHILD_ORIGIN, child.origin)
+        assertEquals(CHILD_ORIGIN, child.position)
 
         app.redo()
-        assertEquals(Vec3(722, 818, 934), room.origin)
+        assertEquals(Vec3(722, 818, 934), room.position)
         assertEquals(SIZE, room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
         assertEquals(SnapOrigin.FLOOR_CENTER, node.snapOrigin)
-        assertEquals(Vec3(-706, -801, -916), child.origin)
+        assertEquals(Vec3(-706, -801, -916), child.position)
     }
 
     @Test

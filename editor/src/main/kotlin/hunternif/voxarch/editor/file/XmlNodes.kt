@@ -98,14 +98,14 @@ internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf(
 /** Maps to XML without mapping any of the children. */
 internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
     val xmlNode = when (this) {
-        is Structure -> XmlStructure(origin, start, size, rotationY)
-        is PolyRoom -> XmlPolyRoom(origin, start, size, rotationY,
+        is Structure -> XmlStructure(position, start, size, rotationY)
+        is PolyRoom -> XmlPolyRoom(position, start, size, rotationY,
             shape, polygon.mapToXmlNode() as XmlPath
         )
-        is Room -> XmlRoom(origin, start, size, rotationY)
-        is Wall -> XmlWall(origin, start, size, rotationY, transparent)
-        is Floor -> XmlFloor(origin.y, start)
-        is Path -> XmlPath(origin, rotationY, points)
+        is Room -> XmlRoom(position, start, size, rotationY)
+        is Wall -> XmlWall(position, start, size, rotationY, transparent)
+        is Floor -> XmlFloor(position.y, start)
+        is Path -> XmlPath(position, rotationY, points)
         else -> null
     }
     xmlNode?.tags?.addAll(tags)

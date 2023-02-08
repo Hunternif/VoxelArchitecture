@@ -91,7 +91,7 @@ private fun SceneObject.mapToXmlRecursive(mapped: MutableSet<SceneObject>): XmlS
     mapped.add(this)
     val xmlNode: XmlSceneObject = when (this) {
         is SceneNode -> XmlSceneNode(id, node.mapToXmlNodeNoChildren(), colorHex, color.a, isGenerated)
-        is SceneVoxelGroup -> XmlSceneVoxelGroup(id, label, isGenerated, origin)
+        is SceneVoxelGroup -> XmlSceneVoxelGroup(id, label, isGenerated, position)
         else -> XmlSceneObject(id, isGenerated)
     }
     children.forEach { child ->

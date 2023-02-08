@@ -28,7 +28,7 @@ class StylePositionTest {
         val child = parent.children[0] as Room
 
         assertEquals(100.0, parent.height, 0.0)
-        assertEquals(47.0, child.origin.y, 0.0)
+        assertEquals(47.0, child.position.y, 0.0)
     }
 
     @Test
@@ -44,6 +44,6 @@ class StylePositionTest {
 
         val child = dom.query<Room>().first()
 
-        assertEquals(Vec3(1, 2, 3), child.origin)
+        assertEquals(Vec3(1, 2, 3), child.position)
     }
 }

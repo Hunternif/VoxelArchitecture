@@ -21,14 +21,13 @@ import hunternif.voxarch.vector.Vec3
  * of the room. It would take that number + 1 blocks to build each boundary
  * of the room in a world.
  *
- * @param origin coordinates of nodes inside this Node are counted
- *            from this origin.
+ * @param position position of this node relative to its parent's [origin].
  * @param size size in centric coordinates, see [Node].
  */
 open class Room(
-    origin: Vec3,
+    position: Vec3,
     size: Vec3
-) : Node(origin) {
+) : Node(position) {
 
     init {
         this.size = size
@@ -37,7 +36,7 @@ open class Room(
     }
 
     /** Relative to the parent's origin. Doesn't take into account rotation! */
-    val boundingBox: Box get() = Box.fromCorners(origin.add(start), origin.add(start).add(size))
+    val boundingBox: Box get() = Box.fromCorners(position + start, position + start + size)
 
     val rooms get() = children.filterIsInstance<Room>()
     val floors get() = children.filterIsInstance<Floor>()
@@ -113,10 +112,10 @@ open class Room(
     /** legacy constructor */
     constructor(
         parent: Node?,
-        origin: Vec3,
+        position: Vec3,
         size: Vec3,
         rotationY: Double
-    ) : this(origin, size) {
+    ) : this(position, size) {
         this.parent = parent
         this.rotationY = rotationY
     }

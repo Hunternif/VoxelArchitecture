@@ -10,7 +10,7 @@ class DomTranslateBuilder(
 
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         children.filterIsInstance<StyledNode<*>>().forEach {
-            it.node.origin.addLocal(offset)
+            it.node.position.addLocal(offset)
         }
         return children
     }

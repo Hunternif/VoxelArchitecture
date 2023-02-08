@@ -11,13 +11,13 @@ import hunternif.voxarch.vector.*
 // This file contains extensions and operations that derive additional info
 // from the basic properties, or modify them.
 
-/** Finds offset of this node's origin in global coordinates, i.e.
+/** Finds offset of this node's position in global coordinates, i.e.
  * in the coordinate space where its highest parent node exists.
  */
 //TODO: cache global position when nodes aren't moved
 fun Node.findGlobalPosition(): Vec3 {
     var depth = 0
-    val result = origin.clone()
+    val result = position.clone()
     var parent = this.parent
     while (parent != null) {
         depth++
@@ -25,8 +25,9 @@ fun Node.findGlobalPosition(): Vec3 {
             println("Possibly infinite recursion!")
             return result
         }
-        result.rotateYLocal(parent.rotationY)
         result.addLocal(parent.origin)
+        result.rotateYLocal(parent.rotationY)
+        result.addLocal(parent.position)
         parent = parent.parent
     }
     return result
@@ -52,7 +53,7 @@ fun Node.findGlobalRotation(): Double {
 /**
  * Finds the GLOBAL axis-aligned bounding box that contains this room's walls.
  * The returned result is in global coordinates.
- * [trans] must rotate and translate (0, 0, 0) to room's origin.
+ * [trans] must rotate and translate (0, 0, 0) to node's origin.
  */
 fun Node.findAABB(trans: ITransformation): AABB {
     val aabb = AABB()
@@ -73,6 +74,7 @@ fun Node.findGlobalAABB(): AABB {
     val trans = LinearTransformation()
     trans.translate(findGlobalPosition())
     trans.rotateY(findGlobalRotation())
+    trans.translate(origin)
     return findAABB(trans)
 }
 
@@ -81,8 +83,9 @@ fun Node.findGlobalAABB(): AABB {
  */
 fun Node.findLocalAABB(): AABB {
     val trans = LinearTransformation()
-    trans.translate(origin)
+    trans.translate(position)
     trans.rotateY(rotationY)
+    trans.translate(origin)
     return findAABB(trans)
 }
 
@@ -102,52 +105,65 @@ inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = seq
 
 /** Center point relative to origin, on all XYZ axes,
  * in local coordinates, not accounting for rotation. */
-val Node.localCenter: Vec3 get() = start + size / 2
+val Node.localCenter: Vec3 get() = start + size / 2 - origin
 
 /** Vs local origin */
-val Node.innerFloorCenter: Vec3 get() = start.add(size.x / 2, 0.0, size.z / 2)
+val Node.innerFloorCenter: Vec3 get() =
+    start.add(size.x / 2, 0.0, size.z / 2) - origin
+
+var Node.x: Double
+    get() = position.x
+    set(value) { position.x = value }
+
+var Node.y: Double
+    get() = position.y
+    set(value) { position.y = value }
+
+var Node.z: Double
+    get() = position.z
+    set(value) { position.z = value }
 
 /** Convenience property that gets and sets low-XYZ point vs parent origin.
- * Accounts for rotation. Setting it moves origin. */
+ * Accounts for rotation. Setting it moves position. */
 var Node.minPoint: Vec3
     get() = findLocalAABB().minVec
-    set(value) { origin += value - minPoint }
+    set(value) { position += value - minPoint }
 
 /** Convenience property that gets and sets high-XYZ point vs parent origin.
- * Accounts for rotation. Setting it moves origin. */
+ * Accounts for rotation. Setting it moves position. */
 var Node.maxPoint: Vec3
     get() = findLocalAABB().maxVec
-    set(value) { origin += value - maxPoint }
+    set(value) { position += value - maxPoint }
 
 /** See [minPoint] */
 var Node.minX: Double
     get() = minPoint.x
-    set(value) { origin.x += value - minX }
+    set(value) { position.x += value - minX }
 
 /** See [minPoint] */
 var Node.minY: Double
     get() = minPoint.y
-    set(value) { origin.y += value - minY }
+    set(value) { position.y += value - minY }
 
 /** See [minPoint] */
 var Node.minZ: Double
     get() = minPoint.z
-    set(value) { origin.z += value - minZ }
+    set(value) { position.z += value - minZ }
 
 /** See [maxPoint] */
 var Node.maxX: Double
     get() = maxPoint.x
-    set(value) { origin.x += value - maxX }
+    set(value) { position.x += value - maxX }
 
 /** See [maxPoint] */
 var Node.maxY: Double
     get() = maxPoint.y
-    set(value) { origin.y += value - maxY }
+    set(value) { position.y += value - maxY }
 
 /** See [maxPoint] */
 var Node.maxZ: Double
     get() = maxPoint.z
-    set(value) { origin.z += value - maxZ }
+    set(value) { position.z += value - maxZ }
 
 /** Node size in the direction [dir], NOT accounting for its rotation. */
 fun Node.localSizeInDir(dir: Direction3D): Double = when (dir) {

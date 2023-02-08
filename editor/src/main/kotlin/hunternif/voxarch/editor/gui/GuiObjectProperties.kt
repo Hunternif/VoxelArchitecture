@@ -19,7 +19,7 @@ class GuiObjectProperties(
     private val app: EditorApp,
     private val gui: GuiBase,
 ) {
-    private val originInput = GuiInputVec3("origin")
+    private val positionInput = GuiInputVec3("position")
     private val sizeInput = GuiInputVec3("size", min = 0f)
     private val startInput = GuiInputVec3("start")
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
@@ -51,8 +51,8 @@ class GuiObjectProperties(
         val node = sceneNode.node
         // By passing the original Vec3 ref into render(), its value will be
         // updated in real time.
-        originInput.render(node.origin) {
-            app.transformObjOrigin(sceneNode, original, newValue)
+        positionInput.render(node.position) {
+            app.transformObjPosition(sceneNode, original, newValue)
         }
 
         sizeInput.render(node.size) {
@@ -110,8 +110,8 @@ class GuiObjectProperties(
     }
 
     private fun renderVoxelGroup(group: SceneVoxelGroup) {
-        originInput.render(group.origin) {
-            app.transformObjOrigin(group, original, newValue)
+        positionInput.render(group.position) {
+            app.transformObjPosition(group, original, newValue)
         }
     }
 
@@ -152,7 +152,7 @@ class GuiObjectProperties(
 
     /** Apply the modified values to the node. */
     private fun redrawIfNeeded() = redrawTimer.runAtInterval {
-        if (originInput.dirty || sizeInput.dirty || startInput.dirty
+        if (positionInput.dirty || sizeInput.dirty || startInput.dirty
             || rotationInput.dirty) {
             obj?.let { obj ->
                 when (obj) {

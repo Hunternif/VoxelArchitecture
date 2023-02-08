@@ -15,6 +15,7 @@ fun assertNodeEquals(
     actual: Node
 ) {
     assertEquals(expected::class, actual::class)
+    assertEquals(expected.position, actual.position)
     assertEquals(expected.origin, actual.origin)
     assertEquals(expected.start, actual.start)
     assertEquals(expected.tags, actual.tags)

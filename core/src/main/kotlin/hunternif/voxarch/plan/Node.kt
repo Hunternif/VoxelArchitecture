@@ -4,6 +4,10 @@ import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 
 /**
+ * An architectural plan is build out of nested 3d boxes.
+ * This is the base class for a 3d box.
+ *
+ *
  * **Coordinate axes** are like in Minecraft, i.e. Y is up.
  *  * X: width - the longer side, defines direction.
  *  * Y: height (up)
@@ -43,27 +47,31 @@ import hunternif.voxarch.vector.Vec3
  *
  * ## 2. "Natural" distance
  * This is how a normal sane person would measure buildings in Minecraft:
- * "if it uses 2 blocks to build, its size is 2". This convention should only
+ * "if it uses 2 blocks to build, its size is 2". This convention should only be
  * used to measure distances, not position! It's useful at the building stage,
  * when describing the size of details like crenellations on a castle wall.
  *
  * * The room of "centric" size 2 (described above) will have a "natural" size 3.
  *
- * @param origin coordinates of nodes inside this Node are counted
- *               from this origin.
+ * @param position position of this node relative to its parent's [origin].
+ *        Children of this node are placed relative to its [origin].
  */
 open class Node(
-    origin: Vec3
+    position: Vec3
 ) : INested<Node> {
-    var origin: Vec3 = origin.clone()
+    /** This node's position relative to its parent's [origin]. */
+    var position: Vec3 = position.clone()
         set(value) { field.set(value) }  // keep the same instance
 
-    /** Internal offset of the low-XZ corner.
-     * Children are placed relative to parent's [origin], but parent's [start]
-     * suggests where children should be placed.
+    /** Internal offset of the low-XYZ corner from [origin].
      * By default, it's set so that origin is at the low-XYZ corner. */
     open var start: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) }  // keep the same instance
+
+    /** Children's positions are relative to this point.
+     * This point itself is relative to [position]. */
+    // This is a separate property to make it easier to refactor later.
+    val origin: Vec3 get() = Vec3.ZERO
 
     final override var parent: Node? = null
 
@@ -102,7 +110,7 @@ open class Node(
 
     fun addChild(child: Node, position: Vec3) {
         addChild(child)
-        child.origin = position
+        child.position = position
     }
 
     /**

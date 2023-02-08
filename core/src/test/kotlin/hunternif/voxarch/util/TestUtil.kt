@@ -61,6 +61,7 @@ fun assertNodeEquals(
     testTags: Boolean = true,
 ) {
     assertEquals(expected::class, actual::class)
+    assertEquals(expected.position, actual.position)
     assertEquals(expected.origin, actual.origin)
     assertEquals(expected.start, actual.start)
     if (testTags) assertEquals(expected.tags, actual.tags)

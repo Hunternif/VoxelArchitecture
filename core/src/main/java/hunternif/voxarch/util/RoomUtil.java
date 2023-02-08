@@ -33,8 +33,8 @@ public class RoomUtil {
 	public Wall findClosestWall(Room room, Vec2 point) {
 		// Check if the room has no walls:
 		if (room.getWalls().isEmpty()) return null;
-		Vec2 p = new Vec2(point.x - room.getOrigin().x,
-						  point.y - room.getOrigin().z);
+		Vec2 p = new Vec2(point.x - room.getPosition().x,
+						  point.y - room.getPosition().z);
 		Matrix2 rot = Matrix2.rotationMatrix(room.getRotationY());
 		rot.multiplyLocal(p);
 		double distance = Double.MAX_VALUE;
@@ -84,7 +84,7 @@ public class RoomUtil {
 		// Retrieve local coordinates of the corners of the room's bounding box:
 		// (Minus angle, because this is the reference frame XZY is left-handed)
 		Matrix2 rot = Matrix2.rotationMatrix(-room.getRotationY());
-		Vec2 roomCenter = new Vec2(room.getOrigin().x, room.getOrigin().z);
+		Vec2 roomCenter = new Vec2(room.getPosition().x, room.getPosition().z);
 		double halfWidth = room.getSize().x/2;
 		double halfLength = room.getSize().z/2;
 		Vec2 v1 = rot.multiplyLocal(new Vec2(halfWidth, halfLength)).addLocal(roomCenter);
@@ -179,7 +179,7 @@ public class RoomUtil {
 		RoomPair pairKey = new RoomPair(room, room.getParent());
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached == null) {
-			cached = Matrix4.translationAdd(room.getOrigin())
+			cached = Matrix4.translationAdd(room.getPosition())
 					.multiplyLocal(Matrix4.rotationY(room.getRotationY()));
 			roomToRoomTranslatorCache.put(pairKey, cached);
 		}
@@ -199,7 +199,7 @@ public class RoomUtil {
 		Matrix4 cached = roomToRoomTranslatorCache.get(pairKey);
 		if (cached == null) {
 			cached = Matrix4.rotationY(-room.getRotationY()).multiplyLocal(
-					Matrix4.translationSubtract(room.getOrigin()));
+					Matrix4.translationSubtract(room.getPosition()));
 			roomToRoomTranslatorCache.put(pairKey, cached);
 		}
 		return cached;

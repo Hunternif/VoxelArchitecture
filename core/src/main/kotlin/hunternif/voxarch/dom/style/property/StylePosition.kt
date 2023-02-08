@@ -6,34 +6,34 @@ import hunternif.voxarch.vector.Vec3
 
 class StylePosition : StyleParameter
 
-// ========================== ABSOLUTE ORIGIN ============================
+// ========================== ABSOLUTE POSITION ============================
 
-val PropY = newNodeProperty<Node, Double>("origin y", 0.0) { value ->
+val PropY = newNodeProperty<Node, Double>("pos y", 0.0) { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000011)
-    node.origin.y = newValue
+    node.position.y = newValue
 }
 
-val PropX = newNodeProperty<Node, Double>("origin x", 0.0) { value ->
+val PropX = newNodeProperty<Node, Double>("pos x", 0.0) { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000012)
-    node.origin.x = newValue
+    node.position.x = newValue
 }
 
-val PropZ = newNodeProperty<Node, Double>("origin z", 0.0) { value ->
+val PropZ = newNodeProperty<Node, Double>("pos z", 0.0) { value ->
     val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000013)
-    node.origin.z = newValue
+    node.position.z = newValue
 }
 
-val PropPosition = newNodeProperty<Node, Vec3>("origin vector", Vec3.ZERO) { value ->
-    val baseValue = node.origin
+val PropPosition = newNodeProperty<Node, Vec3>("pos vector", Vec3.ZERO) { value ->
+    val baseValue = node.size
     val newValue = value
         .invoke(baseValue, seed + 10000014)
-    node.origin = newValue
+    node.position = newValue
 }
 
 fun Rule.y(block: StylePosition.() -> Dimension) {
@@ -59,34 +59,34 @@ fun Rule.position(block: (base: Vec3, seed: Long) -> Vec3) {
 }
 
 
-// ============================= OFFSET ORIGIN =============================
+// ============================= OFFSET POSITION =============================
 
 val PropOffsetY = newNodeProperty<Node, Double>("offset y", 0.0) { value ->
     val baseValue = node.height
     val newValue = value
         .invoke(baseValue, seed + 10000015)
-    node.origin.y += newValue
+    node.position.y += newValue
 }
 
 val PropOffsetX = newNodeProperty<Node, Double>("offset x", 0.0) { value ->
     val baseValue = node.width
     val newValue = value
         .invoke(baseValue, seed + 10000016)
-    node.origin.x += newValue
+    node.position.x += newValue
 }
 
 val PropOffsetZ = newNodeProperty<Node, Double>("offset z", 0.0) { value ->
     val baseValue = node.depth
     val newValue = value
         .invoke(baseValue, seed + 10000017)
-    node.origin.z += newValue
+    node.position.z += newValue
 }
 
 val PropOffsetPosition = newNodeProperty<Node, Vec3>("offset vector", Vec3.ZERO) { value ->
-    val baseValue = node.origin
+    val baseValue = node.size
     val newValue = value
         .invoke(baseValue, seed + 10000018)
-    node.origin += newValue
+    node.position += newValue
 }
 
 fun Rule.offsetY(block: StylePosition.() -> Dimension) {
@@ -136,7 +136,7 @@ val PropStartZ = newNodeProperty<Node, Double>("start z", 0.0) { value ->
 }
 
 val PropStart = newNodeProperty<Node, Vec3>("start vector", Vec3.ZERO) { value ->
-    val baseValue = node.start
+    val baseValue = node.size
     val newValue = value
         .invoke(baseValue, seed + 10000024)
     node.start = newValue

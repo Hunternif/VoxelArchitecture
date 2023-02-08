@@ -16,34 +16,34 @@ class SnapOriginTest {
 
         node.start = Vec3(100, 100, 100)
         node.snapOrigin(OFF)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(100, 100, 100), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapOrigin(CORNER)
-        assertEquals(Vec3(100, 100, 100), node.origin)
+        assertEquals(Vec3(100, 100, 100), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(-99, -99, -99), child.origin)
+        assertEquals(Vec3(-99, -99, -99), child.position)
 
         node.snapOrigin(FLOOR_CENTER)
-        assertEquals(Vec3(110, 100, 130), node.origin)
+        assertEquals(Vec3(110, 100, 130), node.position)
         assertEquals(Vec3(-10, 0, -30), node.start)
-        assertEquals(Vec3(-109, -99, -129), child.origin)
+        assertEquals(Vec3(-109, -99, -129), child.position)
 
         node.snapOrigin(CENTER)
-        assertEquals(Vec3(110, 120, 130), node.origin)
+        assertEquals(Vec3(110, 120, 130), node.position)
         assertEquals(Vec3(-10, -20, -30), node.start)
-        assertEquals(Vec3(-109, -119, -129), child.origin)
+        assertEquals(Vec3(-109, -119, -129), child.position)
 
         node.snapOrigin(CORNER)
-        assertEquals(Vec3(100, 100, 100), node.origin)
+        assertEquals(Vec3(100, 100, 100), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(-99, -99, -99), child.origin)
+        assertEquals(Vec3(-99, -99, -99), child.position)
 
         node.snapOrigin(OFF)
-        assertEquals(Vec3(100, 100, 100), node.origin)
+        assertEquals(Vec3(100, 100, 100), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(-99, -99, -99), child.origin)
+        assertEquals(Vec3(-99, -99, -99), child.position)
     }
 
     @Test
@@ -56,34 +56,34 @@ class SnapOriginTest {
 
         node.start = Vec3(100, 100, 100)
         node.snapOrigin(OFF)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(100, 100, 100), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapOrigin(CORNER)
-        assertEquals(Vec3(100, 100, -100), node.origin)
+        assertEquals(Vec3(100, 100, -100), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(-99, -99, -99), child.origin)
+        assertEquals(Vec3(-99, -99, -99), child.position)
 
         node.snapOrigin(FLOOR_CENTER)
-        assertEquals(Vec3(130, 100, -110), node.origin)
+        assertEquals(Vec3(130, 100, -110), node.position)
         assertEquals(Vec3(-10, 0, -30), node.start)
-        assertEquals(Vec3(-109, -99, -129), child.origin)
+        assertEquals(Vec3(-109, -99, -129), child.position)
 
         node.snapOrigin(CENTER)
-        assertEquals(Vec3(130, 120, -110), node.origin)
+        assertEquals(Vec3(130, 120, -110), node.position)
         assertEquals(Vec3(-10, -20, -30), node.start)
-        assertEquals(Vec3(-109, -119, -129), child.origin)
+        assertEquals(Vec3(-109, -119, -129), child.position)
 
         node.snapOrigin(CORNER)
-        assertEquals(Vec3(100, 100, -100), node.origin)
+        assertEquals(Vec3(100, 100, -100), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(-99, -99, -99), child.origin)
+        assertEquals(Vec3(-99, -99, -99), child.position)
 
         node.snapOrigin(OFF)
-        assertEquals(Vec3(100, 100, -100), node.origin)
+        assertEquals(Vec3(100, 100, -100), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(-99, -99, -99), child.origin)
+        assertEquals(Vec3(-99, -99, -99), child.position)
     }
 
     @Test
@@ -95,33 +95,33 @@ class SnapOriginTest {
 
         node.start = Vec3(100, 100, 100)
         node.snapStart(OFF)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(100, 100, 100), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapStart(CORNER)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapStart(FLOOR_CENTER)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(-10, 0, -30), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapStart(CENTER)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(-10, -20, -30), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapStart(CORNER)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
 
         node.snapStart(OFF)
-        assertEquals(Vec3(0, 0, 0), node.origin)
+        assertEquals(Vec3(0, 0, 0), node.position)
         assertEquals(Vec3(0, 0, 0), node.start)
-        assertEquals(Vec3(1, 1, 1), child.origin)
+        assertEquals(Vec3(1, 1, 1), child.position)
     }
 }

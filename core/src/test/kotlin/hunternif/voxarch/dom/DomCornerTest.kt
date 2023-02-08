@@ -28,10 +28,10 @@ class DomCornerTest {
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)
-        Assert.assertEquals(Vec3(1, 0, 1), room.children[0].origin)
-        Assert.assertEquals(Vec3(1, 0, -1), room.children[1].origin)
-        Assert.assertEquals(Vec3(-1, 0, -1), room.children[2].origin)
-        Assert.assertEquals(Vec3(-1, 0, 1), room.children[3].origin)
+        Assert.assertEquals(Vec3(1, 0, 1), room.children[0].position)
+        Assert.assertEquals(Vec3(1, 0, -1), room.children[1].position)
+        Assert.assertEquals(Vec3(-1, 0, -1), room.children[2].position)
+        Assert.assertEquals(Vec3(-1, 0, 1), room.children[3].position)
     }
 
     @Test
@@ -52,9 +52,9 @@ class DomCornerTest {
 
         val room = dom.children[0]
         Assert.assertEquals(4, room.children.size)
-        Assert.assertEquals(Vec3(1, 0, 2), room.children[0].origin)
-        Assert.assertEquals(Vec3(1, 0, -2), room.children[1].origin)
-        Assert.assertEquals(Vec3(-1, 0, -2), room.children[2].origin)
-        Assert.assertEquals(Vec3(-1, 0, 2), room.children[3].origin)
+        Assert.assertEquals(Vec3(1, 0, 2), room.children[0].position)
+        Assert.assertEquals(Vec3(1, 0, -2), room.children[1].position)
+        Assert.assertEquals(Vec3(-1, 0, -2), room.children[2].position)
+        Assert.assertEquals(Vec3(-1, 0, 2), room.children[3].position)
     }
 }

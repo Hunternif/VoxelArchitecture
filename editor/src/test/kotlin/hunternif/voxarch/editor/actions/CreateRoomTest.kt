@@ -34,7 +34,7 @@ class CreateRoomTest : BaseAppTest() {
         val room = node.node as Room
         assertEquals(setOf(node), sceneObjects.toSet())
         assertEquals(rootNode, node.parent)
-        assertEquals(Vec3(1, 2, 3), room.origin)
+        assertEquals(Vec3(1, 2, 3), room.position)
         assertEquals(Vec3(10, 20, 30), room.size)
         assertEquals(Vec3(0, 0, 0), room.start)
     }
@@ -45,7 +45,7 @@ class CreateRoomTest : BaseAppTest() {
         val room = node.node as Room
         assertEquals(setOf(node), sceneObjects.toSet())
         assertEquals(rootNode, node.parent)
-        assertEquals(Vec3(6, 2, 18), room.origin)
+        assertEquals(Vec3(6, 2, 18), room.position)
         assertEquals(Vec3(10, 20, 30), room.size)
         assertEquals(Vec3(-5, 0, -15), room.start)
     }

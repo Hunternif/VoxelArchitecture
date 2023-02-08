@@ -29,10 +29,10 @@ class DomWardTest {
 
         val ward = dom.children[0]
         assertEquals(4, ward.children.size)
-        assertEquals(Vec3(1, 0, 1), ward.children[0].origin)
-        assertEquals(Vec3(1, 0, -1), ward.children[1].origin)
-        assertEquals(Vec3(-1, 0, -1), ward.children[2].origin)
-        assertEquals(Vec3(-1, 0, 1), ward.children[3].origin)
+        assertEquals(Vec3(1, 0, 1), ward.children[0].position)
+        assertEquals(Vec3(1, 0, -1), ward.children[1].position)
+        assertEquals(Vec3(-1, 0, -1), ward.children[2].position)
+        assertEquals(Vec3(-1, 0, 1), ward.children[3].position)
     }
 
     @Test

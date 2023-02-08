@@ -10,13 +10,13 @@ fun Turret.add4TurretsRecursive() {
 
     for (angle in 0..270 step 90) {
         val size = this.size.multiply(0.333)
-        val origin = Vec3.UNIT_X.rotateY(angle).also {
+        val position = Vec3.UNIT_X.rotateY(angle).also {
             it.y = this.size.y - size.y / 2
             it.x *= (this.size.x / 2 + 1)
             it.z *= (this.size.z / 2 + 1)
         }
         turret(
-            origin = origin,
+            position = position,
             size = size,
             roofShape = this.roofShape,
             bodyShape = this.bodyShape,

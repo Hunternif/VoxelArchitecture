@@ -55,14 +55,14 @@ fun Turret.addGrandCastleTurretsRecursive(seed: Long) {
                 .nextDouble(min(width, this.size.y-1), this.size.y)
         )
 
-        val origin = Vec3.UNIT_X.rotateY(angle).also {
+        val position = Vec3.UNIT_X.rotateY(angle).also {
             it.y = yOffset
             it.x *= round(this.size.x * 0.55)
             it.z *= round(this.size.z * 0.55)
         }
 
         turret(
-            origin = origin,
+            position = position,
             size = Vec3(width, height, width),
             roofShape = roofShape,
             bodyShape = bodyShape,

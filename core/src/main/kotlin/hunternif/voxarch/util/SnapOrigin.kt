@@ -32,8 +32,8 @@ fun Node.snapOrigin(method: SnapOrigin) {
         CENTER -> -size / 2
     }
     val delta = newStart - start
-    origin -= delta.rotateY(rotationY)
-    children.forEach { it.origin += delta }
+    position -= delta.rotateY(rotationY)
+    children.forEach { it.position += delta }
     start = newStart
 }
 

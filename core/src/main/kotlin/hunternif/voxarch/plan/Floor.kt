@@ -15,7 +15,7 @@ open class Floor(
 
     override var start: Vec3
         get() = parent?.let {
-            val corner = it.start - origin
+            val corner = it.start - position
             corner.y = 0.0
             corner
         } ?: Vec3(0, 0, 0)
@@ -33,7 +33,7 @@ open class Floor(
         set(value) { super.size = value }
 
     override fun getGroundBoundaries(): List<GroundBoundary> {
-        val originXZ = origin.clone().apply { y = 0.0 }
+        val originXZ = position.clone().apply { y = 0.0 }
         return parent?.getGroundBoundaries()?.map {
             it.first - originXZ to it.second - originXZ
         } ?: super.getGroundBoundaries()

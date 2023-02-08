@@ -6,7 +6,7 @@ import hunternif.voxarch.vector.Vec3
 @Deprecated("Use GenTurretDecor on a PolyRoom")
 class Turret(
     /** maps to the center of the floor */
-    origin: Vec3,
+    position: Vec3,
     size: Vec3,
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED,
     var bodyShape: BodyShape = BodyShape.SQUARE,
@@ -22,7 +22,7 @@ class Turret(
     /** Level in a hierarchy of nested turrets.
      * Usually equal to recursion depth, but not always. */
     val level: Int = 0
-) : PolyRoom(origin, size) {
+) : PolyRoom(position, size) {
 
     /** Offset for borders and spires in all child turrets. */
     var roofOffset: Int = 1

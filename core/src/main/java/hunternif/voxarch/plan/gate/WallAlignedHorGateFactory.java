@@ -27,7 +27,7 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		// the target room. The angle is inverted because the Y axis represents
 		// inverted Z axis.
 		Matrix2 rot = Matrix2.rotationMatrix(-from.getRotationY());
-		Vec2 room1Center = new Vec2(from.getOrigin().x, from.getOrigin().z);
+		Vec2 room1Center = new Vec2(from.getPosition().x, from.getPosition().z);
 		double halfWidth = from.getSize().x/2;
 		double halfLength = from.getSize().z/2;
 		Vec2 east = rot.multiplyLocal(new Vec2(halfWidth, 0)).addLocal(room1Center);
@@ -76,10 +76,10 @@ public class WallAlignedHorGateFactory implements IGateFactory {
 		}
 		
 		// The get can't be lower than any of the rooms' floors:
-		Vec3 gatePos = new Vec3(point.x, Math.max(from.getOrigin().y, to.getOrigin().y), point.y); 
+		Vec3 gatePos = new Vec3(point.x, Math.max(from.getPosition().y, to.getPosition().y), point.y); 
 		
 		// The gate can't be taller than any of the rooms' ceilings:
-		size.y = Math.min(from.getOrigin().y + from.getSize().y, to.getOrigin().y + to.getSize().y) - gatePos.y;
+		size.y = Math.min(from.getPosition().y + from.getSize().y, to.getPosition().y + to.getSize().y) - gatePos.y;
 		
 		Gate gate = new Gate(to.getParent(), from, to, gatePos, size, angle);
 		return gate;

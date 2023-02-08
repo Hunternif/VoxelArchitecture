@@ -13,7 +13,7 @@ data class PathSegment(
 /**
  * The points contained in this path are relative to [origin].
  */
-open class Path(origin: Vec3) : Node(origin) {
+open class Path(position: Vec3) : Node(position) {
     private val _points = mutableListOf<Vec3>()
     val points: List<Vec3>
         get() = _points
@@ -33,7 +33,7 @@ open class Path(origin: Vec3) : Node(origin) {
         set(value) {}
 
     /** Alternative constructor to add */
-    constructor(origin: Vec3, vararg points: Vec3) : this(origin) {
+    constructor(position: Vec3, vararg points: Vec3) : this(position) {
         points.forEach { addPoint(it) }
     }
 

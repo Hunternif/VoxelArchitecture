@@ -1,9 +1,6 @@
 package hunternif.voxarch.sandbox.castle
 
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.plan.wall
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.addGrandCastleTurretsRecursive
 import hunternif.voxarch.sandbox.castle.turret.randomBody
 import hunternif.voxarch.sandbox.castle.turret.randomRoof
@@ -80,7 +77,7 @@ private fun Node.towerFromBox(box: Box2D, terrain: HeightMap, seed: Long): Room 
     val width = towerWidth + Random(seed+120).nextEvenInt(0, 7)
     val height = towerHeight + Random(seed+121).nextInt(0, 18)
     return turret(
-        origin = Vec3(box.center.x, ground.toDouble(), box.center.y),
+        position = Vec3(box.center.x, ground.toDouble(), box.center.y),
         size = Vec3(width, height, width),
         roofShape = Random(seed+122).randomRoof(),
         bodyShape = Random(seed+123).randomBody()
@@ -101,14 +98,14 @@ private fun Node.buildWallBetween(t1: Room, t2: Room) {
     if (t1 == t2) return
     // make sure he wall isn't too tall for the lower tower,
     // or too short for the higher tower.
-    val minBottom = min(t1.origin.y, t2.origin.y)
-    val highestGround = max(t1.origin.y, t2.origin.y)
-    val highestRoof = max(t1.origin.y + t1.height, t2.origin.y + t2.height)
-    val lowestRoof = min(t1.origin.y + t1.height, t2.origin.y + t2.height)
+    val minBottom = min(t1.y, t2.y)
+    val highestGround = max(t1.y, t2.y)
+    val highestRoof = max(t1.y + t1.height, t2.y + t2.height)
+    val lowestRoof = min(t1.y + t1.height, t2.y + t2.height)
 
     val wallTop = min(lowestRoof, highestRoof - wallTowerOffset)
-    val p1 = t1.origin.clone().apply { y = minBottom }
-    val p2 = t2.origin.clone().apply { y = wallTop }
+    val p1 = t1.position.clone().apply { y = minBottom }
+    val p2 = t2.position.clone().apply { y = wallTop }
 
     wall(p1, p2) {
         tags += BLD_CURTAIN_WALL

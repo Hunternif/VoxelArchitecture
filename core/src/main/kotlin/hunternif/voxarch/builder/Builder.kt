@@ -37,8 +37,9 @@ open class Builder<in T : Node> {
         if (builder != null) {
             trans.apply {
                 push()
-                translate(child.origin)
+                translate(child.position)
                 rotateY(child.rotationY)
+                translate(child.origin)
                 builder.build(child, this, world, context)
                 pop()
             }

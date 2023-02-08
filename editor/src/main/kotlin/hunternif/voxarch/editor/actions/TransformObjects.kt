@@ -29,7 +29,7 @@ class TransformObjects(
             when (obj) {
                 is SceneNode -> {
                     obj.node.run {
-                        origin = data.origin
+                        position = data.position
                         start = data.start
                         rotationY = data.rotationY
                         size = data.size
@@ -37,7 +37,7 @@ class TransformObjects(
                     obj.snapOrigin = data.snapOrigin
                 }
                 is SceneVoxelGroup -> {
-                    obj.origin.set(data.origin)
+                    obj.position.set(data.position)
                 }
             }
             obj.update()
@@ -49,7 +49,7 @@ class TransformObjects(
 }
 
 data class TransformData(
-    val origin: Vec3,
+    val position: Vec3,
     val size: Vec3,
     val start: Vec3,
     val rotationY: Double,
@@ -59,21 +59,21 @@ data class TransformData(
 /** Creates an instance of [TransformData] using current values.
  * Any non-null argument will overwrite the current values. */
 fun SceneObject.transformData(
-    origin: Vec3? = null,
+    position: Vec3? = null,
     size: Vec3? = null,
     start: Vec3? = null,
     rotationY: Double? = null,
     snapOrigin: SnapOrigin? = null,
 ) = when(this) {
     is SceneNode -> TransformData(
-        (origin ?: node.origin).clone(),
+        (position ?: node.position).clone(),
         (size ?: node.size).clone(),
         (start ?: node.start).clone(),
         rotationY ?: node.rotationY,
         snapOrigin ?: this.snapOrigin
     )
     is SceneVoxelGroup -> TransformData(
-        (origin ?: this.origin).clone(),
+        (position ?: this.position).clone(),
         Vec3.ZERO,
         Vec3.ZERO,
         0.0,

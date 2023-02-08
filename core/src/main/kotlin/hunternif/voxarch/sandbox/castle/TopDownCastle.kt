@@ -1,7 +1,6 @@
 package hunternif.voxarch.sandbox.castle
 
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.wall
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.*
 import hunternif.voxarch.sandbox.castle.turret.BodyShape.*
 import hunternif.voxarch.sandbox.castle.turret.BottomShape.*
@@ -24,7 +23,7 @@ private const val wallTowerOffset = 4.0
  * Start with a small turret on top, and recursively add more structures below.
  */
 fun createCastleTopDown(
-    origin: Vec3,
+    position: Vec3,
     seed: Long = 0
 ): Node {
     val size = Random(seed).run {
@@ -33,7 +32,7 @@ fun createCastleTopDown(
         Vec3(width, height, width)
     }
     val topTurret = createTurret(
-        origin = origin,
+        position = position,
         size = size,
         roofShape = Random(seed + 2).randomRoof(),
         bodyShape = Random(seed + 2).randomBody(),
@@ -67,8 +66,8 @@ fun innerWard(keep: Turret, seed: Long): Turret {
     val ward = outerWard(keep, seed)
     // The keep sits in the middle of a random wall
     val keepWall = ward.walls.random(Random(seed + 1010))
-    keep.origin = keepWall.run {
-        Vec3(round((p1.x + p2.x)/2), keep.origin.y, round((p1.y + p2.y)/2))
+    keep.position = keepWall.run {
+        Vec3(round((p1.x + p2.x)/2), keep.y, round((p1.y + p2.y)/2))
     }
     return ward
 }
@@ -115,7 +114,7 @@ fun outerWard(keep: Turret, seed: Long): Turret {
     val radius = wardWidth / 2
 
     return Turret(
-        origin = keep.origin,
+        position = keep.position,
         size = Vec3(wardWidth, wallHeight, wardWidth),
         bodyShape = wardShape,
         style = keep.style,
@@ -124,12 +123,12 @@ fun outerWard(keep: Turret, seed: Long): Turret {
         val turrets = mutableListOf<Turret>()
         var angle = angleStep / 2
         while (angle < 360.0) {
-            val origin = Vec3.UNIT_X.rotateY(angle).also {
+            val position = Vec3.UNIT_X.rotateY(angle).also {
                 it.x = round(it.x * radius)
                 it.z = round(it.z * radius)
             }
             turrets.add(turret(
-                origin = origin,
+                position = position,
                 size = Vec3(turretWidth, turretHeight, turretWidth),
                 roofShape = turretRoofShape,
                 bodyShape = turretBodyShape,
@@ -143,7 +142,7 @@ fun outerWard(keep: Turret, seed: Long): Turret {
         // Create a loop
         turrets.add(turrets.first())
         turrets.zipWithNext { a, b ->
-            wall(a.origin, b.origin.addY(wallHeight)) {
+            wall(a.position, b.position.addY(wallHeight)) {
                 tags += BLD_CURTAIN_WALL
             }
         }

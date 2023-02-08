@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.editor.util.set
 import org.joml.Vector3f
 
 class MoveObjectsBuilder(
@@ -34,13 +33,13 @@ class MoveObjectsBuilder(
 
     private fun setMove(x: Double, y: Double, z: Double) {
         for ((obj, data) in oldData) {
-            val newOrigin = data.origin.add(x, y, z)
+            val newPos = data.position.add(x, y, z)
             when (obj) {
-                is SceneNode -> obj.node.origin.set(newOrigin)
-                is SceneVoxelGroup -> obj.origin.set(newOrigin)
+                is SceneNode -> obj.node.position.set(newPos)
+                is SceneVoxelGroup -> obj.position.set(newPos)
             }
             newData[obj]!!.run {
-                origin.set(newOrigin)
+                position.set(newPos)
             }
             obj.update()
         }

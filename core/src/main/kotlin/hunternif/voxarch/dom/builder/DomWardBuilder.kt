@@ -13,7 +13,7 @@ class Ward : PolyRoom()
 class DomWardBuilder : DomNodeBuilder<Ward>(Ward::class.java, { Ward() }) {
 
     override fun postLayout(element: StyledNode<Ward>) = element.node.run {
-        polygon.origin = innerFloorCenter
+        polygon.position = innerFloorCenter
         when (shape) {
             PolyShape.SQUARE -> polygon.rectangle(width, depth)
             PolyShape.ROUND -> polygon.ellipse(width, depth, edgeCount)

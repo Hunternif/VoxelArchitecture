@@ -54,8 +54,8 @@ class CastleBlueprint(
             towers.add(towerFromBox(box, config.wallTowerHeight, terrain))
         }
         // elevate all towers to the same height
-        val maxElevation = towers.map { it.origin.y }.maxOrNull() ?: 0.0
-        towers.forEach { it.origin.y = maxElevation }
+        val maxElevation = towers.map { it.position.y }.maxOrNull() ?: 0.0
+        towers.forEach { it.position.y = maxElevation }
         buildWallsBetween(towers, m.top)
     }
 
@@ -71,9 +71,9 @@ class CastleBlueprint(
     private fun Structure.buildWallBetween(t1: Room, t2: Room, area: Area) {
         // TODO consider inside-outside of the wall
         if (t1 == t2) return
-        val c1 = t1.origin.toXZ()
-        val c2 = t2.origin.toXZ()
-        val middle = t1.origin.add(t2.origin).multiplyLocal(0.5)
+        val c1 = t1.position.toXZ()
+        val c2 = t2.position.toXZ()
+        val middle = t1.position.add(t2.position).multiplyLocal(0.5)
         val p1 = roomUtil.rayTrace(t1, middle.toXZ(), c1) ?: c1
         val p2 = roomUtil.rayTrace(t2, middle.toXZ(), c2) ?: c2
         // TODO sometimes the wall goes too far deep into the tower
@@ -89,7 +89,7 @@ class CastleBlueprint(
 //        }
 //        if (outsideArea) return
 
-        val y = max(t1.origin.y, t2.origin.y)
+        val y = max(t1.position.y, t2.position.y)
         wall(Vec3(p1.x, y, p1.y), Vec3(p2.x, y + config.wallHeight, p2.y)) {
             tags += BLD_CURTAIN_WALL
         }

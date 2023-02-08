@@ -94,8 +94,8 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	
 	private final IGateFactory gateFactory = new WholeWallHorGateFactory();
 	
-	public FlatDungeon(Vec3 origin, double rotationY) {
-		super(origin, Vec3.ZERO);
+	public FlatDungeon(Vec3 position, double rotationY) {
+		super(position, Vec3.ZERO);
 		// Start with a medium-sized room:
 		Corridor start = new Corridor(Vec3.ZERO, corridorLengths[1], 0, 0);
 		start.createFourWalls();
@@ -204,15 +204,15 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 		/** Corridor can open into a room or junction at this point. */
 		final Vec3 endPoint;
 		/**
-		 * @param origin		point in the middle of the start of the corridor
+		 * @param position		point in the middle of the start of the corridor
 		 * @param length
 		 * @param rotationY
 		 * @param totalLength
 		 */
-		public Corridor(Vec3 origin, int length, double rotationY, int totalLength) {
-			super(FlatDungeon.this, origin, new Vec3(corridorWidth, corridorHeight, length), rotationY);
+		public Corridor(Vec3 position, int length, double rotationY, int totalLength) {
+			super(FlatDungeon.this, position, new Vec3(corridorWidth, corridorHeight, length), rotationY);
 			this.totalLength = totalLength;
-			endPoint = origin.add(
+			endPoint = position.add(
 					length/2*MathUtil.sinDeg(rotationY),
 					0,
 					length/2*MathUtil.cosDeg(rotationY));

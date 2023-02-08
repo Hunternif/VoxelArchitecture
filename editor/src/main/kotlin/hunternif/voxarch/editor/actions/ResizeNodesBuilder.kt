@@ -53,24 +53,24 @@ class ResizeNodesBuilder(
         for ((obj, data) in oldData) {
             val node = obj.node
             // in local space:
-            val originDelta = (node.origin - data.origin).rotateY(-node.rotationY)
+            val posDelta = (node.position - data.position).rotateY(-node.rotationY)
             if (symmetric) {
                 node.size = max(Vec3.ZERO, data.size + deltaVec * 2)
                 val localCenter = data.start + data.size / 2
                 // Move [start] to keep the center in place
-                node.start = localCenter - (node.size) / 2  - originDelta
+                node.start = localCenter - (node.size) / 2  - posDelta
             } else {
                 node.size = max(Vec3.ZERO, data.size + deltaVec)
                 // Move [start] to keep the opposite face in place.
                 when (dir) {
                     POS_X, POS_Y, POS_Z -> {}
                     NEG_X, NEG_Y, NEG_Z -> node.start =
-                        data.start + data.size - node.size - originDelta
+                        data.start + data.size - node.size - posDelta
                 }
             }
             node.snapOrigin(data.snapOrigin)
             newData[obj]!!.run {
-                origin.set(node.origin)
+                position.set(node.position)
                 size.set(node.size)
                 start.set(node.start)
             }

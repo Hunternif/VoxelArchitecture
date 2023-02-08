@@ -13,7 +13,7 @@ import hunternif.voxarch.vector.Vec3
  *  |         inside
  *  | start == wall == end
  *  |  (p1)   outside   (p2)
- *  |(origin)
+ *  | (pos)
  *  V
  *  Z
  * ```
@@ -45,25 +45,25 @@ open class Wall(
 
     init {
         //TODO move this to an extra constructor
-        width = origin.toXZ().distanceTo(end.toXZ())
-        height = end.y - origin.y
-        rotationY = MathUtil.atan2Deg(-end.z + origin.z, end.x - origin.x)
+        width = position.toXZ().distanceTo(end.toXZ())
+        height = end.y - position.y
+        rotationY = MathUtil.atan2Deg(-end.z + position.z, end.x - position.x)
     }
 
     /** Start point on the ground, vs parent origin. Read-only. */
-    val bottomStart: Vec3 get() = origin
+    val bottomStart: Vec3 get() = position
 
     /** End point on the ground, vs parent origin. Read-only. */
-    val bottomEnd: Vec3 get() = origin + direction * width
+    val bottomEnd: Vec3 get() = position + direction * width
 
     /** Top far point relative to local origin. Read-only. */
-    val innerEnd: Vec3 get() = direction * width + Vec3.UNIT_Y * height
+    val innerEnd: Vec3 get() = direction * width + Vec3.UNIT_Y * height - origin
 
     /** Top far point relative to parent origin. Read-only. */
-    val end: Vec3 get() = origin + innerEnd
+    val end: Vec3 get() = position + innerEnd
 
     /** XZ of start point, vs parent origin. Read-only. */
-    val p1: Vec2 get() = Vec2.fromXZ(origin)
+    val p1: Vec2 get() = Vec2.fromXZ(position)
 
     /** XZ of end point, vs parent origin. Read-only. */
     val p2: Vec2 get() = Vec2.fromXZ(end)

@@ -28,13 +28,13 @@ public class Corridor extends Structure {
 	private boolean childrenHaveCeiling = true, childrenHaveFloor = true;
 
 	/**
-	 * @param origin is the starting point of the corridor. It is assumed to be
+	 * @param position is the starting point of the corridor. It is assumed to be
 	 * 				lying directly on a wall of the starting room (if any).
 	 * @param sectionSize is (width, height) of the corridor's cross-section.
 	 */
-	public Corridor(Node parent, Vec3 origin, Vec2 sectionSize) {
+	public Corridor(Node parent, Vec3 position, Vec2 sectionSize) {
 		this.setParent(parent);
-		this.setOrigin(origin);
+		this.setPosition(position);
 		this.sectionSize = sectionSize;
 		// Should we calculate total room size?
 		appendPoint(Vec3.ZERO); // The origin as first point
@@ -198,12 +198,12 @@ public class Corridor extends Structure {
 		Vec3 newPoint = first.add(n.multiplyLocal(t));
 		
 		if (addGate) {
-			Vec3 gateOrigin = roomUtil.translateToParent(this, first);
+			Vec3 gatePos = roomUtil.translateToParent(this, first);
 			p1 = roomUtil.translateToParent(this, p1);
 			p2 = roomUtil.translateToParent(this, p2);
 			double angle = Math.atan2(-(p2.z - p1.z), p2.x - p1.x) * 180 / Math.PI;
 			// Not sure about which way the gate is oriented :/
-			Gate gate = new Gate(this.getParent(), room, this, gateOrigin, sectionSize, angle);
+			Gate gate = new Gate(this.getParent(), room, this, gatePos, sectionSize, angle);
 			this.getParent().addChild(gate);
 		}
 		return newPoint;

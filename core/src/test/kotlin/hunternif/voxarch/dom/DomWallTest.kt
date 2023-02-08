@@ -33,13 +33,13 @@ class DomWallTest {
         val w2 = room.children[1] as Wall
         val w3 = room.children[2] as Wall
         val w4 = room.children[3] as Wall
-        assertEquals(Vec3(1, 0, 1), w1.origin)
+        assertEquals(Vec3(1, 0, 1), w1.position)
         assertEquals(Vec3(1, 0, -1), w1.end)
-        assertEquals(Vec3(1, 0, -1), w2.origin)
+        assertEquals(Vec3(1, 0, -1), w2.position)
         assertEquals(Vec3(-1, 0, -1), w2.end)
-        assertEquals(Vec3(-1, 0, -1), w3.origin)
+        assertEquals(Vec3(-1, 0, -1), w3.position)
         assertEquals(Vec3(-1, 0, 1), w3.end)
-        assertEquals(Vec3(-1, 0, 1), w4.origin)
+        assertEquals(Vec3(-1, 0, 1), w4.position)
         assertEquals(Vec3(1, 0, 1), w4.end)
 
         assertEquals(listOf(20003L, 20004L, 20005L, 20006L), seedCounter.seeds)
@@ -95,13 +95,13 @@ class DomWallTest {
         val w2 = room.children[1] as Wall
         val w3 = room.children[2] as Wall
         val w4 = room.children[3] as Wall
-        assertEquals(Vec3(1, 0, 2), w1.origin)
+        assertEquals(Vec3(1, 0, 2), w1.position)
         assertEquals(Vec3(1, 0, -2), w1.end)
-        assertEquals(Vec3(1, 0, -2), w2.origin)
+        assertEquals(Vec3(1, 0, -2), w2.position)
         assertEquals(Vec3(-1, 0, -2), w2.end)
-        assertEquals(Vec3(-1, 0, -2), w3.origin)
+        assertEquals(Vec3(-1, 0, -2), w3.position)
         assertEquals(Vec3(-1, 0, 2), w3.end)
-        assertEquals(Vec3(-1, 0, 2), w4.origin)
+        assertEquals(Vec3(-1, 0, 2), w4.position)
         assertEquals(Vec3(1, 0, 2), w4.end)
     }
 

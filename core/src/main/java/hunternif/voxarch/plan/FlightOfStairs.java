@@ -11,8 +11,8 @@ public class FlightOfStairs extends Room {
 	/** The change in height at 1 block distance. */
 	private double slope = 0;
 	
-	public FlightOfStairs(Room parent, Vec3 origin, Vec3 size, double rotationY) {
-		super(parent, origin, size, rotationY);
+	public FlightOfStairs(Room parent, Vec3 position, Vec3 size, double rotationY) {
+		super(parent, position, size, rotationY);
 	}
 
 	public void setSlope(double slope) {

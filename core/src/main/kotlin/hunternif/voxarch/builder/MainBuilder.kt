@@ -16,8 +16,9 @@ class MainBuilder : Builder<Node>() {
         val trans = TransformationStack()
         trans.apply {
             push()
-            translate(node.origin)
+            translate(node.position)
             rotateY(node.rotationY)
+            translate(node.origin)
             super.build(node, this, world, context)
             pop()
         }

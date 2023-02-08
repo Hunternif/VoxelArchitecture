@@ -1,6 +1,5 @@
 package hunternif.voxarch.plan.gate;
 
-import hunternif.voxarch.plan.Gate;
 import hunternif.voxarch.plan.Hatch;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.util.Box;
@@ -33,8 +32,8 @@ public class AlignedVerGateFactory {
 				box2.minY + floor2ToCeil1/2;
 		
 		// Find horizontal origin of the 1st room relative to the 2nd:
-		Vec2 ro1 = new Vec2(from.getOrigin().x, from.getOrigin().z);
-		ro1.subtractLocal(to.getOrigin().x, to.getOrigin().z);
+		Vec2 ro1 = new Vec2(from.getPosition().x, from.getPosition().z);
+		ro1.subtractLocal(to.getPosition().x, to.getPosition().z);
 		Matrix2.rotationMatrix(to.getRotationY()).multiplyLocal(ro1);
 		
 		// Update box1 with the relative origin. Using 0 floor level, because
@@ -49,7 +48,7 @@ public class AlignedVerGateFactory {
 		// Gate origin relative to the 2nd room:
 		Vec2 rg = new Vec2((isn.minX + isn.maxX)/2, (isn.minZ + isn.maxZ)/2);
 		Matrix2.rotationMatrix(-to.getRotationY()).multiplyLocal(rg);
-		Vec3 position = new Vec3(to.getOrigin().x + rg.x, y, to.getOrigin().z + rg.y);
+		Vec3 position = new Vec3(to.getPosition().x + rg.x, y, to.getPosition().z + rg.y);
 		Vec2 size = new Vec2(isn.maxX - isn.minX, isn.maxZ - isn.minZ);
 
 		Hatch gate = new Hatch(to.getParent(), from, to, position, size, to.getRotationY());

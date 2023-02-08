@@ -9,7 +9,7 @@ import kotlin.math.ceil
 
 // DSL
 fun Node.turret(
-    origin: Vec3,
+    position: Vec3,
     size: Vec3,
     roofShape: RoofShape,
     bodyShape: BodyShape,
@@ -20,7 +20,7 @@ fun Node.turret(
     level: Int = 1,
     action: Turret.() -> Unit = {}
 ): Turret = createTurret(
-    origin = origin,
+    position = position,
     size = size,
     roofShape = roofShape,
     bodyShape = bodyShape,
@@ -35,7 +35,7 @@ fun Node.turret(
 }
 
 fun createTurret(
-    origin: Vec3,
+    position: Vec3,
     size: Vec3 = Vec3(6.0, 12.0, 6.0),
     roofShape: RoofShape,
     bodyShape: BodyShape,
@@ -74,7 +74,7 @@ fun createTurret(
     val taperedBottomSize = Vec3(size.x, taperedBottomHeight, size.z)
 
     return Turret(
-        origin = origin,
+        position = position,
         size = size,
         roofShape = roofShape,
         bodyShape = bodyShape,

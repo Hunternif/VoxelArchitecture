@@ -19,34 +19,34 @@ class MoveObjectsTest : BaseAppTest() {
     fun setup() = app.state.run {
         node = app.createRoom(Vector3i(10, 20, 30), Vector3i(11, 21, 31))
         voxels = registry.newVoxelGroup("voxels", emptyArray3D())
-        voxels.origin.set(100f, 200f, 300f)
+        voxels.position.set(100f, 200f, 300f)
         voxelRoot.addChild(voxels)
     }
 
     @Test
     fun `move nodes & voxels, undo redo`() {
         val builder = app.moveBuilder(listOf(node, voxels))
-        assertEquals(Vec3(10, 20, 30), node.node.origin)
-        assertEquals(Vec3(100, 200, 300), voxels.origin)
+        assertEquals(Vec3(10, 20, 30), node.node.position)
+        assertEquals(Vec3(100, 200, 300), voxels.position)
 
         builder.setMove(Vector3f(20f, -5f, -6f))
-        assertEquals(Vec3(30, 15, 24), node.node.origin)
-        assertEquals(Vec3(120, 195, 294), voxels.origin)
+        assertEquals(Vec3(30, 15, 24), node.node.position)
+        assertEquals(Vec3(120, 195, 294), voxels.position)
 
         builder.setMove(Vector3f(10f, 10f, 10f))
-        assertEquals(Vec3(20, 30, 40), node.node.origin)
-        assertEquals(Vec3(110, 210, 310), voxels.origin)
+        assertEquals(Vec3(20, 30, 40), node.node.position)
+        assertEquals(Vec3(110, 210, 310), voxels.position)
 
         builder.commit()
-        assertEquals(Vec3(20, 30, 40), node.node.origin)
-        assertEquals(Vec3(110, 210, 310), voxels.origin)
+        assertEquals(Vec3(20, 30, 40), node.node.position)
+        assertEquals(Vec3(110, 210, 310), voxels.position)
 
         app.undo()
-        assertEquals(Vec3(10, 20, 30), node.node.origin)
-        assertEquals(Vec3(100, 200, 300), voxels.origin)
+        assertEquals(Vec3(10, 20, 30), node.node.position)
+        assertEquals(Vec3(100, 200, 300), voxels.position)
 
         app.redo()
-        assertEquals(Vec3(20, 30, 40), node.node.origin)
-        assertEquals(Vec3(110, 210, 310), voxels.origin)
+        assertEquals(Vec3(20, 30, 40), node.node.position)
+        assertEquals(Vec3(110, 210, 310), voxels.position)
     }
 }

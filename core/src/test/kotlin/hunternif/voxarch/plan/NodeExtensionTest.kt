@@ -22,7 +22,7 @@ class NodeExtensionTest {
         assertEquals(Vec3(0, 2, 3), child1.findGlobalPosition())
         assertEquals(Vec3(3, 3, -3), child2.findGlobalPosition())
 
-        child1.origin.y += 10
+        child1.position.y += 10
         assertEquals(Vec3(0, 12, 3), child1.findGlobalPosition())
         assertEquals(Vec3(3, 13, -3), child2.findGlobalPosition())
     }
@@ -211,17 +211,17 @@ class NodeExtensionTest {
         assertEquals(Vec3(2, 3, 6), floor.maxPoint)
 
         node.maxPoint += Vec3(1, 2, 3)
-        assertEquals(Vec3(11, 22, 33), node.origin)
+        assertEquals(Vec3(11, 22, 33), node.position)
         assertEquals(Vec3(11, 22, 33), node.minPoint)
         assertEquals(Vec3(13, 26, 39), node.maxPoint)
 
         node.minPoint -= Vec3(1, 2, 3)
-        assertEquals(Vec3(10, 20, 30), node.origin)
+        assertEquals(Vec3(10, 20, 30), node.position)
         assertEquals(Vec3(10, 20, 30), node.minPoint)
         assertEquals(Vec3(12, 24, 36), node.maxPoint)
 
         node.maxX += 1
-        assertEquals(Vec3(11, 20, 30), node.origin)
+        assertEquals(Vec3(11, 20, 30), node.position)
         assertEquals(Vec3(11, 20, 30), node.minPoint)
         assertEquals(Vec3(13, 24, 36), node.maxPoint)
     }
@@ -232,6 +232,7 @@ class NodeExtensionTest {
             Vec3(1, 2, 3), Vec3(10, 20, 30)
         )
         val trans = LinearTransformation()
+            .translate(room.position)
             .translate(room.origin)
         val ref = IntAABB(1, 2, 3, 10, 20, 30)
         val aabb = room.findIntAABB(trans)
@@ -250,6 +251,7 @@ class NodeExtensionTest {
             createFourWalls()
         }
         val trans = LinearTransformation()
+            .translate(room.position)
             .translate(room.origin)
         val ref = IntAABB(1, 2, 3, 10, 20, 30)
         val aabb = room.findIntAABB(trans)
@@ -269,8 +271,9 @@ class NodeExtensionTest {
             rotationY = 45.0
         }
         val trans = LinearTransformation()
-            .translate(room.origin)
+            .translate(room.position)
             .rotateY(room.rotationY)
+            .translate(room.origin)
 
         val ref = AABB(
             -sqrt(2.0), 0.0, -sqrt(2.0),
