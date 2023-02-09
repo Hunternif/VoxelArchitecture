@@ -9,7 +9,6 @@ val defaultStyle get() = Stylesheet().add {
     styleFor<Room> {
         diameter { 100.pct }
         height { 100.pct }
-        snapOrigin { floorCenter() }
     }
     styleFor<Wall> {
         width { 100.pct }

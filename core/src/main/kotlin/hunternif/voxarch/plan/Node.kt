@@ -71,7 +71,7 @@ open class Node(
     /** Children's positions are relative to this point.
      * This point itself is relative to [position]. */
     // This is a separate property to make it easier to refactor later.
-    val origin: Vec3 get() = Vec3.ZERO
+    val origin: Vec3 get() = start // children are placed relative to corner
 
     final override var parent: Node? = null
 

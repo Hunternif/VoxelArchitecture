@@ -85,7 +85,6 @@ fun Node.findLocalAABB(): AABB {
     val trans = LinearTransformation()
     trans.translate(position)
     trans.rotateY(rotationY)
-    trans.translate(origin)
     return findAABB(trans)
 }
 
