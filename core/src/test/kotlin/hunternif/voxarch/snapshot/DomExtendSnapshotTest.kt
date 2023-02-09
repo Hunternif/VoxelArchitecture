@@ -45,6 +45,7 @@ class DomExtendSnapshotTest : BaseSnapshotTest(16, 3, 16) {
             style("base") {
                 position(7.vx, 0.vx, 7.vx)
                 size(4.vx, 2.vx, 3.vx)
+                snapOrigin { floorCenter() }
             }
             style("child") {
                 depth { 2.vx }

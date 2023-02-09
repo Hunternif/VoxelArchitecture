@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Room
@@ -9,7 +10,6 @@ val defaultStyle get() = Stylesheet().add {
     styleFor<Room> {
         diameter { 100.pct }
         height { 100.pct }
-        snapOrigin { floorCenter() }
     }
     styleFor<Wall> {
         width { 100.pct }
@@ -19,5 +19,8 @@ val defaultStyle get() = Stylesheet().add {
         roofOffset { 1.vx }
         spireRatio { set(1.5) }
         taperRatio { set(0.75) }
+    }
+    style(DOM_TURRET) {
+        snapOrigin { floorCenter() }
     }
 }

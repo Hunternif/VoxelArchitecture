@@ -15,6 +15,7 @@ class DomWallTest {
             styleFor<PolyRoom> {
                 shape { set(PolyShape.SQUARE) }
                 diameter { 2.vx }
+                snapOrigin { floorCenter() }
             }
         }
         val seedCounter = DomBuilderSeedCounter()
@@ -51,6 +52,7 @@ class DomWallTest {
             styleFor<Room> {
                 width { 2.vx }
                 depth { 4.vx }
+                snapOrigin { floorCenter() }
             }
         }
         val seedCounter = DomBuilderSeedCounter()
@@ -72,6 +74,7 @@ class DomWallTest {
             styleFor<Room> {
                 width { 2.vx }
                 depth { 4.vx }
+                snapOrigin { floorCenter() }
             }
         }
         val seedCounter = DomBuilderSeedCounter()

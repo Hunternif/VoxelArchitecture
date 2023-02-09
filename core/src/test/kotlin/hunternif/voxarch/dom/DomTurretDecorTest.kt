@@ -46,6 +46,7 @@ class DomTurretDecorTest {
         val style = defaultStyle.add {
             style("turret") {
                 size(4.vx, 6.vx, 4.vx)
+                snapOrigin { floorCenter() }
             }
         }
         val dom1 = domRoot {

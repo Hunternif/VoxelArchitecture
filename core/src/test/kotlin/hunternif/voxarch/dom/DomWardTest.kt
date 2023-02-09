@@ -17,6 +17,7 @@ class DomWardTest {
             styleFor<Ward> {
                 shape { set(SQUARE) }
                 diameter { 2.vx }
+                snapOrigin { floorCenter() }
             }
         }
         val dom = domRoot {
