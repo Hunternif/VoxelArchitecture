@@ -4,7 +4,7 @@ import hunternif.voxarch.vector.Vec3
 import kotlin.math.max
 
 /**
- * A room shaped as a cylinder with an polygon at its base.
+ * A room shaped as a cylinder with a polygon at its base.
  * It's good for building round turrets or irregularly shaped enclosures.
  * The polygon could be convex or concave.
  *
@@ -17,10 +17,11 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
     /**
      * Describes the perimeter on the XZ plane.
      * It's made of 3d points for convenience, but their Y should be 0.
+     * Assumed to be in the center of the [PolyRoom].
      */
     val polygon: Path = Path(Vec3.ZERO)
 
-    /** For styling: approximate expected length of edges on the the polygon. */
+    /** For styling: approximate expected length of edges on the polygon. */
     var edgeLength: Double = 1.0
         set(value) { field = max(1.0, value) }
     /** For styling. Mimics Turret's body shape. */
@@ -30,7 +31,10 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
     fun createWalls() {
         polygon.origin = innerFloorCenter
         polygon.segments.forEach {
-            wall(it.p1, it.p2.addY(height))
+            wall(
+                polygon.origin + it.p1,
+                polygon.origin + it.p2.addY(height)
+            )
         }
     }
 

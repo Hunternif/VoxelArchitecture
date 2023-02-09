@@ -23,10 +23,13 @@ class PyramidBuilder(
             trans.translate(0, node.height, 0)
             trans.mirrorY()
         }
+        trans.push()
+        trans.translate(node.polygon.origin)
         val apex = trans.transform(0.0, node.height, 0.0)
         node.polygon.segments.forEach {
             buildSegment(it, apex, trans, world, context)
         }
+        trans.pop()
         if (upsideDown) {
             trans.pop()
         }
