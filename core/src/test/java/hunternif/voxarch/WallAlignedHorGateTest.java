@@ -63,8 +63,10 @@ public class WallAlignedHorGateTest extends BaseBuilderTest {
 	@Test
 	public void wallsRotated2() {
 		Room room1 = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 3, 3), 45);
+		room1.setStart(new Vec3(-1.5, 0, -1.5));
 		room1.createFourWalls();
 		Room room2 = new Room(null, new Vec3(2, 0, 0), new Vec3(3, 3, 3), 0);
+		room2.setStart(new Vec3(-1.5, 0, -1.5));
 		Gate gate = gateFactory.create(room1, room2);
 		assertEquals(0, gate.getCenter().y, 0);
 		assertEquals((0.5 + 1.5/Math.sqrt(2))/2, gate.getCenter().x, 0.00001);

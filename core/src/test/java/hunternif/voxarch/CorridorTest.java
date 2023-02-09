@@ -43,6 +43,7 @@ public class CorridorTest {
 	public void endsStraight() {
 		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
 		Room room = new Room(base, Vec3.ZERO, new Vec3(2, 1, 4), 0);
+		room.setStart(new Vec3(-1, 0, -2));
 		room.createFourWalls();
 		CorridorForTesting cor = new CorridorForTesting(base, new Vec3(1, 0, 0), new Vec2(2, 3));
 		cor.appendPoint(new Vec3(4, 2, 0));
@@ -58,6 +59,7 @@ public class CorridorTest {
 	public void endsBent45() {
 		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
 		Room room = new Room(base, Vec3.ZERO, new Vec3(2, 1, 4), 0);
+		room.setStart(new Vec3(-1, 0, -2));
 		room.createFourWalls();
 		base.addChild(room);
 		CorridorForTesting cor = new CorridorForTesting(base, new Vec3(1, 0, 0), new Vec2(2, 3));
@@ -70,6 +72,7 @@ public class CorridorTest {
 	public void endsBent90() {
 		Room base = new Room(Vec3.ZERO, Vec3.ZERO);
 		Room room = new Room(base, Vec3.ZERO, new Vec3(2, 1, 4), 0);
+		room.setStart(new Vec3(-1, 0, -2));
 		room.createFourWalls();
 		base.addChild(room);
 		CorridorForTesting cor = new CorridorForTesting(base, new Vec3(1, 0, 0), new Vec2(2, 3));

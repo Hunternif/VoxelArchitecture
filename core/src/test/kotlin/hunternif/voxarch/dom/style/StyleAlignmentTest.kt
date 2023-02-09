@@ -112,17 +112,22 @@ class StyleAlignmentTest {
         centeredChild: Boolean = false,
         styleBlock: Rule.() -> Unit,
     ) {
-        val parent = Room(Vec3.ZERO, Vec3(3, 3, 3))
-        if (!centeredParent) parent.start = Vec3.ZERO
-
         val style = defaultStyle.add {
+            style("parent") {
+                size(3.vx, 3.vx, 3.vx)
+                snapOrigin { if (centeredParent) floorCenter() else corner() }
+            }
             style("child") {
                 size(2.vx, 2.vx, 2.vx)
-                if (!centeredChild) start(0.vx, 0.vx, 0.vx)
+                snapOrigin { if (centeredChild) floorCenter() else corner() }
                 styleBlock()
             }
         }
-        val dom = domRoot(parent) { room("child") }.buildDom(style)
+        val dom = domRoot {
+            room("parent") {
+                room("child")
+            }
+        }.buildDom(style)
         val child = dom.query<Room>("child").first()
 
         assertEquals(expectedOrigin, child.origin)
