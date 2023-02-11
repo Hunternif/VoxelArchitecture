@@ -16,7 +16,7 @@ class StylePositionTest {
             style("parent") { height { 100.vx } }
             style("child") {
                 height { 50.vx }
-                y { 100.pct - 3.vx }
+                y { 50.pct - 3.vx }
             }
         }
         val dom = domRoot {
@@ -36,7 +36,7 @@ class StylePositionTest {
     fun `vector offset`() {
         val style = Stylesheet().add {
             style("child") {
-                position { base, _ -> base + Vec3(1, 2, 3) }
+                offset(1.vx, 2.vx, 3.vx)
             }
         }
         val dom = domRoot {
