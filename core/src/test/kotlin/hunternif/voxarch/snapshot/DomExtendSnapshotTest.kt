@@ -44,11 +44,11 @@ class DomExtendSnapshotTest : BaseSnapshotTest(16, 3, 16) {
         val style = defaultStyle.add {
             style("base") {
                 position(7.vx, 0.vx, 7.vx)
-                size(4.vx, 2.vx, 3.vx)
+                size(5.vx, 2.vx, 4.vx)
                 snapOrigin { floorCenter() }
             }
             style("child") {
-                depth { 2.vx }
+                depth { 3.vx }
             }
         }
         val child = DomNodeBuilder { Room() }.apply {

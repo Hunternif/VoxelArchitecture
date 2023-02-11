@@ -78,12 +78,15 @@ open class Node(
      */
     open var size: Vec3 = Vec3(0, 0, 0)
         set(value) { field.set(value) } // keep the same instance
+    /** "centric" width (X axis) */
     var width: Double
         get() = size.x
         set(value) { size.x = value }
+    /** "centric" height (Y axis) */
     var height: Double
         get() = size.y
         set(value) { size.y = value }
+    /** "centric" depth (Z axis) */
     var depth: Double
         get() = size.z
         set(value) { size.z = value }

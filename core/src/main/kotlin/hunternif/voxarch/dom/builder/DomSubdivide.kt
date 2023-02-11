@@ -32,24 +32,23 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
         }
 
         val parentNode = children.first().parentNode
-        // + 1 to get "natural" size
-        val total = parentNode.localSizeInDir(dir) + 1
+        // "natural" size of the parent container
+        val total = parentNode.localSizeInDir(dir).centricToNatural()
 
         // Get "natural" sizes pre-layout
-        val solidTotal = solidNodes.fold(0.0) { o, node -> o + node.dirSize + 1 }
-        val pctTotal = pctNodes.fold(0.0) { o, node -> o + node.dirSize + 1 }
+        val solidTotal = solidNodes.fold(0.0) { o, node -> o + node.dirSize }
+        val pctTotal = pctNodes.fold(0.0) { o, node -> o + node.dirSize }
 
-        if (pctTotal - pctNodes.size > 0.0) {
-            // Adjust percentage sizes based on remaining "centric" total size.
-            var remaining = total - solidTotal // "natural size"
-            val ratio = (remaining - pctNodes.size) / (pctTotal - pctNodes.size)
+        if (pctTotal > 0) {
+            // Adjust percentage sizes based on remaining container size.
+            var remaining = total - solidTotal
+            val ratio = remaining / pctTotal
             pctNodes.forEach {
-                // min value -1 represents a node that's absolutely invisibly flat
-                if (remaining <= -1) it.dirSize = -1.0
+                if (remaining <= 0) it.dirSize = 0.0
                 else {
-                    val newSize = min(remaining - 1, round(it.dirSize * ratio))
+                    val newSize = min(remaining, round(it.dirSize * ratio))
                     it.dirSize = newSize
-                    remaining -= newSize + 1
+                    remaining -= newSize
                 }
             }
             if (remaining > 0) {
@@ -81,7 +80,7 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
         var x = initPos
         nodes.forEach {
             it.dirX = x
-            x += sign*(it.dirSize + 1)
+            x += sign * it.dirSize
         }
     }
 
@@ -92,18 +91,18 @@ class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
             NORTH, SOUTH -> PropDepth
         }
 
-    /** Node size in the direction [dir], accounting for its rotation. */
+    /** Node "natural" size in the direction [dir], accounting for its rotation. */
     private var Node.dirSize: Double
         get() = when (dir.rotateY(rotationY)) {
-            UP, DOWN -> height
-            EAST, WEST -> width
-            NORTH, SOUTH -> depth
+            UP, DOWN -> naturalHeight
+            EAST, WEST -> naturalWidth
+            NORTH, SOUTH -> naturalDepth
         }
         set(value) {
             when (dir.rotateY(rotationY)) {
-                UP, DOWN -> height = value
-                EAST, WEST -> width = value
-                NORTH, SOUTH -> depth = value
+                UP, DOWN -> naturalHeight = value
+                EAST, WEST -> naturalWidth = value
+                NORTH, SOUTH -> naturalDepth = value
             }
         }
 

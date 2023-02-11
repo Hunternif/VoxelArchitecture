@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.naturalHeight
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
@@ -27,7 +28,7 @@ class StylePositionTest {
         val parent = dom.children[0] as Room
         val child = parent.children[0] as Room
 
-        assertEquals(100.0, parent.height, 0.0)
+        assertEquals(100.0, parent.naturalHeight, 0.0)
         assertEquals(47.0, child.origin.y, 0.0)
     }
 

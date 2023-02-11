@@ -15,7 +15,7 @@ class DomCornerTest {
         val style = defaultStyle.add {
             styleFor<PolyRoom> {
                 shape { set(PolyShape.SQUARE) }
-                diameter { 2.vx }
+                diameter { 3.vx }
                 snapOrigin { floorCenter() }
             }
         }
@@ -39,8 +39,8 @@ class DomCornerTest {
     fun `rectangle room`() {
         val style = defaultStyle.add {
             styleFor<Room> {
-                width { 2.vx }
-                depth { 4.vx }
+                width { 3.vx }
+                depth { 5.vx }
                 snapOrigin { floorCenter() }
             }
         }

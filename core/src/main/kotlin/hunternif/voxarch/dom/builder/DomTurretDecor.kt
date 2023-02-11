@@ -5,10 +5,13 @@ import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.naturalDepth
+import hunternif.voxarch.plan.naturalWidth
 import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.sandbox.castle.turret.TurretPosition
+import kotlin.math.ceil
 
 /**
  * Adds decorative child elements to make a Room look like a castle turret.
@@ -84,10 +87,10 @@ class DomTurretDecor : DomBuilder() {
         }
         styleFor<PolyRoom>(BLD_TOWER_ROOF) {
             visibleIf { hasCrenellation() }
-            height { 0.vx }
+            height { 1.vx }
         }
         style(BLD_TOWER_CORBEL) {
-            alignY { above() }
+            alignY { top() }
         }
     }
 
@@ -101,7 +104,7 @@ class DomTurretDecor : DomBuilder() {
         RoofShape.FLAT_BORDERED, RoofShape.SPIRE_BORDERED -> true
         else -> false
     }
-    private fun Node.avgRadius() = ((size.x + size.z) / 4).vx
+    private fun Node.avgRadius() = ceil((naturalWidth + naturalDepth) / 4).vx
     private fun roofOffset() = roofOffset.vx
     private fun spireRatio() = spireRatio
     private fun taperRatio() = taperRatio

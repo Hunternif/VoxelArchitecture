@@ -30,14 +30,14 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
 
     @Test
     fun `subdivide y 4 by equal 1`() {
-        doTest(makeStyle(4)) {
+        doTest(makeStyle(5)) {
             wall("a")
         }
     }
 
     @Test
     fun `subdivide y 4 by equal 2`() {
-        doTest(makeStyle(4)) {
+        doTest(makeStyle(5)) {
             wall("a")
             wall("b")
         }
@@ -45,7 +45,7 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
 
     @Test
     fun `subdivide y 4 by equal 3`() {
-        doTest(makeStyle(4)) {
+        doTest(makeStyle(5)) {
             wall("a")
             wall("b")
             wall("c")
@@ -54,7 +54,7 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
 
     @Test
     fun `subdivide y 4 by equal 3 offset`() {
-        val style = makeStyle(4) {
+        val style = makeStyle(5) {
             style("container") { startY { 2.vx } }
         }
         doTest(style) {
@@ -66,14 +66,14 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
 
     @Test
     fun `subdivide y 9 by equal 1`() {
-        doTest(makeStyle(9)) {
+        doTest(makeStyle(10)) {
             wall("a")
         }
     }
 
     @Test
     fun `subdivide y 9 by equal 2`() {
-        doTest(makeStyle(9)) {
+        doTest(makeStyle(10)) {
             wall("a")
             wall("b")
         }
@@ -81,7 +81,7 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
 
     @Test
     fun `subdivide y 9 by equal 3`() {
-        doTest(makeStyle(9)) {
+        doTest(makeStyle(10)) {
             wall("a")
             wall("b")
             wall("c")
@@ -91,7 +91,7 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     @Test
     fun `subdivide y with hole`() {
         val style = makeStyle {
-            style("empty") { height { 1.vx } }
+            style("empty") { height { 2.vx } }
         }
         doTest(style) {
             wall("a")
@@ -104,7 +104,7 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     fun `subdivide y unequal`() {
         val style = makeStyle {
             style("a") { height { 10.pct } }
-            style("c") { height { 30.pct } }
+            style("c") { height { 25.pct } }
         }
         doTest(style) {
             wall("a")
@@ -115,9 +115,9 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     @Test
     fun `subdivide y mixed`() {
         val style = makeStyle {
-            style("a") { height { 0.vx } }
+            style("a") { height { 1.vx } }
             style("b") { height { 100.pct } }
-            style("c") { height { 1.vx } }
+            style("c") { height { 2.vx } }
         }
         doTest(style) {
             wall("a")
@@ -130,9 +130,9 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     @Test
     fun `subdivide y with flat node`() {
         val style = makeStyle {
-            style("a") { height { 5.vx } }
+            style("a") { height { 6.vx } }
             style("b") { height { 100.pct } }
-            style("c") { height { 3.vx } }
+            style("c") { height { 4.vx } }
         }
         doTest(style) {
             wall("b")
@@ -147,9 +147,9 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     @Test
     fun `subdivide y mixed 2`() {
         val style = makeStyle {
-            style("a") { height { 0.vx } }
+            style("a") { height { 1.vx } }
             style("b") { height { 100.pct } }
-            style("c") { height { 1.vx } }
+            style("c") { height { 2.vx } }
         }
         doTest(style) {
             wall("b")
@@ -164,9 +164,9 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     @Test
     fun `subdivide y mixed 2 down`() {
         val style = makeStyle {
-            style("a") { height { 0.vx } }
+            style("a") { height { 1.vx } }
             style("b") { height { 100.pct } }
-            style("c") { height { 1.vx } }
+            style("c") { height { 2.vx } }
         }
         doTest(style, DOWN) {
             wall("b")
@@ -179,11 +179,11 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     }
 
     private fun makeStyle(
-        height: Int = 9,
+        height: Int = 10,
         block: RuleBuilder.() -> Unit = {},
     ) = defaultStyle.add {
         style("container") {
-            size(4.vx, height.vx, 0.vx)
+            size(5.vx, height.vx, 1.vx)
         }
         block()
     }

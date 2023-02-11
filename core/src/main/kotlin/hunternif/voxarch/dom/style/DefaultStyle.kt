@@ -17,8 +17,8 @@ val defaultStyle get() = Stylesheet().add {
     }
     styleFor<DomTurretDecor> {
         roofOffset { 1.vx }
-        spireRatio { set(3.0) }
-        taperRatio { set(1.5) }
+        spireRatio { set(2.5) }
+        taperRatio { set(1.3) }
     }
     style(DOM_TURRET) {
         snapOrigin { floorCenter() }

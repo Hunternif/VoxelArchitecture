@@ -47,12 +47,8 @@ class DomTest {
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
-        assertEquals(10.0, parent.height, 0.0)
-        assertEquals(20.0, parent.width, 0.0)
-        assertEquals(30.0, parent.depth, 0.0)
-        assertEquals(7.5, child.height, 0.0)
-        assertEquals(24.0, child.width, 0.0)
-        assertEquals(30.0, child.depth, 0.0)
+        assertEquals(Vec3(20, 10, 30), parent.naturalSize)
+        assertEquals(Vec3(24.0, 7.5, 30.0), child.naturalSize)
     }
 
     @Test
@@ -77,7 +73,7 @@ class DomTest {
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
-        assertEquals(Vec3(21, 8, 1), child.size)
+        assertEquals(Vec3(21, 8, 1), child.naturalSize)
     }
 
     @Test
@@ -95,7 +91,7 @@ class DomTest {
         }.buildDom(style, seed)
 
         val room = dom.children.first() as Room
-        assertEquals(Vec3(110, 46, 144), room.size)
+        assertEquals(Vec3(110, 46, 144), room.naturalSize)
     }
 
     @Test
@@ -126,12 +122,12 @@ class DomTest {
         val room4 = dom.children[3] as Room
         val nested1 = room3.children[0] as Room
         val nested2 = room4.children[0] as Room
-        assertEquals(804.0, room1.height, 0.0)
-        assertEquals(5.0, room2.height, 0.0)
-        assertEquals(144.0, room3.height, 0.0)
-        assertEquals(144.0, room4.height, 0.0)
-        assertEquals(804.0, nested1.height, 0.0)
-        assertEquals(804.0, nested2.height, 0.0)
+        assertEquals(804.0, room1.naturalHeight, 0.0)
+        assertEquals(5.0, room2.naturalHeight, 0.0)
+        assertEquals(144.0, room3.naturalHeight, 0.0)
+        assertEquals(144.0, room4.naturalHeight, 0.0)
+        assertEquals(804.0, nested1.naturalHeight, 0.0)
+        assertEquals(804.0, nested2.naturalHeight, 0.0)
     }
 
     @Test
@@ -149,8 +145,8 @@ class DomTest {
         }.buildDom(style)
 
         val room = dom.children.first() as Room
-        assertEquals(100.0, room.height, 0.0)
-        assertEquals(200.0, room.width, 0.0)
+        assertEquals(100.0, room.naturalHeight, 0.0)
+        assertEquals(200.0, room.naturalWidth, 0.0)
     }
 
     @Test
@@ -168,8 +164,8 @@ class DomTest {
         }.buildDom(style)
 
         val room = dom.children.first() as Room
-        assertEquals(100.0, room.height, 0.0)
-        assertEquals(200.0, room.width, 0.0)
+        assertEquals(100.0, room.naturalHeight, 0.0)
+        assertEquals(200.0, room.naturalWidth, 0.0)
     }
 
     @Test
@@ -192,8 +188,8 @@ class DomTest {
 
         val room = dom.children[0] as Room
         val polyRoom = dom.children[1] as PolyRoom
-        assertEquals(Vec3(200, 100, 0), room.size)
-        assertEquals(Vec3(200, 100, 300), polyRoom.size)
+        assertEquals(Vec3(200, 100, 1), room.naturalSize)
+        assertEquals(Vec3(200, 100, 300), polyRoom.naturalSize)
     }
 
     @Test
@@ -214,8 +210,8 @@ class DomTest {
 
         val parent = dom.children.first() as Room
         val child = parent.children.first() as Room
-        assertEquals(100.0, parent.height, 0.0)
-        assertEquals(100.0, child.height, 0.0)
+        assertEquals(100.0, parent.naturalHeight, 0.0)
+        assertEquals(100.0, child.naturalHeight, 0.0)
     }
 
     @Test
@@ -268,10 +264,10 @@ class DomTest {
         val child1 = dom.query<Room>("child1").first()
         val child2 = dom.query<Room>("child2").first()
         val room3 = dom.query<Room>("room3").first()
-        assertEquals(Vec3(0, 10, 0), parent.size)
-        assertEquals(Vec3(0, 10, 0), child1.size)
-        assertEquals(Vec3(20, 10, 0), child2.size)
-        assertEquals(Vec3(20, 0, 0), room3.size)
+        assertEquals(Vec3(1, 10, 1), parent.naturalSize)
+        assertEquals(Vec3(1, 10, 1), child1.naturalSize)
+        assertEquals(Vec3(20, 10, 1), child2.naturalSize)
+        assertEquals(Vec3(20, 1, 1), room3.naturalSize)
     }
 
     @Test
@@ -292,8 +288,8 @@ class DomTest {
 
         val specialRoom = dom.query<Room>("special_room").first()
         val secondRoom = dom.query<Room>("second_room").first()
-        assertEquals(35.0, specialRoom.height, 0.0)
-        assertEquals(0.0, secondRoom.height, 0.0)
+        assertEquals(35.0, specialRoom.naturalHeight, 0.0)
+        assertEquals(1.0, secondRoom.naturalHeight, 0.0)
     }
 
     @Test
@@ -330,9 +326,9 @@ class DomTest {
         }.buildDom(style)
 
         val (room1, room2, room3) = dom.query<Room>().toList()
-        assertEquals(Vec3(0, 10, 0), room1.size)
-        assertEquals(Vec3(20, 10, 0), room2.size)
-        assertEquals(Vec3(20, 10, 0), room3.size)
+        assertEquals(Vec3(1, 10, 1), room1.naturalSize)
+        assertEquals(Vec3(20, 10, 1), room2.naturalSize)
+        assertEquals(Vec3(20, 10, 1), room3.naturalSize)
     }
 
     @Test
@@ -355,10 +351,10 @@ class DomTest {
         }.buildDom(style)
 
         val (room1, room2, room3, room4) = dom.query<Room>().toList()
-        assertEquals(Vec3(0, 0, 0), room1.size)
-        assertEquals(Vec3(0, 0, 0), room2.size)
-        assertEquals(Vec3(0, 10, 0), room3.size)
-        assertEquals(Vec3(20, 0, 0), room4.size)
+        assertEquals(Vec3(1, 1, 1), room1.naturalSize)
+        assertEquals(Vec3(1, 1, 1), room2.naturalSize)
+        assertEquals(Vec3(1, 10, 1), room3.naturalSize)
+        assertEquals(Vec3(20, 1, 1), room4.naturalSize)
     }
 
     @Test

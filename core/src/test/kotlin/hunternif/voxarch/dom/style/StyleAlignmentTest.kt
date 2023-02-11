@@ -114,11 +114,11 @@ class StyleAlignmentTest {
     ) {
         val style = defaultStyle.add {
             style("parent") {
-                size(3.vx, 3.vx, 3.vx)
+                size(4.vx, 4.vx, 4.vx)
                 snapOrigin { if (centeredParent) floorCenter() else corner() }
             }
             style("child") {
-                size(2.vx, 2.vx, 2.vx)
+                size(3.vx, 3.vx, 3.vx)
                 snapOrigin { if (centeredChild) floorCenter() else corner() }
                 styleBlock()
             }

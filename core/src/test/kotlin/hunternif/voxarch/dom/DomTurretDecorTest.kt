@@ -5,6 +5,7 @@ import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.naturalHeight
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.sandbox.castle.BLD_TOWER_ROOF
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
@@ -36,9 +37,9 @@ class DomTurretDecorTest {
         val room1 = dom.query<Room>("other_room_1").first()
         val room2 = dom.query<Room>("other_room_2").first()
 
-        assertEquals(0.0, roof.height, 0.0)
-        assertEquals(10.0, room1.height, 0.0)
-        assertEquals(10.0, room2.height, 0.0)
+        assertEquals(1.0, roof.naturalHeight, 0.0)
+        assertEquals(10.0, room1.naturalHeight, 0.0)
+        assertEquals(10.0, room2.naturalHeight, 0.0)
     }
 
     @Test

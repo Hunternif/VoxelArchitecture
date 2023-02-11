@@ -35,7 +35,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
     private fun castleWard(): Node {
         val style = defaultStyle.add {
             style("main_turret") {
-                size(6.vx, 4.vx, 6.vx)
+                size(7.vx, 5.vx, 7.vx)
                 alignXZ { center() }
                 alignY { bottom() }
                 offsetY { 15.vx }
@@ -45,14 +45,14 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
             }
             style("outer_ward") {
                 shape { set(PolyShape.ROUND) }
-                size(48.vx, 6.vx, 48.vx)
+                size(49.vx, 7.vx, 49.vx)
                 position(30.vx, 0.vx, 30.vx)
                 edgeLength { 50.pct }
                 snapOrigin { floorCenter() }
             }
             style("inner_ward") {
                 shape { set(PolyShape.SQUARE) }
-                size(16.vx, 8.vx, 16.vx)
+                size(17.vx, 9.vx, 17.vx)
                 alignY { bottom() }
                 offsetY { 4.vx }
                 snapOrigin { floorCenter() }
@@ -61,13 +61,13 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 shape { set(PolyShape.ROUND) }
                 roofShape { set(RoofShape.FLAT_BORDERED) }
                 bottomShape { set(BottomShape.TAPERED) }
-                size(8.vx, 10.vx, 8.vx)
+                size(9.vx, 11.vx, 9.vx)
             }
             style("inner_ward_turret") {
                 shape { set(PolyShape.SQUARE) }
                 roofShape { set(RoofShape.SPIRE) }
                 bottomShape { set(BottomShape.FOUNDATION) }
-                size(4.vx, 12.vx, 4.vx)
+                size(5.vx, 13.vx, 5.vx)
             }
         }
         return domRoot {

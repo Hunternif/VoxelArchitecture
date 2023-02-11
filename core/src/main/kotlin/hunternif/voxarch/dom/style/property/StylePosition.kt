@@ -9,21 +9,21 @@ class StylePosition : StyleParameter
 // ========================== ABSOLUTE ORIGIN ============================
 
 val PropY = newNodeProperty<Node, Double>("origin y", 0.0) { value ->
-    val baseValue = node.height
+    val baseValue = node.naturalHeight
     val newValue = value
         .invoke(baseValue, seed + 10000011)
     node.origin.y = newValue
 }
 
 val PropX = newNodeProperty<Node, Double>("origin x", 0.0) { value ->
-    val baseValue = node.width
+    val baseValue = node.naturalWidth
     val newValue = value
         .invoke(baseValue, seed + 10000012)
     node.origin.x = newValue
 }
 
 val PropZ = newNodeProperty<Node, Double>("origin z", 0.0) { value ->
-    val baseValue = node.depth
+    val baseValue = node.naturalDepth
     val newValue = value
         .invoke(baseValue, seed + 10000013)
     node.origin.z = newValue

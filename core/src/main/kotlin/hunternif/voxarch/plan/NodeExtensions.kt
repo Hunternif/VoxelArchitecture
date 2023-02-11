@@ -155,3 +155,51 @@ fun Node.localSizeInDir(dir: Direction3D): Double = when (dir) {
     EAST, WEST -> width
     NORTH, SOUTH -> depth
 }
+
+
+/** Size in "centric" coordinates, i.e. "natural" - (1, 1, 1) */
+var Node.centricSize: Vec3
+    get() = size
+    set(value) { size = value }
+
+/** "centric" height (Y axis) */
+var Node.centricHeight: Double
+    get() = height
+    set(value) { height = value }
+
+/** "centric" width (X axis) */
+var Node.centricWidth: Double
+    get() = width
+    set(value) { width = value }
+
+/** "centric" depth (Z axis) */
+var Node.centricDepth: Double
+    get() = depth
+    set(value) { depth = value }
+
+
+/** Size in "natural" coordinates, i.e. "centric" + (1, 1, 1) */
+var Node.naturalSize: Vec3
+    get() = size.centricToNatural()
+    set(value) { size.set(value).subtractLocal(1.0, 1.0, 1.0) }
+
+/** "Natural" height (Y axis) */
+var Node.naturalHeight: Double
+    get() = height + 1
+    set(value) { height = value - 1 }
+
+/** "Natural" width (X axis) */
+var Node.naturalWidth: Double
+    get() = width + 1
+    set(value) { width = value - 1 }
+
+/** "Natural" depth (Z axis) */
+var Node.naturalDepth: Double
+    get() = depth + 1
+    set(value) { depth = value - 1 }
+
+/** Converting centric coordinate to natural */
+fun Double.centricToNatural(): Double = this + 1
+
+/** Converting centric coordinate to natural */
+fun Vec3.centricToNatural(): Vec3 = this.add(1.0, 1.0, 1.0)

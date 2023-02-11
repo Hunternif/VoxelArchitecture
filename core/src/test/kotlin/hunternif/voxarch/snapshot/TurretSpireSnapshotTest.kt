@@ -21,7 +21,7 @@ class TurretSpireSnapshotTest : BaseSnapshotTest(10, 20, 10) {
 
     @Test
     fun `spire ratio 0_6`() {
-        val structure = turret(0.6)
+        val structure = turret(0.7)
         build(structure)
         recordVox()
     }
@@ -35,14 +35,14 @@ class TurretSpireSnapshotTest : BaseSnapshotTest(10, 20, 10) {
 
     @Test
     fun `spire ratio 2`() {
-        val structure = turret(2.0)
+        val structure = turret(1.75)
         build(structure)
         recordVox()
     }
 
     @Test
     fun `spire ratio 3`() {
-        val structure = turret(3.0)
+        val structure = turret(2.5)
         build(structure)
         recordVox()
     }
@@ -52,8 +52,8 @@ class TurretSpireSnapshotTest : BaseSnapshotTest(10, 20, 10) {
             val style = defaultStyle.add {
                 styleFor<PolyRoom>(DOM_TURRET) {
                     position(5.vx, 0.vx, 5.vx)
-                    diameter { 4.vx }
-                    height { 2.vx }
+                    diameter { 5.vx }
+                    height { 3.vx }
                     shape { set(PolyShape.SQUARE) }
                 }
                 styleFor<DomTurretDecor> {

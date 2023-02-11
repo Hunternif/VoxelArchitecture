@@ -21,7 +21,7 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
 
     @Test
     fun turret() {
-        val structure = turret(4)
+        val structure = turret(5)
         build(structure)
         recordVox()
         record(out.sliceZ(2))
@@ -31,28 +31,28 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
 
     @Test
     fun `crenellations width 4`() {
-        val structure = turret(4)
+        val structure = turret(5)
         build(structure)
         record(out.sliceY(8))
     }
 
     @Test
     fun `crenellations width 6`() {
-        val structure = turret(6)
+        val structure = turret(7)
         build(structure)
         record(out.sliceY(8))
     }
 
     @Test
     fun `turret corbels width 4`() {
-        val structure = turret(4)
+        val structure = turret(5)
         build(structure)
         record(out.sliceY(4))
     }
 
     @Test
     fun `turret corbels width 6`() {
-        val structure = turret(6)
+        val structure = turret(7)
         build(structure)
         record(out.sliceY(4))
     }
@@ -63,15 +63,15 @@ class TurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                 styleFor<PolyRoom>(DOM_TURRET) {
                     position(5.vx, 0.vx, 5.vx)
                     diameter { width.vx }
-                    height { 5.vx }
+                    height { 6.vx }
                     shape { set(PolyShape.SQUARE) }
                 }
                 styleFor<DomTurretDecor> {
                     roofShape { set(RoofShape.SPIRE_BORDERED) }
                     bottomShape { set(BottomShape.FLAT) }
                     roofOffset { 1.vx }
-                    spireRatio { set(3.0) }
-                    taperRatio { set(1.5) }
+                    spireRatio { set(2.5) }
+                    taperRatio { set(1.3) }
                 }
             }
             return domRoot {

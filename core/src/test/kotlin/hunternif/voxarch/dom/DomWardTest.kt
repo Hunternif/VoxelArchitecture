@@ -16,7 +16,7 @@ class DomWardTest {
         val style = defaultStyle.add {
             styleFor<Ward> {
                 shape { set(SQUARE) }
-                diameter { 2.vx }
+                diameter { 3.vx }
                 snapOrigin { floorCenter() }
             }
         }
@@ -41,7 +41,7 @@ class DomWardTest {
         val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { set(ROUND) }
-                diameter { 10.vx }
+                diameter { 11.vx }
                 edgeLength { 6.vx }
             }
         }
@@ -62,7 +62,7 @@ class DomWardTest {
         val style = Stylesheet().add {
             styleFor<Ward> {
                 shape { set(ROUND) }
-                diameter { 10.vx }
+                diameter { 11.vx }
                 edgeLength { 4.vx }
             }
         }

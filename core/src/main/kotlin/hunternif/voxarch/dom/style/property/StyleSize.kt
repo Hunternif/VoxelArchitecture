@@ -19,26 +19,26 @@ class StyleSize(
 }
 
 val PropHeight = newNodeProperty<Node, Double>("height", 4.0) { value ->
-    val baseValue = parentNode.height
+    val baseValue = parentNode.naturalHeight
     val newValue = value
         .invoke(baseValue, seed + 10000001)
-    node.height = newValue
+    node.naturalHeight = newValue
 }
 
 val PropWidth = newNodeProperty<Node, Double>("width", 4.0) { value ->
     val rotatedDir = EAST.rotateY(node.rotationY)
-    val baseValue = parentNode.localSizeInDir(rotatedDir)
+    val baseValue = parentNode.localSizeInDir(rotatedDir).centricToNatural()
     val newValue = value
         .invoke(baseValue, seed + 10000002)
-    node.width = newValue
+    node.naturalWidth = newValue
 }
 
 val PropDepth = newNodeProperty<Node, Double>("depth", 4.0) { value ->
     val rotatedDir = SOUTH.rotateY(node.rotationY)
-    val baseValue = parentNode.localSizeInDir(rotatedDir)
+    val baseValue = parentNode.localSizeInDir(rotatedDir).centricToNatural()
     val newValue = value
         .invoke(baseValue, seed + 10000003)
-    node.depth = newValue
+    node.naturalDepth = newValue
 }
 
 fun Rule.height(block: StyleSize.() -> Dimension) {

@@ -21,7 +21,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
 
     @Test
     fun `tapered turret`() {
-        val structure = turret(4)
+        val structure = turret(5)
         build(structure)
         recordVox()
         record(out.sliceZ(5))
@@ -33,15 +33,15 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
                 styleFor<PolyRoom>(DOM_TURRET) {
                     position(5.vx, 5.vx, 5.vx)
                     diameter { width.vx }
-                    height { 5.vx }
+                    height { 6.vx }
                     shape { set(PolyShape.SQUARE) }
                 }
                 styleFor<DomTurretDecor> {
                     roofShape { set(RoofShape.FLAT_BORDERED) }
                     bottomShape { set(BottomShape.TAPERED) }
                     roofOffset { 1.vx }
-                    spireRatio { set(3.0) }
-                    taperRatio { set(1.5) }
+                    spireRatio { set(2.5) }
+                    taperRatio { set(1.3) }
                 }
             }
             return domRoot {

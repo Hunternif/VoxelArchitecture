@@ -33,9 +33,9 @@ class SubdivideZSnapshotTest : BaseSnapshotTest(1, 5, 10, mapOf(
     @Test
     fun `subdivide z mixed south`() {
         val style = makeStyle {
-            style("a") { depth { 0.vx } }
+            style("a") { depth { 1.vx } }
             style("b") { depth { 100.pct } }
-            style("c") { depth { 1.vx } }
+            style("c") { depth { 2.vx } }
         }
         doTest(style, SOUTH) {
             wall("b")
@@ -50,9 +50,9 @@ class SubdivideZSnapshotTest : BaseSnapshotTest(1, 5, 10, mapOf(
     @Test
     fun `subdivide z mixed north`() {
         val style = makeStyle {
-            style("a") { depth { 0.vx } }
+            style("a") { depth { 1.vx } }
             style("b") { depth { 100.pct } }
-            style("c") { depth { 1.vx } }
+            style("c") { depth { 2.vx } }
         }
         doTest(style, NORTH) {
             wall("b")
@@ -67,9 +67,9 @@ class SubdivideZSnapshotTest : BaseSnapshotTest(1, 5, 10, mapOf(
     @Test
     fun `subdivide z mixed south rotated`() {
         val style = makeStyle {
-            style("a") { width { 0.vx } }
+            style("a") { width { 1.vx } }
             style("b") { width { 100.pct } }
-            style("c") { width { 1.vx } }
+            style("c") { width { 2.vx } }
             styleFor<Wall> { rotation { set(90.0) } }
         }
         doTest(style, SOUTH) {
@@ -85,9 +85,9 @@ class SubdivideZSnapshotTest : BaseSnapshotTest(1, 5, 10, mapOf(
     @Test
     fun `subdivide z mixed north rotated`() {
         val style = makeStyle {
-            style("a") { width { 0.vx } }
+            style("a") { width { 1.vx } }
             style("b") { width { 100.pct } }
-            style("c") { width { 1.vx } }
+            style("c") { width { 2.vx } }
             styleFor<Wall> { rotation { set(90.0) } }
         }
         doTest(style, NORTH) {
@@ -101,11 +101,11 @@ class SubdivideZSnapshotTest : BaseSnapshotTest(1, 5, 10, mapOf(
     }
 
     private fun makeStyle(
-        depth: Int = 9,
+        depth: Int = 10,
         block: RuleBuilder.() -> Unit = {},
     ) = defaultStyle.add {
         style("container") {
-            size(0.vx, 4.vx, depth.vx)
+            size(1.vx, 5.vx, depth.vx)
         }
         block()
     }

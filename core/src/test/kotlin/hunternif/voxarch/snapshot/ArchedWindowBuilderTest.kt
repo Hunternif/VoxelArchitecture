@@ -72,22 +72,27 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(19, 19, 1) {
     }
 
     @Test
+    fun `window 11x16`() {
+        testWindow(11, 16)
+    }
+
+    @Test
     fun `window 12x16`() {
         testWindow(12, 16)
     }
 
     @Test
-    fun `window 16x16`() {
-        testWindow(16, 16)
+    fun `window 17x16`() {
+        testWindow(17, 16)
     }
 
     fun testWindow(width: Int, height: Int) {
         val style = Stylesheet().add {
             style("wall") {
-                size((outWidth - 1).vx, (outHeight - 1).vx, 0.vx)
+                size(outWidth.vx, outHeight.vx, 1.vx)
             }
             style("window") {
-                size(width.vx, height.vx, 0.vx)
+                size(width.vx, height.vx, 1.vx)
                 alignX { center() }
             }
         }

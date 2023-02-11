@@ -2,6 +2,7 @@ package hunternif.voxarch.dom.style.property
 
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.plan.naturalWidth
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
@@ -16,7 +17,7 @@ class StyleTurretBottomShape : StyleParameter
 
 /** Offset for borders and spires in all child turrets. */
 val PropRoofOffset = newDomProperty<DomTurretDecor, Double>("roof offset", 1.0) { value ->
-    val baseValue = parentNode.width
+    val baseValue = parentNode.naturalWidth
     domBuilder.roofOffset = value
         .invoke(baseValue, seed + 10000006)
         .roundToInt()
