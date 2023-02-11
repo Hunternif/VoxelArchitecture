@@ -49,6 +49,7 @@ class DomExtendSnapshotTest : BaseSnapshotTest(16, 3, 16) {
             }
             style("child") {
                 depth { 3.vx }
+                offsetStartX { (-1).vx }
             }
         }
         val child = DomNodeBuilder { Room() }.apply {

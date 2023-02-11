@@ -81,10 +81,10 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value
     val baseValue = AlignY.ORIGIN
     val align = value.invoke(baseValue, seed)
     var newY = when (align) {
-        AlignY.ABOVE -> p.height - nodeAABB.minY
+        AlignY.ABOVE -> p.height - nodeAABB.minY + 1
         AlignY.TOP -> p.height - nodeAABB.maxY
         AlignY.BOTTOM -> -nodeAABB.minY
-        AlignY.BELOW -> -nodeAABB.maxY
+        AlignY.BELOW -> -nodeAABB.maxY - 1
         AlignY.ORIGIN -> 0.0
     }
     if (align != AlignY.ORIGIN) newY += p.start.y
@@ -98,9 +98,9 @@ val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value
     val align = value.invoke(baseValue, seed)
     val width = nodeAABB.maxX - nodeAABB.minX
     var newX = when (align) {
-        AlignX.EAST_OUTSIDE -> p.width - nodeAABB.minX
+        AlignX.EAST_OUTSIDE -> p.width - nodeAABB.minX + 1
         AlignX.EAST_INSIDE -> p.width - nodeAABB.maxX
-        AlignX.WEST_OUTSIDE -> -nodeAABB.maxX
+        AlignX.WEST_OUTSIDE -> -nodeAABB.maxX - 1
         AlignX.WEST_INSIDE -> -nodeAABB.minX
         AlignX.ORIGIN -> 0.0
         AlignX.CENTER -> p.width / 2 - width / 2 - nodeAABB.minX
@@ -116,9 +116,9 @@ val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value
     val align = value.invoke(baseValue, seed)
     val length = nodeAABB.maxZ - nodeAABB.minZ
     var newZ = when (align) {
-        AlignZ.SOUTH_OUTSIDE -> p.depth - nodeAABB.minZ
+        AlignZ.SOUTH_OUTSIDE -> p.depth - nodeAABB.minZ + 1
         AlignZ.SOUTH_INSIDE -> p.depth - nodeAABB.maxZ
-        AlignZ.NORTH_OUTSIDE -> -nodeAABB.maxZ
+        AlignZ.NORTH_OUTSIDE -> -nodeAABB.maxZ - 1
         AlignZ.NORTH_INSIDE -> -nodeAABB.minZ
         AlignZ.ORIGIN -> 0.0
         AlignZ.CENTER -> p.depth / 2 - length / 2 - nodeAABB.minZ
