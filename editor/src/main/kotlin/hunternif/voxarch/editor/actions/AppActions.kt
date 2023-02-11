@@ -9,6 +9,7 @@ import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.writeToVoxFile
+import hunternif.voxarch.plan.naturalToCentric
 import hunternif.voxarch.storage.ChunkedStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.storage.boundedView
@@ -144,15 +145,16 @@ fun EditorApp.transformObjOrigin(
     )
 )
 
-/** Passing in [oldSize] because the node could be already resized in the scene. */
-fun EditorApp.transformNodeSize(
+/** Passing in [oldSize] because the node could be already resized in the scene.
+ * Uses "natural" coordinates. */
+fun EditorApp.transformNodeNaturalSize(
     obj: SceneNode,
     oldSize: Vec3,
     newSize: Vec3,
 ) = historyAction(
     TransformObjects(
-        mapOf(obj to obj.transformData(size = oldSize)),
-        mapOf(obj to obj.transformData(size = newSize)),
+        mapOf(obj to obj.transformData(size = oldSize.naturalToCentric())),
+        mapOf(obj to obj.transformData(size = newSize.naturalToCentric())),
         "Transform node (size)",
     )
 )

@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.toVector3i
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.naturalSize
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.snapStart
 import hunternif.voxarch.vector.Vec3
@@ -70,21 +71,21 @@ class TransformNodeTest : BaseAppTest() {
         assertEquals(START, room.start)
         assertEquals(CHILD_ORIGIN, child.origin)
 
-        app.transformNodeSize(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
+        app.transformNodeNaturalSize(node, Vec3(1, 2, 3), Vec3(4, 5, 6))
         assertEquals(ORIGIN, room.origin)
-        assertEquals(Vec3(4, 5, 6), room.size)
+        assertEquals(Vec3(4, 5, 6), room.naturalSize)
         assertEquals(START, room.start)
         assertEquals(CHILD_ORIGIN, child.origin)
 
         app.undo()
         assertEquals(ORIGIN, room.origin)
-        assertEquals(Vec3(1, 2, 3), room.size)
+        assertEquals(Vec3(1, 2, 3), room.naturalSize)
         assertEquals(START, room.start)
         assertEquals(CHILD_ORIGIN, child.origin)
 
         app.redo()
         assertEquals(ORIGIN, room.origin)
-        assertEquals(Vec3(4, 5, 6), room.size)
+        assertEquals(Vec3(4, 5, 6), room.naturalSize)
         assertEquals(START, room.start)
         assertEquals(CHILD_ORIGIN, child.origin)
     }

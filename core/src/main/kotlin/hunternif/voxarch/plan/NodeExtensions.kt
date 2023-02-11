@@ -203,3 +203,9 @@ fun Double.centricToNatural(): Double = this + 1
 
 /** Converting centric coordinate to natural */
 fun Vec3.centricToNatural(): Vec3 = this.add(1.0, 1.0, 1.0)
+
+/** Converting natural coordinate to centric */
+fun Double.naturalToCentric(): Double = this - 1
+
+/** Converting natural coordinate to centric */
+fun Vec3.naturalToCentric(): Vec3 = this.subtract(1.0, 1.0, 1.0)

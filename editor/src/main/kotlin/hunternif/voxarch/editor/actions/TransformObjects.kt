@@ -51,6 +51,7 @@ class TransformObjects(
 data class TransformData(
     val origin: Vec3,
     val size: Vec3,
+    /** Centric size */
     val start: Vec3,
     val rotationY: Double,
     val snapOrigin: SnapOrigin,
@@ -60,7 +61,7 @@ data class TransformData(
  * Any non-null argument will overwrite the current values. */
 fun SceneObject.transformData(
     origin: Vec3? = null,
-    size: Vec3? = null,
+    size: Vec3? = null, // "centric" size
     start: Vec3? = null,
     rotationY: Double? = null,
     snapOrigin: SnapOrigin? = null,
