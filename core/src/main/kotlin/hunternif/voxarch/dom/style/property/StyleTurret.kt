@@ -23,14 +23,14 @@ val PropRoofOffset = newDomProperty<DomTurretDecor, Double>("roof offset", 1.0) 
 }
 
 /** Y/X ratio of spires for all child turrets. */
-val PropSpireRatio = newDomProperty<DomTurretDecor, Double>("spire ratio", 1.5) { value ->
-    val baseValue = 1.5
+val PropSpireRatio = newDomProperty<DomTurretDecor, Double>("spire ratio", 3.0) { value ->
+    val baseValue = 1.0
     domBuilder.spireRatio = value.invoke(baseValue, seed + 10000019)
 }
 
 /** Y/X ratio of tapered bottoms of turrets. */
 val PropTaperRatio = newDomProperty<DomTurretDecor, Double>("taper ratio", 0.75) { value ->
-    val baseValue = 0.75
+    val baseValue = 1.5
     domBuilder.taperRatio = value.invoke(baseValue, seed + 10000020)
 }
 

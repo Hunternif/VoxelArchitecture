@@ -40,6 +40,8 @@ open class DomBuilder {
     /**
      * Layout pass 0: select children that will be rendered.
      * - Can override to return different instances.
+     * - Can add styles to stylesheet, but only once.
+     *   (This is called before children are styled)
      */
     open fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> =
         children
@@ -47,7 +49,6 @@ open class DomBuilder {
     /**
      * Layout pass 1: create an element for styling and measuring.
      * - Can create nodes and add them to parent, without setting size.
-     * - Can add styles to stylesheet, but only once.
      * - Must not add new child DOM builders.
      * - Must be called only once per DOM tree, because it can modify parent node.
      */

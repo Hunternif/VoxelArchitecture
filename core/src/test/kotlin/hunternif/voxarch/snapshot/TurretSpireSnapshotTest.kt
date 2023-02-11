@@ -13,67 +13,52 @@ import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
 
-class TurretOffcenterSnapshotTest : BaseSnapshotTest(10, 20, 10) {
+class TurretSpireSnapshotTest : BaseSnapshotTest(10, 20, 10) {
     override fun setup() {
         super.setup()
         context.builders.setCastleBuilders()
-        out.safeBoundary = true
     }
 
     @Test
-    fun turret() {
-        val structure = turret(4)
+    fun `spire ratio 0_6`() {
+        val structure = turret(0.6)
         build(structure)
         recordVox()
-        record(out.sliceZ(2))
-        record(out.sliceZ(3))
-        record(out.sliceZ(5))
     }
 
     @Test
-    fun `crenellations width 4`() {
-        val structure = turret(4)
+    fun `spire ratio 1`() {
+        val structure = turret(1.0)
         build(structure)
-        record(out.sliceY(8))
+        recordVox()
     }
 
     @Test
-    fun `crenellations width 6`() {
-        val structure = turret(6)
+    fun `spire ratio 2`() {
+        val structure = turret(2.0)
         build(structure)
-        record(out.sliceY(8))
+        recordVox()
     }
 
     @Test
-    fun `turret corbels width 4`() {
-        val structure = turret(4)
+    fun `spire ratio 3`() {
+        val structure = turret(3.0)
         build(structure)
-        record(out.sliceY(4))
-    }
-
-    @Test
-    fun `turret corbels width 6`() {
-        val structure = turret(6)
-        build(structure)
-        record(out.sliceY(4))
+        recordVox()
     }
 
     companion object {
-        private fun turret(width: Int): Node {
+        private fun turret(spireRatio: Double): Node {
             val style = defaultStyle.add {
                 styleFor<PolyRoom>(DOM_TURRET) {
-                    position(1.vx, 0.vx, 1.vx)
-                    start(0.vx, 0.vx, 0.vx)
-                    diameter { width.vx }
-                    height { 5.vx }
+                    position(5.vx, 0.vx, 5.vx)
+                    diameter { 4.vx }
+                    height { 2.vx }
                     shape { set(PolyShape.SQUARE) }
                 }
                 styleFor<DomTurretDecor> {
-                    roofShape { set(RoofShape.SPIRE_BORDERED) }
-                    bottomShape { set(BottomShape.FLAT) }
-                    roofOffset { 1.vx }
-                    spireRatio { set(3.0) }
-                    taperRatio { set(1.5) }
+                    roofShape { set(RoofShape.SPIRE) }
+                    spireRatio { set(spireRatio) }
                 }
             }
             return domRoot {

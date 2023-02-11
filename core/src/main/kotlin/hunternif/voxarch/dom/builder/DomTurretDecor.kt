@@ -21,12 +21,12 @@ class DomTurretDecor : DomBuilder() {
     var positionType: TurretPosition = TurretPosition.NONE
     /** Angle vs parent turret. Usually facing away from the center. */
     val turretAngle: Double = 0.0
-    /** Offset for borders and spires in all child turrets. */
+    /** Offset for roof border and spire. */
     var roofOffset: Int = 1
-    /** Y/X ratio of spires for all child turrets. */
-    var spireRatio: Double = 1.5
-    /** Y/X ratio of tapered bottoms of turrets. */
-    var taperRatio: Double = 0.75
+    /** Y/X slope of roof spire. */
+    var spireRatio: Double = 3.0
+    /** Y/X slope of tapered bottom. */
+    var taperRatio: Double = 1.5
 
     init {
         floor(BLD_FOUNDATION)
@@ -44,7 +44,7 @@ class DomTurretDecor : DomBuilder() {
         }
     }
 
-    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
+    override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         //TODO: make sure stylesheet is modified only once
 
         // Create style rules for this instance:
@@ -53,7 +53,7 @@ class DomTurretDecor : DomBuilder() {
                 addTurretStyle(ctx.parentNode)
             }
         }
-        return super.prepareForLayout(ctx)
+        return super.getChildrenForLayout(ctx)
     }
 
     /**
@@ -67,7 +67,7 @@ class DomTurretDecor : DomBuilder() {
         styleFor<PolyRoom>(BLD_TURRET_BOTTOM) {
             shape { inherit() }
             visibleIf { hasTaperedBottom() }
-            height { 2 * body.avgRadius() * taperRatio() }
+            height { body.avgRadius() * taperRatio() }
             alignXZ { center() }
             alignY { below() }
         }
@@ -80,7 +80,7 @@ class DomTurretDecor : DomBuilder() {
         }
         styleFor<PolyRoom>(BLD_TOWER_SPIRE) {
             visibleIf { hasSpire() }
-            height { 2 * (body.avgRadius() + roofOffset()) * spireRatio() }
+            height { (body.avgRadius() + roofOffset()) * spireRatio() }
         }
         styleFor<PolyRoom>(BLD_TOWER_ROOF) {
             visibleIf { hasCrenellation() }

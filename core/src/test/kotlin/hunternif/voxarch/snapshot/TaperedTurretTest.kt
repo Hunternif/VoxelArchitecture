@@ -40,8 +40,8 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
                     roofShape { set(RoofShape.FLAT_BORDERED) }
                     bottomShape { set(BottomShape.TAPERED) }
                     roofOffset { 1.vx }
-                    spireRatio { set(1.5) }
-                    taperRatio { set(0.75) }
+                    spireRatio { set(3.0) }
+                    taperRatio { set(1.5) }
                 }
             }
             return domRoot {

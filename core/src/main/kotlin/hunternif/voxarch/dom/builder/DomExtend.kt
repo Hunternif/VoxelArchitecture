@@ -1,6 +1,5 @@
 package hunternif.voxarch.dom.builder
 
-import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.style.selectInherit
 import hunternif.voxarch.dom.style.set
@@ -32,7 +31,7 @@ class DomExtend : DomBuilder() {
         addSlot("west", west)
     }
 
-    override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
+    override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         //TODO: make sure stylesheet is modified only once
         ctx.stylesheet.add {
             style(selectInherit(north).instances(north.children)) {
@@ -57,6 +56,6 @@ class DomExtend : DomBuilder() {
             }
         }
 
-        return super.prepareForLayout(ctx)
+        return super.getChildrenForLayout(ctx)
     }
 }
