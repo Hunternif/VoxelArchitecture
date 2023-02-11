@@ -38,4 +38,27 @@ class CollectionUtilTest {
         assertEquals("lol", lol)
         assertEquals("lol", list[1])
     }
+
+    @Test
+    fun `step double for loop`() {
+        val out = mutableListOf<Double>()
+        for (x in 0.9 .. 2.4 step 1) {
+            out.add(x)
+        }
+        assertEquals(listOf(0.9, 1.9), out)
+
+        // Collapsed range
+        out.clear()
+        for (x in 2.1 .. 2.4 step 1) {
+            out.add(x)
+        }
+        assertEquals(listOf(2.1), out)
+
+        // Empty range
+        out.clear()
+        for (x in 1.0 .. -2.4 step 1) {
+            out.add(x)
+        }
+        assertEquals(emptyList<Double>(), out)
+    }
 }
