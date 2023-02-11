@@ -163,3 +163,57 @@ fun Rule.start(x: Dimension, y: Dimension, z: Dimension) {
 fun Rule.start(block: (base: Vec3, seed: Long) -> Vec3) {
     add(PropStart, value("...", block))
 }
+
+
+
+// ============================= OFFSET START =============================
+
+val PropOffsetStartY = newNodeProperty<Node, Double>("offset start y", 0.0) { value ->
+    val baseValue = node.height
+    val newValue = value
+        .invoke(baseValue, seed + 10000028)
+    node.start.y += newValue
+}
+
+val PropOffsetStartX = newNodeProperty<Node, Double>("offset start x", 0.0) { value ->
+    val baseValue = node.width
+    val newValue = value
+        .invoke(baseValue, seed + 10000029)
+    node.start.x += newValue
+}
+
+val PropOffsetStartZ = newNodeProperty<Node, Double>("offset start z", 0.0) { value ->
+    val baseValue = node.depth
+    val newValue = value
+        .invoke(baseValue, seed + 10000030)
+    node.start.z += newValue
+}
+
+val PropOffsetStart = newNodeProperty<Node, Vec3>("offset start vector", Vec3.ZERO) { value ->
+    val baseValue = node.size
+    val newValue = value
+        .invoke(baseValue, seed + 10000031)
+    node.start += newValue
+}
+
+fun Rule.offsetStartY(block: StylePosition.() -> Dimension) {
+    add(PropOffsetStartY, StylePosition().block())
+}
+
+fun Rule.offsetStartX(block: StylePosition.() -> Dimension) {
+    add(PropOffsetStartX, StylePosition().block())
+}
+
+fun Rule.offsetStartZ(block: StylePosition.() -> Dimension) {
+    add(PropOffsetStartZ, StylePosition().block())
+}
+
+fun Rule.offsetStart(x: Dimension, y: Dimension, z: Dimension) {
+    add(PropOffsetStartX, x)
+    add(PropOffsetStartY, y)
+    add(PropOffsetStartZ, z)
+}
+
+fun Rule.offsetStart(block: (base: Vec3, seed: Long) -> Vec3) {
+    add(PropOffsetStart, value("...", block))
+}

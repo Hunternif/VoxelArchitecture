@@ -39,6 +39,10 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropOffsetX,
     PropOffsetZ,
     PropOffsetPosition,
+    PropOffsetStartY,
+    PropOffsetStartX,
+    PropOffsetStartZ,
+    PropOffsetStart,
 
     // Cosmetic changes within the node
     PropEdgeLength,

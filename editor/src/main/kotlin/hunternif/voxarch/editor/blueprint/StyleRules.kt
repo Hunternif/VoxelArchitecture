@@ -43,6 +43,10 @@ val editorStyleProperties: List<Property<*>> = listOf(
     PropStartY,
     PropStartZ,
 
+    PropOffsetStartY,
+    PropOffsetStartX,
+    PropOffsetStartZ,
+
     PropSeed,
 //    PropVisibility,
 )
