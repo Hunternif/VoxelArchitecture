@@ -1,13 +1,13 @@
 package hunternif.voxarch.snapshot
 
-import hunternif.voxarch.builder.SimpleWallBuilder
+import hunternif.voxarch.builder.FillBuilder
 import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.dom.style.pct
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.style.vx
-import hunternif.voxarch.dom.wall
 import hunternif.voxarch.storage.BlockData
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class PaddingXYSnapshotTest : BaseSnapshotTest(10, 10, 1, mapOf(
     override fun setup() {
         super.setup()
         arrayOf("a", "r", "g", "b").forEach {
-            context.builders.set(it to SimpleWallBuilder(it))
+            context.builders.set(it to FillBuilder(it))
             context.materials.set(it) { BlockData(it) }
         }
     }
@@ -94,12 +94,13 @@ class PaddingXYSnapshotTest : BaseSnapshotTest(10, 10, 1, mapOf(
                 size(10.vx, 10.vx, 1.vx)
             }
             style("child") {
+                size(100.pct, 100.pct, 100.pct)
                 styleBlock()
             }
         }
         val dom = domRoot {
-            wall("parent", "a") {
-                wall("child", "r")
+            node("parent", "a") {
+                node("child", "r")
             }
         }.buildDom(style)
         build(dom)

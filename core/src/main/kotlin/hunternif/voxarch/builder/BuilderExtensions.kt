@@ -23,7 +23,7 @@ fun IBlockStorage.asSymmetricX(midPoint: Number) =
     SymmetricStorageX(this, midPoint)
 
 /**
- * Runs the function [buildAt] at every (x, y, z) point inside the room's walls,
+ * Runs [buildAt] at every (x, y, z) point inside the node's boundary,
  * at floor Y level.
  * Is samples in global coordinate space, applying [trans] to local coordinates.
  * Works correctly only for CONVEX rooms.
@@ -52,6 +52,20 @@ fun Node.fillXZ(
             }
         }
         if (inside) buildAt(x, aabb.minY, z)
+    }
+}
+
+/**
+ * Runs [buildAt] at every (x, y, z) point inside the node's boundary.
+ */
+fun Node.fillXYZ(
+    trans: ITransformation,
+    buildAt: (x: Int, y: Int, z: Int) -> Unit
+) {
+    fillXZ(trans) { x, y, z ->
+        for (dy in 0..height.toInt()) {
+            buildAt(x, y + dy, z)
+        }
     }
 }
 

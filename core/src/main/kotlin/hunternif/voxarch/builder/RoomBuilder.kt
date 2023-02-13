@@ -21,10 +21,8 @@ open class RoomBuilder : Builder<Room>() {
 
     companion object {
         private fun Room.clearVolume(world: IBlockStorage, trans: TransformationStack) {
-            fillXZ(trans) { x, y, z ->
-                for (dy in 0..height.toInt()) {
-                    world.clearBlock(x, y + dy, z)
-                }
+            fillXYZ(trans) { x, y, z ->
+                world.clearBlock(x, y, z)
             }
         }
     }
