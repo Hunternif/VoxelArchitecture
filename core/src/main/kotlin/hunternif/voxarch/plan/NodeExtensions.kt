@@ -3,6 +3,7 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.util.MathUtil.clampAngle
+import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.util.rotateYLocal
 import hunternif.voxarch.vector.*
 
@@ -155,6 +156,37 @@ fun Node.localSizeInDir(dir: Direction3D): Double = when (dir) {
     EAST, WEST -> width
     NORTH, SOUTH -> depth
 }
+
+/** Node size in the direction [dir], NOT accounting for its rotation. */
+fun Node.setLocalSizeInDir(dir: Direction3D, value: Double) {
+    when (dir) {
+        UP, DOWN -> height = value
+        EAST, WEST -> width = value
+        NORTH, SOUTH -> depth = value
+    }
+}
+
+/** Property to get & set Node "centric" size along the X axis,
+ * accounting for its rotation. */
+var Node.rotatedWidth: Double
+    get() = localSizeInDir(EAST.rotateY(rotationY))
+    set(value) { setLocalSizeInDir(EAST.rotateY(rotationY), value) }
+
+/** Property to get & set Node "centric" size along the Z axis,
+ * accounting for its rotation. */
+var Node.rotatedDepth: Double
+    get() = localSizeInDir(SOUTH.rotateY(rotationY))
+    set(value) { setLocalSizeInDir(SOUTH.rotateY(rotationY), value) }
+
+/** "Natural" [rotatedWidth] */
+var Node.rotatedNaturalWidth: Double
+    get() = rotatedWidth + 1
+    set(value) { rotatedWidth = value - 1 }
+
+/** "Natural" [rotatedDepth] */
+var Node.rotatedNaturalDepth: Double
+    get() = rotatedDepth + 1
+    set(value) { rotatedDepth = value - 1 }
 
 
 /** Convenience property that gets low-XYZ point vs local origin.

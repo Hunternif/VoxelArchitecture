@@ -3,11 +3,8 @@ package hunternif.voxarch.snapshot
 import hunternif.voxarch.builder.FillBuilder
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.node
-import hunternif.voxarch.dom.style.Rule
-import hunternif.voxarch.dom.style.defaultStyle
-import hunternif.voxarch.dom.style.pct
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
-import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.storage.BlockData
 import org.junit.Test
 
@@ -83,6 +80,16 @@ class PaddingXYSnapshotTest : BaseSnapshotTest(10, 10, 1, mapOf(
             alignX { center() }
             size(6.vx, 6.vx, 1.vx)
             paddingRightX { 50.pct }
+        }
+    }
+
+    @Test
+    fun `padding x rotated 90`() {
+        testPadding {
+            size(1.vx, 10.vx, 10.vx)
+            rotation { set(90.0) }
+            paddingLeftX { 20.pct }
+            paddingRightX { 10.pct }
         }
     }
 

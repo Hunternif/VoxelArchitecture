@@ -34,9 +34,9 @@ val PropPaddingRightX = newNodeProperty<Node, Double>("padding right x", 0.0) { 
     val baseValue = parentNode.naturalWidth
     val newValue = value.invoke(baseValue, seed + 10000030)
     val currentSpace = parentNode.localMaxX - node.maxX
-    val delta = min(newValue - currentSpace, node.naturalWidth)
+    val delta = min(newValue - currentSpace, node.rotatedNaturalWidth)
     if (delta > 0) {
-        node.naturalWidth -= delta
+        node.rotatedWidth -= delta
     }
 }
 
@@ -44,9 +44,9 @@ val PropPaddingLeftX = newNodeProperty<Node, Double>("padding left x", 0.0) { va
     val baseValue = parentNode.naturalWidth
     val newValue = value.invoke(baseValue, seed + 10000031)
     val currentSpace = node.minX - parentNode.localMinX
-    val delta = min(newValue - currentSpace, node.naturalWidth)
+    val delta = min(newValue - currentSpace, node.rotatedNaturalWidth)
     if (delta > 0) {
-        node.naturalWidth -= delta
+        node.rotatedWidth -= delta
         node.origin.x += delta
     }
 }
@@ -55,9 +55,9 @@ val PropPaddingFrontZ = newNodeProperty<Node, Double>("padding front z", 0.0) { 
     val baseValue = parentNode.naturalDepth
     val newValue = value.invoke(baseValue, seed + 10000032)
     val currentSpace = parentNode.localMaxZ - node.maxZ
-    val delta = min(newValue - currentSpace, node.naturalDepth)
+    val delta = min(newValue - currentSpace, node.rotatedNaturalDepth)
     if (delta > 0) {
-        node.naturalDepth -= delta
+        node.rotatedDepth -= delta
     }
 }
 
@@ -65,9 +65,9 @@ val PropPaddingBackZ = newNodeProperty<Node, Double>("padding back z", 0.0) { va
     val baseValue = parentNode.naturalDepth
     val newValue = value.invoke(baseValue, seed + 10000033)
     val currentSpace = node.minZ - parentNode.localMinZ
-    val delta = min(newValue - currentSpace, node.naturalDepth)
+    val delta = min(newValue - currentSpace, node.rotatedNaturalDepth)
     if (delta > 0) {
-        node.naturalDepth -= delta
+        node.rotatedDepth -= delta
         node.origin.z += delta
     }
 }
