@@ -14,7 +14,7 @@ import kotlin.math.round
  * Ignores padding.
  * Rounds size to integer.
  */
-class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {
+class DomSubdivide(var dir: Direction3D = EAST) : DomBuilder() {
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         if (children.isEmpty()) return children
 

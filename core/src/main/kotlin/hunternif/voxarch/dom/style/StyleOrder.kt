@@ -63,6 +63,8 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropSpireRatio,
     PropTaperRatio,
 
+    PropSubdivideDir,
+
     PropVisibility,
 )
 
