@@ -11,6 +11,7 @@ import kotlin.math.round
 
 /**
  * Subdivides space and lays out children along the given direction.
+ * Ignores padding.
  * Rounds size to integer.
  */
 class DomSubdivide(private var dir: Direction3D = UP) : DomBuilder() {

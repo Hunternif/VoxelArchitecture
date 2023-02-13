@@ -108,13 +108,13 @@ val Node.localCenter: Vec3 get() = start + size / 2
 val Node.innerFloorCenter: Vec3 get() = start.add(size.x / 2, 0.0, size.z / 2)
 
 /** Convenience property that gets and sets low-XYZ point vs parent origin.
- * Accounts for rotation. Setting it moves origin. */
+ * Centric coordinates. Accounts for rotation. Setting it moves origin. */
 var Node.minPoint: Vec3
     get() = findLocalAABB().minVec
     set(value) { origin += value - minPoint }
 
 /** Convenience property that gets and sets high-XYZ point vs parent origin.
- * Accounts for rotation. Setting it moves origin. */
+ * Centric coordinates. Accounts for rotation. Setting it moves origin. */
 var Node.maxPoint: Vec3
     get() = findLocalAABB().maxVec
     set(value) { origin += value - maxPoint }
@@ -155,6 +155,33 @@ fun Node.localSizeInDir(dir: Direction3D): Double = when (dir) {
     EAST, WEST -> width
     NORTH, SOUTH -> depth
 }
+
+
+/** Convenience property that gets low-XYZ point vs local origin.
+ * Centric coordinates. Does not account for rotation. */
+val Node.localMinPoint: Vec3 get() = start
+
+/** Convenience property that gets high-XYZ point vs local origin.
+ * Centric coordinates. Does not account for rotation. */
+val Node.localMaxPoint: Vec3 get() = start + size
+
+/** See [localMinPoint] */
+val Node.localMinX: Double get() = localMinPoint.x
+
+/** See [localMinPoint] */
+val Node.localMinY: Double get() = localMinPoint.y
+
+/** See [localMinPoint] */
+val Node.localMinZ: Double get() = localMinPoint.z
+
+/** See [localMaxPoint] */
+val Node.localMaxX: Double get() = localMaxPoint.x
+
+/** See [localMaxPoint] */
+val Node.localMaxY: Double get() = localMaxPoint.y
+
+/** See [localMaxPoint] */
+val Node.localMaxZ: Double get() = localMaxPoint.z
 
 
 /** Size in "centric" coordinates, i.e. "natural" - (1, 1, 1) */

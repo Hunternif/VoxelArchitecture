@@ -28,6 +28,14 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropAlignX,
     PropAlignZ,
 
+    // Padding can reduce size and move the node towards parent's center
+    PropPaddingTop,
+    PropPaddingBottom,
+    PropPaddingLeftX,
+    PropPaddingRightX,
+    PropPaddingBackZ,
+    PropPaddingFrontZ,
+
     // Further changes to position will break alignment
     PropY,
     PropX,
