@@ -20,6 +20,9 @@ enum class AlignY {
     /** Hugs the top of parent from within. */
     TOP,
 
+    /** Vertical center of parent. */
+    MIDDLE,
+
     /** Hugs the bottom of parent from outside. */
     BELOW,
 
@@ -86,6 +89,7 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value
         AlignY.BOTTOM -> -nodeAABB.minY
         AlignY.BELOW -> -nodeAABB.maxY - 1
         AlignY.ORIGIN -> 0.0
+        AlignY.MIDDLE -> p.height / 2 - node.height / 2 - nodeAABB.minY
     }
     if (align != AlignY.ORIGIN) newY += p.start.y
     node.origin.y = newY
@@ -167,6 +171,9 @@ fun StyleAlignmentY.below() = set(AlignY.BELOW)
 
 /** Hugs the bottom of parent from within. */
 fun StyleAlignmentY.bottom() = set(AlignY.BOTTOM)
+
+/** Vertical center of parent. */
+fun StyleAlignmentY.middle() = set(AlignY.MIDDLE)
 
 
 // XZ

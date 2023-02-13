@@ -18,6 +18,7 @@ class StyleAlignmentTest {
 
         testAlignment(Vec3(0, 4, 0)) { alignY { above() } }
         testAlignment(Vec3(0, 1, 0)) { alignY { top() } }
+        testAlignment(Vec3(0.0, 0.5, 0.0)) { alignY { middle() } }
         testAlignment(Vec3(0, -3, 0)) { alignY { below() } }
         testAlignment(Vec3(0, 0, 0)) { alignY { bottom() } }
 
@@ -40,10 +41,11 @@ class StyleAlignmentTest {
 
         testAlignment(Vec3(1.5, 0.0, 1.5), centeredChild = true) { alignXZ { center() } }
 
-        testAlignment(Vec3(0, 4, 0), centeredChild = true) { alignY { above() } }
-        testAlignment(Vec3(0, 1, 0), centeredChild = true) { alignY { top() } }
-        testAlignment(Vec3(0, -3, 0), centeredChild = true) { alignY { below() } }
-        testAlignment(Vec3(0, 0, 0), centeredChild = true) { alignY { bottom() } }
+        testAlignment(Vec3(0, 5, 0), centeredChild = true) { alignY { above() } }
+        testAlignment(Vec3(0, 2, 0), centeredChild = true) { alignY { top() } }
+        testAlignment(Vec3(0.0, 1.5, 0.0), centeredChild = true) { alignY { middle() } }
+        testAlignment(Vec3(0, -2, 0), centeredChild = true) { alignY { below() } }
+        testAlignment(Vec3(0, 1, 0), centeredChild = true) { alignY { bottom() } }
 
         testAlignment(Vec3(1.5, 0.0, 0.0), centeredChild = true) { alignX { center() } }
         testAlignment(Vec3(2, 0, 0), centeredChild = true) { alignX { eastIn() } }
@@ -64,10 +66,11 @@ class StyleAlignmentTest {
 
         testAlignment(Vec3(-1, 0, -1), centeredParent = true) { alignXZ { center() } }
 
-        testAlignment(Vec3(0, 4, 0), centeredParent = true) { alignY { above() } }
-        testAlignment(Vec3(0, 1, 0), centeredParent = true) { alignY { top() } }
-        testAlignment(Vec3(0, -3, 0), centeredParent = true) { alignY { below() } }
-        testAlignment(Vec3(0, 0, 0), centeredParent = true) { alignY { bottom() } }
+        testAlignment(Vec3(0.0, 2.5, 0.0), centeredParent = true) { alignY { above() } }
+        testAlignment(Vec3(0.0, -0.5, 0.0), centeredParent = true) { alignY { top() } }
+        testAlignment(Vec3(0.0, -1.0, 0.0), centeredParent = true) { alignY { middle() } }
+        testAlignment(Vec3(0.0, -4.5, 0.0), centeredParent = true) { alignY { below() } }
+        testAlignment(Vec3(0.0, -1.5, 0.0), centeredParent = true) { alignY { bottom() } }
 
         testAlignment(Vec3(-1, 0, 0), centeredParent = true) { alignX { center() } }
         testAlignment(Vec3(-0.5, 0.0, 0.0), centeredParent = true) { alignX { eastIn() } }
@@ -88,10 +91,11 @@ class StyleAlignmentTest {
 
         testAlignment(Vec3(0, 0, 0), true, true) { alignXZ { center() } }
 
-        testAlignment(Vec3(0, 4, 0), true, true) { alignY { above() } }
-        testAlignment(Vec3(0, 1, 0), true, true) { alignY { top() } }
-        testAlignment(Vec3(0, -3, 0), true, true) { alignY { below() } }
-        testAlignment(Vec3(0, 0, 0), true, true) { alignY { bottom() } }
+        testAlignment(Vec3(0.0, 3.5, 0.0), true, true) { alignY { above() } }
+        testAlignment(Vec3(0.0, 0.5, 0.0), true, true) { alignY { top() } }
+        testAlignment(Vec3(0, 0, 0), true, true) { alignY { middle() } }
+        testAlignment(Vec3(0.0, -3.5, 0.0), true, true) { alignY { below() } }
+        testAlignment(Vec3(0.0, -0.5, 0.0), true, true) { alignY { bottom() } }
 
         testAlignment(Vec3(0, 0, 0), true, true) { alignX { center() } }
         testAlignment(Vec3(0.5, 0.0, 0.0), true, true) { alignX { eastIn() } }
@@ -115,11 +119,11 @@ class StyleAlignmentTest {
         val style = defaultStyle.add {
             style("parent") {
                 size(4.vx, 4.vx, 4.vx)
-                snapOrigin { if (centeredParent) floorCenter() else corner() }
+                snapOrigin { if (centeredParent) center() else corner() }
             }
             style("child") {
                 size(3.vx, 3.vx, 3.vx)
-                snapOrigin { if (centeredChild) floorCenter() else corner() }
+                snapOrigin { if (centeredChild) center() else corner() }
                 styleBlock()
             }
         }
