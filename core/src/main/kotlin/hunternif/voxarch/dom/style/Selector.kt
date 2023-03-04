@@ -5,38 +5,59 @@ import hunternif.voxarch.util.ifNotEmpty
 
 /**
  * CSS-like selector, defines to which DOM elements a rule will apply.
- *
- * @param styleClasses are the "CSS classes".
- * @param inheritedStyleClasses are the "CSS classes" inherited from parents.
- * @param types are the optional "CSS tags" (a Node or a DomBuilder).
- * @param instances are specific instances of DOM Builder.
- *      //TODO: replace instance with #id.
  */
 class Selector {
-    /** the "CSS classes" */
+    /**
+     * "CSS classes"
+     * The rule applies if the element uses *all* these classes.
+     */
     val styleClasses: MutableSet<String> = linkedSetOf()
 
-    /** the "CSS classes" inherited from parents */
-    val inheritedStyleClasses: MutableSet<String> = linkedSetOf()
+    /**
+     * Matches any ancestor in the lineage (build chain).
+     * The rule applies if any of the element's ancestors match *any* selector
+     * in this set.
+     */
+    val ancestorSelectors: MutableSet<Selector> = linkedSetOf()
 
-    /** "CSS tags" (a Node or a DomBuilder) */
+    /**
+     * Matches only the direct parent.
+     * The rule applies if the element's direct parent matches *any* selector
+     * in this set.
+     */
+    val parentSelectors: MutableSet<Selector> = linkedSetOf()
+
+    /**
+     * "CSS tags" (a Node or a DomBuilder).
+     * The rule applies if the element's type matches *any* type in this set.
+     */
     val types: MutableSet<Class<*>> = linkedSetOf()
 
     /** specific instances of DOM Builder */
+    //TODO: replace instance with #id.
     val instances: MutableSet<DomBuilder> = linkedSetOf()
 
-    fun appliesToStyleClass(styleClasses: Set<String>) =
+    private fun appliesToStyleClass(styleClasses: Set<String>) =
         this.styleClasses.isEmpty() || styleClasses.containsAll(this.styleClasses)
 
-    fun appliesToInheritedStyleClass(styleClasses: Set<String>) =
-        inheritedStyleClasses.isEmpty() ||
-            styleClasses.containsAll(inheritedStyleClasses)
-
-    fun appliesToType(type: Class<*>) =
+    private fun appliesToType(type: Class<*>) =
         types.isEmpty() || types.any { it.isAssignableFrom(type) }
 
-    fun appliesToInstance(instance: DomBuilder) =
+    private fun appliesToInstance(instance: DomBuilder) =
         instances.isEmpty() || instances.any { it == instance }
+
+    private fun appliesToParent(parent: StyledElement<*>?): Boolean {
+        if (parentSelectors.isEmpty()) return true
+        if (parent == null) return false
+        return parentSelectors.any { it.appliesTo(parent) }
+    }
+
+    private fun appliesToAncestor(lineage: List<StyledElement<*>>): Boolean {
+        if (ancestorSelectors.isEmpty()) return true
+        return lineage.any { parent ->
+            ancestorSelectors.any { it.appliesTo(parent) }
+        }
+    }
 
     fun appliesTo(element: StyledElement<*>): Boolean {
         val type = when (element) {
@@ -46,22 +67,12 @@ class Selector {
         return appliesToInstance(element.domBuilder) &&
             appliesToType(type) &&
             appliesToStyleClass(element.styleClass) &&
-            appliesToInheritedStyleClass(
-                element.inheritedStyleClass + element.styleClass)
+            appliesToParent(element.parent) &&
+            appliesToAncestor(element.ctx.lineage)
     }
 
     fun style(vararg styleClass: String): Selector {
         styleClasses.addAll(styleClass)
-        return this
-    }
-
-    fun inheritStyle(vararg styleClass: String): Selector {
-        inheritedStyleClasses.addAll(styleClass)
-        return this
-    }
-
-    fun inherit(parentInstance: DomBuilder): Selector {
-        inheritedStyleClasses.add(parentInstance.uniqueClass)
         return this
     }
 
@@ -87,14 +98,16 @@ class Selector {
 
     fun isEmpty(): Boolean =
         styleClasses.isEmpty() && types.isEmpty() && instances.isEmpty()
-            && inheritedStyleClasses.isEmpty()
+            && parentSelectors.isEmpty() && ancestorSelectors.isEmpty()
 
     override fun toString(): String {
-        val inheritedStr = inheritedStyleClasses.joinToString(" ") { ".$it" }
+        val parentStr = parentSelectors.joinToString(", ")
+        val ancestorStr = ancestorSelectors.joinToString(", ")
         return mutableListOf<String>().apply {
+            ancestorStr.ifNotEmpty { add("[$it]") }
+            parentStr.ifNotEmpty { add("$it >") }
             addAll(types.map { it.simpleName })
             addAll(styleClasses.map { ".$it" })
-            inheritedStr.ifNotEmpty { add("[$it]") }
             addAll(instances.map { "#${it.javaClass.simpleName}" })
         }.joinToString(" ")
     }
@@ -109,15 +122,28 @@ fun select(vararg styleClass: String) = Selector().apply {
     styleClasses.addAll(styleClass)
 }
 
-/** Creates a selector with inherited style names */
-fun selectInherit(vararg styleClass: String) = Selector().apply {
-    inheritedStyleClasses.addAll(styleClass)
+/** Creates a selector for immediate children of elements with style names.
+ * This includes only immediate children. */
+fun selectChildOf(vararg styleClass: String) = Selector().apply {
+    parentSelectors.add(select(*styleClass))
 }
 
-/** Creates a selector for children of the given instance.
+/** Creates a selector for direct children of the given instance.
+ * This includes only immediate children. */
+fun selectChildOf(parentInstance: DomBuilder) = Selector().apply {
+    parentSelectors.add(select(parentInstance))
+}
+
+/** Creates a selector for descendants of elements with style name.
  * This includes non-immediate children too. */
-fun selectInherit(parentInstance: DomBuilder) = Selector().apply {
-    inheritedStyleClasses.add(parentInstance.uniqueClass)
+fun selectDescendantOf(vararg styleClass: String) = Selector().apply {
+    ancestorSelectors.add(select(*styleClass))
+}
+
+/** Creates a selector for descendants of the given instance.
+ * This includes non-immediate children too. */
+fun selectDescendantOf(parentInstance: DomBuilder) = Selector().apply {
+    ancestorSelectors.add(select(parentInstance))
 }
 
 /** Creates a selector with types */
@@ -136,11 +162,13 @@ operator fun Selector.plus(other: Selector): Selector {
     val ret = Selector()
     ret.styleClasses.addAll(this.styleClasses)
     ret.styleClasses.addAll(other.styleClasses)
-    ret.inheritedStyleClasses.addAll(this.inheritedStyleClasses)
-    ret.inheritedStyleClasses.addAll(other.inheritedStyleClasses)
     ret.types.addAll(this.types)
     ret.types.addAll(other.types)
     ret.instances.addAll(this.instances)
     ret.instances.addAll(other.instances)
+    ret.parentSelectors.addAll(this.parentSelectors)
+    ret.parentSelectors.addAll(other.parentSelectors)
+    ret.ancestorSelectors.addAll(this.ancestorSelectors)
+    ret.ancestorSelectors.addAll(other.ancestorSelectors)
     return ret
 }

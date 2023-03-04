@@ -1,7 +1,7 @@
 package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.style.property.*
-import hunternif.voxarch.dom.style.selectInherit
+import hunternif.voxarch.dom.style.selectChildOf
 import hunternif.voxarch.dom.style.set
 
 /**
@@ -34,22 +34,22 @@ class DomExtend : DomBuilder() {
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         //TODO: make sure stylesheet is modified only once
         ctx.stylesheet.add {
-            style(selectInherit(north).instances(north.children)) {
+            style(selectChildOf(north).instances(north.children)) {
                 alignX { center() }
                 alignZ { northOut() }
                 rotation { set(90.0) }
             }
-            style(selectInherit(south).instances(south.children)) {
+            style(selectChildOf(south).instances(south.children)) {
                 alignX { center() }
                 alignZ { southOut() }
                 rotation { set(-90.0) }
             }
-            style(selectInherit(east).instances(east.children)) {
+            style(selectChildOf(east).instances(east.children)) {
                 alignZ { center() }
                 alignX { eastOut() }
                 // default rotation
             }
-            style(selectInherit(west).instances(west.children)) {
+            style(selectChildOf(west).instances(west.children)) {
                 alignZ { center() }
                 alignX { westOut() }
                 rotation { set(180.0) }

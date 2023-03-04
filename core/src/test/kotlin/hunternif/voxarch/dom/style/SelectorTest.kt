@@ -19,15 +19,16 @@ class SelectorTest {
         val domBld = domRoot()
         val selA = select("abc").type(Int::class.java)
         val selB = select("123").instance(domBld)
-        val selC = selectInherit("base")
+        val selC = selectChildOf("base")
         val sum = selA + selB + selC
         assertNotEquals(selA, sum)
         assertNotEquals(selB, sum)
         assertNotEquals(selC, sum)
         assertEquals(setOf("abc", "123"), sum.styleClasses)
-        assertEquals(setOf("base"), sum.inheritedStyleClasses)
         assertEquals(setOf(Int::class.java), sum.types)
         assertEquals(setOf(domBld), sum.instances)
+        assertEquals(1, sum.parentSelectors.size)
+        assertEquals(setOf("base"), sum.parentSelectors.first().styleClasses)
     }
 
     @Test
@@ -35,12 +36,13 @@ class SelectorTest {
         val domBld = domRoot()
         val selA = select("abc").type(Room::class.java)
         val selB = select("123").instance(domBld)
-        val selC = selectInherit("base", "test")
-        val sum = selA + selB + selC
+        val selC = selectChildOf("base", "test")
+        val selD = selectDescendantOf("base", "test")
 
         assertEquals("Room .abc", selA.toString())
         assertEquals(".123 #DomRoot", selB.toString())
-        assertEquals("[.base .test]", selC.toString())
-        assertEquals("Room .abc .123 [.base .test] #DomRoot", sum.toString())
+        assertEquals(".base .test >", selC.toString())
+        assertEquals(".base .test > Room .abc .123 #DomRoot", (selA + selB + selC).toString())
+        assertEquals("[.base .test] Room .abc .123 #DomRoot", (selA + selB + selD).toString())
     }
 }

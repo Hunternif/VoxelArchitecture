@@ -245,17 +245,22 @@ class DomTest {
     @Test
     fun `apply inherited style classes`() {
         val style = Stylesheet().add {
-            styleInherit("tall") {
+            style(selectChildOf("tall")) {
                 height { 10.vx }
             }
             style("wide") {
                 width { 20.vx }
             }
+            style(selectDescendantOf("deep")) {
+                depth { 2.vx }
+            }
         }
         val dom = domRoot {
-            room("parent", "tall") {
+            room("parent", "tall", "deep") {
                 room("child1")
-                room("child2", "wide")
+                room("child2", "wide") {
+                    room("child4")
+                }
             }
             room("room3", "wide")
         }.buildDom(style)
@@ -263,10 +268,12 @@ class DomTest {
         val parent = dom.query<Room>("parent").first()
         val child1 = dom.query<Room>("child1").first()
         val child2 = dom.query<Room>("child2").first()
+        val child4 = dom.query<Room>("child4").first()
         val room3 = dom.query<Room>("room3").first()
-        assertEquals(Vec3(1, 10, 1), parent.naturalSize)
-        assertEquals(Vec3(1, 10, 1), child1.naturalSize)
-        assertEquals(Vec3(20, 10, 1), child2.naturalSize)
+        assertEquals(Vec3(1, 1, 1), parent.naturalSize)
+        assertEquals(Vec3(1, 10, 2), child1.naturalSize)
+        assertEquals(Vec3(20, 10, 2), child2.naturalSize)
+        assertEquals(Vec3(1, 1, 2), child4.naturalSize)
         assertEquals(Vec3(20, 1, 1), room3.naturalSize)
     }
 

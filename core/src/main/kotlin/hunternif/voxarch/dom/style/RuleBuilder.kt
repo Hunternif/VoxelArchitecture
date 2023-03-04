@@ -39,11 +39,11 @@ class RuleBuilder(
      * Register a style rule which will be applied to all child elements of
      * the parent with this style class.
      */
-    fun styleInherit(
+    fun styleChildOf(
         vararg styleClass: String,
         block: Rule.() -> Unit,
     ) {
-        val rule = Rule(selectInherit(*styleClass)).apply(block)
+        val rule = Rule(selectChildOf(*styleClass)).apply(block)
         stylesheet.addRule(rule)
     }
 
@@ -52,11 +52,11 @@ class RuleBuilder(
      * this parent instance. This is achieved via unique style class.
      * //TODO: use id here?
      */
-    fun styleInherit(
+    fun styleChildOf(
         instance: DomBuilder,
         block: Rule.() -> Unit,
     ) {
-        val rule = Rule(selectInherit(instance)).apply(block)
+        val rule = Rule(selectChildOf(instance)).apply(block)
         stylesheet.addRule(rule)
     }
 
