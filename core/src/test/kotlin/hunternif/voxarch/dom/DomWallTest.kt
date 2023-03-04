@@ -22,6 +22,7 @@ class DomWallTest {
         val dom = domRoot {
             polyRoom {
                 allWalls {
+                    wall()
                     addChild(seedCounter)
                 }
             }
@@ -59,6 +60,7 @@ class DomWallTest {
         val dom = domRoot {
             room {
                 fourWalls {
+                    wall()
                     addChild(seedCounter)
                 }
             }
@@ -81,6 +83,7 @@ class DomWallTest {
         val dom = domRoot {
             room {
                 allWalls {
+                    wall()
                     addChild(seedCounter)
                 }
             }

@@ -23,6 +23,14 @@ class DomLineSegmentBuilder(
         // Using a generic StyledElement avoids calling styles on dummyWall:
         return StyledElement(this, ctx.copy(parentNode = dummyWall))
     }
+
+    override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
+        if (children.isEmpty()) return children
+        val ctx = children.first().ctx
+        val dummyWall = ctx.parentNode
+        dummyWall.collapse()
+        return children
+    }
 }
 
 /**
