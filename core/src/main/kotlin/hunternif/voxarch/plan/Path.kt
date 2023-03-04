@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.util.MathUtil
 import hunternif.voxarch.vector.AABB
 import hunternif.voxarch.vector.Vec3
 
@@ -8,7 +9,9 @@ data class PathSegment(
     val p2: Vec3,
     val length: Double,
     val distanceFromStart: Double
-)
+) {
+    val angleY: Double get() = MathUtil.atan2Deg(p1.z - p2.z, p2.x - p1.x)
+}
 
 /**
  * The points contained in this path are relative to [origin].

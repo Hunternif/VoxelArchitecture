@@ -62,6 +62,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 roofShape { set(RoofShape.FLAT_BORDERED) }
                 bottomShape { set(BottomShape.TAPERED) }
                 size(9.vx, 11.vx, 9.vx)
+                rotation { set(0.0) }
             }
             style("inner_ward_turret") {
                 shape { set(PolyShape.SQUARE) }

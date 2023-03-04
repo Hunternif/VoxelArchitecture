@@ -1,5 +1,8 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.dom.style.property.rotation
+import hunternif.voxarch.dom.style.selectChildOf
+import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
@@ -23,16 +26,23 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
                 rectangle(parentNode.width, parentNode.depth)
             }
         }
-        return createCornerBuilders(polygon)
+        return createCornerBuilders(ctx, polygon)
     }
 
-    protected fun createCornerBuilders(polygon: Path): List<DomBuilder> =
-        polygon.points.map { point ->
+    protected fun createCornerBuilders(ctx: DomBuildContext, polygon: Path): List<DomBuilder> =
+        polygon.segments.map { seg ->
             // Add origin because points are defined vs polygon origin
-            val bld = DomTranslateBuilder((point + polygon.origin).round())
+            val bld = DomTranslateBuilder((seg.p1 + polygon.origin).round())
             //TODO: round to global voxels, not local
             bld.seedOffset = 10000
             bld.children.addAll(children)
+            // Rotate children along the wall.
+            // Do it via style, so child elements can override rotation to 0.
+            ctx.stylesheet.add {
+                style(selectChildOf(bld)) {
+                    rotation { set(seg.angleY) }
+                }
+            }
             bld
         }
 }
@@ -50,6 +60,6 @@ class DomLogicFourCornerBuilder : DomLogicPolyCornerBuilder() {
             origin = parentNode.innerFloorCenter
             rectangle(parentNode.width, parentNode.depth)
         }
-        return createCornerBuilders(polygon)
+        return createCornerBuilders(ctx, polygon)
     }
 }
