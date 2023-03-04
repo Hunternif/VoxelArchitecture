@@ -318,4 +318,36 @@ class NodeExtensionTest {
         assertEquals(childGlobalRef2, child.findGlobalAABB().toIntAABB())
         assertEquals(childLocalRef1, child.findLocalAABB().toIntAABB())
     }
+
+    @Test
+    fun `collapse node`() {
+        val root1 = Node(Vec3(1, 0, 0)).apply { rotationY = 45.0 }
+        val child1 = Node(Vec3(1, 0, 0)).apply { rotationY = 90.0 }
+        val child2 = Node(Vec3(1, 0, 0))
+        root1.addChild(child1)
+        child1.addChild(child2)
+        child1.collapse()
+        assertEquals(listOf(child2), root1.children)
+        assertEquals(Vec3(1, 0, -1), child2.origin)
+        assertEquals(90.0, child2.rotationY, 0.0)
+    }
+
+    @Test
+    fun `collapse walls`() {
+        val room = Room(Vec3(0, 0, 0), Vec3(3, 9, 5))
+        room.snapOrigin(SnapOrigin.FLOOR_CENTER)
+        val dummyWall1 = room.wall(Vec3(1, 0, 2), Vec3(1, 9, -2))
+        val dummyWall2 = room.wall(Vec3(1, 0, -2), Vec3(-1, 9, -2))
+        val innerWall1 = dummyWall1.wall(Vec3(0, 0, 0), Vec3(4, 9, 0))
+        val innerWall2 = dummyWall2.wall(Vec3(0, 0, 0), Vec3(2, 9, 0))
+        assertEquals(0.0, innerWall1.rotationY, 0.0)
+        assertEquals(0.0, innerWall2.rotationY, 0.0)
+        dummyWall1.collapse()
+        dummyWall2.collapse()
+        assertEquals(listOf(innerWall1, innerWall2), room.children)
+        assertEquals(Vec3(1, 0, 2), innerWall1.origin)
+        assertEquals(Vec3(1, 9, -2), innerWall1.end)
+        assertEquals(Vec3(1, 0, -2), innerWall2.origin)
+        assertEquals(Vec3(-1, 9, -2), innerWall2.end)
+    }
 }

@@ -268,3 +268,23 @@ fun Double.naturalToCentric(): Double = this - 1
 
 /** Converting natural coordinate to centric */
 fun Vec3.naturalToCentric(): Vec3 = this.subtract(1.0, 1.0, 1.0)
+
+/**
+ * Removes this node from the tree, moves its children into its parent,
+ * maintains their global positions.
+ * Similar to removing an element from a linked list.
+ * If this node has no parent, it does nothing.
+ */
+fun Node.collapse() {
+    val parent = this.parent ?: return
+    val trans = LinearTransformation().apply {
+        translate(origin)
+        rotateY(rotationY)
+    }
+    children.toList().forEach {
+        parent.addChild(it)
+        it.origin = trans.transform(it.origin)
+        it.rotationY += rotationY
+    }
+    parent.removeChild(this)
+}
