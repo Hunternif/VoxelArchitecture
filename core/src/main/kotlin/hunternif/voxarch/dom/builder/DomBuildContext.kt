@@ -21,21 +21,9 @@ data class DomBuildContext(
 
     /** Chain of execution up to this point. */
     val lineage: List<StyledElement<*>> = listOf(),
-
-    /** Style classes inherited from all parent DOM elements. */
-    val inheritedStyleClass: MutableSet<String> = linkedSetOf(),
 ) {
     /** Immediate parent DOM element. */
     val parent: StyledElement<*>? get() = lineage.lastOrNull()
-
-    fun inherit(ctx: DomBuildContext): DomBuildContext {
-        inheritedStyleClass.addAll(ctx.inheritedStyleClass)
-        return this
-    }
-    fun inherit(styleClasses: Iterable<String>): DomBuildContext {
-        inheritedStyleClass.addAll(styleClasses)
-        return this
-    }
 
     /**
      * Creates context for a child of this element.
@@ -51,5 +39,5 @@ data class DomBuildContext(
         stylesheet,
         seed,
         lineage + parent,
-    ).inherit(inheritedStyleClass)
+    )
 }

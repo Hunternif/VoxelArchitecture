@@ -368,14 +368,12 @@ class DomTest {
     fun `deep-copy DomBuildContext`() {
         val dom1 = DomBuilder()
         val dom2 = DomBuilder()
-        val ctx1 = DomBuildContext(Node(), defaultStyle, 0).inherit(listOf("class1"))
+        val ctx1 = DomBuildContext(Node(), defaultStyle, 0)
         val styled1 = dom1.prepareForLayout(ctx1)
         dom2.prepareForLayout(ctx1)
         val ctx2 = ctx1.makeChildCtx(parent = styled1)
         assertEquals(styled1, ctx2.parent)
-        assertEquals(setOf("class1"), ctx2.inheritedStyleClass)
-        ctx2.inherit(listOf("class2"))
-        assertEquals(setOf("class1"), ctx1.inheritedStyleClass)
-        assertEquals(setOf("class1", "class2"), ctx2.inheritedStyleClass)
+        assertEquals(listOf(styled1), ctx2.lineage)
+        assertEquals(listOf<StyledElement<*>>(), ctx1.lineage)
     }
 }

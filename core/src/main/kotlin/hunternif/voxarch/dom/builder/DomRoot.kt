@@ -29,7 +29,6 @@ class DomRoot(
         // immutable, i.e. its children will never modify it.
 
         val rootCtx = DomBuildContext(node, stylesheet, seed)
-            .inherit(styleClass)
         val rootElement = prepareForLayout(rootCtx)
 
         // This queue contains fully completed parent elements,

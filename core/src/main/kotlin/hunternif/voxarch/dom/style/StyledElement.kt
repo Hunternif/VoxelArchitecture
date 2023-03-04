@@ -13,7 +13,6 @@ open class StyledElement<D : DomBuilder>(
     val parent: StyledElement<*>? get() = ctx.parent
     val parentNode: Node get() = ctx.parentNode
     val styleClass: Set<String> get() = domBuilder.styleClass
-    val inheritedStyleClass: Set<String> get() = ctx.inheritedStyleClass
 
     val isVisible: Boolean get() = domBuilder.visibility == Visibility.VISIBLE
 
@@ -26,7 +25,7 @@ open class StyledElement<D : DomBuilder>(
     open fun cleanup() {}
 
     open fun makeChildCtx(): DomBuildContext =
-        ctx.makeChildCtx(this).inherit(styleClass)
+        ctx.makeChildCtx(this)
 
     override fun toString(): String =
         "Styled<${domBuilder::class.java.simpleName}>"
@@ -49,7 +48,7 @@ class StyledNode<N : Node>(
     }
 
     override fun makeChildCtx(): DomBuildContext =
-        ctx.makeChildCtx(this, node).inherit(styleClass)
+        ctx.makeChildCtx(this, node)
 
     override fun toString(): String = "Styled<${node::class.java.simpleName}>"
 }
