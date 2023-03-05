@@ -21,7 +21,7 @@ class JsonBlueprintSerializerTest : BaseAppTest() {
         app.linkBlueprintSlots(node1.outputs.first { it.name == "east" }, node2.inputs[0])
 
         val json = serializeToJsonStr(bp, true)
-        assertEquals(exampleBpJson, json.trimXml())
+        assertEquals(exampleBpJson, json.fixCRLF())
     }
 
     @Test
@@ -36,7 +36,7 @@ class JsonBlueprintSerializerTest : BaseAppTest() {
         assertEquals(2, bp.linkIDs.map.size)
 
         val reserialized = serializeToJsonStr(bp, true)
-        assertEquals(exampleBpJson, reserialized.trimXml())
+        assertEquals(exampleBpJson, reserialized.fixCRLF())
     }
 
     private val exampleBpJson = """

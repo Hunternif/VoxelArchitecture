@@ -62,8 +62,8 @@ class XmlSceneObjectSerializerTest {
     @Test
     fun `serialize Node tree as SceneObject`() {
         val obj = registry.createNodes(structure)
-        val actualSceneXml = serializeToXmlStr(obj, true).trimXml()
-        val actualNodeXml = serializeToXmlStr(obj.node, true).trimXml()
+        val actualSceneXml = serializeToXmlStr(obj, true).fixCRLF()
+        val actualNodeXml = serializeToXmlStr(obj.node, true).fixCRLF()
         assertEquals(sceneXml, actualSceneXml)
         assertEquals(nodeXml, actualNodeXml)
     }
@@ -85,6 +85,6 @@ class XmlSceneObjectSerializerTest {
         assertEquals(room2.node, parent.node.children[1])
 
         val reserialized = serializeToXmlStr(obj, true)
-        assertEquals(sceneXml, reserialized.trimXml())
+        assertEquals(sceneXml, reserialized.fixCRLF())
     }
 }
