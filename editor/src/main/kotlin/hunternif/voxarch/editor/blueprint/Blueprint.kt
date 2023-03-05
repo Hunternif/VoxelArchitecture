@@ -35,9 +35,7 @@ class Blueprint(
         y: Float = 0f,
         domBuilder: DomBuilder,
     ): BlueprintNode {
-        val node = BlueprintNode(nodeIDs.newID(), name, this, domBuilder)
-        node.x = x
-        node.y = y
+        val node = BlueprintNode(nodeIDs.newID(), name, this, domBuilder, x, y)
         nodeIDs.save(node)
         nodes.add(node)
         domBuilder.addStyle(node.styleClass)
@@ -89,19 +87,31 @@ class BlueprintNode(
     val name: String,
     val bp: Blueprint,
     val domBuilder: DomBuilder,
+    var x: Float = 0f,
+    var y: Float = 0f,
 ) : WithID {
     val styleClass = "${name}_${id}"
     val rule: Rule = Rule(select(styleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
-    var x: Float = 0f
-    var y: Float = 0f
 
-    internal fun addInput(name: String): BlueprintSlot.In =
-        BlueprintSlot.In(name, this).also { inputs.add(it) }
+    internal fun addInput(name: String): BlueprintSlot.In {
+        val id = bp.slotIDs.newID()
+        return BlueprintSlot.In(id, name, this).also {
+            inputs.add(it)
+            bp.slotIDs.save(it)
+        }
+    }
 
-    internal fun addOutput(name: String, domSlot: DomBuilder = domBuilder): BlueprintSlot.Out =
-        BlueprintSlot.Out(name, this, domSlot).also { outputs.add(it) }
+    internal fun addOutput(
+        name: String, domSlot: DomBuilder = domBuilder,
+    ): BlueprintSlot.Out {
+        val id = bp.slotIDs.newID()
+        return BlueprintSlot.Out(id, name, this, domSlot).also {
+            outputs.add(it)
+            bp.slotIDs.save(it)
+        }
+    }
 
     fun applyImNodesPos() {
         ImNodes.setNodeGridSpacePos(id, x, y)
@@ -109,23 +119,22 @@ class BlueprintNode(
 }
 
 sealed class BlueprintSlot(
+    override val id: Int,
     val name: String,
     val bp: Blueprint,
     val node: BlueprintNode,
-    override val id: Int = bp.slotIDs.newID(),
 ) : WithID {
-    init {
-        bp.slotIDs.save(this)
-    }
     val links = LinkedHashSet<BlueprintLink>()
 
-    class In(name: String, node: BlueprintNode) : BlueprintSlot(name, node.bp, node)
+    class In(id: Int, name: String, node: BlueprintNode)
+        : BlueprintSlot(id, name, node.bp, node)
 
     class Out(
+        id: Int,
         name: String,
         node: BlueprintNode,
         val domSlot: DomBuilder,
-    ) : BlueprintSlot(name, node.bp, node) {
+    ) : BlueprintSlot(id, name, node.bp, node) {
         fun linkTo(dest: In): BlueprintLink {
             val existingLink = links.firstOrNull { it.from == this && it.to == dest }
             if (existingLink != null) return existingLink
