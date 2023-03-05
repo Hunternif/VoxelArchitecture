@@ -9,7 +9,7 @@ import hunternif.voxarch.storage.ChunkedStorage3D
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
-import hunternif.voxarch.vector.Array3D
+import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.IntVec3
 
 
@@ -34,21 +34,19 @@ class VoxFileStorage(
     private val colorIndex = mutableMapOf<VoxColor, Byte>()
     private var voxelCount = 0
 
-    override val minX: Int = 0
-    override val minY: Int = 0
-    override val minZ: Int = 0
-    // -1 because coordinates are centric
-    override val maxX: Int get() = containerSize.x - 1
-    override val maxY: Int get() = containerSize.y - 1
-    override val maxZ: Int get() = containerSize.z - 1
+    private val container = IntAABB()
 
-    var containerSize: IntVec3 = data.sizeVec
-        set(value) { field.set(value) }
+    override val minX: Int get() = container.minX
+    override val minY: Int get() = container.minY
+    override val minZ: Int get() = container.minZ
+    override val maxX: Int get() = container.maxX
+    override val maxY: Int get() = container.maxY
+    override val maxZ: Int get() = container.maxZ
 
-    constructor(width: Int, height: Int, depth: Int):
-        this(Array3D<VoxColor?>(width, height, depth, null)) {
-            containerSize.set(width, height, depth)
-        }
+    constructor(width: Int, height: Int, depth: Int): this() {
+        container.setMin(0, 0, 0)
+        container.setMax(width - 1, height - 1, depth - 1)
+    }
 
     override val size: Int get() = data.size
     override fun get(x: Int, y: Int, z: Int): VoxColor? = data[x, y, z]
@@ -58,6 +56,7 @@ class VoxFileStorage(
             if (data[x, y, z] != null) voxelCount--
         } else {
             if (data[x, y, z] == null) voxelCount++
+            container.union(x, y, z)
             palette.add(v)
         }
         data[x, y, z] = v
@@ -155,6 +154,7 @@ class VoxFileStorage(
                 val pos = it.position.toIntVec3()
                 val color = file.palette[it.colourIndex] and 0xffffff
                 storage.data[pos] = VoxColor(color)
+                storage.container.union(pos)
             }
             return storage
         }
