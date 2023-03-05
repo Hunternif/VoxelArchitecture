@@ -3,7 +3,6 @@ package hunternif.voxarch.editor.file
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -13,10 +12,8 @@ class JsonBlueprintSerializerTest : BaseAppTest() {
     fun `serialize blueprint`() {
         app.state.registry.blueprintIDs.lastID = 23
         val bp = app.state.registry.newBlueprint("Test blueprint")
-        val domExtend = domBuilderFactoryByName["Extend"]!!()
-        val node1 = app.newBlueprintNode(bp, "Extend", domExtend, 100f, 20f)
-        val domRoom = domBuilderFactoryByName["Room"]!!()
-        val node2 = app.newBlueprintNode(bp, "Room", domRoom, 200f, 30f)
+        val node1 = app.newBlueprintNode(bp, "Extend", 100f, 20f)!!
+        val node2 = app.newBlueprintNode(bp, "Room", 200f, 30f)!!
         app.linkBlueprintSlots(bp.start.outputs[0], node1.inputs[0])
         app.linkBlueprintSlots(node1.outputs.first { it.name == "east" }, node2.inputs[0])
 

@@ -1,6 +1,5 @@
 package hunternif.voxarch.editor.actions
 
-import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
@@ -36,15 +35,17 @@ fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
 
 fun EditorApp.selectBlueprint(bp: Blueprint?) = historyAction(OpenBlueprint(bp))
 
+/** Looks up the DomBuilder factory by name and creates a BP node with it.
+ * If not found, returns null. */
 fun EditorApp.newBlueprintNode(
     bp: Blueprint,
     name: String,
-    domBuilder: DomBuilder,
     x: Float = 0f,
     y: Float = 0f,
     autoLinkFrom: BlueprintSlot.Out? = null,
-): BlueprintNode {
-    val action = BlueprintNewNode(bp, name, domBuilder, x, y, autoLinkFrom)
+): BlueprintNode? {
+    val factory = domBuilderFactoryByName[name] ?: return null
+    val action = BlueprintNewNode(bp, name, factory(), x, y, autoLinkFrom)
     historyAction(action)
     return action.node
 }

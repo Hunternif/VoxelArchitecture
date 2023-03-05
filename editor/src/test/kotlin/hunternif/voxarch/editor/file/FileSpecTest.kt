@@ -81,7 +81,7 @@ class FileSpecTest : BaseAppTest() {
         app.newBlueprint(app.state.rootNode)
         app.newBlueprint(node2)
         val bp = node2.blueprints[0]
-        app.newBlueprintNode(bp, "Floor", DomBuilder(), 120f, 14f)
+        app.newBlueprintNode(bp, "Floor", 120f, 14f)
 
         val refPath = resourcePath("project/2_rooms.voxarch")
         val testPath = tempDir.resolve("2_rooms.voxarch")

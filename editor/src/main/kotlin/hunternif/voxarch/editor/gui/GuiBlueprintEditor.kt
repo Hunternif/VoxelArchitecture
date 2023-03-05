@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
-import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.util.ColorRGBa
 import imgui.ImColor
 import imgui.ImGui
@@ -245,11 +244,8 @@ class GuiBlueprintEditor(
     }
 
     private fun Blueprint.addNodeWithDomElement(name: String, pos: ImVec2) {
-        val domBuilderFactory = domBuilderFactoryByName[name]
-        domBuilderFactory?.let {
-            app.newBlueprintNode(this, name, it(),
-                // place node higher so that cursor lands on the input slot
-                pos.x, pos.y - 35f, lastOutSlot)
-        }
+        app.newBlueprintNode(this, name,
+            // place node higher so that cursor lands on the input slot
+            pos.x, pos.y - 35f, lastOutSlot)
     }
 }
