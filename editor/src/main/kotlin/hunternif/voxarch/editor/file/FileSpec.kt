@@ -1,8 +1,11 @@
 package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.AppStateImpl
+import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -104,8 +107,15 @@ fun EditorAppImpl.readProject(path: Path) {
             deserializeXml(it.readText(), XmlSceneTree::class)
         }
 
-        // populate VOX files
-        treeXmlType.noderoot?.forEachSubtree { zipfs.tryReadVoxFile(it) }
+        treeXmlType.blueprints?.entries?.forEach {
+            tryReadBlueprintFile(it, zipfs, reg, this)
+        }
+
+        // populate VOX files & Blueprints
+        treeXmlType.noderoot?.forEachSubtree {
+            zipfs.tryReadVoxFile(it)
+            tryAddBlueprintRefs(it, reg)
+        }
         treeXmlType.voxelroot?.forEachSubtree { zipfs.tryReadVoxFile(it) }
 
         val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
@@ -166,6 +176,7 @@ fun EditorAppImpl.writeProject(path: Path) {
                 selectedObjects = state.selectedObjects.mapToXml(),
                 hiddenObjects = state.hiddenObjects.mapToXml(),
                 manuallyHiddenObjects = state.manuallyHiddenObjects.mapToXml(),
+                blueprints = state.registry.blueprintIDs.mapToXml(),
             )
             val treeXmlStr = serializeToXmlStr(treeXmlType, true)
             it.write(treeXmlStr)
@@ -184,6 +195,17 @@ fun EditorAppImpl.writeProject(path: Path) {
         state.rootNode.forEachSubtree { tryWriteVoxFile(it) }
         state.voxelRoot.forEachSubtree { tryWriteVoxFile(it) }
 
+        Files.createDirectories(zipfs.getPath("/blueprints"))
+        state.registry.blueprintIDs.map.forEach { (id, bp) ->
+            Files.newBufferedWriter(
+                zipfs.getPath("/blueprints/blueprint_$id.json"),
+                CREATE,
+                TRUNCATE_EXISTING
+            ).use {
+                val bpJson = serializeToJsonStr(bp, true)
+                it.write(bpJson)
+            }
+        }
     }
 }
 
@@ -195,5 +217,30 @@ private fun FileSystem.tryReadVoxFile(obj: XmlSceneObject) {
         } catch (_: Exception) {
             // data could have been empty
         }
+    }
+}
+
+/** Finds and adds Blueprint references by ID, if they have been loaded. */
+private fun tryAddBlueprintRefs(obj: XmlSceneObject, reg: SceneRegistry) {
+    (obj as? XmlSceneNode)?.let { node ->
+        node.blueprintRefs = node.blueprintIDs.mapNotNull {
+            reg.blueprintIDs.map[it]
+        }
+    }
+}
+
+private fun tryReadBlueprintFile(
+    entry: XmlBlueprintEntry, fs: FileSystem, reg: SceneRegistry, app: EditorApp,
+) {
+    try {
+        Files.newBufferedReader(
+            fs.getPath("/blueprints/blueprint_${entry.id}.json")
+        ).use {
+            val bp = deserializeJson(it.readText(), Blueprint::class)
+            reg.blueprintIDs.save(bp)
+        }
+    } catch (e: Exception) {
+        app.logWarning("Couldn't read blueprint ${entry.id}")
+        app.logError(e)
     }
 }

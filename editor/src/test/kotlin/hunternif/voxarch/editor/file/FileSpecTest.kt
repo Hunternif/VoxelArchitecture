@@ -1,7 +1,9 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -50,6 +52,11 @@ class FileSpecTest : BaseAppTest() {
         assertEquals("one block", vox.label)
         assertEquals(1, vox.data.size)
         assertEquals(VoxColor(0xff0000), vox.data[0, 0, 0])
+        // Blueprints
+        val bpMap = app.state.registry.blueprintIDs.map
+        assertEquals(2, bpMap.size)
+        assertEquals(listOf(bpMap[0]), app.state.rootNode.blueprints)
+        assertEquals(listOf(bpMap[1]), (app.state.rootNode.children.toList()[1] as SceneNode).blueprints)
     }
 
     @Test
@@ -70,6 +77,11 @@ class FileSpecTest : BaseAppTest() {
 
         app.hideObject(node2)
         app.selectAll()
+
+        app.newBlueprint(app.state.rootNode)
+        app.newBlueprint(node2)
+        val bp = node2.blueprints[0]
+        app.newBlueprintNode(bp, "Floor", DomBuilder(), 120f, 14f)
 
         val refPath = resourcePath("project/2_rooms.voxarch")
         val testPath = tempDir.resolve("2_rooms.voxarch")
@@ -97,6 +109,14 @@ class FileSpecTest : BaseAppTest() {
                 assertFilesEqual(
                     zipfsRef.getPath("/voxels/group_6.vox"),
                     zipfsTest.getPath("/voxels/group_6.vox")
+                )
+                assertFilesEqual(
+                    zipfsRef.getPath("/blueprints/blueprint_0.json"),
+                    zipfsTest.getPath("/blueprints/blueprint_0.json")
+                )
+                assertFilesEqual(
+                    zipfsRef.getPath("/blueprints/blueprint_1.json"),
+                    zipfsTest.getPath("/blueprints/blueprint_1.json")
                 )
             }
         }

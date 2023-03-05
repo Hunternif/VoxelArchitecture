@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
@@ -61,6 +62,14 @@ class XmlSceneNode(
     var colorAlpha: Float = 1f,
 
     generated: Boolean = false,
+
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "blueprintID")
+    var blueprintIDs: List<Int> = emptyList(),
+
+    /** Populated during deserialization */
+    @field:JsonIgnore
+    var blueprintRefs: List<Blueprint> = emptyList(),
 ) : XmlSceneObject(id, generated)
 
 class XmlSceneVoxelGroup(
@@ -90,7 +99,10 @@ private fun SceneObject.mapToXmlRecursive(mapped: MutableSet<SceneObject>): XmlS
     val colorHex = color.hex.toString(16)
     mapped.add(this)
     val xmlNode: XmlSceneObject = when (this) {
-        is SceneNode -> XmlSceneNode(id, node.mapToXmlNodeNoChildren(), colorHex, color.a, isGenerated)
+        is SceneNode -> XmlSceneNode(
+            id, node.mapToXmlNodeNoChildren(), colorHex, color.a, isGenerated,
+            blueprints.map { it.id }
+        )
         is SceneVoxelGroup -> XmlSceneVoxelGroup(id, label, isGenerated, origin)
         else -> XmlSceneObject(id, isGenerated)
     }
@@ -111,7 +123,9 @@ private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): 
     val node: SceneObject = when (this) {
         is XmlSceneNode -> {
             val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
-            SceneNode(id, node?.mapXmlNode() ?: return null, color, generated)
+            SceneNode(id, node?.mapXmlNode() ?: return null, color, generated).apply {
+                blueprints.addAll(blueprintRefs)
+            }
         }
         is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, data, renderMode, generated, origin)
         else -> SceneObject(id, isGenerated = generated)
