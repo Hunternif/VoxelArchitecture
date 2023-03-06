@@ -149,11 +149,11 @@ class VoxFileStorage(
          */
         fun fromFile(file: VoxFile, useModelOffset: Boolean = true): VoxFileStorage {
             val storage = VoxFileStorage()
+            file.palette.forEach {
+                val unsignedColor = it and 0xffffff
+                storage.palette.add(VoxColor(unsignedColor))
+            }
             file.modelInstances.forEach { modelInst ->
-                file.palette.forEach {
-                    val unsignedColor = it and 0xffffff
-                    storage.palette.add(VoxColor(unsignedColor))
-                }
                 val model = modelInst.model
                 val size = model.size.toIntVec3()
                 var cornerOffset = IntVec3(0, 0, 0)
