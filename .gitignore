@@ -4,7 +4,6 @@ release
 dist
 build
 run
-generated-src
 
 # Gradle
 .gradle
