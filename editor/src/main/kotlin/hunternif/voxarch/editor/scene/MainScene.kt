@@ -173,9 +173,15 @@ class MainScene(private val app: EditorApp) {
         for (obj in app.state.selectedObjects) {
             if (obj != app.state.rootNode && obj != app.state.voxelRoot) {
                 selectedNodeModel.add(obj.box)
-                if (obj is SceneNode) {
-                    val origin = obj.node.findGlobalPosition().toVector3f()
-                    originsModel.addPoint(origin)
+                when (obj) {
+                    is SceneNode -> {
+                        val origin = obj.node.findGlobalPosition().toVector3f()
+                        originsModel.addPoint(origin)
+                    }
+                    is SceneVoxelGroup -> {
+                        val origin = obj.findGlobalPosition().toVector3f()
+                        originsModel.addPoint(origin)
+                    }
                 }
             }
         }
