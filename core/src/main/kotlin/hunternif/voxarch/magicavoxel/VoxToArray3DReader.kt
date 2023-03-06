@@ -5,9 +5,12 @@ import hunternif.voxarch.vector.Array3D
 import java.nio.file.Files
 import java.nio.file.Path
 
-fun readVoxFile(path: Path): VoxFileStorage {
+fun readVoxFile(
+    path: Path,
+    useModelOffset: Boolean = true,
+): VoxFileStorage {
     val voxFile = VoxReader(Files.newInputStream(path)).use { it.read() }
-    return VoxFileStorage.fromFile(voxFile)
+    return VoxFileStorage.fromFile(voxFile, useModelOffset)
 }
 
 inline fun <reified C: Any> readVoxFile(

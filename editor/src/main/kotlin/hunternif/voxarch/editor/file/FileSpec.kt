@@ -113,10 +113,10 @@ fun EditorAppImpl.readProject(path: Path) {
 
         // populate VOX files & Blueprints
         treeXmlType.noderoot?.forEachSubtree {
-            zipfs.tryReadVoxFile(it)
+            zipfs.tryReadVoxFile(it, metadata)
             tryAddBlueprintRefs(it, reg)
         }
-        treeXmlType.voxelroot?.forEachSubtree { zipfs.tryReadVoxFile(it) }
+        treeXmlType.voxelroot?.forEachSubtree { zipfs.tryReadVoxFile(it, metadata) }
 
         val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
         reg.save(rootNode)
@@ -209,11 +209,12 @@ fun EditorAppImpl.writeProject(path: Path) {
     }
 }
 
-private fun FileSystem.tryReadVoxFile(obj: XmlSceneObject) {
+private fun FileSystem.tryReadVoxFile(obj: XmlSceneObject, metadata: Metadata) {
     val voxPath = getPath("/voxels/group_${obj.id}.vox")
     if (obj is XmlSceneVoxelGroup) {
         try {
-            obj.data = readVoxFile(voxPath)
+            val useModelOffset = metadata.formatVersion >= 3
+            obj.data = readVoxFile(voxPath, useModelOffset)
         } catch (_: Exception) {
             // data could have been empty
         }

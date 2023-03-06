@@ -141,8 +141,13 @@ class VoxFileStorage(
         private fun IntVec3.toGridPoint3() = GridPoint3(z, x, y)
         private fun gridPoint3(x: Int, y: Int, z: Int) = GridPoint3(z, x, y)
 
-        /** Reads all models and places them at their offsets in a single combined storage. */
-        fun fromFile(file: VoxFile): VoxFileStorage {
+        /**
+         * Reads all models and places them at their offsets in a single
+         * combined storage.
+         * @param useModelOffset use VOX model instance offsets to determine
+         * position and size. If false, will place models in the corner by default.
+         */
+        fun fromFile(file: VoxFile, useModelOffset: Boolean = true): VoxFileStorage {
             val storage = VoxFileStorage()
             file.modelInstances.forEach { modelInst ->
                 file.palette.forEach {
@@ -151,12 +156,15 @@ class VoxFileStorage(
                 }
                 val model = modelInst.model
                 val size = model.size.toIntVec3()
-                // In the file, voxel positions are stored relative to model's corner.
-                // worldOffset is the distance to model's center from scene origin (0, 0, 0).
-                // VoxFileStorage will match (0, 0, 0) with the file's (0, 0, 0).
-                val cornerOffset = modelInst.worldOffset.toIntVec3() - size / 2
-                storage.container.union(cornerOffset)
-                storage.container.union(size + cornerOffset - IntVec3(1, 1, 1))
+                var cornerOffset = IntVec3(0, 0, 0)
+                if (useModelOffset) {
+                    // In the file, voxel positions are stored relative to model's corner.
+                    // worldOffset is the distance to model's center from scene origin (0, 0, 0).
+                    // VoxFileStorage will match (0, 0, 0) with the file's (0, 0, 0).
+                    cornerOffset = modelInst.worldOffset.toIntVec3() - size / 2
+                    storage.container.union(cornerOffset)
+                    storage.container.union(size + cornerOffset - IntVec3(1, 1, 1))
+                }
                 model.voxels.forEach {
                     val pos = it.position.toIntVec3().addLocal(cornerOffset)
                     val color = file.palette[it.colourIndex and 0xff] and 0xffffff
