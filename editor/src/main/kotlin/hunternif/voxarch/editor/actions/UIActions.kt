@@ -145,8 +145,7 @@ fun EditorApp.redrawVoxels() = action {
 }
 
 fun EditorApp.clearNewNodeFrame() = action {
-    state.newNodeFrame.state = NewNodeFrame.State.EMPTY
-    scene.updateNewNodeFrame()
+    scene.clearNewNodeFrame()
 }
 
 /** Highlight the given face on a node. Passing null removes the highlight. */
@@ -169,4 +168,12 @@ fun EditorApp.logWarning(msg: String) = action {
 
 fun EditorApp.logError(e: Exception) = action {
     logs.add(LogMessage.Error(e))
+}
+
+fun EditorApp.addOverlayText(id: String, text: String) = action {
+    state.overlayText[id] = text
+}
+
+fun EditorApp.removeOverlayText(id: String) = action {
+    state.overlayText.remove(id)
 }

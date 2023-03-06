@@ -33,6 +33,9 @@ class NewNodeFrame : AABBf() {
             field = value
             correctBounds()
         }
+    /** Size in natural coordinates */
+    val size: Vector3i = Vector3i()
+        get() = field.apply { set(end).sub(start).absolute().add(1, 1, 1) }
 
     // bottom vertices
     private val v1 = Vector3f()

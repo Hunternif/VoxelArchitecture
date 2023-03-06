@@ -189,8 +189,8 @@ class MainScene(private val app: EditorApp) {
         originsModel.update()
     }
 
-    fun updateNewNodeFrame() {
-        newNodeController.model.updateEdges(app.state.newNodeFrame)
+    fun clearNewNodeFrame() {
+        newNodeController.setState(NewNodeFrame.State.EMPTY)
     }
 
     fun updateHighlightedFaces() {

@@ -68,6 +68,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 ImGui.sameLine()
                 ImGui.text(app.state.currentTool.toolName)
 
+                app.state.overlayText.values.forEach { ImGui.text(it) }
+
                 ImGui.text(fpsCounter.fpsRoundStr)
                 ImGui.sameLine()
                 ImGui.text(" fps")

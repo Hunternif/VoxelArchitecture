@@ -2,6 +2,8 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.addOverlayText
+import hunternif.voxarch.editor.actions.removeOverlayText
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.NewNodeFrame.State.*
 import hunternif.voxarch.editor.scene.models.NewNodeFrameModel
@@ -10,6 +12,7 @@ import imgui.internal.ImGui
 import org.joml.Vector3f
 import org.joml.Vector3i
 import org.lwjgl.glfw.GLFW.*
+import java.text.DecimalFormat
 import kotlin.math.max
 import kotlin.math.round
 
@@ -17,6 +20,10 @@ class NewNodeController(
     private val app: EditorApp,
     private val camera: OrbitalCamera,
 ) : MouseListener {
+    private val overlayIdStart: String = "new_node_start"
+    private val overlayIdSize: String = "new_node_size"
+    private val vecFormat = DecimalFormat()
+
     private val frame: NewNodeFrame get() = app.state.newNodeFrame
     val model = NewNodeFrameModel()
 
@@ -45,6 +52,7 @@ class NewNodeController(
                     end.set(newEnd)
                     correctBounds()
                     model.updateEdges(frame)
+                    app.addOverlayText(overlayIdSize, "size: ${size.toString(vecFormat)}")
                 }
                 CHOOSING_HEIGHT -> {
                     val posOnWall = camera.projectToY(
@@ -54,6 +62,7 @@ class NewNodeController(
                     end.y = round(max(0f, posOnWall.y)).toInt()
                     correctBounds()
                     model.updateEdges(frame)
+                    app.addOverlayText(overlayIdSize, "size: ${size.toString(vecFormat)}")
                 }
                 COMPLETE -> {}
             }
@@ -92,6 +101,7 @@ class NewNodeController(
                     frame.start = Vector3i(origStart)
                     frame.end = Vector3i(origStart)
                     setState(CHOOSING_BASE)
+                    app.addOverlayText(overlayIdStart, "start: ${origStart.toString(vecFormat)}")
                 }
                 CHOOSING_BASE -> setState(CHOOSING_HEIGHT) // This shouldn't happen!
                 CHOOSING_HEIGHT -> setState(COMPLETE)
@@ -114,9 +124,13 @@ class NewNodeController(
         }
     }
 
-    private fun setState(state: NewNodeFrame.State) {
+    fun setState(state: NewNodeFrame.State) {
         frame.state = state
         model.updateEdges(frame)
+        if (state == EMPTY) {
+            app.removeOverlayText(overlayIdStart)
+            app.removeOverlayText(overlayIdSize)
+        }
     }
 
     private fun cancelOperation() {
