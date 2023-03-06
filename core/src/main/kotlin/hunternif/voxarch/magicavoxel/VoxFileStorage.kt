@@ -146,13 +146,12 @@ class VoxFileStorage(
             val depth = model.size.x
             val storage = VoxFileStorage(width, height, depth)
             file.palette.forEach {
-                //TODO check if VoxFileParser stores colors correctly
                 val unsignedColor = it and 0xffffff
                 storage.palette.add(VoxColor(unsignedColor))
             }
             model.voxels.forEach {
                 val pos = it.position.toIntVec3()
-                val color = file.palette[it.colourIndex] and 0xffffff
+                val color = file.palette[it.colourIndex and 0xff] and 0xffffff
                 storage.data[pos] = VoxColor(color)
                 storage.container.union(pos)
             }
