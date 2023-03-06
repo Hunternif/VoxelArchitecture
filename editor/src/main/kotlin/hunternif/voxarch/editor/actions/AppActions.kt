@@ -12,7 +12,6 @@ import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.plan.naturalToCentric
 import hunternif.voxarch.storage.ChunkedStorage3D
 import hunternif.voxarch.storage.IVoxel
-import hunternif.voxarch.storage.boundedView
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.copyTo
 import hunternif.voxarch.util.forEachSubtree
@@ -54,8 +53,7 @@ fun EditorApp.exportVoxFile(path: Path) = action {
             it.data.copyTo(mergedStorage, it.findGlobalPosition().toIntVec3())
         }
     }
-    val boundedView = mergedStorage.boundedView()
-    boundedView.writeToVoxFile(path) { v ->
+    mergedStorage.writeToVoxFile(path) { v ->
         when (v) {
             is VoxColor -> v
             else -> VoxColor(state.voxelColorMap(v).hex)

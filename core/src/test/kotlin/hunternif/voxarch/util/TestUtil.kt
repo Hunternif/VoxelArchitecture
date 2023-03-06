@@ -50,7 +50,7 @@ fun <T> assertStorageEquals(
     assertEquals(expected.maxY, actual.maxY)
     assertEquals(expected.maxZ, actual.maxZ)
     expected.forEachPos { x, y, z, t ->
-        assertEquals(t, actual[x, y, z])
+        assertEquals("at ($x, $y, $z)", t, actual[x, y, z])
     }
 }
 

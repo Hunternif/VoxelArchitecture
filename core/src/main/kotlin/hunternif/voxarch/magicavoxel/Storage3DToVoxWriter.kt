@@ -14,7 +14,7 @@ fun <T> IStorage3D<out T?>.writeToVoxFile(
     path: Path,
     colorMap: (T) -> VoxColor?
 ) {
-    val voxStorage = VoxFileStorage(width, height, depth)
+    val voxStorage = VoxFileStorage()
     forEachPos { x, y, z, color ->
         if (color != null)
             voxStorage[x, y, z] = colorMap(color)
@@ -24,7 +24,7 @@ fun <T> IStorage3D<out T?>.writeToVoxFile(
 }
 
 fun IStorage3D<VoxColor?>.writeToVoxFile(path: Path) {
-    val voxStorage = VoxFileStorage(width, height, depth)
+    val voxStorage = VoxFileStorage()
     forEachPos { x, y, z, color ->
         if (color != null)
             voxStorage[x, y, z] = color

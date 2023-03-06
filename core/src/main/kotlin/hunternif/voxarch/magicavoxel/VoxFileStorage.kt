@@ -77,7 +77,9 @@ class VoxFileStorage(
             appendChunk(makeGroupChunk(1, 2))
 
             // 5. Transform for the following 'shape' chunk.
-            appendChunk(makeTransformChunk(2, 3))
+            // the transform vector points from (0, 0, 0) to model center:
+            val transform = gridPoint3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2)
+            appendChunk(makeTransformChunk(2, 3, transform))
             // 6. 'Shape' chunk, references 'model'
             appendChunk(makeShapeChunk(3, 0))
 
@@ -106,7 +108,8 @@ class VoxFileStorage(
         data.forEachPos { x, y, z, color ->
             val index = colorIndex[color]
             if (index != null) {
-                voxels[i] = Voxel(gridPoint3(x, y, z), index)
+                // offset voxels from negative coordinates
+                voxels[i] = Voxel(gridPoint3(x - minX, y - minY, z - minZ), index)
                 i++
             }
         }
@@ -138,22 +141,28 @@ class VoxFileStorage(
         private fun IntVec3.toGridPoint3() = GridPoint3(z, x, y)
         private fun gridPoint3(x: Int, y: Int, z: Int) = GridPoint3(z, x, y)
 
-        /** Only reads 1 model */
+        /** Reads all models and places them at their offsets in a single combined storage. */
         fun fromFile(file: VoxFile): VoxFileStorage {
-            val model = file.modelInstances.first().model
-            val width = model.size.y
-            val height = model.size.z
-            val depth = model.size.x
-            val storage = VoxFileStorage(width, height, depth)
-            file.palette.forEach {
-                val unsignedColor = it and 0xffffff
-                storage.palette.add(VoxColor(unsignedColor))
-            }
-            model.voxels.forEach {
-                val pos = it.position.toIntVec3()
-                val color = file.palette[it.colourIndex and 0xff] and 0xffffff
-                storage.data[pos] = VoxColor(color)
-                storage.container.union(pos)
+            val storage = VoxFileStorage()
+            file.modelInstances.forEach { modelInst ->
+                file.palette.forEach {
+                    val unsignedColor = it and 0xffffff
+                    storage.palette.add(VoxColor(unsignedColor))
+                }
+                val model = modelInst.model
+                val size = model.size.toIntVec3()
+                // In the file, voxel positions are stored relative to model's corner.
+                // worldOffset is the distance to model's center from scene origin (0, 0, 0).
+                // VoxFileStorage will match (0, 0, 0) with the file's (0, 0, 0).
+                val cornerOffset = modelInst.worldOffset.toIntVec3() - size / 2
+                storage.container.union(cornerOffset)
+                storage.container.union(size + cornerOffset - IntVec3(1, 1, 1))
+                model.voxels.forEach {
+                    val pos = it.position.toIntVec3().addLocal(cornerOffset)
+                    val color = file.palette[it.colourIndex and 0xff] and 0xffffff
+                    storage.data[pos] = VoxColor(color)
+                    storage.container.union(pos)
+                }
             }
             return storage
         }

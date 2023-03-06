@@ -57,12 +57,28 @@ public class IntVec3 {
 		return this;
 	}
 
+	/** Modifies and returns itself. */
+	public IntVec3 addLocal(IntVec3 p) {
+		this.x += p.x;
+		this.y += p.y;
+		this.z += p.z;
+		return this;
+	}
+
 	public IntVec3 subtract(IntVec3 p) {
 		return new IntVec3(x - p.x, y - p.y, z - p.z);
 	}
 
 	/** Modifies and returns itself. */
 	public IntVec3 subtractLocal(double dx, double dy, double dz) {
+		this.x -= dx;
+		this.y -= dy;
+		this.z -= dz;
+		return this;
+	}
+
+	/** Modifies and returns itself. */
+	public IntVec3 subtractLocal(int dx, int dy, int dz) {
 		this.x -= dx;
 		this.y -= dy;
 		this.z -= dz;
