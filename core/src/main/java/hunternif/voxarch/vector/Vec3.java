@@ -67,6 +67,13 @@ public class Vec3 {
 		this.z = other.z;
 		return this;
 	}
+	/** Copies values from other to this vector. */
+	public Vec3 set(IntVec3 other) {
+		this.x = other.x;
+		this.y = other.y;
+		this.z = other.z;
+		return this;
+	}
 	
 	/** Modifies and returns itself. */
 	public Vec3 addLocal(Vec3 vec) {

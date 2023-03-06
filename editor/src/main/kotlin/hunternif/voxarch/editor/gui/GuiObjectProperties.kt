@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.plan.naturalSize
 import hunternif.voxarch.util.SnapOrigin
+import hunternif.voxarch.vector.Vec3
 import imgui.ImGui
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
@@ -32,6 +33,7 @@ class GuiObjectProperties(
     private val redrawTimer = Timer(0.02)
 
     private var obj: SceneObject? = null
+    private val voxGroupSize: Vec3 = Vec3(0, 0, 0)
 
     private val curBlueprints = mutableListOf<Blueprint>()
 
@@ -113,6 +115,10 @@ class GuiObjectProperties(
     private fun renderVoxelGroup(group: SceneVoxelGroup) {
         originInput.render(group.origin) {
             app.transformObjOrigin(group, original, newValue)
+        }
+        disabled {
+            voxGroupSize.set(group.data.sizeVec)
+            sizeInput.render(voxGroupSize)
         }
     }
 
