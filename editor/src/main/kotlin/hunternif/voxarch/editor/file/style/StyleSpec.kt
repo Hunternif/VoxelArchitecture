@@ -38,9 +38,9 @@ Room.tower {
     roof-shape: SPIRE
 }
 
-// multiple OR-combined selector:
+// multiple OR-combined descendant selector:
 [.inner-wall, .outer-wall] wall {
-    depth: 1
+    depth: -1
 }
 
 // direct child selector:

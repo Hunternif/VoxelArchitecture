@@ -48,18 +48,6 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 */
 	void exitDeclaration(StyleGrammarParser.DeclarationContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code dimValue}
-	 * labeled alternative in {@link StyleGrammarParser#propValue}.
-	 * @param ctx the parse tree
-	 */
-	void enterDimValue(StyleGrammarParser.DimValueContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code dimValue}
-	 * labeled alternative in {@link StyleGrammarParser#propValue}.
-	 * @param ctx the parse tree
-	 */
-	void exitDimValue(StyleGrammarParser.DimValueContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code numValue}
 	 * labeled alternative in {@link StyleGrammarParser#propValue}.
 	 * @param ctx the parse tree
@@ -71,6 +59,18 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumValue(StyleGrammarParser.NumValueContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code inheritValue}
+	 * labeled alternative in {@link StyleGrammarParser#propValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterInheritValue(StyleGrammarParser.InheritValueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code inheritValue}
+	 * labeled alternative in {@link StyleGrammarParser#propValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitInheritValue(StyleGrammarParser.InheritValueContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code enumValue}
 	 * labeled alternative in {@link StyleGrammarParser#propValue}.
@@ -132,17 +132,17 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 */
 	void exitChildSelector(StyleGrammarParser.ChildSelectorContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code listSelector}
+	 * Enter a parse tree produced by the {@code orSelector}
 	 * labeled alternative in {@link StyleGrammarParser#selector}.
 	 * @param ctx the parse tree
 	 */
-	void enterListSelector(StyleGrammarParser.ListSelectorContext ctx);
+	void enterOrSelector(StyleGrammarParser.OrSelectorContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code listSelector}
+	 * Exit a parse tree produced by the {@code orSelector}
 	 * labeled alternative in {@link StyleGrammarParser#selector}.
 	 * @param ctx the parse tree
 	 */
-	void exitListSelector(StyleGrammarParser.ListSelectorContext ctx);
+	void exitOrSelector(StyleGrammarParser.OrSelectorContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code andSelector}
 	 * labeled alternative in {@link StyleGrammarParser#selector}.
@@ -177,6 +177,30 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitDotClass(StyleGrammarParser.DotClassContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code intPctLiteral}
+	 * labeled alternative in {@link StyleGrammarParser#numExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code intPctLiteral}
+	 * labeled alternative in {@link StyleGrammarParser#numExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code floatPctLiteral}
+	 * labeled alternative in {@link StyleGrammarParser#numExpression}.
+	 * @param ctx the parse tree
+	 */
+	void enterFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code floatPctLiteral}
+	 * labeled alternative in {@link StyleGrammarParser#numExpression}.
+	 * @param ctx the parse tree
+	 */
+	void exitFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code numParenExpression}
 	 * labeled alternative in {@link StyleGrammarParser#numExpression}.
@@ -237,64 +261,4 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumBinaryOperation(StyleGrammarParser.NumBinaryOperationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code intPctLiteral}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code intPctLiteral}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code floatPctLiteral}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code floatPctLiteral}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code dimAddOperation}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDimAddOperation(StyleGrammarParser.DimAddOperationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code dimAddOperation}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDimAddOperation(StyleGrammarParser.DimAddOperationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code numberAsDim}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterNumberAsDim(StyleGrammarParser.NumberAsDimContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code numberAsDim}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitNumberAsDim(StyleGrammarParser.NumberAsDimContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code dimMultOperation}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void enterDimMultOperation(StyleGrammarParser.DimMultOperationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code dimMultOperation}
-	 * labeled alternative in {@link StyleGrammarParser#dimExpression}.
-	 * @param ctx the parse tree
-	 */
-	void exitDimMultOperation(StyleGrammarParser.DimMultOperationContext ctx);
 }

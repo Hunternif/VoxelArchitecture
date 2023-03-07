@@ -64,18 +64,6 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDimValue(StyleGrammarParser.DimValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDimValue(StyleGrammarParser.DimValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNumValue(StyleGrammarParser.NumValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -83,6 +71,18 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumValue(StyleGrammarParser.NumValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterInheritValue(StyleGrammarParser.InheritValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitInheritValue(StyleGrammarParser.InheritValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -148,13 +148,13 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterListSelector(StyleGrammarParser.ListSelectorContext ctx) { }
+	@Override public void enterOrSelector(StyleGrammarParser.OrSelectorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitListSelector(StyleGrammarParser.ListSelectorContext ctx) { }
+	@Override public void exitOrSelector(StyleGrammarParser.OrSelectorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -191,6 +191,30 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitDotClass(StyleGrammarParser.DotClassContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -251,66 +275,6 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumBinaryOperation(StyleGrammarParser.NumBinaryOperationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitFloatPctLiteral(StyleGrammarParser.FloatPctLiteralContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDimAddOperation(StyleGrammarParser.DimAddOperationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDimAddOperation(StyleGrammarParser.DimAddOperationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterNumberAsDim(StyleGrammarParser.NumberAsDimContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitNumberAsDim(StyleGrammarParser.NumberAsDimContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDimMultOperation(StyleGrammarParser.DimMultOperationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDimMultOperation(StyleGrammarParser.DimMultOperationContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

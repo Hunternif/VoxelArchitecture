@@ -7,38 +7,34 @@ styleRule : selector LBRACE NEWLINE* ruleBody RBRACE ;
 
 ruleBody : declaration+ ;
 
-declaration : property=ID COLON value=propValue SEMICOLON? NEWLINE* ;
+declaration : property=ID COLON value=propValue SEMICOLON? COMMENT? NEWLINE* ;
 
-propValue : dimExpression # dimValue
-          | numExpression # numValue
+propValue : numExpression # numValue
+          | INHERIT       # inheritValue
           | ID            # enumValue
           | STR           # strValue ;
 
 
 // Selectors
-selector : selector COMMA selector             # listSelector
-         | selector dotClass                   # andSelector
-         | selector GT selector                # childSelector
-         | LBRACKET selector RBRACKET selector # descendantSelector
-         | dotClass                            # classSelector
-         | ID                                  # typeSelector ;
+selector : left=selector right=selector                            # andSelector
+         | parent=selector GT child=selector                       # childSelector
+         | LBRACKET ancestor=selector RBRACKET descendant=selector # descendantSelector
+         | dotClass                                                # classSelector
+         | ID                                                      # typeSelector
+         | left=selector COMMA right=selector                      # orSelector ;
 
-dotClass : DOT ID ;
+dotClass : DOT classname=ID ;
 
 
 // Arithmetic expressions with numbers
 numExpression : left=numExpression op=(DIV|MULT) right=numExpression   # numBinaryOperation
               | left=numExpression op=(PLUS|MINUS) right=numExpression # numBinaryOperation
+              | left=numExpression op=TILDE right=numExpression        # numBinaryOperation
               | LPAREN numExpression RPAREN                            # numParenExpression
               | MINUS numExpression                                    # numMinusExpression
               | INT                                                    # intLiteral
-              | FLOAT                                                  # floatLiteral ;
-
-// Arithmetic expressions with dimensions (which can use %)
-dimExpression : left=dimExpression op=(DIV|MULT) right=numExpression   # dimMultOperation
-              | left=dimExpression op=(PLUS|MINUS) right=dimExpression # dimAddOperation
-              | numExpression                                          # numberAsDim
               | INT_PCT                                                # intPctLiteral
+              | FLOAT                                                  # floatLiteral
               | FLOAT_PCT                                              # floatPctLiteral ;
 
 
