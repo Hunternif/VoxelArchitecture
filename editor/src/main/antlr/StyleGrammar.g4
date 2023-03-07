@@ -7,11 +7,11 @@ styleRule : selector LBRACE NEWLINE* ruleBody RBRACE ;
 
 ruleBody : declaration+ ;
 
-declaration : PROPERTY COLON propValue SEMICOLON? NEWLINE* ;
+declaration : property=ID COLON value=propValue SEMICOLON? NEWLINE* ;
 
 propValue : dimExpression # dimValue
           | numExpression # numValue
-          | ENUM          # enumValue
+          | ID            # enumValue
           | STR           # strValue ;
 
 
@@ -21,9 +21,9 @@ selector : selector COMMA selector             # listSelector
          | selector GT selector                # childSelector
          | LBRACKET selector RBRACKET selector # descendantSelector
          | dotClass                            # classSelector
-         | TYPE                                # typeSelector ;
+         | ID                                  # typeSelector ;
 
-dotClass : DOT CLASSNAME ;
+dotClass : DOT ID ;
 
 
 // Arithmetic expressions with numbers
@@ -77,10 +77,8 @@ COMMA               : ',' ;
 QUOTE               : '"' ;
 
 // Identifiers
-CLASSNAME           : [A-Za-z0-9_-]+ ;
-TYPE                : [A-Z][A-Za-z0-9]+ ;
-PROPERTY            : [a-z][A-Za-z0-9_-]* ;
-ENUM                : [A-Za-z0-9_-]+ ;
+ID                  : [A-Za-z0-9_-]+ ;
 
+// Comments
 COMMENT             : '//' .*? (NEWLINE | EOF) ;
 BLOCK_COMMENT       : '/*' .*? '*/' ;
