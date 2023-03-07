@@ -39,6 +39,30 @@ class StyleGrammarLexerTest {
         )
     }
 
+    @Test
+    fun `tokenize number literals`() {
+        assertTokensEqual(
+            listOf(INT, INT, FLOAT, INT_PCT, FLOAT_PCT),
+            tokenize("0  5  130.1  28%  17.5%")
+        )
+    }
+
+    @Test
+    fun `tokenize expressions`() {
+        assertTokensEqual(
+            listOf(LPAREN, INT, DIV, FLOAT, RPAREN, TILDE, INT_PCT, MULT, INT),
+            tokenize("(5 / 2.0) ~ 18% * 3")
+        )
+    }
+
+    @Test
+    fun `tokenize complex selector`() {
+        assertTokensEqual(
+            listOf(DOT, ID, GT, LBRACKET, DOT, ID, DOT, ID, RBRACKET, ID, DOT, ID, DOT, ID, COMMA, ID),
+            tokenize(".castle > [.base.test] Room.abc.size-2, Wall")
+        )
+    }
+
     /** Returns token types */
     private fun tokenize(input: String): List<Int> {
         val lexer = StyleGrammarLexer(CharStreams.fromString(input))
