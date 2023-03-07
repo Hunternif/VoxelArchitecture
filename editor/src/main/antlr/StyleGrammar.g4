@@ -1,7 +1,7 @@
 grammar StyleGrammar;
 
 // Rules
-stylesheet : (styleRule NEWLINE*)+ EOF ;
+stylesheet : (styleRule NEWLINE*)* EOF ;
 
 styleRule : selector LBRACE NEWLINE* ruleBody RBRACE ;
 
