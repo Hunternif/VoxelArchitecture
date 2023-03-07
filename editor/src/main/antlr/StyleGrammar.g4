@@ -5,7 +5,7 @@ stylesheet : (styleRule | comment | NEWLINE)* EOF ;
 
 styleRule : selector LBRACE NEWLINE* ruleBody RBRACE ;
 
-ruleBody : (declaration | comment)+ ;
+ruleBody : (declaration | comment)* ;
 
 declaration : property=ID COLON value=propValue SEMICOLON? comment? NEWLINE* ;
 

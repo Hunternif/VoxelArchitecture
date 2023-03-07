@@ -40,7 +40,7 @@ class ParseTreeNode(val name: String) : ParseTreeElement() {
 
 fun ParserRuleContext.toParseTree(): ParseTreeNode {
     val res = ParseTreeNode(this::class.java.simpleName.removeSuffix("Context"))
-    children.forEach { c ->
+    children?.forEach { c ->
         when (c) {
             is ParserRuleContext -> res.child(c.toParseTree())
             is TerminalNode -> res.child(ParseTreeLeaf(c.text))

@@ -16,6 +16,25 @@ class StyleGrammarParserTest {
         )
     }
 
+    @Test
+    fun `parse empty rule`() {
+        assertEquals("""
+            Stylesheet
+              StyleRule
+                TypeSelector
+                  T[selector]
+                T[{]
+                RuleBody
+                T[}]
+              T[<EOF>]
+        """.trimIndent(),
+            parseAndFormat("""
+                selector {
+                }
+            """.trimIndent())
+        )
+    }
+
     @Test(expected = ParseCancellationException::class)
     fun `parse invalid empty selector`() {
         parseAndFormat("{ prop: value }")
@@ -89,11 +108,17 @@ class StyleGrammarParserTest {
     }
 
     @Test
-    fun `parse selector with comments`() {
+    fun `parse selectors with comments`() {
         assertEquals("""
             Stylesheet
+              StyleRule
+                TypeSelector
+                  T[selector]
+                T[{]
+                RuleBody
+                T[}]
               Comment
-                T[/** My selector */]
+                T[/** My other selector */]
               StyleRule
                 TypeSelector
                   T[selector]
@@ -112,7 +137,9 @@ class StyleGrammarParserTest {
               T[<EOF>]
         """.trimIndent(),
             parseAndFormat("""
-                /** My selector */
+                selector { }
+                
+                /** My other selector */
                 selector {
                     # comment-only line
                     property: value // EOL comment
