@@ -42,8 +42,8 @@ class StyleGrammarLexerTest {
     @Test
     fun `tokenize number literals`() {
         assertTokensEqual(
-            listOf(INT, INT, FLOAT, INT_PCT, FLOAT_PCT),
-            tokenize("0  5  130.1  28%  17.5%")
+            listOf(INT, FLOAT, INT, FLOAT, INT_PCT, FLOAT_PCT, INT_PCT, FLOAT_PCT, MINUS, INT),
+            tokenize("0  0.0  5  130.1  28%  17.5%  0%  0.0%  -1")
         )
     }
 

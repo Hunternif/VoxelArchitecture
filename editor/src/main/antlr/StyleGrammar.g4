@@ -53,9 +53,9 @@ INHERIT             : 'inherit' ;
 STR                 : (SINGLEQUOTE (~['])*? (SINGLEQUOTE | NEWLINE | EOF))
                     | (DOUBLEQUOTE (~["])*? (DOUBLEQUOTE | NEWLINE | EOF)) ;
 INT                 : '0'|[1-9][0-9]* ;
-FLOAT               : '0'|[1-9][0-9]* '.' [0-9]+ ;
+FLOAT               : ('0'|[1-9][0-9]*) '.' [0-9]+ ;
 INT_PCT             : '0%'|[1-9][0-9]* '%' ;
-FLOAT_PCT           : '0%'|[1-9][0-9]* '.' [0-9]+ '%' ;
+FLOAT_PCT           : ('0'|[1-9][0-9]*) '.' [0-9]+ '%' ;
 
 // Operators
 PLUS                : '+' ;
@@ -79,7 +79,7 @@ SINGLEQUOTE         : '\'' ;
 DOUBLEQUOTE         : '"' ;
 
 // Identifiers
-ID                  : [A-Za-z0-9_-]+ ;
+ID                  : [A-Za-z_][A-Za-z0-9_-]* ;
 
 // Comments
 COMMENT             : '//' ~( '\r' | '\n' )* ;
