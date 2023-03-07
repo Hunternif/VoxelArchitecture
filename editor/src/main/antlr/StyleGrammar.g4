@@ -50,7 +50,8 @@ WS                  : [\t ]+ -> skip ;
 INHERIT             : 'inherit' ;
 
 // Literals
-STR                 : '"' (~[\r\n])*? '"' ;
+STR                 : (SINGLEQUOTE (~['])*? (SINGLEQUOTE | NEWLINE | EOF))
+                    | (DOUBLEQUOTE (~["])*? (DOUBLEQUOTE | NEWLINE | EOF)) ;
 INT                 : '0'|[1-9][0-9]* ;
 FLOAT               : '0'|[1-9][0-9]* '.' [0-9]+ ;
 INT_PCT             : '0%'|[1-9][0-9]* '%' ;
@@ -74,7 +75,8 @@ COLON               : ':' ;
 SEMICOLON           : ';' ;
 DOT                 : '.' ;
 COMMA               : ',' ;
-QUOTE               : '"' ;
+SINGLEQUOTE         : '\'' ;
+DOUBLEQUOTE         : '"' ;
 
 // Identifiers
 ID                  : [A-Za-z0-9_-]+ ;

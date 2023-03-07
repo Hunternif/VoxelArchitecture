@@ -28,6 +28,17 @@ class StyleGrammarLexerTest {
         )
     }
 
+    @Test
+    fun `tokenize string literals`() {
+        assertTokensEqual(
+            listOf(STR, STR, ID, STR),
+            tokenize("""
+                "string's" '"my" string' non-string
+                "string that doesn't terminate
+            """.trimIndent())
+        )
+    }
+
     /** Returns token types */
     private fun tokenize(input: String): List<Int> {
         val lexer = StyleGrammarLexer(CharStreams.fromString(input))
