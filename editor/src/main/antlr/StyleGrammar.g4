@@ -43,7 +43,7 @@ dimExpression : left=dimExpression op=(DIV|MULT) right=numExpression   # dimMult
 
 
 // Whitespace
-NEWLINE             : '\r\n' | '\r' | '\n' ;
+NEWLINE             : ('\r\n' | '\r' | '\n') -> skip ;
 WS                  : [\t ]+ -> skip ;
 
 // Keywords
