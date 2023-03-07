@@ -275,6 +275,18 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumBinaryOperation(StyleGrammarParser.NumBinaryOperationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterComment(StyleGrammarParser.CommentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitComment(StyleGrammarParser.CommentContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

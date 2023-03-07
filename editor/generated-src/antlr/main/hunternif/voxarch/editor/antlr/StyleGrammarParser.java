@@ -20,14 +20,16 @@ public class StyleGrammarParser extends Parser {
 		NEWLINE=1, WS=2, INHERIT=3, STR=4, INT=5, FLOAT=6, INT_PCT=7, FLOAT_PCT=8, 
 		PLUS=9, MINUS=10, MULT=11, DIV=12, LPAREN=13, RPAREN=14, LBRACKET=15, 
 		RBRACKET=16, LBRACE=17, RBRACE=18, LT=19, GT=20, TILDE=21, COLON=22, SEMICOLON=23, 
-		DOT=24, COMMA=25, SINGLEQUOTE=26, DOUBLEQUOTE=27, ID=28, COMMENT=29, BLOCK_COMMENT=30;
+		DOT=24, COMMA=25, SINGLEQUOTE=26, DOUBLEQUOTE=27, ID=28, LINE_COMMENT=29, 
+		BLOCK_COMMENT=30;
 	public static final int
 		RULE_stylesheet = 0, RULE_styleRule = 1, RULE_ruleBody = 2, RULE_declaration = 3, 
-		RULE_propValue = 4, RULE_selector = 5, RULE_dotClass = 6, RULE_numExpression = 7;
+		RULE_propValue = 4, RULE_selector = 5, RULE_dotClass = 6, RULE_numExpression = 7, 
+		RULE_comment = 8;
 	private static String[] makeRuleNames() {
 		return new String[] {
 			"stylesheet", "styleRule", "ruleBody", "declaration", "propValue", "selector", 
-			"dotClass", "numExpression"
+			"dotClass", "numExpression", "comment"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -45,7 +47,7 @@ public class StyleGrammarParser extends Parser {
 			null, "NEWLINE", "WS", "INHERIT", "STR", "INT", "FLOAT", "INT_PCT", "FLOAT_PCT", 
 			"PLUS", "MINUS", "MULT", "DIV", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", 
 			"LBRACE", "RBRACE", "LT", "GT", "TILDE", "COLON", "SEMICOLON", "DOT", 
-			"COMMA", "SINGLEQUOTE", "DOUBLEQUOTE", "ID", "COMMENT", "BLOCK_COMMENT"
+			"COMMA", "SINGLEQUOTE", "DOUBLEQUOTE", "ID", "LINE_COMMENT", "BLOCK_COMMENT"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -107,6 +109,12 @@ public class StyleGrammarParser extends Parser {
 		public StyleRuleContext styleRule(int i) {
 			return getRuleContext(StyleRuleContext.class,i);
 		}
+		public List<CommentContext> comment() {
+			return getRuleContexts(CommentContext.class);
+		}
+		public CommentContext comment(int i) {
+			return getRuleContext(CommentContext.class,i);
+		}
 		public List<TerminalNode> NEWLINE() { return getTokens(StyleGrammarParser.NEWLINE); }
 		public TerminalNode NEWLINE(int i) {
 			return getToken(StyleGrammarParser.NEWLINE, i);
@@ -132,35 +140,44 @@ public class StyleGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(25);
+			setState(23);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
-			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << LBRACKET) | (1L << DOT) | (1L << ID))) != 0)) {
+			while ((((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << NEWLINE) | (1L << LBRACKET) | (1L << DOT) | (1L << ID) | (1L << LINE_COMMENT) | (1L << BLOCK_COMMENT))) != 0)) {
 				{
-				{
-				setState(16);
-				styleRule();
-				setState(20);
+				setState(21);
 				_errHandler.sync(this);
-				_la = _input.LA(1);
-				while (_la==NEWLINE) {
+				switch (_input.LA(1)) {
+				case LBRACKET:
+				case DOT:
+				case ID:
 					{
+					setState(18);
+					styleRule();
+					}
+					break;
+				case LINE_COMMENT:
+				case BLOCK_COMMENT:
 					{
-					setState(17);
+					setState(19);
+					comment();
+					}
+					break;
+				case NEWLINE:
+					{
+					setState(20);
 					match(NEWLINE);
 					}
-					}
-					setState(22);
-					_errHandler.sync(this);
-					_la = _input.LA(1);
+					break;
+				default:
+					throw new NoViableAltException(this);
 				}
 				}
-				}
-				setState(27);
+				setState(25);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(28);
+			setState(26);
 			match(EOF);
 			}
 		}
@@ -209,27 +226,27 @@ public class StyleGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(30);
+			setState(28);
 			selector(0);
-			setState(31);
+			setState(29);
 			match(LBRACE);
-			setState(35);
+			setState(33);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==NEWLINE) {
 				{
 				{
-				setState(32);
+				setState(30);
 				match(NEWLINE);
 				}
 				}
-				setState(37);
+				setState(35);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
-			setState(38);
+			setState(36);
 			ruleBody();
-			setState(39);
+			setState(37);
 			match(RBRACE);
 			}
 		}
@@ -250,6 +267,12 @@ public class StyleGrammarParser extends Parser {
 		}
 		public DeclarationContext declaration(int i) {
 			return getRuleContext(DeclarationContext.class,i);
+		}
+		public List<CommentContext> comment() {
+			return getRuleContexts(CommentContext.class);
+		}
+		public CommentContext comment(int i) {
+			return getRuleContext(CommentContext.class,i);
 		}
 		public RuleBodyContext(ParserRuleContext parent, int invokingState) {
 			super(parent, invokingState);
@@ -272,20 +295,35 @@ public class StyleGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(42); 
+			setState(41); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
-				{
 				setState(41);
-				declaration();
+				_errHandler.sync(this);
+				switch (_input.LA(1)) {
+				case ID:
+					{
+					setState(39);
+					declaration();
+					}
+					break;
+				case LINE_COMMENT:
+				case BLOCK_COMMENT:
+					{
+					setState(40);
+					comment();
+					}
+					break;
+				default:
+					throw new NoViableAltException(this);
 				}
 				}
-				setState(44); 
+				setState(43); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
-			} while ( _la==ID );
+			} while ( (((_la) & ~0x3f) == 0 && ((1L << _la) & ((1L << ID) | (1L << LINE_COMMENT) | (1L << BLOCK_COMMENT))) != 0) );
 			}
 		}
 		catch (RecognitionException re) {
@@ -308,7 +346,9 @@ public class StyleGrammarParser extends Parser {
 			return getRuleContext(PropValueContext.class,0);
 		}
 		public TerminalNode SEMICOLON() { return getToken(StyleGrammarParser.SEMICOLON, 0); }
-		public TerminalNode COMMENT() { return getToken(StyleGrammarParser.COMMENT, 0); }
+		public CommentContext comment() {
+			return getRuleContext(CommentContext.class,0);
+		}
 		public List<TerminalNode> NEWLINE() { return getTokens(StyleGrammarParser.NEWLINE); }
 		public TerminalNode NEWLINE(int i) {
 			return getToken(StyleGrammarParser.NEWLINE, i);
@@ -334,43 +374,43 @@ public class StyleGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(46);
+			setState(45);
 			((DeclarationContext)_localctx).property = match(ID);
-			setState(47);
+			setState(46);
 			match(COLON);
-			setState(48);
+			setState(47);
 			((DeclarationContext)_localctx).value = propValue();
-			setState(50);
+			setState(49);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==SEMICOLON) {
 				{
-				setState(49);
+				setState(48);
 				match(SEMICOLON);
 				}
 			}
 
-			setState(53);
+			setState(52);
 			_errHandler.sync(this);
-			_la = _input.LA(1);
-			if (_la==COMMENT) {
+			switch ( getInterpreter().adaptivePredict(_input,6,_ctx) ) {
+			case 1:
 				{
-				setState(52);
-				match(COMMENT);
+				setState(51);
+				comment();
 				}
+				break;
 			}
-
-			setState(58);
+			setState(57);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			while (_la==NEWLINE) {
 				{
 				{
-				setState(55);
+				setState(54);
 				match(NEWLINE);
 				}
 				}
-				setState(60);
+				setState(59);
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			}
@@ -453,7 +493,7 @@ public class StyleGrammarParser extends Parser {
 		PropValueContext _localctx = new PropValueContext(_ctx, getState());
 		enterRule(_localctx, 8, RULE_propValue);
 		try {
-			setState(65);
+			setState(64);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case INT:
@@ -465,7 +505,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new NumValueContext(_localctx);
 				enterOuterAlt(_localctx, 1);
 				{
-				setState(61);
+				setState(60);
 				numExpression(0);
 				}
 				break;
@@ -473,7 +513,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new InheritValueContext(_localctx);
 				enterOuterAlt(_localctx, 2);
 				{
-				setState(62);
+				setState(61);
 				match(INHERIT);
 				}
 				break;
@@ -481,7 +521,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new EnumValueContext(_localctx);
 				enterOuterAlt(_localctx, 3);
 				{
-				setState(63);
+				setState(62);
 				match(ID);
 				}
 				break;
@@ -489,7 +529,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new StrValueContext(_localctx);
 				enterOuterAlt(_localctx, 4);
 				{
-				setState(64);
+				setState(63);
 				match(STR);
 				}
 				break;
@@ -641,7 +681,7 @@ public class StyleGrammarParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(75);
+			setState(74);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LBRACKET:
@@ -650,13 +690,13 @@ public class StyleGrammarParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(68);
+				setState(67);
 				match(LBRACKET);
-				setState(69);
+				setState(68);
 				((DescendantSelectorContext)_localctx).ancestor = selector(0);
-				setState(70);
+				setState(69);
 				match(RBRACKET);
-				setState(71);
+				setState(70);
 				((DescendantSelectorContext)_localctx).descendant = selector(4);
 				}
 				break;
@@ -665,7 +705,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new ClassSelectorContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(73);
+				setState(72);
 				dotClass();
 				}
 				break;
@@ -674,7 +714,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new TypeSelectorContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(74);
+				setState(73);
 				match(ID);
 				}
 				break;
@@ -682,25 +722,25 @@ public class StyleGrammarParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(87);
+			setState(86);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,11,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(85);
+					setState(84);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,9,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,10,_ctx) ) {
 					case 1:
 						{
 						_localctx = new AndSelectorContext(new SelectorContext(_parentctx, _parentState));
 						((AndSelectorContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_selector);
-						setState(77);
+						setState(76);
 						if (!(precpred(_ctx, 6))) throw new FailedPredicateException(this, "precpred(_ctx, 6)");
-						setState(78);
+						setState(77);
 						((AndSelectorContext)_localctx).right = selector(7);
 						}
 						break;
@@ -709,11 +749,11 @@ public class StyleGrammarParser extends Parser {
 						_localctx = new ChildSelectorContext(new SelectorContext(_parentctx, _parentState));
 						((ChildSelectorContext)_localctx).parent = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_selector);
-						setState(79);
+						setState(78);
 						if (!(precpred(_ctx, 5))) throw new FailedPredicateException(this, "precpred(_ctx, 5)");
-						setState(80);
+						setState(79);
 						match(GT);
-						setState(81);
+						setState(80);
 						((ChildSelectorContext)_localctx).child = selector(6);
 						}
 						break;
@@ -722,20 +762,20 @@ public class StyleGrammarParser extends Parser {
 						_localctx = new OrSelectorContext(new SelectorContext(_parentctx, _parentState));
 						((OrSelectorContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_selector);
-						setState(82);
+						setState(81);
 						if (!(precpred(_ctx, 1))) throw new FailedPredicateException(this, "precpred(_ctx, 1)");
-						setState(83);
+						setState(82);
 						match(COMMA);
-						setState(84);
+						setState(83);
 						((OrSelectorContext)_localctx).right = selector(2);
 						}
 						break;
 					}
 					} 
 				}
-				setState(89);
+				setState(88);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,10,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,11,_ctx);
 			}
 			}
 		}
@@ -774,9 +814,9 @@ public class StyleGrammarParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(90);
+			setState(89);
 			match(DOT);
-			setState(91);
+			setState(90);
 			((DotClassContext)_localctx).classname = match(ID);
 			}
 		}
@@ -923,7 +963,7 @@ public class StyleGrammarParser extends Parser {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(104);
+			setState(103);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case LPAREN:
@@ -932,11 +972,11 @@ public class StyleGrammarParser extends Parser {
 				_ctx = _localctx;
 				_prevctx = _localctx;
 
-				setState(94);
+				setState(93);
 				match(LPAREN);
-				setState(95);
+				setState(94);
 				numExpression(0);
-				setState(96);
+				setState(95);
 				match(RPAREN);
 				}
 				break;
@@ -945,9 +985,9 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new NumMinusExpressionContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(98);
+				setState(97);
 				match(MINUS);
-				setState(99);
+				setState(98);
 				numExpression(5);
 				}
 				break;
@@ -956,7 +996,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new IntLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(100);
+				setState(99);
 				match(INT);
 				}
 				break;
@@ -965,7 +1005,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new IntPctLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(101);
+				setState(100);
 				match(INT_PCT);
 				}
 				break;
@@ -974,7 +1014,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new FloatLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(102);
+				setState(101);
 				match(FLOAT);
 				}
 				break;
@@ -983,7 +1023,7 @@ public class StyleGrammarParser extends Parser {
 				_localctx = new FloatPctLiteralContext(_localctx);
 				_ctx = _localctx;
 				_prevctx = _localctx;
-				setState(103);
+				setState(102);
 				match(FLOAT_PCT);
 				}
 				break;
@@ -991,25 +1031,25 @@ public class StyleGrammarParser extends Parser {
 				throw new NoViableAltException(this);
 			}
 			_ctx.stop = _input.LT(-1);
-			setState(117);
+			setState(116);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,14,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					if ( _parseListeners!=null ) triggerExitRuleEvent();
 					_prevctx = _localctx;
 					{
-					setState(115);
+					setState(114);
 					_errHandler.sync(this);
-					switch ( getInterpreter().adaptivePredict(_input,12,_ctx) ) {
+					switch ( getInterpreter().adaptivePredict(_input,13,_ctx) ) {
 					case 1:
 						{
 						_localctx = new NumBinaryOperationContext(new NumExpressionContext(_parentctx, _parentState));
 						((NumBinaryOperationContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_numExpression);
-						setState(106);
+						setState(105);
 						if (!(precpred(_ctx, 9))) throw new FailedPredicateException(this, "precpred(_ctx, 9)");
-						setState(107);
+						setState(106);
 						((NumBinaryOperationContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==MULT || _la==DIV) ) {
@@ -1020,7 +1060,7 @@ public class StyleGrammarParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(108);
+						setState(107);
 						((NumBinaryOperationContext)_localctx).right = numExpression(10);
 						}
 						break;
@@ -1029,9 +1069,9 @@ public class StyleGrammarParser extends Parser {
 						_localctx = new NumBinaryOperationContext(new NumExpressionContext(_parentctx, _parentState));
 						((NumBinaryOperationContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_numExpression);
-						setState(109);
+						setState(108);
 						if (!(precpred(_ctx, 8))) throw new FailedPredicateException(this, "precpred(_ctx, 8)");
-						setState(110);
+						setState(109);
 						((NumBinaryOperationContext)_localctx).op = _input.LT(1);
 						_la = _input.LA(1);
 						if ( !(_la==PLUS || _la==MINUS) ) {
@@ -1042,7 +1082,7 @@ public class StyleGrammarParser extends Parser {
 							_errHandler.reportMatch(this);
 							consume();
 						}
-						setState(111);
+						setState(110);
 						((NumBinaryOperationContext)_localctx).right = numExpression(9);
 						}
 						break;
@@ -1051,20 +1091,20 @@ public class StyleGrammarParser extends Parser {
 						_localctx = new NumBinaryOperationContext(new NumExpressionContext(_parentctx, _parentState));
 						((NumBinaryOperationContext)_localctx).left = _prevctx;
 						pushNewRecursionContext(_localctx, _startState, RULE_numExpression);
-						setState(112);
+						setState(111);
 						if (!(precpred(_ctx, 7))) throw new FailedPredicateException(this, "precpred(_ctx, 7)");
-						setState(113);
+						setState(112);
 						((NumBinaryOperationContext)_localctx).op = match(TILDE);
-						setState(114);
+						setState(113);
 						((NumBinaryOperationContext)_localctx).right = numExpression(8);
 						}
 						break;
 					}
 					} 
 				}
-				setState(119);
+				setState(118);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,13,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,14,_ctx);
 			}
 			}
 		}
@@ -1075,6 +1115,53 @@ public class StyleGrammarParser extends Parser {
 		}
 		finally {
 			unrollRecursionContexts(_parentctx);
+		}
+		return _localctx;
+	}
+
+	public static class CommentContext extends ParserRuleContext {
+		public TerminalNode LINE_COMMENT() { return getToken(StyleGrammarParser.LINE_COMMENT, 0); }
+		public TerminalNode BLOCK_COMMENT() { return getToken(StyleGrammarParser.BLOCK_COMMENT, 0); }
+		public CommentContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_comment; }
+		@Override
+		public void enterRule(ParseTreeListener listener) {
+			if ( listener instanceof StyleGrammarListener ) ((StyleGrammarListener)listener).enterComment(this);
+		}
+		@Override
+		public void exitRule(ParseTreeListener listener) {
+			if ( listener instanceof StyleGrammarListener ) ((StyleGrammarListener)listener).exitComment(this);
+		}
+	}
+
+	public final CommentContext comment() throws RecognitionException {
+		CommentContext _localctx = new CommentContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_comment);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(119);
+			_la = _input.LA(1);
+			if ( !(_la==LINE_COMMENT || _la==BLOCK_COMMENT) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
 		}
 		return _localctx;
 	}
@@ -1112,38 +1199,38 @@ public class StyleGrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 {\4\2\t\2\4\3\t\3"+
-		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\7\2\25\n\2\f"+
-		"\2\16\2\30\13\2\7\2\32\n\2\f\2\16\2\35\13\2\3\2\3\2\3\3\3\3\3\3\7\3$\n"+
-		"\3\f\3\16\3\'\13\3\3\3\3\3\3\3\3\4\6\4-\n\4\r\4\16\4.\3\5\3\5\3\5\3\5"+
-		"\5\5\65\n\5\3\5\5\58\n\5\3\5\7\5;\n\5\f\5\16\5>\13\5\3\6\3\6\3\6\3\6\5"+
-		"\6D\n\6\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7N\n\7\3\7\3\7\3\7\3\7\3\7\3"+
-		"\7\3\7\3\7\7\7X\n\7\f\7\16\7[\13\7\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t"+
-		"\3\t\3\t\3\t\3\t\3\t\5\tk\n\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\7\t"+
-		"v\n\t\f\t\16\ty\13\t\3\t\2\4\f\20\n\2\4\6\b\n\f\16\20\2\4\3\2\r\16\3\2"+
-		"\13\f\2\u0089\2\33\3\2\2\2\4 \3\2\2\2\6,\3\2\2\2\b\60\3\2\2\2\nC\3\2\2"+
-		"\2\fM\3\2\2\2\16\\\3\2\2\2\20j\3\2\2\2\22\26\5\4\3\2\23\25\7\3\2\2\24"+
-		"\23\3\2\2\2\25\30\3\2\2\2\26\24\3\2\2\2\26\27\3\2\2\2\27\32\3\2\2\2\30"+
-		"\26\3\2\2\2\31\22\3\2\2\2\32\35\3\2\2\2\33\31\3\2\2\2\33\34\3\2\2\2\34"+
-		"\36\3\2\2\2\35\33\3\2\2\2\36\37\7\2\2\3\37\3\3\2\2\2 !\5\f\7\2!%\7\23"+
-		"\2\2\"$\7\3\2\2#\"\3\2\2\2$\'\3\2\2\2%#\3\2\2\2%&\3\2\2\2&(\3\2\2\2\'"+
-		"%\3\2\2\2()\5\6\4\2)*\7\24\2\2*\5\3\2\2\2+-\5\b\5\2,+\3\2\2\2-.\3\2\2"+
-		"\2.,\3\2\2\2./\3\2\2\2/\7\3\2\2\2\60\61\7\36\2\2\61\62\7\30\2\2\62\64"+
-		"\5\n\6\2\63\65\7\31\2\2\64\63\3\2\2\2\64\65\3\2\2\2\65\67\3\2\2\2\668"+
-		"\7\37\2\2\67\66\3\2\2\2\678\3\2\2\28<\3\2\2\29;\7\3\2\2:9\3\2\2\2;>\3"+
-		"\2\2\2<:\3\2\2\2<=\3\2\2\2=\t\3\2\2\2><\3\2\2\2?D\5\20\t\2@D\7\5\2\2A"+
-		"D\7\36\2\2BD\7\6\2\2C?\3\2\2\2C@\3\2\2\2CA\3\2\2\2CB\3\2\2\2D\13\3\2\2"+
-		"\2EF\b\7\1\2FG\7\21\2\2GH\5\f\7\2HI\7\22\2\2IJ\5\f\7\6JN\3\2\2\2KN\5\16"+
-		"\b\2LN\7\36\2\2ME\3\2\2\2MK\3\2\2\2ML\3\2\2\2NY\3\2\2\2OP\f\b\2\2PX\5"+
-		"\f\7\tQR\f\7\2\2RS\7\26\2\2SX\5\f\7\bTU\f\3\2\2UV\7\33\2\2VX\5\f\7\4W"+
-		"O\3\2\2\2WQ\3\2\2\2WT\3\2\2\2X[\3\2\2\2YW\3\2\2\2YZ\3\2\2\2Z\r\3\2\2\2"+
-		"[Y\3\2\2\2\\]\7\32\2\2]^\7\36\2\2^\17\3\2\2\2_`\b\t\1\2`a\7\17\2\2ab\5"+
-		"\20\t\2bc\7\20\2\2ck\3\2\2\2de\7\f\2\2ek\5\20\t\7fk\7\7\2\2gk\7\t\2\2"+
-		"hk\7\b\2\2ik\7\n\2\2j_\3\2\2\2jd\3\2\2\2jf\3\2\2\2jg\3\2\2\2jh\3\2\2\2"+
-		"ji\3\2\2\2kw\3\2\2\2lm\f\13\2\2mn\t\2\2\2nv\5\20\t\fop\f\n\2\2pq\t\3\2"+
-		"\2qv\5\20\t\13rs\f\t\2\2st\7\27\2\2tv\5\20\t\nul\3\2\2\2uo\3\2\2\2ur\3"+
-		"\2\2\2vy\3\2\2\2wu\3\2\2\2wx\3\2\2\2x\21\3\2\2\2yw\3\2\2\2\20\26\33%."+
-		"\64\67<CMWYjuw";
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 |\4\2\t\2\4\3\t\3"+
+		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\4\n\t\n\3\2\3\2\3\2\7"+
+		"\2\30\n\2\f\2\16\2\33\13\2\3\2\3\2\3\3\3\3\3\3\7\3\"\n\3\f\3\16\3%\13"+
+		"\3\3\3\3\3\3\3\3\4\3\4\6\4,\n\4\r\4\16\4-\3\5\3\5\3\5\3\5\5\5\64\n\5\3"+
+		"\5\5\5\67\n\5\3\5\7\5:\n\5\f\5\16\5=\13\5\3\6\3\6\3\6\3\6\5\6C\n\6\3\7"+
+		"\3\7\3\7\3\7\3\7\3\7\3\7\3\7\5\7M\n\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7\3\7"+
+		"\7\7W\n\7\f\7\16\7Z\13\7\3\b\3\b\3\b\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3"+
+		"\t\3\t\3\t\5\tj\n\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\3\t\7\tu\n\t\f\t\16"+
+		"\tx\13\t\3\n\3\n\3\n\2\4\f\20\13\2\4\6\b\n\f\16\20\22\2\5\3\2\r\16\3\2"+
+		"\13\f\3\2\37 \2\u008b\2\31\3\2\2\2\4\36\3\2\2\2\6+\3\2\2\2\b/\3\2\2\2"+
+		"\nB\3\2\2\2\fL\3\2\2\2\16[\3\2\2\2\20i\3\2\2\2\22y\3\2\2\2\24\30\5\4\3"+
+		"\2\25\30\5\22\n\2\26\30\7\3\2\2\27\24\3\2\2\2\27\25\3\2\2\2\27\26\3\2"+
+		"\2\2\30\33\3\2\2\2\31\27\3\2\2\2\31\32\3\2\2\2\32\34\3\2\2\2\33\31\3\2"+
+		"\2\2\34\35\7\2\2\3\35\3\3\2\2\2\36\37\5\f\7\2\37#\7\23\2\2 \"\7\3\2\2"+
+		"! \3\2\2\2\"%\3\2\2\2#!\3\2\2\2#$\3\2\2\2$&\3\2\2\2%#\3\2\2\2&\'\5\6\4"+
+		"\2\'(\7\24\2\2(\5\3\2\2\2),\5\b\5\2*,\5\22\n\2+)\3\2\2\2+*\3\2\2\2,-\3"+
+		"\2\2\2-+\3\2\2\2-.\3\2\2\2.\7\3\2\2\2/\60\7\36\2\2\60\61\7\30\2\2\61\63"+
+		"\5\n\6\2\62\64\7\31\2\2\63\62\3\2\2\2\63\64\3\2\2\2\64\66\3\2\2\2\65\67"+
+		"\5\22\n\2\66\65\3\2\2\2\66\67\3\2\2\2\67;\3\2\2\28:\7\3\2\298\3\2\2\2"+
+		":=\3\2\2\2;9\3\2\2\2;<\3\2\2\2<\t\3\2\2\2=;\3\2\2\2>C\5\20\t\2?C\7\5\2"+
+		"\2@C\7\36\2\2AC\7\6\2\2B>\3\2\2\2B?\3\2\2\2B@\3\2\2\2BA\3\2\2\2C\13\3"+
+		"\2\2\2DE\b\7\1\2EF\7\21\2\2FG\5\f\7\2GH\7\22\2\2HI\5\f\7\6IM\3\2\2\2J"+
+		"M\5\16\b\2KM\7\36\2\2LD\3\2\2\2LJ\3\2\2\2LK\3\2\2\2MX\3\2\2\2NO\f\b\2"+
+		"\2OW\5\f\7\tPQ\f\7\2\2QR\7\26\2\2RW\5\f\7\bST\f\3\2\2TU\7\33\2\2UW\5\f"+
+		"\7\4VN\3\2\2\2VP\3\2\2\2VS\3\2\2\2WZ\3\2\2\2XV\3\2\2\2XY\3\2\2\2Y\r\3"+
+		"\2\2\2ZX\3\2\2\2[\\\7\32\2\2\\]\7\36\2\2]\17\3\2\2\2^_\b\t\1\2_`\7\17"+
+		"\2\2`a\5\20\t\2ab\7\20\2\2bj\3\2\2\2cd\7\f\2\2dj\5\20\t\7ej\7\7\2\2fj"+
+		"\7\t\2\2gj\7\b\2\2hj\7\n\2\2i^\3\2\2\2ic\3\2\2\2ie\3\2\2\2if\3\2\2\2i"+
+		"g\3\2\2\2ih\3\2\2\2jv\3\2\2\2kl\f\13\2\2lm\t\2\2\2mu\5\20\t\fno\f\n\2"+
+		"\2op\t\3\2\2pu\5\20\t\13qr\f\t\2\2rs\7\27\2\2su\5\20\t\ntk\3\2\2\2tn\3"+
+		"\2\2\2tq\3\2\2\2ux\3\2\2\2vt\3\2\2\2vw\3\2\2\2w\21\3\2\2\2xv\3\2\2\2y"+
+		"z\t\4\2\2z\23\3\2\2\2\21\27\31#+-\63\66;BLVXitv";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

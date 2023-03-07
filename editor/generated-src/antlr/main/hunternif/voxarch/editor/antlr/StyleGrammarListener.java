@@ -261,4 +261,14 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumBinaryOperation(StyleGrammarParser.NumBinaryOperationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link StyleGrammarParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void enterComment(StyleGrammarParser.CommentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link StyleGrammarParser#comment}.
+	 * @param ctx the parse tree
+	 */
+	void exitComment(StyleGrammarParser.CommentContext ctx);
 }

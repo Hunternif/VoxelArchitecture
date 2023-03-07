@@ -66,12 +66,13 @@ class StyleGrammarLexerTest {
     @Test
     fun `tokenize comments`() {
         assertTokensEqual(
-            listOf(COMMENT, ID, BLOCK_COMMENT, INT, COMMENT),
+            listOf(LINE_COMMENT, ID, BLOCK_COMMENT, INT, LINE_COMMENT, STR),
             tokenize("""
                 // hello world
                 abc /* multi-
                 line comment */
-                123 // end-of line comment
+                123  # end-of line comment
+                "string // with /* non-comments"
             """.trimIndent())
         )
     }

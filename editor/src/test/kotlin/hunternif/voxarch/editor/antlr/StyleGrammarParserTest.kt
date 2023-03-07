@@ -1,8 +1,6 @@
 package hunternif.voxarch.editor.antlr
 
-import org.antlr.v4.runtime.BailErrorStrategy
-import org.antlr.v4.runtime.CharStreams
-import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.misc.ParseCancellationException
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -91,6 +89,39 @@ class StyleGrammarParserTest {
     }
 
     @Test
+    fun `parse selector with comments`() {
+        assertEquals("""
+            Stylesheet
+              Comment
+                T[/** My selector */]
+              StyleRule
+                TypeSelector
+                  T[selector]
+                T[{]
+                RuleBody
+                  Comment
+                    T[# comment-only line]
+                  Declaration
+                    T[property]
+                    T[:]
+                    EnumValue
+                      T[value]
+                    Comment
+                      T[// EOL comment]
+                T[}]
+              T[<EOF>]
+        """.trimIndent(),
+            parseAndFormat("""
+                /** My selector */
+                selector {
+                    # comment-only line
+                    property: value // EOL comment
+                }
+            """.trimIndent())
+        )
+    }
+
+    @Test
     fun `parse class selector`() {
         assertEquals("""
             Stylesheet
@@ -147,7 +178,8 @@ class StyleGrammarParserTest {
                         T[~]
                         IntPctLiteral
                           T[50%]
-                    T[// randomized value, 4 is natural size in voxels]
+                    Comment
+                      T[// randomized value, 4 is natural size in voxels]
                 T[}]
               T[<EOF>]
         """.trimIndent(),
@@ -380,8 +412,20 @@ class StyleGrammarParserTest {
     private fun parseAndFormat(input: String): String {
         val lexer = StyleGrammarLexer(CharStreams.fromString(input))
         val parser = StyleGrammarParser(CommonTokenStream(lexer))
-        parser.errorHandler = BailErrorStrategy()
-//        parser.addErrorListener(ConsoleErrorListener())
+        parser.addErrorListener(ErrorListener())
         return parser.stylesheet().toParseTree().multiLineString()
+    }
+
+    private class ErrorListener : BaseErrorListener() {
+        override fun syntaxError(
+            recognizer: Recognizer<*, *>?,
+            offendingSymbol: Any?,
+            line: Int,
+            charPositionInLine: Int,
+            msg: String?,
+            e: RecognitionException?,
+        ) {
+            throw ParseCancellationException("line $line:$charPositionInLine $msg")
+        }
     }
 }

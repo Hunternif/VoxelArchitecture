@@ -1,13 +1,13 @@
 grammar StyleGrammar;
 
 // Rules
-stylesheet : (styleRule NEWLINE*)* EOF ;
+stylesheet : (styleRule | comment | NEWLINE)* EOF ;
 
 styleRule : selector LBRACE NEWLINE* ruleBody RBRACE ;
 
-ruleBody : declaration+ ;
+ruleBody : (declaration | comment)+ ;
 
-declaration : property=ID COLON value=propValue SEMICOLON? COMMENT? NEWLINE* ;
+declaration : property=ID COLON value=propValue SEMICOLON? comment? NEWLINE* ;
 
 propValue : numExpression # numValue
           | INHERIT       # inheritValue
@@ -36,6 +36,8 @@ numExpression : left=numExpression op=(DIV|MULT) right=numExpression   # numBina
               | INT_PCT                                                # intPctLiteral
               | FLOAT                                                  # floatLiteral
               | FLOAT_PCT                                              # floatPctLiteral ;
+
+comment : LINE_COMMENT | BLOCK_COMMENT ;
 
 
 // Whitespace
@@ -78,5 +80,5 @@ DOUBLEQUOTE         : '"' ;
 ID                  : [A-Za-z_][A-Za-z0-9_-]* ;
 
 // Comments
-COMMENT             : '//' ~( '\r' | '\n' )* ;
+LINE_COMMENT        : ('//'|'#') ~( '\r' | '\n' )* ;
 BLOCK_COMMENT       : '/*' .*? '*/' ;
