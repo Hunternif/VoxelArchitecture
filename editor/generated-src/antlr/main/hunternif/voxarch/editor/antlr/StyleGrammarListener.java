@@ -168,16 +168,6 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 */
 	void exitClassSelector(StyleGrammarParser.ClassSelectorContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link StyleGrammarParser#dotClass}.
-	 * @param ctx the parse tree
-	 */
-	void enterDotClass(StyleGrammarParser.DotClassContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link StyleGrammarParser#dotClass}.
-	 * @param ctx the parse tree
-	 */
-	void exitDotClass(StyleGrammarParser.DotClassContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code intPctLiteral}
 	 * labeled alternative in {@link StyleGrammarParser#numExpression}.
 	 * @param ctx the parse tree

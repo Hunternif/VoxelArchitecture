@@ -184,18 +184,6 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterDotClass(StyleGrammarParser.DotClassContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDotClass(StyleGrammarParser.DotClassContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterIntPctLiteral(StyleGrammarParser.IntPctLiteralContext ctx) { }
 	/**
 	 * {@inheritDoc}

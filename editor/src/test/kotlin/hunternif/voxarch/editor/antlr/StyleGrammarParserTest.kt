@@ -127,9 +127,8 @@ class StyleGrammarParserTest {
             Stylesheet
               StyleRule
                 ClassSelector
-                  DotClass
-                    T[.]
-                    T[tower-4]
+                  T[.]
+                  T[tower-4]
                 T[{]
                 RuleBody
                   Declaration
@@ -158,9 +157,8 @@ class StyleGrammarParserTest {
                   TypeSelector
                     T[Room]
                   ClassSelector
-                    DotClass
-                      T[.]
-                      T[tower]
+                    T[.]
+                    T[tower]
                 T[{]
                 RuleBody
                   Declaration
@@ -200,17 +198,14 @@ class StyleGrammarParserTest {
                 AndSelector
                   AndSelector
                     ClassSelector
-                      DotClass
-                        T[.]
-                        T[tower]
-                    ClassSelector
-                      DotClass
-                        T[.]
-                        T[tall]
-                  ClassSelector
-                    DotClass
                       T[.]
-                      T[a]
+                      T[tower]
+                    ClassSelector
+                      T[.]
+                      T[tall]
+                  ClassSelector
+                    T[.]
+                    T[a]
                 T[{]
                 RuleBody
                   Declaration
@@ -238,19 +233,16 @@ class StyleGrammarParserTest {
                 OrSelector
                   OrSelector
                     ClassSelector
-                      DotClass
-                        T[.]
-                        T[tower]
+                      T[.]
+                      T[tower]
                     T[,]
                     AndSelector
                       ClassSelector
-                        DotClass
-                          T[.]
-                          T[tall]
+                        T[.]
+                        T[tall]
                       ClassSelector
-                        DotClass
-                          T[.]
-                          T[room]
+                        T[.]
+                        T[room]
                   T[,]
                   TypeSelector
                     T[Prop]
@@ -281,14 +273,12 @@ class StyleGrammarParserTest {
                 DescendantSelector
                   T[[]
                   ClassSelector
-                    DotClass
-                      T[.]
-                      T[spire-castle]
+                    T[.]
+                    T[spire-castle]
                   T[]]
                   ClassSelector
-                    DotClass
-                      T[.]
-                      T[tower]
+                    T[.]
+                    T[tower]
                 T[{]
                 RuleBody
                   Declaration
@@ -316,14 +306,12 @@ class StyleGrammarParserTest {
                   T[[]
                   OrSelector
                     ClassSelector
-                      DotClass
-                        T[.]
-                        T[inner-wall]
+                      T[.]
+                      T[inner-wall]
                     T[,]
                     ClassSelector
-                      DotClass
-                        T[.]
-                        T[outer-wall]
+                      T[.]
+                      T[outer-wall]
                   T[]]
                   TypeSelector
                     T[wall]
@@ -355,14 +343,12 @@ class StyleGrammarParserTest {
               StyleRule
                 ChildSelector
                   ClassSelector
-                    DotClass
-                      T[.]
-                      T[tower-wall]
+                    T[.]
+                    T[tower-wall]
                   T[>]
                   ClassSelector
-                    DotClass
-                      T[.]
-                      T[window]
+                    T[.]
+                    T[window]
                 T[{]
                 RuleBody
                   Declaration
@@ -388,9 +374,8 @@ class StyleGrammarParserTest {
             Stylesheet
               StyleRule
                 ClassSelector
-                  DotClass
-                    T[.]
-                    T[turret]
+                  T[.]
+                  T[turret]
                 T[{]
                 RuleBody
                   Declaration

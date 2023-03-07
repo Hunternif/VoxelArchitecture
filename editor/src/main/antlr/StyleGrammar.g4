@@ -19,11 +19,9 @@ propValue : numExpression # numValue
 selector : left=selector right=selector                            # andSelector
          | parent=selector GT child=selector                       # childSelector
          | LBRACKET ancestor=selector RBRACKET descendant=selector # descendantSelector
-         | dotClass                                                # classSelector
+         | DOT classname=ID                                        # classSelector
          | ID                                                      # typeSelector
          | left=selector COMMA right=selector                      # orSelector ;
-
-dotClass : DOT classname=ID ;
 
 
 // Arithmetic expressions with numbers
