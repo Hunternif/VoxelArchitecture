@@ -63,6 +63,19 @@ class StyleGrammarLexerTest {
         )
     }
 
+    @Test
+    fun `tokenize comments`() {
+        assertTokensEqual(
+            listOf(COMMENT, ID, BLOCK_COMMENT, INT, COMMENT),
+            tokenize("""
+                // hello world
+                abc /* multi-
+                line comment */
+                123 // end-of line comment
+            """.trimIndent())
+        )
+    }
+
     /** Returns token types */
     private fun tokenize(input: String): List<Int> {
         val lexer = StyleGrammarLexer(CharStreams.fromString(input))

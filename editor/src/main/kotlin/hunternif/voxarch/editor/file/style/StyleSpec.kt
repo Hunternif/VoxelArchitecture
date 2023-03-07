@@ -19,7 +19,7 @@ selector { prop1: value1; prop2: value2 }
 
 // type + class selector:
 Room.tower {
-    height: 100%
+    height: inherit
     width: 4 ~ 50%    // randomized value, 4 is natural size in voxels
 }
 

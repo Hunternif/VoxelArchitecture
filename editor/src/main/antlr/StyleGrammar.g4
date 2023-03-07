@@ -82,5 +82,5 @@ DOUBLEQUOTE         : '"' ;
 ID                  : [A-Za-z0-9_-]+ ;
 
 // Comments
-COMMENT             : '//' .*? (NEWLINE | EOF) ;
+COMMENT             : '//' ~( '\r' | '\n' )* ;
 BLOCK_COMMENT       : '/*' .*? '*/' ;
