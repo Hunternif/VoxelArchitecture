@@ -68,11 +68,19 @@ build.dependsOn generateGrammarSource
 compileKotlin.dependsOn generateGrammarSource
 compileJava.dependsOn generateGrammarSource
 
+
 sourceSets {
     generated {
         java.srcDir 'generated-src/antlr/main/'
     }
     main.java.srcDirs += 'generated-src/antlr/main/'
+}
+
+compileGeneratedJava {
+    // This fixes the error when trying to run tests for the whole project.
+    // The error would say that ANTLR 4 runtime dependency is not found
+    // in generated sources.
+    classpath = configurations.compile
 }
 
 clean{
