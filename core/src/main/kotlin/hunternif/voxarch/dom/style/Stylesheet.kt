@@ -23,6 +23,9 @@ open class Stylesheet {
     }
 
     fun addRule(rule: Rule) {
+        if (rule.selectors.isEmpty()) {
+            rules.put(GLOBAL_STYLE, rule)
+        }
         rule.selectors.forEach { sel ->
             if (sel.styleClasses.isEmpty()) {
                 rules.put(GLOBAL_STYLE, rule)

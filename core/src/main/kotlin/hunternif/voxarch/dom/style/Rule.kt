@@ -8,7 +8,10 @@ package hunternif.voxarch.dom.style
 class Rule(
     val selectors: LinkedHashSet<Selector> = linkedSetOf(),
 ) {
-    constructor(vararg selectors : Selector)
+    constructor(selectors: Collection<Selector>)
+        : this(LinkedHashSet(selectors))
+
+    constructor(vararg selectors: Selector)
         : this(LinkedHashSet(selectors.toList()))
 
     val declarations = mutableListOf<Declaration<*>>()
@@ -25,7 +28,7 @@ class Rule(
     }
 
     fun appliesTo(element: StyledElement<*>) =
-        selectors.any { it.appliesTo(element) }
+        selectors.isEmpty() || selectors.any { it.appliesTo(element) }
 
     override fun toString(): String {
         return "${selectors.joinToString(", ")} {\n${

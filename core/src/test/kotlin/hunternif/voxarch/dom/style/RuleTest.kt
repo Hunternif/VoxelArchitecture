@@ -64,4 +64,28 @@ class RuleTest {
         assertEquals(80.0, towerRoom.naturalHeight, 0.0)
         assertEquals(80.0, turret.naturalHeight, 0.0)
     }
+
+    @Test
+    fun `rule with empty selectors`() {
+        val rule = Rule().apply {
+            rotation { set(90.0) }
+        }
+        assertEquals(""" {
+            |  rotation: 90.0
+            |}
+        """.trimMargin(), rule.toString())
+
+        // Should apply to any node:
+        val style = Stylesheet().apply { addRule(rule) }
+        val dom = domRoot {
+            room {
+                node("node")
+            }
+        }.buildDom(style)
+
+        val room = dom.query<Room>().first()
+        val node = dom.query<Node>("node").first()
+        assertEquals(90.0, room.rotationY, 0.0)
+        assertEquals(90.0, node.rotationY, 0.0)
+    }
 }
