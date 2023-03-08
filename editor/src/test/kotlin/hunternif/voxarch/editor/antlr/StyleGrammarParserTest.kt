@@ -421,6 +421,35 @@ class StyleGrammarParserTest {
         )
     }
 
+    @Test
+    fun `parse spaced selector`() {
+        assertEquals("""
+            Stylesheet
+              StyleRule
+                AndSelector
+                  AndSelector
+                    AndSelector
+                      TypeSelector
+                        T[Room]
+                      TypeSelector
+                        T[Wall]
+                    ClassSelector
+                      T[.]
+                      T[abc]
+                  ClassSelector
+                    T[.]
+                    T[f123]
+                T[{]
+                RuleBody
+                T[}]
+              T[<EOF>]
+        """.trimIndent(),
+            parseAndFormat("""
+                Room Wall .abc .f123 { }
+            """.trimIndent())
+        )
+    }
+
     private fun parseAndFormat(input: String): String {
         val lexer = StyleGrammarLexer(CharStreams.fromString(input))
         val parser = StyleGrammarParser(CommonTokenStream(lexer))
