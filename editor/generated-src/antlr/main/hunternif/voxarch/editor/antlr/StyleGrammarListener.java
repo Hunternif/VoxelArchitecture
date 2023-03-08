@@ -144,6 +144,18 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 */
 	void exitOrSelector(StyleGrammarParser.OrSelectorContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code anySelector}
+	 * labeled alternative in {@link StyleGrammarParser#selector}.
+	 * @param ctx the parse tree
+	 */
+	void enterAnySelector(StyleGrammarParser.AnySelectorContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code anySelector}
+	 * labeled alternative in {@link StyleGrammarParser#selector}.
+	 * @param ctx the parse tree
+	 */
+	void exitAnySelector(StyleGrammarParser.AnySelectorContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code andSelector}
 	 * labeled alternative in {@link StyleGrammarParser#selector}.
 	 * @param ctx the parse tree

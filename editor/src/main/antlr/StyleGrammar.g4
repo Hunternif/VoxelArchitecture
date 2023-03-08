@@ -21,7 +21,8 @@ selector : left=selector right=selector                            # andSelector
          | LBRACKET ancestor=selector RBRACKET descendant=selector # descendantSelector
          | DOT classname=ID                                        # classSelector
          | ID                                                      # typeSelector
-         | left=selector COMMA right=selector                      # orSelector ;
+         | left=selector COMMA right=selector                      # orSelector
+         | MULT                                                    # anySelector ;
 
 
 // Arithmetic expressions with numbers

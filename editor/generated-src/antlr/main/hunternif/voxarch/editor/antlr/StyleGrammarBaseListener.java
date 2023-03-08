@@ -160,6 +160,18 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAnySelector(StyleGrammarParser.AnySelectorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAnySelector(StyleGrammarParser.AnySelectorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterAndSelector(StyleGrammarParser.AndSelectorContext ctx) { }
 	/**
 	 * {@inheritDoc}

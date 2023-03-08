@@ -31,7 +31,8 @@ class Rule(
         selectors.isEmpty() || selectors.any { it.appliesTo(element) }
 
     override fun toString(): String {
-        return "${selectors.joinToString(", ")} {\n${
+        val selStr = selectors.run { if (isEmpty()) "*" else joinToString(", ") }
+        return "$selStr {\n${
             declarations.joinToString("\n") { "  $it" }
         }\n}"
     }

@@ -474,6 +474,31 @@ class StyleGrammarParserTest {
         )
     }
 
+    @Test
+    fun `parse any selector`() {
+        assertEquals("""
+            Stylesheet
+              StyleRule
+                AnySelector
+                  T[*]
+                T[{]
+                RuleBody
+                  Declaration
+                    T[property]
+                    T[:]
+                    EnumValue
+                      T[value]
+                T[}]
+              T[<EOF>]
+        """.trimIndent(),
+            parseAndFormat("""
+                * {
+                    property: value
+                }
+            """.trimIndent())
+        )
+    }
+
     private fun parseAndFormat(input: String): String {
         val lexer = StyleGrammarLexer(CharStreams.fromString(input))
         val parser = StyleGrammarParser(CommonTokenStream(lexer))

@@ -109,7 +109,9 @@ class Selector {
             addAll(types.map { it.simpleName })
             addAll(styleClasses.map { ".$it" })
             addAll(instances.map { "#${it.javaClass.simpleName}" })
-        }.joinToString(" ")
+        }
+            .joinToString(" ")
+            .ifEmpty { "*" }
     }
 
     companion object {

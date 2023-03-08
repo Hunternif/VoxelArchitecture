@@ -12,6 +12,9 @@ selector {
 // semicolon is optional, allows inlining:
 selector { prop1: value1; prop2: value2 }
 
+// any selector:
+* { ... }
+
 // class selector:
 .tower-4 {
     diameter: 4

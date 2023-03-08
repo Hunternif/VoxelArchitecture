@@ -70,7 +70,7 @@ class RuleTest {
         val rule = Rule().apply {
             rotation { set(90.0) }
         }
-        assertEquals(""" {
+        assertEquals("""* {
             |  rotation: 90.0
             |}
         """.trimMargin(), rule.toString())
