@@ -108,7 +108,7 @@ class StyleGrammarParserTest {
     }
 
     @Test
-    fun `parse selectors with comments`() {
+    fun `parse multiple rules with comments`() {
         assertEquals("""
             Stylesheet
               StyleRule
@@ -288,6 +288,30 @@ class StyleGrammarParserTest {
                 .tower, .tall.room, Prop {
                     rotation: 0.0
                 }
+            """.trimIndent())
+        )
+    }
+
+    @Test
+    fun `parse multiline selector list`() {
+        assertEquals("""
+            Stylesheet
+              StyleRule
+                OrSelector
+                  TypeSelector
+                    T[Wall]
+                  T[,]
+                  TypeSelector
+                    T[Floor]
+                T[{]
+                RuleBody
+                T[}]
+              T[<EOF>]
+        """.trimIndent(),
+            parseAndFormat("""
+                Wall,
+                Floor
+                { }
             """.trimIndent())
         )
     }
