@@ -42,6 +42,7 @@ class SelectorTest {
         assertEquals("Room .abc", selA.toString())
         assertEquals(".123 #DomRoot", selB.toString())
         assertEquals(".base .test >", selC.toString())
+        assertEquals("[.base .test]", selD.toString())
         assertEquals(".base .test > Room .abc .123 #DomRoot", (selA + selB + selC).toString())
         assertEquals("[.base .test] Room .abc .123 #DomRoot", (selA + selB + selD).toString())
     }

@@ -23,10 +23,12 @@ open class Stylesheet {
     }
 
     fun addRule(rule: Rule) {
-        if (rule.selector.styleClasses.isEmpty()) {
-            rules.put(GLOBAL_STYLE, rule)
-        } else {
-            rule.selector.styleClasses.forEach { rules.put(it, rule) }
+        rule.selectors.forEach { sel ->
+            if (sel.styleClasses.isEmpty()) {
+                rules.put(GLOBAL_STYLE, rule)
+            } else {
+                sel.styleClasses.forEach { rules.put(it, rule) }
+            }
         }
     }
 

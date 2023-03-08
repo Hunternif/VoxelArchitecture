@@ -2,11 +2,15 @@ package hunternif.voxarch.dom.style
 
 /**
  * A list of CSS-like style declarations.
- * [selector] defines to which DOM elements this rule will apply.
+ * [selectors] define to which DOM elements this rule will apply.
+ * The rule applies if the element matches *any* selectors in the set.
  */
 class Rule(
-    val selector: Selector = Selector(),
+    val selectors: LinkedHashSet<Selector> = linkedSetOf(),
 ) {
+    constructor(vararg selectors : Selector)
+        : this(LinkedHashSet(selectors.toList()))
+
     val declarations = mutableListOf<Declaration<*>>()
     fun <T> add(prop: Property<T>, value: Value<T>) {
         add(Declaration(prop, value))
@@ -20,10 +24,11 @@ class Rule(
         declarations.remove(declaration)
     }
 
-    fun appliesTo(element: StyledElement<*>) = selector.appliesTo(element)
+    fun appliesTo(element: StyledElement<*>) =
+        selectors.any { it.appliesTo(element) }
 
     override fun toString(): String {
-        return "$selector {\n${
+        return "${selectors.joinToString(", ")} {\n${
             declarations.joinToString("\n") { "  $it" }
         }\n}"
     }
