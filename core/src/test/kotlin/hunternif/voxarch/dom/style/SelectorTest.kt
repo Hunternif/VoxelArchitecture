@@ -38,13 +38,16 @@ class SelectorTest {
         val selB = select("123").instance(domBld)
         val selC = selectChildOf("base", "test")
         val selD = selectDescendantOf("base", "test")
+        val selE = selectDescendantOf("extra")
 
         assertEquals("*", Selector().toString())
         assertEquals("Room .abc", selA.toString())
         assertEquals(".123 #DomRoot", selB.toString())
         assertEquals(".base .test >", selC.toString())
         assertEquals("[.base .test]", selD.toString())
+        assertEquals("[.extra]", selE.toString())
         assertEquals(".base .test > Room .abc .123 #DomRoot", (selA + selB + selC).toString())
         assertEquals("[.base .test] Room .abc .123 #DomRoot", (selA + selB + selD).toString())
+        assertEquals("[.base .test, .extra]", (selD + selE).toString())
     }
 }
