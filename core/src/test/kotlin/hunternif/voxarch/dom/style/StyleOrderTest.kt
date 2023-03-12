@@ -7,6 +7,7 @@ import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class StyleOrderTest {
@@ -31,5 +32,17 @@ class StyleOrderTest {
         style.applyStyle(styledNode)
 
         assertEquals(listOf("height", "width", "length"), calls)
+    }
+
+    @Test
+    fun `ensure valid property names`() {
+        // This matches ID literal in StyleGrammar
+        val regex = Regex("[A-Za-z_][A-Za-z0-9_-]*")
+        for (prop in GlobalStyleOrder) {
+            assertTrue(
+                "invalid property name ${prop.name}",
+                regex.matches(prop.name),
+            )
+        }
     }
 }

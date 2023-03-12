@@ -20,9 +20,9 @@ class RuleTest {
             roofShape { randomRoof() }
         }
         assertEquals("""Room .tower {
-            |  align y: BOTTOM
-            |  offset y: 15
-            |  roof shape: random
+            |  align-y: BOTTOM
+            |  offset-y: 15
+            |  roof-shape: random
             |}
         """.trimMargin(), rule.toString())
     }

@@ -9,7 +9,7 @@ import hunternif.voxarch.util.snapStart
 
 class StyleSnapOrigin : StyleParameter
 
-val PropSnapOrigin = newNodeProperty<Node, SnapOrigin>("snap origin", OFF) { value ->
+val PropSnapOrigin = newNodeProperty<Node, SnapOrigin>("snap-origin", OFF) { value ->
     val newValue = value.invoke(OFF, seed + 10000027)
     // Don't move origin, because this can mess up offsets added by other styles
     node.snapStart(newValue)

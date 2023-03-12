@@ -78,7 +78,7 @@ enum class AlignZ {
     NORTH_OUTSIDE,
 }
 
-val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value ->
+val PropAlignY = newNodeProperty<Node, AlignY>("align-y", AlignY.ORIGIN) { value ->
     val p = parentNode
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignY.ORIGIN
@@ -95,7 +95,7 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align y", AlignY.ORIGIN) { value
     node.origin.y = newY
 }
 
-val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value ->
+val PropAlignX = newNodeProperty<Node, AlignX>("align-x", AlignX.ORIGIN) { value ->
     val p = parentNode
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignX.ORIGIN
@@ -113,7 +113,7 @@ val PropAlignX = newNodeProperty<Node, AlignX>("align x", AlignX.ORIGIN) { value
     node.origin.x = newX
 }
 
-val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value ->
+val PropAlignZ = newNodeProperty<Node, AlignZ>("align-z", AlignZ.ORIGIN) { value ->
     val p = parentNode
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignZ.ORIGIN
@@ -131,7 +131,7 @@ val PropAlignZ = newNodeProperty<Node, AlignZ>("align z", AlignZ.ORIGIN) { value
     node.origin.z = newZ
 }
 
-val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align xz", AlignXZ.ORIGIN) { value ->
+val PropAlignXZ = newNodeProperty<Node, AlignXZ>("align-xz", AlignXZ.ORIGIN) { value ->
     val p = parentNode
     val baseValue = AlignXZ.ORIGIN
     val align = value.invoke(baseValue, seed)

@@ -2,7 +2,10 @@ package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.dom.style.property.*
 
-/** Properties must be evaluated in this order. */
+/**
+ * List of all usable style properties,
+ * in order how they are evaluated.
+ */
 val GlobalStyleOrder : List<Property<*>> = listOf(
     PropSeed,
 
