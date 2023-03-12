@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -43,6 +44,14 @@ class NumValuesTest {
         assertEquals(10.vx, 10.vx.clamp(1.vx, 10.vx))
         assertEquals(20.vx, 10.vx.clamp(20.vx, 25.vx))
         assertEquals(200.vx, 100.vx.clamp(20.pct, 75.pct))
+    }
+
+    @Test
+    fun `extract coordinates from vec3 value`() {
+        val vecValue = set(Vec3(1, 2, 3))
+        assertEquals(1.0, vecValue.getX().invoke(0.0, 0), 0.0)
+        assertEquals(2.0, vecValue.getY().invoke(0.0, 0), 0.0)
+        assertEquals(3.0, vecValue.getZ().invoke(0.0, 0), 0.0)
     }
 
     companion object {

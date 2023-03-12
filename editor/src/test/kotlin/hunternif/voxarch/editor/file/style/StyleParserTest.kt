@@ -104,7 +104,7 @@ class StyleParserTest {
             }
         """.trimIndent())
         val expected = Rule(select("tower-4")).apply {
-            diameter { 1.vx }
+            diameter { 4.vx }
         }
         assertRulesEqual(listOf(expected), rules)
     }

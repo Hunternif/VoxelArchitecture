@@ -70,6 +70,21 @@ val PropPaddingBackZ = newNodeProperty<Node, Double>("padding-back-z", 0.0) { va
     }
 }
 
+val PropPaddingX = newNodeProperty<Node, Double>("padding-x", 0.0) { value ->
+    PropPaddingLeftX.applyTo(this, value)
+    PropPaddingRightX.applyTo(this, value)
+}
+
+val PropPaddingY = newNodeProperty<Node, Double>("padding-y", 0.0) { value ->
+    PropPaddingTop.applyTo(this, value)
+    PropPaddingBottom.applyTo(this, value)
+}
+
+val PropPaddingZ = newNodeProperty<Node, Double>("padding-z", 0.0) { value ->
+    PropPaddingBackZ.applyTo(this, value)
+    PropPaddingFrontZ.applyTo(this, value)
+}
+
 fun Rule.paddingTop(block: StylePadding.() -> Value<Number>) {
     add(PropPaddingTop, StylePadding().block().toDouble())
 }
@@ -95,19 +110,13 @@ fun Rule.paddingFrontZ(block: StylePadding.() -> Value<Number>) {
 }
 
 fun Rule.paddingY(block: StylePadding.() -> Value<Number>) {
-    val value = StylePadding().block()
-    add(PropPaddingTop, value.toDouble())
-    add(PropPaddingBottom, value.toDouble())
+    add(PropPaddingY, StylePadding().block().toDouble())
 }
 
 fun Rule.paddingX(block: StylePadding.() -> Value<Number>) {
-    val value = StylePadding().block()
-    add(PropPaddingLeftX, value.toDouble())
-    add(PropPaddingRightX, value.toDouble())
+    add(PropPaddingX, StylePadding().block().toDouble())
 }
 
 fun Rule.paddingZ(block: StylePadding.() -> Value<Number>) {
-    val value = StylePadding().block()
-    add(PropPaddingBackZ, value.toDouble())
-    add(PropPaddingFrontZ, value.toDouble())
+    add(PropPaddingZ, StylePadding().block().toDouble())
 }

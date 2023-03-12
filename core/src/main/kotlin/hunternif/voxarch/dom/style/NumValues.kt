@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.util.round
+import hunternif.voxarch.vector.Vec3
 import kotlin.random.Random
 
 typealias NumVal = Value<Number>
@@ -116,6 +117,18 @@ fun Value<Number>.toDouble(): Value<Double> = number(toString(), isPct) {
 
 fun Value<Number>.toInt(): Value<Int> = number(toString(), isPct) {
     base, seed -> invoke(base, seed).toInt()
+}
+
+fun Value<Vec3>.getX(): Value<Double> = value(toString(), isPct) {
+    base, seed -> invoke(Vec3(base, 0.0, 0.0), seed).x
+}
+
+fun Value<Vec3>.getY(): Value<Double> = value(toString(), isPct) {
+    base, seed -> invoke(Vec3(0.0, base, 0.0), seed).y
+}
+
+fun Value<Vec3>.getZ(): Value<Double> = value(toString(), isPct) {
+    base, seed -> invoke(Vec3(0.0, 0.0, base), seed).z
 }
 
 /** Shorthand to check if this or [other] is a percentage-based value. */

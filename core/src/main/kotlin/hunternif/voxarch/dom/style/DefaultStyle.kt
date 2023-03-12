@@ -8,8 +8,9 @@ import hunternif.voxarch.plan.Wall
 
 val defaultStyle get() = Stylesheet().add {
     styleFor<Room> {
-        diameter { 100.pct }
+        width { 100.pct }
         height { 100.pct }
+        depth { 100.pct }
     }
     styleFor<Wall> {
         width { 100.pct }

@@ -49,9 +49,14 @@ fun Rule.z(block: StylePosition.() -> Value<Number>) {
 }
 
 fun Rule.position(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
-    add(PropX, x.toDouble())
-    add(PropY, y.toDouble())
-    add(PropZ, z.toDouble())
+    val value = value<Vec3>("$x $y $z", true) { base, seed ->
+        Vec3(
+            x(base.x, seed).toDouble(),
+            y(base.y, seed).toDouble(),
+            z(base.z, seed).toDouble(),
+        )
+    }
+    add(PropPosition, value)
 }
 
 fun Rule.position(block: (base: Vec3, seed: Long) -> Vec3) {
@@ -102,9 +107,14 @@ fun Rule.offsetZ(block: StylePosition.() -> Value<Number>) {
 }
 
 fun Rule.offset(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
-    add(PropOffsetX, x.toDouble())
-    add(PropOffsetY, y.toDouble())
-    add(PropOffsetZ, z.toDouble())
+    val value = value<Vec3>("$x $y $z", true) { base, seed ->
+        Vec3(
+            x(base.x, seed).toDouble(),
+            y(base.y, seed).toDouble(),
+            z(base.z, seed).toDouble(),
+        )
+    }
+    add(PropOffsetPosition, value)
 }
 
 fun Rule.offset(block: (base: Vec3, seed: Long) -> Vec3) {
@@ -155,9 +165,14 @@ fun Rule.startZ(block: StylePosition.() -> Value<Number>) {
 }
 
 fun Rule.start(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
-    add(PropStartX, x.toDouble())
-    add(PropStartY, y.toDouble())
-    add(PropStartZ, z.toDouble())
+    val value = value<Vec3>("$x $y $z", true) { base, seed ->
+        Vec3(
+            x(base.x, seed).toDouble(),
+            y(base.y, seed).toDouble(),
+            z(base.z, seed).toDouble(),
+        )
+    }
+    add(PropStart, value)
 }
 
 fun Rule.start(block: (base: Vec3, seed: Long) -> Vec3) {
@@ -209,9 +224,14 @@ fun Rule.offsetStartZ(block: StylePosition.() -> Value<Number>) {
 }
 
 fun Rule.offsetStart(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
-    add(PropOffsetStartX, x.toDouble())
-    add(PropOffsetStartY, y.toDouble())
-    add(PropOffsetStartZ, z.toDouble())
+    val value = value<Vec3>("$x $y $z", true) { base, seed ->
+        Vec3(
+            x(base.x, seed).toDouble(),
+            y(base.y, seed).toDouble(),
+            z(base.z, seed).toDouble(),
+        )
+    }
+    add(PropOffsetStart, value)
 }
 
 fun Rule.offsetStart(block: (base: Vec3, seed: Long) -> Vec3) {

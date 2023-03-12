@@ -15,6 +15,8 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropHeight,
     PropWidth,
     PropDepth,
+    PropDiameter,
+    PropSize,
 
     // "snap origin" modifies both origin and start
     PropSnapOrigin,
@@ -32,10 +34,13 @@ val GlobalStyleOrder : List<Property<*>> = listOf(
     PropAlignZ,
 
     // Padding can reduce size and move the node towards parent's center
+    PropPaddingY,
     PropPaddingTop,
     PropPaddingBottom,
+    PropPaddingX,
     PropPaddingLeftX,
     PropPaddingRightX,
+    PropPaddingZ,
     PropPaddingBackZ,
     PropPaddingFrontZ,
 
