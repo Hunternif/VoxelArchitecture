@@ -6,11 +6,11 @@ import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.util.rotateY
 
 class StyleSize(
-    var initial: Dimension = 0.vx,
-    var min: Dimension? = null,
-    var max: Dimension? = null,
+    var initial: Value<Number> = 0.vx,
+    var min: Value<Number>? = null,
+    var max: Value<Number>? = null,
 ) : StyleParameter {
-    fun get(): Dimension = when {
+    fun get(): Value<Number> = when {
         min != null && max != null -> initial.clamp(min!!, max!!)
         min != null -> max(min!!, initial)
         max != null -> min(max!!, initial)
@@ -41,33 +41,30 @@ val PropDepth = newNodeProperty<Node, Double>("depth", 4.0) { value ->
     node.naturalDepth = newValue
 }
 
-fun Rule.height(block: StyleSize.() -> Dimension) {
+fun Rule.height(block: StyleSize.() -> Value<Number>) {
     val value = StyleSize().apply { initial = block() }
-    add(PropHeight, value.get())
+    add(PropHeight, value.get().toDouble())
 }
 
-fun Rule.width(block: StyleSize.() -> Dimension) {
+fun Rule.width(block: StyleSize.() -> Value<Number>) {
     val value = StyleSize().apply { initial = block() }
-    add(PropWidth, value.get())
+    add(PropWidth, value.get().toDouble())
 }
 
-fun Rule.depth(block: StyleSize.() -> Dimension) {
+fun Rule.depth(block: StyleSize.() -> Value<Number>) {
     val value = StyleSize().apply { initial = block() }
-    add(PropDepth, value.get())
+    add(PropDepth, value.get().toDouble())
 }
 
 /** Applies to both width and length. */
-fun Rule.diameter(block: StyleSize.() -> Dimension) {
+fun Rule.diameter(block: StyleSize.() -> Value<Number>) {
     val value = StyleSize().apply { initial = block() }
-    add(PropWidth, value.get())
-    add(PropDepth, value.get())
+    add(PropWidth, value.get().toDouble())
+    add(PropDepth, value.get().toDouble())
 }
 
-fun Rule.size(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropWidth, x)
-    add(PropHeight, y)
-    add(PropDepth, z)
+fun Rule.size(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
+    add(PropWidth, x.toDouble())
+    add(PropHeight, y.toDouble())
+    add(PropDepth, z.toDouble())
 }
-
-/** Inherit the value from the parent node. */
-fun StyleSize.inherit(): Dimension = dimension("inherit", true) { base, _ -> base }

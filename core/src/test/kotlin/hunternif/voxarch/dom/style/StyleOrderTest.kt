@@ -15,11 +15,11 @@ class StyleOrderTest {
         val calls = mutableListOf<String>()
         val style = Stylesheet().add {
             style("class1") {
-                width { dimension { _, _ -> calls.add("width"); 1.0 } }
+                width { number { _, _ -> calls.add("width"); 1.0 } }
             }
             style("class2") {
-                depth { dimension { _, _ -> calls.add("length"); 2.0 } }
-                height { dimension { _, _ -> calls.add("height"); 3.0 } }
+                depth { number { _, _ -> calls.add("length"); 2.0 } }
+                height { number { _, _ -> calls.add("height"); 3.0 } }
             }
         }
         val node: Room = spy(Room())

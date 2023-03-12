@@ -23,6 +23,6 @@ fun Rule.shape(block: StyleShape.() -> Value<PolyShape>) {
     add(PropShape, StyleShape().block())
 }
 
-fun Rule.edgeLength(block: StyleSize.() -> Dimension) {
-    add(PropEdgeLength, StyleSize(min = 1.vx).block())
+fun Rule.edgeLength(block: StyleSize.() -> Value<Number>) {
+    add(PropEdgeLength, StyleSize(min = 1.vx).block().toDouble())
 }

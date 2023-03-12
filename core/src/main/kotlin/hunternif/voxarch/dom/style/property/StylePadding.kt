@@ -1,8 +1,6 @@
 package hunternif.voxarch.dom.style.property
 
-import hunternif.voxarch.dom.style.Dimension
-import hunternif.voxarch.dom.style.Rule
-import hunternif.voxarch.dom.style.StyleParameter
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.newNodeProperty
 import hunternif.voxarch.plan.*
 import kotlin.math.min
@@ -72,44 +70,44 @@ val PropPaddingBackZ = newNodeProperty<Node, Double>("padding back z", 0.0) { va
     }
 }
 
-fun Rule.paddingTop(block: StylePadding.() -> Dimension) {
-    add(PropPaddingTop, StylePadding().block())
+fun Rule.paddingTop(block: StylePadding.() -> Value<Number>) {
+    add(PropPaddingTop, StylePadding().block().toDouble())
 }
 
-fun Rule.paddingBottom(block: StylePadding.() -> Dimension) {
-    add(PropPaddingBottom, StylePadding().block())
+fun Rule.paddingBottom(block: StylePadding.() -> Value<Number>) {
+    add(PropPaddingBottom, StylePadding().block().toDouble())
 }
 
-fun Rule.paddingLeftX(block: StylePadding.() -> Dimension) {
-    add(PropPaddingLeftX, StylePadding().block())
+fun Rule.paddingLeftX(block: StylePadding.() -> Value<Number>) {
+    add(PropPaddingLeftX, StylePadding().block().toDouble())
 }
 
-fun Rule.paddingRightX(block: StylePadding.() -> Dimension) {
-    add(PropPaddingRightX, StylePadding().block())
+fun Rule.paddingRightX(block: StylePadding.() -> Value<Number>) {
+    add(PropPaddingRightX, StylePadding().block().toDouble())
 }
 
-fun Rule.paddingBackZ(block: StylePadding.() -> Dimension) {
-    add(PropPaddingBackZ, StylePadding().block())
+fun Rule.paddingBackZ(block: StylePadding.() -> Value<Number>) {
+    add(PropPaddingBackZ, StylePadding().block().toDouble())
 }
 
-fun Rule.paddingFrontZ(block: StylePadding.() -> Dimension) {
-    add(PropPaddingFrontZ, StylePadding().block())
+fun Rule.paddingFrontZ(block: StylePadding.() -> Value<Number>) {
+    add(PropPaddingFrontZ, StylePadding().block().toDouble())
 }
 
-fun Rule.paddingY(block: StylePadding.() -> Dimension) {
+fun Rule.paddingY(block: StylePadding.() -> Value<Number>) {
     val value = StylePadding().block()
-    add(PropPaddingTop, value)
-    add(PropPaddingBottom, value)
+    add(PropPaddingTop, value.toDouble())
+    add(PropPaddingBottom, value.toDouble())
 }
 
-fun Rule.paddingX(block: StylePadding.() -> Dimension) {
+fun Rule.paddingX(block: StylePadding.() -> Value<Number>) {
     val value = StylePadding().block()
-    add(PropPaddingLeftX, value)
-    add(PropPaddingRightX, value)
+    add(PropPaddingLeftX, value.toDouble())
+    add(PropPaddingRightX, value.toDouble())
 }
 
-fun Rule.paddingZ(block: StylePadding.() -> Dimension) {
+fun Rule.paddingZ(block: StylePadding.() -> Value<Number>) {
     val value = StylePadding().block()
-    add(PropPaddingBackZ, value)
-    add(PropPaddingFrontZ, value)
+    add(PropPaddingBackZ, value.toDouble())
+    add(PropPaddingFrontZ, value.toDouble())
 }

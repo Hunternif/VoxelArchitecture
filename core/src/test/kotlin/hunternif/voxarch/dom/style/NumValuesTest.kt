@@ -1,13 +1,11 @@
 package hunternif.voxarch.dom.style
 
-import hunternif.voxarch.dom.style.property.StyleSize
-import hunternif.voxarch.dom.style.property.inherit
 import org.junit.Assert.*
 import org.junit.Test
 
-class DimensionTest {
+class NumValuesTest {
     @Test
-    fun `dimension arithmetic`() {
+    fun `num value arithmetic`() {
         assertEquals(3.vx, 1.vx + 2.vx)
         assertEquals(8.vx, 10.vx - 2.vx)
         assertEquals(75.pct, 50.pct + 25.pct)
@@ -25,7 +23,7 @@ class DimensionTest {
     }
 
     @Test
-    fun `dimension isPct`() {
+    fun `num value isPct`() {
         assertFalse((1.vx + 2.vx).isPct)
         assertTrue((1.vx + 25.pct).isPct)
         assertTrue((10.pct - 25.pct).isPct)
@@ -36,11 +34,10 @@ class DimensionTest {
         assertFalse((100.vx to 1000.vx).isPct)
         assertTrue((100.vx to 200.pct).isPct)
         assertTrue((10.vx.clamp(1.pct, 5.pct)).isPct)
-        assertTrue(StyleSize().inherit().isPct)
     }
 
     @Test
-    fun `dimension clamp`() {
+    fun `num value clamp`() {
         assertEquals(5.vx, 10.vx.clamp(1.vx, 5.vx))
         assertEquals(1.vx, 1.vx.clamp(1.vx, 10.vx))
         assertEquals(10.vx, 10.vx.clamp(1.vx, 10.vx))
@@ -52,15 +49,15 @@ class DimensionTest {
         private const val base = 1000.0
         private const val seed = 0L
 
-        fun assertEquals(expected: Dimension, actual: Dimension) {
-            val expectedVal = expected(base, seed)
-            val actualVal = actual(base, seed)
+        fun assertEquals(expected: Value<Number>, actual: Value<Number>) {
+            val expectedVal = expected(base, seed).toDouble()
+            val actualVal = actual(base, seed).toDouble()
             assertEquals(expectedVal, actualVal, 0.0)
         }
     }
 
     @Test
-    fun `dimension toString`() {
+    fun `num value toString`() {
         assertEquals("(1 + 2.5%)", (1.vx + 2.5.pct).toString())
         assertEquals("(1 / 2 - 3 * min(4, 5))", (1.vx / 2 - 3 * min(4.vx, 5.vx)).toString())
         assertEquals("(1.4 ~ 2.0)", (1.4.vx to 2.0.vx).toString())

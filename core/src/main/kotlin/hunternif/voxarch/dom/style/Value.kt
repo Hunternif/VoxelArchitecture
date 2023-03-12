@@ -22,13 +22,14 @@ fun <T> random(vararg options: T): Value<T> {
 }
 
 /** Inherit the value from the parent node. */
-fun <T> StyleParameter.inherit(): Value<T> = value("inherit") { base, _ -> base }
+fun <T> StyleParameter.inherit(): Value<T> = value("inherit", true) { base, _ -> base }
 
 fun <T> value(
     strValue: String = "...",
+    isPct: Boolean = false,
     method: (base: T, seed: Long) -> T,
 ) = object : Value<T> {
     override fun invoke(base: T, seed: Long): T = method(base, seed)
-    override val isPct: Boolean = false
+    override val isPct: Boolean = isPct
     override fun toString(): String = strValue
 }

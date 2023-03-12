@@ -51,8 +51,8 @@ val PropBottomShape = newDomProperty<DomTurretDecor, BottomShape>("bottom shape"
     domBuilder.bottomShape = value.invoke(baseValue, seed + 10000009)
 }
 
-fun Rule.roofOffset(block: StyleSize.() -> Dimension) {
-    add(PropRoofOffset, StyleSize().block())
+fun Rule.roofOffset(block: StyleSize.() -> Value<Number>) {
+    add(PropRoofOffset, StyleSize().block().toDouble())
 }
 
 fun Rule.spireRatio(block: StyleSize.() -> Value<Double>) {

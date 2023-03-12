@@ -36,26 +36,26 @@ val PropPosition = newNodeProperty<Node, Vec3>("origin vector", Vec3.ZERO) { val
     node.origin = newValue
 }
 
-fun Rule.y(block: StylePosition.() -> Dimension) {
-    add(PropY, StylePosition().block())
+fun Rule.y(block: StylePosition.() -> Value<Number>) {
+    add(PropY, StylePosition().block().toDouble())
 }
 
-fun Rule.x(block: StylePosition.() -> Dimension) {
-    add(PropX, StylePosition().block())
+fun Rule.x(block: StylePosition.() -> Value<Number>) {
+    add(PropX, StylePosition().block().toDouble())
 }
 
-fun Rule.z(block: StylePosition.() -> Dimension) {
-    add(PropZ, StylePosition().block())
+fun Rule.z(block: StylePosition.() -> Value<Number>) {
+    add(PropZ, StylePosition().block().toDouble())
 }
 
-fun Rule.position(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropX, x)
-    add(PropY, y)
-    add(PropZ, z)
+fun Rule.position(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
+    add(PropX, x.toDouble())
+    add(PropY, y.toDouble())
+    add(PropZ, z.toDouble())
 }
 
 fun Rule.position(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropPosition, value("...", block))
+    add(PropPosition, value("...", false, block))
 }
 
 
@@ -89,26 +89,26 @@ val PropOffsetPosition = newNodeProperty<Node, Vec3>("offset vector", Vec3.ZERO)
     node.origin += newValue
 }
 
-fun Rule.offsetY(block: StylePosition.() -> Dimension) {
-    add(PropOffsetY, StylePosition().block())
+fun Rule.offsetY(block: StylePosition.() -> Value<Number>) {
+    add(PropOffsetY, StylePosition().block().toDouble())
 }
 
-fun Rule.offsetX(block: StylePosition.() -> Dimension) {
-    add(PropOffsetX, StylePosition().block())
+fun Rule.offsetX(block: StylePosition.() -> Value<Number>) {
+    add(PropOffsetX, StylePosition().block().toDouble())
 }
 
-fun Rule.offsetZ(block: StylePosition.() -> Dimension) {
-    add(PropOffsetZ, StylePosition().block())
+fun Rule.offsetZ(block: StylePosition.() -> Value<Number>) {
+    add(PropOffsetZ, StylePosition().block().toDouble())
 }
 
-fun Rule.offset(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropOffsetX, x)
-    add(PropOffsetY, y)
-    add(PropOffsetZ, z)
+fun Rule.offset(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
+    add(PropOffsetX, x.toDouble())
+    add(PropOffsetY, y.toDouble())
+    add(PropOffsetZ, z.toDouble())
 }
 
 fun Rule.offset(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropOffsetPosition, value("...", block))
+    add(PropOffsetPosition, value("...", false, block))
 }
 
 
@@ -142,26 +142,26 @@ val PropStart = newNodeProperty<Node, Vec3>("start vector", Vec3.ZERO) { value -
     node.start = newValue
 }
 
-fun Rule.startY(block: StylePosition.() -> Dimension) {
-    add(PropStartY, StylePosition().block())
+fun Rule.startY(block: StylePosition.() -> Value<Number>) {
+    add(PropStartY, StylePosition().block().toDouble())
 }
 
-fun Rule.startX(block: StylePosition.() -> Dimension) {
-    add(PropStartX, StylePosition().block())
+fun Rule.startX(block: StylePosition.() -> Value<Number>) {
+    add(PropStartX, StylePosition().block().toDouble())
 }
 
-fun Rule.startZ(block: StylePosition.() -> Dimension) {
-    add(PropStartZ, StylePosition().block())
+fun Rule.startZ(block: StylePosition.() -> Value<Number>) {
+    add(PropStartZ, StylePosition().block().toDouble())
 }
 
-fun Rule.start(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropStartX, x)
-    add(PropStartY, y)
-    add(PropStartZ, z)
+fun Rule.start(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
+    add(PropStartX, x.toDouble())
+    add(PropStartY, y.toDouble())
+    add(PropStartZ, z.toDouble())
 }
 
 fun Rule.start(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropStart, value("...", block))
+    add(PropStart, value("...", false, block))
 }
 
 
@@ -196,24 +196,24 @@ val PropOffsetStart = newNodeProperty<Node, Vec3>("offset start vector", Vec3.ZE
     node.start += newValue
 }
 
-fun Rule.offsetStartY(block: StylePosition.() -> Dimension) {
-    add(PropOffsetStartY, StylePosition().block())
+fun Rule.offsetStartY(block: StylePosition.() -> Value<Number>) {
+    add(PropOffsetStartY, StylePosition().block().toDouble())
 }
 
-fun Rule.offsetStartX(block: StylePosition.() -> Dimension) {
-    add(PropOffsetStartX, StylePosition().block())
+fun Rule.offsetStartX(block: StylePosition.() -> Value<Number>) {
+    add(PropOffsetStartX, StylePosition().block().toDouble())
 }
 
-fun Rule.offsetStartZ(block: StylePosition.() -> Dimension) {
-    add(PropOffsetStartZ, StylePosition().block())
+fun Rule.offsetStartZ(block: StylePosition.() -> Value<Number>) {
+    add(PropOffsetStartZ, StylePosition().block().toDouble())
 }
 
-fun Rule.offsetStart(x: Dimension, y: Dimension, z: Dimension) {
-    add(PropOffsetStartX, x)
-    add(PropOffsetStartY, y)
-    add(PropOffsetStartZ, z)
+fun Rule.offsetStart(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
+    add(PropOffsetStartX, x.toDouble())
+    add(PropOffsetStartY, y.toDouble())
+    add(PropOffsetStartZ, z.toDouble())
 }
 
 fun Rule.offsetStart(block: (base: Vec3, seed: Long) -> Vec3) {
-    add(PropOffsetStart, value("...", block))
+    add(PropOffsetStart, value("...", false, block))
 }
