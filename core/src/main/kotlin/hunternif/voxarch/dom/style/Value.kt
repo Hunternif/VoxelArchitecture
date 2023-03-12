@@ -14,7 +14,8 @@ interface Value<T> {
 }
 
 
-fun <T> set(value: T): Value<T> = value(value.toString()) { _, _ -> value }
+fun <T> set(text: String, value: T): Value<T> = value(text) { _, _ -> value }
+fun <T> set(value: T): Value<T> = set(value.toString(), value)
 
 fun <T> random(vararg options: T): Value<T> {
     require(options.isNotEmpty()) { "options are empty" }
@@ -22,7 +23,7 @@ fun <T> random(vararg options: T): Value<T> {
 }
 
 /** Inherit the value from the parent node. */
-fun <T> StyleParameter.inherit(): Value<T> = value("inherit", true) { base, _ -> base }
+fun <T> inherit(): Value<T> = value("inherit", true) { base, _ -> base }
 
 fun <T> value(
     strValue: String = "...",

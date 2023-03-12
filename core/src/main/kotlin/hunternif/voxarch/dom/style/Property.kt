@@ -16,6 +16,8 @@ abstract class Property<T>(
     val valType: Class<T>,
     val default: T,
 ) {
+    val isEnum: Boolean = isType<Enum<*>>()
+
     abstract fun applyTo(styled: StyledElement<*>, value: Value<T>)
     inline fun <reified T2> isType(): Boolean =
         valType.isAssignableFrom(T2::class.java)
@@ -23,6 +25,11 @@ abstract class Property<T>(
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T2> asType(): Property<T2>? =
         if (isType<T2>()) this as Property<T2>
+        else null
+
+    @Suppress("UNCHECKED_CAST")
+    fun asEnum(): Property<Enum<*>>? =
+        if (isType<Enum<*>>()) this as Property<Enum<*>>
         else null
 
     override fun toString(): String = name

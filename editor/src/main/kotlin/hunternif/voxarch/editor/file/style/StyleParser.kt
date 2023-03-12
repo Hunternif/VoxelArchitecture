@@ -1,8 +1,7 @@
 package hunternif.voxarch.editor.file.style
 
 import hunternif.voxarch.dom.builder.DomNodeBuilder
-import hunternif.voxarch.dom.style.Rule
-import hunternif.voxarch.dom.style.Selector
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.editor.antlr.StyleGrammarLexer
 import hunternif.voxarch.editor.antlr.StyleGrammarParser
 import hunternif.voxarch.editor.antlr.StyleGrammarParser.*
@@ -21,7 +20,10 @@ fun parseStylesheet(styleStr: String): List<Rule> {
 
 private fun StylesheetContext.toRules() = styleRule().map { it.toRule() }
 private fun StyleRuleContext.toRule(): Rule {
-    return Rule(selector().toSelectors())
+    val rule = Rule(selector().toSelectors())
+    val declarations = ruleBody()?.declaration()?.map { it.toDecl() } ?: emptyList()
+    rule.declarations.addAll(declarations)
+    return rule
 }
 
 private fun SelectorContext?.toSelectors(): List<Selector> = when (this) {
@@ -59,6 +61,57 @@ private fun Selector.append(other: SelectorContext?): Selector = apply {
     }
 }
 
+private fun DeclarationContext.toDecl(): Declaration<*> {
+    val property = knownStyleProperties[property.text]
+        ?: invalidProperty(property.text)
+    return makeDecl(property, value)
+}
+
+@Suppress("UNCHECKED_CAST")
+private fun <T> makeDecl(
+    property: Property<T>, ctx: PropValueContext?,
+): Declaration<T> {
+    val value: Value<T> = when {
+        ctx is InheritValueContext -> inherit()
+        ctx is EnumValueContext && property.isEnum -> {
+            // TODO: add support for random enum expressions
+            val name = ctx.ID()?.text ?: ""
+            val enum = property.valType.enumConstants?.first { (it as Enum<*>).name == name }
+            enum?.let { set(name, it) }
+        }
+        ctx is StrValueContext && property.isType<String>() -> {
+            // TODO: strip quotes
+            set((ctx.STR()?.text ?: "") as T)
+        }
+        ctx is NumValueContext && property.isType<Number>() -> {
+            try {
+                ctx.numExpression()?.toValue() as Value<T>
+            } catch (e: Exception) {
+                null
+            }
+        }
+        else -> null
+    }
+    // invalid value, use default:
+        ?: set(ctx?.text ?: "null", property.default)
+    return Declaration(property, value)
+}
+
+@Throws(NumberExpressionException::class)
+private fun NumExpressionContext?.toValue(): Value<Number> {
+    try {
+        return when (this) {
+            is IntLiteralContext -> INT().text.toInt().vx
+            is IntPctLiteralContext -> INT_PCT().text.toInt().pct
+            is FloatLiteralContext -> FLOAT().text.toDouble().vx
+            is FloatPctLiteralContext -> FLOAT_PCT().text.toDouble().pct
+            else -> throw NumberExpressionException()
+        }
+    } catch (e: Exception) {
+        throw NumberExpressionException(cause = e)
+    }
+}
+
 
 /** All known Node and DomBuilder subclasses that can be styled.
  * Maps class name to class. */
@@ -72,6 +125,20 @@ val knownStyleTypes: Map<String, Class<*>> by lazy {
     }
 }
 
+val knownStyleProperties: Map<String, Property<*>> by lazy {
+    GlobalStyleOrder.associateBy { it.name }
+}
+
+private fun invalidProperty(text: String) = object : Property<Any>(
+    text, Any::class.java, Any::class.java, Any()
+) {
+    override fun applyTo(styled: StyledElement<*>, value: Value<Any>) {}
+}
+
+class NumberExpressionException(
+    text: String = "failed to parse number expression",
+    cause: Exception? = null,
+) : Exception(text, cause)
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class StyleParseException(
