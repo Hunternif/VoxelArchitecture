@@ -1,6 +1,5 @@
 package hunternif.voxarch.editor.file
 
-import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -111,12 +110,12 @@ class FileSpecTest : BaseAppTest() {
                     zipfsTest.getPath("/voxels/group_6.vox")
                 )
                 assertFilesEqual(
-                    zipfsRef.getPath("/blueprints/blueprint_0.json"),
-                    zipfsTest.getPath("/blueprints/blueprint_0.json")
+                    zipfsRef.getPath("/blueprints/blueprint_0.xml"),
+                    zipfsTest.getPath("/blueprints/blueprint_0.xml")
                 )
                 assertFilesEqual(
-                    zipfsRef.getPath("/blueprints/blueprint_1.json"),
-                    zipfsTest.getPath("/blueprints/blueprint_1.json")
+                    zipfsRef.getPath("/blueprints/blueprint_1.xml"),
+                    zipfsTest.getPath("/blueprints/blueprint_1.xml")
                 )
             }
         }

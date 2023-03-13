@@ -1,86 +1,94 @@
 package hunternif.voxarch.editor.file
 
-import com.fasterxml.jackson.annotation.JsonProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 
-class JsonBlueprint(
-    @field:JsonProperty
+@JacksonXmlRootElement(localName = "blueprint")
+class XmlBlueprint(
+    @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,
 
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var name: String = "",
 
-    @field:JsonProperty
-    var nodes: List<JsonBlueprintNode> = emptyList(),
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "node")
+    var nodes: List<XmlBlueprintNode> = emptyList(),
 
-    @field:JsonProperty
-    var links: List<JsonBlueprintLink> = emptyList(),
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "link")
+    var links: List<XmlBlueprintLink> = emptyList(),
 )
 
-class JsonBlueprintNode(
-    @field:JsonProperty
+class XmlBlueprintNode(
+    @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,
 
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var name: String = "",
 
-    @field:JsonProperty
-    var inputSlots: List<JsonBlueprintSlot> = emptyList(),
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "inSlot")
+    var inputSlots: List<XmlBlueprintSlot> = emptyList(),
 
-    @field:JsonProperty
-    var outputSlots: List<JsonBlueprintSlot> = emptyList(),
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "outSlot")
+    var outputSlots: List<XmlBlueprintSlot> = emptyList(),
 
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var x: Float = -1f,
 
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var y: Float = -1f,
 )
 
-class JsonBlueprintSlot(
-    @field:JsonProperty
+class XmlBlueprintSlot(
+    @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,
 
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var name: String = "",
 )
 
-class JsonBlueprintLink(
+class XmlBlueprintLink(
     // node IDs are added just in case, for debugging errors
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var fromNodeId: Int = -1,
 
-    @field:JsonProperty
-    var fromSlot: JsonBlueprintSlot? = null,
+    @field:JacksonXmlProperty
+    var fromSlot: XmlBlueprintSlot? = null,
 
-    @field:JsonProperty
+    @field:JacksonXmlProperty(isAttribute = true)
     var toNodeId: Int = -1,
 
-    @field:JsonProperty
-    var toSlot: JsonBlueprintSlot? = null,
+    @field:JacksonXmlProperty
+    var toSlot: XmlBlueprintSlot? = null,
 )
 
-internal fun Blueprint.mapToJson(): JsonBlueprint {
+internal fun Blueprint.mapToXml(): XmlBlueprint {
     val jsonLinks = links.map {
-        JsonBlueprintLink(
-            it.from.node.id, JsonBlueprintSlot(it.from.id, it.from.name),
-            it.to.node.id, JsonBlueprintSlot(it.to.id, it.to.name),
+        XmlBlueprintLink(
+            it.from.node.id, XmlBlueprintSlot(it.from.id, it.from.name),
+            it.to.node.id, XmlBlueprintSlot(it.to.id, it.to.name),
         )
     }
     val jsonNodes = nodes.map { n ->
-        JsonBlueprintNode(n.id, n.name,
-            n.inputs.map { JsonBlueprintSlot(it.id, it.name) },
-            n.outputs.map { JsonBlueprintSlot(it.id, it.name) },
+        XmlBlueprintNode(
+            n.id, n.name,
+            n.inputs.map { XmlBlueprintSlot(it.id, it.name) },
+            n.outputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.x, n.y,
         )
     }
-    return JsonBlueprint(id, name, jsonNodes, jsonLinks)
+    return XmlBlueprint(id, name, jsonNodes, jsonLinks)
 }
 
-internal fun JsonBlueprint.mapJson(): Blueprint {
+internal fun XmlBlueprint.mapXml(): Blueprint {
     val bp = Blueprint(id, name)
     for (n in nodes) {
         // Skip start node because it's added automatically:

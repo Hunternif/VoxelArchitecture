@@ -8,6 +8,7 @@ import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.dataformat.xml.XmlMapper
+import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
@@ -24,6 +25,9 @@ private val xmlMapper: XmlMapper by lazy {
 
     module.addSerializer(SceneObjectSerializer())
     module.addDeserializer(SceneObject::class.java, SceneObjectDeserializer())
+
+    module.addSerializer(BlueprintSerializer())
+    module.addDeserializer(Blueprint::class.java, BlueprintDeserializer())
 
     XmlMapper().apply {
         registerModule(module)
@@ -99,5 +103,24 @@ private class SceneObjectDeserializer : StdDeserializer<SceneObject>(SceneObject
         ctxt: DeserializationContext
     ): SceneObject? {
         return p.readValueAs(XmlSceneObject::class.java)?.mapXml()
+    }
+}
+
+private class BlueprintSerializer : StdSerializer<Blueprint>(Blueprint::class.java) {
+    override fun serialize(
+        value: Blueprint,
+        gen: JsonGenerator,
+        provider: SerializerProvider
+    ) {
+        gen.writeObject(value.mapToXml())
+    }
+}
+
+private class BlueprintDeserializer : StdDeserializer<Blueprint>(Blueprint::class.java) {
+    override fun deserialize(
+        p: JsonParser,
+        ctxt: DeserializationContext
+    ): Blueprint? {
+        return p.readValueAs(XmlBlueprint::class.java)?.mapXml()
     }
 }

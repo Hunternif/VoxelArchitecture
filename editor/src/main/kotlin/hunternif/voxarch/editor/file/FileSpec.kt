@@ -198,11 +198,11 @@ fun EditorAppImpl.writeProject(path: Path) {
         Files.createDirectories(zipfs.getPath("/blueprints"))
         state.registry.blueprintIDs.map.forEach { (id, bp) ->
             Files.newBufferedWriter(
-                zipfs.getPath("/blueprints/blueprint_$id.json"),
+                zipfs.getPath("/blueprints/blueprint_$id.xml"),
                 CREATE,
                 TRUNCATE_EXISTING
             ).use {
-                val bpJson = serializeToJsonStr(bp, true)
+                val bpJson = serializeToXmlStr(bp, true)
                 it.write(bpJson)
             }
         }
@@ -235,9 +235,9 @@ private fun tryReadBlueprintFile(
 ) {
     try {
         Files.newBufferedReader(
-            fs.getPath("/blueprints/blueprint_${entry.id}.json")
+            fs.getPath("/blueprints/blueprint_${entry.id}.xml")
         ).use {
-            val bp = deserializeJson(it.readText(), Blueprint::class)
+            val bp = deserializeXml(it.readText(), Blueprint::class)
             reg.blueprintIDs.save(bp)
         }
     } catch (e: Exception) {
