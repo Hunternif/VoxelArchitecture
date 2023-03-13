@@ -9,10 +9,12 @@ ruleBody : (declaration | comment)* ;
 
 declaration : property=ID COLON value=propValue SEMICOLON? comment? NEWLINE* ;
 
-propValue : numExpression # numValue
-          | INHERIT       # inheritValue
-          | ID            # enumValue
-          | STR           # strValue ;
+propValue : numExpression        # numValue
+          | INT INT INT          # intVec3Value
+          | number number number # vec3Value
+          | INHERIT              # inheritValue
+          | ID                   # enumValue
+          | STR                  # strValue ;
 
 
 // Selectors
@@ -35,6 +37,8 @@ numExpression : left=numExpression op=(DIV|MULT) right=numExpression   # numBina
               | INT_PCT                                                # intPctLiteral
               | FLOAT                                                  # floatLiteral
               | FLOAT_PCT                                              # floatPctLiteral ;
+
+number : INT | FLOAT ;
 
 comment : LINE_COMMENT | BLOCK_COMMENT ;
 

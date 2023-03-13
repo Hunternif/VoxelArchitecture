@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.antlr.StyleGrammarLexer
 import hunternif.voxarch.editor.antlr.StyleGrammarParser
 import hunternif.voxarch.editor.antlr.StyleGrammarParser.*
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.vector.Vec3
 import org.antlr.v4.runtime.*
 
 /** Parses a list of styles from text. See "CSS" specification. */
@@ -91,6 +92,14 @@ private fun <T> makeDecl(
             } catch (e: Exception) {
                 null // invalid value
             }
+        }
+        ctx is IntVec3ValueContext && property.isType<Vec3>() -> {
+            val (x, y, z) = ctx.INT().map { it.text.toInt() }
+            set("$x $y $z", Vec3(x, y, z) as T)
+        }
+        ctx is Vec3ValueContext && property.isType<Vec3>() -> {
+            val (x, y, z) = ctx.number().map { it.text.toDouble() }
+            set("$x $y $z", Vec3(x, y, z) as T)
         }
         else -> null
     }

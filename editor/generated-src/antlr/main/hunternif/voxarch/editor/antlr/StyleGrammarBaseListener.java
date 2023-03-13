@@ -76,6 +76,30 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterIntVec3Value(StyleGrammarParser.IntVec3ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitIntVec3Value(StyleGrammarParser.IntVec3ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterVec3Value(StyleGrammarParser.Vec3ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitVec3Value(StyleGrammarParser.Vec3ValueContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterInheritValue(StyleGrammarParser.InheritValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -275,6 +299,18 @@ public class StyleGrammarBaseListener implements StyleGrammarListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNumBinaryOperation(StyleGrammarParser.NumBinaryOperationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterNumber(StyleGrammarParser.NumberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitNumber(StyleGrammarParser.NumberContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

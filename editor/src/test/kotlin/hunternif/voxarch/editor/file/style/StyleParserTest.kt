@@ -52,6 +52,7 @@ class StyleParserTest {
             ".selector { width: % }",
             ".selector { width: 1$ }",
             ".selector { width: 1! }",
+            ".selector { width: 1 2 }",
         ).forEach {
             try {
                 parseStylesheet(it)
@@ -292,6 +293,32 @@ class StyleParserTest {
         assertEquals(92.5, child.naturalWidth, 0.0)
         assertEquals(10.0, child.naturalHeight, 0.0)
         assertEquals(40.0, child.naturalDepth, 0.0)
+    }
+
+    @Test
+    fun `parse int vec3 size`() {
+        val rules = parseStylesheet("""
+            * {
+                size: 1 2 3
+            }
+        """.trimIndent())
+        val expected = Rule().apply {
+            size(1.vx, 2.vx, 3.vx)
+        }
+        assertRulesEqual(listOf(expected), rules)
+    }
+
+    @Test
+    fun `parse float vec3 size`() {
+        val rules = parseStylesheet("""
+            * {
+                size: 1 2.5 3
+            }
+        """.trimIndent())
+        val expected = Rule().apply {
+            size(1.0.vx, 2.5.vx, 3.0.vx)
+        }
+        assertRulesEqual(listOf(expected), rules)
     }
 
     private fun assertRulesEqual(expected: List<Rule>, actual: List<Rule>) {

@@ -60,6 +60,30 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 */
 	void exitNumValue(StyleGrammarParser.NumValueContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code intVec3Value}
+	 * labeled alternative in {@link StyleGrammarParser#propValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterIntVec3Value(StyleGrammarParser.IntVec3ValueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code intVec3Value}
+	 * labeled alternative in {@link StyleGrammarParser#propValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitIntVec3Value(StyleGrammarParser.IntVec3ValueContext ctx);
+	/**
+	 * Enter a parse tree produced by the {@code vec3Value}
+	 * labeled alternative in {@link StyleGrammarParser#propValue}.
+	 * @param ctx the parse tree
+	 */
+	void enterVec3Value(StyleGrammarParser.Vec3ValueContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code vec3Value}
+	 * labeled alternative in {@link StyleGrammarParser#propValue}.
+	 * @param ctx the parse tree
+	 */
+	void exitVec3Value(StyleGrammarParser.Vec3ValueContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code inheritValue}
 	 * labeled alternative in {@link StyleGrammarParser#propValue}.
 	 * @param ctx the parse tree
@@ -263,6 +287,16 @@ public interface StyleGrammarListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNumBinaryOperation(StyleGrammarParser.NumBinaryOperationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link StyleGrammarParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void enterNumber(StyleGrammarParser.NumberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link StyleGrammarParser#number}.
+	 * @param ctx the parse tree
+	 */
+	void exitNumber(StyleGrammarParser.NumberContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link StyleGrammarParser#comment}.
 	 * @param ctx the parse tree
