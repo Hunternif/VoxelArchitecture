@@ -35,6 +35,22 @@ class StyleSizeTest {
         }
     }
 
+    @Test
+    fun `apply width before size`() {
+        testSize(Vec3(1, 2, 3)) {
+            width { 15.vx }
+            size(1.vx, 2.vx, 3.vx)
+        }
+    }
+
+    @Test
+    fun `apply width after size`() {
+        testSize(Vec3(15, 2, 3)) {
+            size(1.vx, 2.vx, 3.vx)
+            width { 15.vx }
+        }
+    }
+
     private fun testSize(
         expected: Vec3,
         styleBlock: Rule.() -> Unit,

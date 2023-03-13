@@ -126,7 +126,7 @@ val knownStyleTypes: Map<String, Class<*>> by lazy {
 }
 
 val knownStyleProperties: Map<String, Property<*>> by lazy {
-    GlobalStyleOrder.associateBy { it.name }
+    AllStyleProperties.associateBy { it.name }
 }
 
 private fun invalidProperty(text: String) = object : Property<Any>(

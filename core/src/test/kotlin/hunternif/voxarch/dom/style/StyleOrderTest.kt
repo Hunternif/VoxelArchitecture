@@ -1,48 +1,76 @@
 package hunternif.voxarch.dom.style
 
-import com.nhaarman.mockitokotlin2.spy
-import hunternif.voxarch.dom.builder.DomBuildContext
-import hunternif.voxarch.dom.builder.DomNodeBuilder
+import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.style.property.*
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class StyleOrderTest {
     @Test
-    fun `execute styles in order`() {
-        val calls = mutableListOf<String>()
-        val style = Stylesheet().add {
+    fun `properties from different groups use global order`() {
+        val style = LoggingStylesheet()
+        style.add {
             style("class1") {
-                width { number { _, _ -> calls.add("width"); 1.0 } }
+                rotation { set(1.0) }
             }
             style("class2") {
-                depth { number { _, _ -> calls.add("length"); 2.0 } }
-                height { number { _, _ -> calls.add("height"); 3.0 } }
+                seed { set(2) }
+                height { 3.vx }
             }
         }
-        val node: Room = spy(Room())
-        val domBuilder = DomNodeBuilder { node }
-        domBuilder.addStyles("class1", "class2")
-        val ctx = DomBuildContext(Structure(), defaultStyle, 0)
-        val styledNode = StyledNode(node, domBuilder, ctx)
+        domRoot {
+            node("class1", "class2")
+        }.buildDom(style)
 
-        style.applyStyle(styledNode)
+        assertEquals(listOf(PropSeed, PropRotation, PropHeight), style.propertyOrder)
+    }
 
-        assertEquals(listOf("height", "width", "length"), calls)
+    @Test
+    fun `properties within the same group are not reordered`() {
+        val style = LoggingStylesheet()
+        style.add {
+            style("class1") {
+                paddingRightX { 1.vx }
+                width { 2.vx }
+            }
+            style("class2") {
+                depth { 3.vx }
+                height { 4.vx }
+                paddingY { 5.vx }
+            }
+        }
+        domRoot {
+            node("class1", "class2")
+        }.buildDom(style)
+
+        assertEquals(
+            listOf(PropWidth, PropDepth, PropHeight, PropPaddingRightX, PropPaddingY),
+            style.propertyOrder,
+        )
     }
 
     @Test
     fun `ensure valid property names`() {
         // This matches ID literal in StyleGrammar
         val regex = Regex("[A-Za-z_][A-Za-z0-9_-]*")
-        for (prop in GlobalStyleOrder) {
+        for (prop in AllStyleProperties) {
             assertTrue(
                 "invalid property name ${prop.name}",
                 regex.matches(prop.name),
             )
+        }
+    }
+
+    private class LoggingStylesheet : Stylesheet() {
+        val propertyOrder = mutableListOf<Property<*>>()
+
+        override fun applyStyle(element: StyledElement<*>) {
+            getProperties(element).forEach {
+                propertyOrder.add(it.property)
+                it.applyTo(element)
+            }
         }
     }
 }
