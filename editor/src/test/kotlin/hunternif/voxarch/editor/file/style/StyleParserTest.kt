@@ -50,9 +50,8 @@ class StyleParserTest {
             ".selector { width: *1 }",
             ".selector { width: /1 }",
             ".selector { width: % }",
-            // TODO: parse invalid characters
-//            ".selector { width: 1$ }",
-//            ".selector { width: 1! }",
+            ".selector { width: 1$ }",
+            ".selector { width: 1! }",
         ).forEach {
             try {
                 parseStylesheet(it)
@@ -69,15 +68,6 @@ class StyleParserTest {
                 prop2: value
             }
         """.trimIndent())
-    }
-
-    @Test
-    fun `parse unknown selector into asterisk`() {
-        val rules = parseStylesheet("selector? { width: 100% }")
-        val expected = Rule().apply {
-            width { 100.pct }
-        }
-        assertRulesEqual(listOf(expected), rules)
     }
 
     @Test

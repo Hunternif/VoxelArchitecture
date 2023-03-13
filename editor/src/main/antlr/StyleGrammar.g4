@@ -81,3 +81,6 @@ ID                  : [A-Za-z_][A-Za-z0-9_-]* ;
 // Comments
 LINE_COMMENT        : ('//'|'#') ~( '\r' | '\n' )* ;
 BLOCK_COMMENT       : '/*' .*? '*/' ;
+
+// Invalid Identifier
+INVALID             : . ;

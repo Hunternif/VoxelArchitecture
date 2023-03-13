@@ -21,7 +21,7 @@ public class StyleGrammarParser extends Parser {
 		PLUS=9, MINUS=10, MULT=11, DIV=12, LPAREN=13, RPAREN=14, LBRACKET=15, 
 		RBRACKET=16, LBRACE=17, RBRACE=18, LT=19, GT=20, TILDE=21, COLON=22, SEMICOLON=23, 
 		DOT=24, COMMA=25, SINGLEQUOTE=26, DOUBLEQUOTE=27, ID=28, LINE_COMMENT=29, 
-		BLOCK_COMMENT=30;
+		BLOCK_COMMENT=30, INVALID=31;
 	public static final int
 		RULE_stylesheet = 0, RULE_styleRule = 1, RULE_ruleBody = 2, RULE_declaration = 3, 
 		RULE_propValue = 4, RULE_selector = 5, RULE_numExpression = 6, RULE_comment = 7;
@@ -46,7 +46,8 @@ public class StyleGrammarParser extends Parser {
 			null, "NEWLINE", "WS", "INHERIT", "STR", "INT", "FLOAT", "INT_PCT", "FLOAT_PCT", 
 			"PLUS", "MINUS", "MULT", "DIV", "LPAREN", "RPAREN", "LBRACKET", "RBRACKET", 
 			"LBRACE", "RBRACE", "LT", "GT", "TILDE", "COLON", "SEMICOLON", "DOT", 
-			"COMMA", "SINGLEQUOTE", "DOUBLEQUOTE", "ID", "LINE_COMMENT", "BLOCK_COMMENT"
+			"COMMA", "SINGLEQUOTE", "DOUBLEQUOTE", "ID", "LINE_COMMENT", "BLOCK_COMMENT", 
+			"INVALID"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -1181,7 +1182,7 @@ public class StyleGrammarParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3 z\4\2\t\2\4\3\t\3"+
+		"\3\u608b\ua72a\u8133\ub9ed\u417c\u3be7\u7786\u5964\3!z\4\2\t\2\4\3\t\3"+
 		"\4\4\t\4\4\5\t\5\4\6\t\6\4\7\t\7\4\b\t\b\4\t\t\t\3\2\3\2\3\2\7\2\26\n"+
 		"\2\f\2\16\2\31\13\2\3\2\3\2\3\3\3\3\3\3\7\3 \n\3\f\3\16\3#\13\3\3\3\3"+
 		"\3\3\3\3\4\3\4\7\4*\n\4\f\4\16\4-\13\4\3\5\3\5\3\5\3\5\5\5\63\n\5\3\5"+
