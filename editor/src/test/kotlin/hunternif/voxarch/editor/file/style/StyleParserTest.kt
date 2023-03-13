@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.file.style
 
+import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.style.select
@@ -7,6 +9,7 @@ import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Ignore
 import org.junit.Test
 
@@ -32,6 +35,30 @@ class StyleParserTest {
     @Test(expected = StyleParseException::class)
     fun `parse invalid unmatched brace`() {
         parseStylesheet(".selector { prop: value")
+    }
+
+    @Test
+    fun `parse invalid expressions`() {
+        listOf(
+            ".selector { width: -11. }",
+            ".selector { width: 1 - }",
+            ".selector { width: 1 + }",
+            ".selector { width: 1 * }",
+            ".selector { width: 1 / }",
+            ".selector { width: 1 ~ }",
+            ".selector { width: +1 }",
+            ".selector { width: *1 }",
+            ".selector { width: /1 }",
+            ".selector { width: % }",
+            // TODO: parse invalid characters
+//            ".selector { width: 1$ }",
+//            ".selector { width: 1! }",
+        ).forEach {
+            try {
+                parseStylesheet(it)
+                fail("didn't throw: $it")
+            } catch (_: StyleParseException) { }
+        }
     }
 
     @Test(expected = StyleParseException::class)
@@ -193,7 +220,7 @@ class StyleParserTest {
                 selectDescendantOf("outer-wall") +
                 select(Wall::class.java)
         ).apply {
-            depth { (-1).vx }
+            depth { -1.vx }
         }
         assertRulesEqual(listOf(expected), rules)
     }
@@ -243,6 +270,38 @@ class StyleParserTest {
             gone()
         }
         assertRulesEqual(listOf(expected), rules)
+    }
+
+    @Test
+    fun `parse expressions`() {
+        val rules = parseStylesheet("""
+            .child {
+                width: ((100% - 2.5 * 3))
+                height: 30 / (2 + 1%)
+                depth: 1 + (15 ~ 45)
+            }
+        """.trimIndent())
+        val expected = Rule(select("child")).apply {
+            width { 100.pct - 2.5.vx * 3 }
+            height { 30.vx / (2.vx + 1.pct) }
+            depth { 1.vx + (15.vx to 45.vx) }
+        }
+        assertRulesEqual(listOf(expected), rules)
+
+        // Calculate values
+        val style = Stylesheet().add {
+            style("parent") { size(100.vx, 100.vx, 100.vx) }
+            addRule(expected)
+        }
+        val dom = domRoot {
+            node("parent") {
+                node("child")
+            }
+        }.buildDom(style)
+        val child = dom.query<Node>("child").first()
+        assertEquals(92.5, child.naturalWidth, 0.0)
+        assertEquals(10.0, child.naturalHeight, 0.0)
+        assertEquals(40.0, child.naturalDepth, 0.0)
     }
 
     private fun assertRulesEqual(expected: List<Rule>, actual: List<Rule>) {

@@ -96,4 +96,8 @@ class RuleBuilder(
     ) {
         RuleBuilder(stylesheet, baseSelector + selector).apply(block)
     }
+
+    fun addRule(rule: Rule) {
+        stylesheet.addRule(rule)
+    }
 }

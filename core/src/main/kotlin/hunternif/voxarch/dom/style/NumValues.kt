@@ -68,9 +68,19 @@ operator fun Number.times(value: NumVal): NumVal {
     { base, seed -> this.toDouble() * value(base, seed).toDouble() }
 }
 
+operator fun NumVal.times(value: NumVal): NumVal {
+    return number("$this * $value", isPct)
+    { base, seed -> this(base, seed).toDouble() * value(base, seed).toDouble() }
+}
+
 operator fun NumVal.div(value: Number): NumVal {
     return number("$this / $value", isPct)
     { base, seed -> this(base, seed).toDouble() / value.toDouble() }
+}
+
+operator fun NumVal.div(value: NumVal): NumVal {
+    return number("$this / $value", isPct)
+    { base, seed -> this(base, seed).toDouble() / value(base, seed).toDouble() }
 }
 
 fun NumVal.clamp(min: NumVal, max: NumVal): NumVal {

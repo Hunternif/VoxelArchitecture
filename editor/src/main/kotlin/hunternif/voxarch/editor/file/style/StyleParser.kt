@@ -13,7 +13,9 @@ import org.antlr.v4.runtime.*
 fun parseStylesheet(styleStr: String): List<Rule> {
     if (styleStr.isEmpty()) return emptyList()
     val lexer = StyleGrammarLexer(CharStreams.fromString(styleStr))
+    lexer.errorListeners
     val parser = StyleGrammarParser(CommonTokenStream(lexer))
+    parser.errorHandler
     parser.addErrorListener(StyleErrorListener())
     return parser.stylesheet().toRules()
 }
@@ -79,37 +81,41 @@ private fun <T> makeDecl(
             val enum = property.valType.enumConstants?.first { (it as Enum<*>).name == name }
             enum?.let { set(name, it) }
         }
-        ctx is StrValueContext && property.isType<String>() -> {
+        ctx is StrValueContext && property.isString -> {
             // TODO: strip quotes
             set((ctx.STR()?.text ?: "") as T)
         }
-        ctx is NumValueContext && property.isType<Number>() -> {
+        ctx is NumValueContext && property.isNumber -> {
             try {
-                ctx.numExpression()?.toValue() as Value<T>
+                ctx.numExpression()?.toValue() as? Value<T>
             } catch (e: Exception) {
-                null
+                null // invalid value
             }
         }
         else -> null
     }
-    // invalid value, use default:
+    // null means invalid value, so fall back to default:
         ?: set(ctx?.text ?: "null", property.default)
     return Declaration(property, value)
 }
 
 @Throws(NumberExpressionException::class)
-private fun NumExpressionContext?.toValue(): Value<Number> {
-    try {
-        return when (this) {
-            is IntLiteralContext -> INT().text.toInt().vx
-            is IntPctLiteralContext -> INT_PCT().text.toInt().pct
-            is FloatLiteralContext -> FLOAT().text.toDouble().vx
-            is FloatPctLiteralContext -> FLOAT_PCT().text.toDouble().pct
-            else -> throw NumberExpressionException()
-        }
-    } catch (e: Exception) {
-        throw NumberExpressionException(cause = e)
+private fun NumExpressionContext?.toValue(): Value<Number> = when (this) {
+    is IntLiteralContext -> INT().text.toInt().vx
+    is IntPctLiteralContext -> INT_PCT().text.removeSuffix("%").toInt().pct
+    is FloatLiteralContext -> FLOAT().text.toDouble().vx
+    is FloatPctLiteralContext -> FLOAT_PCT().text.removeSuffix("%").toDouble().pct
+    is NumMinusExpressionContext -> -numExpression().toValue()
+    is NumParenExpressionContext -> numExpression().toValue()
+    is NumBinaryOperationContext -> when (op.text) {
+        "+" -> left.toValue() + right.toValue()
+        "-" -> left.toValue() - right.toValue()
+        "*" -> left.toValue() * right.toValue()
+        "/" -> left.toValue() / right.toValue()
+        "~" -> left.toValue() to right.toValue()
+        else ->  throw NumberExpressionException(this.text)
     }
+    else -> throw NumberExpressionException(this?.text ?: "")
 }
 
 
@@ -136,9 +142,9 @@ private fun invalidProperty(text: String) = object : Property<Any>(
 }
 
 class NumberExpressionException(
-    text: String = "failed to parse number expression",
+    text: String,
     cause: Exception? = null,
-) : Exception(text, cause)
+) : Exception("failed to parse number expression: $text", cause)
 
 @Suppress("unused", "MemberVisibilityCanBePrivate")
 class StyleParseException(

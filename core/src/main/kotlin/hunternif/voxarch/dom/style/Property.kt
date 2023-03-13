@@ -17,6 +17,8 @@ abstract class Property<T>(
     val default: T,
 ) {
     val isEnum: Boolean = isType<Enum<*>>()
+    val isString: Boolean = isType<String>()
+    val isNumber: Boolean = Number::class.java.isAssignableFrom(valType)
 
     abstract fun applyTo(styled: StyledElement<*>, value: Value<T>)
     inline fun <reified T2> isType(): Boolean =
