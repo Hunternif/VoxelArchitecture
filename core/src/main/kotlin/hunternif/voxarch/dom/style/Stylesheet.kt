@@ -14,7 +14,8 @@ interface StyleParameter
 /** Contains for styling DOM elements. */
 @StyleDsl
 open class Stylesheet {
-    val rules: ListMultimap<String, Rule> = ArrayListMultimap.create()
+    private val allRules = mutableListOf<Rule>()
+    private val rulesByClass: ListMultimap<String, Rule> = ArrayListMultimap.create()
 
     /** Starting point to new style Rules. */
     fun add(block: RuleBuilder.() -> Unit): Stylesheet {
@@ -23,14 +24,15 @@ open class Stylesheet {
     }
 
     fun addRule(rule: Rule) {
+        allRules.add(rule)
         if (rule.selectors.isEmpty()) {
-            rules.put(GLOBAL_STYLE, rule)
+            rulesByClass.put(GLOBAL_STYLE, rule)
         }
         rule.selectors.forEach { sel ->
             if (sel.styleClasses.isEmpty()) {
-                rules.put(GLOBAL_STYLE, rule)
+                rulesByClass.put(GLOBAL_STYLE, rule)
             } else {
-                sel.styleClasses.forEach { rules.put(it, rule) }
+                sel.styleClasses.forEach { rulesByClass.put(it, rule) }
             }
         }
     }
@@ -38,7 +40,7 @@ open class Stylesheet {
     fun getProperties(element: StyledElement<*>): PropertyMap {
         val styleClasses = listOf(GLOBAL_STYLE) + element.styleClass
         val rules = styleClasses
-            .flatMap { rules[it] }
+            .flatMap { rulesByClass[it] }
             .toSet() // filter duplicates
             .filter { it.appliesTo(element) }
         return rules.flatMap { it.declarations }
@@ -51,7 +53,7 @@ open class Stylesheet {
     }
 
     fun clear() {
-        rules.clear()
+        rulesByClass.clear()
     }
 
     /** Create a copy of this stylesheet with the same rules. */
@@ -59,8 +61,10 @@ open class Stylesheet {
 
     /** Copy all rules from the [other] stylesheet into this stylesheet. */
     fun copyRules(other: Stylesheet) {
-        other.rules.forEach { name, rule -> rules.put(name, rule) }
+        other.rulesByClass.forEach { name, rule -> rulesByClass.put(name, rule) }
     }
+
+    override fun toString(): String = allRules.joinToString("\n\n")
 
     companion object {
         const val GLOBAL_STYLE = "__global_style__"
