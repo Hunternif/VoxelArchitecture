@@ -224,6 +224,14 @@ public class Vec3 {
 		return new IntVec3(x, y, z);
 	}
 
+	public Vec3 floor() {
+		return new Vec3(Math.floor(x), Math.floor(y), Math.floor(z));
+	}
+
+	public Vec3 ceil() {
+		return new Vec3(Math.ceil(x), Math.ceil(y), Math.ceil(z));
+	}
+
 	public boolean isInteger() {
 		return x - Math.round(x) == 0 && y - Math.round(y) == 0 && z - Math.round(z) == 0;
 	}

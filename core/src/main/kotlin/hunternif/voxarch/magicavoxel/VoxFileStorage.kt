@@ -11,6 +11,7 @@ import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
 import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.IntVec3
+import hunternif.voxarch.vector.Vec3
 
 
 // I don't plan to support materials, only colors for now.
@@ -78,7 +79,8 @@ class VoxFileStorage(
 
             // 5. Transform for the following 'shape' chunk.
             // the transform vector points from (0, 0, 0) to model center:
-            val transform = gridPoint3((minX + maxX) / 2, (minY + maxY) / 2, (minZ + maxZ) / 2)
+            val size = IntVec3(maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1)
+            val transform = (IntVec3(minX, minY, minZ) + size / 2).toGridPoint3()
             appendChunk(makeTransformChunk(2, 3, transform))
             // 6. 'Shape' chunk, references 'model'
             appendChunk(makeShapeChunk(3, 0))

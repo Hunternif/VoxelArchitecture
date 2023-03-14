@@ -31,24 +31,24 @@ fun <T> Array3D<T>.printSliceY(y: Int): String {
 }
 
 fun assertVec3Equals(expected: Vec3, actual: Vec3, delta: Double = 0.0000001) {
-    assertEquals(expected.x, actual.x, delta)
-    assertEquals(expected.y, actual.y, delta)
-    assertEquals(expected.z, actual.z, delta)
+    assertEquals("x", expected.x, actual.x, delta)
+    assertEquals("y", expected.y, actual.y, delta)
+    assertEquals("z", expected.z, actual.z, delta)
 }
 
 fun <T> assertStorageEquals(
     expected: IStorage3D<in T>,
     actual: IStorage3D<in T>
 ) {
-    assertEquals(expected.width, actual.width)
-    assertEquals(expected.height, actual.height)
-    assertEquals(expected.depth, actual.depth)
-    assertEquals(expected.minX, actual.minX)
-    assertEquals(expected.minY, actual.minY)
-    assertEquals(expected.minZ, actual.minZ)
-    assertEquals(expected.maxX, actual.maxX)
-    assertEquals(expected.maxY, actual.maxY)
-    assertEquals(expected.maxZ, actual.maxZ)
+    assertEquals("width", expected.width, actual.width)
+    assertEquals("height", expected.height, actual.height)
+    assertEquals("depth", expected.depth, actual.depth)
+    assertEquals("minX", expected.minX, actual.minX)
+    assertEquals("minY", expected.minY, actual.minY)
+    assertEquals("minZ", expected.minZ, actual.minZ)
+    assertEquals("maxX", expected.maxX, actual.maxX)
+    assertEquals("maxY", expected.maxY, actual.maxY)
+    assertEquals("maxZ", expected.maxZ, actual.maxZ)
     expected.forEachPos { x, y, z, t ->
         assertEquals("at ($x, $y, $z)", t, actual[x, y, z])
     }
@@ -60,22 +60,22 @@ fun assertNodeEquals(
     actual: Node,
     testTags: Boolean = true,
 ) {
-    assertEquals(expected::class, actual::class)
-    assertEquals(expected.origin, actual.origin)
-    assertEquals(expected.start, actual.start)
-    if (testTags) assertEquals(expected.tags, actual.tags)
-    assertEquals(expected.rotationY, actual.rotationY, 0.0)
-    assertEquals(expected.size, actual.size)
-    assertEquals(expected.width, actual.width, 0.0)
-    assertEquals(expected.height, actual.height, 0.0)
-    assertEquals(expected.depth, actual.depth, 0.0)
+    assertEquals("class", expected::class, actual::class)
+    assertEquals("origin", expected.origin, actual.origin)
+    assertEquals("start", expected.start, actual.start)
+    if (testTags) assertEquals("tags", expected.tags, actual.tags)
+    assertEquals("rotationY", expected.rotationY, actual.rotationY, 0.0)
+    assertEquals("size", expected.size, actual.size)
+    assertEquals("width", expected.width, actual.width, 0.0)
+    assertEquals("height", expected.height, actual.height, 0.0)
+    assertEquals("depth", expected.depth, actual.depth, 0.0)
     when (expected) {
         is PolyRoom -> {
-            assertEquals(expected.shape, (actual as PolyRoom).shape)
+            assertEquals("shape", expected.shape, (actual as PolyRoom).shape)
             assertNodeEquals(expected.polygon, actual.polygon)
         }
         is Path -> {
-            assertEquals(expected.points, (actual as Path).points)
+            assertEquals("points", expected.points, (actual as Path).points)
         }
     }
 }
