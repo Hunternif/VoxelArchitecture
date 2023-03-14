@@ -8,6 +8,7 @@ import hunternif.voxarch.dom.style.select
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
+import hunternif.voxarch.util.SnapOrigin
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Ignore
@@ -264,6 +265,22 @@ class StyleParserTest {
     }
 
     @Test
+    fun `parse enum value`() {
+        val rules = parseStylesheet("""
+            * {
+                snap-origin: FLOOR_CENTER
+            }
+        """.trimIndent())
+        val expected = Rule().apply {
+            snapOrigin { floorCenter() }
+        }
+        assertRulesEqual(listOf(expected), rules)
+
+        val value = rules.first().propertyMap[PropSnapOrigin]?.value
+        assertEquals(SnapOrigin.FLOOR_CENTER, value?.invoke(SnapOrigin.OFF, 0L))
+    }
+
+    @Test
     fun `parse expressions`() {
         val rules = parseStylesheet("""
             .child {
@@ -282,7 +299,7 @@ class StyleParserTest {
         // Calculate values
         val style = Stylesheet().add {
             style("parent") { size(100.vx, 100.vx, 100.vx) }
-            addRule(expected)
+            addRule(rules.first())
         }
         val dom = domRoot {
             node("parent") {

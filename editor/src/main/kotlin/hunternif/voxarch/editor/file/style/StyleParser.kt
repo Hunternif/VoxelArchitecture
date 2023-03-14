@@ -14,9 +14,7 @@ import org.antlr.v4.runtime.*
 fun parseStylesheet(styleStr: String): List<Rule> {
     if (styleStr.isEmpty()) return emptyList()
     val lexer = StyleGrammarLexer(CharStreams.fromString(styleStr))
-    lexer.errorListeners
     val parser = StyleGrammarParser(CommonTokenStream(lexer))
-    parser.errorHandler
     parser.addErrorListener(StyleErrorListener())
     return parser.stylesheet().toRules()
 }
@@ -104,7 +102,7 @@ private fun <T> makeDecl(
         else -> null
     }
     // null means invalid value, so fall back to default:
-        ?: set(ctx?.text ?: "null", property.default)
+        ?: set("invalid", property.default)
     return Declaration(property, value)
 }
 

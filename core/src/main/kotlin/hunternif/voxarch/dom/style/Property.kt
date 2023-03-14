@@ -16,7 +16,7 @@ abstract class Property<T>(
     val valType: Class<T>,
     val default: T,
 ) {
-    val isEnum: Boolean = isType<Enum<*>>()
+    val isEnum: Boolean = Enum::class.java.isAssignableFrom(valType)
     val isString: Boolean = isType<String>()
     val isNumber: Boolean = Number::class.java.isAssignableFrom(valType)
 
