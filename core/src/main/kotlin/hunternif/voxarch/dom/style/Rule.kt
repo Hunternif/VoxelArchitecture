@@ -15,6 +15,11 @@ class Rule(
         : this(LinkedHashSet(selectors.toList()))
 
     val declarations = mutableListOf<Declaration<*>>()
+
+    val propertyMap get() = PropertyMap(declarations)
+
+    fun isEmpty(): Boolean = declarations.isEmpty()
+
     fun <T> add(prop: Property<T>, value: Value<T>) {
         add(Declaration(prop, value))
     }

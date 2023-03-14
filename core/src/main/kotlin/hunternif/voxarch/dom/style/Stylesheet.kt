@@ -61,6 +61,7 @@ open class Stylesheet {
 
     /** Copy all rules from the [other] stylesheet into this stylesheet. */
     fun copyRules(other: Stylesheet) {
+        allRules.addAll(other.allRules)
         other.rulesByClass.forEach { name, rule -> rulesByClass.put(name, rule) }
     }
 

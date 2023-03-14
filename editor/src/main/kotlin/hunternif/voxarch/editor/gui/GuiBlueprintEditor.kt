@@ -149,7 +149,8 @@ class GuiBlueprintEditor(
     }
 
     private fun renderEnabledStyleList(node: BlueprintNode) {
-        styleMap[node]?.items?.forEach { item ->
+        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle(node) }
+        style.items.forEach { item ->
             if (item.enabled) {
                 ImGui.bulletText(item.stringRepr)
             }

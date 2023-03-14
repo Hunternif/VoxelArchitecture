@@ -32,7 +32,7 @@ class GuiBlueprintNodeStyle(
         var stringRepr: String = "${property.name}:"
             private set
 
-        var enabled: Boolean = false
+        var enabled: Boolean = property in rule.propertyMap
 
         fun render() {
             checkbox.render(enabled) {
@@ -62,7 +62,9 @@ class GuiBlueprintNodeStyle(
         max: Float = 999f,
     ) : Item<Number>(rule, property) {
         private val gui = GuiInputFloat(property.name, min = min, max = max)
-        override var value: Number = 0.0
+        override var value: Number =
+            rule.propertyMap[property]?.value?.invoke(0.0, 0L)
+                ?: 0.0
 
         init {
             updateStringRepr()
@@ -85,7 +87,9 @@ class GuiBlueprintNodeStyle(
     ) : Item<E>(rule, property) {
         private val values = property.valType.enumConstants
         private val gui = GuiCombo(property.name, *values)
-        override var value: E = property.default
+        override var value: E =
+            rule.propertyMap[property]?.value?.invoke(property.default, 0L)
+                ?: property.default
 
         init {
             updateStringRepr()

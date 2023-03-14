@@ -15,6 +15,9 @@ class PropertyMap(declarations: Collection<Declaration<*>>) {
         return map[property] as Declaration<T>?
     }
 
+    operator fun contains(property: Property<*>): Boolean =
+        property in map.keys
+
     inline fun forEach(action: (Declaration<*>) -> Unit) {
         for (element in values) action(element)
     }

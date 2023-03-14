@@ -25,17 +25,18 @@ class Blueprint(
 
     private val internalStylesheet = Stylesheet()
 
-    val start: BlueprintNode = createNode("Start", 100f, 100f, DomBuilder()).apply {
+    val start: BlueprintNode = createNode(0, "Start", 100f, 100f, DomBuilder()).apply {
         addOutput("node")
     }
 
-    private fun createNode(
+    internal fun createNode(
+        id: Int,
         name: String,
         x: Float = 0f,
         y: Float = 0f,
         domBuilder: DomBuilder,
     ): BlueprintNode {
-        val node = BlueprintNode(nodeIDs.newID(), name, this, domBuilder, x, y)
+        val node = BlueprintNode(id, name, this, domBuilder, x, y)
         nodeIDs.save(node)
         nodes.add(node)
         domBuilder.addStyle(node.styleClass)
@@ -48,7 +49,7 @@ class Blueprint(
         domBuilder: DomBuilder,
         x: Float = 0f,
         y: Float = 0f,
-    ): BlueprintNode = createNode(name, x, y, domBuilder).apply {
+    ): BlueprintNode = createNode(nodeIDs.newID(), name, x, y, domBuilder).apply {
         addInput("in")
         addOutput("out", domBuilder)
         domBuilder.slots.forEach { (name, domSlot) ->

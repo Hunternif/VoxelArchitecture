@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.editor.file.style.parseStylesheet
 
 @JacksonXmlRootElement(localName = "blueprint")
 class XmlBlueprint(
@@ -45,6 +46,9 @@ class XmlBlueprintNode(
 
     @field:JacksonXmlProperty(isAttribute = true)
     var y: Float = -1f,
+
+    @field:JacksonXmlProperty
+    var style: String = "",
 )
 
 class XmlBlueprintSlot(
@@ -83,6 +87,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             n.inputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.outputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.x, n.y,
+            if (n.rule.isEmpty()) "" else "\n${n.rule}\n",
         )
     }
     return XmlBlueprint(id, name, jsonNodes, jsonLinks)
@@ -96,9 +101,7 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
         // For other nodes, create and save it:
         val factory = domBuilderFactoryByName[n.name] ?: continue
         val domBuilder = factory()
-        val bpNode = BlueprintNode(n.id, n.name, bp, domBuilder, n.x, n.y)
-        bp.nodes.add(bpNode)
-        bp.nodeIDs.save(bpNode)
+        val bpNode = bp.createNode(n.id, n.name, n.x, n.y, domBuilder)
         n.inputSlots.forEach {
             val slot = BlueprintSlot.In(it.id, it.name, bpNode)
             bpNode.inputs.add(slot)
@@ -109,7 +112,8 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             bpNode.outputs.add(slot)
             bp.slotIDs.save(slot)
         }
-        //TODO: serialize CSS in nodes
+        val rule = parseStylesheet(n.style).firstOrNull()
+        rule?.declarations?.forEach { bpNode.rule.add(it) }
     }
     // Add any output slots that may have been introduced in newer versions:
     bp.nodes.forEach { bpNode ->
