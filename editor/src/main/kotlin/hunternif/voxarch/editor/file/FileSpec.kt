@@ -18,6 +18,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.CREATE
 import java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+import kotlin.io.path.isRegularFile
 
 /*
 
@@ -153,9 +154,11 @@ fun EditorAppImpl.readProject(path: Path) {
  */
 fun EditorAppImpl.writeProject(path: Path) {
     val zipfs = newZipFileSystem(path)
+    val paths = mutableListOf<Path>()
 
     fun writeFile(path: String, block: (BufferedWriter) -> Unit) {
         val pathObj = zipfs.getPath(path)
+        paths.add(pathObj)
         Files.newBufferedWriter(pathObj, CREATE, TRUNCATE_EXISTING).use(block)
     }
 
@@ -185,6 +188,7 @@ fun EditorAppImpl.writeProject(path: Path) {
         fun tryWriteVoxFile(obj: SceneObject) {
             if (obj is SceneVoxelGroup && obj.data.isNotEmpty()) {
                 val voxPath = zipfs.getPath("/voxels/group_${obj.id}.vox")
+                paths.add(voxPath)
                 obj.data.writeToVoxFile(voxPath) { v ->
                     if (v is VoxColor) v
                     else VoxColor(state.voxelColorMap(v).hex)
@@ -201,6 +205,13 @@ fun EditorAppImpl.writeProject(path: Path) {
                 it.write(bpJson)
             }
         }
+        // Delete old unused files:
+        Files.walk(zipfs.getPath("/"), 2)
+            .filter { it !in paths }
+            .filter { it.isRegularFile() }
+            .forEach {
+                Files.delete(it)
+            }
     }
 }
 
