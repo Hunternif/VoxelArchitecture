@@ -12,6 +12,7 @@ import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.util.forEachSubtree
+import java.io.BufferedWriter
 import java.nio.file.FileSystem
 import java.nio.file.Files
 import java.nio.file.Path
@@ -113,10 +114,10 @@ fun EditorAppImpl.readProject(path: Path) {
 
         // populate VOX files & Blueprints
         treeXmlType.noderoot?.forEachSubtree {
-            zipfs.tryReadVoxFile(it, metadata)
+            tryReadVoxFile(it, zipfs, metadata, this)
             tryAddBlueprintRefs(it, reg)
         }
-        treeXmlType.voxelroot?.forEachSubtree { zipfs.tryReadVoxFile(it, metadata) }
+        treeXmlType.voxelroot?.forEachSubtree { tryReadVoxFile(it, zipfs, metadata, this) }
 
         val rootNode = treeXmlType.noderoot?.mapXml() as SceneNode
         reg.save(rootNode)
@@ -152,22 +153,20 @@ fun EditorAppImpl.readProject(path: Path) {
  */
 fun EditorAppImpl.writeProject(path: Path) {
     val zipfs = newZipFileSystem(path)
+
+    fun writeFile(path: String, block: (BufferedWriter) -> Unit) {
+        val pathObj = zipfs.getPath(path)
+        Files.newBufferedWriter(pathObj, CREATE, TRUNCATE_EXISTING).use(block)
+    }
+
     zipfs.use {
-        Files.newBufferedWriter(
-            zipfs.getPath("/metadata.yaml"),
-            CREATE,
-            TRUNCATE_EXISTING
-        ).use {
+        writeFile("/metadata.yaml") {
             val metadata = Metadata(FORMAT_VERSION)
             val metadataStr = serializeToYamlStr(metadata)
             it.write(metadataStr)
         }
 
-        Files.newBufferedWriter(
-            zipfs.getPath("/scenetree.xml"),
-            CREATE,
-            TRUNCATE_EXISTING
-        ).use {
+        writeFile("/scenetree.xml") {
             val treeXmlType = XmlSceneTree(
                 noderoot = state.rootNode.mapToXml(),
                 voxelroot = state.voxelRoot.mapToXml(),
@@ -197,11 +196,7 @@ fun EditorAppImpl.writeProject(path: Path) {
 
         Files.createDirectories(zipfs.getPath("/blueprints"))
         state.registry.blueprintIDs.map.forEach { (id, bp) ->
-            Files.newBufferedWriter(
-                zipfs.getPath("/blueprints/blueprint_$id.xml"),
-                CREATE,
-                TRUNCATE_EXISTING
-            ).use {
+            writeFile("/blueprints/blueprint_$id.xml") {
                 val bpJson = serializeToXmlStr(bp, true)
                 it.write(bpJson)
             }
@@ -209,14 +204,19 @@ fun EditorAppImpl.writeProject(path: Path) {
     }
 }
 
-private fun FileSystem.tryReadVoxFile(obj: XmlSceneObject, metadata: Metadata) {
-    val voxPath = getPath("/voxels/group_${obj.id}.vox")
+private fun tryReadVoxFile(
+    obj: XmlSceneObject, fs: FileSystem, metadata: Metadata, app: EditorApp,
+) {
+    val voxPath = fs.getPath("/voxels/group_${obj.id}.vox")
     if (obj is XmlSceneVoxelGroup) {
         try {
             val useModelOffset = metadata.formatVersion >= 3
             obj.data = readVoxFile(voxPath, useModelOffset)
-        } catch (_: Exception) {
-            // data could have been empty
+        } catch (e: java.nio.file.NoSuchFileException) {
+            // ignore this because data could have been empty
+        } catch (e: Exception) {
+            app.logWarning("Couldn't read voxel group ${obj.id}")
+            app.logError(e)
         }
     }
 }
