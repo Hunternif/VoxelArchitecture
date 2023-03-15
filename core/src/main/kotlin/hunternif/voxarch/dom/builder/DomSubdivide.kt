@@ -1,11 +1,13 @@
 package hunternif.voxarch.dom.builder
 
-import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.dom.style.property.*
-import hunternif.voxarch.plan.*
+import hunternif.voxarch.dom.style.StyledElement
+import hunternif.voxarch.dom.style.StyledNode
+import hunternif.voxarch.dom.style.pct
+import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.centricToNatural
+import hunternif.voxarch.plan.localSizeInDir
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
-import hunternif.voxarch.util.rotateY
 import kotlin.math.min
 import kotlin.math.round
 
@@ -14,7 +16,9 @@ import kotlin.math.round
  * Ignores padding.
  * Rounds size to integer.
  */
-class DomSubdivide(var dir: Direction3D = EAST) : DomBuilder() {
+class DomSubdivide(
+    override var dir: Direction3D = EAST,
+) : DomBuilder(), IDirectionBuilder {
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         if (children.isEmpty()) return children
 
@@ -65,66 +69,10 @@ class DomSubdivide(var dir: Direction3D = EAST) : DomBuilder() {
     }
 
     private fun layoutInDir(parent: Node, nodes: Iterable<Node>) {
-        val initPos = when (dir) {
-            UP -> parent.start.y
-            EAST -> parent.start.x
-            SOUTH -> parent.start.z
-            DOWN -> parent.start.y + parent.height
-            WEST -> parent.start.x + parent.width
-            NORTH -> parent.start.z + parent.depth
-        }
-        val sign = when (dir) {
-            UP, EAST, SOUTH -> 1.0
-            DOWN, WEST, NORTH -> -1.0
-        }
-
-        var x = initPos
+        var x = parent.initPos
         nodes.forEach {
             it.dirX = x
             x += sign * it.dirSize
         }
     }
-
-    private val Node.propertyForDir: Property<Double>
-        get() = when (dir.rotateY(rotationY)) {
-            UP, DOWN -> PropHeight
-            EAST, WEST -> PropWidth
-            NORTH, SOUTH -> PropDepth
-        }
-
-    /** Node "natural" size in the direction [dir], accounting for its rotation. */
-    private var Node.dirSize: Double
-        get() = when (dir.rotateY(rotationY)) {
-            UP, DOWN -> naturalHeight
-            EAST, WEST -> naturalWidth
-            NORTH, SOUTH -> naturalDepth
-        }
-        set(value) {
-            when (dir.rotateY(rotationY)) {
-                UP, DOWN -> naturalHeight = value
-                EAST, WEST -> naturalWidth = value
-                NORTH, SOUTH -> naturalDepth = value
-            }
-        }
-
-    /** Starting coordinate in the direction [dir] */
-    private var Node.dirX: Double
-        get() = when (dir) {
-            UP -> minY
-            DOWN -> maxY
-            EAST -> minX
-            WEST -> maxX
-            SOUTH -> minZ
-            NORTH -> maxZ
-        }
-        set(value) {
-            when (dir) {
-                UP -> minY = value
-                DOWN -> maxY = value
-                EAST -> minX = value
-                WEST -> maxX = value
-                SOUTH -> minZ = value
-                NORTH -> maxZ = value
-            }
-        }
 }
