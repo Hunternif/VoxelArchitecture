@@ -28,7 +28,8 @@ class GuiBlueprintNodeStyle(
     ) {
         private val checkbox = GuiCheckbox("##enabled_${property.name}")
         abstract val value: V
-        protected val declaration = Declaration.defaultForProperty(property)
+        protected val declaration = rule.propertyMap[property]
+            ?: Declaration.defaultForProperty(property)
         var stringRepr: String = "${property.name}:"
             private set
 
@@ -62,9 +63,7 @@ class GuiBlueprintNodeStyle(
         max: Float = 999f,
     ) : Item<Number>(rule, property) {
         private val gui = GuiInputFloat(property.name, min = min, max = max)
-        override var value: Number =
-            rule.propertyMap[property]?.value?.invoke(0.0, 0L)
-                ?: 0.0
+        override var value: Float = declaration.value.invoke(0.0, 0L).toFloat()
 
         init {
             updateStringRepr()
@@ -87,9 +86,7 @@ class GuiBlueprintNodeStyle(
     ) : Item<E>(rule, property) {
         private val values = property.valType.enumConstants
         private val gui = GuiCombo(property.name, *values)
-        override var value: E =
-            rule.propertyMap[property]?.value?.invoke(property.default, 0L)
-                ?: property.default
+        override var value: E = declaration.value.invoke(property.default, 0L)
 
         init {
             updateStringRepr()
