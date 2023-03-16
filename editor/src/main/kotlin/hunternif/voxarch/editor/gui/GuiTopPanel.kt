@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.clearNewNodeFrame
 import hunternif.voxarch.editor.actions.createNode
@@ -13,7 +14,7 @@ private val nodeTypeCombo = GuiCombo(
     "##new_node_type", nodeFactoryByName.keys, 80f)
 
 fun MainGui.topPanel() {
-    if (app.state.selectedObjects.isNotEmpty()) {
+    if (app.state.selectedObjects.isNotEmpty() && app.state.canDeleteSelection()) {
         button("Delete", "Delete selected objects") {
             app.deleteSelectedObjects()
         }
@@ -36,4 +37,13 @@ fun MainGui.topPanel() {
             }
         }
     }
+}
+
+private var canDeleteSelection = false
+private val selectionTimer = Timer(0.1)
+private fun AppState.canDeleteSelection(): Boolean {
+    selectionTimer.runAtInterval {
+        canDeleteSelection = selectedObjects.any { it != rootNode && it != voxelRoot }
+    }
+    return canDeleteSelection
 }
