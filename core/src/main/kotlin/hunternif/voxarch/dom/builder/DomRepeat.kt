@@ -20,7 +20,7 @@ class DomRepeat(
     override var dir: Direction3D = EAST,
 ) : DomBuilder(), IDirectionBuilder {
     /** Gap to be placed between children. */
-    var gap: Int = 0
+    var gap: Double = 0.0
 
     /** What to do with remaining space. */
     var mode: RepeatMode = OFF
@@ -43,15 +43,15 @@ class DomRepeat(
         }
 
         // "natural" size of the parent container
-        val totalSpace = gap + ctx.parentNode.localSizeInDir(dir).centricToNatural()
+        val totalSpace = ctx.parentNode.localSizeInDir(dir).centricToNatural()
 
         val childrenWidth = measuredChildren
             .filterIsInstance<StyledNode<*>>()
             .fold(0.0) { o, child -> o + child.node.dirSize }
 
-        val tileSize = gap + max(minSize, childrenWidth)
-        val tileCount = (totalSpace / tileSize).toInt()
-        val remainingSpace = totalSpace - tileCount * tileSize
+        val tileSize = max(minSize, childrenWidth)
+        val tileCount = ((totalSpace + gap) / (tileSize + gap)).toInt()
+        val remainingSpace = (totalSpace + gap) - tileCount * (tileSize + gap)
         // TODO: snap to voxels?
         val newTileSize = tileSize + remainingSpace / tileCount
 
@@ -62,7 +62,7 @@ class DomRepeat(
             val bld = DomRepeatTile(dir, x, newTileSize, mode)
             bld.children.addAll(children)
             tileBuilders.add(bld)
-            x += sign * newTileSize
+            x += sign * (newTileSize + gap)
         }
 
         return tileBuilders
