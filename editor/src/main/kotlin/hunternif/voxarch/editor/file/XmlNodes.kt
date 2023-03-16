@@ -24,11 +24,12 @@ import hunternif.voxarch.vector.Vec3
     JsonSubTypes.Type(name = "Floor", value = XmlFloor::class),
     JsonSubTypes.Type(name = "Wall", value = XmlWall::class),
     JsonSubTypes.Type(name = "Path", value = XmlPath::class),
+    JsonSubTypes.Type(name = "Node", value = XmlNode::class),
 ])
 @JacksonXmlRootElement(localName = "node")
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
-abstract class XmlNode(
+open class XmlNode(
     @field:JacksonXmlProperty(isAttribute = true)
     var origin: Vec3 = Vec3.ZERO,
     @field:JacksonXmlProperty(isAttribute = true)
@@ -106,9 +107,9 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
         is Wall -> XmlWall(origin, start, size, rotationY, transparent)
         is Floor -> XmlFloor(origin.y, start)
         is Path -> XmlPath(origin, rotationY, points)
-        else -> null
+        else -> XmlNode(origin, start, size, rotationY)
     }
-    xmlNode?.tags?.addAll(tags)
+    xmlNode.tags.addAll(tags)
     return xmlNode
 }
 
@@ -143,8 +144,8 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
         is XmlPath -> Path(origin).also {
             it.addPoints(points ?: emptyList())
         }
-        else -> null
-    } ?: return null
+        else -> Node(origin)
+    }
     node.start = start
     node.rotationY = rotationY
     node.size = size
