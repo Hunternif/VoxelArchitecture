@@ -18,9 +18,9 @@ class DeleteObjectsTest : BaseAppTest() {
 
     @Before
     fun setup() = app.state.run {
-        node = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
+        node = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         app.setParentNode(node)
-        childNode = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
+        childNode = app.createNode(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
         voxels = registry.newVoxelGroup("voxels", emptyArray3D())
         voxelRoot.addChild(voxels)
     }

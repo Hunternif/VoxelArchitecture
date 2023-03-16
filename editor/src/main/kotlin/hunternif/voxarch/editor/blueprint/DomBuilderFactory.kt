@@ -10,6 +10,7 @@ import hunternif.voxarch.sandbox.castle.BLD_ARCHED_WINDOW
 typealias DomBuilderFactory = () -> DomBuilder
 
 val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
+    "Node" to { DomNodeBuilder { Node() } },
     "Room" to { DomNodeBuilder { Room() } },
     "PolyRoom" to { DomPolyRoomBuilder() },
     "Floor" to { DomNodeBuilder { Floor() } },
@@ -25,4 +26,17 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Four Corners" to { DomLogicFourCornerBuilder() },
     "Subdivide" to { DomSubdivide() },
     "Repeat" to { DomRepeat() },
+)
+
+/**
+ * Creates a new Node instance.
+ */
+typealias NodeFactory = () -> Node
+
+val nodeFactoryByName: Map<String, NodeFactory> = mapOf(
+    "Node" to { Node() },
+    "Room" to { Room() },
+    "PolyRoom" to { PolyRoom() },
+    "Floor" to { Floor() },
+    "Wall" to { Wall() },
 )

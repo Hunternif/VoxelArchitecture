@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.actions.clearNewNodeFrame
-import hunternif.voxarch.editor.actions.createRoom
+import hunternif.voxarch.editor.actions.createNode
 import hunternif.voxarch.editor.actions.deleteSelectedObjects
 import hunternif.voxarch.editor.scene.NewNodeFrame.*
 import imgui.ImGui
@@ -14,8 +14,8 @@ fun MainGui.topPanel() {
     }
     app.state.newNodeFrame.run {
         if (state == State.COMPLETE) {
-            button("Create room", "Create room from the 3d frame") {
-                app.createRoom(start, end, fromCenter)
+            button("Create node", "Create node from the 3d frame") {
+                app.createNode(start, end, fromCenter)
                 app.clearNewNodeFrame()
             }
             ImGui.sameLine()

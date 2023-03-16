@@ -60,13 +60,13 @@ class FileSpecTest : BaseAppTest() {
 
     @Test
     fun `write project 2_rooms`() {
-        app.createRoom(Vector3i(-8, 0, -8), Vector3i(0, 5, 1), true)
-        val node2 = app.createRoom(Vector3i(-4, 0, 1), Vector3i(3, 3, 6), false)
+        app.createNode(Vector3i(-8, 0, -8), Vector3i(0, 5, 1), true, "Room")
+        val node2 = app.createNode(Vector3i(-4, 0, 1), Vector3i(3, 3, 6), false, "Room")
         app.setParentNode(node2)
-        app.createRoom(
+        app.createNode(
             Vector3i(1, 2, -1).add(node2.node.origin.toVector3i()),
             Vector3i(2, 3, 0).add(node2.node.origin.toVector3i()),
-            false
+            false, "Room",
         )
         val vox = app.state.registry.newVoxelGroup(
             "one block",

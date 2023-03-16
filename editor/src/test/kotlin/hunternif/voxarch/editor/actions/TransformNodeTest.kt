@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.toVector3i
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.naturalSize
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.snapStart
@@ -16,8 +16,8 @@ import org.junit.Test
 class TransformNodeTest : BaseAppTest() {
     private lateinit var node: SceneNode
     private lateinit var childNode: SceneNode
-    private lateinit var room: Room
-    private lateinit var child: Room
+    private lateinit var room: Node
+    private lateinit var child: Node
 
     // Initial values
     private val ORIGIN = Vec3(17, 18, 19)
@@ -28,14 +28,14 @@ class TransformNodeTest : BaseAppTest() {
 
     @Before
     fun setup() = app.state.run {
-        node = app.createRoom(ORIGIN.toVector3i(), (ORIGIN + SIZE).toVector3i())
+        node = app.createNode(ORIGIN.toVector3i(), (ORIGIN + SIZE).toVector3i())
         app.setParentNode(node)
-        childNode = app.createRoom(
+        childNode = app.createNode(
             (ORIGIN + CHILD_ORIGIN).toVector3i(),
             (ORIGIN + CHILD_ORIGIN + CHILD_SIZE).toVector3i()
         )
-        room = node.node as Room
-        child = childNode.node as Room
+        room = node.node
+        child = childNode.node
     }
     
     @Test

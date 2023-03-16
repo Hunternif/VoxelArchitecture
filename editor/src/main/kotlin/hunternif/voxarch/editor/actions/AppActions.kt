@@ -125,7 +125,7 @@ fun EditorApp.moveBuilder(objs: Collection<SceneObject>) =
     MoveObjectsBuilder(this as EditorAppImpl, objs.toList())
 
 /** Modify object size in multiple steps.
- * Room start will be modified to keep origin in the same global position.
+ * Node start will be modified to keep origin in the same global position.
  * A centered room will be resized symmetrically. */
 fun EditorApp.resizeBuilder(objs: Collection<SceneObject>) =
     ResizeNodesBuilder(this as EditorAppImpl, objs.toList())
@@ -208,13 +208,15 @@ fun EditorApp.transformNodeSnapOrigin(
 //=========================== CREATE & DELETE ===========================
 
 /**
- * Add child room to the currently active node.
+ * Add child node to the currently active node.
  * [start] and [end] are in global 'centric' coordinates!
  */
-fun EditorApp.createRoom(
-    start: Vector3i, end: Vector3i, centered: Boolean = false
+fun EditorApp.createNode(
+    start: Vector3i, end: Vector3i,
+    centered: Boolean = false,
+    type: String = "Node",
 ): SceneNode {
-    val action = CreateRoom(start, end, centered)
+    val action = CreateNode(start, end, centered, type)
     historyAction(action)
     return action.node
 }

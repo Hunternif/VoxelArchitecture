@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.AADirection3D.*
-import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.snapStart
 import hunternif.voxarch.vector.Vec3
@@ -15,15 +15,15 @@ import org.junit.Test
 class ResizeNodesTest : BaseAppTest() {
     private lateinit var node1: SceneNode
     private lateinit var node2: SceneNode
-    private lateinit var room1: Room
-    private lateinit var room2: Room
+    private lateinit var room1: Node
+    private lateinit var room2: Node
 
     @Before
     fun setup() = app.state.run {
-        node1 = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
-        node2 = app.createRoom(Vector3i(100, 200, 300), Vector3i(110, 210, 310))
-        room1 = node1.node as Room
-        room2 = node2.node as Room
+        node1 = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
+        node2 = app.createNode(Vector3i(100, 200, 300), Vector3i(110, 210, 310))
+        room1 = node1.node
+        room2 = node2.node
     }
 
     @Test

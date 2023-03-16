@@ -1,18 +1,28 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.BaseAppTest
+import hunternif.voxarch.editor.blueprint.nodeFactoryByName
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 import org.junit.Assert.*
 import org.junit.Test
 
-class CreateRoomTest : BaseAppTest() {
+class CreateNodeTest : BaseAppTest() {
+    @Test
+    fun `create node of each type`() {
+        for ((type, factory) in nodeFactoryByName) {
+            val node = factory()
+            val sceneNode = app.createNode(
+                Vector3i(0, 0, 0), Vector3i(1, 1, 1), false, type)
+            assertEquals(node.javaClass, sceneNode.node.javaClass)
+        }
+    }
+
     @Test
     fun `create room, undo redo`() = app.state.run {
-        val node = app.createRoom(Vector3i(1, 2, 3), Vector3i(11, 22, 33), false)
+        val node = app.createNode(Vector3i(1, 2, 3), Vector3i(11, 22, 33), false)
         assertEquals(setOf(node), sceneObjects.toSet())
         assertEquals(rootNode, node.parent)
         assertEquals(setOf(node), rootNode.children.toSet())
@@ -30,8 +40,8 @@ class CreateRoomTest : BaseAppTest() {
 
     @Test
     fun `create unecentered room`() = app.state.run {
-        val node = app.createRoom(Vector3i(1, 2, 3), Vector3i(11, 22, 33), false)
-        val room = node.node as Room
+        val node = app.createNode(Vector3i(1, 2, 3), Vector3i(11, 22, 33), false)
+        val room = node.node
         assertEquals(setOf(node), sceneObjects.toSet())
         assertEquals(rootNode, node.parent)
         assertEquals(Vec3(1, 2, 3), room.origin)
@@ -41,8 +51,8 @@ class CreateRoomTest : BaseAppTest() {
 
     @Test
     fun `create centered room`() = app.state.run {
-        val node = app.createRoom(Vector3i(1, 2, 3), Vector3i(11, 22, 33), true)
-        val room = node.node as Room
+        val node = app.createNode(Vector3i(1, 2, 3), Vector3i(11, 22, 33), true)
+        val room = node.node
         assertEquals(setOf(node), sceneObjects.toSet())
         assertEquals(rootNode, node.parent)
         assertEquals(Vec3(6, 2, 18), room.origin)
@@ -52,9 +62,9 @@ class CreateRoomTest : BaseAppTest() {
 
     @Test
     fun `create room under parent`() = app.state.run {
-        val parentRoom = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
+        val parentRoom = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         parentNode = parentRoom
-        val childRoom = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
+        val childRoom = app.createNode(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
         assertEquals(setOf(parentRoom, childRoom), sceneObjects.toSet())
         assertEquals(parentRoom, childRoom.parent)
         assertEquals(parentRoom.node, childRoom.node.parent)

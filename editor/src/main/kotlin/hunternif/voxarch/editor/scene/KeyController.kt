@@ -22,7 +22,7 @@ class KeyController(private val app: EditorApp) : KeyListener {
                 key == GLFW_KEY_ESCAPE -> app.clearNewNodeFrame()
                 key == GLFW_KEY_SPACE -> app.state.newNodeFrame.run {
                     if (state != EMPTY) {
-                        app.createRoom(start, end, fromCenter)
+                        app.createNode(start, end, fromCenter)
                         app.clearNewNodeFrame()
                     }
                 }

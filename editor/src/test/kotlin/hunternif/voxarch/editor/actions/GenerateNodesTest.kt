@@ -20,9 +20,9 @@ class GenerateNodesTest : BaseAppTest() {
 
     @Before
     fun setup() = app.state.run {
-        parent = app.createRoom(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
+        parent = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         parentNode = parent
-        child = app.createRoom(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
+        child = app.createNode(Vector3i(1, 2, 3), Vector3i(2, 2, 2))
     }
 
     @Test
