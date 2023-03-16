@@ -10,7 +10,7 @@ class StylePadding : StyleParameter
 // Padding is the distance from this node to its parent's boundary.
 // Setting padding on a node shrinks it and moves it.
 
-val PropPaddingTop = newNodeProperty<Node, Double>("padding-top", 0.0) { value ->
+val PropPaddingTop = newNodeProperty<Node, Double>("padding-top", 1.0) { value ->
     val baseValue = parentNode.naturalHeight
     val newValue = value.invoke(baseValue, seed + 10000028)
     val currentSpace = parentNode.localMaxY - node.maxY
@@ -20,7 +20,7 @@ val PropPaddingTop = newNodeProperty<Node, Double>("padding-top", 0.0) { value -
     }
 }
 
-val PropPaddingBottom = newNodeProperty<Node, Double>("padding-bottom", 0.0) { value ->
+val PropPaddingBottom = newNodeProperty<Node, Double>("padding-bottom", 1.0) { value ->
     val baseValue = parentNode.naturalHeight
     val newValue = value.invoke(baseValue, seed + 10000029)
     val currentSpace = node.minY - parentNode.localMinY
@@ -31,7 +31,7 @@ val PropPaddingBottom = newNodeProperty<Node, Double>("padding-bottom", 0.0) { v
     }
 }
 
-val PropPaddingRightX = newNodeProperty<Node, Double>("padding-right-x", 0.0) { value ->
+val PropPaddingRightX = newNodeProperty<Node, Double>("padding-right-x", 1.0) { value ->
     val baseValue = parentNode.naturalWidth
     val newValue = value.invoke(baseValue, seed + 10000030)
     val currentSpace = parentNode.localMaxX - node.maxX
@@ -42,7 +42,7 @@ val PropPaddingRightX = newNodeProperty<Node, Double>("padding-right-x", 0.0) { 
     }
 }
 
-val PropPaddingLeftX = newNodeProperty<Node, Double>("padding-left-x", 0.0) { value ->
+val PropPaddingLeftX = newNodeProperty<Node, Double>("padding-left-x", 1.0) { value ->
     val baseValue = parentNode.naturalWidth
     val newValue = value.invoke(baseValue, seed + 10000031)
     val currentSpace = node.minX - parentNode.localMinX
@@ -53,7 +53,7 @@ val PropPaddingLeftX = newNodeProperty<Node, Double>("padding-left-x", 0.0) { va
     }
 }
 
-val PropPaddingFrontZ = newNodeProperty<Node, Double>("padding-front-z", 0.0) { value ->
+val PropPaddingFrontZ = newNodeProperty<Node, Double>("padding-front-z", 1.0) { value ->
     val baseValue = parentNode.naturalDepth
     val newValue = value.invoke(baseValue, seed + 10000032)
     val currentSpace = parentNode.localMaxZ - node.maxZ
@@ -64,7 +64,7 @@ val PropPaddingFrontZ = newNodeProperty<Node, Double>("padding-front-z", 0.0) { 
     }
 }
 
-val PropPaddingBackZ = newNodeProperty<Node, Double>("padding-back-z", 0.0) { value ->
+val PropPaddingBackZ = newNodeProperty<Node, Double>("padding-back-z", 1.0) { value ->
     val baseValue = parentNode.naturalDepth
     val newValue = value.invoke(baseValue, seed + 10000033)
     val currentSpace = node.minZ - parentNode.localMinZ
@@ -75,17 +75,17 @@ val PropPaddingBackZ = newNodeProperty<Node, Double>("padding-back-z", 0.0) { va
     }
 }
 
-val PropPaddingX = newNodeProperty<Node, Double>("padding-x", 0.0) { value ->
+val PropPaddingX = newNodeProperty<Node, Double>("padding-x", 1.0) { value ->
     PropPaddingLeftX.applyTo(this, value)
     PropPaddingRightX.applyTo(this, value)
 }
 
-val PropPaddingY = newNodeProperty<Node, Double>("padding-y", 0.0) { value ->
+val PropPaddingY = newNodeProperty<Node, Double>("padding-y", 1.0) { value ->
     PropPaddingTop.applyTo(this, value)
     PropPaddingBottom.applyTo(this, value)
 }
 
-val PropPaddingZ = newNodeProperty<Node, Double>("padding-z", 0.0) { value ->
+val PropPaddingZ = newNodeProperty<Node, Double>("padding-z", 1.0) { value ->
     PropPaddingBackZ.applyTo(this, value)
     PropPaddingFrontZ.applyTo(this, value)
 }
