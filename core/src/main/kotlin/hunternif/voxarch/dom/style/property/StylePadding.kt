@@ -7,6 +7,9 @@ import kotlin.math.min
 
 class StylePadding : StyleParameter
 
+// Padding is the distance from this node to its parent's boundary.
+// Setting padding on a node shrinks it and moves it.
+
 val PropPaddingTop = newNodeProperty<Node, Double>("padding-top", 0.0) { value ->
     val baseValue = parentNode.naturalHeight
     val newValue = value.invoke(baseValue, seed + 10000028)
@@ -35,6 +38,7 @@ val PropPaddingRightX = newNodeProperty<Node, Double>("padding-right-x", 0.0) { 
     val delta = min(newValue - currentSpace, node.rotatedNaturalWidth)
     if (delta > 0) {
         node.rotatedWidth -= delta
+        node.maxX = parentNode.localMaxX - newValue
     }
 }
 
@@ -45,7 +49,7 @@ val PropPaddingLeftX = newNodeProperty<Node, Double>("padding-left-x", 0.0) { va
     val delta = min(newValue - currentSpace, node.rotatedNaturalWidth)
     if (delta > 0) {
         node.rotatedWidth -= delta
-        node.origin.x += delta
+        node.minX = parentNode.localMinX + newValue
     }
 }
 
@@ -56,6 +60,7 @@ val PropPaddingFrontZ = newNodeProperty<Node, Double>("padding-front-z", 0.0) { 
     val delta = min(newValue - currentSpace, node.rotatedNaturalDepth)
     if (delta > 0) {
         node.rotatedDepth -= delta
+        node.maxZ = parentNode.localMaxZ - newValue
     }
 }
 
@@ -66,7 +71,7 @@ val PropPaddingBackZ = newNodeProperty<Node, Double>("padding-back-z", 0.0) { va
     val delta = min(newValue - currentSpace, node.rotatedNaturalDepth)
     if (delta > 0) {
         node.rotatedDepth -= delta
-        node.origin.z += delta
+        node.minZ = parentNode.localMinZ + newValue
     }
 }
 
