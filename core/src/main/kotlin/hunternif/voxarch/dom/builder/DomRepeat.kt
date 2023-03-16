@@ -82,8 +82,8 @@ private class DomRepeatTile(
 
     override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
         val dummyNode = ctx.parentNode.run { node(start, size) }
-        dummyNode.dirX = dirX
         dummyNode.dirSize = dirSize
+        dummyNode.dirX = dirX
         // TODO: apply mode
         // Using a generic StyledElement avoids calling styles on dummy node:
         return StyledElement(this, ctx.copy(parentNode = dummyNode))
