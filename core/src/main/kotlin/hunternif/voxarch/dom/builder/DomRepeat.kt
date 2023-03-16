@@ -1,8 +1,8 @@
 package hunternif.voxarch.dom.builder
 
 import hunternif.voxarch.dom.builder.RepeatMode.*
-import hunternif.voxarch.dom.style.StyledElement
-import hunternif.voxarch.dom.style.StyledNode
+import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
@@ -14,6 +14,7 @@ import kotlin.math.max
  * These Style properties affect behavior:
  * * `gap:` gap between repeated items, in voxels.
  * * `repeat-mode:` strategy for filling the space, see [RepeatMode].
+ * * `minSize:` minimum tile size.
  */
 class DomRepeat(
     override var dir: Direction3D = EAST,
@@ -22,7 +23,7 @@ class DomRepeat(
     var gap: Int = 0
 
     /** What to do with remaining space. */
-    var mode: RepeatMode = STRETCH
+    var mode: RepeatMode = OFF
 
     /** Children are assumed to be at least this big.
      * Else repeating makes no sense. */
@@ -52,14 +53,13 @@ class DomRepeat(
         val tileCount = (totalSpace / tileSize).toInt()
         val remainingSpace = totalSpace - tileCount * tileSize
         // TODO: snap to voxels?
-        val extraTileSize = remainingSpace / tileCount
-        val newTileSize = tileSize + extraTileSize
+        val newTileSize = tileSize + remainingSpace / tileCount
 
         // Lay out child nodes, adding extra space as needed
         val tileBuilders = mutableListOf<DomBuilder>()
         var x = ctx.parentNode.initPos
         for (i in 0 until tileCount) {
-            val bld = DomRepeatTile(dir, x, newTileSize, extraTileSize, mode)
+            val bld = DomRepeatTile(dir, x, newTileSize, mode)
             bld.children.addAll(children)
             tileBuilders.add(bld)
             x += sign * newTileSize
@@ -75,8 +75,6 @@ private class DomRepeatTile(
     private val dirX: Double,
     /** size along the direction axis */
     private val dirSize: Double,
-    /** remaining size that must be filled */
-    private val extraSize: Double,
     private val mode: RepeatMode,
 ) : DomBuilder(), IDirectionBuilder {
 
@@ -84,7 +82,6 @@ private class DomRepeatTile(
         val dummyNode = ctx.parentNode.run { node(start, size) }
         dummyNode.dirSize = dirSize
         dummyNode.dirX = dirX
-        // TODO: apply mode
         // Using a generic StyledElement avoids calling styles on dummy node:
         return StyledElement(this, ctx.copy(parentNode = dummyNode))
     }
@@ -92,6 +89,27 @@ private class DomRepeatTile(
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         if (children.isEmpty()) return children
         val ctx = children.first().ctx
+
+        // Apply mode via styling the children:
+        val rule = Rule().apply {
+            when (mode) {
+                OFF -> {}
+                STRETCH -> when (dir) {
+                    UP, DOWN -> {}
+                    EAST, WEST -> width { 100.pct }
+                    SOUTH, NORTH -> depth { 100.pct }
+                }
+                SPACE -> when (dir) {
+                    UP, DOWN -> {}
+                    EAST, WEST -> alignX { center() }
+                    SOUTH, NORTH -> alignZ { center() }
+                }
+            }
+        }
+        for (decl in rule.declarations) {
+            children.forEach { decl.applyTo(it) }
+        }
+
         val dummyNode = ctx.parentNode
         dummyNode.collapse()
         return children
@@ -99,6 +117,11 @@ private class DomRepeatTile(
 }
 
 enum class RepeatMode {
+    /**
+     * Lets children handle its own position via their own styles.
+     */
+    OFF,
+
     /**
      * Children are repeated and rescaled (if necessary) to fill the area with
      * a whole number of tiles.
