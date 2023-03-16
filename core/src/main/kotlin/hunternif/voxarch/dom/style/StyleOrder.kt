@@ -92,6 +92,8 @@ val GlobalStyleOrderByGroups: List<List<Property<*>>> by lazy {
         ),
 
         listOf(PropSubdivideDir),
+        listOf(PropRepeatMode),
+        listOf(PropRepeatGap),
 
         listOf(PropVisibility),
     )

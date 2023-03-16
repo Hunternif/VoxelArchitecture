@@ -37,6 +37,8 @@ val editorStyleProperties: List<Property<*>> = listOf(
     PropPaddingFrontZ,
 
     PropSubdivideDir,
+    PropRepeatMode,
+    PropRepeatGap,
 
     PropX,
     PropY,
