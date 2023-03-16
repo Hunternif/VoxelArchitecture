@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.blueprint.nodeFactoryByName
 import hunternif.voxarch.editor.builder.setMinecraftMaterials
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
@@ -51,6 +52,11 @@ fun EditorApp.openDialogExportVoxFile() = action {
 
 fun EditorApp.setTool(tool: Tool) = action {
     state.currentTool = tool
+}
+
+fun EditorApp.setNewNodeType(type: String) = action {
+    val actualType = if (type in nodeFactoryByName.keys) type else "Node"
+    state.newNodeType = actualType
 }
 
 fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {

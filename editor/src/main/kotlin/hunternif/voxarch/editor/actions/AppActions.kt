@@ -214,7 +214,7 @@ fun EditorApp.transformNodeSnapOrigin(
 fun EditorApp.createNode(
     start: Vector3i, end: Vector3i,
     centered: Boolean = false,
-    type: String = "Node",
+    type: String = state.newNodeType,
 ): SceneNode {
     val action = CreateNode(start, end, centered, type)
     historyAction(action)

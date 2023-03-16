@@ -73,6 +73,7 @@ interface AppState {
     val newNodeFrame: NewNodeFrame
     val history: ReadOnlyHistory<HistoryAction>
     val highlightedFace: BoxFace?
+    val newNodeType: String
 
 
     //============================= GUI STATE ===============================
@@ -131,6 +132,7 @@ class AppStateImpl(
     override val newNodeFrame = NewNodeFrame()
     override val history = History<HistoryAction>()
     override var highlightedFace: BoxFace? = null
+    override var newNodeType: String = "Node"
 
     override val DEBUG = true
     override var isMainWindowFocused = false
