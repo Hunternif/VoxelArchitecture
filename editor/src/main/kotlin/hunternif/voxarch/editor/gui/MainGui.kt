@@ -24,16 +24,20 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
-        rightRatio = 0.25f,
-        left = VerticalSplit(
-            bottomRatio = 0.5f,
-            top = WindowGroup(
-                Window("###scene_window"),
+        rightSize = 250,
+        left = HorizontalSplit(
+            leftSize = 250,
+            left = Window("Style editor"),
+            right = VerticalSplit(
+                bottomRatio = 0.5f,
+                top = WindowGroup(
+                    Window("###scene_window"),
+                ),
+                bottom = Window("###blueprint_window")
             ),
-            bottom = Window("###blueprint_window")
         ),
         right = VerticalSplit(
-            bottomSize = 180,
+            bottomRatio = 0.5f,
             bottom = Window("Properties"),
             top = VerticalSplit(
                 bottomRatio = 0.3f,
@@ -60,6 +64,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
         fpsCounter.run()
         mainMenu()
         dockspace(layout)
+        panel("Style editor") {
+
+        }
         sceneWindow { vp ->
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,

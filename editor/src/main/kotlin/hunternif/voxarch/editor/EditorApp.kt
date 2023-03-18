@@ -28,8 +28,8 @@ interface EditorApp {
 class EditorAppImpl : EditorApp {
     private val title = "Voxel Architecture Editor"
     private var window: Long = 0
-    private var width: Int = 1000
-    private var height: Int = 600
+    private var width: Int = 1280
+    private var height: Int = 720
     internal val gui = MainGui(this)
     val scene = MainScene(this)
 
