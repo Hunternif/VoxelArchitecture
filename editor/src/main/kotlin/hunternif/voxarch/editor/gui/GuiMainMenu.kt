@@ -49,6 +49,23 @@ fun MainGui.mainMenu() {
             ImGui.endMenu()
         }
         if (ImGui.beginMenu("View")) {
+            if (ImGui.beginMenu("Render mode")) {
+                if (ImGui.menuItem("Solid color", "",
+                        app.state.renderMode == COLORED
+                    )) app.setRenderMode(COLORED)
+                if (ImGui.menuItem("Texture", "",
+                        app.state.renderMode == TEXTURED
+                    )) app.setRenderMode(TEXTURED)
+                ImGui.separator()
+                if (ImGui.menuItem("MagicaVoxel", "",
+                        app.state.shadingMode == MAGICA_VOXEL
+                    )) app.setShadingMode(MAGICA_VOXEL)
+                if (ImGui.menuItem("Minecraft", "",
+                        app.state.shadingMode == MINECRAFT
+                    )) app.setShadingMode(MINECRAFT)
+                ImGui.endMenu()
+            }
+            ImGui.separator()
             if (ImGui.menuItem("Style Editor", "", showStyleEditor.get())) {
                 showStyleEditor.toggle()
             }
@@ -69,25 +86,6 @@ fun MainGui.mainMenu() {
             }
             if (ImGui.menuItem("Logs", "", showLogs.get())) {
                 showLogs.toggle()
-            }
-            ImGui.endMenu()
-        }
-        if (ImGui.beginMenu("Options")) {
-            if (ImGui.beginMenu("Render mode")) {
-                if (ImGui.menuItem("Solid color", "",
-                        app.state.renderMode == COLORED
-                    )) app.setRenderMode(COLORED)
-                if (ImGui.menuItem("Texture", "",
-                        app.state.renderMode == TEXTURED
-                    )) app.setRenderMode(TEXTURED)
-                ImGui.separator()
-                if (ImGui.menuItem("MagicaVoxel", "",
-                        app.state.shadingMode == MAGICA_VOXEL
-                    )) app.setShadingMode(MAGICA_VOXEL)
-                if (ImGui.menuItem("Minecraft", "",
-                        app.state.shadingMode == MINECRAFT
-                    )) app.setShadingMode(MINECRAFT)
-                ImGui.endMenu()
             }
             ImGui.endMenu()
         }
