@@ -48,6 +48,30 @@ fun MainGui.mainMenu() {
                 )) app.redo()
             ImGui.endMenu()
         }
+        if (ImGui.beginMenu("View")) {
+            if (ImGui.menuItem("Style Editor", "", showStyleEditor.get())) {
+                showStyleEditor.toggle()
+            }
+            if (ImGui.menuItem("Blueprint Editor", "", showBlueprintEditor.get())) {
+                showBlueprintEditor.toggle()
+            }
+            if (ImGui.menuItem("Node tree", "", showNodeTree.get())) {
+                showNodeTree.toggle()
+            }
+            if (ImGui.menuItem("Voxel tree", "", showVoxelTree.get())) {
+                showVoxelTree.toggle()
+            }
+            if (ImGui.menuItem("History", "", showHistory.get())) {
+                showHistory.toggle()
+            }
+            if (ImGui.menuItem("Properties", "", showProperties.get())) {
+                showProperties.toggle()
+            }
+            if (ImGui.menuItem("Logs", "", showLogs.get())) {
+                showLogs.toggle()
+            }
+            ImGui.endMenu()
+        }
         if (ImGui.beginMenu("Options")) {
             if (ImGui.beginMenu("Render mode")) {
                 if (ImGui.menuItem("Solid color", "",
