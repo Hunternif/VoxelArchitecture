@@ -69,5 +69,9 @@ open class Stylesheet {
 
     companion object {
         const val GLOBAL_STYLE = "__global_style__"
+
+        fun fromRules(rules: Collection<Rule>): Stylesheet = Stylesheet().apply {
+            rules.forEach { addRule(it) }
+        }
     }
 }

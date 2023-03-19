@@ -1,11 +1,14 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.defaultStyle
 import hunternif.voxarch.editor.AppStateImpl
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.file.style.parseStylesheet
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -132,6 +135,11 @@ fun EditorAppImpl.readProject(path: Path) {
         val hiddenObjects = treeXmlType.hiddenObjects!!.mapXmlSubset<SceneObject>(reg)
         val manuallyHiddenObjects = treeXmlType.manuallyHiddenObjects!!.mapXmlSubset<SceneObject>(reg)
 
+        // Stylesheet
+        val styleText = tryReadStylesheetFile(zipfs)
+        // Ignore parsing errors, they will show in the editor anyway
+        val style = Stylesheet.fromRules(parseStylesheet(styleText).rules)
+
         state = AppStateImpl(
             reg,
             sceneRoot,
@@ -144,6 +152,8 @@ fun EditorAppImpl.readProject(path: Path) {
             manuallyHiddenObjects
         ).apply {
             projectPath = path
+            stylesheet = style
+            stylesheetText = styleText
         }
     }
 }
@@ -205,6 +215,11 @@ fun EditorAppImpl.writeProject(path: Path) {
                 it.write(bpJson)
             }
         }
+
+        writeFile("/stylesheet.vcss") {
+            it.write(state.stylesheetText)
+        }
+
         // Delete old unused files:
         Files.walk(zipfs.getPath("/"), 2)
             .filter { it !in paths }
@@ -254,5 +269,15 @@ private fun tryReadBlueprintFile(
     } catch (e: Exception) {
         app.logWarning("Couldn't read blueprint ${entry.id}")
         app.logError(e)
+    }
+}
+
+private fun tryReadStylesheetFile(fs: FileSystem): String {
+    try {
+        Files.newBufferedReader(fs.getPath("/stylesheet.vcss")).use {
+            return it.readText()
+        }
+    } catch (e: java.nio.file.NoSuchFileException) {
+        return defaultStyle.toString()
     }
 }

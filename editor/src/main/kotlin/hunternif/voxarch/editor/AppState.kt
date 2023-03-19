@@ -2,10 +2,7 @@ package hunternif.voxarch.editor
 
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.dom.style.defaultStyle
-import hunternif.voxarch.editor.actions.History
-import hunternif.voxarch.editor.actions.HistoryAction
-import hunternif.voxarch.editor.actions.ReadOnlyHistory
+import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.builder.*
@@ -30,6 +27,7 @@ interface AppState {
     //============================ PROJECT FILE =============================
     val projectPath: Path?
     val lastSavedAction: HistoryAction?
+    val stylesheetText: String
 
     //=============================== VOXELS ================================
 
@@ -101,6 +99,7 @@ class AppStateImpl(
 ) : AppState {
     override var projectPath: Path? = null
     override var lastSavedAction: HistoryAction? = null
+    override var stylesheetText: String = ""
 
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
@@ -108,7 +107,7 @@ class AppStateImpl(
         builders.setDefaultBuilders()
         builders.setCastleBuilders()
     }
-    override val stylesheet = defaultStyle
+    override var stylesheet = Stylesheet()
     override var seed: Long = 0
     override val domBuilderNames = domBuilderFactoryByName.keys.toList()
     override val voxelColorMap = ::mapVoxelToSolidColor

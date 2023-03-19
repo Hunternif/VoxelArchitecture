@@ -105,6 +105,10 @@ class FileSpecTest : BaseAppTest() {
                     zipfsRef.getPath("/scenetree.xml"),
                     zipfsTest.getPath("/scenetree.xml")
                 )
+                assertTextFilesEqual(
+                    zipfsRef.getPath("/stylesheet.vcss"),
+                    zipfsTest.getPath("/stylesheet.vcss")
+                )
                 assertFilesEqual(
                     zipfsRef.getPath("/voxels/group_6.vox"),
                     zipfsTest.getPath("/voxels/group_6.vox")

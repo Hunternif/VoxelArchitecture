@@ -232,6 +232,11 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
 }
 
 
+//=============================== STYLES ================================
+
+fun EditorApp.resetStylesheet() = historyAction(ResetStylesheet())
+
+
 //=============================== HISTORY ===============================
 
 fun EditorApp.undo() = action {
