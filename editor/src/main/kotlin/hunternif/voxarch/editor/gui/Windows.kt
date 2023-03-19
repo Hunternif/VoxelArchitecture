@@ -22,19 +22,6 @@ inline fun popup(
     ImGui.popStyleVar()
 }
 
-inline fun menu(label: String, crossinline content: () -> Unit) {
-    if (ImGui.beginMenu(label)) {
-        content()
-        ImGui.endMenu()
-    }
-}
-
-inline fun menuItem(label: String, crossinline onOpen: () -> Unit) {
-    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
-    if (ImGui.menuItem(label)) { onOpen() }
-    ImGui.popStyleVar()
-}
-
 inline fun listbox(label: String, crossinline content: () -> Unit) {
     if (ImGui.beginListBox(label)) {
         content()

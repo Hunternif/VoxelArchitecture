@@ -4,92 +4,76 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode.*
 import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode.*
 import imgui.ImGui
-import imgui.flag.ImGuiStyleVar
 
 fun MainGui.mainMenu() {
-    ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
-    if (ImGui.beginMainMenuBar()) {
-        if (ImGui.beginMenu("File")) {
-            if (ImGui.menuItem("New", "Ctrl+N")) {
+    mainMenuBar {
+        menu("File") {
+            menuItem("New", "Ctrl+N") {
                 app.newProject()
             }
-            if (ImGui.menuItem("Open...", "Ctrl+O")) {
+            menuItem("Open...", "Ctrl+O") {
                 app.openDialogOpenProjectFile()
             }
-            disabled(app.state.projectPath == null) {
-                if (ImGui.menuItem("Save", "Ctrl+S")) {
-                    app.saveProjectFile()
-                }
+            menuItem("Save", "Ctrl+S", app.state.projectPath != null) {
+                app.saveProjectFile()
             }
-            if (ImGui.menuItem("Save as...", "Ctrl+Shift+S")) {
+            menuItem("Save as...", "Ctrl+Shift+S") {
                 app.openDialogSaveProjectFile()
             }
             ImGui.separator()
-            if (ImGui.menuItem("Import VOX...", "Ctrl+I")) {
+            menuItem("Import VOX...", "Ctrl+I") {
                 app.openDialogImportVoxFile()
             }
-            if (ImGui.menuItem("Export VOX...")) {
+            menuItem("Export VOX...") {
                 app.openDialogExportVoxFile()
             }
-            ImGui.endMenu()
         }
-        if (ImGui.beginMenu("Edit")) {
-            if (ImGui.menuItem(
-                    "Undo",
-                    "Ctrl+Z",
-                    false,
-                    app.state.history.hasPastItems()
-                )) app.undo()
-            if (ImGui.menuItem(
-                    "Redo",
-                    "Ctrl+Shift+Z",
-                    false,
-                    app.state.history.hasFutureItems()
-                )) app.redo()
-            ImGui.endMenu()
+        menu("Edit") {
+            menuItem("Undo", "Ctrl+Z", app.state.history.hasPastItems()) {
+                app.undo()
+            }
+            menuItem("Redo", "Ctrl+Shift+Z", app.state.history.hasFutureItems()) {
+                app.redo()
+            }
         }
-        if (ImGui.beginMenu("View")) {
-            if (ImGui.beginMenu("Render mode")) {
-                if (ImGui.menuItem("Solid color", "",
-                        app.state.renderMode == COLORED
-                    )) app.setRenderMode(COLORED)
-                if (ImGui.menuItem("Texture", "",
-                        app.state.renderMode == TEXTURED
-                    )) app.setRenderMode(TEXTURED)
+        menu("View") {
+            menu("Render mode") {
+                menuCheck("Solid color", app.state.renderMode == COLORED) {
+                    app.setRenderMode(COLORED)
+                }
+                menuCheck("Texture", app.state.renderMode == TEXTURED) {
+                    app.setRenderMode(TEXTURED)
+                }
                 ImGui.separator()
-                if (ImGui.menuItem("MagicaVoxel", "",
-                        app.state.shadingMode == MAGICA_VOXEL
-                    )) app.setShadingMode(MAGICA_VOXEL)
-                if (ImGui.menuItem("Minecraft", "",
-                        app.state.shadingMode == MINECRAFT
-                    )) app.setShadingMode(MINECRAFT)
-                ImGui.endMenu()
+                menuCheck("MagicaVoxel", app.state.shadingMode == MAGICA_VOXEL) {
+                    app.setShadingMode(MAGICA_VOXEL)
+                }
+                menuCheck("Minecraft", app.state.shadingMode == MINECRAFT) {
+                    app.setShadingMode(MINECRAFT)
+                }
             }
             ImGui.separator()
-            if (ImGui.menuItem("Style Editor", "", showStyleEditor.get())) {
+            menuCheck("Style Editor", showStyleEditor.get()) {
                 showStyleEditor.toggle()
             }
-            if (ImGui.menuItem("Blueprint Editor", "", showBlueprintEditor.get())) {
+            menuCheck("Blueprint Editor", showBlueprintEditor.get()) {
                 showBlueprintEditor.toggle()
             }
-            if (ImGui.menuItem("Node tree", "", showNodeTree.get())) {
+            menuCheck("Node tree", showNodeTree.get()) {
                 showNodeTree.toggle()
             }
-            if (ImGui.menuItem("Voxel tree", "", showVoxelTree.get())) {
+            menuCheck("Voxel tree", showVoxelTree.get()) {
                 showVoxelTree.toggle()
             }
-            if (ImGui.menuItem("History", "", showHistory.get())) {
+            menuCheck("History", showHistory.get()) {
                 showHistory.toggle()
             }
-            if (ImGui.menuItem("Properties", "", showProperties.get())) {
+            menuCheck("Properties", showProperties.get()) {
                 showProperties.toggle()
             }
-            if (ImGui.menuItem("Logs", "", showLogs.get())) {
+            menuCheck("Logs", showLogs.get()) {
                 showLogs.toggle()
             }
-            ImGui.endMenu()
         }
-        ImGui.endMainMenuBar()
     }
-    ImGui.popStyleVar(1)
 }
