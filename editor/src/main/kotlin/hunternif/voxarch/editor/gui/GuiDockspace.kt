@@ -120,9 +120,13 @@ class WindowGroup(private vararg val windows: Window): DockspaceLayoutBuilder {
     }
 }
 
-fun dockspace(layout: DockLayout) {
+fun dockspace(
+    layout: DockLayout,
+    marginBottom: Float = 0f,
+) {
     val dockspaceId = ImGui.getID("MyDockSpace")
     val vp = ImGui.getMainViewport()
+    vp.setWorkSize(vp.workSizeX, vp.workSizeY - marginBottom)
     ImGui.setNextWindowPos(vp.workPosX, vp.workPosY)
     ImGui.setNextWindowSize(vp.workSizeX, vp.workSizeY)
     ImGui.setNextWindowViewport(vp.id)

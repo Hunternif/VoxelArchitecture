@@ -23,6 +23,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val history = GuiHistory(app, this)
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
     @PublishedApi internal val styleEditor = GuiStyleEditor(app)
+    @PublishedApi internal val statusBar = GuiStatusBar(app)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightSize = 250,
@@ -65,7 +66,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         logWindow()
         fpsCounter.run()
         mainMenu()
-        dockspace(layout)
+        dockspace(layout, statusBar.height)
         panel("Style editor") {
             styleEditor.render()
         }
@@ -132,6 +133,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         panel(blueprintWindowTitle, hasPadding = false) {
             blueprintEditor.render()
         }
+        statusBar.render()
     }
 
     @PublishedApi
@@ -199,7 +201,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                     ImGui.textWrapped(e.msg)
                 }
                 is LogMessage.Error -> {
-                    if (ImGui.treeNode(e.shortMsg)) {
+                    if (ImGui.treeNode(e.msg)) {
                         for (stackFrame in e.ex.stackTrace) {
                             ImGui.text(stackFrame.toString())
                         }

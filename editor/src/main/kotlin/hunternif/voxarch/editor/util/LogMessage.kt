@@ -2,10 +2,15 @@ package hunternif.voxarch.editor.util
 
 import java.util.Date
 
-sealed class LogMessage(val time: Date) {
-    class Warning(val msg: String, time: Date = Date()) : LogMessage(time)
-    class Error(val ex: Exception, time: Date = Date()) : LogMessage(time) {
-        val shortMsg: String = "${ex.javaClass.simpleName}: ${ex.message}"
-    }
+sealed class LogMessage(
+    /** Message to display in logs or status bar */
+    val msg: String,
+    val time: Date,
+) {
+    class Warning(msg: String, time: Date = Date())
+        : LogMessage("Warning: $msg", time)
+
+    class Error(val ex: Exception, time: Date = Date())
+        : LogMessage("Error: ${ex.javaClass.simpleName}: ${ex.message}", time)
 }
 
