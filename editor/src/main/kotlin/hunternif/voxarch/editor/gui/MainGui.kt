@@ -22,6 +22,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
+    @PublishedApi internal val styleEditor = GuiStyleEditor(app)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightSize = 250,
@@ -56,6 +57,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA(samplesMSAA)
         mainWindowFbo.init(viewport)
         blueprintEditor.init()
+        styleEditor.init()
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
@@ -65,7 +67,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         mainMenu()
         dockspace(layout)
         panel("Style editor") {
-
+            styleEditor.render()
         }
         sceneWindow { vp ->
             renderMainWindow(vp)
