@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.dom.style.AllStyleProperties
-import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
@@ -14,22 +13,16 @@ class GuiStyleEditor(
     private val app: EditorApp,
 ) {
     private val editor = TextEditor()
-    private var text: String = ""
+    private var currentText: String = ""
 
-    var stylesheet: Stylesheet = Stylesheet()
-        set(value) {
-            if (field != value) {
-                field = value
-                text = """// Defaults
-
-$field
-
-
-// Custom rules
-"""
-                editor.textLines = text.split('\n').toTypedArray()
-            }
+    /** Replaces text in the editor with [newText] */
+    fun loadText(newText: String) {
+        if (newText != currentText) {
+            currentText = newText
+            editor.text = newText
         }
+    }
+
 
     fun init() {
         val lang = TextEditorLanguageDefinition.glsl()
@@ -90,7 +83,6 @@ $field
     }
 
     fun render() {
-        stylesheet = app.state.stylesheet
         editor.render("TextEditor")
     }
 }

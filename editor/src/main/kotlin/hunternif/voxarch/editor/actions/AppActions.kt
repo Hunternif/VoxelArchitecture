@@ -236,6 +236,11 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
 
 fun EditorApp.resetStylesheet() = historyAction(ResetStylesheet())
 
+/** Replaces text in Style Editor with the current stylesheet text */
+fun EditorApp.reloadStyleEditor() = action {
+    gui.styleEditor.loadText(state.stylesheetText)
+}
+
 
 //=============================== HISTORY ===============================
 

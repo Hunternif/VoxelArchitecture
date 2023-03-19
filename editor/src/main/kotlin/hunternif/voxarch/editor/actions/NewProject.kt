@@ -12,6 +12,7 @@ class NewProject() : HistoryAction(
         state = newState()
         // Reset stylesheet, but don't write this into history
         ResetStylesheet().invoke(app)
+        reloadStyleEditor()
         clearNewNodeFrame()
         redrawNodes()
         redrawVoxels()

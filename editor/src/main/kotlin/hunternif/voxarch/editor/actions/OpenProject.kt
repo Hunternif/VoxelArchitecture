@@ -11,6 +11,7 @@ class OpenProject(private val path: Path) : HistoryAction(
 ) {
     override fun invoke(app: EditorAppImpl) = app.run {
         readProject(path)
+        reloadStyleEditor()
         clearNewNodeFrame()
         redrawNodes()
         redrawVoxels()
