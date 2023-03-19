@@ -68,4 +68,10 @@ class ColorRGBaTest {
         val expected = ColorRGBa.fromHex(0x00cc99)
         assertEquals(expected, colorFromBytes)
     }
+
+    @Test
+    fun `to hex ABGR`() {
+        val hexABGR = ColorRGBa.fromHex(0xfc0267).hexABGR
+        assertEquals("0xFF6702FC", String.format("0x%08X", hexABGR))
+    }
 }

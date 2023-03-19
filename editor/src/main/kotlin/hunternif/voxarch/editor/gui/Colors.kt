@@ -43,5 +43,15 @@ class Colors {
         val axisX = ColorRGBa.fromHex(0xD46363)
         val axisY = ColorRGBa.fromHex(0x69B042)
         val axisZ = ColorRGBa.fromHex(0x4296fa)
+
+        // Style editor colors
+        val styleLineNumber = ColorRGBa.fromHex(0x333333)
+        val styleComment = ColorRGBa.fromHex(0x999999)
+        val styleTypeName = ColorRGBa.fromHex(0x67B2D4)
+        val styleClassName = ColorRGBa.fromHex(0x569cd6)
+        val styleProperty = ColorRGBa.fromHex(0xe07070)
+        val styleString = ColorRGBa.fromHex(0xe0a070)
+        val styleKeyword = ColorRGBa.fromHex(0xFFC66D)
+        val styleValue = ColorRGBa.fromHex(0xE8EAED)
     }
 }

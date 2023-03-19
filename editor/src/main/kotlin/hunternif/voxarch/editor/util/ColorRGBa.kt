@@ -18,6 +18,7 @@ data class ColorRGBa(
     fun toVector4f() = Vector4f(r, g, b, a)
 
     val hex: Int = calculateHexRGB()
+    val hexABGR: Int by lazy { calculateHexABGR() }
 
     private fun calculateHexRGB(): Int {
         val ri = round(255f * r).toInt()
@@ -49,6 +50,18 @@ data class ColorRGBa(
             min(1f, (b * a * (1f - c.a) + c.b * c.a) / alpha),
             alpha,
         )
+    }
+
+    private fun calculateHexABGR(): Int {
+        val ri = round(255f * r).toInt()
+        val gi = round(255f * g).toInt()
+        val bi = round(255f * b).toInt()
+        val ai = round(255f * a).toInt()
+        val abit = (ai shl 24) and (0xff shl 24)
+        val bbit = (bi shl 16) and 0xff0000
+        val gbit = (gi shl 8) and 0x00ff00
+        val rbit = ri and 0x0000ff
+        return abit or rbit or gbit or bbit
     }
 
     override fun toString(): String {
