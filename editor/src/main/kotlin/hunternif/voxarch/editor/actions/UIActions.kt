@@ -6,7 +6,7 @@ import hunternif.voxarch.editor.blueprint.nodeFactoryByName
 import hunternif.voxarch.editor.builder.setMinecraftMaterials
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
-import hunternif.voxarch.editor.scene.*
+import hunternif.voxarch.editor.gui.toggle
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
@@ -185,5 +185,5 @@ fun EditorApp.removeOverlayText(id: String) = action {
 }
 
 fun EditorApp.toggleLogs() = action {
-    state.isLogOpen = !state.isLogOpen
+    gui.showLogs.toggle()
 }

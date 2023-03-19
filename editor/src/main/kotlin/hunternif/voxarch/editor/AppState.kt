@@ -81,7 +81,6 @@ interface AppState {
     val DEBUG: Boolean
     val isMainWindowFocused: Boolean
     val isMainWindowHovered: Boolean
-    val isLogOpen: Boolean
     val selectedBlueprint: Blueprint?
     /** Maps text id to text value*/
     val overlayText: Map<String, String>
@@ -138,7 +137,6 @@ class AppStateImpl(
     override val DEBUG = true
     override var isMainWindowFocused = false
     override var isMainWindowHovered = false
-    override var isLogOpen = false
     override var selectedBlueprint: Blueprint? = null
     override val overlayText = linkedMapOf<String, String>()
 }

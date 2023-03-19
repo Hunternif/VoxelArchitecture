@@ -7,6 +7,7 @@ import imgui.ImFont
 import imgui.ImGui
 import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
+import imgui.type.ImBoolean
 
 inline fun button(
     text: String,
@@ -125,4 +126,8 @@ inline fun GuiBase.inlineIconButton(
     if (ImGui.selectable(text, false)) onClick()
     ImGui.popStyleVar(1)
     ImGui.popFont()
+}
+
+fun ImBoolean.toggle() {
+    set(!get())
 }

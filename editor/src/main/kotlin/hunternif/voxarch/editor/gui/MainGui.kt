@@ -12,6 +12,7 @@ import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
 import imgui.internal.flag.ImGuiDockNodeFlags
+import imgui.type.ImBoolean
 
 class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
@@ -24,6 +25,14 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
     @PublishedApi internal val styleEditor = GuiStyleEditor(app)
     @PublishedApi internal val statusBar = GuiStatusBar(app)
+
+    @PublishedApi internal val showStyleEditor = ImBoolean(true)
+    @PublishedApi internal val showBlueprintEditor = ImBoolean(true)
+    @PublishedApi internal val showNodeTree = ImBoolean(true)
+    @PublishedApi internal val showVoxelTree = ImBoolean(true)
+    @PublishedApi internal val showHistory = ImBoolean(true)
+    @PublishedApi internal val showProperties = ImBoolean(true)
+    @PublishedApi internal val showLogs = ImBoolean(false)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightSize = 250,
@@ -70,7 +79,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         fpsCounter.run()
         mainMenu()
         dockspace(layout, statusBar.height)
-        panel("Style editor") {
+        panel("Style editor", showStyleEditor) {
             styleEditor.render()
         }
         sceneWindow { vp ->
@@ -105,7 +114,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 topPanel()
             }
         }
-        panel("Node tree", hasPadding = false) {
+        panel("Node tree", showNodeTree, hasPadding = false) {
             ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
             childWindow("tree", toolbarHeight) { nodeTree.render() }
             childToolbar("footer") {
@@ -124,22 +133,20 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
             ImGui.popStyleVar()
         }
-        panel("History", hasPadding = false) {
+        panel("History", showHistory, hasPadding = false) {
             history.render()
         }
-        panel("Voxel tree", hasPadding = false) {
+        panel("Voxel tree", showVoxelTree, hasPadding = false) {
             voxelTree.render()
         }
-        panel("Properties") {
+        panel("Properties", showProperties) {
             nodeProperties.render()
         }
-        panel(blueprintWindowTitle, hasPadding = false) {
+        panel(blueprintWindowTitle, showBlueprintEditor, hasPadding = false) {
             blueprintEditor.render()
         }
-        if (app.state.isLogOpen) {
-            panel("Logs") {
-                logWindow()
-            }
+        panel("Logs", showLogs) {
+            logWindow()
         }
         statusBar.render()
     }
@@ -183,9 +190,14 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ImGui.popStyleVar(3)
     }
 
+    /**
+     * @param openFlag if not null, a close 'X' button will appear.
+     *                 Clicking it will set the flag to false.
+     */
     @PublishedApi
     internal inline fun panel(
         title: String,
+        openFlag: ImBoolean? = null,
         hasPadding: Boolean = true,
         crossinline renderWindow: () -> Unit
     ) {
@@ -193,10 +205,20 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowBorderSize, 0f)
         if (!hasPadding)
             ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 0f, 0f)
-        if (ImGui.begin(title, 0)) {
-            renderWindow()
+        val flags = 0
+        if (openFlag != null) {
+            if (openFlag.get()) {
+                if (ImGui.begin(title, openFlag, flags)) {
+                    renderWindow()
+                }
+                ImGui.end()
+            }
+        } else {
+            if (ImGui.begin(title, flags)) {
+                renderWindow()
+            }
+            ImGui.end()
         }
-        ImGui.end()
         ImGui.popStyleVar(2)
         if (!hasPadding) ImGui.popStyleVar()
     }
