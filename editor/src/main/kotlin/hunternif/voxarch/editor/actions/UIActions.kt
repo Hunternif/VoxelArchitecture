@@ -183,3 +183,7 @@ fun EditorApp.addOverlayText(id: String, text: String) = action {
 fun EditorApp.removeOverlayText(id: String) = action {
     state.overlayText.remove(id)
 }
+
+fun EditorApp.toggleLogs() = action {
+    state.isLogOpen = !state.isLogOpen
+}

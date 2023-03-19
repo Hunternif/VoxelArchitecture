@@ -27,16 +27,20 @@ class MainGui(val app: EditorApp) : GuiBase() {
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightSize = 250,
-        left = HorizontalSplit(
-            leftSize = 250,
-            left = Window("Style editor"),
-            right = VerticalSplit(
-                bottomRatio = 0.5f,
-                top = WindowGroup(
-                    Window("###scene_window"),
+        left = VerticalSplit(
+            bottomSize = 100,
+            top = HorizontalSplit(
+                leftSize = 250,
+                left = Window("Style editor"),
+                right = VerticalSplit(
+                    bottomRatio = 0.5f,
+                    top = WindowGroup(
+                        Window("###scene_window"),
+                    ),
+                    bottom = Window("###blueprint_window")
                 ),
-                bottom = Window("###blueprint_window")
             ),
+            bottom = Window("Logs"),
         ),
         right = VerticalSplit(
             bottomRatio = 0.5f,
@@ -63,7 +67,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
 //        debugTexture((app as EditorAppImpl).scene.hitTester.voxelsFbo.texture)
-        logWindow()
         fpsCounter.run()
         mainMenu()
         dockspace(layout, statusBar.height)
@@ -132,6 +135,11 @@ class MainGui(val app: EditorApp) : GuiBase() {
         }
         panel(blueprintWindowTitle, hasPadding = false) {
             blueprintEditor.render()
+        }
+        if (app.state.isLogOpen) {
+            panel("Logs") {
+                logWindow()
+            }
         }
         statusBar.render()
     }

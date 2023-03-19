@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.toggleLogs
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImGui
 import imgui.flag.ImGuiCol
@@ -13,7 +14,7 @@ class GuiStatusBar(private val app: EditorApp) {
     val height: Float = 19f
     val maxMsgLength = 100
 
-    private var message: String = ""
+    private var message: String = "..."
 
     fun render() {
         updateTimer.runAtInterval { updateMessage() }
@@ -24,6 +25,8 @@ class GuiStatusBar(private val app: EditorApp) {
 
         pushStyleColor(ImGuiCol.Border, Colors.statusBarBg)
         pushStyleColor(ImGuiCol.WindowBg, Colors.statusBarBg)
+        pushStyleColor(ImGuiCol.HeaderHovered, Colors.statusBarBgHovered)
+        pushStyleColor(ImGuiCol.HeaderActive, Colors.statusBarBgPressed)
         pushStyleColor(ImGuiCol.Text, Colors.statusBarText)
 
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 6f, 2f)
@@ -37,12 +40,13 @@ class GuiStatusBar(private val app: EditorApp) {
             ImGuiWindowFlags.NoScrollbar or
             ImGuiWindowFlags.NoDocking
         ImGui.begin("status_bar", flags)
-        text(message)
-        ImGui.text(message)
+        if (ImGui.selectable(message, false)) {
+            app.toggleLogs()
+        }
         ImGui.end()
 
         ImGui.popStyleVar(2)
-        ImGui.popStyleColor(3)
+        ImGui.popStyleColor(5)
     }
 
     private fun updateMessage() {

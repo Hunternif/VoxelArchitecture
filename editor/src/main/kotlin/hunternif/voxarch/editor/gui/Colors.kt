@@ -55,6 +55,8 @@ class Colors {
         val styleValue = ColorRGBa.fromHex(0xE8EAED)
 
         val statusBarBg = ColorRGBa.fromHex(0x242424)
+        val statusBarBgHovered = ColorRGBa.fromHex(0x333333, 0.5f)
+        val statusBarBgPressed = ColorRGBa.fromHex(0x333333, 0.8f)
         val statusBarText = ColorRGBa.fromHex(0x666666)
     }
 }
