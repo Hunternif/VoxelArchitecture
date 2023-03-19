@@ -4,6 +4,7 @@ import imgui.ImGui
 import imgui.ImGuiWindowClass
 import imgui.ImVec2
 import imgui.flag.ImGuiCol
+import imgui.flag.ImGuiMouseButton
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
 import imgui.internal.flag.ImGuiDockNodeFlags
@@ -150,3 +151,7 @@ fun calcTextSize(str: String): ImVec2 {
     ImGui.calcTextSize(sizeBuf, str)
     return sizeBuf
 }
+
+fun isThisWindowClicked(): Boolean = ImGui.isWindowHovered() &&
+    !ImGui.isMouseDragging(ImGuiMouseButton.Left) &&
+    ImGui.isMouseClicked(ImGuiMouseButton.Left)

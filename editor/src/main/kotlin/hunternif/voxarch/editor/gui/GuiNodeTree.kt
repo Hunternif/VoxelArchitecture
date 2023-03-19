@@ -69,10 +69,7 @@ abstract class GuiSceneTree(
 
     fun render() {
         isAnyTreeNodeClicked = false
-        isThisPanelClicked = ImGui.isWindowHovered() &&
-            ImGui.isWindowFocused() &&
-            !ImGui.isMouseDragging(ImGuiMouseButton.Left) &&
-            ImGui.isMouseClicked(ImGuiMouseButton.Left)
+        isThisPanelClicked = ImGui.isWindowFocused() && isThisWindowClicked()
 
         // CellPadding = 0 makes tree rows appear next to each other without breaks
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
