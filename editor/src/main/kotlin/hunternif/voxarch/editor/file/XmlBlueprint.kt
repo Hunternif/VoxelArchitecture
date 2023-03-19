@@ -4,7 +4,6 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.file.style.parseStylesheet
@@ -112,7 +111,7 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             bpNode.outputs.add(slot)
             bp.slotIDs.save(slot)
         }
-        val rule = parseStylesheet(n.style).firstOrNull()
+        val rule = parseStylesheet(n.style).rules.firstOrNull()
         rule?.declarations?.forEach { bpNode.rule.add(it) }
     }
     // Add any output slots that may have been introduced in newer versions:

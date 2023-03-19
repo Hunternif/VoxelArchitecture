@@ -10,13 +10,16 @@ import hunternif.voxarch.vector.Vec3
 import org.antlr.v4.runtime.*
 
 /** Parses a list of styles from text. See "CSS" specification. */
-@Throws(StyleParseException::class)
-fun parseStylesheet(styleStr: String): List<Rule> {
-    if (styleStr.isEmpty()) return emptyList()
+fun parseStylesheet(
+    styleStr: String,
+): StyleParseResult {
+    if (styleStr.isEmpty()) return StyleParseResult(emptyList(), emptyList())
     val lexer = StyleGrammarLexer(CharStreams.fromString(styleStr))
     val parser = StyleGrammarParser(CommonTokenStream(lexer))
-    parser.addErrorListener(StyleErrorListener())
-    return parser.stylesheet().toRules()
+    val errorListener = StyleErrorListener()
+    parser.addErrorListener(errorListener)
+    val rules = parser.stylesheet().toRules()
+    return StyleParseResult(rules, errorListener.errors)
 }
 
 private fun StylesheetContext.toRules() = styleRule().map { it.toRule() }
@@ -153,16 +156,25 @@ class NumberExpressionException(
     cause: Exception? = null,
 ) : Exception("failed to parse number expression: $text", cause)
 
-@Suppress("unused", "MemberVisibilityCanBePrivate")
-class StyleParseException(
+data class StyleParseResult(
+    val rules: List<Rule>,
+    val errors: List<StyleParseError>,
+)
+
+data class StyleParseError(
     val offendingSymbol: Any?,
     val line: Int,
     val charPositionInLine: Int,
     val parserMsg: String?,
     val e: RecognitionException?,
-) : Exception("line $line:$charPositionInLine $parserMsg", e)
+) {
+    val msg = "line $line:$charPositionInLine $parserMsg"
+    override fun toString(): String = msg
+}
 
-private class StyleErrorListener : BaseErrorListener() {
+class StyleErrorListener() : BaseErrorListener() {
+    val errors: MutableList<StyleParseError> = mutableListOf()
+
     override fun syntaxError(
         recognizer: Recognizer<*, *>?,
         offendingSymbol: Any?,
@@ -171,6 +183,6 @@ private class StyleErrorListener : BaseErrorListener() {
         msg: String?,
         e: RecognitionException?,
     ) {
-        throw StyleParseException(offendingSymbol, line, charPositionInLine, msg, e)
+        errors.add(StyleParseError(offendingSymbol, line, charPositionInLine, msg, e))
     }
 }

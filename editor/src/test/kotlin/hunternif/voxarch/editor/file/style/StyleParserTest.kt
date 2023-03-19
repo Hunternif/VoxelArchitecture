@@ -10,32 +10,34 @@ import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.util.SnapOrigin
 import org.junit.Assert.assertEquals
-import org.junit.Assert.fail
+import org.junit.Assert.assertNotEquals
 import org.junit.Ignore
 import org.junit.Test
 
 class StyleParserTest {
     @Test
     fun `parse empty stylesheet`() {
-        val rules = parseStylesheet("")
+        val rules = parseStylesheet("").rules
         assertRulesEqual(emptyList(), rules)
     }
 
     @Test
     fun `parse empty rule`() {
-        val rules = parseStylesheet(".selector { }")
+        val rules = parseStylesheet(".selector { }").rules
         val expected = Rule(select("selector"))
         assertRulesEqual(listOf(expected), rules)
     }
 
-    @Test(expected = StyleParseException::class)
+    @Test
     fun `parse invalid empty selector`() {
-        parseStylesheet("{ prop: value }")
+        val result = parseStylesheet("{ prop: value }")
+        assertNotEquals(emptyList<StyleParseError>(), result.errors)
     }
 
-    @Test(expected = StyleParseException::class)
+    @Test
     fun `parse invalid unmatched brace`() {
-        parseStylesheet(".selector { prop: value")
+        val result = parseStylesheet(".selector { prop: value")
+        assertNotEquals(emptyList<StyleParseError>(), result.errors)
     }
 
     @Test
@@ -55,21 +57,20 @@ class StyleParserTest {
             ".selector { width: 1! }",
             ".selector { width: 1 2 }",
         ).forEach {
-            try {
-                parseStylesheet(it)
-                fail("didn't throw: $it")
-            } catch (_: StyleParseException) { }
+            val result = parseStylesheet(it)
+            assertNotEquals(emptyList<StyleParseError>(), result.errors)
         }
     }
 
-    @Test(expected = StyleParseException::class)
+    @Test
     fun `parse invalid prop without value`() {
-        parseStylesheet("""
+        val result = parseStylesheet("""
             .selector {
                 prop1:
                 prop2: value
             }
         """.trimIndent())
+        assertNotEquals(emptyList<StyleParseError>(), result.errors)
     }
 
     @Test
@@ -78,7 +79,7 @@ class StyleParserTest {
                 .selector {
                     visibility: VISIBLE
                 }
-            """.trimIndent())
+            """.trimIndent()).rules
         val expected = Rule(select("selector")).apply {
             visible()
         }
@@ -87,7 +88,7 @@ class StyleParserTest {
 
     @Test
     fun `parse inline selector`() {
-        val rules = parseStylesheet(".selector { height: 1; width: 2 }")
+        val rules = parseStylesheet(".selector { height: 1; width: 2 }").rules
         val expected = Rule(select("selector")).apply {
             height { 1.vx }
             width { 2.vx }
@@ -105,7 +106,7 @@ class StyleParserTest {
                 # comment-only line
                 depth: 3 // EOL comment
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = listOf(
             Rule(select("selector")),
             Rule(select("selector")).apply {
@@ -121,7 +122,7 @@ class StyleParserTest {
             .tower-4 {
                 diameter: 4
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(select("tower-4")).apply {
             diameter { 4.vx }
         }
@@ -135,7 +136,7 @@ class StyleParserTest {
                 height: inherit
                 width: 4 ~ 50%    // randomized value, 4 is natural size in voxels
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(select(Room::class.java).style("tower")).apply {
             height { inherit() }
             width { 4.vx to 50.pct }
@@ -149,7 +150,7 @@ class StyleParserTest {
             .tower.tall.a {
                 height: 150%
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(select("tower", "tall", "a")).apply {
             height { 150.pct }
         }
@@ -162,7 +163,7 @@ class StyleParserTest {
             .tower, .tall.room, PolyRoom {
                 rotation: 0.0
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(
             select("tower"),
             select("tall", "room"),
@@ -179,7 +180,7 @@ class StyleParserTest {
             Wall,
             Floor
             { }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(
             select(Wall::class.java),
             select(Floor::class.java),
@@ -193,7 +194,7 @@ class StyleParserTest {
             [.spire-castle] .tower {
                 roof-shape: SPIRE
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(selectDescendantOf("spire-castle").style("tower")).apply {
             roofShape { set(RoofShape.SPIRE) }
         }
@@ -206,7 +207,7 @@ class StyleParserTest {
             [.inner-wall, .outer-wall] Wall {
                 depth: -1
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(
             selectDescendantOf("inner-wall") +
                 selectDescendantOf("outer-wall") +
@@ -223,7 +224,7 @@ class StyleParserTest {
             .tower-wall > .window {
                 padding-x: 1
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(selectChildOf("tower-wall").style("window")).apply {
             paddingX { 1.vx }
         }
@@ -237,14 +238,14 @@ class StyleParserTest {
             .turret {
                 blueprint: "Turret Decor BP"
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(select("turret"))
         assertRulesEqual(listOf(expected), rules)
     }
 
     @Test
     fun `parse spaced selector`() {
-        val rules = parseStylesheet("Room Wall .abc .f123 { }")
+        val rules = parseStylesheet("Room Wall .abc .f123 { }").rules
         val expected = Rule(
             select(Room::class.java, Wall::class.java).style("abc", "f123")
         )
@@ -257,7 +258,7 @@ class StyleParserTest {
             * {
                 visibility: GONE
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule().apply {
             gone()
         }
@@ -270,7 +271,7 @@ class StyleParserTest {
             * {
                 snap-origin: FLOOR_CENTER
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule().apply {
             snapOrigin { floorCenter() }
         }
@@ -288,7 +289,7 @@ class StyleParserTest {
                 height: 30 / (2 + 1%)
                 depth: 1 + (15 ~ 45)
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule(select("child")).apply {
             width { 100.pct - 2.5.vx * 3 }
             height { 30.vx / (2.vx + 1.pct) }
@@ -318,7 +319,7 @@ class StyleParserTest {
             * {
                 size: 1 2 3
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule().apply {
             size(1.vx, 2.vx, 3.vx)
         }
@@ -331,7 +332,7 @@ class StyleParserTest {
             * {
                 size: 1 2.5 3
             }
-        """.trimIndent())
+        """.trimIndent()).rules
         val expected = Rule().apply {
             size(1.0.vx, 2.5.vx, 3.0.vx)
         }
