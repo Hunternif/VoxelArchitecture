@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.SelectMask.*
@@ -235,6 +236,9 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
 //=============================== STYLES ================================
 
 fun EditorApp.resetStylesheet() = historyAction(ResetStylesheet())
+
+fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) =
+    historyAction(SetStylesheet(stylesheet, text))
 
 /** Replaces text in Style Editor with the current stylesheet text */
 fun EditorApp.reloadStyleEditor() = action {

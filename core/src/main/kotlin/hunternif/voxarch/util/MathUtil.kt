@@ -98,6 +98,18 @@ fun segmentAngleY(start: Vec3, end: Vec3): Double =
  * Ensures the result is between [min] (incl.) and [max] (incl.).
  * In case when max < min, returns [max].
  */
+fun Int.clamp(min: Int, max: Int): Int {
+    return when {
+        this < min -> min
+        this > max -> max
+        else -> this
+    }
+}
+
+/**
+ * Ensures the result is between [min] (incl.) and [max] (incl.).
+ * In case when max < min, returns [max].
+ */
 fun Double.clamp(min: Double, max: Double): Double {
     return when {
         this < min -> min

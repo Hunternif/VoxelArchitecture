@@ -1,9 +1,13 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.dom.style.AllStyleProperties
+import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.updateStylesheetAndText
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
+import hunternif.voxarch.editor.file.style.parseStylesheet
+import hunternif.voxarch.util.clamp
 import imgui.extension.texteditor.TextEditor
 import imgui.extension.texteditor.TextEditorLanguageDefinition
 import imgui.extension.texteditor.flag.TextEditorPaletteIndex
@@ -14,6 +18,9 @@ class GuiStyleEditor(
 ) {
     private val editor = TextEditor()
     private var currentText: String = ""
+
+    private val applyTimer = Timer(0.1)
+    private var isDirty: Boolean = false
 
     /** Replaces text in the editor with [newText] */
     fun loadText(newText: String) {
@@ -84,5 +91,30 @@ class GuiStyleEditor(
 
     fun render() {
         editor.render("TextEditor")
+        if (editor.isTextChanged) isDirty = true
+        applyTimer.runAtInterval {
+            //TODO: only update after user stopped typing
+            applyStylesheet()
+        }
+    }
+
+    private fun applyStylesheet() {
+        if (isDirty) {
+            currentText = editor.text
+            val totalLines = editor.totalLines
+
+            val parsed = parseStylesheet(currentText)
+
+            val errorMap = parsed.errors.associate {
+                // Sometimes the error is reported on the next line after EOF
+                it.line.clamp(1, totalLines) to it.msg
+            }
+            editor.setErrorMarkers(errorMap)
+
+            val newSheet = Stylesheet.fromRules(parsed.rules)
+            // TODO: use history builder, don't spam history with each character!
+            app.updateStylesheetAndText(newSheet, currentText)
+            isDirty = false
+        }
     }
 }
