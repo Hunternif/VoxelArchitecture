@@ -19,8 +19,14 @@ class GuiStyleEditor(
     var stylesheet: Stylesheet = Stylesheet()
         set(value) {
             if (field != value) {
-                text = value.toString()
                 field = value
+                text = """// Defaults
+
+$field
+
+
+// Custom rules
+"""
                 editor.textLines = text.split('\n').toTypedArray()
             }
         }
