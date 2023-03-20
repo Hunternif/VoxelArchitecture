@@ -86,6 +86,13 @@ class MainGui(val app: EditorApp) : GuiBase() {
             renderMainWindow(vp)
             if (app.state.DEBUG) overlay("debug_overlay", Corner.TOP_RIGHT,
                 padding = 0f) {
+//                ImGui.text("isAnyItemActive: ${ImGui.isAnyItemActive()}")
+//                ImGui.text("isAnyItemFocused: ${ImGui.isAnyItemFocused()}")
+//                ImGui.text("isAnyItemHovered: ${ImGui.isAnyItemHovered()}")
+//                ImGui.text("isMainWindowFocused: ${app.state.isMainWindowFocused}")
+//                ImGui.text("isMainWindowHovered: ${app.state.isMainWindowHovered}")
+//                ImGui.text("isTextEditorActive: ${app.state.isTextEditorActive}")
+
                 ImGui.text("Tool: ")
                 ImGui.sameLine()
                 ImGui.text(app.state.currentTool.toolName)

@@ -31,7 +31,7 @@ class KeyController(private val app: EditorApp) : KeyListener {
             }
         }
         // If an ImGui item is active, it may have its own shortcuts.
-        if (!ImGui.isAnyItemActive()) {
+        if (!ImGui.isAnyItemActive() && !app.state.isTextEditorActive) {
             val tool = Tool.values().firstOrNull { it.shortcut.code == key }
             // Shortcuts anywhere in the program:
             when {

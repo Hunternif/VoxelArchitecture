@@ -168,6 +168,10 @@ fun EditorApp.hoverMainWindow(hovered: Boolean) = action {
     state.isMainWindowHovered = hovered
 }
 
+fun EditorApp.setTextEditorActive(active: Boolean) = action {
+    state.isTextEditorActive = active
+}
+
 fun EditorApp.logWarning(msg: String) = action {
     logs.add(LogMessage.Warning(msg))
 }

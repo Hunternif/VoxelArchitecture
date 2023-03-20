@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.dom.style.AllStyleProperties
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.setTextEditorActive
 import hunternif.voxarch.editor.actions.updateStylesheetAndText
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
@@ -12,6 +13,8 @@ import imgui.extension.texteditor.TextEditor
 import imgui.extension.texteditor.TextEditorLanguageDefinition
 import imgui.extension.texteditor.flag.TextEditorPaletteIndex
 import imgui.extension.texteditor.flag.TextEditorPaletteIndex.*
+import imgui.flag.ImGuiFocusedFlags
+import imgui.internal.ImGui
 
 class GuiStyleEditor(
     private val app: EditorApp,
@@ -93,6 +96,7 @@ class GuiStyleEditor(
     }
 
     fun render() {
+        app.setTextEditorActive(ImGui.isWindowFocused(ImGuiFocusedFlags.ChildWindows))
         editor.render("TextEditor")
         if (editor.isTextChanged) isDirty = true
         applyTimer.runAtInterval {
