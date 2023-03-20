@@ -16,7 +16,7 @@ class BuildVoxels : HistoryAction(
     private lateinit var oldGenerated: List<DetachedObject>
     private lateinit var newGenerated: List<DetachedObject>
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::oldGenerated.isInitialized) {
             oldGenerated = app.state.generatedVoxels.map { it.detached() }
         }

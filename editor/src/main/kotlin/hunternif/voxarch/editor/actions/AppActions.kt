@@ -267,7 +267,7 @@ fun EditorApp.undo() = action {
 }
 
 fun EditorApp.redo() = action {
-    state.history.moveForward()?.invoke(this)
+    state.history.moveForward()?.invoke(this, false)
 }
 
 
@@ -286,6 +286,6 @@ internal inline fun EditorApp.action(
 
 /** Runs an action and also writes it to history. */
 internal fun EditorApp.historyAction(action: HistoryAction) = action {
-    action.invoke(this)
+    action.invoke(this, true)
     state.history.append(action)
 }

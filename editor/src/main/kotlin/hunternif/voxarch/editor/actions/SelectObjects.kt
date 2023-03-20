@@ -14,7 +14,7 @@ class SelectObjects(
     description: String,
 ) : HistoryAction(description, Tool.SELECT.icon) {
 
-    override fun invoke(app: EditorAppImpl) = app.applySelection(newSet)
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.applySelection(newSet)
 
     override fun revert(app: EditorAppImpl) = app.applySelection(oldSet)
 

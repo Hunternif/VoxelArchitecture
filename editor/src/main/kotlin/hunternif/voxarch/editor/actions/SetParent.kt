@@ -10,7 +10,7 @@ class SetParent(private val newParent: SceneNode) : HistoryAction(
 ) {
     private lateinit var oldParent: SceneNode
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::oldParent.isInitialized) {
             oldParent = app.state.parentNode
         }

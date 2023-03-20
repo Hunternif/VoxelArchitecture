@@ -26,7 +26,7 @@ class BlueprintDeleteParts(
     /** Includes initial [links] and links from deleted nodes */
     private lateinit var allLinks: List<BlueprintLink>
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::allLinks.isInitialized) {
             allLinks = links +
                 nodes.flatMap { it.inputs.flatMap { it.links } } +

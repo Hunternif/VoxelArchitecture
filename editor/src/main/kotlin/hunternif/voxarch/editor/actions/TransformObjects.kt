@@ -18,7 +18,7 @@ class TransformObjects(
     private val hasNodes = newData.keys.any { it is SceneNode }
     private val hasVoxels = newData.keys.any { it is SceneVoxelGroup }
 
-    override fun invoke(app: EditorAppImpl) = app.applyTransform(newData)
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.applyTransform(newData)
 
     override fun revert(app: EditorAppImpl) = app.applyTransform(oldData)
 

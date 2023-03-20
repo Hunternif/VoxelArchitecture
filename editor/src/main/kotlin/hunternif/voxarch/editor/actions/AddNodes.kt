@@ -18,7 +18,7 @@ class AddNodes(
 ) {
     private lateinit var newSceneNodes: MutableSet<SceneNode>
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::newSceneNodes.isInitialized) {
             newSceneNodes = LinkedHashSet()
             for (node in nodes) {

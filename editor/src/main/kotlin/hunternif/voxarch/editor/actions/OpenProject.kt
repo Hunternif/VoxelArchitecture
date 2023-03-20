@@ -9,7 +9,7 @@ class OpenProject(private val path: Path) : HistoryAction(
     "Open project '${path.fileName}'",
     FontAwesomeIcons.File
 ) {
-    override fun invoke(app: EditorAppImpl) = app.run {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.run {
         readProject(path)
         reloadStyleEditor()
         clearNewNodeFrame()

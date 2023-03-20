@@ -7,7 +7,7 @@ abstract class HistoryAction(
     val description: String,
     val icon: String = FontAwesomeIcons.File,
 ) {
-    abstract fun invoke(app: EditorAppImpl)
+    abstract fun invoke(app: EditorAppImpl, firstTime: Boolean)
     abstract fun revert(app: EditorAppImpl)
     override fun toString(): String = description
 }

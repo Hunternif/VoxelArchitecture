@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
-import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
 class BlueprintNewNode(
@@ -22,7 +21,7 @@ class BlueprintNewNode(
     lateinit var node: BlueprintNode
         private set
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::node.isInitialized) {
             node = bp.addNode(name, domBuilder, x, y)
         }

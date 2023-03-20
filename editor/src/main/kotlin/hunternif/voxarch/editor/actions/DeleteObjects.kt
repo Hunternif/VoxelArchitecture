@@ -20,7 +20,7 @@ class DeleteObjects(
     private val hasNodes = objs.any { it is SceneNode }
     private val hasVoxels = objs.any { it is SceneVoxelGroup }
 
-    override fun invoke(app: EditorAppImpl) = app.state.run {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.state.run {
         for (detached in detachedObjs) {
             detached.detach()
             // Parent node must not point to a deleted node:

@@ -23,7 +23,7 @@ class CreateNode(
         private set
     lateinit var parent: SceneNode
 
-    override fun invoke(app: EditorAppImpl) = app.state.run {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.state.run {
         if (!::node.isInitialized) {
             createNode()
         }

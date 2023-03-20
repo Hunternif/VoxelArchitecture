@@ -15,7 +15,7 @@ class ResetStylesheet : HistoryAction("Reset stylesheet", FontAwesomeIcons.Histo
     private lateinit var newText: String
     private lateinit var newStylesheet: Stylesheet
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::newText.isInitialized) {
             oldText = app.state.stylesheetText
             oldStylesheet = app.state.stylesheet

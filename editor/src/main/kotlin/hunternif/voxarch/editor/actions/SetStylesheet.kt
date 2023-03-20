@@ -18,7 +18,7 @@ class SetStylesheet(
     private var newText: String,
 ) : HistoryAction("Update stylesheet", FontAwesomeIcons.FileCode) {
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         app.state.stylesheet = newStyle
         app.state.stylesheetText = newText
         app.reloadStyleEditor()

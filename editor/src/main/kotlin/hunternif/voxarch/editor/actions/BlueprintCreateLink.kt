@@ -11,7 +11,7 @@ class BlueprintCreateLink(
     "Create blueprint link",
     FontAwesomeIcons.Link
 ) {
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         from.linkTo(to)
     }
 

@@ -15,7 +15,7 @@ class ImportVoxFile(
 ) {
     private lateinit var voxelGroup: SceneVoxelGroup
 
-    override fun invoke(app: EditorAppImpl) = app.run {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.run {
         if (!::voxelGroup.isInitialized) {
             val file = readVoxFile(path)
             voxelGroup = state.registry.newVoxelGroup(

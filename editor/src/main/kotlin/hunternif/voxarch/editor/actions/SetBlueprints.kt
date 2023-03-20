@@ -14,7 +14,7 @@ class SetBlueprints(
     private val oldGens = node.blueprints.toList()
     private var oldSelected: Blueprint? = null
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         oldSelected = app.state.selectedBlueprint
         node.blueprints.clear()
         node.blueprints.addAll(newBlues)

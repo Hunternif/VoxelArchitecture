@@ -8,10 +8,10 @@ class NewProject() : HistoryAction(
     "New project",
     FontAwesomeIcons.File
 ) {
-    override fun invoke(app: EditorAppImpl) = app.run {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.run {
         state = newState()
         // Reset stylesheet, but don't write this into history
-        ResetStylesheet().invoke(app)
+        ResetStylesheet().invoke(app, true)
         reloadStyleEditor()
         clearNewNodeFrame()
         redrawNodes()

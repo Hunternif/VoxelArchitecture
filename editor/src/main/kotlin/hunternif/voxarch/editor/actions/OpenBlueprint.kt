@@ -10,7 +10,7 @@ class OpenBlueprint(private val newBlueprint: Blueprint?) : HistoryAction(
 ) {
     private var oldBlueprint: Blueprint? = null
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         oldBlueprint = app.state.selectedBlueprint
         app.state.selectedBlueprint = newBlueprint
         newBlueprint?.nodes?.forEach { it.applyImNodesPos() }

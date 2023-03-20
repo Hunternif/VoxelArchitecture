@@ -11,7 +11,7 @@ class BlueprintDeleteNode(private val node: BlueprintNode) : HistoryAction(
 ) {
     private lateinit var oldLinks: List<BlueprintLink>
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::oldLinks.isInitialized) {
             oldLinks = node.inputs.flatMap { it.links } +
                 node.outputs.flatMap { it.links }

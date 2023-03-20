@@ -16,7 +16,7 @@ class GenerateNodes : HistoryAction(
     private lateinit var oldGenerated: List<DetachedObject>
     private lateinit var newGenerated: MutableList<DetachedObject>
 
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::oldGenerated.isInitialized) {
             oldGenerated = app.state.generatedNodes.map { it.detached() }
         }

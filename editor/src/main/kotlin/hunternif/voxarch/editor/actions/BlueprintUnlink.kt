@@ -11,7 +11,7 @@ class BlueprintUnlink(
     "Remove blueprint link",
     FontAwesomeIcons.Unlink
 ) {
-    override fun invoke(app: EditorAppImpl) {
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         to.unlinkFrom(from)
     }
 
