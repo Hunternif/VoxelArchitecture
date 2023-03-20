@@ -17,6 +17,7 @@ fun parseStylesheet(
     val lexer = StyleGrammarLexer(CharStreams.fromString(styleStr))
     val parser = StyleGrammarParser(CommonTokenStream(lexer))
     val errorListener = StyleErrorListener()
+    parser.errorListeners.clear()
     parser.addErrorListener(errorListener)
     val rules = parser.stylesheet().toRules()
     return StyleParseResult(rules, errorListener.errors)
