@@ -17,14 +17,17 @@ class GuiStyleEditor(
     private val app: EditorApp,
 ) {
     private val editor = TextEditor()
+    /** This is only used to speed up comparison when loading text. */
+    private var currentStyle = Stylesheet()
     private var currentText: String = ""
 
     private val applyTimer = Timer(0.1)
     private var isDirty: Boolean = false
 
     /** Replaces text in the editor with [newText] */
-    fun loadText(newText: String) {
-        if (newText != currentText) {
+    fun loadText(newStyle: Stylesheet, newText: String) {
+        if (newStyle != currentStyle) {
+            currentStyle = newStyle
             currentText = newText
             editor.text = newText
         }
@@ -112,7 +115,6 @@ class GuiStyleEditor(
             editor.setErrorMarkers(errorMap)
 
             val newSheet = Stylesheet.fromRules(parsed.rules)
-            // TODO: use history builder, don't spam history with each character!
             app.updateStylesheetAndText(newSheet, currentText)
             isDirty = false
         }

@@ -5,6 +5,7 @@ import java.util.*
 interface ReadOnlyHistory<T> {
     val pastItems: List<T>
     val futureItems: List<T>
+    fun last(): T?
     fun hasPastItems(): Boolean
     fun hasFutureItems(): Boolean
 }
@@ -12,6 +13,9 @@ interface ReadOnlyHistory<T> {
 class History<T> : ReadOnlyHistory<T> {
     override val pastItems = LinkedList<T>()
     override val futureItems = LinkedList<T>()
+
+    /** Returns the last past item */
+    override fun last(): T? = pastItems.last
 
     /**
      * Returns the last item and move current position back to it.

@@ -12,23 +12,27 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
  * It's also assumed that Style Editor already contains this text.
  */
 class SetStylesheet(
-    private val stylesheet: Stylesheet,
-    private val text: String,
+    private val oldStyle: Stylesheet,
+    private val oldText: String,
+    private var newStyle: Stylesheet,
+    private var newText: String,
 ) : HistoryAction("Update stylesheet", FontAwesomeIcons.FileCode) {
-    private lateinit var oldSheet: Stylesheet
-    private lateinit var oldText: String
 
     override fun invoke(app: EditorAppImpl) {
-        if (!::oldSheet.isInitialized) {
-            oldSheet = app.state.stylesheet
-            oldText = app.state.stylesheetText
-        }
-        app.state.stylesheet = stylesheet
-        app.state.stylesheetText = text
+        app.state.stylesheet = newStyle
+        app.state.stylesheetText = newText
+        app.reloadStyleEditor()
     }
 
     override fun revert(app: EditorAppImpl) {
-        app.state.stylesheet = oldSheet
+        app.state.stylesheet = oldStyle
         app.state.stylesheetText = oldText
+        app.reloadStyleEditor()
+    }
+
+    /** Combine this old action with the next consecutive action. */
+    fun update(nextAction: SetStylesheet) {
+        this.newStyle = nextAction.newStyle
+        this.newText = nextAction.newText
     }
 }

@@ -237,12 +237,26 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
 
 fun EditorApp.resetStylesheet() = historyAction(ResetStylesheet())
 
-fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) =
-    historyAction(SetStylesheet(stylesheet, text))
+/**
+ * If last action was also to update style text, then the 2 actions are
+ * combined into 1.
+ */
+fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) {
+    val action = SetStylesheet(
+        state.stylesheet, state.stylesheetText,
+        stylesheet, text,
+    )
+    val last = state.history.last()
+    if (last != null && last is SetStylesheet) {
+        last.update(action)
+    } else {
+        historyAction(action)
+    }
+}
 
 /** Replaces text in Style Editor with the current stylesheet text */
 fun EditorApp.reloadStyleEditor() = action {
-    gui.styleEditor.loadText(state.stylesheetText)
+    gui.styleEditor.loadText(state.stylesheet, state.stylesheetText)
 }
 
 
