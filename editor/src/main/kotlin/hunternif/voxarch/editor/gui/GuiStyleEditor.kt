@@ -22,8 +22,6 @@ class GuiStyleEditor(
 ) {
     private val editor = TextEditor()
 
-    /** This is only used to speed up comparison when loading text. */
-    private var currentStyle = Stylesheet()
     private var currentText: String = ""
 
     /** Whether this text input is active, i.e. has a typing cursor */
@@ -39,12 +37,9 @@ class GuiStyleEditor(
         get() = GLFW.glfwGetTime() - lastTypeTime > stopTypingDelaySecs
 
     /** Replaces text in the editor with [newText] */
-    fun loadText(newStyle: Stylesheet, newText: String) {
-        if (newStyle != currentStyle) {
-            currentStyle = newStyle
-            currentText = newText
-            editor.text = newText
-        }
+    fun loadText(newText: String) {
+        currentText = newText
+        editor.text = newText
     }
 
 

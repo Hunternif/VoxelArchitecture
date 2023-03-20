@@ -21,7 +21,7 @@ class SetStylesheet(
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         app.state.stylesheet = newStyle
         app.state.stylesheetText = newText
-        app.reloadStyleEditor()
+        if (!firstTime) app.reloadStyleEditor()
     }
 
     override fun revert(app: EditorAppImpl) {

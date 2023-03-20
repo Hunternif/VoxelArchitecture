@@ -256,7 +256,7 @@ fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) {
 
 /** Replaces text in Style Editor with the current stylesheet text */
 fun EditorApp.reloadStyleEditor() = action {
-    gui.styleEditor.loadText(state.stylesheet, state.stylesheetText)
+    gui.styleEditor.loadText(state.stylesheetText)
 }
 
 
