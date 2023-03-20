@@ -15,17 +15,28 @@ import imgui.extension.texteditor.flag.TextEditorPaletteIndex
 import imgui.extension.texteditor.flag.TextEditorPaletteIndex.*
 import imgui.flag.ImGuiFocusedFlags
 import imgui.internal.ImGui
+import org.lwjgl.glfw.GLFW
 
 class GuiStyleEditor(
     private val app: EditorApp,
 ) {
     private val editor = TextEditor()
+
     /** This is only used to speed up comparison when loading text. */
     private var currentStyle = Stylesheet()
     private var currentText: String = ""
 
+    /** Whether this text input is active, i.e. has a typing cursor */
+    private var isActive: Boolean = false
+
     private val applyTimer = Timer(0.1)
     private var isDirty: Boolean = false
+
+    // Only update stylesheet after user stopped typing for X seconds
+    private var lastTypeTime: Double = GLFW.glfwGetTime()
+    private val stopTypingDelaySecs: Double = 0.5
+    private val stoppedTyping: Boolean
+        get() = GLFW.glfwGetTime() - lastTypeTime > stopTypingDelaySecs
 
     /** Replaces text in the editor with [newText] */
     fun loadText(newStyle: Stylesheet, newText: String) {
@@ -96,17 +107,17 @@ class GuiStyleEditor(
     }
 
     fun render() {
-        app.setTextEditorActive(ImGui.isWindowFocused(ImGuiFocusedFlags.ChildWindows))
+        isActive = ImGui.isWindowFocused(ImGuiFocusedFlags.ChildWindows)
+        app.setTextEditorActive(isActive)
+
         editor.render("TextEditor")
-        if (editor.isTextChanged) isDirty = true
-        applyTimer.runAtInterval {
-            //TODO: only update after user stopped typing
-            applyStylesheet()
-        }
+
+        updateTyping()
+        applyTimer.runAtInterval { applyStylesheet() }
     }
 
     private fun applyStylesheet() {
-        if (isDirty) {
+        if (isDirty && stoppedTyping) {
             currentText = editor.text
             val totalLines = editor.totalLines
 
@@ -121,6 +132,13 @@ class GuiStyleEditor(
             val newSheet = Stylesheet.fromRules(parsed.rules)
             app.updateStylesheetAndText(newSheet, currentText)
             isDirty = false
+        }
+    }
+
+    private fun updateTyping() {
+        if (editor.isTextChanged) isDirty = true
+        if (isActive && editor.isTextChanged) {
+            lastTypeTime = GLFW.glfwGetTime()
         }
     }
 }
