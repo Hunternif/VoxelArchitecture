@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor
 
 import hunternif.voxarch.editor.actions.newProject
+import hunternif.voxarch.editor.actions.openProjectFile
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
@@ -11,9 +12,12 @@ import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryUtil
+import java.nio.file.Files
+import java.nio.file.Path
+import java.nio.file.Paths
 import java.util.*
 
-fun main() = EditorAppImpl().run()
+fun main(args: Array<String>) = EditorAppImpl().run(*args)
 
 /**
  * Central control mechanism for the app.
@@ -38,8 +42,8 @@ class EditorAppImpl : EditorApp {
     override lateinit var state: AppStateImpl
     override val logs = LinkedList<LogMessage>()
 
-    fun run() {
-        init()
+    fun run(vararg args: String) {
+        init(*args)
         while (!glfwWindowShouldClose(window)) {
             runFrame()
         }
@@ -59,7 +63,7 @@ class EditorAppImpl : EditorApp {
 
     //==================== INIT CODE =======================
 
-    fun init() {
+    fun init(vararg args: String) {
         glfwInit()
         window = createWindow(width, height, title)
         val vp = Viewport(0, 0, width, height)
@@ -69,7 +73,17 @@ class EditorAppImpl : EditorApp {
         // ImGui must be initialized after other GLFW callbacks are registered
         gui.init(window, vp, inputController, 4)
         glfwShowWindow(window)
-        newProject()
+
+        val file = parseFileArg(args)
+        file?.let { openProjectFile(it) } ?: newProject()
+    }
+
+    private fun parseFileArg(args: Array<out String>): Path? {
+        if (args.isNotEmpty()) {
+            val path = Paths.get(args[0])
+            if (Files.exists(path)) return path
+        }
+        return null
     }
 
     private fun registerWindowEventHandler() {
