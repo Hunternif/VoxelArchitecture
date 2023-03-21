@@ -78,6 +78,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         mainWindowFbo.init(viewport)
         blueprintEditor.init()
         styleEditor.init()
+        inputController.addListener(styleEditor)
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
