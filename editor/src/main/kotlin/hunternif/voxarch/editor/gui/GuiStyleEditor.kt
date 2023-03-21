@@ -195,6 +195,10 @@ class GuiStyleEditor(
 //                    println("undo $undoCount")
                     editor.undo(undoCount)
                 }
+                key == GLFW_KEY_KP_ENTER -> {
+                    // TextEditor doesn't know this key by default
+                    insertText("\n")
+                }
             }
         }
     }
@@ -205,5 +209,15 @@ class GuiStyleEditor(
             typingHistory.append(typingStreak)
             typingStreak = 0
         }
+    }
+
+    /** Insert text and also add it to history */
+    private fun insertText(text: String) {
+        // TextEditor.insertText() doesn't write to history, but paste() does.
+        val prevClipboard = ImGui.getClipboardText()
+        ImGui.setClipboardText(text)
+        editor.paste()
+        typingStreak++
+        ImGui.setClipboardText(prevClipboard)
     }
 }
