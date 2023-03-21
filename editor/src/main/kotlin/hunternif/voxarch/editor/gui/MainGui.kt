@@ -43,7 +43,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
                 leftSize = 250,
                 left = Window("Style editor"),
                 right = VerticalSplit(
-                    bottomRatio = 0.5f,
+                    bottomSize = 350,
                     top = WindowGroup(
                         Window("###scene_window"),
                     ),
