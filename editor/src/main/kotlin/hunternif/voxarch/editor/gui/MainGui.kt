@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.Texture
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.scene.InputController
 import hunternif.voxarch.editor.util.LogMessage
 import imgui.ImGui
 import imgui.ImGuiWindowClass
@@ -65,7 +66,12 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ),
     ))
 
-    fun init(windowHandle: Long, viewport: Viewport, samplesMSAA: Int = 0) {
+    fun init(
+        windowHandle: Long,
+        viewport: Viewport,
+        inputController: InputController,
+        samplesMSAA: Int = 0,
+    ) {
         super.init(windowHandle)
         vp.set(viewport)
         if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA(samplesMSAA)

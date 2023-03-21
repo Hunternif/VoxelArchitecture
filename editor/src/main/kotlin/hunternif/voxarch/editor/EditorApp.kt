@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.actions.newProject
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.scene.InputController
 import hunternif.voxarch.editor.util.LogMessage
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
@@ -30,6 +31,7 @@ class EditorAppImpl : EditorApp {
     private var window: Long = 0
     private var width: Int = 1280
     private var height: Int = 720
+    private val inputController = InputController(this)
     internal val gui = MainGui(this)
     val scene = MainScene(this)
 
@@ -62,9 +64,10 @@ class EditorAppImpl : EditorApp {
         window = createWindow(width, height, title)
         val vp = Viewport(0, 0, width, height)
         registerWindowEventHandler()
-        scene.init(window, vp)
+        inputController.init(window)
+        scene.init(window, vp, inputController)
         // ImGui must be initialized after other GLFW callbacks are registered
-        gui.init(window, vp, 4)
+        gui.init(window, vp, inputController, 4)
         glfwShowWindow(window)
         newProject()
     }

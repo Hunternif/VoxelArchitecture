@@ -24,7 +24,6 @@ class MainScene(private val app: EditorApp) {
     private val vp = Viewport(0, 0, 0, 0)
 
     // core controllers
-    private val inputController = InputController(app)
     private val keyController = KeyController(app)
     private val camera = OrbitalCamera()
     /** For drawing the gizmo model in overlay */
@@ -76,7 +75,7 @@ class MainScene(private val app: EditorApp) {
     private var cursorResizeVer = 0L
 
 
-    fun init(window: Long, viewport: Viewport) {
+    fun init(window: Long, viewport: Viewport, inputController: InputController) {
         this.window = window
         cursorResizeHor = glfwCreateStandardCursor(GLFW_HRESIZE_CURSOR)
         cursorResizeVer = glfwCreateStandardCursor(GLFW_VRESIZE_CURSOR)
@@ -86,7 +85,6 @@ class MainScene(private val app: EditorApp) {
         gizmoModel.init()
         hitTester.init()
         inputController.run {
-            init(window)
             addListener(keyController)
             addListener(camera)
             addListener(gizmoCamera)
