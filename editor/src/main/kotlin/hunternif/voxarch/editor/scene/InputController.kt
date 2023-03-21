@@ -11,6 +11,7 @@ interface MouseListener {
 
 interface KeyListener {
     fun onKeyPress(key: Int, action: Int, mods: Int) {}
+    fun onCharInput(char: Char) {}
 }
 
 class InputController(private val app: EditorApp) {
@@ -22,6 +23,7 @@ class InputController(private val app: EditorApp) {
         glfwSetMouseButtonCallback(window, ::onMouseButton)
         glfwSetScrollCallback(window, ::onScroll)
         glfwSetKeyCallback(window, ::onKeyPress)
+        glfwSetCharCallback(window, ::onCharInput)
     }
 
     fun addListener(listener: MouseListener) {
@@ -56,5 +58,11 @@ class InputController(private val app: EditorApp) {
     private fun onKeyPress(window: Long, key: Int, scancode: Int, action: Int, mods: Int) {
         for (listener in keyListeners)
             listener.onKeyPress(key, action, mods)
+    }
+
+    @Suppress("UNUSED_PARAMETER")
+    private fun onCharInput(window: Long, code: Int) {
+        for (listener in keyListeners)
+            listener.onCharInput(code.toChar())
     }
 }
