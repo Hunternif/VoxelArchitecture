@@ -111,24 +111,32 @@ class GuiBlueprintEditor(
             ImNodes.beginNode(node.id)
 
             ImNodes.beginNodeTitleBar()
+            // render default input on the same line as title
+            node.inputs.firstOrNull()?.let {
+                if (it.name == "in") {
+                    renderInputPin(it, false)
+                    ImGui.sameLine()
+                }
+            }
             ImGui.text(node.name)
+            // render default output on the same line as title
+            node.outputs.firstOrNull()?.let {
+                if (it.name == "out") {
+                    ImGui.sameLine()
+                    renderOutputPin(it, 0f, false)
+                }
+            }
             ImNodes.endNodeTitleBar()
 
-            node.inputs.forEach {
-                pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
-                ImNodes.beginInputAttribute(it.id, ImNodesPinShape.CircleFilled)
-                text(it.name)
-                ImNodes.endInputAttribute()
-                ImNodes.popColorStyle()
+            for (slot in node.inputs) {
+                if (slot.name == "in") continue
+                renderInputPin(slot)
             }
             renderEnabledStyleList(node)
             val width = ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f
-            node.outputs.forEach {
-                pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(it))
-                ImNodes.beginOutputAttribute(it.id, ImNodesPinShape.CircleFilled)
-                text(it.name, Align.RIGHT, width)
-                ImNodes.endOutputAttribute()
-                ImNodes.popColorStyle()
+            for (slot in node.outputs) {
+                if (slot.name == "out") continue
+                renderOutputPin(slot, width)
             }
             ImNodes.endNode()
 
@@ -146,6 +154,23 @@ class GuiBlueprintEditor(
 
         ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
         ImNodes.endNodeEditor()
+    }
+
+    private fun renderInputPin(slot: BlueprintSlot.In, named: Boolean = true) {
+        pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(slot))
+        ImNodes.beginInputAttribute(slot.id, ImNodesPinShape.CircleFilled)
+        if (named) text(slot.name) else ImGui.text("")
+        ImNodes.endInputAttribute()
+        ImNodes.popColorStyle()
+    }
+
+    private fun renderOutputPin(
+        slot: BlueprintSlot.Out, width: Float, named: Boolean = true) {
+        pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(slot))
+        ImNodes.beginOutputAttribute(slot.id, ImNodesPinShape.CircleFilled)
+        if (named) text(slot.name, Align.RIGHT, width) else ImGui.text("")
+        ImNodes.endOutputAttribute()
+        ImNodes.popColorStyle()
     }
 
     private fun renderEnabledStyleList(node: BlueprintNode) {
