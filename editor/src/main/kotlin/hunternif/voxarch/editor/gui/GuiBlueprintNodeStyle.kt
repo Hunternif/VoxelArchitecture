@@ -14,11 +14,13 @@ class GuiBlueprintNodeStyle(
     private val rule = node.rule
 
     @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
-    val items: List<Item<*>> = editorStyleProperties.mapNotNull { p ->
-        when (p.default) {
-            is Number -> ItemNumber(rule, p as Property<Number>)
-            is Enum<*> -> ItemEnum(rule, p as Property<Enum<*>>)
-            else -> null
+    val items: List<Item<*>> by lazy {
+        editorStyleProperties.mapNotNull { p ->
+            when (p.default) {
+                is Number -> ItemNumber(rule, p as Property<Number>)
+                is Enum<*> -> ItemEnum(rule, p as Property<Enum<*>>)
+                else -> null
+            }
         }
     }
 

@@ -29,6 +29,7 @@ class GuiBlueprintEditor(
     private val clickPos = ImVec2()
     private var isEditorHovered = false
     private var isEditorFocused = false
+
     /** A newly created node will be linked to this slot */
     private var lastOutSlot: BlueprintSlot.Out? = null
 
@@ -37,7 +38,7 @@ class GuiBlueprintEditor(
     private val SLOT_B = ImInt()
 
     private val titleInput = GuiInputText("title")
-    private val styleMap = mutableMapOf<BlueprintNode, GuiBlueprintNodeStyle>()
+    private val contentMap = mutableMapOf<BlueprintNode, GuiBpEditorNodeContent>()
 
     private val padding = ImVec2(8f, 5f)
 
@@ -66,7 +67,7 @@ class GuiBlueprintEditor(
                     text("Start node")
                 } else {
                     menu("Style...") {
-                        targetNode?.let { renderStyleMenu(it) }
+                        targetNode?.guiContent?.renderStyleMenu()
                     }
                     menuItem("Delete node") {
                         targetNode?.let { app.deleteBlueprintNode(it) }
@@ -110,6 +111,7 @@ class GuiBlueprintEditor(
         nodes.forEach { node ->
             ImNodes.beginNode(node.id)
 
+            //============================ Header =============================
             ImNodes.beginNodeTitleBar()
             // render default input on the same line as title
             node.inputs.firstOrNull()?.let {
@@ -128,11 +130,16 @@ class GuiBlueprintEditor(
             }
             ImNodes.endNodeTitleBar()
 
+            //========================= Extra inputs ==========================
             for (slot in node.inputs) {
                 if (slot.name == "in") continue
                 renderInputPin(slot)
             }
-            renderEnabledStyleList(node)
+
+            //============================= Body ==============================
+            node.guiContent.render()
+
+            //========================= Extra outputs =========================
             val width = ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f
             for (slot in node.outputs) {
                 if (slot.name == "out") continue
@@ -171,23 +178,6 @@ class GuiBlueprintEditor(
         if (named) text(slot.name, Align.RIGHT, width) else ImGui.text("")
         ImNodes.endOutputAttribute()
         ImNodes.popColorStyle()
-    }
-
-    private fun renderEnabledStyleList(node: BlueprintNode) {
-        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle(node) }
-        style.items.forEach { item ->
-            if (item.enabled) {
-                ImGui.bulletText(item.stringRepr)
-            }
-        }
-    }
-
-    private fun renderStyleMenu(node: BlueprintNode) {
-        val style = styleMap.getOrPut(node) { GuiBlueprintNodeStyle(node) }
-        ImGui.pushItemWidth(150f)
-        text("Style Rules")
-        ImGui.separator()
-        style.items.forEach { it.render() }
     }
 
     private fun pinColor(slot: BlueprintSlot) =
@@ -274,4 +264,7 @@ class GuiBlueprintEditor(
             // place node higher so that cursor lands on the input slot
             pos.x, pos.y - 35f, lastOutSlot)
     }
+
+    private val BlueprintNode.guiContent: GuiBpEditorNodeContent
+        get() = contentMap.getOrPut(this) { GuiBpEditorNodeContent(this) }
 }
