@@ -61,12 +61,17 @@ class GuiBlueprintEditor(
                 val targetNode = nodeIDs.map[hoveredNodeID]
                 if (targetNode == start) {
                     text("Start node")
-                } else {
+                } else if (targetNode != null) {
+                    val gui = targetNode.guiContent
                     menu("Style...") {
-                        targetNode?.guiContent?.renderStyleMenu()
+                        gui.renderStyleMenu()
+                    }
+                    ImGui.separator()
+                    menuCheck("Show class names", gui.showStyleClass) {
+                        gui.showStyleClass = !gui.showStyleClass
                     }
                     menuItem("Delete node") {
-                        targetNode?.let { app.deleteBlueprintNode(it) }
+                        app.deleteBlueprintNode(targetNode)
                         ImGui.closeCurrentPopup()
                     }
                 }

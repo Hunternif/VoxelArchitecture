@@ -20,7 +20,9 @@ class GuiBpEditorNodeContent(
     val padding: ImVec2,
 ) {
     private val styleMenu = GuiBlueprintNodeStyle(node)
-    private val styleClassInput = GuiInputText("##${node.id}_classname", "class name")
+    private val styleClassInput = GuiInputText("##${node.id}_classname", "class names")
+
+    var showStyleClass: Boolean = node.extraStyleClass.isNotEmpty()
 
     fun render() {
         val width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
@@ -51,7 +53,7 @@ class GuiBpEditorNodeContent(
         }
 
         //============================= Body ==============================
-        if (node.name != "Start") {
+        if (showStyleClass) {
             ImGui.pushItemWidth(width)
             ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
             styleClassInput.render(node.extraStyleClass) {
