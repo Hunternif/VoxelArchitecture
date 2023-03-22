@@ -2,21 +2,34 @@ package hunternif.voxarch.editor.gui
 
 import imgui.ImGui
 import imgui.type.ImString
+import org.lwjgl.glfw.GLFW
 
 class GuiInputText(
     val label: String,
     val hint: String? = null,
 ) {
     /** Data storage that ImGui understands */
-    @PublishedApi
-    internal val data = ImString()
+    @PublishedApi internal val data = ImString()
+
+    @PublishedApi internal var isDirty = false
+
+    // Only call update after user stopped typing for X seconds
+    @PublishedApi internal var lastTypeTime: Double = GLFW.glfwGetTime()
+    @PublishedApi internal val stopTypingDelaySecs: Double = 0.5
+    @PublishedApi internal val stoppedTyping: Boolean
+        get() = GLFW.glfwGetTime() - lastTypeTime > stopTypingDelaySecs
 
     inline fun render(
         initialValue: String,
         crossinline onUpdate: (newValue: String) -> Unit = {}
     ) {
-        data.set(initialValue)
+        if (!isDirty) data.set(initialValue)
         if (renderText()) {
+            lastTypeTime = GLFW.glfwGetTime()
+            isDirty = true
+        }
+        if (stoppedTyping && isDirty) {
+            isDirty = false
             onUpdate(data.get())
         }
     }
