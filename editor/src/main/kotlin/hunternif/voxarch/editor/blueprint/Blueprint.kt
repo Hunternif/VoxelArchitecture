@@ -39,7 +39,7 @@ class Blueprint(
         val node = BlueprintNode(id, name, this, domBuilder, x, y)
         nodeIDs.save(node)
         nodes.add(node)
-        domBuilder.addStyle(node.styleClass)
+        domBuilder.addStyle(node.autoStyleClass)
         internalStylesheet.addRule(node.rule)
         return node
     }
@@ -91,8 +91,9 @@ class BlueprintNode(
     var x: Float = 0f,
     var y: Float = 0f,
 ) : WithID {
-    val styleClass = "${name}_${id}"
-    val rule: Rule = Rule(select(styleClass))
+    val autoStyleClass = "${name}_${id}"
+    var extraStyleClass = ""
+    val rule: Rule = Rule(select(autoStyleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
 

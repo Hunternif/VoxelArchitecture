@@ -36,7 +36,7 @@ class GuiBlueprintEditor(
     private val titleInput = GuiInputText("title")
     private val contentMap = mutableMapOf<BlueprintNode, GuiBpEditorNodeContent>()
 
-    private val padding = ImVec2(8f, 5f)
+    private val padding = ImVec2(8f, 6f)
 
     fun init() {
         ImNodes.createContext()

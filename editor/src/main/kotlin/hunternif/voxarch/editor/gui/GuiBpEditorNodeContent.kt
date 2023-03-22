@@ -9,14 +9,19 @@ import imgui.ImVec2
 import imgui.extension.imnodes.ImNodes
 import imgui.extension.imnodes.flag.ImNodesColorStyle
 import imgui.extension.imnodes.flag.ImNodesPinShape
+import imgui.flag.ImGuiStyleVar
+import kotlin.math.max
 
 class GuiBpEditorNodeContent(
     val node: BlueprintNode,
     val padding: ImVec2,
 ) {
     private val styleMenu = GuiBlueprintNodeStyle(node)
+    private val styleClassInput = GuiInputText("##${node.id}_classname", "class name")
 
     fun render() {
+        val width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
+
         //============================ Header =============================
         ImNodes.beginNodeTitleBar()
         // render default input on the same line as title
@@ -43,6 +48,13 @@ class GuiBpEditorNodeContent(
         }
 
         //============================= Body ==============================
+        if (node.name != "Start") {
+            ImGui.pushItemWidth(width)
+            ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
+            styleClassInput.render(node.extraStyleClass)
+            ImGui.popStyleVar()
+            ImGui.popItemWidth()
+        }
         styleMenu.items.forEach { item ->
             if (item.enabled) {
                 ImGui.bulletText(item.stringRepr)
@@ -50,7 +62,6 @@ class GuiBpEditorNodeContent(
         }
 
         //========================= Extra outputs =========================
-        val width = ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f
         for (slot in node.outputs) {
             if (slot.name == "out") continue
             renderOutputPin(slot, width)
