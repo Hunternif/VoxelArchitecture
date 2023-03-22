@@ -63,3 +63,8 @@ fun EditorApp.deleteBlueprintParts(
     nodes: Collection<BlueprintNode>,
     links: Collection<BlueprintLink>,
 ) = historyAction(BlueprintDeleteParts(nodes, links))
+
+fun EditorApp.updateBlueprintNode(
+    node: BlueprintNode,
+    styleClass: String,
+) = historyAction(BlueprintUpdateNode(node, styleClass))

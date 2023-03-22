@@ -205,6 +205,6 @@ class GuiBlueprintEditor(
 
     private val BlueprintNode.guiContent: GuiBpEditorNodeContent
         get() = contentMap.getOrPut(this) {
-            GuiBpEditorNodeContent(this, padding)
+            GuiBpEditorNodeContent(app, this, padding)
         }
 }

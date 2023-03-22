@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.updateBlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -13,6 +15,7 @@ import imgui.flag.ImGuiStyleVar
 import kotlin.math.max
 
 class GuiBpEditorNodeContent(
+    val app: EditorApp,
     val node: BlueprintNode,
     val padding: ImVec2,
 ) {
@@ -51,7 +54,9 @@ class GuiBpEditorNodeContent(
         if (node.name != "Start") {
             ImGui.pushItemWidth(width)
             ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
-            styleClassInput.render(node.extraStyleClass)
+            styleClassInput.render(node.extraStyleClass) {
+                app.updateBlueprintNode(node, it)
+            }
             ImGui.popStyleVar()
             ImGui.popItemWidth()
         }
