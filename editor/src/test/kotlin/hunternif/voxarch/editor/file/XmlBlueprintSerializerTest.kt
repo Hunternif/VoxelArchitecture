@@ -17,6 +17,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
         val bp = app.state.registry.newBlueprint("Test blueprint")
         val node1 = app.newBlueprintNode(bp, "Extend", 100f, 20f)!!
         val node2 = app.newBlueprintNode(bp, "Room", 200f, 30f)!!
+        node2.extraStyleClass = "my_room"
         node2.rule.add(PropWidth, 10.vx.toDouble())
         app.linkBlueprintSlots(bp.start.outputs[0], node1.inputs[0])
         app.linkBlueprintSlots(node1.outputs.first { it.name == "east" }, node2.inputs[0])
@@ -35,11 +36,13 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
         assertEquals(9, bp.slotIDs.map.size)
         assertEquals(2, bp.links.size)
         assertEquals(2, bp.linkIDs.map.size)
+        val node2 = bp.nodes.toList()[2]
+        assertEquals("my_room", node2.extraStyleClass)
         assertEquals("""
             .Room_2 {
               width: 10
             }
-        """.trimIndent(), bp.nodes.toList()[2].rule.toString())
+        """.trimIndent(), node2.rule.toString())
 
         val reserialized = serializeToXmlStr(bp, true)
         assertEquals(exampleBpXml, reserialized.fixCRLF())
@@ -48,10 +51,12 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
     private val exampleBpXml = """
         <blueprint id="23" name="Test blueprint">
           <node id="0" name="Start" x="100.0" y="100.0">
+            <styleClass></styleClass>
             <style></style>
             <outSlot id="0" name="node"/>
           </node>
           <node id="1" name="Extend" x="100.0" y="20.0">
+            <styleClass></styleClass>
             <style></style>
             <inSlot id="1" name="in"/>
             <outSlot id="2" name="out"/>
@@ -61,6 +66,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
             <outSlot id="6" name="west"/>
           </node>
           <node id="2" name="Room" x="200.0" y="30.0">
+            <styleClass>my_room</styleClass>
             <style>
         .Room_2 {
           width: 10

@@ -47,6 +47,9 @@ class XmlBlueprintNode(
     var y: Float = -1f,
 
     @field:JacksonXmlProperty
+    var styleClass: String = "",
+
+    @field:JacksonXmlProperty
     var style: String = "",
 )
 
@@ -86,6 +89,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             n.inputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.outputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.x, n.y,
+            n.extraStyleClass,
             if (n.rule.isEmpty()) "" else "\n${n.rule}\n",
         )
     }
@@ -111,6 +115,7 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             bpNode.outputs.add(slot)
             bp.slotIDs.save(slot)
         }
+        bpNode.extraStyleClass = n.styleClass
         val rule = parseStylesheet(n.style).rules.firstOrNull()
         rule?.declarations?.forEach { bpNode.rule.add(it) }
     }

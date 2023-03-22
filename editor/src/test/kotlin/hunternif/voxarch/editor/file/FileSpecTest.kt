@@ -113,11 +113,11 @@ class FileSpecTest : BaseAppTest() {
                     zipfsRef.getPath("/voxels/group_6.vox"),
                     zipfsTest.getPath("/voxels/group_6.vox")
                 )
-                assertFilesEqual(
+                assertTextFilesEqual(
                     zipfsRef.getPath("/blueprints/blueprint_0.xml"),
                     zipfsTest.getPath("/blueprints/blueprint_0.xml")
                 )
-                assertFilesEqual(
+                assertTextFilesEqual(
                     zipfsRef.getPath("/blueprints/blueprint_1.xml"),
                     zipfsTest.getPath("/blueprints/blueprint_1.xml")
                 )
