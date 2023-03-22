@@ -5,14 +5,10 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
-import hunternif.voxarch.editor.util.ColorRGBa
-import imgui.ImColor
 import imgui.ImGui
 import imgui.ImVec2
 import imgui.extension.imnodes.ImNodes
-import imgui.extension.imnodes.flag.ImNodesColorStyle
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
-import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiMouseButton
 import imgui.flag.ImGuiStyleVar
 import imgui.type.ImInt
@@ -110,41 +106,7 @@ class GuiBlueprintEditor(
 
         nodes.forEach { node ->
             ImNodes.beginNode(node.id)
-
-            //============================ Header =============================
-            ImNodes.beginNodeTitleBar()
-            // render default input on the same line as title
-            node.inputs.firstOrNull()?.let {
-                if (it.name == "in") {
-                    renderInputPin(it, false)
-                    ImGui.sameLine()
-                }
-            }
-            ImGui.text(node.name)
-            // render default output on the same line as title
-            node.outputs.firstOrNull()?.let {
-                if (it.name == "out") {
-                    ImGui.sameLine()
-                    renderOutputPin(it, 0f, false)
-                }
-            }
-            ImNodes.endNodeTitleBar()
-
-            //========================= Extra inputs ==========================
-            for (slot in node.inputs) {
-                if (slot.name == "in") continue
-                renderInputPin(slot)
-            }
-
-            //============================= Body ==============================
             node.guiContent.render()
-
-            //========================= Extra outputs =========================
-            val width = ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f
-            for (slot in node.outputs) {
-                if (slot.name == "out") continue
-                renderOutputPin(slot, width)
-            }
             ImNodes.endNode()
 
             node.x = ImNodes.getNodeGridSpacePosX(node.id)
@@ -161,30 +123,6 @@ class GuiBlueprintEditor(
 
         ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
         ImNodes.endNodeEditor()
-    }
-
-    private fun renderInputPin(slot: BlueprintSlot.In, named: Boolean = true) {
-        pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(slot))
-        ImNodes.beginInputAttribute(slot.id, ImNodesPinShape.CircleFilled)
-        if (named) text(slot.name) else ImGui.text("")
-        ImNodes.endInputAttribute()
-        ImNodes.popColorStyle()
-    }
-
-    private fun renderOutputPin(
-        slot: BlueprintSlot.Out, width: Float, named: Boolean = true) {
-        pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(slot))
-        ImNodes.beginOutputAttribute(slot.id, ImNodesPinShape.CircleFilled)
-        if (named) text(slot.name, Align.RIGHT, width) else ImGui.text("")
-        ImNodes.endOutputAttribute()
-        ImNodes.popColorStyle()
-    }
-
-    private fun pinColor(slot: BlueprintSlot) =
-        if (slot.links.isEmpty()) Colors.emptySlot else Colors.filledSlot
-
-    private fun pushNodesColorStyle(imGuiCol: Int, color: ColorRGBa) {
-        color.run { ImNodes.pushColorStyle(imGuiCol, ImColor.floatToColor(r, g, b, a)) }
     }
 
     /** Implements a workaround to find this value from the start node
@@ -266,5 +204,7 @@ class GuiBlueprintEditor(
     }
 
     private val BlueprintNode.guiContent: GuiBpEditorNodeContent
-        get() = contentMap.getOrPut(this) { GuiBpEditorNodeContent(this) }
+        get() = contentMap.getOrPut(this) {
+            GuiBpEditorNodeContent(this, padding)
+        }
 }
