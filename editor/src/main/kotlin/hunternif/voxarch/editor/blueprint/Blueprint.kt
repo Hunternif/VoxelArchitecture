@@ -92,10 +92,22 @@ class BlueprintNode(
     var y: Float = 0f,
 ) : WithID {
     val autoStyleClass = "${name}_${id}"
-    var extraStyleClass = ""
     val rule: Rule = Rule(select(autoStyleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
+
+    private val extraClassList = linkedSetOf<String>()
+    var extraStyleClass = ""
+        set(value) {
+            field = value
+            domBuilder.styleClass.removeAll(extraClassList)
+            extraClassList.apply {
+                clear()
+                addAll(value.split(' '))
+                remove("")
+            }
+            domBuilder.styleClass.addAll(extraClassList)
+        }
 
     internal fun addInput(name: String): BlueprintSlot.In {
         val id = bp.slotIDs.newID()
