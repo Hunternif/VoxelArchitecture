@@ -54,7 +54,6 @@ class GuiStyleEditor(
     fun loadText(newText: String) {
         currentText = newText
         editor.text = newText
-//        println("updated text")
         typingHistory.clear()
         typingHistory.append(0)
     }
@@ -168,7 +167,6 @@ class GuiStyleEditor(
             // (the numpad 'Enter' key doesn't count as 'text changed')
             if (openBrace && (lastKey == GLFW_KEY_ENTER || lastKey == GLFW_KEY_KP_ENTER)) {
                 openBrace = false
-                editor.currentLineText
                 insertText("  \n}")
                 editor.moveUp(1, false)
                 editor.moveEnd(false)
@@ -191,7 +189,6 @@ class GuiStyleEditor(
                 isUndoing = true
                 // redo n steps, because TextEditor doesn't know Ctrl + Shift + Z
                 val redoCount = typingHistory.moveForward() ?: 0
-//                println("redo $redoCount")
                 editor.redo(redoCount)
             }
             ctrl && key == GLFW_KEY_Y -> {
@@ -199,7 +196,6 @@ class GuiStyleEditor(
                 isUndoing = true
                 // redo (n - 1) steps, because 1 was already redone
                 val redoCount = typingHistory.moveForward()?.minus(1) ?: 0
-//                println("redo $redoCount")
                 editor.redo(redoCount)
             }
             ctrl && key == GLFW_KEY_Z -> {
@@ -207,7 +203,6 @@ class GuiStyleEditor(
                 isUndoing = true
                 // undo (n - 1) steps, because 1 was already undone
                 val undoCount = typingHistory.moveBack()?.minus(1) ?: 0
-//                println("undo $undoCount")
                 editor.undo(undoCount)
             }
             key == GLFW_KEY_KP_ENTER -> {
@@ -225,7 +220,6 @@ class GuiStyleEditor(
 
     private fun commitTypingStreak() {
         if (typingStreak > 0) {
-//            println("committed $typingStreak steps")
             typingHistory.append(typingStreak)
             typingStreak = 0
         }
