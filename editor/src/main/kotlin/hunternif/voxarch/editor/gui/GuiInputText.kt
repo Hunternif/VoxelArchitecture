@@ -28,7 +28,7 @@ class GuiInputText(
             lastTypeTime = GLFW.glfwGetTime()
             isDirty = true
         }
-        if (stoppedTyping && isDirty) {
+        if (isDirty && (stoppedTyping || !ImGui.isItemActive())) {
             isDirty = false
             onUpdate(data.get())
         }
