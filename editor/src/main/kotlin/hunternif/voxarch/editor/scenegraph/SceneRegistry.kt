@@ -62,7 +62,10 @@ class SceneRegistry {
 
     fun newBlueprint(name: String): Blueprint {
         val id = blueprintIDs.newID()
-        val blueprint = Blueprint(id, name)
+        // In case of duplicates, change "Untitled" to "Untitled 2"
+        val count = blueprintIDs.map.values.count { it.name == name }
+        val newName = if (count > 0) "$name ${count + 1}" else name
+        val blueprint = Blueprint(id, newName)
         blueprintIDs.save(blueprint)
         return blueprint
     }
