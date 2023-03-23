@@ -248,6 +248,7 @@ fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) {
     )
     val last = state.history.last()
     if (last != null && last is SetStylesheet) {
+        action.invoke(this as EditorAppImpl, true)
         last.update(action)
     } else {
         historyAction(action)
