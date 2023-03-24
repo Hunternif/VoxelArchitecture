@@ -28,6 +28,7 @@ interface AppState {
     val projectPath: Path?
     val lastSavedAction: HistoryAction?
     val stylesheetText: String
+    val blueprints: Collection<Blueprint>
 
     //=============================== VOXELS ================================
 
@@ -101,6 +102,7 @@ class AppStateImpl(
     override var projectPath: Path? = null
     override var lastSavedAction: HistoryAction? = null
     override var stylesheetText: String = ""
+    override val blueprints get() = registry.blueprintIDs.map.values
 
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {

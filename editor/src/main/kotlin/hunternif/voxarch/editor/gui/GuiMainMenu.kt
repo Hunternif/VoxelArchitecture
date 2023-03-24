@@ -56,6 +56,9 @@ fun MainGui.mainMenu() {
             menuCheck("Style Editor", showStyleEditor.get()) {
                 showStyleEditor.toggle()
             }
+            menuCheck("Blueprint Library", showBlueprintLibrary.get()) {
+                showBlueprintLibrary.toggle()
+            }
             menuCheck("Blueprint Editor", showBlueprintEditor.get()) {
                 showBlueprintEditor.toggle()
             }

@@ -23,11 +23,13 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
+    @PublishedApi internal val blueprintLibrary = GuiBlueprintLibrary(app, this)
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
     @PublishedApi internal val styleEditor = GuiStyleEditor(app)
     @PublishedApi internal val statusBar = GuiStatusBar(app)
 
     @PublishedApi internal val showStyleEditor = ImBoolean(true)
+    @PublishedApi internal val showBlueprintLibrary = ImBoolean(true)
     @PublishedApi internal val showBlueprintEditor = ImBoolean(true)
     @PublishedApi internal val showNodeTree = ImBoolean(true)
     @PublishedApi internal val showVoxelTree = ImBoolean(true)
@@ -41,7 +43,11 @@ class MainGui(val app: EditorApp) : GuiBase() {
             bottomSize = 100,
             top = HorizontalSplit(
                 leftSize = 250,
-                left = Window("Style editor"),
+                left = VerticalSplit(
+                    bottomRatio = 0.3f,
+                    top = Window("Style editor"),
+                    bottom = Window("Blueprint library"),
+                ),
                 right = VerticalSplit(
                     bottomSize = 350,
                     top = WindowGroup(
@@ -88,6 +94,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
         dockspace(layout, statusBar.height)
         panel("Style editor", showStyleEditor) {
             styleEditor.render()
+        }
+        panel("Blueprint library", showBlueprintLibrary) {
+            blueprintLibrary.render()
         }
         sceneWindow { vp ->
             renderMainWindow(vp)
