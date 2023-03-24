@@ -39,6 +39,14 @@ class GuiBlueprintLibrary(
                 if (ImGui.selectable(name, selected, flags)) {
                     app.selectBlueprint(bp)
                 }
+                contextMenu(memoStrWithIndex("bp_lib_context_menu", i)) {
+                    menuItem("Open") {
+                        app.selectBlueprint(bp)
+                    }
+                    menuItem("Delete") {
+                        // TODO: delete blueprint
+                    }
+                }
             }
             ImGui.endTable()
         }

@@ -172,6 +172,15 @@ abstract class GuiSceneTree(
             }
         }
 
+        contextMenu(memoStrWithIndex("node_tree_context_menu", i)) {
+            menuItem("Select") {
+                onShiftClick(node)
+            }
+            menuItem("Delete") {
+                app.deleteObjects(listOf(node))
+            }
+        }
+
         if (open && node.children.isNotEmpty()) {
             node.children.forEach {
                 addTreeNodeRecursive(it, depth + 1,

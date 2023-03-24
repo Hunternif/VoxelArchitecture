@@ -9,6 +9,22 @@ import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
 import imgui.internal.flag.ImGuiDockNodeFlags
 
+inline fun contextMenu(
+    name: String = "",
+    padding: Float = 8f,
+    crossinline content: () -> Unit,
+) {
+    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, padding, padding)
+    ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 4f)
+    ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 4f, 2f)
+    ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 8f, 4f)
+    if (ImGui.beginPopupContextItem(name)) {
+        content()
+        ImGui.endPopup()
+    }
+    ImGui.popStyleVar(4)
+}
+
 inline fun popup(
     name: String,
     padding: Float = 10f,
