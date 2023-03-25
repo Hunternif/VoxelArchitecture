@@ -5,12 +5,21 @@ import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
 
 
-fun EditorApp.newBlueprint(node: SceneNode) = action {
-    addBlueprint(node, state.registry.newBlueprint("Untitled"), true)
+fun EditorApp.newBlueprint(): Blueprint {
+    val action = NewBlueprint()
+    historyAction(action)
+    return action.bp
+}
+
+fun EditorApp.addNewBlueprint(node: SceneNode): Blueprint {
+    val action = NewBlueprint(autoSelect = false)
+    action { action.invoke(this) }
+    addBlueprint(node, action.bp, true)
+    return action.bp
 }
 
 fun EditorApp.addBlueprint(
-    node: SceneNode, blueprint: Blueprint, autoSelect: Boolean = false
+    node: SceneNode, blueprint: Blueprint, autoSelect: Boolean = true
 ) = historyAction(AddBlueprint(node, blueprint, autoSelect))
 
 /** Removes Blueprint from the node, but keeps it in the library. */

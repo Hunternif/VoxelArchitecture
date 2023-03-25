@@ -79,9 +79,8 @@ class FileSpecTest : BaseAppTest() {
         app.hideObject(node2)
         app.selectAll()
 
-        app.newBlueprint(app.state.rootNode)
-        app.newBlueprint(node2)
-        val bp = node2.blueprints[0]
+        app.addNewBlueprint(app.state.rootNode)
+        val bp = app.addNewBlueprint(node2)
         app.newBlueprintNode(bp, "Floor", 120f, 14f)
 
         val refPath = resourcePath("project/2_rooms.voxarch")

@@ -20,10 +20,8 @@ class DeleteBlueprintTest : BaseAppTest() {
     fun setup() {
         node1 = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         node2 = app.createNode(Vector3i(1, 0, 0), Vector3i(2, 1, 1))
-        app.newBlueprint(node1)
-        app.newBlueprint(node1)
-        bp1 = node1.blueprints[0]
-        bp2 = node1.blueprints[1]
+        bp1 = app.addNewBlueprint(node1)
+        bp2 = app.addNewBlueprint(node1)
         app.addBlueprint(node2, bp1)
         reg = app.state.registry
     }

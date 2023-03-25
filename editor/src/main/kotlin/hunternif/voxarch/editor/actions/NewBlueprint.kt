@@ -3,27 +3,28 @@ package hunternif.voxarch.editor.actions
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
-import hunternif.voxarch.editor.scenegraph.SceneNode
 
-class AddBlueprint(
-    private val node: SceneNode,
-    private val bp: Blueprint,
+class NewBlueprint(
+    private val name: String = "Untitled",
     private val autoSelect: Boolean = true,
-) : HistoryAction("Add blueprint", FontAwesomeIcons.PlusSquare) {
+) : HistoryAction("New blueprint", FontAwesomeIcons.Landmark) {
+    lateinit var bp: Blueprint
     private var oldSelected: Blueprint? = null
     private var newSelected: Blueprint? = null
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        oldSelected = app.state.selectedBlueprint
-        newSelected = if (autoSelect) bp else oldSelected
-        node.addBlueprint(bp)
-        app.state.registry.bpInNodes.put(bp, node)
+        if (!::bp.isInitialized) {
+            bp = app.state.registry.newBlueprint(name)
+            oldSelected = app.state.selectedBlueprint
+            newSelected = if (autoSelect) bp else oldSelected
+        }
+        app.state.registry.blueprintIDs.save(bp)
         if (autoSelect) OpenBlueprint(newSelected).invoke(app)
     }
 
     override fun revert(app: EditorAppImpl) {
-        node.removeBlueprint(bp)
-        app.state.registry.bpInNodes.remove(bp, node)
+        app.state.selectedBlueprint = oldSelected
+        app.state.registry.blueprintIDs.remove(bp)
         OpenBlueprint(oldSelected).invoke(app)
     }
 }

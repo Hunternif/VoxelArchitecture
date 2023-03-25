@@ -14,8 +14,7 @@ class GuiBlueprintLibrary(
 ) {
     fun render() {
         button("New blueprint...") {
-            //TODO: new blueprint without node
-//            app.newBlueprint(sceneNode)
+            app.newBlueprint()
         }
         ImGui.separator()
 

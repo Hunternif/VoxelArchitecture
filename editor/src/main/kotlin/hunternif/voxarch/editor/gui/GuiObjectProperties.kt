@@ -79,7 +79,7 @@ class GuiObjectProperties(
         ImGui.separator()
         ImGui.text("Blueprints")
         button("New blueprint...") {
-            app.newBlueprint(sceneNode)
+            app.addNewBlueprint(sceneNode)
         }
         renderBlueprintTable(sceneNode)
     }
