@@ -1,12 +1,12 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.newBlueprint
-import hunternif.voxarch.editor.actions.selectBlueprint
+import hunternif.voxarch.editor.actions.*
 import imgui.ImGui
 import imgui.flag.ImGuiSelectableFlags
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
+import org.lwjgl.glfw.GLFW
 
 class GuiBlueprintLibrary(
     private val app: EditorApp,
@@ -44,12 +44,16 @@ class GuiBlueprintLibrary(
                         app.selectBlueprint(bp)
                     }
                     menuItem("Delete") {
-                        // TODO: delete blueprint
+                        app.deleteSelectedBlueprint()
                     }
                 }
             }
             ImGui.endTable()
         }
         ImGui.popFont()
+
+        if (ImGui.isWindowFocused() && ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
+            app.deleteSelectedBlueprint()
+        }
     }
 }

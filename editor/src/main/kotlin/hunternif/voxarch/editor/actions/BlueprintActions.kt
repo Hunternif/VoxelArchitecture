@@ -20,6 +20,7 @@ fun EditorApp.addBlueprint(
     ))
 }
 
+/** Removes Blueprint from the node, but keeps it in the library. */
 fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
     val newSelected = state.selectedBlueprint?.let {
         if (it == blueprint) null else it
@@ -28,9 +29,15 @@ fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
     if (newBlues.remove(blueprint)) {
         historyAction(SetBlueprints(
             node, newBlues, newSelected,
-            "Remove blueprint", FontAwesomeIcons.TrashAlt,
+            "Remove blueprint", FontAwesomeIcons.Ban,
         ))
     }
+}
+
+/** Deletes Blueprint from the library */
+fun EditorApp.deleteSelectedBlueprint() {
+    val blueprint = state.selectedBlueprint ?: return
+    historyAction(DeleteBlueprint(blueprint))
 }
 
 fun EditorApp.selectBlueprint(bp: Blueprint?) = historyAction(OpenBlueprint(bp))
