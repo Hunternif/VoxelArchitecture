@@ -78,6 +78,8 @@ class Blueprint(
         root.addChild(start.domBuilder)
         root.buildDom(finalStylesheet, seed, maxRecursions)
     }
+
+    override fun toString(): String = "Blueprint \"$name\""
 }
 
 /**

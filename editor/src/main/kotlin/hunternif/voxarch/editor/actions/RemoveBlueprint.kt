@@ -21,6 +21,7 @@ class RemoveBlueprint(
         insertPos = node.blueprints.indexOf(bp)
         if (insertPos > -1) {
             node.removeBlueprint(bp)
+            app.state.registry.bpInNodes.remove(bp, node)
             OpenBlueprint(newSelected).invoke(app)
         }
     }
@@ -28,6 +29,7 @@ class RemoveBlueprint(
     override fun revert(app: EditorAppImpl) {
         if (insertPos > -1) {
             node.addBlueprint(bp, insertPos)
+            app.state.registry.bpInNodes.put(bp, node)
             OpenBlueprint(oldSelected).invoke(app)
         }
     }

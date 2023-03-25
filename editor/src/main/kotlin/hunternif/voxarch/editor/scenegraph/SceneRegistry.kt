@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.scenegraph
 
+import com.google.common.collect.ArrayListMultimap
+import com.google.common.collect.ListMultimap
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
@@ -16,6 +18,8 @@ class SceneRegistry {
     val objectIDs = IDRegistry<SceneObject>()
     val subsetIDs = IDRegistry<Subset<*>>()
     val blueprintIDs = IDRegistry<Blueprint>()
+
+    val bpInNodes: ListMultimap<Blueprint, SceneNode> = ArrayListMultimap.create()
 
     fun newObject(
         center: Vector3f = Vector3f(),
@@ -72,7 +76,12 @@ class SceneRegistry {
 
     fun save(obj: Any) {
         when (obj) {
-            is SceneObject -> obj.forEachSubtree { objectIDs.save(it) }
+            is SceneObject -> obj.forEachSubtree { o ->
+                if (o is SceneNode) {
+                    o.blueprints.forEach { bpInNodes.put(it, o) }
+                }
+                objectIDs.save(o)
+            }
             is Subset<*> -> subsetIDs.save(obj)
         }
     }

@@ -56,6 +56,8 @@ class FileSpecTest : BaseAppTest() {
         assertEquals(2, bpMap.size)
         assertEquals(listOf(bpMap[0]), app.state.rootNode.blueprints)
         assertEquals(listOf(bpMap[1]), (app.state.rootNode.children.toList()[1] as SceneNode).blueprints)
+        assertEquals(listOf(app.state.rootNode), app.state.registry.bpInNodes[bpMap[0]])
+        assertEquals(listOf( app.state.rootNode.children.toList()[1]), app.state.registry.bpInNodes[bpMap[1]])
     }
 
     @Test
