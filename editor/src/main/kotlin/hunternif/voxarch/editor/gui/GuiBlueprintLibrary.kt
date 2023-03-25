@@ -19,12 +19,10 @@ class GuiBlueprintLibrary(
         ImGui.separator()
 
         ImGui.pushFont(gui.fontSmallIcons)
-        if (ImGui.beginTable("blueprints_table", 2, ImGuiTableFlags.PadOuterX)) {
-            ImGui.tableSetupColumn(
-                "icon",
-                ImGuiTableColumnFlags.WidthFixed, 10f
-            )
+        if (ImGui.beginTable("blueprints_table", 3, ImGuiTableFlags.PadOuterX)) {
+            ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
             ImGui.tableSetupColumn("name")
+            ImGui.tableSetupColumn("usage", ImGuiTableColumnFlags.WidthFixed, 55f)
 
             app.state.blueprints.forEachIndexed { i, bp ->
                 ImGui.tableNextRow()
@@ -44,6 +42,16 @@ class GuiBlueprintLibrary(
                     }
                     menuItem("Delete") {
                         app.deleteSelectedBlueprint()
+                    }
+                }
+
+                ImGui.tableNextColumn()
+                val usages = app.state.blueprintUsage[bp].size
+                if (usages > 0) {
+                    disabled {
+                        ImGui.text(usages.toString())
+                        ImGui.sameLine()
+                        ImGui.text("usages")
                     }
                 }
             }

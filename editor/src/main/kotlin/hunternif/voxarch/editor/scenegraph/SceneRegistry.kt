@@ -19,6 +19,7 @@ class SceneRegistry {
     val subsetIDs = IDRegistry<Subset<*>>()
     val blueprintIDs = IDRegistry<Blueprint>()
 
+    /** Maps BP to nodes where it's used */
     val bpInNodes: ListMultimap<Blueprint, SceneNode> = ArrayListMultimap.create()
 
     fun newObject(

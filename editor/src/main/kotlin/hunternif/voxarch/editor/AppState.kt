@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor
 
+import com.google.common.collect.ListMultimap
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.actions.*
@@ -29,6 +30,8 @@ interface AppState {
     val lastSavedAction: HistoryAction?
     val stylesheetText: String
     val blueprints: Collection<Blueprint>
+    /** Maps BP to nodes where it's used */
+    val blueprintUsage: ListMultimap<Blueprint, SceneNode>
 
     //=============================== VOXELS ================================
 
@@ -103,6 +106,7 @@ class AppStateImpl(
     override var lastSavedAction: HistoryAction? = null
     override var stylesheetText: String = ""
     override val blueprints get() = registry.blueprintIDs.map.values
+    override val blueprintUsage = registry.bpInNodes
 
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
