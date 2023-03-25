@@ -124,7 +124,7 @@ private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): 
         is XmlSceneNode -> {
             val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
             SceneNode(id, node?.mapXmlNode() ?: return null, color, generated).apply {
-                blueprints.addAll(blueprintRefs)
+                blueprintRefs.forEach { addBlueprint(it) }
             }
         }
         is XmlSceneVoxelGroup -> SceneVoxelGroup(id, label, data, renderMode, generated, origin)

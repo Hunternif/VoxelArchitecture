@@ -18,7 +18,17 @@ class SceneNode(
     color = color,
     isGenerated = isGenerated,
 ) {
-    val blueprints = mutableListOf<Blueprint>()
+    private val _blueprints = mutableListOf<Blueprint>()
+    val blueprints: List<Blueprint> get() = _blueprints
+
+    fun addBlueprint(bp: Blueprint, index: Int = -1) {
+        if (index > -1) _blueprints.add(index, bp)
+        else _blueprints.add(bp)
+    }
+
+    fun removeBlueprint(bp: Blueprint) {
+        _blueprints.remove(bp)
+    }
 
     // TODO: store Style declarations and apply them to the node
     var snapOrigin: SnapOrigin = SnapOrigin.CORNER

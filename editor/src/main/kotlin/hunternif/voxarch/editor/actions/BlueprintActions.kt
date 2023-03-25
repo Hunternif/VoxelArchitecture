@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.blueprint.*
-import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 
 
@@ -12,27 +11,11 @@ fun EditorApp.newBlueprint(node: SceneNode) = action {
 
 fun EditorApp.addBlueprint(
     node: SceneNode, blueprint: Blueprint, autoSelect: Boolean = false
-) {
-    val newSelected = if (autoSelect) blueprint else state.selectedBlueprint
-    historyAction(SetBlueprints(
-        node, node.blueprints + blueprint, newSelected,
-        "Add blueprint", FontAwesomeIcons.Landmark
-    ))
-}
+) = historyAction(AddBlueprint(node, blueprint, autoSelect))
 
 /** Removes Blueprint from the node, but keeps it in the library. */
-fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) {
-    val newSelected = state.selectedBlueprint?.let {
-        if (it == blueprint) null else it
-    }
-    val newBlues = node.blueprints.toMutableList()
-    if (newBlues.remove(blueprint)) {
-        historyAction(SetBlueprints(
-            node, newBlues, newSelected,
-            "Remove blueprint", FontAwesomeIcons.Ban,
-        ))
-    }
-}
+fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) =
+    historyAction(RemoveBlueprint(node, blueprint))
 
 /** Deletes Blueprint from the library */
 fun EditorApp.deleteSelectedBlueprint() {
