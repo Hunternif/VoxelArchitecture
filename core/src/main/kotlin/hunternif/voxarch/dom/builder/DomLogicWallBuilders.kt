@@ -19,19 +19,11 @@ class DomLineSegmentBuilder(
     override fun prepareForLayout(ctx: DomBuildContext): StyledElement<*> {
         val dummyWall = ctx.parentNode.wall(p1, p2.addY(ctx.parentNode.height)) {
             transparent = true
+            tags.add("_dummy_")
         }
+        ctx.stats.dummyNodes.add(dummyWall)
         // Using a generic StyledElement avoids calling styles on dummyWall:
         return StyledElement(this, ctx.copy(parentNode = dummyWall))
-    }
-
-    override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
-        if (children.isEmpty()) return children
-        val ctx = children.first().ctx
-        val dummyWall = ctx.parentNode
-        //TODO: when DomRunBlueprint is one of the children here,
-        // it still references dummyWall as the parent node
-//        dummyWall.collapse()
-        return children
     }
 }
 

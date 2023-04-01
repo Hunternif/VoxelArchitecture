@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.DomBuildContext
+import hunternif.voxarch.dom.builder.DomBuildStats
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
@@ -368,7 +369,7 @@ class DomTest {
     fun `deep-copy DomBuildContext`() {
         val dom1 = DomBuilder()
         val dom2 = DomBuilder()
-        val ctx1 = DomBuildContext(Node(), defaultStyle, 0)
+        val ctx1 = DomBuildContext(Node(), defaultStyle, 0, DomBuildStats())
         val styled1 = dom1.prepareForLayout(ctx1)
         dom2.prepareForLayout(ctx1)
         val ctx2 = ctx1.makeChildCtx(parent = styled1)

@@ -19,6 +19,9 @@ data class DomBuildContext(
      */
     val seed: Long,
 
+    /** Aggregates info during the build. */
+    val stats: DomBuildStats,
+
     /** Chain of execution up to this point. */
     val lineage: List<StyledElement<*>> = listOf(),
 ) {
@@ -38,6 +41,7 @@ data class DomBuildContext(
         parentNode,
         stylesheet,
         seed,
+        stats,
         lineage + parent,
     )
 }
