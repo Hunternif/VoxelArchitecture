@@ -46,4 +46,36 @@ class StyleContentTest {
 
         assertNodeTreeEqualsRecursive(refDom, dom)
     }
+
+    @Test
+    fun `prevent infinite recursion`() {
+        // expected
+        val refDom = domRoot {
+            room("extend") {
+                node("new_node", "extend") {
+                    node("new_node", "extend")
+                }
+            }
+            room("second", "extend") {
+                node("new_node", "extend") {
+                    node("new_node", "extend")
+                }
+            }
+        }.buildDom()
+
+        // actual
+        val style = Stylesheet().add {
+            style("extend") {
+                content {
+                    node("new_node", "extend")
+                }
+            }
+        }
+        val dom = domRoot {
+            room("extend")
+            room("second", "extend")
+        }.buildDom(style)
+
+        assertNodeTreeEqualsRecursive(refDom, dom)
+    }
 }
