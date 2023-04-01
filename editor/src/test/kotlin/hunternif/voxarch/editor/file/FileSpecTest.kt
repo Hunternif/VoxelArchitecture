@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.file
 
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
@@ -57,7 +58,8 @@ class FileSpecTest : BaseAppTest() {
         assertEquals(listOf(bpMap[0]), app.state.rootNode.blueprints)
         assertEquals(listOf(bpMap[1]), (app.state.rootNode.children.toList()[1] as SceneNode).blueprints)
         assertEquals(listOf(app.state.rootNode), app.state.registry.bpInNodes[bpMap[0]])
-        assertEquals(listOf( app.state.rootNode.children.toList()[1]), app.state.registry.bpInNodes[bpMap[1]])
+        assertEquals(listOf(app.state.rootNode.children.toList()[1]), app.state.registry.bpInNodes[bpMap[1]])
+        assertEquals(bpMap[0], (bpMap[1]!!.nodes.toList()[2].domBuilder as DomRunBlueprint).blueprint)
     }
 
     @Test
@@ -79,9 +81,11 @@ class FileSpecTest : BaseAppTest() {
         app.hideObject(node2)
         app.selectAll()
 
-        app.addNewBlueprint(app.state.rootNode)
-        val bp = app.addNewBlueprint(node2)
-        app.newBlueprintNode(bp, "Floor", 120f, 14f)
+        val bp1 = app.addNewBlueprint(app.state.rootNode)
+        val bp2 = app.addNewBlueprint(node2)
+        app.newBlueprintNode(bp2, "Floor", 120f, 14f)
+        val delegateNode = app.newBlueprintNode(bp2, "Blueprint")!!
+        app.setDelegateBlueprint(delegateNode, bp1)
 
         val refPath = resourcePath("project/2_rooms.voxarch")
         val testPath = tempDir.resolve("2_rooms.voxarch")

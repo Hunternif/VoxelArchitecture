@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.file.style.parseStylesheet
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
@@ -115,6 +116,7 @@ fun EditorAppImpl.readProject(path: Path) {
         treeXmlType.blueprints?.entries?.forEach {
             tryReadBlueprintFile(it, zipfs, reg, this)
         }
+        tryPopulateDelegateBlueprints(reg)
 
         // populate VOX files & Blueprints
         treeXmlType.noderoot?.forEachSubtree {
@@ -279,5 +281,19 @@ private fun tryReadStylesheetFile(fs: FileSystem): String {
         }
     } catch (e: java.nio.file.NoSuchFileException) {
         return defaultStyle.toString()
+    }
+}
+
+/**
+ * Populate blueprint nodes that reference other blueprints.
+ */
+fun tryPopulateDelegateBlueprints(reg: SceneRegistry) {
+    val bpMap = reg.blueprintIDs.map
+    bpMap.values.forEach { bp ->
+        for (node in bp.nodes) {
+            val domBuilder = node.domBuilder as? DomRunBlueprint ?: continue
+            val delegateBp = bpMap[domBuilder.blueprintID] ?: continue
+            domBuilder.blueprint = delegateBp
+        }
     }
 }

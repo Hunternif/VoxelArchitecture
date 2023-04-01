@@ -1,10 +1,12 @@
 package hunternif.voxarch.editor.file
 
+import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
+import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.file.style.parseStylesheet
 
@@ -25,6 +27,7 @@ class XmlBlueprint(
     var links: List<XmlBlueprintLink> = emptyList(),
 )
 
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class XmlBlueprintNode(
     @field:JacksonXmlProperty(isAttribute = true)
     var id: Int = -1,
@@ -51,6 +54,9 @@ class XmlBlueprintNode(
 
     @field:JacksonXmlProperty
     var style: String = "",
+
+    @field:JacksonXmlProperty
+    var delegateBlueprintID: Int? = null,
 )
 
 class XmlBlueprintSlot(
@@ -84,6 +90,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
         )
     }
     val jsonNodes = nodes.map { n ->
+        val delegateBPID = (n.domBuilder as? DomRunBlueprint)?.blueprintID
         XmlBlueprintNode(
             n.id, n.name,
             n.inputs.map { XmlBlueprintSlot(it.id, it.name) },
@@ -91,6 +98,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             n.x, n.y,
             n.extraStyleClass,
             if (n.rule.isEmpty()) "" else "\n${n.rule}\n",
+            delegateBPID,
         )
     }
     return XmlBlueprint(id, name, jsonNodes, jsonLinks)
@@ -118,6 +126,9 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
         bpNode.extraStyleClass = n.styleClass
         val rule = parseStylesheet(n.style).rules.firstOrNull()
         rule?.declarations?.forEach { bpNode.rule.add(it) }
+        if (domBuilder is DomRunBlueprint) {
+            domBuilder.blueprintID = n.delegateBlueprintID
+        }
     }
     // Add any output slots that may have been introduced in newer versions:
     bp.nodes.forEach { bpNode ->

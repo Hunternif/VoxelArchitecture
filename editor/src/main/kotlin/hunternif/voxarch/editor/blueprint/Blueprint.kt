@@ -104,14 +104,16 @@ class BlueprintNode(
     private val extraClassList = linkedSetOf<String>()
     var extraStyleClass = ""
         set(value) {
-            field = value
-            domBuilder.styleClass.removeAll(extraClassList)
-            extraClassList.apply {
-                clear()
-                addAll(value.split(' '))
-                remove("")
+            if (field != value) {
+                domBuilder.styleClass.removeAll(extraClassList)
+                field = value
+                extraClassList.apply {
+                    clear()
+                    addAll(value.split(' '))
+                    remove("")
+                }
+                domBuilder.styleClass.addAll(extraClassList)
             }
-            domBuilder.styleClass.addAll(extraClassList)
         }
 
     internal fun addInput(name: String): BlueprintSlot.In {

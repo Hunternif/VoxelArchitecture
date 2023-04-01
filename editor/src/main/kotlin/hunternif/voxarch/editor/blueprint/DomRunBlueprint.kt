@@ -7,7 +7,13 @@ import hunternif.voxarch.dom.builder.DomBuilder
  * Runs blueprint
  */
 class DomRunBlueprint : DomBuilder() {
+    /** Used for deserialization, to reference the blueprint before it has been loaded */
+    var blueprintID: Int? = null
     var blueprint: Blueprint = emptyBlueprint
+        set(value) {
+            field = value
+            blueprintID = blueprint.id
+        }
 
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         //TODO: alternative way to run blueprint: use CSS style to run blueprint

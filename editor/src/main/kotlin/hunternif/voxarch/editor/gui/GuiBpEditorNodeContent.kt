@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.updateBlueprintNode
+import hunternif.voxarch.editor.actions.setBlueprintNodeStyle
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
@@ -71,7 +71,7 @@ class GuiBpEditorNodeContent(
         if (showStyleClass) {
             ImGui.pushItemWidth(width)
             styleClassInput.render(node.extraStyleClass) {
-                app.updateBlueprintNode(node, it)
+                app.setBlueprintNodeStyle(node, it)
             }
             ImGui.popItemWidth()
         }
