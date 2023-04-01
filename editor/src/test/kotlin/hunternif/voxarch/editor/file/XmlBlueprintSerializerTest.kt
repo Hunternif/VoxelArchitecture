@@ -51,13 +51,9 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
     private val exampleBpXml = """
         <blueprint id="23" name="Test blueprint">
           <node id="0" name="Start" x="100.0" y="100.0">
-            <styleClass></styleClass>
-            <style></style>
             <outSlot id="0" name="node"/>
           </node>
           <node id="1" name="Extend" x="100.0" y="20.0">
-            <styleClass></styleClass>
-            <style></style>
             <inSlot id="1" name="in"/>
             <outSlot id="2" name="out"/>
             <outSlot id="3" name="north"/>

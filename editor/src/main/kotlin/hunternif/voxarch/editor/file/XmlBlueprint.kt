@@ -50,10 +50,10 @@ class XmlBlueprintNode(
     var y: Float = -1f,
 
     @field:JacksonXmlProperty
-    var styleClass: String = "",
+    var styleClass: String? = null,
 
     @field:JacksonXmlProperty
-    var style: String = "",
+    var style: String? = null,
 
     @field:JacksonXmlProperty
     var delegateBlueprintID: Int? = null,
@@ -96,8 +96,8 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             n.inputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.outputs.map { XmlBlueprintSlot(it.id, it.name) },
             n.x, n.y,
-            n.extraStyleClass,
-            if (n.rule.isEmpty()) "" else "\n${n.rule}\n",
+            n.extraStyleClass.ifEmpty { null },
+            if (n.rule.isEmpty()) null else "\n${n.rule}\n",
             delegateBPID,
         )
     }
@@ -123,8 +123,8 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             bpNode.outputs.add(slot)
             bp.slotIDs.save(slot)
         }
-        bpNode.extraStyleClass = n.styleClass
-        val rule = parseStylesheet(n.style).rules.firstOrNull()
+        n.styleClass?.let { bpNode.extraStyleClass = it }
+        val rule = n.style?.let { parseStylesheet(it).rules.firstOrNull() }
         rule?.declarations?.forEach { bpNode.rule.add(it) }
         if (domBuilder is DomRunBlueprint) {
             domBuilder.blueprintID = n.delegateBlueprintID
