@@ -26,6 +26,7 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Four Corners" to { DomLogicFourCornerBuilder() },
     "Subdivide" to { DomSubdivide() },
     "Repeat" to { DomRepeat() },
+    "Blueprint" to { DomRunBlueprint() },
 )
 
 /**

@@ -23,7 +23,7 @@ class Blueprint(
     val slotIDs = IDRegistry<BlueprintSlot>()
     internal val linkIDs = IDRegistry<BlueprintLink>()
 
-    private val internalStylesheet = Stylesheet()
+    internal val internalStylesheet = Stylesheet()
 
     val start: BlueprintNode = createNode(0, "Start", 100f, 100f, DomBuilder()).apply {
         addOutput("node")
@@ -51,7 +51,9 @@ class Blueprint(
         y: Float = 0f,
     ): BlueprintNode = createNode(nodeIDs.newID(), name, x, y, domBuilder).apply {
         addInput("in")
-        addOutput("out", domBuilder)
+        if (domBuilder !is DomRunBlueprint) {
+            addOutput("out", domBuilder)
+        }
         domBuilder.slots.forEach { (name, domSlot) ->
             addOutput(name, domSlot)
         }
@@ -79,7 +81,7 @@ class Blueprint(
         root.buildDom(finalStylesheet, seed, maxRecursions)
     }
 
-    override fun toString(): String = "Blueprint \"$name\""
+    override fun toString(): String = name
 }
 
 /**

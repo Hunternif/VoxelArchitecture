@@ -28,7 +28,9 @@ class DomLineSegmentBuilder(
         if (children.isEmpty()) return children
         val ctx = children.first().ctx
         val dummyWall = ctx.parentNode
-        dummyWall.collapse()
+        //TODO: when DomRunBlueprint is one of the children here,
+        // it still references dummyWall as the parent node
+//        dummyWall.collapse()
         return children
     }
 }

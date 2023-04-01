@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.updateBlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
+import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.util.ColorRGBa
 import imgui.ImColor
 import imgui.ImGui
@@ -21,10 +22,17 @@ class GuiBpEditorNodeContent(
 ) {
     private val styleMenu = GuiBlueprintNodeStyle(node)
     private val styleClassInput = GuiInputText("##${node.id}_classname", "class names")
+    private val bpCombo by lazy {
+        GuiCombo("##blueprint", app.state.blueprints)
+    }
 
     var showStyleClass: Boolean = node.extraStyleClass.isNotEmpty()
 
     fun render() {
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 8f, 8f)
+        ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
+        ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 4f, 2f)
+        ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 8f, 4f)
         val width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
 
         //============================ Header =============================
@@ -53,13 +61,18 @@ class GuiBpEditorNodeContent(
         }
 
         //============================= Body ==============================
+        if (node.domBuilder is DomRunBlueprint) {
+            ImGui.pushItemWidth(width)
+            bpCombo.render(node.domBuilder.blueprint) {
+                node.domBuilder.blueprint = it
+            }
+            ImGui.popItemWidth()
+        }
         if (showStyleClass) {
             ImGui.pushItemWidth(width)
-            ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
             styleClassInput.render(node.extraStyleClass) {
                 app.updateBlueprintNode(node, it)
             }
-            ImGui.popStyleVar()
             ImGui.popItemWidth()
         }
         styleMenu.items.forEach { item ->
@@ -73,6 +86,8 @@ class GuiBpEditorNodeContent(
             if (slot.name == "out") continue
             renderOutputPin(slot, width)
         }
+
+        ImGui.popStyleVar(4)
     }
 
     fun renderStyleMenu() {
