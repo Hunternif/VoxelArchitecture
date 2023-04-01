@@ -96,6 +96,9 @@ val GlobalStyleOrderByGroups: List<List<Property<*>>> by lazy {
         listOf(PropRepeatGap),
 
         listOf(PropVisibility),
+
+        // TODO: 'content' property should be executable multiple times
+        listOf(PropContent),
     )
 }
 

@@ -88,7 +88,7 @@ fun assertNodeTreeEqualsRecursive(
 ) {
     val expectedTraversal = expected.query<Node>().toList()
     val actualTraversal = actual.query<Node>().toList()
-    assertEquals(expectedTraversal.size, actualTraversal.size)
+    assertEquals("node count", expectedTraversal.size, actualTraversal.size)
     expectedTraversal.zip(actualTraversal).forEach { (exp, act) ->
         assertNodeEquals(exp, act, testTags)
     }
