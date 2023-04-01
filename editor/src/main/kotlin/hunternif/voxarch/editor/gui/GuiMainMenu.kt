@@ -78,5 +78,13 @@ fun MainGui.mainMenu() {
                 showLogs.toggle()
             }
         }
+        menu("Run") {
+            menuItem("Generate nodes") {
+                app.generateNodes()
+            }
+            menuItem("Build voxels") {
+                app.buildVoxels()
+            }
+        }
     }
 }
