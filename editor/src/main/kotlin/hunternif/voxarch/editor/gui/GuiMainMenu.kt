@@ -85,6 +85,12 @@ fun MainGui.mainMenu() {
             menuItem("Build voxels") {
                 app.buildVoxels()
             }
+            ImGui.separator()
+            menuCheck("Clean dummy nodes", app.state.cleanDummies,
+                tooltip = "Automatically remove temporary \"dummy\" nodes from the generated node tree"
+            ) {
+                app.toggleCleanDummies()
+            }
         }
     }
 }

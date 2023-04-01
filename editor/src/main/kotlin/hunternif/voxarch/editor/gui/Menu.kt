@@ -34,9 +34,13 @@ inline fun menuCheck(
     label: String,
     selected: Boolean,
     enabled: Boolean = true,
+    tooltip: String? = null,
     crossinline onClick: () -> Unit,
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
     if (ImGui.menuItem(label, "", selected, enabled)) { onClick() }
+    if (tooltip != null && ImGui.isItemHovered()) {
+        ImGui.setTooltip(tooltip)
+    }
     ImGui.popStyleVar()
 }

@@ -232,6 +232,10 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
     }
 }
 
+fun EditorApp.toggleCleanDummies() = action {
+    state.cleanDummies = !state.cleanDummies
+}
+
 
 //=============================== STYLES ================================
 

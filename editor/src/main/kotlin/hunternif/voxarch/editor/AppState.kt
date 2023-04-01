@@ -78,6 +78,11 @@ interface AppState {
     val newNodeType: String
 
 
+    //============================== OPTIONS ================================
+
+    val cleanDummies: Boolean
+
+
     //============================= GUI STATE ===============================
 
     val DEBUG: Boolean
@@ -139,6 +144,8 @@ class AppStateImpl(
     override val history = History<HistoryAction>()
     override var highlightedFace: BoxFace? = null
     override var newNodeType: String = "Node"
+
+    override var cleanDummies: Boolean = true
 
     override val DEBUG = true
     override var isMainWindowFocused = false
