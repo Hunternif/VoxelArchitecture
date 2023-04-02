@@ -5,7 +5,7 @@ import imgui.type.ImInt
 
 class GuiCombo<T>(
     val label: String,
-    val values: List<T>,
+    values: List<T>,
     val width: Float? = null,
 ) {
     constructor(label: String, vararg values: T, width: Float? = null)
@@ -19,11 +19,19 @@ class GuiCombo<T>(
     internal val index = ImInt(-1)
 
     @PublishedApi
-    internal val names = values.map { it.toString() }.toTypedArray()
+    internal var names: Array<String> = values.map { it.toString() }.toTypedArray()
 
     /** True when this UI is being interacted with. */
     @PublishedApi
     internal var isBeingChanged = false
+
+    var values: List<T> = values
+        set(value) {
+            if (field != value) {
+                field = value
+                names = values.map { it.toString() }.toTypedArray()
+            }
+        }
 
     fun setInitialValue(value: T) {
         if (!isBeingChanged) {

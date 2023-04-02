@@ -30,7 +30,6 @@ class GuiObjectProperties(
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
     //TODO: update list of builders based on node type
-    //TODO: display default builder from BuilderConfig
     private val builderInput by lazy {
         GuiCombo("builder", app.state.builderLibrary.allBuilders)
     }
@@ -44,6 +43,9 @@ class GuiObjectProperties(
     // Currently selected items
     private var obj: SceneObject? = null
     private val voxGroupSize: Vec3 = Vec3(0, 0, 0)
+
+    /** Default entry that indicates which builder will be assigned by BuilderConfig */
+    private var defaultBuilderEntry = BuilderLibrary.Entry("Default", nullBuilder)
     private var builderEntry: BuilderLibrary.Entry = defaultBuilderEntry
 
     private val curBlueprints = mutableListOf<Blueprint>()
@@ -87,12 +89,14 @@ class GuiObjectProperties(
             app.transformNodeRotation(sceneNode, original.toDouble(), newValue.toDouble())
         })
 
-        checkNodeBuilder(sceneNode)
+        checkNodeBuilder(sceneNode.node)
         builderInput.render(builderEntry) {
             //TODO: create action to set node builder
             //TODO: allow executing various builders regardless of exact node type
             builderEntry = it
-            sceneNode.node.builder = it.builder
+            sceneNode.node.builder =
+                if (it == defaultBuilderEntry) null
+                else it.builder
         }
 
         ImGui.separator()
@@ -153,9 +157,23 @@ class GuiObjectProperties(
     }
 
     /** Check whether the list of current & available builders needs to be updated */
-    private fun checkNodeBuilder(sceneNode: SceneNode) = builderTimer.runAtInterval {
+    private fun checkNodeBuilder(node: Node) = builderTimer.runAtInterval {
         val library = app.state.builderLibrary
-        val currentBuilder = sceneNode.node.builder
+
+        // Update the title of the default builder
+        val newDefaultBuilder = app.state.buildContext.builders.get(node) ?: nullBuilder
+        if (defaultBuilderEntry.builder != newDefaultBuilder) {
+            val newDefaultName = library.buildersByInstance[newDefaultBuilder]?.let {
+                "Default: ${it.name}"
+            } ?: "Default"
+            defaultBuilderEntry = BuilderLibrary.Entry(newDefaultName, newDefaultBuilder)
+
+            // Update the list in the combo
+            builderInput.values = listOf(defaultBuilderEntry) + library.allBuilders
+        }
+
+        // Set currently selected builder
+        val currentBuilder = node.builder
         if (builderEntry.builder != currentBuilder) {
             builderEntry = library.buildersByInstance[currentBuilder]
                 ?: defaultBuilderEntry
@@ -205,8 +223,6 @@ class GuiObjectProperties(
 
     companion object {
         /** Indicates that the default should be used. */
-        private val defaultBuilder = Builder<Node>()
-
-        private val defaultBuilderEntry = BuilderLibrary.Entry("Default", defaultBuilder)
+        private val nullBuilder = Builder<Node>()
     }
 }
