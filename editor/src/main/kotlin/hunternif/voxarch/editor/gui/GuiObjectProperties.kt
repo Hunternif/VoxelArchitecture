@@ -157,9 +157,10 @@ class GuiObjectProperties(
     /** Check whether the list of current & available builders needs to be updated */
     private fun checkNodeBuilder(node: Node) = builderTimer.runAtInterval {
         val library = app.state.builderLibrary
+        val builderConfig = app.state.buildContext.builders
 
         // Update the title of the default builder
-        val newDefaultBuilder = app.state.buildContext.builders.get(node) ?: nullBuilder
+        val newDefaultBuilder = builderConfig.getFromConfig(node) ?: nullBuilder
         if (defaultBuilderEntry.builder != newDefaultBuilder) {
             val newDefaultName = library.buildersByInstance[newDefaultBuilder]?.let {
                 "Default: ${it.name}"

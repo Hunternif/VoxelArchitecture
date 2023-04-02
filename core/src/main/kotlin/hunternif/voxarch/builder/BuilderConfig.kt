@@ -37,18 +37,8 @@ class BuilderConfig {
      * If builder is not found for class, will try superclasses.
      */
     @Suppress("UNCHECKED_CAST")
-    fun <T: Node> get(node: T): Builder<T>? {
+    fun <T: Node> getFromConfig(node: T): Builder<T>? {
         var nodeClass: Class<*> = node::class.java
-
-        // 1. Try the local builder first
-        // TODO: log error if type is mismatched
-        node.builder?.let {
-            if (it.nodeClass.isAssignableFrom(nodeClass)) {
-                return it as Builder<T>
-            }
-        }
-
-        // 2. Fetch appropriate builder from the config
         var builder: Builder<*>? = null
         classLoop@ while (Node::class.java.isAssignableFrom(nodeClass)) {
             val buildersForClass = buildersForClass(nodeClass as Class<out Node>)
@@ -61,6 +51,24 @@ class BuilderConfig {
             nodeClass = nodeClass.superclass
         }
         return builder as Builder<T>?
+    }
+
+    /**
+     * Get Builder for this Node given its class and tags.
+     * Will first check the node's inner builder instance,
+     * then proceed to [get].
+     */
+    @Suppress("UNCHECKED_CAST")
+    fun <T: Node> get(node: T): Builder<T>? {
+        // 1. Try the local builder first
+        // TODO: log error if type is mismatched
+        node.builder?.let {
+            if (it.nodeClass.isAssignableFrom(node::class.java)) {
+                return it as Builder<T>
+            }
+        }
+        // 2. Fetch appropriate builder from the config
+        return getFromConfig(node)
     }
 
 
