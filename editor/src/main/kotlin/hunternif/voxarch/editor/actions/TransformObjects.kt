@@ -71,14 +71,20 @@ fun SceneObject.transformData(
         (size ?: node.size).clone(),
         (start ?: node.start).clone(),
         rotationY ?: node.rotationY,
-        snapOrigin ?: this.snapOrigin
+        snapOrigin ?: this.snapOrigin,
     )
     is SceneVoxelGroup -> TransformData(
         (origin ?: this.origin).clone(),
         Vec3.ZERO,
         Vec3.ZERO,
         0.0,
-        SnapOrigin.OFF
+        SnapOrigin.OFF,
     )
-    else -> TransformData(Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, 0.0, SnapOrigin.OFF)
+    else -> TransformData(
+        Vec3.ZERO,
+        Vec3.ZERO,
+        Vec3.ZERO,
+        0.0,
+        SnapOrigin.OFF,
+    )
 }

@@ -91,12 +91,10 @@ class GuiObjectProperties(
 
         checkNodeBuilder(sceneNode.node)
         builderInput.render(builderEntry) {
-            //TODO: create action to set node builder
             //TODO: allow executing various builders regardless of exact node type
             builderEntry = it
-            sceneNode.node.builder =
-                if (it == defaultBuilderEntry) null
-                else it.builder
+            val newBuilder = if (it == defaultBuilderEntry) null else it.builder
+            app.setNodeBuilder(sceneNode, newBuilder)
         }
 
         ImGui.separator()

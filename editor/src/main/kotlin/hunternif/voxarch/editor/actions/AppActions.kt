@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
@@ -204,6 +205,11 @@ fun EditorApp.transformNodeSnapOrigin(
         )
     )
 }
+
+fun EditorApp.setNodeBuilder(
+    obj: SceneNode,
+    builder: Builder<*>?,
+) = historyAction(SetNodeBuilder(obj, builder))
 
 
 //=========================== CREATE & DELETE ===========================
