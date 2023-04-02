@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.blueprint.PropBlueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.DetachedObject
@@ -23,6 +24,7 @@ class GenerateNodes : HistoryAction(
         app.clearGeneratedNodes()
         if (!::newGenerated.isInitialized) {
             newGenerated = mutableListOf()
+            PropBlueprint.updateBlueprints(app.state.blueprints)
             app.runBlueprintsRecursive(app.state.rootNode)
         }
         newGenerated.forEach {

@@ -16,7 +16,6 @@ class DomRunBlueprint : DomBuilder() {
         }
 
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
-        //TODO: alternative way to run blueprint: use CSS style to run blueprint
         ctx.stylesheet.copyRules(blueprint.internalStylesheet)
         return blueprint.start.domBuilder.children
     }
