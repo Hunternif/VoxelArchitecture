@@ -3,9 +3,6 @@ package hunternif.voxarch.mc.config
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.mc.ExtBlockDataMC
 import hunternif.voxarch.mc.MCEnvironment
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.sandbox.TorchStandBuilder
-import hunternif.voxarch.sandbox.castle.*
 import net.minecraft.block.Blocks
 
 val defaultContext get() = BuildContext(MCEnvironment).apply {
@@ -23,13 +20,8 @@ val defaultContext get() = BuildContext(MCEnvironment).apply {
         set(MAT_POST) { ExtBlockDataMC(Blocks.OAK_FENCE) }
     }
     builders.apply {
-        setDefault(SimpleFloorBuilder(MAT_FLOOR))
-        setDefault(SimpleWallBuilder(MAT_WALL))
-        setDefault(RoomBuilder())
-        setDefault(SimpleGateBuilder())
-        setDefault(SimpleHatchBuilder())
-        setDefault<Node>(Builder())
-        set(TORCH_STAND to TorchStandBuilder())
+        setDefaultBuilders()
+        set(TORCH_STAND to DefaultBuilders.TorchStand)
     }
 }
 

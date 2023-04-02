@@ -1,7 +1,7 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.builder.MAT_WALL
 import hunternif.voxarch.plan.Path
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.CrenellationPathBuilder
 import hunternif.voxarch.sandbox.castle.builder.CrenellationSizes
 import hunternif.voxarch.vector.Vec3

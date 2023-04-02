@@ -9,7 +9,7 @@ import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
-import hunternif.voxarch.sandbox.castle.setCastleBuilders
+import hunternif.voxarch.builder.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
 

@@ -14,7 +14,6 @@ import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.emptyArray3D
 import hunternif.voxarch.world.defaultEnvironment

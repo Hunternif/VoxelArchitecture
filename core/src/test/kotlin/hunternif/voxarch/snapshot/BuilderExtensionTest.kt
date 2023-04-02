@@ -1,7 +1,7 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.builder.MAT_ROOF
 import hunternif.voxarch.builder.line2
-import hunternif.voxarch.sandbox.castle.MAT_ROOF
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 

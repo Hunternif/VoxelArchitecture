@@ -1,9 +1,7 @@
 package hunternif.voxarch.sandbox.castle
 
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.plan.wall
+import hunternif.voxarch.builder.*
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.addGrandCastleTurretsRecursive
 import hunternif.voxarch.sandbox.castle.turret.randomBody
 import hunternif.voxarch.sandbox.castle.turret.randomRoof

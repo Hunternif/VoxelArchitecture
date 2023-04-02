@@ -1,10 +1,7 @@
 package hunternif.voxarch.sandbox
 
-import hunternif.voxarch.builder.APropBuilder
-import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.toLocal
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Prop
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
 import hunternif.voxarch.vector.TransformationStack

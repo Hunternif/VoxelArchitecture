@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc.gdmc
 
 import hunternif.voxarch.builder.MainBuilder
+import hunternif.voxarch.builder.setCastleBuilders
 import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.mc.config.defaultContext
 import hunternif.voxarch.sandbox.castle.*

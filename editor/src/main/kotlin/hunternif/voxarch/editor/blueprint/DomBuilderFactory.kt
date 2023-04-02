@@ -1,8 +1,8 @@
 package hunternif.voxarch.editor.blueprint
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.sandbox.castle.BLD_ARCHED_WINDOW
 
 /**
  * Creates a new DomBuilder for a Blueprint node.

@@ -1,5 +1,6 @@
 package hunternif.voxarch.sandbox.castle
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.RoomUtil
 import hunternif.voxarch.vector.Box2D

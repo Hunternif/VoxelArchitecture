@@ -1,12 +1,11 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyShape
-import hunternif.voxarch.sandbox.castle.BLD_CURTAIN_WALL
-import hunternif.voxarch.sandbox.castle.setCastleBuilders
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
 

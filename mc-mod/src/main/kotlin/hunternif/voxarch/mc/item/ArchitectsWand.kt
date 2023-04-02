@@ -1,5 +1,7 @@
 package hunternif.voxarch.mc.item
 
+import hunternif.voxarch.builder.MAT_WALL
+import hunternif.voxarch.builder.setCastleBuilders
 import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.vector.Vec3
@@ -9,7 +11,6 @@ import net.minecraft.world.World
 
 import hunternif.voxarch.mc.*
 import hunternif.voxarch.mc.config.defaultContext
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.builder.SimpleTorchlitWallBuilder
 import hunternif.voxarch.sandbox.castle.turret.*
 import hunternif.voxarch.wfc.tiled.WfcTiledModel

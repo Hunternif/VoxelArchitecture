@@ -2,8 +2,8 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.APathBuilder
 import hunternif.voxarch.builder.BuildContext
+import hunternif.voxarch.builder.MAT_WALL
 import hunternif.voxarch.plan.Path
-import hunternif.voxarch.sandbox.castle.MAT_WALL
 import hunternif.voxarch.snapshot.PathBuilderTest.Companion.squarePath
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger

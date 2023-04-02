@@ -1,8 +1,8 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.builder.MAT_WALL
 import hunternif.voxarch.builder.SnakePathBuilder
 import hunternif.voxarch.plan.Path
-import hunternif.voxarch.sandbox.castle.MAT_WALL
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 

@@ -1,11 +1,10 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.*
-import hunternif.voxarch.sandbox.castle.BLD_ARCHED_WINDOW
-import hunternif.voxarch.sandbox.castle.BLD_TOWER_BODY
 import hunternif.voxarch.util.Direction3D
 
 // Some DOM elements are built of more basic classes,

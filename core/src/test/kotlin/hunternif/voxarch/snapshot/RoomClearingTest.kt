@@ -1,10 +1,10 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.builder.MAT_FLOOR
 import hunternif.voxarch.builder.RoomBuilder
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.room
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 

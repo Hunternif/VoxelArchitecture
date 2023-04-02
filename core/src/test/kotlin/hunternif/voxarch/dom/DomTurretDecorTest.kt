@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
@@ -7,7 +8,6 @@ import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.naturalHeight
 import hunternif.voxarch.plan.query
-import hunternif.voxarch.sandbox.castle.BLD_TOWER_ROOF
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.util.assertNodeTreeEqualsRecursive
 import org.junit.Assert.*

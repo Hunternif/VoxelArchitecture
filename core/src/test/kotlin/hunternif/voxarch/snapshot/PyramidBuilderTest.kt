@@ -1,8 +1,8 @@
 package hunternif.voxarch.snapshot
 
+import hunternif.voxarch.builder.MAT_ROOF
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredPolyRoom
-import hunternif.voxarch.sandbox.castle.MAT_ROOF
 import hunternif.voxarch.sandbox.castle.builder.PyramidBuilder
 import hunternif.voxarch.util.circle
 import hunternif.voxarch.util.square

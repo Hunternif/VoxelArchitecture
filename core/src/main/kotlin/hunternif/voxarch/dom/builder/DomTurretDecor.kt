@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.builder
 
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.*
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
@@ -7,7 +8,6 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.naturalDepth
 import hunternif.voxarch.plan.naturalWidth
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.sandbox.castle.turret.TurretPosition

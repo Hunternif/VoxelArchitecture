@@ -7,19 +7,8 @@ import hunternif.voxarch.editor.render.TextureAtlas
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.resourcePath
 import hunternif.voxarch.magicavoxel.VoxColor
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.sandbox.castle.*
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IVoxel
-
-fun BuilderConfig.setDefaultBuilders() {
-    setDefault(SimpleFloorBuilder(MAT_FLOOR))
-    setDefault(SimpleWallBuilder(MAT_WALL))
-    setDefault(RoomBuilder())
-    setDefault(SimpleGateBuilder())
-    setDefault(SimpleHatchBuilder())
-    setDefault<Node>(Builder())
-}
 
 
 // ============================ Solid color voxels ============================

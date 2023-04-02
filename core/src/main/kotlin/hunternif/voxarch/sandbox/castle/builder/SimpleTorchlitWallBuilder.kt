@@ -1,10 +1,10 @@
 package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.BuildContext
+import hunternif.voxarch.builder.MAT_TORCH
 import hunternif.voxarch.builder.SimpleWallBuilder
 import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.Wall
-import hunternif.voxarch.sandbox.castle.MAT_TORCH
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
 import hunternif.voxarch.vector.TransformationStack

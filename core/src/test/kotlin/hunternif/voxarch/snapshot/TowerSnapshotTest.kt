@@ -2,7 +2,7 @@ package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.sandbox.castle.CastleBlueprint
-import hunternif.voxarch.sandbox.castle.setCastleBuilders
+import hunternif.voxarch.builder.setCastleBuilders
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
