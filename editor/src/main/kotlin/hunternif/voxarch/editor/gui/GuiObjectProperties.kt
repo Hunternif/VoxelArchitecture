@@ -29,7 +29,6 @@ class GuiObjectProperties(
     private val startInput = GuiInputVec3("start")
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
-    //TODO: update list of builders based on node type
     private val builderInput by lazy {
         GuiCombo("builder", app.state.builderLibrary.allBuilders)
     }
@@ -168,7 +167,8 @@ class GuiObjectProperties(
             defaultBuilderEntry = BuilderLibrary.Entry(newDefaultName, newDefaultBuilder)
 
             // Update the list in the combo
-            builderInput.values = listOf(defaultBuilderEntry) + library.allBuilders
+            val libraryBuilders = library.buildersByNodeType[node::class.java]
+            builderInput.values = listOf(defaultBuilderEntry) + libraryBuilders
         }
 
         // Set currently selected builder
