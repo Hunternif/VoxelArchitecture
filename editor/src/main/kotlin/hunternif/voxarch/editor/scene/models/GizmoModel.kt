@@ -5,6 +5,7 @@ import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
 import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
@@ -15,11 +16,13 @@ class GizmoModel(
     /** position of the axis intersection point
      * relative to the center of the voxel */
     private val center: Vector3f = Vector3f(0f, 0f, 0f),
-    /** length of axis line */
-    private val length: Float = 1f,
     private val lineWidth: Float = 2f,
 ) : BaseModel() {
-    private data class GizmoData(val pos: Vector3f)
+    private data class GizmoData(
+        val pos: Vector3f,
+        val size: Vector3f,
+        val angleY: Float,
+    )
 
     private var vertBufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
     private val instanceVertexBuffer = FloatBufferWrapper()
@@ -66,8 +69,8 @@ class GizmoModel(
         uploadInstanceData()
     }
 
-    fun addPos(pos: Vector3f) {
-        instances.add(GizmoData(pos))
+    fun addPos(pos: Vector3f, size: Vector3f, angleY: Float = 0f) {
+        instances.add(GizmoData(pos, size, angleY))
     }
 
     fun clear() {
@@ -82,7 +85,12 @@ class GizmoModel(
         // 16f is used by model matrix
         instanceVertexBuffer.prepare(instances.size * 16).run {
             instances.forEach { it.run {
-                put(Matrix4f().translation(pos).scale(length, length, length))
+                put(
+                    Matrix4f()
+                        .translation(pos)
+                        .rotateY(angleY.toRadians())
+                        .scale(size)
+                )
             }}
             flip()
         }

@@ -19,10 +19,9 @@ class GizmoBoxModel : IModel {
     override fun init() {
         gizmoModel = GizmoModel(
             Vector3f(-0.5f, -0.5f, -0.5f),
-            1f,
             lineWidth = 2f
         ).apply {
-            addPos(Vector3f(0f, 0f, 0f))
+            addPos(Vector3f(0f, 0f, 0f), Vector3f(1f, 1f, 1f))
             init()
         }
         outlineModel = AABBoxFrameModel(

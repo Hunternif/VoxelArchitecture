@@ -2,10 +2,8 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
-import hunternif.voxarch.editor.scene.models.box.BoxFrameModel
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -43,7 +41,7 @@ class MainScene(private val app: EditorApp) {
     private val voxelModel = VoxelGroupsModel(hitTester) { v -> app.state.voxelColorMap(v) }
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel(camera)
-    private val selectedNodeModel = BoxFrameModel(Colors.selectedNodeOutline)
+    private val selectedNodeModel = SelectedNodeModel()
     private val originsModel = PointSpriteModel("textures/point-circle.png")
     private val highlightedFaceModel = ResizeNodeModel()
     // special 3d model with a separate camera
