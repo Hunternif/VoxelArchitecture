@@ -4,6 +4,7 @@ import com.google.common.collect.ArrayListMultimap
 import com.google.common.collect.ListMultimap
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.DefaultBuilders
+import hunternif.voxarch.plan.Node
 
 
 class BuilderLibrary {
@@ -37,6 +38,17 @@ class BuilderLibrary {
         ArrayListMultimap.create<Class<*>, Entry>().apply {
             allBuilders.forEach { put(it.builder.nodeClass, it) }
         }
+    }
+
+    /** Returns all builders with matching type for a given node */
+    fun findBuildersFor(node: Node): List<Entry> {
+        val result = mutableListOf<Entry>()
+        var nodeClass: Class<*> = node::class.java
+        while (Node::class.java.isAssignableFrom(nodeClass)) {
+            result.addAll(buildersByNodeType[nodeClass])
+            nodeClass = nodeClass.superclass
+        }
+        return result
     }
 
     data class Entry(

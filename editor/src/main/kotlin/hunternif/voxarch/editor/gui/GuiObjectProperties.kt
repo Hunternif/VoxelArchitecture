@@ -177,7 +177,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
             defaultBuilderEntry = BuilderLibrary.Entry(newDefaultName, newDefaultBuilder)
 
             // Update the list in the combo
-            val libraryBuilders = library.buildersByNodeType[node::class.java]
+            val libraryBuilders = library.findBuildersFor(node)
             builderInput.values = listOf(defaultBuilderEntry) + libraryBuilders
         }
 
