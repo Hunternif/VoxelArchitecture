@@ -38,6 +38,8 @@ open class XmlNode(
     var size: Vec3 = Vec3.ZERO,
     @field:JacksonXmlProperty(isAttribute = true)
     var rotationY: Double = 0.0,
+    @field:JacksonXmlProperty(isAttribute = true)
+    var transparent: Boolean? = null
 ) {
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "tag")
@@ -76,8 +78,6 @@ class XmlWall(
     start: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
     rotationY: Double = 0.0,
-    @field:JacksonXmlProperty(isAttribute = true)
-    var transparent: Boolean = false
 ) : XmlNode(origin, start, size, rotationY)
 
 class XmlFloor(
@@ -104,12 +104,13 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
             shape, polygon.mapToXmlNode() as XmlPath
         )
         is Room -> XmlRoom(origin, start, size, rotationY)
-        is Wall -> XmlWall(origin, start, size, rotationY, transparent)
+        is Wall -> XmlWall(origin, start, size, rotationY)
         is Floor -> XmlFloor(origin.y, start)
         is Path -> XmlPath(origin, rotationY, points)
         else -> XmlNode(origin, start, size, rotationY)
     }
     xmlNode.tags.addAll(tags)
+    if (transparent) xmlNode.transparent = true
     return xmlNode
 }
 
@@ -139,7 +140,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
             it.polygon.addPoints(polygon.points ?: emptyList())
         }
         is XmlRoom -> Room(origin, size)
-        is XmlWall -> Wall(origin, origin + size, transparent)
+        is XmlWall -> Wall(origin, origin + size)
         is XmlFloor -> Floor(y)
         is XmlPath -> Path(origin).also {
             it.addPoints(points ?: emptyList())
@@ -150,6 +151,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     node.rotationY = rotationY
     node.size = size
     node.tags += tags
+    node.transparent = transparent == true
     children.forEach { xmlChild ->
         xmlChild.mapXmlNodeRecursive(mapped)?.let { child ->
             node.addChild(child)

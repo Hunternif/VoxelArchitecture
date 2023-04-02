@@ -14,7 +14,7 @@ class XmlSceneObjectSerializerTest {
         <node class="Structure" origin="(1.0, 2.0, 3.0)" start="(0.0, 0.0, 0.0)" size="(0.0, 0.0, 0.0)" rotationY="0.0">
           <node class="Room" origin="(0.0, 0.0, 0.0)" start="(-2.5, 0.0, -3.5)" size="(5.0, 6.0, 7.0)" rotationY="0.0">
             <node class="Wall" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="0.0" transparent="true"/>
-            <node class="Wall" origin="(0.0, 0.0, 1.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="-90.0" transparent="false"/>
+            <node class="Wall" origin="(0.0, 0.0, 1.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="-90.0"/>
             <node class="Floor" origin="(0.0, 0.0, 0.0)" start="(-2.5, 0.0, -3.5)" size="(0.0, 0.0, 0.0)" rotationY="0.0" y="1.0"/>
           </node>
           <node class="PolyRoom" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(7.0, 8.0, 9.0)" rotationY="0.0" shape="ROUND">
@@ -30,7 +30,7 @@ class XmlSceneObjectSerializerTest {
               <node class="Wall" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="0.0" transparent="true"/>
             </obj>
             <obj class="SceneNode" id="4" generated="false" color="4296fa" alpha="0.2">
-              <node class="Wall" origin="(0.0, 0.0, 1.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="-90.0" transparent="false"/>
+              <node class="Wall" origin="(0.0, 0.0, 1.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 0.0)" rotationY="-90.0"/>
             </obj>
             <obj class="SceneNode" id="5" generated="false" color="4296fa" alpha="0.2">
               <node class="Floor" origin="(0.0, 0.0, 0.0)" start="(-2.5, 0.0, -3.5)" size="(0.0, 0.0, 0.0)" rotationY="0.0" y="1.0"/>
