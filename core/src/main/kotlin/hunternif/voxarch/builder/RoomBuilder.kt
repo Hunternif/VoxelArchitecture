@@ -13,9 +13,7 @@ open class RoomBuilder : ARoomBuilder() {
             floors.filter { !it.isBuilt }.forEach { buildChild(it, trans, world, context) }
             walls.filter { !it.isBuilt }.forEach { buildChild(it, trans, world, context) }
             children.filter { it !is Gate && it !is Hatch && !it.isBuilt }.forEach { buildChild(it, trans, world, context) }
-            // gates and hatches is all that's left, and they must be built last:
-            buildChildren(this, trans, world, context)
-            isBuilt = true
+            // gates and hatches is all that's left, and they must be built last (via buildChildren)
         }
     }
 

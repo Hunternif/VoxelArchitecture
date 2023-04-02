@@ -11,6 +11,5 @@ class OneBlockPropBuilder(private val material: String) : ANodeBuilder() {
         node.origin.apply {
             world.toLocal(trans).setBlock(x, y, z, block)
         }
-        super.build(node, trans, world, context)
     }
 }

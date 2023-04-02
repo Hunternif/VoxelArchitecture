@@ -17,7 +17,6 @@ class SimpleTorchlitWallBuilder(
 
     override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         super.build(node, trans, world, context)
-        if (node.transparent) return
         val localWorld = world.toLocal(trans)
 
         //TODO: some torches fall down. Consider spawning them as props.

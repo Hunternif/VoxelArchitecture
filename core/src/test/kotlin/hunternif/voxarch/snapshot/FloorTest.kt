@@ -1,6 +1,7 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.MAT_FLOOR
+import hunternif.voxarch.plan.Floor
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.floor
 import hunternif.voxarch.plan.room
@@ -24,7 +25,7 @@ class FloorTest : BaseSnapshotTest(10, 1, 10) {
     fun `foundation floor`() {
         out.safeBoundary = true
         context.builders.apply {
-            setDefault(FloorFoundationBuilder(MAT_FLOOR))
+            setDefault<Floor>(FloorFoundationBuilder(MAT_FLOOR))
         }
         `simple floor`()
     }

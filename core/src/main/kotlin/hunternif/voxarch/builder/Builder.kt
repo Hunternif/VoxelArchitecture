@@ -15,13 +15,13 @@ open class Builder<in T : Node>(
     val nodeClass: Class<in T>,
 ) {
     companion object {
-        inline operator fun <reified T : Node> invoke() : Builder<T> =
+        inline operator fun <reified T : Node> invoke(): Builder<T> =
             Builder(T::class.java)
     }
 
     /**
-     * When overriding, don't forget to call [buildChildren]
-     * and set `node.isBuilt = true` at some point.
+     * Override this, placing blocks in the world to represent this Node.
+     * No need to build children, they are built automatically after this.
      *
      * @param node the node being built into blocks.
      * @param trans transforms local coordinates to global world coordinates.
@@ -30,26 +30,47 @@ open class Builder<in T : Node>(
      * @param world uses global coordinates.
      * @param context contains materials and custom Builders.
      */
-    open fun build(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    internal open fun build(
+        node: T,
+        trans: TransformationStack,
+        world: IBlockStorage,
+        context: BuildContext,
+    ) {
         buildChildren(node, trans, world, context)
         node.isBuilt = true
     }
 
-    internal fun buildChildren(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        node.children.filter { !it.isBuilt }.forEach { buildChild(it, trans, world, context) }
+    private fun buildChildren(
+        parent: T,
+        trans: TransformationStack,
+        world: IBlockStorage,
+        context: BuildContext,
+    ) {
+        parent.children
+            .filter { !it.isBuilt }
+            .forEach { buildChild(it, trans, world, context) }
     }
 
-    internal fun buildChild(child: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    protected fun buildChild(
+        child: Node,
+        trans: TransformationStack,
+        world: IBlockStorage,
+        context: BuildContext,
+    ) {
         val builder = context.builders.get(child)
         if (builder != null) {
             trans.apply {
                 push()
                 translate(child.origin)
                 rotateY(child.rotationY)
-                builder.build(child, this, world, context)
+                if (!child.transparent) {
+                    builder.build(child, this, world, context)
+                }
+                builder.buildChildren(child, trans, world, context)
                 pop()
             }
         }
+        child.isBuilt = true
     }
 
     override fun toString(): String = this::class.java.simpleName

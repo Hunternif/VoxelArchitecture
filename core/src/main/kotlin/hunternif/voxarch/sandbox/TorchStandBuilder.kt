@@ -29,6 +29,5 @@ class TorchStandBuilder : ANodeBuilder() {
             torch.rotate(90.0)
             setBlock(0, 2, 1, torch)
         }
-        super.build(node, trans, world, context)
     }
 }

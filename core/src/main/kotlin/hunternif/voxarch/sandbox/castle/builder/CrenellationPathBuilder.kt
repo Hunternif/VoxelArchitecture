@@ -30,7 +30,6 @@ class CrenellationPathBuilder(
         val wallLength = node.totalLength.toInt()
         val hugger = PathHugger(node, trans, world)
         buildCrenellations(0, wallLength, 0, sizes, material, hugger, context)
-        super.build(node, trans, world, context)
     }
 }
 
@@ -49,7 +48,6 @@ class CrenellationWallBuilder(
 
     override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         super.build(node, trans, world, context)
-        if (node.transparent) return
         val height = node.height.toInt()
         val wallLength = node.width.toInt()
         val localWorld = world.toLocal(trans)

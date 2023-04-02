@@ -24,7 +24,6 @@ open class PathBuilder<in T : Path>(
             }
             traveled -= s.length
         }
-        super.build(node, trans, world, context)
     }
 
     /**

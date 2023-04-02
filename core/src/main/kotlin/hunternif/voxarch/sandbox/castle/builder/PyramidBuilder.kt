@@ -35,7 +35,6 @@ class PyramidBuilder(
         if (upsideDown) {
             trans.pop()
         }
-        super.build(node, trans, world, context)
     }
 
     /**

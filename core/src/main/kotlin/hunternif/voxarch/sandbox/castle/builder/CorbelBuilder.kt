@@ -69,8 +69,6 @@ class CorbelBuilder(
                 }
             }
         }
-
-        super.build(node, trans, world, context)
     }
 
     private fun buildCorbel(

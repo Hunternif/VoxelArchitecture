@@ -14,12 +14,6 @@ class MainBuilder : ANodeBuilder() {
      */
     fun build(node: Node, world: IBlockStorage, context: BuildContext) {
         val trans = TransformationStack()
-        trans.apply {
-            push()
-            translate(node.origin)
-            rotateY(node.rotationY)
-            super.build(node, this, world, context)
-            pop()
-        }
+        buildChild(node, trans, world, context)
     }
 }

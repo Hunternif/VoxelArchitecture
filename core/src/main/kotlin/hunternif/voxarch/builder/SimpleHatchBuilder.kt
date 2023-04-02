@@ -30,6 +30,5 @@ class SimpleHatchBuilder(
                 }
             }
         }
-        super.build(node, trans, world, context)
     }
 }

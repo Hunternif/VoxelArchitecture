@@ -3,7 +3,6 @@ package hunternif.voxarch.builder
 import com.nhaarman.mockitokotlin2.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec2
 import hunternif.voxarch.vector.Vec3
 import org.junit.Before
@@ -27,16 +26,16 @@ class RoomBuilderTest {
 
     @Mock lateinit var world: IBlockStorage
     lateinit var buildContext: BuildContext
-    private val trans = TransformationStack()
 
     @Mock lateinit var builder: Builder<Node>
 
     @Before
     fun setup() {
-        buildContext = BuildContext(mock()).apply{
+        buildContext = BuildContext(mock()).apply {
+            builders.set<Room>("base" to RoomBuilder())
             builders.set(null to builder)
         }
-        room = spy(Room(Vec3.ZERO, Vec3.ZERO))
+        room = spy(Room(Vec3.ZERO, Vec3.ZERO)).apply { tags.add("base") }
         floor = spy(Floor())
         wall = spy(Wall(Vec3.ZERO, Vec3.ZERO))
         childRoom = spy(Room(Vec3.ZERO, Vec3.ZERO))
@@ -59,14 +58,14 @@ class RoomBuilderTest {
         }
         val inOrder = inOrder(builder)
 
-        RoomBuilder().build(room, trans, world, buildContext)
+        MainBuilder().build(room, world, buildContext)
 
-        inOrder.verify(builder).build(eq(floor), eq(trans), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(wall), eq(trans), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(node), eq(trans), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(childRoom), eq(trans), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(prop), eq(trans), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(gate), eq(trans), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(hatch), eq(trans), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(floor), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(wall), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(node), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(childRoom), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(prop), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(gate), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(hatch), any(), eq(world), eq(buildContext))
     }
 }

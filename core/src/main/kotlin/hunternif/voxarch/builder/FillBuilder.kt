@@ -12,6 +12,5 @@ open class FillBuilder(
         node.fillXYZ(trans) { x, y, z ->
             world.setBlock(x, y, z, block)
         }
-        super.build(node, trans, world, context)
     }
 }

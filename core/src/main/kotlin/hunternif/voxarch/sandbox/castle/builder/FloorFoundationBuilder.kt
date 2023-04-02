@@ -23,8 +23,6 @@ class FloorFoundationBuilder(
                 buildDownToGround(pos.x, pos.y, pos.z, world, context)
             }
         }
-
-        super.build(node, trans, world, context)
     }
 
     private fun buildDownToGround(
