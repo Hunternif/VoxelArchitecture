@@ -38,7 +38,17 @@ class BuilderConfig {
      */
     @Suppress("UNCHECKED_CAST")
     fun <T: Node> get(node: T): Builder<T>? {
-        var nodeClass: Class<*> = node.javaClass
+        var nodeClass: Class<*> = node::class.java
+
+        // 1. Try the local builder first
+        // TODO: log error if type is mismatched
+        node.builder?.let {
+            if (it.nodeClass.isAssignableFrom(nodeClass)) {
+                return it as Builder<T>
+            }
+        }
+
+        // 2. Fetch appropriate builder from the config
         var builder: Builder<*>? = null
         classLoop@ while (Node::class.java.isAssignableFrom(nodeClass)) {
             val buildersForClass = buildersForClass(nodeClass as Class<out Node>)

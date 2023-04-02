@@ -18,14 +18,14 @@ class BuilderConfigTest {
     @Before
     fun setup() {
         config = BuilderConfig()
-        config.set(
+        config.set<Room>(
             "room tag" to specialRoomBuilder,
             null to roomBuilder
         )
-        config.set(
+        config.set<Node>(
             "node tag" to nodeBuilder
         )
-        config.set(
+        config.set<Floor>(
             null to floorBuilder
         )
     }
@@ -55,5 +55,14 @@ class BuilderConfigTest {
     fun `get null because no builder set`() {
         val node = Prop(Vec3.ZERO, "type")
         assertNull(config.get(node))
+    }
+
+    @Test
+    fun `local override builder takes priority`() {
+        val node = Room()
+        assertEquals(roomBuilder, config.get(node))
+
+        node.builder = specialRoomBuilder
+        assertEquals(specialRoomBuilder, config.get(node))
     }
 }

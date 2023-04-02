@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.Vec3
 
@@ -69,6 +70,9 @@ open class Node(
 
     /** Rotation around Y axis CCW in degrees */
     open var rotationY: Double = 0.0
+
+    /** If set, this builder class will have higher priority than BuilderConfig */
+    var builder: Builder<*>? = null
 
     override val children: MutableList<Node> = mutableListOf()
 
