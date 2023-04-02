@@ -9,7 +9,7 @@ import hunternif.voxarch.vector.TransformationStack
 
 class FloorFoundationBuilder(
     private val material: String
-) : Builder<Floor>() {
+) : AFloorBuilder() {
     override fun build(node: Floor, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // 1. Fill space inside
         node.fillXZ(trans) { x, y, z ->

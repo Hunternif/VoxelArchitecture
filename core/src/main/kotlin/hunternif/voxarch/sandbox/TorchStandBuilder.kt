@@ -1,7 +1,7 @@
 package hunternif.voxarch.sandbox
 
+import hunternif.voxarch.builder.APropBuilder
 import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.sandbox.castle.*
@@ -9,7 +9,7 @@ import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
 import hunternif.voxarch.vector.TransformationStack
 
-class TorchStandBuilder : Builder<Prop>() {
+class TorchStandBuilder : APropBuilder() {
     override fun build(node: Prop, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val post = context.materials.get(MAT_POST)
         val block = context.materials.get(MAT_WALL)

@@ -11,7 +11,7 @@ import hunternif.voxarch.vector.TransformationStack
 open class SnakePathBuilder(
     private val material: String,
     private val step: Double = 1.0
-): Builder<Path>() {
+): APathBuilder() {
     override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val hugger = PathHugger(node, trans, world)
         var x = 0.0

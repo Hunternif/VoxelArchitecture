@@ -1,9 +1,6 @@
 package hunternif.voxarch.sandbox.castle.builder
 
-import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.Builder
-import hunternif.voxarch.builder.SimpleWallBuilder
-import hunternif.voxarch.builder.toLocal
+import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.IBlockStorage
@@ -27,7 +24,7 @@ data class CrenellationSizes(
 class CrenellationPathBuilder(
     private val material: String,
     private val sizes: CrenellationSizes = CrenellationSizes()
-) : Builder<Path>() {
+) : APathBuilder() {
 
     override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val wallLength = node.totalLength.toInt()

@@ -6,7 +6,7 @@ import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 
-open class RoomBuilder : Builder<Room>() {
+open class RoomBuilder : ARoomBuilder() {
     override fun build(node: Room, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         node.apply {
             clearVolume(world, trans)

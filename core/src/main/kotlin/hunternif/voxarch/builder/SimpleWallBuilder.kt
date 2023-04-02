@@ -7,7 +7,7 @@ import hunternif.voxarch.vector.TransformationStack
 open class SimpleWallBuilder(
     private val material: String,
     private val downToGround: Boolean = false
-): Builder<Wall>() {
+): AWallBuilder() {
     override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         if (!node.transparent) {
             val localWorld = world.toLocal(trans)

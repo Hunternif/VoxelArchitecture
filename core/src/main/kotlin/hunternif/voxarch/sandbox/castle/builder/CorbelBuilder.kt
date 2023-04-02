@@ -1,7 +1,7 @@
 package hunternif.voxarch.sandbox.castle.builder
 
+import hunternif.voxarch.builder.APathBuilder
 import hunternif.voxarch.builder.BuildContext
-import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
@@ -26,7 +26,7 @@ class CorbelBuilder(
     private val corbelMinSpacing: Int = 2,
     private val corbelMaxSpacing: Int = 3,
     private val spacingMode: SpacingMode = SpacingMode.SYMMETRIC
-) : Builder<Path>() {
+) : APathBuilder() {
 
     enum class SpacingMode {
         SYMMETRIC, ROUNDED, LINEAR

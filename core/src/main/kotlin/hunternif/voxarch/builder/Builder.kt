@@ -11,7 +11,14 @@ import hunternif.voxarch.vector.TransformationStack
  * Custom Builder subclasses can handle Node subclasses ("Room", "Wall" etc)
  * and types ("corridor", "dungeon" etc).
  */
-open class Builder<in T : Node> {
+open class Builder<in T : Node>(
+    val nodeClass: Class<in T>,
+) {
+    companion object {
+        inline operator fun <reified T : Node> invoke() : Builder<T> =
+            Builder(T::class.java)
+    }
+
     /**
      * When overriding, don't forget to call [buildChildren]
      * and set `node.isBuilt = true` at some point.

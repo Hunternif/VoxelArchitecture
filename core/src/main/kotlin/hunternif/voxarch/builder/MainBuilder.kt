@@ -8,7 +8,7 @@ import hunternif.voxarch.vector.TransformationStack
  * Use this builder to start building in an open world.
  * Don't register it in [BuildContext]
  */
-class MainBuilder : Builder<Node>() {
+class MainBuilder : ANodeBuilder() {
     /**
      * Moves starting point to `node`'s origin and then starts building.
      */

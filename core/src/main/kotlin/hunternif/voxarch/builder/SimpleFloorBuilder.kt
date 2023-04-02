@@ -6,7 +6,7 @@ import hunternif.voxarch.vector.TransformationStack
 
 open class SimpleFloorBuilder(
     private val material: String
-) : Builder<Floor>() {
+) : AFloorBuilder() {
     override fun build(node: Floor, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // Fill space inside
         node.fillXZ(trans) { x, y, z ->

@@ -10,7 +10,7 @@ import hunternif.voxarch.vector.Vec3
  */
 open class PathBuilder<in T : Path>(
     val step: Double = 1.0
-) : Builder<T>() {
+) : Builder<T>(Path::class.java) {
     override fun build(node: T, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // distance traveled along the CURRENT SECTION of the path
         var traveled = 0.0

@@ -4,7 +4,7 @@ import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 
-class OneBlockPropBuilder(private val material: String) : Builder<Prop>() {
+class OneBlockPropBuilder(private val material: String) : APropBuilder() {
 
     override fun build(node: Prop, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val block = context.materials.get(material)

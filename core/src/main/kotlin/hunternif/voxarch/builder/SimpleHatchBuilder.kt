@@ -16,7 +16,7 @@ class SimpleHatchBuilder(
     private val minWidth: Int = 1,
     private val minLength: Int = 1,
     private val clearance: Int = 1
-): Builder<Hatch>() {
+): AHatchBuilder() {
     override fun build(node: Hatch, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val localWorld = world.toLocal(trans)
         val width = max(minWidth, node.size.x.toInt())
