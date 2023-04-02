@@ -1,11 +1,12 @@
 package hunternif.voxarch.editor.file
 
-import hunternif.voxarch.dom.style.property.PropWidth
-import hunternif.voxarch.dom.style.toDouble
+import hunternif.voxarch.dom.style.property.width
+import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.PropBlueprint
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -18,7 +19,10 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
         val node1 = app.newBlueprintNode(bp, "Extend", 100f, 20f)!!
         val node2 = app.newBlueprintNode(bp, "Room", 200f, 30f)!!
         node2.extraStyleClass = "my_room"
-        node2.rule.add(PropWidth, 10.vx.toDouble())
+        node2.rule.apply {
+            width { 10.vx }
+            add(PropBlueprint, set("some blueprint"))
+        }
         app.linkBlueprintSlots(bp.start.outputs[0], node1.inputs[0])
         app.linkBlueprintSlots(node1.outputs.first { it.name == "east" }, node2.inputs[0])
 
@@ -41,6 +45,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
         assertEquals("""
             .Room_2 {
               width: 10
+              blueprint: "some blueprint"
             }
         """.trimIndent(), node2.rule.toString())
 
@@ -66,6 +71,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
             <style>
         .Room_2 {
           width: 10
+          blueprint: "some blueprint"
         }
         </style>
             <inSlot id="7" name="in"/>

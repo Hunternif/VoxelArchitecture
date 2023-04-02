@@ -19,5 +19,7 @@ class Declaration<T>(
             Declaration(property, set(property.default))
     }
 
-    override fun toString(): String = "$property: $value"
+    override fun toString(): String =
+        if (property.isString) "$property: \"$value\""
+        else "$property: $value"
 }
