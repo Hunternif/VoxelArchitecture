@@ -7,30 +7,42 @@ import hunternif.voxarch.builder.DefaultBuilders
 
 
 class BuilderLibrary {
-    val allBuilders: List<Builder<*>> = listOf(
-        DefaultBuilders.Node,
-        DefaultBuilders.Room,
-        DefaultBuilders.Wall,
-        DefaultBuilders.Floor,
-        DefaultBuilders.ArchedWindow,
-        DefaultBuilders.Foundation,
+    val allBuilders: List<Entry> = listOf(
+        Entry("Basic Node", DefaultBuilders.Node),
+        Entry("Basic Room", DefaultBuilders.Room),
+        Entry("Basic Wall", DefaultBuilders.Wall),
+        Entry("Basic Floor", DefaultBuilders.Floor),
 
-        DefaultBuilders.CastleCrenelGroundWall,
-        DefaultBuilders.CastleCrenelWall,
-        DefaultBuilders.CastleCorbel,
-        DefaultBuilders.CastleCrenelDecor,
-        DefaultBuilders.PyramidRoof,
-        DefaultBuilders.TowerTaperedBottom,
+        Entry("Arched Window", DefaultBuilders.ArchedWindow),
 
-        DefaultBuilders.TorchStand,
+        Entry("Foundation", DefaultBuilders.Foundation),
+        Entry("Castle crenel ground wall", DefaultBuilders.CastleCrenelGroundWall),
+        Entry("Castle crenel wall", DefaultBuilders.CastleCrenelWall),
+        Entry("Castle crenel decor", DefaultBuilders.CastleCrenelDecor),
+        Entry("Castle corbel", DefaultBuilders.CastleCorbel),
+        Entry("Spire roof", DefaultBuilders.PyramidRoof),
+        Entry("Tapered bottom", DefaultBuilders.TowerTaperedBottom),
 
-        DefaultBuilders.Gate,
-        DefaultBuilders.Hatch,
+        Entry("Torch stand", DefaultBuilders.TorchStand),
+
+        Entry("Basic Gate", DefaultBuilders.Gate),
+        Entry("Basic Hatch", DefaultBuilders.Hatch),
     )
 
-    val buildersByNodeType: ListMultimap<Class<*>, Builder<*>> by lazy {
-        ArrayListMultimap.create<Class<*>, Builder<*>>().apply {
-            allBuilders.forEach {put(it.nodeClass, it) }
+    val buildersByInstance: Map<Builder<*>, Entry> by lazy {
+        allBuilders.associateBy { it.builder }
+    }
+
+    val buildersByNodeType: ListMultimap<Class<*>, Entry> by lazy {
+        ArrayListMultimap.create<Class<*>, Entry>().apply {
+            allBuilders.forEach { put(it.builder.nodeClass, it) }
         }
+    }
+
+    data class Entry(
+        val name: String,
+        val builder: Builder<*>,
+    ) {
+        override fun toString(): String = name
     }
 }

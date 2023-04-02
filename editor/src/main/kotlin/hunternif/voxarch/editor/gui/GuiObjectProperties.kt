@@ -4,9 +4,11 @@ import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.builder.BuilderLibrary
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.naturalSize
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
@@ -29,18 +31,20 @@ class GuiObjectProperties(
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
     //TODO: update list of builders based on node type
     //TODO: display default builder from BuilderConfig
-    //TODO: display meaningful names
     private val builderInput by lazy {
-        GuiCombo<Builder<*>?>("builder", app.state.builderLibrary.allBuilders)
+        GuiCombo("builder", app.state.builderLibrary.allBuilders)
     }
 
     // Update timer
     private val nodeTimer = Timer(0.02)
+    private val builderTimer = Timer(0.1)
     private val blueprintsTimer = Timer(0.02)
     private val redrawTimer = Timer(0.02)
 
+    // Currently selected items
     private var obj: SceneObject? = null
     private val voxGroupSize: Vec3 = Vec3(0, 0, 0)
+    private var builderEntry: BuilderLibrary.Entry = defaultBuilderEntry
 
     private val curBlueprints = mutableListOf<Blueprint>()
 
@@ -83,10 +87,12 @@ class GuiObjectProperties(
             app.transformNodeRotation(sceneNode, original.toDouble(), newValue.toDouble())
         })
 
-        builderInput.render(sceneNode.node.builder) {
+        checkNodeBuilder(sceneNode)
+        builderInput.render(builderEntry) {
             //TODO: create action to set node builder
             //TODO: allow executing various builders regardless of exact node type
-            sceneNode.node.builder = it
+            builderEntry = it
+            sceneNode.node.builder = it.builder
         }
 
         ImGui.separator()
@@ -146,6 +152,16 @@ class GuiObjectProperties(
         }
     }
 
+    /** Check whether the list of current & available builders needs to be updated */
+    private fun checkNodeBuilder(sceneNode: SceneNode) = builderTimer.runAtInterval {
+        val library = app.state.builderLibrary
+        val currentBuilder = sceneNode.node.builder
+        if (builderEntry.builder != currentBuilder) {
+            builderEntry = library.buildersByInstance[currentBuilder]
+                ?: defaultBuilderEntry
+        }
+    }
+
     private fun renderHeaderText() {
         app.state.selectedObjects.run {
             when (size) {
@@ -185,5 +201,12 @@ class GuiObjectProperties(
                 }
             }
         }
+    }
+
+    companion object {
+        /** Indicates that the default should be used. */
+        private val defaultBuilder = Builder<Node>()
+
+        private val defaultBuilderEntry = BuilderLibrary.Entry("Default", defaultBuilder)
     }
 }
