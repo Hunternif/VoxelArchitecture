@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.gui
 
+import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
@@ -26,6 +27,12 @@ class GuiObjectProperties(
     private val startInput = GuiInputVec3("start")
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
+    //TODO: update list of builders based on node type
+    //TODO: display default builder from BuilderConfig
+    //TODO: display meaningful names
+    private val builderInput by lazy {
+        GuiCombo<Builder<*>?>("builder", app.state.builderLibrary.allBuilders)
+    }
 
     // Update timer
     private val nodeTimer = Timer(0.02)
@@ -75,6 +82,12 @@ class GuiObjectProperties(
         }, onEditFinished = {
             app.transformNodeRotation(sceneNode, original.toDouble(), newValue.toDouble())
         })
+
+        builderInput.render(sceneNode.node.builder) {
+            //TODO: create action to set node builder
+            //TODO: allow executing various builders regardless of exact node type
+            sceneNode.node.builder = it
+        }
 
         ImGui.separator()
         ImGui.text("Blueprints")

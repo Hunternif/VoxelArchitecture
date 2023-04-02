@@ -37,6 +37,7 @@ interface AppState {
     /** Root group containing all voxel groups in the scene.
      * The root itself should stay empty of voxels. */
     val voxelRoot: SceneObject
+    val builderLibrary: BuilderLibrary
     val builder: MainBuilder
     val buildContext: BuildContext
     val stylesheet: Stylesheet
@@ -112,6 +113,7 @@ class AppStateImpl(
     override val blueprints get() = registry.blueprintIDs.map.values
     override val blueprintUsage = registry.bpInNodes
 
+    override val builderLibrary = BuilderLibrary()
     override val builder = MainBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
         materials.setSolidColorMaterials()

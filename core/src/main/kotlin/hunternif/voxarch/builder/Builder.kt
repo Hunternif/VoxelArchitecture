@@ -51,4 +51,6 @@ open class Builder<in T : Node>(
             }
         }
     }
+
+    override fun toString(): String = this::class.java.simpleName
 }
