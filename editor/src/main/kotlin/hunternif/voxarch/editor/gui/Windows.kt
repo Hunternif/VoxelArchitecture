@@ -158,3 +158,12 @@ fun calcTextSize(str: String): ImVec2 {
 fun isThisWindowClicked(): Boolean = ImGui.isWindowHovered() &&
     !ImGui.isMouseDragging(ImGuiMouseButton.Left) &&
     ImGui.isMouseClicked(ImGuiMouseButton.Left)
+
+/** Display a non-empty tooltip if the last element is hovered */
+fun tooltip(msg: String?) {
+    if (msg != null && msg.isNotEmpty() && ImGui.isItemHovered()) {
+        ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 6f, 6f)
+        ImGui.setTooltip(msg)
+        ImGui.popStyleVar()
+    }
+}

@@ -69,24 +69,33 @@ class GuiObjectProperties(
         originInput.render(node.origin) {
             app.transformObjOrigin(sceneNode, original, newValue)
         }
+        tooltip("""The point from which this node's coordinates are calculated.
+Indicated on the 3D scene as a little circle.""")
 
         sizeInput.render(node.naturalSize) {
             app.transformNodeNaturalSize(sceneNode, original, newValue)
         }
+        tooltip("How many blocks this node occupies along each axis.")
 
         startInput.render(node.start) {
             app.transformNodeStart(sceneNode, original, newValue)
         }
+        tooltip("""Internal offset of the low-XYZ corner.
+Children are placed relative to parent's origin, but parent's start
+suggests where children should be placed.
+By default, it's set so that origin is at the low-XYZ corner.""")
 
         snapOriginInput.render(sceneNode.snapOrigin) {
             app.transformNodeSnapOrigin(sceneNode, it)
         }
+        tooltip("Snap node origin to a predefined position")
 
         rotationInput.render(node.rotationY.toFloat(), onUpdated = {
             node.rotationY = newValue.toDouble()
         }, onEditFinished = {
             app.transformNodeRotation(sceneNode, original.toDouble(), newValue.toDouble())
         })
+        tooltip("CCW rotation around the vertical axis, in degrees.")
 
         checkNodeBuilder(sceneNode.node)
         builderInput.render(builderEntry) {
@@ -95,6 +104,7 @@ class GuiObjectProperties(
             val newBuilder = if (it == defaultBuilderEntry) null else it.builder
             app.setNodeBuilder(sceneNode, newBuilder)
         }
+        tooltip("Override the Builder that will be used for this node during 'Build voxels'.")
 
         ImGui.separator()
         ImGui.text("Blueprints")

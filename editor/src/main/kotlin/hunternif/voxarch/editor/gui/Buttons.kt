@@ -16,7 +16,7 @@ inline fun button(
     crossinline onClick: () -> Unit = {}
 ) {
     if (ImGui.button(text, width, 0f)) onClick()
-    if (tooltip.isNotEmpty() && ImGui.isItemHovered()) setTooltip(tooltip)
+    tooltip(tooltip)
 }
 
 inline fun accentButton(
@@ -60,7 +60,7 @@ inline fun GuiBase.iconButton(
     ImGui.pushFont(font)
     if (ImGui.button(icon, width, height)) onClick()
     ImGui.popFont()
-    if (tooltip.isNotEmpty() && ImGui.isItemHovered()) setTooltip(tooltip)
+    tooltip(tooltip)
     ImGui.popStyleVar(1)
     if (accent || selected) ImGui.popStyleColor(3)
     else if (transparent) ImGui.popStyleColor()
@@ -85,12 +85,6 @@ inline fun GuiBase.smallIconButton(
     crossinline onClick: () -> Unit = {}
 ) {
     iconButton(icon, tooltip, false, selected, transparent, 20f, 19f, fontSmallIcons, onClick)
-}
-
-fun setTooltip(msg: String) {
-    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 6f, 6f)
-    ImGui.setTooltip(msg)
-    ImGui.popStyleVar()
 }
 
 fun MainGui.toolButton(tool: Tool) {
