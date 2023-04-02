@@ -5,7 +5,7 @@ import hunternif.voxarch.dom.style.Property
 import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.editor.blueprint.BlueprintNode
-import hunternif.voxarch.editor.blueprint.editorStyleProperties
+import hunternif.voxarch.editor.blueprint.blueprintEditorStyleProperties
 import imgui.ImGui
 
 class GuiBlueprintNodeStyle(
@@ -15,7 +15,7 @@ class GuiBlueprintNodeStyle(
 
     @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
     val items: List<Item<*>> by lazy {
-        editorStyleProperties.mapNotNull { p ->
+        blueprintEditorStyleProperties.mapNotNull { p ->
             when (p.default) {
                 is Number -> ItemNumber(rule, p as Property<Number>)
                 is Enum<*> -> ItemEnum(rule, p as Property<Enum<*>>)

@@ -42,7 +42,7 @@ abstract class Property<T>(
 // ============================================================================
 
 /** Helper function for creating a new [Property] for a [Node] class */
-internal inline fun <reified N : Node, reified T> newNodeProperty(
+inline fun <reified N : Node, reified T> newNodeProperty(
     name: String,
     default: T,
     noinline block: StyledNode<N>.(Value<T>) -> Unit,
@@ -60,7 +60,7 @@ internal inline fun <reified N : Node, reified T> newNodeProperty(
 }
 
 /** Helper function for creating a new [Property] for a [DomBuilder] class */
-internal inline fun <reified D : DomBuilder, reified T> newDomProperty(
+inline fun <reified D : DomBuilder, reified T> newDomProperty(
     name: String,
     default: T,
     noinline block: StyledElement<D>.(Value<T>) -> Unit,

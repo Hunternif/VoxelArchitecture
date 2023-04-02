@@ -1,6 +1,5 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.dom.style.AllStyleProperties
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.History
@@ -8,6 +7,7 @@ import hunternif.voxarch.editor.actions.setTextEditorActive
 import hunternif.voxarch.editor.actions.updateStylesheetAndText
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
+import hunternif.voxarch.editor.blueprint.styleEditorStyleProperties
 import hunternif.voxarch.editor.file.style.parseStylesheet
 import hunternif.voxarch.editor.scene.KeyListener
 import hunternif.voxarch.util.clamp
@@ -83,7 +83,7 @@ class GuiStyleEditor(
 
         val preprocIds = mutableMapOf<String, String>()
         // Treat property names as "preprocessor identifiers":
-        AllStyleProperties.forEach {
+        styleEditorStyleProperties.forEach {
             preprocIds[it.name] = "property '${it.name}'"
         }
         lang.setPreprocIdentifiers(preprocIds)

@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.antlr.StyleGrammarLexer
 import hunternif.voxarch.editor.antlr.StyleGrammarParser
 import hunternif.voxarch.editor.antlr.StyleGrammarParser.*
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.editor.blueprint.styleEditorStyleProperties
 import hunternif.voxarch.vector.Vec3
 import org.antlr.v4.runtime.*
 
@@ -85,8 +86,7 @@ private fun <T> makeDecl(
             enum?.let { set(name, it) }
         }
         ctx is StrValueContext && property.isString -> {
-            // TODO: strip quotes
-            set((ctx.STR()?.text ?: "") as T)
+            set((ctx.STR()?.text?.stripQuotes() ?: "") as T)
         }
         ctx is NumValueContext && property.isNumber -> {
             try {
@@ -143,7 +143,7 @@ val knownStyleTypes: Map<String, Class<*>> by lazy {
 }
 
 val knownStyleProperties: Map<String, Property<*>> by lazy {
-    AllStyleProperties.associateBy { it.name }
+    styleEditorStyleProperties.associateBy { it.name }
 }
 
 private fun invalidProperty(text: String) = object : Property<Any>(
@@ -151,6 +151,8 @@ private fun invalidProperty(text: String) = object : Property<Any>(
 ) {
     override fun applyTo(styled: StyledElement<*>, value: Value<Any>) {}
 }
+
+private fun String.stripQuotes() = this.trim('\'', '\"')
 
 class NumberExpressionException(
     text: String,

@@ -6,6 +6,7 @@ import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.style.select
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.editor.blueprint.PropBlueprint
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.util.SnapOrigin
@@ -232,14 +233,27 @@ class StyleParserTest {
     }
 
     @Test
-    @Ignore("Blueprint execution not implemented yet")
+    @Ignore("Inline content not implemented yet")
+    fun `parse content property`() {
+        val rules = parseStylesheet("""
+            .turret {
+                content: "content"
+            }
+        """.trimIndent()).rules
+        val expected = Rule(select("turret"))
+        assertRulesEqual(listOf(expected), rules)
+    }
+
+    @Test
     fun `parse blueprint execution rule`() {
         val rules = parseStylesheet("""
             .turret {
                 blueprint: "Turret Decor BP"
             }
         """.trimIndent()).rules
-        val expected = Rule(select("turret"))
+        val expected = Rule(select("turret")).apply {
+            add(PropBlueprint, set("Turret Decor BP"))
+        }
         assertRulesEqual(listOf(expected), rules)
     }
 

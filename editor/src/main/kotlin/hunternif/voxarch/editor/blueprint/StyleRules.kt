@@ -3,61 +3,73 @@ package hunternif.voxarch.editor.blueprint
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 
-/** Ordered as they would be in UI. */
-val editorStyleProperties: List<Property<*>> = listOf(
-    PropWidth,
-    PropHeight,
-    PropDepth,
+/**
+ * Style properties available in Style editor.
+ */
+val styleEditorStyleProperties: List<Property<*>> by lazy {
+    AllStyleProperties + PropBlueprint
+}
 
-    PropSnapOrigin,
+/**
+ * Style properties available in Blueprint editor.
+ * Ordered as they would be in UI.
+ */
+val blueprintEditorStyleProperties: List<Property<*>> by lazy {
+    listOf(
+        PropWidth,
+        PropHeight,
+        PropDepth,
 
-    PropAlignY,
-    PropAlignXZ,
-    PropAlignX,
-    PropAlignZ,
+        PropSnapOrigin,
 
-    PropRotation,
+        PropAlignY,
+        PropAlignXZ,
+        PropAlignX,
+        PropAlignZ,
 
-    PropShape,
+        PropRotation,
 
-    PropRoofShape,
-//    PropBodyShape,
-    PropBottomShape,
-    PropRoofOffset,
-    PropSpireRatio,
-    PropTaperRatio,
+        PropShape,
 
-    PropEdgeLength,
+        PropRoofShape,
+//        PropBodyShape,
+        PropBottomShape,
+        PropRoofOffset,
+        PropSpireRatio,
+        PropTaperRatio,
 
-    PropPaddingTop,
-    PropPaddingBottom,
-    PropPaddingLeftX,
-    PropPaddingRightX,
-    PropPaddingBackZ,
-    PropPaddingFrontZ,
+        PropEdgeLength,
 
-    PropSubdivideDir,
-    PropRepeatMode,
-    PropRepeatGap,
+        PropPaddingTop,
+        PropPaddingBottom,
+        PropPaddingLeftX,
+        PropPaddingRightX,
+        PropPaddingBackZ,
+        PropPaddingFrontZ,
 
-    PropX,
-    PropY,
-    PropZ,
-    PropPosition,
+        PropSubdivideDir,
+        PropRepeatMode,
+        PropRepeatGap,
 
-    PropOffsetY,
-    PropOffsetX,
-    PropOffsetZ,
-    PropOffsetPosition,
+        PropX,
+        PropY,
+        PropZ,
+        PropPosition,
 
-    PropStartX,
-    PropStartY,
-    PropStartZ,
+        PropOffsetY,
+        PropOffsetX,
+        PropOffsetZ,
+        PropOffsetPosition,
 
-    PropOffsetStartY,
-    PropOffsetStartX,
-    PropOffsetStartZ,
+        PropStartX,
+        PropStartY,
+        PropStartZ,
 
-    PropSeed,
-//    PropVisibility,
-)
+        PropOffsetStartY,
+        PropOffsetStartX,
+        PropOffsetStartZ,
+
+        PropSeed,
+//        PropVisibility,
+    )
+}
