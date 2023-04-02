@@ -25,7 +25,7 @@ class SimpleTorchlitWallBuilder(
         // Starting with a half-step from the edge, and not including the edge
         // itself because it will probably be covered by another wall:
         var x = torchWallSpacing / 2
-        while (x < node.depth) {
+        while (x < node.width) {
             val block = context.materials.get(MAT_TORCH)
             block.orientation = Direction.NORTH
             localWorld.setBlock(x, torchHeight, -1, block)

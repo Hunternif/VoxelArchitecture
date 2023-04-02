@@ -13,21 +13,27 @@ class BuilderLibrary {
         Entry("Basic Room", DefaultBuilders.Room),
         Entry("Basic Wall", DefaultBuilders.Wall),
         Entry("Basic Floor", DefaultBuilders.Floor),
+        Entry("Fill", DefaultBuilders.Fill),
 
         Entry("Arched Window", DefaultBuilders.ArchedWindow),
 
         Entry("Foundation", DefaultBuilders.Foundation),
         Entry("Castle crenel ground wall", DefaultBuilders.CastleCrenelGroundWall),
         Entry("Castle crenel wall", DefaultBuilders.CastleCrenelWall),
+        Entry("Castle crenel path", DefaultBuilders.CastleCrenelPath),
         Entry("Castle crenel decor", DefaultBuilders.CastleCrenelDecor),
         Entry("Castle corbel", DefaultBuilders.CastleCorbel),
         Entry("Spire roof", DefaultBuilders.PyramidRoof),
         Entry("Tapered bottom", DefaultBuilders.TowerTaperedBottom),
 
         Entry("Torch stand", DefaultBuilders.TorchStand),
+        Entry("Wall with torches", DefaultBuilders.WallWithTorches),
 
         Entry("Basic Gate", DefaultBuilders.Gate),
         Entry("Basic Hatch", DefaultBuilders.Hatch),
+
+        Entry("Snake path", DefaultBuilders.SnakePath),
+        Entry("One block", DefaultBuilders.OneBlock),
     )
 
     val buildersByInstance: Map<Builder<*>, Entry> by lazy {

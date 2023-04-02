@@ -48,17 +48,24 @@ class DefaultBuilders {
         val Room = RoomBuilder()
         val Gate = SimpleGateBuilder()
         val Hatch = SimpleHatchBuilder()
+        val Fill = FillBuilder(MAT_WALL)
 
         // Castle builders
         val Foundation = FloorFoundationBuilder(MAT_WALL)
         val CastleCrenelGroundWall = CrenellationWallBuilder(MAT_WALL, downToGround = true)
         val CastleCrenelWall = CrenellationWallBuilder(MAT_WALL)
+        val CastleCrenelPath = CrenellationPathBuilder(MAT_WALL)
         val CastleCorbel = CorbelBuilder(MAT_WALL_DECORATION)
         val CastleCrenelDecor = CrenellationWallBuilder(MAT_WALL_DECORATION)
         val PyramidRoof = PyramidBuilder(MAT_ROOF)
         val TowerTaperedBottom = PyramidBuilder(MAT_WALL, upsideDown = true)
         val ArchedWindow = ArchedWindowBuilder()
+
+        // Special builders
+        val SnakePath = SnakePathBuilder(MAT_WALL)
+        val OneBlock = OneBlockPropBuilder(MAT_WALL_DECORATION)
         val TorchStand = TorchStandBuilder()
+        val WallWithTorches = SimpleTorchlitWallBuilder(MAT_WALL)
     }
 }
 
