@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc.config
 
 import hunternif.voxarch.builder.*
+import hunternif.voxarch.plan.Prop
 import hunternif.voxarch.mc.ExtBlockDataMC
 import hunternif.voxarch.mc.MCEnvironment
 import net.minecraft.block.Blocks
@@ -21,7 +22,7 @@ val defaultContext get() = BuildContext(MCEnvironment).apply {
     }
     builders.apply {
         setDefaultBuilders()
-        set(TORCH_STAND to DefaultBuilders.TorchStand)
+        set<Prop>(TORCH_STAND to DefaultBuilders.TorchStand)
     }
 }
 

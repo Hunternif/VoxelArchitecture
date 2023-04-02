@@ -1,6 +1,6 @@
 package hunternif.voxarch.builder
 
-import hunternif.voxarch.plan.Gate
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 import kotlin.math.max
@@ -16,8 +16,8 @@ class SimpleGateBuilder(
     private val minWidth: Int = 1,
     private val minHeight: Int = 2,
     private val clearance: Int = 1
-): AGateBuilder() {
-    override fun build(node: Gate, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+): ANodeBuilder() {
+    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val localWorld = world.toLocal(trans)
         val width = max(minWidth, node.size.x.toInt())
         val height = max(minHeight, node.size.y.toInt())

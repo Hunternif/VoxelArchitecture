@@ -28,7 +28,7 @@ open class Wall(
     start: Vec3,
     end: Vec3,
     /** If true, the wall will not be generated, only used as boundary for calculations. */
-    var transparent: Boolean = false
+    transparent: Boolean = false,
 ) : Node(start) {
 
     final override var rotationY: Double
@@ -48,6 +48,7 @@ open class Wall(
         width = origin.toXZ().distanceTo(end.toXZ())
         height = end.y - origin.y
         rotationY = MathUtil.atan2Deg(-end.z + origin.z, end.x - origin.x)
+        this.transparent = transparent
     }
 
     /** Start point on the ground, vs parent origin. Read-only. */

@@ -1,6 +1,6 @@
 package hunternif.voxarch.builder
 
-import hunternif.voxarch.plan.Hatch
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 import kotlin.math.max
@@ -16,8 +16,8 @@ class SimpleHatchBuilder(
     private val minWidth: Int = 1,
     private val minLength: Int = 1,
     private val clearance: Int = 1
-): AHatchBuilder() {
-    override fun build(node: Hatch, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+): ANodeBuilder() {
+    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val localWorld = world.toLocal(trans)
         val width = max(minWidth, node.size.x.toInt())
         val length = max(minLength, node.size.z.toInt())

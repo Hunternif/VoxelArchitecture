@@ -7,13 +7,14 @@ import hunternif.voxarch.dom.style.property.center
 import hunternif.voxarch.dom.style.property.size
 import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.dom.wall
+import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.sandbox.castle.builder.ArchedWindowBuilder
 import org.junit.Test
 
 class ArchedWindowBuilderTest : BaseSnapshotTest(19, 19, 1) {
     override fun setup() {
         super.setup()
-        context.builders.set("window" to ArchedWindowBuilder())
+        context.builders.set<Wall>("window" to ArchedWindowBuilder())
     }
 
     @Test

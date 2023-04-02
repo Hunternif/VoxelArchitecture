@@ -4,7 +4,7 @@ import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.MAT_TORCH
 import hunternif.voxarch.builder.SimpleWallBuilder
 import hunternif.voxarch.builder.toLocal
-import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
 import hunternif.voxarch.vector.TransformationStack
@@ -15,7 +15,7 @@ class SimpleTorchlitWallBuilder(
     private val torchHeight: Int = 3
 ) : SimpleWallBuilder(wallMaterial) {
 
-    override fun build(node: Wall, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         super.build(node, trans, world, context)
         if (node.transparent) return
         val localWorld = world.toLocal(trans)

@@ -1,13 +1,13 @@
 package hunternif.voxarch.sandbox
 
 import hunternif.voxarch.builder.*
-import hunternif.voxarch.plan.Prop
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.Direction
 import hunternif.voxarch.vector.TransformationStack
 
-class TorchStandBuilder : APropBuilder() {
-    override fun build(node: Prop, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+class TorchStandBuilder : ANodeBuilder() {
+    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         val post = context.materials.get(MAT_POST)
         val block = context.materials.get(MAT_WALL)
         val torch = context.materials.get(MAT_TORCH)

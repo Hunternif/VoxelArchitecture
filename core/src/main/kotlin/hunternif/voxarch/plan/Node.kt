@@ -74,6 +74,9 @@ open class Node(
     /** If set, this builder class will have higher priority than BuilderConfig */
     var builder: Builder<*>? = null
 
+    /** If true, the node will not be generated, only used as boundary for calculations. */
+    var transparent: Boolean = false
+
     override val children: MutableList<Node> = mutableListOf()
 
     /**

@@ -1,7 +1,7 @@
 package hunternif.voxarch.sandbox.castle.builder
 
 import hunternif.voxarch.builder.*
-import hunternif.voxarch.plan.Floor
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.roundToInt
@@ -9,8 +9,8 @@ import hunternif.voxarch.vector.TransformationStack
 
 class FloorFoundationBuilder(
     private val material: String
-) : AFloorBuilder() {
-    override fun build(node: Floor, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+) : ANodeBuilder() {
+    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
         // 1. Fill space inside
         node.fillXZ(trans) { x, y, z ->
             buildDownToGround(x, y, z, world, context)

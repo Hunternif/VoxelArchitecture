@@ -35,14 +35,7 @@ class DomLineSegmentBuilder(
  */
 open class DomPolySegmentBuilder : DomBuilder() {
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
-        val parentNode = ctx.parentNode
-        val polygon = when (parentNode) {
-            is PolyRoom -> parentNode.polygon
-            else -> Path().apply {
-                origin = parentNode.innerFloorCenter
-                rectangle(parentNode.width, parentNode.depth)
-            }
-        }
+        val polygon = ctx.parentNode.getPerimeter()
         return createSegmentBuilders(polygon)
     }
 

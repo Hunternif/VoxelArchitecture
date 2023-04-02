@@ -1,6 +1,7 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.MAT_ROOF
+import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredPolyRoom
 import hunternif.voxarch.sandbox.castle.builder.PyramidBuilder
@@ -12,8 +13,8 @@ import org.junit.Test
 class PyramidBuilderTest : BaseSnapshotTest(9, 9, 9) {
     override fun setup() {
         super.setup()
-        context.builders.set(TYPE_PYRAMID to PyramidBuilder(MAT_ROOF))
-        context.builders.set(
+        context.builders.set<Room>(TYPE_PYRAMID to PyramidBuilder(MAT_ROOF))
+        context.builders.set<Room>(
             TYPE_PYRAMID_UPSIDE_DOWN to
                 PyramidBuilder(MAT_ROOF, upsideDown = true)
         )

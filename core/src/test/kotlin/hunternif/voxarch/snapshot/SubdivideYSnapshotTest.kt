@@ -10,6 +10,7 @@ import hunternif.voxarch.dom.style.property.size
 import hunternif.voxarch.dom.style.property.startY
 import hunternif.voxarch.dom.subdivide
 import hunternif.voxarch.dom.wall
+import hunternif.voxarch.plan.Wall
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
@@ -23,7 +24,7 @@ class SubdivideYSnapshotTest : BaseSnapshotTest(5, 10, 1, mapOf(
     override fun setup() {
         super.setup()
         arrayOf("a", "b", "c").forEach {
-            context.builders.set(it to SimpleWallBuilder(it))
+            context.builders.set<Wall>(it to SimpleWallBuilder(it))
             context.materials.set(it) { BlockData(it) }
         }
     }

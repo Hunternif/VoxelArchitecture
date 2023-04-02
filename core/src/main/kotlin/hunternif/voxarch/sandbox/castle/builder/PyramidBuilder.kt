@@ -1,10 +1,11 @@
 package hunternif.voxarch.sandbox.castle.builder
 
-import hunternif.voxarch.builder.APolyRoomBuilder
+import hunternif.voxarch.builder.ANodeBuilder
 import hunternif.voxarch.builder.BuildContext
 import hunternif.voxarch.builder.line
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PathSegment
-import hunternif.voxarch.plan.PolyRoom
+import hunternif.voxarch.plan.getPerimeter
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
@@ -16,17 +17,18 @@ import hunternif.voxarch.vector.Vec3
 class PyramidBuilder(
     private val material: String,
     private val upsideDown: Boolean = false
-): APolyRoomBuilder() {
-    override fun build(node: PolyRoom, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+): ANodeBuilder() {
+    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+        val polygon = node.getPerimeter()
         if (upsideDown) {
             trans.push()
             trans.translate(0, node.height, 0)
             trans.mirrorY()
         }
         trans.push()
-        trans.translate(node.polygon.origin)
+        trans.translate(polygon.origin)
         val apex = trans.transform(0.0, node.height, 0.0)
-        node.polygon.segments.forEach {
+        polygon.segments.forEach {
             buildSegment(it, apex, trans, world, context)
         }
         trans.pop()

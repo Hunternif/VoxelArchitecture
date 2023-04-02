@@ -3,6 +3,7 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.util.MathUtil.clampAngle
+import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.util.rotateYLocal
 import hunternif.voxarch.vector.*
@@ -98,6 +99,17 @@ inline fun <reified N : Node> Node.query(vararg tags: String): Sequence<N> = seq
         if (it is N && (tagSet.isEmpty() || it.tags.containsAll(tagSet))) {
             yield(it)
         }
+    }
+}
+
+/** Returns polygon describing this room's perimeter, positioned
+ * at inner floor center. */
+fun Node.getPerimeter(): Path = when (this) {
+    is PolyRoom -> this.polygon
+    is Path -> this
+    else -> Path().also { path ->
+        path.origin = this.innerFloorCenter
+        path.rectangle(this.width, this.depth)
     }
 }
 

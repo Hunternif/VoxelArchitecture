@@ -25,7 +25,7 @@ class SubdivideXSnapshotTest : BaseSnapshotTest(10, 5, 1, mapOf(
     override fun setup() {
         super.setup()
         arrayOf("a", "b", "c").forEach {
-            context.builders.set(it to SimpleWallBuilder(it))
+            context.builders.set<Wall>(it to SimpleWallBuilder(it))
             context.materials.set(it) { BlockData(it) }
         }
     }
