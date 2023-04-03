@@ -58,9 +58,13 @@ class DomRoot(
             }
         }
 
-        // Collapse dummy nodes
+        // Collapse dummy nodes:
         if (cleanDummies) {
             stats.dummyNodes.forEach { it.collapse() }
+        }
+        // Remove added DOM elements to keep the tree unchanged:
+        stats.addedContent.forEach { (parent, child) ->
+            parent.removeChild(child)
         }
 
         return node

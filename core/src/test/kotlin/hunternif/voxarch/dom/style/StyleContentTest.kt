@@ -1,10 +1,12 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.property.content
 import hunternif.voxarch.dom.style.property.size
+import hunternif.voxarch.plan.Room
 import hunternif.voxarch.util.assertNodeTreeEqualsRecursive
 import org.junit.Test
 
@@ -77,5 +79,22 @@ class StyleContentTest {
         }.buildDom(style)
 
         assertNodeTreeEqualsRecursive(refDom, dom)
+    }
+
+    @Test
+    fun `execute multiple times`() {
+        val style = Stylesheet().add {
+            style("extend") {
+                content {
+                    node("new_node")
+                }
+            }
+        }
+        val room = DomNodeBuilder { Room() }.apply { addStyle("extend") }
+
+        val dom1 = domRoot { addChild(room) }.buildDom(style)
+        val dom2 = domRoot { addChild(room) }.buildDom(style)
+
+        assertNodeTreeEqualsRecursive(dom1, dom2)
     }
 }

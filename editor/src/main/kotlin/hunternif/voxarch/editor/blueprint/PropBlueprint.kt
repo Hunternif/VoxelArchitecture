@@ -36,8 +36,7 @@ class PropertyBlueprint : Property<String>(
         val bpName = value.invoke("", styled.seed)
         val blueprint = blueprintMap[bpName] ?: return
         val content = DomRunBlueprint().apply { this.blueprint = blueprint }
-        val setContent = value<DomBuilder?> { base, _ -> base?.apply { addChild(content) } }
-        PropContent.applyTo(styled, setContent)
+        PropContent.applyTo(styled, set(content))
     }
 }
 
