@@ -72,6 +72,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         ),
     ))
 
+    /** Called 1 time when the app starts. */
     fun init(
         windowHandle: Long,
         viewport: Viewport,
@@ -85,6 +86,10 @@ class MainGui(val app: EditorApp) : GuiBase() {
         blueprintEditor.init()
         styleEditor.init()
         inputController.addListener(styleEditor)
+    }
+
+    /** Called when a new AppState is created */
+    fun initState() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
