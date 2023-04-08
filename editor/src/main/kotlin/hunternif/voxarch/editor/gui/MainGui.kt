@@ -90,6 +90,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
 
     /** Called when a new AppState is created */
     fun initState() {
+        nodeTree.initState()
+        voxelTree.initState()
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {

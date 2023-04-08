@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.scenegraph.ISceneListener
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
@@ -10,13 +11,14 @@ import imgui.ImGui
 import imgui.flag.*
 import imgui.flag.ImGuiCol.*
 import org.lwjgl.glfw.GLFW.*
+import java.util.LinkedList
 
 class GuiNodeTree(
     app: EditorApp,
     gui: GuiBase
 ) : GuiSceneTree(app, gui) {
     override val root: SceneNode get() = app.state.rootNode
-    override fun label(item: SceneObject): String {
+    override fun itemLabel(item: SceneObject): String {
         if (item is SceneNode) {
             var result = item.nodeClassName
             val type = item.node.tags.firstOrNull()
@@ -40,21 +42,26 @@ class GuiVoxelTree(
     gui: GuiBase
 ) : GuiSceneTree(app, gui) {
     override val root: SceneObject get() = app.state.voxelRoot
-    override fun label(item: SceneObject): String =
+    override fun itemLabel(item: SceneObject): String =
         (item as? SceneVoxelGroup)?.label ?: item.toString()
 }
 
 abstract class GuiSceneTree(
     val app: EditorApp,
     private val gui: GuiBase,
-) {
+) : ISceneListener {
     /** Used to detect click outside the tree, which resets selection */
     private var isAnyTreeNodeClicked = false
     private var isThisPanelClicked = false
 
     abstract val root: SceneObject
 
-    abstract fun label(item: SceneObject): String
+    abstract fun itemLabel(item: SceneObject): String
+
+    /** List of displayed entries */
+    private val list = ArrayList<TreeEntry>()
+    private var isListDirty = false
+    private lateinit var parentNode: SceneObject
 
     open fun onClick(item: SceneObject) {
         app.setSelectedObject(item)
@@ -67,9 +74,21 @@ abstract class GuiSceneTree(
 
     open fun onDoubleClick(item: SceneObject) {}
 
+    fun initState() {
+        app.state.sceneTree.addListener(this)
+        parentNode = root
+        markListDirty()
+    }
+
+    override fun onSceneChange() {
+        markListDirty()
+    }
+
     fun render() {
         isAnyTreeNodeClicked = false
         isThisPanelClicked = ImGui.isWindowFocused() && isThisWindowClicked()
+        if (parentNode != app.state.parentNode) markListDirty()
+        if (isListDirty) rebuildList()
 
         // CellPadding = 0 makes tree rows appear next to each other without breaks
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
@@ -77,7 +96,7 @@ abstract class GuiSceneTree(
             ImGui.tableSetupColumn("visibility",
                 ImGuiTableColumnFlags.WidthFixed, 20f)
             ImGui.tableSetupColumn("tree")
-            addTreeNodeRecursive(root, 0, false)
+            list.forEach { renderItem(it) }
             ImGui.endTable()
         }
         ImGui.popStyleVar(1)
@@ -90,11 +109,8 @@ abstract class GuiSceneTree(
         }
     }
 
-    private fun addTreeNodeRecursive(
-        node: SceneObject,
-        depth: Int,
-        isChildNode: Boolean,
-    ) {
+    private fun renderItem(item: TreeEntry) {
+        val node = item.obj
         val isGenerated = node.isGenerated
         if (isGenerated) pushStyleColor(Text, Colors.generatedLabel)
 
@@ -132,7 +148,8 @@ abstract class GuiSceneTree(
                 ImGuiTreeNodeFlags.Bullet
         }
         val isRootNode = node === app.state.rootNode // root node is never highlighted
-        val isParentNode = node === app.state.parentNode && !isRootNode
+        val isParentNode = item.isParent && !isRootNode
+        val isChildNode = item.isChild
         val isSelected = node in app.state.selectedObjects
         if (isSelected) {
             flags = flags or ImGuiTreeNodeFlags.Selected
@@ -144,7 +161,7 @@ abstract class GuiSceneTree(
             flags = flags or ImGuiTreeNodeFlags.Selected
             applyChileNodeColors(isSelected)
         }
-        val text = memoStrWithIndex(label(node), node.id)
+        val text = memoStrWithIndex(itemLabel(node), node.id)
         ImGui.alignTextToFramePadding()
         if (updatedHidden) {
             if (isGenerated) pushStyleColor(Text, Colors.generatedHiddenLabel)
@@ -152,9 +169,13 @@ abstract class GuiSceneTree(
         }
 
         // Create fake indents to make the tree work in the 2nd column.
-        for (x in 1..depth) ImGui.indent()
+        for (x in 1..item.depth) ImGui.indent()
         val open = ImGui.treeNodeEx(text, flags)
-        for (x in 1..depth) ImGui.unindent()
+        if (item.isOpen != open) {
+            item.isOpen = open
+            isListDirty = true
+        }
+        for (x in 1..item.depth) ImGui.unindent()
 
         if (updatedHidden) ImGui.popStyleColor()
         if (isParentNode || isChildNode) ImGui.popStyleColor(3)
@@ -180,14 +201,6 @@ abstract class GuiSceneTree(
                 app.deleteObjects(listOf(node))
             }
         }
-
-        if (open && node.children.isNotEmpty()) {
-            node.children.forEach {
-                addTreeNodeRecursive(it, depth + 1,
-                    isParentNode || isChildNode
-                )
-            }
-        }
     }
 
     private fun applyParentNodeColors(isSelected: Boolean) = Colors.run {
@@ -203,4 +216,50 @@ abstract class GuiSceneTree(
         pushStyleColor(HeaderHovered, color.blend(headerHovered))
         pushStyleColor(HeaderActive, color.blend(headerActive))
     }
+
+    private fun markListDirty() {
+        isListDirty = true
+    }
+
+    private fun rebuildList() {
+//        println("rebuildList")
+        parentNode = app.state.parentNode
+        val isParentRootNode = root === app.state.rootNode // root node is never highlighted
+        // remember which entries were closed:
+        val closedObjs = list.filter { !it.isOpen }.map { it.obj }.toSet()
+        list.clear()
+        // Recursively add items using Depth-First Search
+        val queue = LinkedList<TreeEntry>()
+        queue.add(
+            TreeEntry(
+                root, 0, root !in closedObjs,
+                root === parentNode && !isParentRootNode, false,
+            )
+        )
+        while (queue.isNotEmpty()) {
+            val next = queue.removeFirst()
+            list.add(next)
+            if (next.isOpen) {
+                queue.addAll(0, next.obj.children.map {
+                    TreeEntry(
+                        it, next.depth + 1, it !in closedObjs,
+                        it === parentNode,
+                        next.isChild || next.isParent,
+                    )
+                })
+            }
+        }
+        isListDirty = false
+    }
 }
+
+/** Data about a single entry in the UI list */
+private data class TreeEntry(
+    val obj: SceneObject,
+    val depth: Int,
+    var isOpen: Boolean,
+    /** Is this the current parent node? */
+    val isParent: Boolean,
+    /** Is this the child of the current parent node? */
+    val isChild: Boolean,
+)
