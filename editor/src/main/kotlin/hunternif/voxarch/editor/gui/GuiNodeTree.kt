@@ -8,6 +8,8 @@ import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImGui
+import imgui.ImGuiListClipper
+import imgui.callback.ImListClipperCallback
 import imgui.flag.*
 import imgui.flag.ImGuiCol.*
 import org.lwjgl.glfw.GLFW.*
@@ -62,6 +64,11 @@ abstract class GuiSceneTree(
     private val list = ArrayList<TreeEntry>()
     private var isListDirty = false
     private lateinit var parentNode: SceneObject
+    private val listClipperCallback = object : ImListClipperCallback() {
+        override fun accept(index: Int) {
+            renderItem(list[index])
+        }
+    }
 
     open fun onClick(item: SceneObject) {
         app.setSelectedObject(item)
@@ -96,7 +103,7 @@ abstract class GuiSceneTree(
             ImGui.tableSetupColumn("visibility",
                 ImGuiTableColumnFlags.WidthFixed, 20f)
             ImGui.tableSetupColumn("tree")
-            list.forEach { renderItem(it) }
+            ImGuiListClipper.forEach(list.size, listClipperCallback)
             ImGui.endTable()
         }
         ImGui.popStyleVar(1)
