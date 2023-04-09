@@ -46,7 +46,7 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
                 shape { set(PolyShape.ROUND) }
                 size(49.vx, 7.vx, 49.vx)
                 position(30.vx, 0.vx, 30.vx)
-                edgeLength { 50.pct }
+                sideCount { set(6) }
                 snapOrigin { floorCenter() }
             }
             style("inner_ward") {

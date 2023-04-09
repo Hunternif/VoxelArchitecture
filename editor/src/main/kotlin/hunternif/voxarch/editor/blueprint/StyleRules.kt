@@ -39,6 +39,7 @@ val blueprintEditorStyleProperties: List<Property<*>> by lazy {
         PropTaperRatio,
 
         PropEdgeLength,
+        PropSideCount,
 
         PropPaddingTop,
         PropPaddingBottom,

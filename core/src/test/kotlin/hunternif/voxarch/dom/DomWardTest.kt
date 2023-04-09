@@ -1,14 +1,15 @@
 package hunternif.voxarch.dom
 
 import hunternif.voxarch.dom.builder.Ward
+import hunternif.voxarch.dom.builder.countChordsGivenLength
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
-import hunternif.voxarch.plan.PolyShape.ROUND
-import hunternif.voxarch.plan.PolyShape.SQUARE
+import hunternif.voxarch.plan.PolyShape.*
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.*
 import org.junit.Test
+import kotlin.math.sqrt
 
 class DomWardTest {
     @Test
@@ -42,7 +43,7 @@ class DomWardTest {
             styleFor<Ward> {
                 shape { set(ROUND) }
                 diameter { 11.vx }
-                edgeLength { 6.vx }
+                sideCount { set(6) }
             }
         }
         val dom = domRoot {
@@ -63,7 +64,27 @@ class DomWardTest {
             styleFor<Ward> {
                 shape { set(ROUND) }
                 diameter { 11.vx }
-                edgeLength { 4.vx }
+                sideCount { set(8) }
+            }
+        }
+        val dom = domRoot {
+            ward {
+                allCorners {
+                    room()
+                }
+            }
+        }.buildDom(style)
+
+        val ward = dom.children[0]
+        assertEquals(8, ward.children.size)
+    }
+
+    @Test
+    fun `round castle ward with 8 edges via octagon`() {
+        val style = Stylesheet().add {
+            styleFor<Ward> {
+                shape { set(OCTAGON) }
+                diameter { 11.vx }
             }
         }
         val dom = domRoot {
@@ -97,5 +118,23 @@ class DomWardTest {
         }.buildDom(style, 2)
         val ward2 = dom2.query<Ward>().first()
         assertEquals(SQUARE, ward2.shape)
+    }
+
+    @Test
+    fun `count chords given length`() {
+        assertEquals(6, countChordsGivenLength(1.0, 1.0))
+        assertEquals(4, countChordsGivenLength(sqrt(2.0), 1.0))
+        assertEquals(3, countChordsGivenLength(sqrt(3.0), 1.0))
+        assertEquals(3, countChordsGivenLength(sqrt(3.0) - 0.1, 1.0))
+        assertEquals(3, countChordsGivenLength(sqrt(3.0) + 0.1, 1.0))
+        assertEquals(2, countChordsGivenLength(2.0, 1.0))
+        assertEquals(0, countChordsGivenLength(99.0, 1.0))
+
+//        // Gauging which algorithm makes more sense:
+//        for (r in 2..8) {
+//            val countFromEdgeLength = countChordsGivenLength(4.0, r.toDouble()).clampMin(4).roundToEven()
+//            val countFromCircle = (ceil(r.toDouble() * 0.334).toInt() * 4)
+//            println("radius $r:  $countFromEdgeLength  $countFromCircle")
+//        }
     }
 }

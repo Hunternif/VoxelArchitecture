@@ -4,9 +4,11 @@ import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.plan.innerFloorCenter
+import hunternif.voxarch.util.clampMin
 import hunternif.voxarch.util.ellipse
 import hunternif.voxarch.util.rectangle
-import kotlin.math.ceil
+import hunternif.voxarch.util.roundToEven
+import kotlin.math.*
 
 open class DomPolyRoomBuilder
     : DomNodeBuilder<PolyRoom>(PolyRoom::class.java, { PolyRoom() }) {
@@ -19,8 +21,22 @@ internal fun PolyRoom.createPolygon() {
     when (shape) {
         PolyShape.SQUARE -> polygon.rectangle(width, depth)
         PolyShape.ROUND -> {
-            val sideCount = ceil((size.x + size.z) * 0.167).toInt() * 4
+            val radius = (width + depth) / 2
+            val sideCount = when {
+                sideCount >= 3 -> sideCount
+                edgeLength >= 1.0 -> countChordsGivenLength(edgeLength, radius)
+                    .clampMin(4).roundToEven()
+                else -> ceil(radius * 0.334).toInt() * 4
+            }
             polygon.ellipse(width, depth, sideCount)
         }
+        PolyShape.OCTAGON -> polygon.ellipse(width, depth, 8)
     }
+}
+
+/** Counts how many chords of length [length] fit in a circle of radius [radius] */
+internal fun countChordsGivenLength(length: Double, radius: Double): Int {
+    val r = max(1.0, radius)
+    val len = max(1.0, length)
+    return round(PI / asin(len / 2 / r)).toInt()
 }

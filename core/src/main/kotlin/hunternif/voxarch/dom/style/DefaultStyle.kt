@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Wall
 

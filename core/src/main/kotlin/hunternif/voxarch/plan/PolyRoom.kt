@@ -21,9 +21,20 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
      */
     val polygon: Path = Path(Vec3.ZERO)
 
-    /** For styling: approximate expected length of edges on the polygon. */
-    var edgeLength: Double = 1.0
-        set(value) { field = max(1.0, value) }
+    /**
+     * For styling: approximate expected length of edges for ROUND shape.
+     * If < 1, edge length is calculated dynamically.
+     * [sideCount] takes precedence over [edgeLength].
+     */
+    var edgeLength: Double = 0.0
+
+    /**
+     * Side count for ROUND shape.
+     * If < 3, side count is calculated dynamically.
+     * [sideCount] takes precedence over [edgeLength].
+     */
+    var sideCount: Int = 0
+
     /** For styling. Mimics Turret's body shape. */
     var shape: PolyShape = PolyShape.SQUARE
 
@@ -45,10 +56,16 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
 enum class PolyShape {
     /** axis-aligned walls, 4 towers in corners */
     SQUARE,
+
     /** rectangular sections project in each axis direction */
 //    CROSS,
-    /** N towers spread evenly in a circle */
+
+    /** Walls spread evenly in a circle, edge length is dynamically calculated. */
     ROUND,
+
+    /** 8 sides */
+    OCTAGON,
+
     /** N towers spread evenly in a circle,
      * and then moved by random distance from center */
 //    JITTERY_POLYGON

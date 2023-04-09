@@ -105,6 +105,8 @@ fun Int.clamp(min: Int, max: Int): Int {
         else -> this
     }
 }
+fun Int.clampMin(min: Int): Int = max(min, this)
+fun Int.roundToEven() = (this / 2) * 2
 
 /**
  * Ensures the result is between [min] (incl.) and [max] (incl.).
@@ -129,7 +131,7 @@ fun Float.clamp(min: Float, max: Float): Float {
 }
 
 fun Double.round(): Double = this.roundToInt().toDouble()
-fun Double.roundToEven() = round(this / 2)*2
+fun Double.roundToEven() = round(this / 2) * 2
 
 /** If the value comes within [delta] to any of the [values],
  * the result snaps to the value. */

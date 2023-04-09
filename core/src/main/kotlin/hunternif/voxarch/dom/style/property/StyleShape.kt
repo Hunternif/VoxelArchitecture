@@ -19,10 +19,18 @@ val PropEdgeLength = newNodeProperty<PolyRoom, Double>("edge-length", 1.0) { val
     node.edgeLength = value.invoke(baseValue, seed + 10000005)
 }
 
+val PropSideCount = newNodeProperty<PolyRoom, Int>("side-count", 4) { value ->
+    node.sideCount = value.invoke(4, seed + 10000037)
+}
+
 fun Rule.shape(block: StyleShape.() -> Value<PolyShape>) {
     add(PropShape, StyleShape().block())
 }
 
 fun Rule.edgeLength(block: StyleSize.() -> Value<Number>) {
     add(PropEdgeLength, StyleSize(min = 1.vx).block().toDouble())
+}
+
+fun Rule.sideCount(block: StyleSize.() -> Value<Int>) {
+    add(PropSideCount, StyleSize(min = 4.vx).block())
 }

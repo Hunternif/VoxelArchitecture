@@ -80,6 +80,7 @@ val GlobalStyleOrderByGroups: List<List<Property<*>>> by lazy {
 
         // Cosmetic changes within the node
         listOf(PropEdgeLength),
+        listOf(PropSideCount),
         listOf(PropShape),
 
         listOf(
