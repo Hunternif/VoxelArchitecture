@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.blueprint.Blueprint
 import imgui.ImGui
 import imgui.flag.ImGuiSelectableFlags
 import imgui.flag.ImGuiTableColumnFlags
@@ -18,6 +19,7 @@ class GuiBlueprintLibrary(
         }
         ImGui.separator()
 
+        var toDelete: Blueprint? = null
         ImGui.pushFont(gui.fontSmallIcons)
         if (ImGui.beginTable("blueprints_table", 3, ImGuiTableFlags.PadOuterX)) {
             ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
@@ -41,7 +43,8 @@ class GuiBlueprintLibrary(
                         app.selectBlueprint(bp)
                     }
                     menuItem("Delete") {
-                        app.deleteSelectedBlueprint()
+                        // prevent concurrent modification:
+                        toDelete = bp
                     }
                 }
 
@@ -59,6 +62,7 @@ class GuiBlueprintLibrary(
         }
         ImGui.popFont()
 
+        toDelete?.let { app.deleteBlueprint(it) }
         if (ImGui.isWindowFocused() && ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
             app.deleteSelectedBlueprint()
         }

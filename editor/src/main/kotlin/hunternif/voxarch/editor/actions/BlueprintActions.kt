@@ -27,6 +27,11 @@ fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) =
     historyAction(RemoveBlueprint(node, blueprint))
 
 /** Deletes Blueprint from the library */
+fun EditorApp.deleteBlueprint(blueprint: Blueprint) {
+    historyAction(DeleteBlueprint(blueprint))
+}
+
+/** Deletes Blueprint from the library */
 fun EditorApp.deleteSelectedBlueprint() {
     val blueprint = state.selectedBlueprint ?: return
     historyAction(DeleteBlueprint(blueprint))
