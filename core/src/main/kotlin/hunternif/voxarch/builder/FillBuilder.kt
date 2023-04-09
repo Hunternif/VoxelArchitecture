@@ -8,8 +8,8 @@ open class FillBuilder(
     private val material: String,
 ) : ANodeBuilder() {
     override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
-        val block = context.materials.get(material)
         node.fillXYZ(trans) { x, y, z ->
+            val block = context.materials.get(material)
             world.setBlock(x, y, z, block)
         }
     }
