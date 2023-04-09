@@ -71,10 +71,10 @@ class CastleWardTest: BaseSnapshotTest(60, 50, 60) {
             }
         }
         return domRoot {
-            ward("outer_ward") {
+            polyRoom("outer_ward") {
                 allCorners { turret("outer_ward_turret") }
                 allWalls { wall(BLD_CURTAIN_WALL) }
-                ward("inner_ward") {
+                polyRoom("inner_ward") {
                     allCorners { turret("inner_ward_turret") }
                     allWalls { wall(BLD_CURTAIN_WALL) }
                     randomWall { turret("main_turret") }

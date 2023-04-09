@@ -1,28 +1,28 @@
 package hunternif.voxarch.dom
 
-import hunternif.voxarch.dom.builder.Ward
 import hunternif.voxarch.dom.builder.countChordsGivenLength
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape.*
 import hunternif.voxarch.plan.query
 import hunternif.voxarch.vector.Vec3
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.math.sqrt
 
-class DomWardTest {
+class DomPolyRoomTest {
     @Test
-    fun `square castle ward`() {
+    fun `square polygon`() {
         val style = defaultStyle.add {
-            styleFor<Ward> {
+            styleFor<PolyRoom> {
                 shape { set(SQUARE) }
                 diameter { 3.vx }
                 snapOrigin { floorCenter() }
             }
         }
         val dom = domRoot {
-            ward {
+            polyRoom {
                 allCorners {
                     room()
                 }
@@ -38,16 +38,16 @@ class DomWardTest {
     }
 
     @Test
-    fun `round castle ward with 6 edges`() {
+    fun `round polygon with 6 edges`() {
         val style = Stylesheet().add {
-            styleFor<Ward> {
+            styleFor<PolyRoom> {
                 shape { set(ROUND) }
                 diameter { 11.vx }
                 sideCount { set(6) }
             }
         }
         val dom = domRoot {
-            ward {
+            polyRoom {
                 allCorners {
                     room()
                 }
@@ -59,16 +59,16 @@ class DomWardTest {
     }
 
     @Test
-    fun `round castle ward with 8 edges`() {
+    fun `round polygon with 8 edges`() {
         val style = Stylesheet().add {
-            styleFor<Ward> {
+            styleFor<PolyRoom> {
                 shape { set(ROUND) }
                 diameter { 11.vx }
                 sideCount { set(8) }
             }
         }
         val dom = domRoot {
-            ward {
+            polyRoom {
                 allCorners {
                     room()
                 }
@@ -80,15 +80,15 @@ class DomWardTest {
     }
 
     @Test
-    fun `round castle ward with 8 edges via octagon`() {
+    fun `polygon octagon`() {
         val style = Stylesheet().add {
-            styleFor<Ward> {
+            styleFor<PolyRoom> {
                 shape { set(OCTAGON) }
                 diameter { 11.vx }
             }
         }
         val dom = domRoot {
-            ward {
+            polyRoom {
                 allCorners {
                     room()
                 }
@@ -100,23 +100,23 @@ class DomWardTest {
     }
 
     @Test
-    fun `castle ward with random shape`() {
+    fun `polygon with random shape`() {
         val style = Stylesheet().add {
-            styleFor<Ward> {
+            styleFor<PolyRoom> {
                 shape { random(ROUND, SQUARE) }
             }
         }
 
         val dom1 = domRoot {
-            ward()
+            polyRoom()
         }.buildDom(style, 1)
-        val ward1 = dom1.query<Ward>().first()
+        val ward1 = dom1.query<PolyRoom>().first()
         assertEquals(ROUND, ward1.shape)
 
         val dom2 = domRoot {
-            ward()
+            polyRoom()
         }.buildDom(style, 2)
-        val ward2 = dom2.query<Ward>().first()
+        val ward2 = dom2.query<PolyRoom>().first()
         assertEquals(SQUARE, ward2.shape)
     }
 

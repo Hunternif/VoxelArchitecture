@@ -88,16 +88,6 @@ fun DomBuilder.turretDecor(
     bld.block()
 }
 
-/** Adds child [Ward] with a perimeter of walls and towers. */
-fun DomBuilder.ward(
-    vararg styleClass: String,
-    block: DomWardBuilder.() -> Unit = {}
-) {
-    val bld = DomWardBuilder().apply { +styleClass }
-    addChild(bld)
-    bld.block()
-}
-
 /** Runs [block] in every corner of this [PolyRoom]. */
 fun DomBuilder.allCorners(
     block: DomBuilder.() -> Unit = {}
