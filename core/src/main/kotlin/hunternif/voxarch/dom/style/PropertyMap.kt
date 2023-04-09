@@ -6,7 +6,14 @@ package hunternif.voxarch.dom.style
  */
 class PropertyMap(declarations: Collection<Declaration<*>>) {
     private val map: Map<Property<*>, Declaration<*>> =
-        declarations.associateBy { it.property }
+        LinkedHashMap<Property<*>, Declaration<*>>().apply {
+            declarations.forEach {
+                // Later occurrences must override the position of earlier ones,
+                // to maintain style order:
+                if (it.property in this) remove(it.property)
+                put(it.property, it)
+            }
+        }
 
     val values: Collection<Declaration<*>> get() = map.values
 
