@@ -32,11 +32,14 @@ class GuiObjectProperties(
     private val builderInput by lazy {
         GuiCombo("builder", app.state.builderLibrary.allBuilders)
     }
+    private val blueprintInput by lazy {
+        GuiCombo("##blueprint", app.state.blueprints)
+    }
 
     // Update timer
     private val nodeTimer = Timer(0.02)
     private val builderTimer = Timer(0.1)
-    private val blueprintsTimer = Timer(0.02)
+    private val blueprintsTimer = Timer(0.1)
     private val redrawTimer = Timer(0.02)
 
     // Currently selected items
@@ -45,8 +48,14 @@ class GuiObjectProperties(
 
     /** Default entry that indicates which builder will be assigned by BuilderConfig */
     private var defaultBuilderEntry = BuilderLibrary.Entry("Default", nullBuilder)
+    /** Selected builder in combo box */
     private var builderEntry: BuilderLibrary.Entry = defaultBuilderEntry
 
+    /** Default blueprint entry that causes a new blueprint to be created */
+    private val newBlueprintItem = Blueprint(-2, "New...")
+    /** Selected blueprint in combo box */
+    private var selectedBlueprint = newBlueprintItem
+    /** All blueprints currently on this node */
     private val curBlueprints = mutableListOf<Blueprint>()
 
     fun render() {
@@ -108,8 +117,12 @@ By default, it's set so that origin is at the low-XYZ corner.""")
 
         ImGui.separator()
         ImGui.text("Blueprints")
-        button("New blueprint...") {
-            app.addNewBlueprint(sceneNode)
+        blueprintInput.render(selectedBlueprint) { selectedBlueprint = it }
+        ImGui.sameLine()
+        button("Add") {
+            if (selectedBlueprint == newBlueprintItem) app.addNewBlueprint(sceneNode)
+            else app.addBlueprint(sceneNode, selectedBlueprint)
+            selectedBlueprint = newBlueprintItem
         }
         renderBlueprintTable(sceneNode)
     }
@@ -140,6 +153,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
     private fun updateCurrentBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
         curBlueprints.clear()
         curBlueprints.addAll(sceneNode.blueprints)
+        blueprintInput.values = listOf(newBlueprintItem) + app.state.blueprints
     }
 
     private fun renderVoxelGroup(group: SceneVoxelGroup) {
