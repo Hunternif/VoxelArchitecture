@@ -3,9 +3,7 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
-import hunternif.voxarch.plan.PolyRoom
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Wall
+import hunternif.voxarch.plan.*
 
 val defaultStyle get() = Stylesheet().add {
     styleFor<Room> {
@@ -24,5 +22,11 @@ val defaultStyle get() = Stylesheet().add {
     }
     style(DOM_TURRET) {
         snapOrigin { floorCenter() }
+    }
+    styleFor<Column> {
+        diameter { 2.vx }
+        height { 100.pct }
+        snapOrigin { floorCenter() }
+        shape { set(PolyShape.OCTAGON) }
     }
 }

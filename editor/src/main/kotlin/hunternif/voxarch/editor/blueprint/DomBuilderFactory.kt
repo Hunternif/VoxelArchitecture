@@ -12,9 +12,10 @@ typealias DomBuilderFactory = () -> DomBuilder
 val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Node" to { DomNodeBuilder { Node() } },
     "Room" to { DomNodeBuilder { Room() } },
-    "PolyRoom" to { DomPolyRoomBuilder() },
+    "PolyRoom" to { DomPolyRoomBuilder { PolyRoom() } },
     "Floor" to { DomNodeBuilder { Floor() } },
     "Wall" to { DomNodeBuilder { Wall() } },
+    "Column" to { DomPolyRoomBuilder { Column() } },
     "Arched Window" to { DomNodeBuilder { Wall() }.addStyle(BLD_ARCHED_WINDOW) },
     "Turret" to { DomPolyRoomWithTurretBuilder() },
     "Turret Decor" to { DomTurretDecor() },
@@ -40,4 +41,5 @@ val nodeFactoryByName: Map<String, NodeFactory> = mapOf(
     "PolyRoom" to { PolyRoom() },
     "Floor" to { Floor() },
     "Wall" to { Wall() },
+    "Column" to { Column() },
 )

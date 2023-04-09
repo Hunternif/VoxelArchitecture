@@ -58,7 +58,7 @@ fun DomBuilder.floor(
 /** Adds child [PolyRoom]. See [node]. */
 fun DomBuilder.polyRoom(
     vararg styleClass: String,
-    block: DomNodeBuilder<PolyRoom>.() -> Unit = {}
+    block: DomPolyRoomBuilder<PolyRoom>.() -> Unit = {}
 ) {
     val bld = DomPolyRoomBuilder().apply { +styleClass }
     addChild(bld)
@@ -166,6 +166,16 @@ fun DomBuilder.prop(
     block: DomNodeBuilder<Prop>.() -> Unit = {}
 ) {
     this.addChildNodeBuilder(styleClass) { Prop(propType) }.block()
+}
+
+/** Adds child [Column]. See [node]. */
+fun DomBuilder.column(
+    vararg styleClass: String,
+    block: DomPolyRoomBuilder<Column>.() -> Unit = {}
+) {
+    val bld = DomPolyRoomBuilder { Column() }.apply { +styleClass }
+    addChild(bld)
+    bld.block()
 }
 
 /** Adds an extra element in the DOM that doesn't do anything.

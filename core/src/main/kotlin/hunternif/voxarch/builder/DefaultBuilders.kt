@@ -72,6 +72,7 @@ class DefaultBuilders {
 fun BuilderConfig.setDefaultBuilders() {
     setDefault<Floor>(DefaultBuilders.Floor)
     setDefault<Wall>(DefaultBuilders.Wall)
+    setDefault<Column>(DefaultBuilders.Fill)
     setDefault<Room>(DefaultBuilders.Room)
     setDefault<Gate>(DefaultBuilders.Gate)
     setDefault<Hatch>(DefaultBuilders.Hatch)

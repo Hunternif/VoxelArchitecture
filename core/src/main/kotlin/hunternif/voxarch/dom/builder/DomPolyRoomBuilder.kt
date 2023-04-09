@@ -10,9 +10,21 @@ import hunternif.voxarch.util.rectangle
 import hunternif.voxarch.util.roundToEven
 import kotlin.math.*
 
-open class DomPolyRoomBuilder
-    : DomNodeBuilder<PolyRoom>(PolyRoom::class.java, { PolyRoom() }) {
-    override fun postLayout(element: StyledNode<PolyRoom>) =
+open class DomPolyRoomBuilder<N: PolyRoom>(
+    nodeClass: Class<N>,
+    createNode: () -> N,
+) : DomNodeBuilder<N>(nodeClass, createNode) {
+    companion object {
+        inline operator fun <reified N : PolyRoom> invoke(
+            noinline createNode: () -> N,
+        ): DomPolyRoomBuilder<N> =
+            DomPolyRoomBuilder(N::class.java, createNode)
+
+        operator fun invoke(): DomPolyRoomBuilder<PolyRoom> =
+            DomPolyRoomBuilder(PolyRoom::class.java) { PolyRoom() }
+    }
+
+    override fun postLayout(element: StyledNode<N>) =
         element.node.createPolygon()
 }
 

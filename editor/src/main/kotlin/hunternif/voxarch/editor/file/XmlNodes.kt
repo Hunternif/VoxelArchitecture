@@ -20,6 +20,7 @@ import hunternif.voxarch.vector.Vec3
 @JsonSubTypes(value = [
     JsonSubTypes.Type(name = "Structure", value = XmlStructure::class),
     JsonSubTypes.Type(name = "Room", value = XmlRoom::class),
+    JsonSubTypes.Type(name = "Column", value = XmlColumn::class),
     JsonSubTypes.Type(name = "PolyRoom", value = XmlPolyRoom::class),
     JsonSubTypes.Type(name = "Floor", value = XmlFloor::class),
     JsonSubTypes.Type(name = "Wall", value = XmlWall::class),
@@ -63,7 +64,7 @@ open class XmlRoom(
     rotationY: Double = 0.0,
 ) : XmlNode(origin, start, size, rotationY)
 
-class XmlPolyRoom(
+open class XmlPolyRoom(
     origin: Vec3 = Vec3.ZERO,
     start: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
@@ -72,6 +73,15 @@ class XmlPolyRoom(
     var shape: PolyShape = PolyShape.SQUARE,
     var polygon: XmlPath = XmlPath()
 ) : XmlRoom(origin, start, size, rotationY)
+
+class XmlColumn(
+    origin: Vec3 = Vec3.ZERO,
+    start: Vec3 = Vec3.ZERO,
+    size: Vec3 = Vec3.ZERO,
+    rotationY: Double = 0.0,
+    shape: PolyShape = PolyShape.SQUARE,
+    polygon: XmlPath = XmlPath(),
+) : XmlPolyRoom(origin, start, size, rotationY, shape, polygon)
 
 class XmlWall(
     origin: Vec3 = Vec3.ZERO,
@@ -97,9 +107,12 @@ class XmlPath(
 
 internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf())
 /** Maps to XML without mapping any of the children. */
-internal fun Node.mapToXmlNodeNoChildren(): XmlNode? {
+internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
     val xmlNode = when (this) {
         is Structure -> XmlStructure(origin, start, size, rotationY)
+        is Column -> XmlColumn(origin, start, size, rotationY,
+            shape, polygon.mapToXmlNode() as XmlPath
+        )
         is PolyRoom -> XmlPolyRoom(origin, start, size, rotationY,
             shape, polygon.mapToXmlNode() as XmlPath
         )
@@ -135,6 +148,10 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     mapped.add(this)
     val node: Node = when (this) {
         is XmlStructure -> Structure(origin)
+        is XmlColumn -> Column(origin, size).also {
+            it.shape = shape
+            it.polygon.addPoints(polygon.points ?: emptyList())
+        }
         is XmlPolyRoom -> PolyRoom(origin, size).also {
             it.shape = shape
             it.polygon.addPoints(polygon.points ?: emptyList())

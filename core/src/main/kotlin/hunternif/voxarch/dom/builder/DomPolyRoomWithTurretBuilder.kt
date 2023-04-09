@@ -4,7 +4,8 @@ import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.plan.PolyRoom
 
 /** Adds child [PolyRoom] with a [DomTurretDecor]. */
-open class DomPolyRoomWithTurretBuilder : DomPolyRoomBuilder() {
+open class DomPolyRoomWithTurretBuilder
+    : DomPolyRoomBuilder<PolyRoom>(PolyRoom::class.java, { PolyRoom() }) {
 
     private val decor: DomTurretDecor = DomTurretDecor()
 

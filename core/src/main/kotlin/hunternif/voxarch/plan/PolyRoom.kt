@@ -1,7 +1,6 @@
 package hunternif.voxarch.plan
 
 import hunternif.voxarch.vector.Vec3
-import kotlin.math.max
 
 /**
  * A room shaped as a cylinder with a polygon at its base.
@@ -46,6 +45,14 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
                 polygon.origin + it.p1,
                 polygon.origin + it.p2.addY(height)
             )
+        }
+    }
+
+    override fun getGroundBoundaries(): List<GroundBoundary> {
+        return if (polygon.segments.isNotEmpty()) {
+            polygon.segments.map { polygon.origin + it.p1 to polygon.origin + it.p2 }
+        } else {
+            super.getGroundBoundaries()
         }
     }
 

@@ -5,8 +5,9 @@ import hunternif.voxarch.vector.Vec3
 
 /** Adds points on a rectangle, centered at origin */
 fun Path.rectangle(width: Double, length: Double) {
-    val a = width / 2
-    val b = length / 2
+    // Min size is 0.5 so that 0-size rooms have at least 1 block
+    val a = kotlin.math.max(0.5, width / 2)
+    val b = kotlin.math.max(0.5, length / 2)
     /*
      * (Wall indices)
      * +---------> X
@@ -33,8 +34,9 @@ fun Path.square(width: Double) = rectangle(width, width)
  * Works best with even count. */
 fun Path.ellipse(width: Double, depth: Double, count: Int) {
     if (count < 3) return
-    val a = width / 2
-    val b = depth / 2
+    // Min size is 0.5 so that 0-size rooms have at least 1 block
+    val a = kotlin.math.max(0.5, width / 2)
+    val b = kotlin.math.max(0.5, depth / 2)
     val angleStep = 360.0 / count
     // Going counterclockwise:
     var angle = angleStep / 2
