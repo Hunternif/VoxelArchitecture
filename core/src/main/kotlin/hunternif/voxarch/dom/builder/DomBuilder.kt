@@ -29,7 +29,7 @@ open class DomBuilder {
 
     /** If hinting is enabled, children's global positions will be rounded to int,
      * according to this strategy. */
-    var hintDir: HintDir = HintDir.OFF
+    var hintDir: HintDir = HintDir.ROUND
 
     /** The unique class name ensures that the following style rules
      * will only apply to this turret instance. */

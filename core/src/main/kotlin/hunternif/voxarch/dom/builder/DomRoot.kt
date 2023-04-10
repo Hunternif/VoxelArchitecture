@@ -19,6 +19,7 @@ class DomRoot(
         seed: Long = 0L,
         maxRecursions: Int = 4,
         cleanDummies: Boolean = true,
+        hinting: Boolean = false,
     ): Node {
         // Building happens in multiple passes:
         // 1. Measure: each of the immediate children produces its StyledElement.
@@ -58,6 +59,12 @@ class DomRoot(
             }
         }
 
+        // Apply hinting
+        if (hinting) {
+            stats.hintedOrigins.forEach { (node, hint) ->
+                node.origin = hint
+            }
+        }
         // Collapse dummy nodes:
         if (cleanDummies) {
             stats.dummyNodes.forEach { it.collapse() }

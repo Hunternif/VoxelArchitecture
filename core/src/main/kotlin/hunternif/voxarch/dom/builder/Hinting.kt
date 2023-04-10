@@ -8,9 +8,10 @@ import hunternif.voxarch.util.isRightAngle
 import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.util.round
 import hunternif.voxarch.vector.LinearTransformation
+import hunternif.voxarch.vector.Vec3
 
 /**
- * See [applyHinting]
+ * See [findOriginHint]
  */
 enum class HintDir {
     /** No hinting */
@@ -31,12 +32,13 @@ enum class HintDir {
 /**
  * Move this [node]'s origin so that it's global position rounds to int,
  * using the given strategy [dir].
+ * @return new origin value after hinting.
  */
-fun applyHinting(node: Node, dir: HintDir) {
+fun findOriginHint(node: Node, dir: HintDir): Vec3 {
     // TODO: hint rotated nodes
-    if (!node.rotationY.isRightAngle()) return
-    when (dir) {
-        OFF -> {}
+    if (!node.rotationY.isRightAngle()) return node.origin
+    val hint = when (dir) {
+        OFF -> node.origin
         ROUND -> {
             val globalPos = node.findGlobalPosition()
             val globalRot = node.findGlobalRotation()
@@ -53,9 +55,10 @@ fun applyHinting(node: Node, dir: HintDir) {
             val localStartHint = globalToLocal.transform(globalStartHint)
             val deltaStart = localStartHint - node.start
             // rotate to local angle because we're moving origin, not start:
-            node.origin += deltaStart.rotateY(node.rotationY)
+            node.origin + deltaStart.rotateY(node.rotationY)
         }
-        OUT_X -> {/* not implemented */}
-        OUT_X_Z -> {/* not implemented */}
+        OUT_X -> node.origin /* not implemented */
+        OUT_X_Z -> node.origin /* not implemented */
     }
+    return hint
 }
