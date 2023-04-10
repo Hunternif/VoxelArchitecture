@@ -24,9 +24,7 @@ val defaultStyle get() = Stylesheet().add {
         snapOrigin { floorCenter() }
     }
     styleFor<Column> {
-        diameter { 2.vx }
         height { 100.pct }
         snapOrigin { floorCenter() }
-        shape { set(PolyShape.OCTAGON) }
     }
 }

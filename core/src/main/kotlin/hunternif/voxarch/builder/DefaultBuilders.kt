@@ -46,6 +46,7 @@ class DefaultBuilders {
         val Floor = SimpleFloorBuilder(MAT_FLOOR)
         val Wall = SimpleWallBuilder(MAT_WALL)
         val Room = RoomBuilder()
+        val Column = ColumnBuilder(MAT_WALL)
         val Gate = SimpleGateBuilder()
         val Hatch = SimpleHatchBuilder()
         val Fill = FillBuilder(MAT_WALL)
@@ -72,7 +73,7 @@ class DefaultBuilders {
 fun BuilderConfig.setDefaultBuilders() {
     setDefault<Floor>(DefaultBuilders.Floor)
     setDefault<Wall>(DefaultBuilders.Wall)
-    setDefault<Column>(DefaultBuilders.Fill)
+    setDefault<Column>(DefaultBuilders.Column)
     setDefault<Room>(DefaultBuilders.Room)
     setDefault<Gate>(DefaultBuilders.Gate)
     setDefault<Hatch>(DefaultBuilders.Hatch)

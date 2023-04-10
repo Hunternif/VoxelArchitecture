@@ -15,7 +15,7 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "PolyRoom" to { DomPolyRoomBuilder { PolyRoom() } },
     "Floor" to { DomNodeBuilder { Floor() } },
     "Wall" to { DomNodeBuilder { Wall() } },
-    "Column" to { DomPolyRoomBuilder { Column() } },
+    "Column" to { DomNodeBuilder { Column() } },
     "Arched Window" to { DomNodeBuilder { Wall() }.addStyle(BLD_ARCHED_WINDOW) },
     "Turret" to { DomPolyRoomWithTurretBuilder() },
     "Turret Decor" to { DomTurretDecor() },

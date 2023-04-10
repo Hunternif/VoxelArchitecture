@@ -171,11 +171,9 @@ fun DomBuilder.prop(
 /** Adds child [Column]. See [node]. */
 fun DomBuilder.column(
     vararg styleClass: String,
-    block: DomPolyRoomBuilder<Column>.() -> Unit = {}
+    block: DomNodeBuilder<Column>.() -> Unit = {}
 ) {
-    val bld = DomPolyRoomBuilder { Column() }.apply { +styleClass }
-    addChild(bld)
-    bld.block()
+    this.addChildNodeBuilder(styleClass) { Column() }.block()
 }
 
 /** Adds an extra element in the DOM that doesn't do anything.

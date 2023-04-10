@@ -79,9 +79,7 @@ class XmlColumn(
     start: Vec3 = Vec3.ZERO,
     size: Vec3 = Vec3.ZERO,
     rotationY: Double = 0.0,
-    shape: PolyShape = PolyShape.SQUARE,
-    polygon: XmlPath = XmlPath(),
-) : XmlPolyRoom(origin, start, size, rotationY, shape, polygon)
+) : XmlNode(origin, start, size, rotationY)
 
 class XmlWall(
     origin: Vec3 = Vec3.ZERO,
@@ -110,9 +108,7 @@ internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf(
 internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
     val xmlNode = when (this) {
         is Structure -> XmlStructure(origin, start, size, rotationY)
-        is Column -> XmlColumn(origin, start, size, rotationY,
-            shape, polygon.mapToXmlNode() as XmlPath
-        )
+        is Column -> XmlColumn(origin, start, size, rotationY)
         is PolyRoom -> XmlPolyRoom(origin, start, size, rotationY,
             shape, polygon.mapToXmlNode() as XmlPath
         )
@@ -148,10 +144,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     mapped.add(this)
     val node: Node = when (this) {
         is XmlStructure -> Structure(origin)
-        is XmlColumn -> Column(origin, size).also {
-            it.shape = shape
-            it.polygon.addPoints(polygon.points ?: emptyList())
-        }
+        is XmlColumn -> Column(origin)
         is XmlPolyRoom -> PolyRoom(origin, size).also {
             it.shape = shape
             it.polygon.addPoints(polygon.points ?: emptyList())
