@@ -91,6 +91,11 @@ fun MainGui.mainMenu() {
             ) {
                 app.toggleCleanDummies()
             }
+            menuCheck("Hinting", app.state.hinting,
+                tooltip = "Automatically move generated node origins to the nearest global integer position"
+            ) {
+                app.toggleHinting()
+            }
         }
     }
 }

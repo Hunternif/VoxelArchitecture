@@ -55,7 +55,9 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.runBlueprintsRecursive(root: SceneNode) {
         val prevChildSet = root.children.filterIsInstance<SceneNode>().map { it.node }.toSet()
         root.blueprints.forEach {
-            it.execute(root.node, state.stylesheet, state.seed, 4, state.cleanDummies)
+            it.execute(root.node, state.stylesheet, state.seed, 4,
+                state.cleanDummies, state.hinting,
+            )
         }
         // Create SceneNodes for the new nodes
         val newNodes = root.node.children.filter { it !in prevChildSet }

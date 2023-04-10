@@ -73,13 +73,14 @@ class Blueprint(
         seed: Long = 0,
         maxRecursions: Int = 4,
         cleanDummies: Boolean = true,
+        hinting: Boolean = false,
     ) {
         // copy the incoming stylesheet to keep it clean from generated rules:
         val finalStylesheet = stylesheet.copy()
         finalStylesheet.copyRules(internalStylesheet)
         val root = domRoot(rootNode)
         root.addChild(start.domBuilder)
-        root.buildDom(finalStylesheet, seed, maxRecursions, cleanDummies)
+        root.buildDom(finalStylesheet, seed, maxRecursions, cleanDummies, hinting)
     }
 
     override fun toString(): String = name

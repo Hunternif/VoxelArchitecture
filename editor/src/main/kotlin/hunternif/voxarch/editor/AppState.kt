@@ -81,6 +81,7 @@ interface AppState {
     //============================== OPTIONS ================================
 
     val cleanDummies: Boolean
+    val hinting: Boolean
 
 
     //============================= GUI STATE ===============================
@@ -147,6 +148,7 @@ class AppStateImpl(
     override var newNodeType: String = "Node"
 
     override var cleanDummies: Boolean = true
+    override var hinting: Boolean = false
 
     override val DEBUG = true
     override var isMainWindowFocused = false

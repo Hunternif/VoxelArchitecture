@@ -242,6 +242,10 @@ fun EditorApp.toggleCleanDummies() = action {
     state.cleanDummies = !state.cleanDummies
 }
 
+fun EditorApp.toggleHinting() = action {
+    state.hinting = !state.hinting
+}
+
 
 //=============================== STYLES ================================
 
