@@ -41,6 +41,9 @@ class StyledNode<N : Node>(
 
     override fun postLayout() {
         domBuilder.postLayout(this)
+        // For visual debugging, this can be moved to DomRoot post-processing,
+        // by saving the hinted origin in ctx.stats
+        applyHinting(node, parent?.domBuilder?.hintDir ?: HintDir.OFF)
     }
 
     override fun cleanup() {

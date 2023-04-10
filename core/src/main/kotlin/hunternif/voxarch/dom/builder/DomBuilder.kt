@@ -27,6 +27,10 @@ open class DomBuilder {
     /** Extension slots where other DomBuilders attach. */
     val slots = linkedSetOf<Pair<String, DomBuilder>>()
 
+    /** If hinting is enabled, children's global positions will be rounded to int,
+     * according to this strategy. */
+    var hintDir: HintDir = HintDir.OFF
+
     /** The unique class name ensures that the following style rules
      * will only apply to this turret instance. */
     internal val uniqueClass by lazy {

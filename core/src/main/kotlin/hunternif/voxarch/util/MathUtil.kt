@@ -142,3 +142,6 @@ fun Double.snapTo(vararg values: Number, delta: Double = 0.000001): Double {
     }
     return this
 }
+
+val rightAngles = arrayOf(0, 90, -90, 180, -180, 270, -270)
+fun Double.isRightAngle(): Boolean = rightAngles.any { abs(this - it) < 0.001 }
