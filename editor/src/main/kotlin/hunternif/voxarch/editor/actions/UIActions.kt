@@ -172,12 +172,16 @@ fun EditorApp.setTextEditorActive(active: Boolean) = action {
     state.isTextEditorActive = active
 }
 
+fun EditorApp.logInfo(msg: String) = action {
+    logs.add(LogMessage.info(msg))
+}
+
 fun EditorApp.logWarning(msg: String) = action {
-    logs.add(LogMessage.Warning(msg))
+    logs.add(LogMessage.warn(msg))
 }
 
 fun EditorApp.logError(e: Exception) = action {
-    logs.add(LogMessage.Error(e))
+    logs.add(LogMessage.error(e))
 }
 
 fun EditorApp.addOverlayText(id: String, text: String) = action {

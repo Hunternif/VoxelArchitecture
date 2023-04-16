@@ -1,16 +1,37 @@
 package hunternif.voxarch.editor.util
 
-import java.util.Date
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
 
-sealed class LogMessage(
+class LogMessage(
     /** Message to display in logs or status bar */
     val msg: String,
-    val time: Date,
+    val severity: Severity,
+    val time: LocalDateTime = LocalDateTime.now(),
+    val exception: Exception? = null,
+    val moreLines: List<String> = emptyList(),
 ) {
-    class Warning(msg: String, time: Date = Date())
-        : LogMessage("Warning: $msg", time)
+    val hasMoreLines: Boolean get() = moreLines.isNotEmpty()
+    val formattedString: String by lazy {
+        "${timeFormat.format(time)} $msg"
+    }
 
-    class Error(val ex: Exception, time: Date = Date())
-        : LogMessage("Error: ${ex.javaClass.simpleName}: ${ex.message}", time)
+    companion object {
+        val timeFormat: DateTimeFormatter = DateTimeFormatter.ofPattern("HH:mm:ss")
+
+        fun info(msg: String) = LogMessage(msg, Severity.INFO)
+        fun warn(msg: String) = LogMessage(msg, Severity.WARN)
+        fun error(e: Exception): LogMessage {
+            val msg = "Error: ${e.javaClass.simpleName}: ${e.message}"
+            val lines = e.stackTrace.map { it.toString() }
+            return LogMessage(msg, Severity.ERROR, LocalDateTime.now(), e, lines)
+        }
+    }
+}
+
+enum class Severity {
+    INFO,
+    WARN,
+    ERROR,
 }
 

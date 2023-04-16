@@ -7,7 +7,6 @@ import hunternif.voxarch.editor.render.Texture
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.scene.InputController
-import hunternif.voxarch.editor.util.LogMessage
 import imgui.ImGui
 import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiStyleVar
@@ -256,18 +255,15 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi
     internal fun logWindow() {
         for (e in app.logs) {
-            when (e) {
-                is LogMessage.Warning -> {
-                    ImGui.textWrapped(e.msg)
-                }
-                is LogMessage.Error -> {
-                    if (ImGui.treeNode(e.msg)) {
-                        for (stackFrame in e.ex.stackTrace) {
-                            ImGui.text(stackFrame.toString())
-                        }
-                        ImGui.treePop()
+            if (e.hasMoreLines) {
+                if (ImGui.treeNode(e.formattedString)) {
+                    for (line in e.moreLines) {
+                        ImGui.textWrapped(line)
                     }
+                    ImGui.treePop()
                 }
+            } else {
+                ImGui.textWrapped(e.formattedString)
             }
         }
     }
