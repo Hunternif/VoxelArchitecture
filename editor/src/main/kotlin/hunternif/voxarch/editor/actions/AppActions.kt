@@ -253,6 +253,11 @@ fun EditorApp.toggleVerboseDom() = action {
     state.verboseDom = !state.verboseDom
 }
 
+fun EditorApp.toggleVerboseBuild() = action {
+    state.verboseBuild = !state.verboseBuild
+}
+
+
 
 //=============================== STYLES ================================
 

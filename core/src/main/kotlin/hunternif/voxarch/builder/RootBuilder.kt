@@ -10,6 +10,13 @@ import java.util.*
  * Don't register it in [BuildContext]
  */
 class RootBuilder : ANodeBuilder() {
+
+    private val listeners = mutableListOf<IBuildListener>()
+
+    fun addListener(listener: IBuildListener) {
+        listeners.add(listener)
+    }
+
     /**
      * Moves starting point to [rootNode]'s origin and then starts building.
      */
@@ -25,6 +32,7 @@ class RootBuilder : ANodeBuilder() {
             val node = entry.node
             if (node in visited) continue
             visited.add(node)
+            listeners.forEach { it.onBeginBuild(node) }
 
             val builder = context.builders.get(node)
             if (builder != null && !node.transparent) {
@@ -36,7 +44,8 @@ class RootBuilder : ANodeBuilder() {
                 addAll(node.children.filterIsInstance<Wall>())
                 addAll(node.children.filterNot { it is Gate || it is Hatch })
                 addAll(node.children)
-            }
+            }.toList()
+            listeners.forEach { it.onPrepareChildren(node, sortedChildren) }
 
             buildQueue.addAll(0, sortedChildren.map {
                 continueTransform(it, entry.trans.clone())

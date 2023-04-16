@@ -1,10 +1,16 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.builder.IBuildListener
+import hunternif.voxarch.builder.RootBuilder
+import hunternif.voxarch.dom.builder.IDomListener
+import hunternif.voxarch.dom.style.StyledElement
+import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.DetachedObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.scenegraph.detached
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.BlockStorageDelegate
 import hunternif.voxarch.storage.ChunkedStorage3D
 
@@ -23,11 +29,13 @@ class BuildVoxels : HistoryAction(
         if (!::newGenerated.isInitialized) {
             newGenerated = mutableListOf()
             val world = BlockStorageDelegate(ChunkedStorage3D())
+            val builder = RootBuilder()
             app.state.run {
+                if (verboseBuild) builder.addListener(VerboseLogger(app))
                 builder.build(rootNode.node, world, buildContext)
                 val builtVoxels = registry.newVoxelGroup(
                     "Built voxels", world, renderMode, true)
-                app.state.voxelRoot.addChild(builtVoxels)
+                voxelRoot.addChild(builtVoxels)
                 newGenerated = listOf(builtVoxels.detached())
             }
         }
@@ -51,5 +59,15 @@ class BuildVoxels : HistoryAction(
     private fun EditorAppImpl.clearGeneratedVoxels() = state.run {
         generatedVoxels.toList().forEach { it.remove() }
         generatedVoxels.clear()
+    }
+
+    companion object {
+        class VerboseLogger(val app: EditorApp) : IBuildListener {
+            override fun onBeginBuild(node: Node) {
+                app.logInfo("Building Node $node")
+            }
+
+            override fun onPrepareChildren(parent: Node, children: List<Node>) {}
+        }
     }
 }

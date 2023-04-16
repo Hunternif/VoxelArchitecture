@@ -38,7 +38,6 @@ interface AppState {
      * The root itself should stay empty of voxels. */
     val voxelRoot: SceneObject
     val builderLibrary: BuilderLibrary
-    val builder: RootBuilder
     val buildContext: BuildContext
     val stylesheet: Stylesheet
     val seed: Long
@@ -83,6 +82,7 @@ interface AppState {
     val cleanDummies: Boolean
     val hinting: Boolean
     val verboseDom: Boolean
+    val verboseBuild: Boolean
 
 
     //============================= GUI STATE ===============================
@@ -116,7 +116,6 @@ class AppStateImpl(
     override val blueprintUsage = registry.bpInNodes
 
     override val builderLibrary = BuilderLibrary()
-    override val builder = RootBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
         materials.setSolidColorMaterials()
         builders.setDefaultBuilders()
@@ -151,6 +150,7 @@ class AppStateImpl(
     override var cleanDummies: Boolean = true
     override var hinting: Boolean = false
     override var verboseDom: Boolean = false
+    override var verboseBuild: Boolean = false
 
     override val DEBUG = true
     override var isMainWindowFocused = false

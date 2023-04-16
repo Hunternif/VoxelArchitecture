@@ -96,10 +96,15 @@ fun MainGui.mainMenu() {
             ) {
                 app.toggleHinting()
             }
-            menuCheck("Verbose DOM", app.state.hinting,
-                tooltip = "Log verbose details when building DOM (from \"Generate nodes\")"
+            menuCheck("Verbose DOM", app.state.verboseDom,
+                tooltip = "Log verbose details when building Nodes from DOM elements (\"Generate nodes\")"
             ) {
                 app.toggleVerboseDom()
+            }
+            menuCheck("Verbose build", app.state.verboseBuild,
+                tooltip = "Log verbose details when building voxels from Nodes (\"Build voxels\")"
+            ) {
+                app.toggleVerboseBuild()
             }
         }
     }
