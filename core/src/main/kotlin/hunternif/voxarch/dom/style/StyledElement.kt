@@ -28,7 +28,8 @@ open class StyledElement<D : DomBuilder>(
         ctx.makeChildCtx(this)
 
     override fun toString(): String =
-        "Styled<${domBuilder::class.java.simpleName}>"
+        "Styled<${domBuilder::class.java.simpleName}> " +
+            "[${styleClass.joinToString(", ")}]"
 }
 
 /** Represents a DOM element with a [Node] for the purpose of styling. */

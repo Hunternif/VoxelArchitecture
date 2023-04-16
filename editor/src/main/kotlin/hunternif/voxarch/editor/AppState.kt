@@ -82,6 +82,7 @@ interface AppState {
 
     val cleanDummies: Boolean
     val hinting: Boolean
+    val verboseDom: Boolean
 
 
     //============================= GUI STATE ===============================
@@ -149,6 +150,7 @@ class AppStateImpl(
 
     override var cleanDummies: Boolean = true
     override var hinting: Boolean = false
+    override var verboseDom: Boolean = false
 
     override val DEBUG = true
     override var isMainWindowFocused = false

@@ -13,6 +13,12 @@ class DomRoot(
     val node: Node = Structure(),
 ) : DomBuilder() {
 
+    private val listeners = mutableListOf<IDomListener>()
+
+    fun addListener(listener: IDomListener) {
+        listeners.add(listener)
+    }
+
     /** Builds the entire DOM tree. */
     fun buildDom(
         stylesheet: Stylesheet = defaultStyle,
@@ -42,8 +48,10 @@ class DomRoot(
 
         while (layoutQueue.isNotEmpty()) {
             val element = layoutQueue.pop()
+            listeners.forEach { it.onBeginBuild(element) }
             // 1. Measure
             val styledChildren = element.prepareChildren(maxRecursions)
+            listeners.forEach { it.onPrepareChildren(element, styledChildren) }
             styledChildren.forEach { stylesheet.applyStyle(it) }
             // 1.1. Hide invisible
             val visibleChildren = styledChildren.filter {
@@ -52,11 +60,13 @@ class DomRoot(
             }
             // 2. Layout
             val laidOutChildren = element.domBuilder.layout(visibleChildren)
+            listeners.forEach { it.onLayoutChildren(element, laidOutChildren) }
             // 3. Recurse
             laidOutChildren.forEach {
                 it.postLayout()
                 layoutQueue.add(it)
             }
+            listeners.forEach { it.onEndBuild(element) }
         }
 
         // Apply hinting

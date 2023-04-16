@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.IDomListener
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.editor.util.IDRegistry
@@ -74,12 +75,14 @@ class Blueprint(
         maxRecursions: Int = 4,
         cleanDummies: Boolean = true,
         hinting: Boolean = false,
+        listeners: Collection<IDomListener> = emptyList(),
     ) {
         // copy the incoming stylesheet to keep it clean from generated rules:
         val finalStylesheet = stylesheet.copy()
         finalStylesheet.copyRules(internalStylesheet)
         val root = domRoot(rootNode)
         root.addChild(start.domBuilder)
+        listeners.forEach { root.addListener(it) }
         root.buildDom(finalStylesheet, seed, maxRecursions, cleanDummies, hinting)
     }
 

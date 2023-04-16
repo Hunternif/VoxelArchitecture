@@ -1,5 +1,8 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.dom.builder.IDomListener
+import hunternif.voxarch.dom.style.StyledElement
+import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.blueprint.PropBlueprint
 import hunternif.voxarch.editor.gui.Colors
@@ -54,9 +57,11 @@ class GenerateNodes : HistoryAction(
      * and are added to [newGenerated]. */
     private fun EditorAppImpl.runBlueprintsRecursive(root: SceneNode) {
         val prevChildSet = root.children.filterIsInstance<SceneNode>().map { it.node }.toSet()
+        val loggers = mutableListOf<IDomListener>()
+        if (state.verboseDom) loggers.add(VerboseLogger(this))
         root.blueprints.forEach {
             it.execute(root.node, state.stylesheet, state.seed, 4,
-                state.cleanDummies, state.hinting,
+                state.cleanDummies, state.hinting, loggers,
             )
         }
         // Create SceneNodes for the new nodes
@@ -74,5 +79,16 @@ class GenerateNodes : HistoryAction(
         sceneNode.parent = parent
         newGenerated.add(sceneNode.detached())
         newNode.children.forEach { createSceneNodesRecursive(sceneNode, it) }
+    }
+
+    companion object {
+        class VerboseLogger(val app: EditorApp) : IDomListener {
+            override fun onBeginBuild(element: StyledElement<*>) {
+                app.logInfo("Building DOM $element")
+            }
+            override fun onPrepareChildren(parent: StyledElement<*>, children: List<StyledElement<*>>) {}
+            override fun onLayoutChildren(parent: StyledElement<*>, children: List<StyledElement<*>>) {}
+            override fun onEndBuild(element: StyledElement<*>) {}
+        }
     }
 }
