@@ -23,7 +23,7 @@ data class Viewport(
 
     /** Returns offset in GLFW window coordinates */
     val windowOffset: Vector2f = Vector2f()
-        get() = field.set(x.toFloat(), -y.toFloat())
+        get() = field.set(x.toFloat(), y.toFloat())
 
     constructor(vp: Viewport) : this(vp.x, vp.y, vp.width, vp.height)
 

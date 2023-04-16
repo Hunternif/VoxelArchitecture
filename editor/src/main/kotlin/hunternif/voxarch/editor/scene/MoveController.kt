@@ -53,7 +53,7 @@ class MoveController(
         cursorOffset
             .set(camera.projectToViewport(pickedNode.box.floorCenter))
             .sub(mouseX, mouseY)
-            .sub(camera.vp.windowOffset)
+            .add(camera.vp.windowOffset)
         floorY = round(pickedNode.box.floorCenter.y)
         dragStartWorldPos.set(projectToFloorWithOffset(mouseX, mouseY))
         if (mods and GLFW_MOD_ALT != 0) {

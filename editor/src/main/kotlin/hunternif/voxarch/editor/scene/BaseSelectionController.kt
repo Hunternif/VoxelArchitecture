@@ -46,6 +46,7 @@ abstract class BaseSelectionController(
     protected open fun onMouseUp(mods: Int) {
         dragging = false
     }
+    /** coordinates passed are relative to window */
     protected open fun drag(posX: Float, posY: Float) {}
 
     /** If no objects are selected, select one that the cursor is hovering. */
