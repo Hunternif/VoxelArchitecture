@@ -71,8 +71,7 @@ fun DomBuilder.turret(
     block: DomPolyRoomWithTurretBuilder.() -> Unit = {}
 ) {
     val bld = DomPolyRoomWithTurretBuilder().apply {
-        // The current node acts as the tower body, so we add style BLD_TOWER_BODY.
-        addStyles(BLD_TOWER_BODY, DOM_TURRET, *styleClass)
+        addStyles(*styleClass)
     }
     addChild(bld)
     bld.block()
@@ -144,9 +143,10 @@ fun DomBuilder.wall(
 /** Adds a wall with a window type assigned to it. */
 fun DomBuilder.archedWindow(
     vararg styleClass: String,
-    block: DomNodeBuilder<Wall>.() -> Unit = {}
+    block: DomNodeBuilder<Window>.() -> Unit = {}
 ) {
-    wall(BLD_ARCHED_WINDOW)
+    val styles = arrayOf(*styleClass, BLD_ARCHED_WINDOW)
+    this.addChildNodeBuilder(styles) { Window() }.block()
 }
 
 /** Creates a [Path] on the line segment. */
