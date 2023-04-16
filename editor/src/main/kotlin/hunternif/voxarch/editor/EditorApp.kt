@@ -75,6 +75,7 @@ class EditorAppImpl : EditorApp {
         glfwShowWindow(window)
 
         val file = parseFileArg(args)
+        //TODO: log errors from opening initial file
         file?.let { openProjectFile(it) } ?: newProject()
     }
 
