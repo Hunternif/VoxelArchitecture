@@ -19,6 +19,7 @@ abstract class BaseBuilderTest(
     lateinit var trans: TransformationStack
     lateinit var context: BuildContext
     lateinit var builder: RootBuilder
+    protected var verbose = false
 
     @Before
     open fun setup() {
@@ -33,6 +34,7 @@ abstract class BaseBuilderTest(
 
     fun build(node: Node) {
         try {
+            if (verbose) builder.addListener(ConsoleBuildListener())
             builder.build(node, out, context)
         } catch (e: ArrayIndexOutOfBoundsException) {
             // don't throw, so we can see the results in the snapshot
@@ -79,6 +81,13 @@ abstract class BaseBuilderTest(
             override val minY: Int = 0
             override fun isTerrain(block: BlockData?): Boolean = true
             override fun shouldBuildThrough(block: BlockData?): Boolean = false
+        }
+
+        class ConsoleBuildListener : IBuildListener {
+            override fun onBeginBuild(node: Node) {
+                println("Building $node")
+            }
+            override fun onPrepareChildren(parent: Node, children: List<Node>) {}
         }
     }
 }
