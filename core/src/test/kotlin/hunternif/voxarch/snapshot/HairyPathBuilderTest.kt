@@ -7,7 +7,7 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.snapshot.PathBuilderTest.Companion.squarePath
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 
@@ -78,7 +78,7 @@ internal class HairyPathBuilder(
     private val hairLength: Double = 1.0,
     private val hairStep: Double = 1.0
 ): APathBuilder() {
-    override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Path, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         val hugger = PathHugger(node, trans, world)
         var x = 0.0
         while (x < node.totalLength) {

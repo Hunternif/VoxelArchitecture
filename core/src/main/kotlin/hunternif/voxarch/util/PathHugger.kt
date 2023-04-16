@@ -4,6 +4,7 @@ import hunternif.voxarch.builder.toLocal
 import hunternif.voxarch.plan.Path
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.ILinearTransformation
 import hunternif.voxarch.vector.TransformationStack
 
 /**
@@ -12,10 +13,11 @@ import hunternif.voxarch.vector.TransformationStack
  */
 class PathHugger(
     private val path: Path,
-    private val trans: TransformationStack,
+    trans: ILinearTransformation,
     world: IBlockStorage
 ) : IBlockStorage {
-    private val localWorld = world.toLocal(trans)
+    private val stack = TransformationStack(trans)
+    private val localWorld = world.toLocal(stack)
 
     override fun getBlock(x: Int, y: Int, z: Int): BlockData? {
         return localWorld.getBlock(x, y, z)
@@ -27,7 +29,7 @@ class PathHugger(
 
     override fun setBlock(x: Double, y: Double, z: Double, block: BlockData?) {
         path.mapX(x)?.let { segment ->
-            trans.apply {
+            stack.apply {
                 push()
                 val xOffset = x - segment.distanceFromStart
                 val angleY = segmentAngleY(segment.p1, segment.p2)

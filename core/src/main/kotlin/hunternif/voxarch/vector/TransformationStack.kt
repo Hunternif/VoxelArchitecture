@@ -10,6 +10,11 @@ class TransformationStack(
     /** Combined transformation from the bottom of the stack. */
     private val current: LinearTransformation = LinearTransformation()
 ) : ILinearTransformation by current {
+
+    constructor(start: ILinearTransformation) : this(
+        LinearTransformation(start.angleY, start.matrix.clone())
+    )
+
     /** Stack of transformations. */
     private val stack: Deque<LinearTransformation> = ArrayDeque()
 

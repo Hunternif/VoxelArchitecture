@@ -4,10 +4,11 @@ import hunternif.voxarch.plan.Gate
 import hunternif.voxarch.plan.Hatch
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
+import hunternif.voxarch.vector.ITransformation
 
 open class RoomBuilder : ARoomBuilder() {
-    override fun build(node: Room, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Room, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         node.apply {
             clearVolume(world, trans)
             floors.filter { !it.isBuilt }.forEach { buildChild(it, trans, world, context) }
@@ -18,7 +19,7 @@ open class RoomBuilder : ARoomBuilder() {
     }
 
     companion object {
-        private fun Room.clearVolume(world: IBlockStorage, trans: TransformationStack) {
+        private fun Room.clearVolume(world: IBlockStorage, trans: ITransformation) {
             fillXYZ(trans) { x, y, z ->
                 world.clearBlock(x, y, z)
             }

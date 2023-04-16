@@ -2,13 +2,13 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
 
 open class SimpleWallBuilder(
     private val material: String,
     private val downToGround: Boolean = false
 ): ANodeBuilder() {
-    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Node, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         val localWorld = world.toLocal(trans)
         val wallLength = node.width.toInt()
         val height = node.height.toInt()

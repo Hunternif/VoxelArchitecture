@@ -6,7 +6,7 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
 import hunternif.voxarch.util.symmetricSpacing
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
 import kotlin.math.ceil
 import kotlin.math.floor
 
@@ -32,7 +32,7 @@ class CorbelBuilder(
         SYMMETRIC, ROUNDED, LINEAR
     }
 
-    override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Path, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         val wallLength = ceil(node.totalLength).toInt()
         val hugger = PathHugger(node, trans, world)
 

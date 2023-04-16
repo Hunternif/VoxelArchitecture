@@ -4,14 +4,14 @@ import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.step
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
 import kotlin.math.sqrt
 
 /**
  * Builds a "lancet" window on the given section of the wall.
  */
 class ArchedWindowBuilder : ANodeBuilder() {
-    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Node, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         val midPoint = node.width / 2
         val height = node.height
         val depth = node.depth

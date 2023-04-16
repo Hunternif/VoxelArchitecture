@@ -2,6 +2,7 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.ILinearTransformation
 import hunternif.voxarch.vector.TransformationStack
 
 /**
@@ -32,7 +33,7 @@ open class Builder<in T : Node>(
      */
     internal open fun build(
         node: T,
-        trans: TransformationStack,
+        trans: ILinearTransformation,
         world: IBlockStorage,
         context: BuildContext,
     ) {
@@ -42,7 +43,7 @@ open class Builder<in T : Node>(
 
     private fun buildChildren(
         parent: T,
-        trans: TransformationStack,
+        trans: ILinearTransformation,
         world: IBlockStorage,
         context: BuildContext,
     ) {
@@ -53,13 +54,14 @@ open class Builder<in T : Node>(
 
     protected fun buildChild(
         child: Node,
-        trans: TransformationStack,
+        trans: ILinearTransformation,
         world: IBlockStorage,
         context: BuildContext,
     ) {
+        val stack = TransformationStack(trans)
         val builder = context.builders.get(child)
         if (builder != null) {
-            trans.apply {
+            stack.apply {
                 push()
                 translate(child.origin)
                 rotateY(child.rotationY)

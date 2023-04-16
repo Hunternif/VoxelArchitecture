@@ -2,12 +2,12 @@ package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
 
 open class ColumnBuilder(
     private val material: String,
 ) : ANodeBuilder() {
-    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Node, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         if (node.width == 0.0 && node.depth == 0.0) {
             // Single block column
             val localWorld = world.toLocal(trans)

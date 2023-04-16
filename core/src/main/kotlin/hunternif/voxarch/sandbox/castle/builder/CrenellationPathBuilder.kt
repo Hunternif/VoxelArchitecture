@@ -5,7 +5,7 @@ import hunternif.voxarch.plan.Path
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.PathHugger
-import hunternif.voxarch.vector.TransformationStack
+import hunternif.voxarch.vector.ILinearTransformation
 
 data class CrenellationSizes(
     val merlonLength: Int = 1,
@@ -26,7 +26,7 @@ class CrenellationPathBuilder(
     private val sizes: CrenellationSizes = CrenellationSizes()
 ) : APathBuilder() {
 
-    override fun build(node: Path, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Path, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         val wallLength = node.totalLength.toInt()
         val hugger = PathHugger(node, trans, world)
         buildCrenellations(0, wallLength, 0, sizes, material, hugger, context)
@@ -46,7 +46,7 @@ class CrenellationWallBuilder(
     downToGround: Boolean = false
 ) : SimpleWallBuilder(material, downToGround) {
 
-    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Node, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         super.build(node, trans, world, context)
         val height = node.height.toInt()
         val wallLength = node.width.toInt()

@@ -7,6 +7,7 @@ import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PathSegment
 import hunternif.voxarch.plan.getPerimeter
 import hunternif.voxarch.storage.IBlockStorage
+import hunternif.voxarch.vector.ILinearTransformation
 import hunternif.voxarch.vector.TransformationStack
 import hunternif.voxarch.vector.Vec3
 
@@ -18,22 +19,23 @@ class PyramidBuilder(
     private val material: String,
     private val upsideDown: Boolean = false
 ): ANodeBuilder() {
-    override fun build(node: Node, trans: TransformationStack, world: IBlockStorage, context: BuildContext) {
+    override fun build(node: Node, trans: ILinearTransformation, world: IBlockStorage, context: BuildContext) {
         val polygon = node.getPerimeter()
+        val stack = TransformationStack(trans)
         if (upsideDown) {
-            trans.push()
-            trans.translate(0, node.height, 0)
-            trans.mirrorY()
+            stack.push()
+            stack.translate(0, node.height, 0)
+            stack.mirrorY()
         }
-        trans.push()
-        trans.translate(polygon.origin)
-        val apex = trans.transform(0.0, node.height, 0.0)
+        stack.push()
+        stack.translate(polygon.origin)
+        val apex = stack.transform(0.0, node.height, 0.0)
         polygon.segments.forEach {
-            buildSegment(it, apex, trans, world, context)
+            buildSegment(it, apex, stack, world, context)
         }
-        trans.pop()
+        stack.pop()
         if (upsideDown) {
-            trans.pop()
+            stack.pop()
         }
     }
 
