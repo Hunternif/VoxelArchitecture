@@ -15,6 +15,10 @@ val defaultStyle get() = Stylesheet().add {
         width { 100.pct }
         height { 100.pct }
     }
+    styleFor<Window> {
+        width { 100.pct }
+        height { 100.pct }
+    }
     styleFor<DomTurretDecor> {
         roofOffset { 1.vx }
         spireRatio { set(2.5) }

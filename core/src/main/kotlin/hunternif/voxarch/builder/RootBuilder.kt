@@ -42,7 +42,9 @@ class RootBuilder : ANodeBuilder() {
             val sortedChildren = LinkedHashSet<Node>().apply {
                 addAll(node.children.filterIsInstance<Floor>())
                 addAll(node.children.filterIsInstance<Wall>())
-                addAll(node.children.filterNot { it is Gate || it is Hatch })
+                // all children except windows:
+                addAll(node.children.filterNot { it.isWindow() })
+                // only windows are left:
                 addAll(node.children)
             }.toList()
             listeners.forEach { it.onPrepareChildren(node, sortedChildren) }
@@ -52,6 +54,8 @@ class RootBuilder : ANodeBuilder() {
             })
         }
     }
+
+    private fun Node.isWindow() = this is Window || this is Gate || this is Hatch
 
     private data class Entry(
         val node: Node,
