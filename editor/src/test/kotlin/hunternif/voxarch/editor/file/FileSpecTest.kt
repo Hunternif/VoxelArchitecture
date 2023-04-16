@@ -1,5 +1,10 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.dom.style.Stylesheet
+import hunternif.voxarch.dom.style.pct
+import hunternif.voxarch.dom.style.property.height
+import hunternif.voxarch.dom.style.property.width
+import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
@@ -7,10 +12,7 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.magicavoxel.VoxColor
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.Structure
-import hunternif.voxarch.plan.centeredRoom
-import hunternif.voxarch.plan.room
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Array3D
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
@@ -64,6 +66,14 @@ class FileSpecTest : BaseAppTest() {
 
     @Test
     fun `write project 2_rooms`() {
+        app.setStylesheet(Stylesheet().add {
+            styleFor<Wall> {
+                width { 100.pct }
+            }
+            style("my_class") {
+                height { 50.vx }
+            }
+        })
         app.createNode(Vector3i(-8, 0, -8), Vector3i(0, 5, 1), true, "Room")
         val node2 = app.createNode(Vector3i(-4, 0, 1), Vector3i(3, 3, 6), false, "Room")
         app.setParentNode(node2)

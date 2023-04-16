@@ -263,6 +263,9 @@ fun EditorApp.toggleVerboseBuild() = action {
 
 fun EditorApp.resetStylesheet() = historyAction(ResetStylesheet())
 
+fun EditorApp.setStylesheet(stylesheet: Stylesheet) =
+    updateStylesheetAndText(stylesheet, stylesheet.toString())
+
 /**
  * If last action was also to update style text, then the 2 actions are
  * combined into 1.
