@@ -82,7 +82,7 @@ private fun <T> makeDecl(
         ctx is EnumValueContext && property.isEnum -> {
             // TODO: add support for random enum expressions
             val name = ctx.ID()?.text ?: ""
-            val enum = property.valType.enumConstants?.first { (it as Enum<*>).name == name }
+            val enum = property.valType.enumConstants?.firstOrNull { (it as Enum<*>).name == name }
             enum?.let { set(name, it) }
         }
         ctx is StrValueContext && property.isString -> {
