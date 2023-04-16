@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.History
+import hunternif.voxarch.editor.actions.saveProjectOrOpenDialogToSaveAs
 import hunternif.voxarch.editor.actions.setTextEditorActive
 import hunternif.voxarch.editor.actions.updateStylesheetAndText
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
@@ -124,11 +125,13 @@ class GuiStyleEditor(
         editor.render("TextEditor")
 
         handleTyping()
-        applyTimer.runAtInterval { applyStylesheet() }
+        applyTimer.runAtInterval { applyStylesheet(checkTyping = true) }
     }
 
-    private fun applyStylesheet() {
-        if (isDirty && stoppedTyping) {
+    /** @param checkTyping if true, will first check if user stopped typing */
+    private fun applyStylesheet(checkTyping: Boolean = false) {
+        if (isDirty && (!checkTyping || stoppedTyping)) {
+//            println("applying style")
             currentText = editor.text
             val totalLines = editor.totalLines
 
@@ -204,6 +207,10 @@ class GuiStyleEditor(
                 // undo (n - 1) steps, because 1 was already undone
                 val undoCount = typingHistory.moveBack()?.minus(1) ?: 0
                 editor.undo(undoCount)
+            }
+            ctrl && key == GLFW_KEY_S -> {
+                applyStylesheet()
+                app.saveProjectOrOpenDialogToSaveAs()
             }
             key == GLFW_KEY_KP_ENTER -> {
                 // TextEditor doesn't know this key by default
