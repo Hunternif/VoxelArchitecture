@@ -45,79 +45,58 @@ open class XmlNode(
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "tag")
     var tags = mutableListOf<String>()
+
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "node")
     var children = mutableListOf<XmlNode>()
 }
 
-class XmlStructure(
-    origin: Vec3 = Vec3.ZERO,
-    start: Vec3 = Vec3.ZERO,
-    size: Vec3 = Vec3.ZERO,
-    rotationY: Double = 0.0,
-) : XmlNode(origin, start, size, rotationY)
+class XmlStructure : XmlNode()
 
-open class XmlRoom(
-    origin: Vec3 = Vec3.ZERO,
-    start: Vec3 = Vec3.ZERO,
-    size: Vec3 = Vec3.ZERO,
-    rotationY: Double = 0.0,
-) : XmlNode(origin, start, size, rotationY)
+open class XmlRoom : XmlNode()
 
 open class XmlPolyRoom(
-    origin: Vec3 = Vec3.ZERO,
-    start: Vec3 = Vec3.ZERO,
-    size: Vec3 = Vec3.ZERO,
-    rotationY: Double = 0.0,
     @field:JacksonXmlProperty(isAttribute = true)
     var shape: PolyShape = PolyShape.SQUARE,
     var polygon: XmlPath = XmlPath()
-) : XmlRoom(origin, start, size, rotationY)
+) : XmlRoom()
 
-class XmlColumn(
-    origin: Vec3 = Vec3.ZERO,
-    start: Vec3 = Vec3.ZERO,
-    size: Vec3 = Vec3.ZERO,
-    rotationY: Double = 0.0,
-) : XmlNode(origin, start, size, rotationY)
+class XmlColumn : XmlNode()
 
-class XmlWall(
-    origin: Vec3 = Vec3.ZERO,
-    start: Vec3 = Vec3.ZERO,
-    size: Vec3 = Vec3.ZERO,
-    rotationY: Double = 0.0,
-) : XmlNode(origin, start, size, rotationY)
+class XmlWall : XmlNode()
 
 class XmlFloor(
     @field:JacksonXmlProperty(isAttribute = true)
     var y: Double = 0.0,
-    start: Vec3 = Vec3.ZERO,
-) : XmlNode(start = start)
+) : XmlNode()
 
 class XmlPath(
-    origin: Vec3 = Vec3.ZERO,
-    rotationY: Double = 0.0,
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "point")
     var points: List<Vec3>? = null,
-) : XmlNode(origin, rotationY = rotationY)
+) : XmlNode()
 
+
+//================== SERIALIZATION & DESERIALIZATION FUNCTIONS =================
 
 internal fun Node.mapToXmlNode(): XmlNode? = mapToXmlNodeRecursive(mutableSetOf())
+
 /** Maps to XML without mapping any of the children. */
 internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
     val xmlNode = when (this) {
-        is Structure -> XmlStructure(origin, start, size, rotationY)
-        is Column -> XmlColumn(origin, start, size, rotationY)
-        is PolyRoom -> XmlPolyRoom(origin, start, size, rotationY,
-            shape, polygon.mapToXmlNode() as XmlPath
-        )
-        is Room -> XmlRoom(origin, start, size, rotationY)
-        is Wall -> XmlWall(origin, start, size, rotationY)
-        is Floor -> XmlFloor(origin.y, start)
-        is Path -> XmlPath(origin, rotationY, points)
-        else -> XmlNode(origin, start, size, rotationY)
+        is Structure -> XmlStructure()
+        is Column -> XmlColumn()
+        is PolyRoom -> XmlPolyRoom(shape, polygon.mapToXmlNode() as XmlPath)
+        is Room -> XmlRoom()
+        is Wall -> XmlWall()
+        is Floor -> XmlFloor(origin.y)
+        is Path -> XmlPath(points)
+        else -> XmlNode()
     }
+    xmlNode.origin = origin
+    xmlNode.start = start
+    xmlNode.size = size
+    xmlNode.rotationY = rotationY
     xmlNode.tags.addAll(tags)
     if (transparent) xmlNode.transparent = true
     return xmlNode
@@ -143,20 +122,21 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     if (this in mapped) return null
     mapped.add(this)
     val node: Node = when (this) {
-        is XmlStructure -> Structure(origin)
-        is XmlColumn -> Column(origin)
-        is XmlPolyRoom -> PolyRoom(origin, size).also {
+        is XmlStructure -> Structure()
+        is XmlColumn -> Column()
+        is XmlPolyRoom -> PolyRoom().also {
             it.shape = shape
             it.polygon.addPoints(polygon.points ?: emptyList())
         }
-        is XmlRoom -> Room(origin, size)
-        is XmlWall -> Wall(origin, origin + size)
+        is XmlRoom -> Room()
+        is XmlWall -> Wall()
         is XmlFloor -> Floor(y)
-        is XmlPath -> Path(origin).also {
+        is XmlPath -> Path().also {
             it.addPoints(points ?: emptyList())
         }
-        else -> Node(origin)
+        else -> Node()
     }
+    node.origin = origin
     node.start = start
     node.rotationY = rotationY
     node.size = size
