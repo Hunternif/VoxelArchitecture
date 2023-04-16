@@ -1,6 +1,6 @@
 package hunternif.voxarch.mc.gdmc
 
-import hunternif.voxarch.builder.MainBuilder
+import hunternif.voxarch.builder.RootBuilder
 import hunternif.voxarch.builder.setCastleBuilders
 import hunternif.voxarch.mc.MCWorld
 import hunternif.voxarch.mc.config.defaultContext
@@ -30,6 +30,6 @@ fun buildSettlement(
         mountainCastle(terrain, it, seed)
     } ?: defaultCastle(terrain, seed)
 
-    MainBuilder().build(castle, mcWorld, context)
+    RootBuilder().build(castle, mcWorld, context)
 }
 

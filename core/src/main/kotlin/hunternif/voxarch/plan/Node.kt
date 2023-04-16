@@ -107,9 +107,6 @@ open class Node(
      */
     val tags = LinkedHashSet<String>()
 
-    /** For use with incremental building. True means that this node will not be re-built.  */
-    var isBuilt = false
-
     fun addChild(child: Node, position: Vec3) {
         addChild(child)
         child.origin = position

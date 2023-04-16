@@ -1,7 +1,7 @@
 package hunternif.voxarch.mc;
 
 import hunternif.voxarch.builder.BuildContext;
-import hunternif.voxarch.builder.MainBuilder;
+import hunternif.voxarch.builder.RootBuilder;
 import hunternif.voxarch.plan.IIncrementalBuilding;
 import hunternif.voxarch.plan.Structure;
 import net.minecraftforge.common.MinecraftForge;
@@ -10,14 +10,14 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 
 public class IncrementalBuilder {
 	private final IIncrementalBuilding building;
-	private final MainBuilder builder;
+	private final RootBuilder builder;
 	private final BuildContext context;
 	private final Structure structure;
 	
 	public IncrementalBuilder(
 			IIncrementalBuilding building,
 			Structure structure,
-			MainBuilder builder,
+			RootBuilder builder,
 			BuildContext context
 	) {
 		this.building = building;

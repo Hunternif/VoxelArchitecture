@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.DetachedObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.scenegraph.detached
-import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.BlockStorageDelegate
 import hunternif.voxarch.storage.ChunkedStorage3D
 
@@ -25,7 +24,6 @@ class BuildVoxels : HistoryAction(
             newGenerated = mutableListOf()
             val world = BlockStorageDelegate(ChunkedStorage3D())
             app.state.run {
-                rootNode.node.setNotBuiltRecursive()
                 builder.build(rootNode.node, world, buildContext)
                 val builtVoxels = registry.newVoxelGroup(
                     "Built voxels", world, renderMode, true)
@@ -53,12 +51,5 @@ class BuildVoxels : HistoryAction(
     private fun EditorAppImpl.clearGeneratedVoxels() = state.run {
         generatedVoxels.toList().forEach { it.remove() }
         generatedVoxels.clear()
-    }
-
-    /** Apply `isBuilt = false` to all nodes in the scene. */
-    //TODO: get rid of isBuilt, it's almost useless
-    private fun Node.setNotBuiltRecursive() {
-        isBuilt = false
-        children.forEach { it.setNotBuiltRecursive() }
     }
 }

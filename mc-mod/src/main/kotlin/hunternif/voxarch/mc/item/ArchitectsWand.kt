@@ -57,12 +57,12 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //                prop(Vec3.UNIT_Y, TORCH_STAND)
 //                rotationY = 270.0 - player.rotationYaw
 //            }
-//            MainBuilder().build(plan, mcWorld, context)
+//            RootBuilder().build(plan, mcWorld, context)
 
             // random corridor
 //            var plan = RandomPlan.create()
 //            plan.origin = player.position.toVec3()
-//            MainBuilder().build(plan, mcWorld, context)
+//            RootBuilder().build(plan, mcWorld, context)
 
             // simple room
 //            val plan = Structure(player.position.toVec3()).apply {
@@ -71,7 +71,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //                }
 //                rotationY = -player.rotationYaw.toDouble()
 //            }
-//            MainBuilder().build(plan, mcWorld, context)
+//            RootBuilder().build(plan, mcWorld, context)
 
             // tower
 //            val castleSetup = CastleBlueprint()
@@ -80,7 +80,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //                origin = pos.toVec3()
 //                rotationY = 45.0 * Random().nextInt(2)
 //            }
-//            MainBuilder().build(tower, mcWorld, context)
+//            RootBuilder().build(tower, mcWorld, context)
 //            player.setPositionAndUpdate(pos.x.toDouble(), (pos.y + 10).toDouble(), pos.z.toDouble())
 
             // castle on mountain
@@ -92,7 +92,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //            val castle = CastleBlueprint()
 //            castle.setup(context)
 //            val plan = castle.layout(terrain)
-//            MainBuilder().build(plan, mcWorld, context)
+//            RootBuilder().build(plan, mcWorld, context)
 
             // random flat dungeon
 //            val plan = Structure()
@@ -100,7 +100,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //            context.builders.setDefault(SimpleTorchlitWallBuilder(MAT_WALL, 4, 3))
 //            plan.addChild(dungeon)
 //            FMLCommonHandler.instance().bus().register(
-//                IncrementalBuilder(dungeon, plan, MainBuilder(), context))
+//                IncrementalBuilder(dungeon, plan, RootBuilder(), context))
 
             context.builders.setCastleBuilders()
 
@@ -151,7 +151,7 @@ class ArchitectsWand(properties: Properties) : Item(properties) {
 //                origin = pos
 //                addChild(outerWard, Vec3(30, 0, 30))
 //            }
-//            MainBuilder().build(plan, animationWorld, context)
+//            RootBuilder().build(plan, animationWorld, context)
 
             // test all generated WFC tiles
 //            val wfcTiles = generateValidTiles7x3x7()

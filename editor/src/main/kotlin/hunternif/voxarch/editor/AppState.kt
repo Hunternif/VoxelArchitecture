@@ -38,7 +38,7 @@ interface AppState {
      * The root itself should stay empty of voxels. */
     val voxelRoot: SceneObject
     val builderLibrary: BuilderLibrary
-    val builder: MainBuilder
+    val builder: RootBuilder
     val buildContext: BuildContext
     val stylesheet: Stylesheet
     val seed: Long
@@ -116,7 +116,7 @@ class AppStateImpl(
     override val blueprintUsage = registry.bpInNodes
 
     override val builderLibrary = BuilderLibrary()
-    override val builder = MainBuilder()
+    override val builder = RootBuilder()
     override val buildContext = BuildContext(defaultEnvironment).apply {
         materials.setSolidColorMaterials()
         builders.setDefaultBuilders()

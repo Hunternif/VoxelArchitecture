@@ -117,7 +117,6 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 	@Override
 	public void buildStep() {
 		if (corridorQueue.isEmpty()) return;
-		setBuilt(false);
 		Corridor node = corridorQueue.poll();
 		
 		// Probability of a dead end increases as total length increases:

@@ -58,7 +58,7 @@ class RoomBuilderTest {
         }
         val inOrder = inOrder(builder)
 
-        MainBuilder().build(room, world, buildContext)
+        RootBuilder().build(room, world, buildContext)
 
         inOrder.verify(builder).build(eq(floor), any(), eq(world), eq(buildContext))
         inOrder.verify(builder).build(eq(wall), any(), eq(world), eq(buildContext))

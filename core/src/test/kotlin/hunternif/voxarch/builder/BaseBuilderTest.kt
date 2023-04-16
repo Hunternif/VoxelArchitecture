@@ -18,7 +18,7 @@ abstract class BaseBuilderTest(
     lateinit var out: ArrayBlockStorage
     lateinit var trans: TransformationStack
     lateinit var context: BuildContext
-    lateinit var builder: MainBuilder
+    lateinit var builder: RootBuilder
 
     @Before
     open fun setup() {
@@ -26,7 +26,7 @@ abstract class BaseBuilderTest(
 //        out.safeBoundary = true
         trans = TransformationStack()
         context = BuildContext(DEFAULT_ENV)
-        builder = MainBuilder()
+        builder = RootBuilder()
         setupDefaultMaterials()
         setupDefaultBuilders()
     }
