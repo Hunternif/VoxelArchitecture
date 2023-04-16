@@ -1,7 +1,6 @@
 package hunternif.voxarch.snapshot
 
 import hunternif.voxarch.builder.MAT_FLOOR
-import hunternif.voxarch.builder.RoomBuilder
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.room
@@ -12,7 +11,6 @@ class RoomClearingTest: BaseSnapshotTest(10, 1, 10) {
 
     override fun setup() {
         super.setup()
-        context.builders.setDefault(RoomBuilder())
 
         val fillBlock = context.materials.get(MAT_FLOOR)
         for (x in 0 until outWidth) {
