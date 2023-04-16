@@ -11,22 +11,14 @@ class BuilderLibraryTest {
 
         val nodeEntries = library.findBuildersFor(Node())
         assertContainsBuilder<Node>(nodeEntries)
-        assertNotContainsBuilder<Room>(nodeEntries)
         assertNotContainsBuilder<Path>(nodeEntries)
-
-        val roomEntries = library.findBuildersFor(Room())
-        assertContainsBuilder<Node>(roomEntries)
-        assertContainsBuilder<Room>(roomEntries)
-        assertNotContainsBuilder<Path>(roomEntries)
 
         val wallEntries = library.findBuildersFor(Wall())
         assertContainsBuilder<Node>(wallEntries)
-        assertNotContainsBuilder<Room>(wallEntries)
         assertNotContainsBuilder<Path>(wallEntries)
 
         val pathEntries = library.findBuildersFor(Path())
         assertContainsBuilder<Node>(pathEntries)
-        assertNotContainsBuilder<Room>(pathEntries)
         assertContainsBuilder<Path>(pathEntries)
     }
 
