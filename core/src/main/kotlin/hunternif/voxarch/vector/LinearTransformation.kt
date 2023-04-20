@@ -88,6 +88,7 @@ class LinearTransformation(
         return this
     }
 
-
     fun clone() = LinearTransformation(angleY, matrix.clone())
 }
+
+fun ILinearTransformation.inverse() = LinearTransformation(-angleY, matrix.invert())

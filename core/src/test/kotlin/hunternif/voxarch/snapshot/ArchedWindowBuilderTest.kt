@@ -101,7 +101,7 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(19, 19, 1) {
             wall("wall") {
                 wall("window")
             }
-        }.buildDom(style)
+        }.buildDom(style, hinting = true)
         build(dom)
         record(out.sliceZ(0))
     }

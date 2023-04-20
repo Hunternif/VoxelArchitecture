@@ -32,7 +32,7 @@ fun IBlockStorage.asSymmetricX(midPoint: Number) =
  *      i.e. relative to the storage, NOT to the room. Y is floor level.
  */
 fun Node.fillXZ(
-    trans: ITransformation,
+    trans: ILinearTransformation,
     buildAt: (x: Int, y: Int, z: Int) -> Unit
 ) {
     val aabb = findIntAABB(trans)
@@ -56,10 +56,27 @@ fun Node.fillXZ(
 }
 
 /**
+ * Same as [fillXZ], but the arguments (x, y, z) are in node's local space.
+ * This method is useless because it will cause aliasing gaps, but serves as
+ * a reference implementation.
+ */
+fun Node.fillXZLocal(
+    trans: ILinearTransformation,
+    buildAt: (x: Double, y: Double, z: Double) -> Unit
+) {
+    val inverse = trans.inverse()
+    val vec = Vec3(0, 0, 0)
+    fillXZ(trans) { x, y, z ->
+        inverse.transformLocal(vec.set(x, y, z))
+        buildAt(vec.x, vec.y, vec.z)
+    }
+}
+
+/**
  * Runs [buildAt] at every (x, y, z) point inside the node's boundary.
  */
 fun Node.fillXYZ(
-    trans: ITransformation,
+    trans: ILinearTransformation,
     buildAt: (x: Int, y: Int, z: Int) -> Unit
 ) {
     fillXZ(trans) { x, y, z ->
