@@ -71,6 +71,8 @@ class VoxFileStorage(
 
             // 2. Add voxel positions for the 'model'
             appendChunk(makeVoxelChunk())
+            //TODO: split chunks bigger than 256, because VOX stores each voxel
+            // coordinate in 256 bits
 
             // 3. Transform for the following 'group' chunk?
             appendChunk(makeTransformChunk(0, 1))
