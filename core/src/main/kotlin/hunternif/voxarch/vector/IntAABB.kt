@@ -14,6 +14,16 @@ data class IntAABB(
     var maxY: Int = Int.MIN_VALUE,
     var maxZ: Int = Int.MIN_VALUE,
 ) {
+    val size: IntVec3 = IntVec3(0, 0, 0)
+        get() = field.set(maxX - minX, maxY - minY, maxZ - minZ)
+
+    var minVec: IntVec3 = IntVec3(0, 0, 0)
+        get() = field.set(minX, minY, minZ)
+        set(value) { setMin(value) }
+
+    var maxVec: IntVec3 = IntVec3(0, 0, 0)
+        get() = field.set(maxX, maxY, maxZ)
+        set(value) { setMax(value) }
 
     fun setMin(x: Int, y: Int, z: Int) {
         minX = x

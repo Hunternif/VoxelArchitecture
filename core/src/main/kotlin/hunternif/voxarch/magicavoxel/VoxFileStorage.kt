@@ -9,9 +9,10 @@ import hunternif.voxarch.storage.ChunkedStorage3D
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachPos
+import hunternif.voxarch.util.max
+import hunternif.voxarch.util.min
 import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.IntVec3
-import hunternif.voxarch.vector.Vec3
 
 
 // I don't plan to support materials, only colors for now.
@@ -22,12 +23,14 @@ data class VoxColor(val color: Int) : IVoxel {
         if (other !is VoxColor) return false
         return color == other.color
     }
+
     override fun hashCode(): Int = color
 }
 
 class VoxFileStorage(
-    private val data: IStorage3D<VoxColor?> = ChunkedStorage3D()
 ) : IStorage3D<VoxColor?> {
+    // VOX stores each voxel coordinate in 256 bits
+    private val data = ChunkedStorage3D<VoxColor>(VOX_CHUNK_SIZE, VOX_CHUNK_SIZE, VOX_CHUNK_SIZE)
 
     private val palette = LinkedHashSet<VoxColor>()
         // add the 0 color to shift the index. MagicaVoxel uses indices 1+.
@@ -44,14 +47,22 @@ class VoxFileStorage(
     override val maxY: Int get() = container.maxY
     override val maxZ: Int get() = container.maxZ
 
-    constructor(width: Int, height: Int, depth: Int): this() {
+    private val fitsInOneModel: Boolean
+        get() = sizeVec.x <= MAX_VOX_CHUNK_SIZE &&
+            sizeVec.y <= MAX_VOX_CHUNK_SIZE &&
+            sizeVec.z <= MAX_VOX_CHUNK_SIZE
+
+    constructor(width: Int, height: Int, depth: Int) : this() {
         container.setMin(0, 0, 0)
         container.setMax(width - 1, height - 1, depth - 1)
     }
 
     override val size: Int get() = data.size
     override fun get(x: Int, y: Int, z: Int): VoxColor? = data[x, y, z]
-    override operator fun set(p: IntVec3, v: VoxColor?) { set(p.x, p.y, p.z, v) }
+    override operator fun set(p: IntVec3, v: VoxColor?) {
+        set(p.x, p.y, p.z, v)
+    }
+
     override operator fun set(x: Int, y: Int, z: Int, v: VoxColor?) {
         if (v == null) {
             if (data[x, y, z] != null) voxelCount--
@@ -65,27 +76,52 @@ class VoxFileStorage(
 
     fun serialize(): VoxFile {
         refreshColorIndex()
+        val models = if (fitsInOneModel) {
+            // If voxel data fits in one model, use one model
+            listOf(
+                Model(0, container.minVec, sizeVec, data, container.minVec)
+            )
+        } else {
+            // Otherwise, break it down into chunks smaller than MAX_VOX_CHUNK_SIZE
+            data.chunkMap.entries.mapIndexed { i, entry ->
+                val data = entry.value
+                val chunkPos = entry.key.multiply(VOX_CHUNK_SIZE)
+                // Corner might need to be shifted due to chunk rounding:
+                val minPos = max(container.minVec, chunkPos)
+                val maxPos = min(container.maxVec, chunkPos + data.sizeVec - IntVec3(1, 1, 1))
+                val size = maxPos - minPos + IntVec3(1, 1, 1)
+                val offset = minPos - chunkPos
+                Model(i, minPos, size, data, offset)
+            }
+        }
+
         val root = VoxRootChunk().apply {
-            // 1. Define size of the whole project
-            appendChunk(makeSizeChunk())
+            // Counter for chunk IDs
+            var i = 0
+            appendChunk(VoxPackChunk(models.size))
+            models.forEach { model ->
+                // 1. Tile size
+                appendChunk(makeSizeChunk(model))
+                // 2. Tile content, which become a 'model'
+                appendChunk(makeVoxelChunk(model))
+            }
 
-            // 2. Add voxel positions for the 'model'
-            appendChunk(makeVoxelChunk())
-            //TODO: split chunks bigger than 256, because VOX stores each voxel
-            // coordinate in 256 bits
+            // 3. Transform for the following group of models
+            appendChunk(makeTransformChunk(i++, i))
+            // 4. group chunk containing shape chunks (which contain to models)
+            val group = makeGroupChunk(i++)
+            appendChunk(group)
 
-            // 3. Transform for the following 'group' chunk?
-            appendChunk(makeTransformChunk(0, 1))
-            // 4. group chunk, references the following 'transform' chunk
-            appendChunk(makeGroupChunk(1, 2))
-
-            // 5. Transform for the following 'shape' chunk.
-            // the transform vector points from (0, 0, 0) to model center:
-            val size = IntVec3(maxX - minX + 1, maxY - minY + 1, maxZ - minZ + 1)
-            val transform = (IntVec3(minX, minY, minZ) + size / 2).toGridPoint3()
-            appendChunk(makeTransformChunk(2, 3, transform))
-            // 6. 'Shape' chunk, references 'model'
-            appendChunk(makeShapeChunk(3, 0))
+            models.forEach { model ->
+                // 5. Transform for the following 'shape' chunk.
+                // the transform vector points from (0, 0, 0) to model center:
+                val transform = (model.pos + model.size / 2).toGridPoint3()
+                val transformChunk = makeTransformChunk(i++, i, transform)
+                appendChunk(transformChunk)
+                group.child_ids.add(transformChunk.id)
+                // 6. 'Shape' chunk, references 'model'
+                appendChunk(makeShapeChunk(i++, model.id))
+            }
 
             // 7. layers...
 
@@ -104,20 +140,23 @@ class VoxFileStorage(
         }
     }
 
-    private fun makeSizeChunk() = VoxSizeChunk(
-        IntVec3(width, height, depth).toGridPoint3()
+    private fun makeSizeChunk(voxChunk: Model) = VoxSizeChunk(
+        voxChunk.size.toGridPoint3()
     )
-    private fun makeVoxelChunk() = VoxXYZIChunk(voxelCount).apply {
+
+    private fun makeVoxelChunk(model: Model) = VoxXYZIChunk(model.data.size).apply {
         var i = 0
-        data.forEachPos { x, y, z, color ->
+        val off = model.offset
+        model.data.forEachPos { x, y, z, color ->
             val index = colorIndex[color]
             if (index != null) {
                 // offset voxels from negative coordinates
-                voxels[i] = Voxel(gridPoint3(x - minX, y - minY, z - minZ), index)
+                voxels[i] = Voxel(gridPoint3(x - off.x, y - off.y, z - off.z), index)
                 i++
             }
         }
     }
+
     private fun makeTransformChunk(
         id: Int,
         shapeId: Int,
@@ -126,12 +165,15 @@ class VoxFileStorage(
         this.child_node_id = shapeId
         this.transform = transform
     }
-    private fun makeGroupChunk(id: Int, childId: Int) = VoxGroupChunk(id).apply {
-        this.child_ids.add(childId)
+
+    private fun makeGroupChunk(id: Int, vararg childIds: Int) = VoxGroupChunk(id).apply {
+        this.child_ids.addAll(childIds.toList())
     }
+
     private fun makeShapeChunk(id: Int, modelId: Int) = VoxShapeChunk(id).apply {
         this.model_ids.add(modelId)
     }
+
     private fun makePaletteChunk(): VoxRGBAChunk {
         val chunk = VoxRGBAChunk()
         palette.forEachIndexed { i, color ->
@@ -141,6 +183,11 @@ class VoxFileStorage(
     }
 
     companion object {
+        /** VOX file supports models up to 256 x 256 x 256 in size.
+         * Bigger voxel groups will be broken down into chunks of this size. */
+        private const val VOX_CHUNK_SIZE = 256
+        /** This is dictated by the VOX format */
+        private const val MAX_VOX_CHUNK_SIZE = 256
         private fun GridPoint3.toIntVec3() = IntVec3(y, z, x)
         private fun IntVec3.toGridPoint3() = GridPoint3(z, x, y)
         private fun gridPoint3(x: Int, y: Int, z: Int) = GridPoint3(z, x, y)
@@ -178,5 +225,24 @@ class VoxFileStorage(
             }
             return storage
         }
+
+        /**
+         * Temp data structure for each chunk that is serialized
+         * as a separate 'model' inside the VOX file.
+         *
+         * This must be set up so that the lowest position in the final model
+         * is (0, 0, 0).
+         */
+        private data class Model(
+            val id: Int,
+            /** corner position of this model inside the vox file */
+            val pos: IntVec3,
+            /** size of voxel data in this model */
+            val size: IntVec3,
+            /** voxel data. Position at [offset] is the lowest corner */
+            val data: IStorage3D<VoxColor?>,
+            /** offset from model corner to the first voxel in [data] */
+            val offset: IntVec3,
+        )
     }
 }

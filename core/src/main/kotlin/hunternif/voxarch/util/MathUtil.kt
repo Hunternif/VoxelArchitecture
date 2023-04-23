@@ -84,6 +84,8 @@ fun Vec3.roundLocal(): Vec3 = set(x.roundToInt(), y.roundToInt(), z.roundToInt()
 fun Vec3.roundToInt() = IntVec3(x.roundToInt(), y.roundToInt(), z.roundToInt())
 fun max(a: Vec3, b: Vec3) = Vec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
 fun min(a: Vec3, b: Vec3) = Vec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
+fun max(a: IntVec3, b: IntVec3) = IntVec3(max(a.x, b.x), max(a.y, b.y), max(a.z, b.z))
+fun min(a: IntVec3, b: IntVec3) = IntVec3(min(a.x, b.x), min(a.y, b.y), min(a.z, b.z))
 
 fun Float.toRadians(): Float = this / 180f * Math.PI.toFloat()
 fun Double.toRadians(): Double = this / 180f * Math.PI

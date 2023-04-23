@@ -86,6 +86,11 @@ public class IntVec3 {
 	}
 
 	/** Returns a new vector. */
+	public IntVec3 multiply(int m) {
+		return new IntVec3(x*m, y*m, z*m);
+	}
+
+	/** Returns a new vector. */
 	public IntVec3 multiply(double m) {
 		return new IntVec3(x*m, y*m, z*m);
 	}
