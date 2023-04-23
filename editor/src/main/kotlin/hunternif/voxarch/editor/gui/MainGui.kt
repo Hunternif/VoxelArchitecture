@@ -85,6 +85,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         blueprintEditor.init()
         styleEditor.init()
         inputController.addListener(styleEditor)
+        app.eventBus.register(nodeProperties)
     }
 
     /** Called when a new AppState is created */

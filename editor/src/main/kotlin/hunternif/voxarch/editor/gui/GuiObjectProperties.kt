@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.gui
 
+import com.google.common.eventbus.Subscribe
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
@@ -155,7 +156,10 @@ By default, it's set so that origin is at the low-XYZ corner.""")
     private fun updateBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
         curBlueprints.clear()
         curBlueprints.addAll(sceneNode.blueprints)
-        if (allBlueprints.size != app.state.blueprints.size + 1)
+    }
+
+    @Subscribe
+    fun onBlueprintsChange(event: BlueprintEvent) {
         allBlueprints.apply {
             clear()
             add(newBlueprintItem)
