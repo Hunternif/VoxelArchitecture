@@ -54,7 +54,7 @@ class GuiBlueprintEditor(
                 popup("settings_context") {
                     text("Blueprint settings")
                     ImGui.separator()
-                    titleInput.render(name) { name = it }
+                    titleInput.render(name) { app.renameBlueprint(this, it) }
                 }
             }
             popup("node_context") {
