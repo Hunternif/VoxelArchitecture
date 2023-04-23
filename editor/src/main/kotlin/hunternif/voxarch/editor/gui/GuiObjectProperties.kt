@@ -36,11 +36,9 @@ class GuiObjectProperties(
     private val blueprintInput by lazy {
         GuiCombo("##blueprint", allBlueprints)
     }
+    private var headerText: String = ""
 
     // Update timer
-    private val nodeTimer = Timer(0.02)
-    private val builderTimer = Timer(0.1)
-    private val blueprintsTimer = Timer(0.1)
     private val redrawTimer = Timer(0.02)
 
     // Currently selected items
@@ -66,8 +64,7 @@ class GuiObjectProperties(
     }
 
     fun render() {
-        checkSelectedNodes()
-        renderHeaderText()
+        ImGui.text(headerText)
 
         obj?.let { obj ->
             when (obj) {
@@ -113,7 +110,6 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         })
         tooltip("CCW rotation around the vertical axis, in degrees.")
 
-        checkNodeBuilder(sceneNode.node)
         builderInput.render(builderEntry) {
             //TODO: allow executing various builders regardless of exact node type
             builderEntry = it
@@ -135,7 +131,6 @@ By default, it's set so that origin is at the low-XYZ corner.""")
     }
 
     private fun renderBlueprintTable(sceneNode: SceneNode) {
-        updateBlueprints(sceneNode)
         if (ImGui.beginTable("blueprints_table", 2, ImGuiTableFlags.PadOuterX)) {
             ImGui.tableSetupColumn("name")
             // it's not actually 10px wide, selectable makes it wider
@@ -157,7 +152,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         }
     }
 
-    private fun updateBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
+    private fun updateBlueprints(sceneNode: SceneNode) {
         curBlueprints.clear()
         curBlueprints.addAll(sceneNode.blueprints)
     }
@@ -187,8 +182,9 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         }
     }
 
-    /** Check which nodes are currently selected, and update the state of gui */
-    private fun checkSelectedNodes() = nodeTimer.runAtInterval {
+    /** Called when selection changes. */
+    @Subscribe
+    fun onSelectObject(event: SelectEvent) {
         app.state.selectedObjects.run {
             obj = when (size) {
                 0 -> null
@@ -196,10 +192,15 @@ By default, it's set so that origin is at the low-XYZ corner.""")
                 else -> null
             }
         }
+        updateHeaderText()
+        (obj as? SceneNode)?.let { sceneNode ->
+            updateBlueprints(sceneNode)
+            updateBuilders(sceneNode.node)
+        }
     }
 
     /** Check whether the list of current & available builders needs to be updated */
-    private fun checkNodeBuilder(node: Node) = builderTimer.runAtInterval {
+    private fun updateBuilders(node: Node) {
         val library = app.state.builderLibrary
         val builderConfig = app.state.buildContext.builders
 
@@ -229,26 +230,24 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         }
     }
 
-    private fun renderHeaderText() {
+    private fun updateHeaderText() {
         app.state.selectedObjects.run {
-            when (size) {
-                0 -> {}
+            headerText = when (size) {
+                0 -> ""
                 1 -> {
                     val obj = obj
-                    when (obj) {
-                        is SceneNode -> ImGui.text(obj.nodeClassName)
-                        else -> ImGui.text(obj.toString())
+                    val className = when (obj) {
+                        is SceneNode -> obj.nodeClassName
+                        else -> obj.toString()
                     }
+
                     if (obj?.isGenerated == true) {
-                        ImGui.sameLine()
-                        ImGui.text("(generated)")
+                        "$className (generated)"
+                    } else {
+                        className
                     }
                 }
-                else -> {
-                    ImGui.text(size.toString())
-                    ImGui.sameLine()
-                    ImGui.text("nodes")
-                }
+                else -> "$size nodes"
             }
         }
     }
