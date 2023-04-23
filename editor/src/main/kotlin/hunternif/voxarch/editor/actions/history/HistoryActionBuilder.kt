@@ -17,6 +17,8 @@ abstract class HistoryActionBuilder(protected val app: EditorAppImpl) {
     /** Builds the action and writes it to history without executing,
      * because all intermediate steps have been executed. */
     open fun commit() {
-        app.state.history.append(build())
+        val action = build()
+        app.state.history.append(action)
+        app.eventBus.post(action)
     }
 }
