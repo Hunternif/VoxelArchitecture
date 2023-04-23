@@ -18,6 +18,7 @@ class SelectionMarqueeModel : BaseModel() {
 
     override fun init() {
         super.init()
+        readDepth = false
         initVertexAttributes {
             vector3f(0) // position attribute
         }
@@ -41,14 +42,12 @@ class SelectionMarqueeModel : BaseModel() {
 
     override fun render() {
         if (!visible) return
-        glDisable(GL_DEPTH_TEST)
         glEnable(GL_LINE_STIPPLE)
 
         glLineWidth(1f)
         glLineStipple(1, 0x0f0f.toShort())
         glDrawArrays(GL_LINE_LOOP, 0, 4)
 
-        glEnable(GL_DEPTH_TEST)
         glDisable(GL_LINE_STIPPLE)
     }
 }

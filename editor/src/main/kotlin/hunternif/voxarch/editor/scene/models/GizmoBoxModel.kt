@@ -42,6 +42,8 @@ class GizmoBoxModel : IModel {
             ))
             init()
         }
+        gizmoModel.readDepth = false
+        outlineModel.readDepth = false
     }
 
     override fun runFrame(viewProj: Matrix4f) {

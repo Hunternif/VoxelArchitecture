@@ -23,6 +23,7 @@ class Sprite2DModel(texturePath: String) : BaseModel() {
 
     override fun init() {
         super.init()
+        readDepth = false
         initVertexAttributes {
             vector3f(0) // position attribute
             vector2f(1) // texture uv attribute
@@ -56,13 +57,9 @@ class Sprite2DModel(texturePath: String) : BaseModel() {
 
     override fun render() {
         if (!visible) return
-        glDisable(GL_DEPTH_TEST)
-
         glEnable(GL_BLEND)
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA)
 
         glDrawArrays(GL_QUADS, 0, bufferSize)
-
-        glEnable(GL_DEPTH_TEST)
     }
 }

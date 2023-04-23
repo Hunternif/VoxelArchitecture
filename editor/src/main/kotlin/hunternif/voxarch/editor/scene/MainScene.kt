@@ -42,7 +42,7 @@ class MainScene(private val app: EditorApp) {
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel(camera)
     private val selectedNodeModel = SelectedNodeModel()
-    private val originsModel = PointSpriteModel("textures/point-circle.png")
+    private val originsModel = PointSpriteModel("textures/point-circle.png").apply { readDepth = false }
     private val highlightedFaceModel = ResizeNodeModel()
     // special 3d model with a separate camera
     private val gizmoModel = GizmoBoxModel()
@@ -197,6 +197,7 @@ class MainScene(private val app: EditorApp) {
     fun render() {
         updateCursor()
         setGLViewport(vp)
+        glDepthMask(true)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
         glClear(GL_DEPTH_BUFFER_BIT or GL_COLOR_BUFFER_BIT)
         val viewProj3d = camera.getViewProjectionMatrix()

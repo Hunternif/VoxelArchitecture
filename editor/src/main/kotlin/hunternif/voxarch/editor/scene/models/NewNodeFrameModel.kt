@@ -15,6 +15,7 @@ class NewNodeFrameModel : BaseModel() {
 
     override fun init() {
         super.init()
+        readDepth = false
         initVertexAttributes {
             vector3f(0) // position attribute
         }
@@ -39,14 +40,12 @@ class NewNodeFrameModel : BaseModel() {
     }
 
     override fun render() {
-        glDisable(GL_DEPTH_TEST)
         glEnable(GL_LINE_STIPPLE)
 
         glLineWidth(3f)
         glLineStipple(1, 0x00ff.toShort())
         glDrawArrays(GL_LINES, 0, bufferSize)
 
-        glEnable(GL_DEPTH_TEST)
         glDisable(GL_LINE_STIPPLE)
     }
 }

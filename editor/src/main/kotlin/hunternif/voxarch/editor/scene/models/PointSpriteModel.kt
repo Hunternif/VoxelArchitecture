@@ -53,8 +53,6 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
     }
 
     override fun render() {
-        glDisable(GL_DEPTH_TEST)
-
         glEnable(GL_POINT_SPRITE)
 
         glEnable(GL_BLEND)
@@ -64,7 +62,5 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
         glDrawArrays(GL_POINTS, 0, points.size)
 
         glDisable(GL_POINT_SPRITE)
-
-        glEnable(GL_DEPTH_TEST)
     }
 }

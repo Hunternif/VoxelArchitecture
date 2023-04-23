@@ -17,6 +17,13 @@ abstract class BaseModel : IModel {
 
     protected abstract val shader: Shader
 
+    /** Whether to read from depth buffer */
+    var readDepth: Boolean = true
+
+    /** Whether to write to depth buffer.
+     * If read is disabled, write doesn't work anyway. */
+    var writeDepth: Boolean = true
+
     override fun init() {
         shader.init()
         vaoID = glGenVertexArrays()
@@ -61,6 +68,12 @@ abstract class BaseModel : IModel {
         }
         for (attr in instanceAttribList.list) {
             glEnableVertexAttribArray(attr.id)
+        }
+        glDepthMask(writeDepth)
+        if (readDepth) {
+            glEnable(GL_DEPTH_TEST)
+        } else {
+            glDisable(GL_DEPTH_TEST)
         }
     }
 

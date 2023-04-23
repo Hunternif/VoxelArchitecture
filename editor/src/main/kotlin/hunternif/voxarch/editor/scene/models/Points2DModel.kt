@@ -21,6 +21,7 @@ class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
 
     override fun init() {
         super.init()
+        readDepth = false
         initVertexAttributes {
             vector3f(0) // position attribute
         }
@@ -56,11 +57,7 @@ class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
 
     override fun render() {
         if (isDirty) update()
-        glDisable(GL_DEPTH_TEST)
-
         glPointSize(4f)
         glDrawArrays(GL_POINTS, 0, points.size)
-
-        glEnable(GL_DEPTH_TEST)
     }
 }

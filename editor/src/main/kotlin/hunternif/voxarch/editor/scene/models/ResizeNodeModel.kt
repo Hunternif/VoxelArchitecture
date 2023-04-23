@@ -53,10 +53,10 @@ class ResizeNodeModel : BaseModel() {
     }
 
     override fun render() {
-        glDisable(GL_DEPTH_TEST)
+//        glDisable(GL_DEPTH_TEST)
 
         glDrawArrays(GL_QUADS, 0, bufferSize)
 
-        glEnable(GL_DEPTH_TEST)
+//        glEnable(GL_DEPTH_TEST)
     }
 }

@@ -20,6 +20,7 @@ class FloorGridModel : BaseModel() {
 
     override fun init() {
         super.init()
+        readDepth = false
         initVertexAttributes {
             vector3f(0) // position attribute
         }
@@ -62,7 +63,6 @@ class FloorGridModel : BaseModel() {
     }
 
     override fun render() {
-        glEnable(GL_DEPTH_TEST)
         glLineWidth(1f)
         glDrawArrays(GL_LINES, 0, bufferSize)
     }

@@ -94,11 +94,7 @@ class BoxFrameModel(
     }
 
     override fun render() {
-        glDisable(GL_DEPTH_TEST)
-
         glLineWidth(lineWidth)
         glDrawArraysInstanced(GL_LINES, 0, vertBufferSize, instances.size)
-
-        glEnable(GL_DEPTH_TEST)
     }
 }

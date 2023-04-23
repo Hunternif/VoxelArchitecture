@@ -9,14 +9,20 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import org.joml.Matrix4f
 
 class NodeModel(val camera: OrbitalCamera) : IModel {
-    val fillModel = BoxTransparentModel()
-    val lineModel = BoxFrameModel()
+    val fillModel = BoxTransparentModel().apply {
+        readDepth = false
+    }
+    val lineModel = BoxFrameModel().apply {
+        readDepth = true // read from depth buffer
+        writeDepth = false // don't write to depth buffer
+    }
     val pointsDebugModel = Points2DModel()
 
     /** Whether to display debug dots */
     private val DEBUG_NODES = false
 
     override fun init() {
+        // This is not called because the models are init'ed separately
         fillModel.init()
         lineModel.init()
     }
@@ -41,6 +47,7 @@ class NodeModel(val camera: OrbitalCamera) : IModel {
     }
 
     override fun runFrame(viewProj: Matrix4f) {
+        // This is not called because the models are rendered separately
         fillModel.runFrame(viewProj)
         lineModel.runFrame(viewProj)
     }

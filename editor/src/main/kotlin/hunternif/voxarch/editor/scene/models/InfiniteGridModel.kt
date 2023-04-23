@@ -7,8 +7,11 @@ import org.lwjgl.opengl.GL33.*
 class InfiniteGridModel : BaseModel() {
     override val shader = InfiniteGridShader()
 
+    init {
+        readDepth = false
+    }
+
     override fun render() {
-        glDisable(GL_DEPTH_TEST)
         glDisable(GL_CULL_FACE)
 
         glEnable(GL_BLEND)

@@ -15,8 +15,14 @@ class SelectedNodeModel : IModel {
     private val lineModel = BoxFrameModel(Colors.selectedNodeOutline)
 
     override fun init() {
-        lineModel.init()
-        gizmoModel.init()
+        lineModel.apply {
+            init()
+            writeDepth = false
+        }
+        gizmoModel.apply {
+            init()
+            writeDepth = false
+        }
     }
 
     fun add(box: BoxMesh) {
