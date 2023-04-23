@@ -29,13 +29,21 @@ class GuiCombo<T>(
         set(value) {
             if (field != value) {
                 field = value
-                names = values.map { it.toString() }.toTypedArray()
+                refreshNames()
             }
         }
 
     fun setInitialValue(value: T) {
         if (!isBeingChanged) {
             index.set(values.indexOf(value))
+        }
+    }
+
+    fun refreshNames() {
+        if (values.size == names.size) {
+            values.forEachIndexed { i, v -> names[i] = v.toString()}
+        } else {
+            names = values.map { it.toString() }.toTypedArray()
         }
     }
 

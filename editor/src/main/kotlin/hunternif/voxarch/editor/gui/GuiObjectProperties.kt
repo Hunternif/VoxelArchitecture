@@ -30,10 +30,10 @@ class GuiObjectProperties(
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
     private val builderInput by lazy {
-        GuiCombo("builder", app.state.builderLibrary.allBuilders)
+        GuiCombo("builder", allBuilders)
     }
     private val blueprintInput by lazy {
-        GuiCombo("##blueprint", app.state.blueprints)
+        GuiCombo("##blueprint", allBlueprints)
     }
 
     // Update timer
@@ -50,6 +50,7 @@ class GuiObjectProperties(
     private var defaultBuilderEntry = BuilderLibrary.Entry("Default", nullBuilder)
     /** Selected builder in combo box */
     private var builderEntry: BuilderLibrary.Entry = defaultBuilderEntry
+    private val allBuilders = mutableListOf(defaultBuilderEntry)
 
     /** Default blueprint entry that causes a new blueprint to be created */
     private val newBlueprintItem = Blueprint(-2, "New...")
@@ -57,6 +58,7 @@ class GuiObjectProperties(
     private var selectedBlueprint = newBlueprintItem
     /** All blueprints currently on this node */
     private val curBlueprints = mutableListOf<Blueprint>()
+    private val allBlueprints = mutableListOf(newBlueprintItem)
 
     fun render() {
         checkSelectedNodes()
@@ -128,7 +130,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
     }
 
     private fun renderBlueprintTable(sceneNode: SceneNode) {
-        updateCurrentBlueprints(sceneNode)
+        updateBlueprints(sceneNode)
         if (ImGui.beginTable("blueprints_table", 2, ImGuiTableFlags.PadOuterX)) {
             ImGui.tableSetupColumn("name")
             // it's not actually 10px wide, selectable makes it wider
@@ -150,10 +152,16 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         }
     }
 
-    private fun updateCurrentBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
+    private fun updateBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
         curBlueprints.clear()
         curBlueprints.addAll(sceneNode.blueprints)
-        blueprintInput.values = listOf(newBlueprintItem) + app.state.blueprints
+        if (allBlueprints.size != app.state.blueprints.size + 1)
+        allBlueprints.apply {
+            clear()
+            add(newBlueprintItem)
+            addAll(app.state.blueprints)
+        }
+        blueprintInput.refreshNames()
     }
 
     private fun renderVoxelGroup(group: SceneVoxelGroup) {
@@ -192,7 +200,12 @@ By default, it's set so that origin is at the low-XYZ corner.""")
 
             // Update the list in the combo
             val libraryBuilders = library.findBuildersFor(node)
-            builderInput.values = listOf(defaultBuilderEntry) + libraryBuilders
+            allBuilders.apply {
+                clear()
+                add(defaultBuilderEntry)
+                addAll(libraryBuilders)
+            }
+            builderInput.refreshNames()
         }
 
         // Set currently selected builder
