@@ -59,9 +59,9 @@ fun EditorApp.setNewNodeType(type: String) = action {
 }
 
 fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
-    if (state.renderMode != mode) {
-        state.renderMode = mode
-        when (mode) {
+    if (state.settings.renderMode != mode) {
+        state.settings = state.settings.copy(renderMode = mode)
+            when (mode) {
             VoxelRenderMode.COLORED -> {
                 state.buildContext.materials.setSolidColorMaterials()
             }
@@ -74,7 +74,7 @@ fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
 }
 
 fun EditorApp.setShadingMode(mode: VoxelShadingMode) = action {
-    state.shadingMode = mode
+    state.settings = state.settings.copy(shadingMode = mode)
     scene.updateShadingMode()
 }
 

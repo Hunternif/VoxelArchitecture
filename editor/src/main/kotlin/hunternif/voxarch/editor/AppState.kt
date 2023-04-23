@@ -47,8 +47,6 @@ interface AppState {
     val generatedNodes: Subset<SceneNode>
     val generatedVoxels: Subset<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
-    val renderMode: VoxelRenderMode
-    val shadingMode: VoxelShadingMode
 
 
     //=========================== SCENE OBJECTS =============================
@@ -96,6 +94,8 @@ data class Settings(
     val hinting: Boolean,
     val verboseDom: Boolean,
     val verboseBuild: Boolean,
+    val renderMode: VoxelRenderMode,
+    val shadingMode: VoxelShadingMode,
 )
 
 class AppStateImpl(
@@ -127,8 +127,6 @@ class AppStateImpl(
     override var seed: Long = 0
     override val domBuilderNames = domBuilderFactoryByName.keys.toList()
     override val voxelColorMap = ::mapVoxelToSolidColor
-    override var renderMode = VoxelRenderMode.COLORED
-    override var shadingMode = VoxelShadingMode.MAGICA_VOXEL
 
     override var parentNode: SceneNode = rootNode
     override val sceneTree = SceneTree(sceneRoot).apply {
@@ -153,7 +151,9 @@ class AppStateImpl(
         cleanDummies = true,
         hinting = false,
         verboseDom = false,
-        verboseBuild = false
+        verboseBuild = false,
+        renderMode = VoxelRenderMode.COLORED,
+        shadingMode = VoxelShadingMode.MAGICA_VOXEL
     )
 
     override val DEBUG = true

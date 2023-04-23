@@ -143,7 +143,7 @@ class MainScene(private val app: EditorApp) {
     }
 
     fun updateShadingMode() {
-        voxelModel.setShadingMode(app.state.shadingMode)
+        voxelModel.setShadingMode(app.state.settings.shadingMode)
     }
 
     /** Returns all children of [root] that are not hidden directly or

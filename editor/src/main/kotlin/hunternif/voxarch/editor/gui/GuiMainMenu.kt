@@ -38,17 +38,17 @@ fun MainGui.mainMenu() {
         }
         menu("View") {
             menu("Render mode") {
-                menuCheck("Solid color", app.state.renderMode == COLORED) {
+                menuCheck("Solid color", app.state.settings.renderMode == COLORED) {
                     app.setRenderMode(COLORED)
                 }
-                menuCheck("Texture", app.state.renderMode == TEXTURED) {
+                menuCheck("Texture", app.state.settings.renderMode == TEXTURED) {
                     app.setRenderMode(TEXTURED)
                 }
                 ImGui.separator()
-                menuCheck("MagicaVoxel", app.state.shadingMode == MAGICA_VOXEL) {
+                menuCheck("MagicaVoxel", app.state.settings.shadingMode == MAGICA_VOXEL) {
                     app.setShadingMode(MAGICA_VOXEL)
                 }
-                menuCheck("Minecraft", app.state.shadingMode == MINECRAFT) {
+                menuCheck("Minecraft", app.state.settings.shadingMode == MINECRAFT) {
                     app.setShadingMode(MINECRAFT)
                 }
             }

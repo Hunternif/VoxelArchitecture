@@ -35,7 +35,7 @@ class BuildVoxels : HistoryAction(
                 if (settings.verboseBuild) builder.addListener(VerboseLogger(app))
                 builder.build(rootNode.node, world, buildContext)
                 val builtVoxels = registry.newVoxelGroup(
-                    "Built voxels", world, renderMode, true)
+                    "Built voxels", world, settings.renderMode, true)
                 voxelRoot.addChild(builtVoxels)
                 newGenerated = listOf(builtVoxels.detached())
             }
