@@ -77,14 +77,7 @@ interface AppState {
     val history: ReadOnlyHistory<HistoryAction>
     val highlightedFace: BoxFace?
     val newNodeType: String
-
-
-    //============================== OPTIONS ================================
-
-    val cleanDummies: Boolean
-    val hinting: Boolean
-    val verboseDom: Boolean
-    val verboseBuild: Boolean
+    val settings: Settings
 
 
     //============================= GUI STATE ===============================
@@ -97,6 +90,13 @@ interface AppState {
     /** Maps text id to text value*/
     val overlayText: Map<String, String>
 }
+
+data class Settings(
+    val cleanDummies: Boolean,
+    val hinting: Boolean,
+    val verboseDom: Boolean,
+    val verboseBuild: Boolean,
+)
 
 class AppStateImpl(
     val registry: SceneRegistry,
@@ -149,10 +149,12 @@ class AppStateImpl(
     override var highlightedFace: BoxFace? = null
     override var newNodeType: String = "Node"
 
-    override var cleanDummies: Boolean = true
-    override var hinting: Boolean = false
-    override var verboseDom: Boolean = false
-    override var verboseBuild: Boolean = false
+    override var settings = Settings(
+        cleanDummies = true,
+        hinting = false,
+        verboseDom = false,
+        verboseBuild = false
+    )
 
     override val DEBUG = true
     override var isMainWindowFocused = false

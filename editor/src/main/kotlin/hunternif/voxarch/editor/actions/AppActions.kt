@@ -228,22 +228,22 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
 }
 
 
-//=============================== OPTIONS ===============================
+//=============================== SETTINGS ===============================
 
 fun EditorApp.toggleCleanDummies() = action {
-    state.cleanDummies = !state.cleanDummies
+    state.settings = state.settings.copy(cleanDummies = !state.settings.cleanDummies)
 }
 
 fun EditorApp.toggleHinting() = action {
-    state.hinting = !state.hinting
+    state.settings = state.settings.copy(hinting = !state.settings.hinting)
 }
 
 fun EditorApp.toggleVerboseDom() = action {
-    state.verboseDom = !state.verboseDom
+    state.settings = state.settings.copy(verboseDom = !state.settings.verboseDom)
 }
 
 fun EditorApp.toggleVerboseBuild() = action {
-    state.verboseBuild = !state.verboseBuild
+    state.settings = state.settings.copy(verboseBuild = !state.settings.verboseBuild)
 }
 
 

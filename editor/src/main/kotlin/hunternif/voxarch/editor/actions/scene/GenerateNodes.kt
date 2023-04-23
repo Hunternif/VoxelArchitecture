@@ -61,10 +61,10 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.runBlueprintsRecursive(root: SceneNode) {
         val prevChildSet = root.children.filterIsInstance<SceneNode>().map { it.node }.toSet()
         val loggers = mutableListOf<IDomListener>()
-        if (state.verboseDom) loggers.add(VerboseLogger(this))
+        if (state.settings.verboseDom) loggers.add(VerboseLogger(this))
         root.blueprints.forEach {
             it.execute(root.node, state.stylesheet, state.seed, 4,
-                state.cleanDummies, state.hinting, loggers,
+                state.settings.cleanDummies, state.settings.hinting, loggers,
             )
         }
         // Create SceneNodes for the new nodes

@@ -32,7 +32,7 @@ class BuildVoxels : HistoryAction(
             val world = BlockStorageDelegate(ChunkedStorage3D())
             val builder = RootBuilder()
             app.state.run {
-                if (verboseBuild) builder.addListener(VerboseLogger(app))
+                if (settings.verboseBuild) builder.addListener(VerboseLogger(app))
                 builder.build(rootNode.node, world, buildContext)
                 val builtVoxels = registry.newVoxelGroup(
                     "Built voxels", world, renderMode, true)

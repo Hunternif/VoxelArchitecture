@@ -86,22 +86,22 @@ fun MainGui.mainMenu() {
                 app.buildVoxels()
             }
             ImGui.separator()
-            menuCheck("Clean dummy nodes", app.state.cleanDummies,
+            menuCheck("Clean dummy nodes", app.state.settings.cleanDummies,
                 tooltip = "Automatically remove temporary \"dummy\" nodes from the generated node tree"
             ) {
                 app.toggleCleanDummies()
             }
-            menuCheck("Hinting", app.state.hinting,
+            menuCheck("Hinting", app.state.settings.hinting,
                 tooltip = "Automatically move generated node origins to the nearest global integer position"
             ) {
                 app.toggleHinting()
             }
-            menuCheck("Verbose DOM", app.state.verboseDom,
+            menuCheck("Verbose DOM", app.state.settings.verboseDom,
                 tooltip = "Log verbose details when building Nodes from DOM elements (\"Generate nodes\")"
             ) {
                 app.toggleVerboseDom()
             }
-            menuCheck("Verbose build", app.state.verboseBuild,
+            menuCheck("Verbose build", app.state.settings.verboseBuild,
                 tooltip = "Log verbose details when building voxels from Nodes (\"Build voxels\")"
             ) {
                 app.toggleVerboseBuild()
