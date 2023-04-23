@@ -4,15 +4,12 @@ import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.file.ExportVoxFile
 import hunternif.voxarch.editor.actions.file.ImportVoxFile
 import hunternif.voxarch.editor.actions.file.NewProject
 import hunternif.voxarch.editor.actions.file.OpenProject
-import hunternif.voxarch.editor.actions.scene.BuildVoxels
-import hunternif.voxarch.editor.actions.scene.GenerateNodes
 import hunternif.voxarch.editor.actions.history.HistoryAction
-import hunternif.voxarch.editor.actions.scene.CreateNode
-import hunternif.voxarch.editor.actions.scene.DeleteObjects
-import hunternif.voxarch.editor.actions.scene.SetParent
+import hunternif.voxarch.editor.actions.scene.*
 import hunternif.voxarch.editor.actions.select.SelectMask
 import hunternif.voxarch.editor.actions.select.SelectMask.ALL
 import hunternif.voxarch.editor.actions.select.SelectObjectsBuilder
@@ -22,15 +19,8 @@ import hunternif.voxarch.editor.actions.transform.*
 import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
-import hunternif.voxarch.magicavoxel.VoxColor
-import hunternif.voxarch.magicavoxel.writeToVoxFile
 import hunternif.voxarch.plan.naturalToCentric
-import hunternif.voxarch.storage.ChunkedStorage3D
-import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.SnapOrigin
-import hunternif.voxarch.util.copyTo
-import hunternif.voxarch.util.forEachSubtree
 import hunternif.voxarch.vector.Vec3
 import org.joml.Vector3i
 import java.nio.file.Path
@@ -60,23 +50,7 @@ fun EditorApp.saveProjectFileAs(path: Path) = action {
     state.lastSavedAction = state.history.pastItems.last
 }
 
-fun EditorApp.exportVoxFile(path: Path) = action {
-    // Copy all vox groups into a single storage
-    //TODO: serialize separate VOX groups
-    val mergedStorage = ChunkedStorage3D<IVoxel>()
-    state.voxelRoot.forEachSubtree {
-        if (it is SceneVoxelGroup) {
-            it.data.copyTo(mergedStorage, it.findGlobalPosition().toIntVec3())
-        }
-    }
-    mergedStorage.writeToVoxFile(path) { v ->
-        when (v) {
-            is VoxColor -> v
-            else -> VoxColor(state.voxelColorMap(v).hex)
-        }
-    }
-    logWarning("Export complete to '$path'")
-}
+fun EditorApp.exportVoxFile(path: Path) = action(ExportVoxFile(path))
 
 
 //=============================== VOXELS ================================
@@ -242,7 +216,7 @@ fun EditorApp.createNode(
     return action.node
 }
 
-fun EditorApp.deleteSelectedObjects() = action {
+fun EditorApp.deleteSelectedObjects() {
     deleteObjects(state.selectedObjects)
 }
 
@@ -270,7 +244,6 @@ fun EditorApp.toggleVerboseDom() = action {
 fun EditorApp.toggleVerboseBuild() = action {
     state.verboseBuild = !state.verboseBuild
 }
-
 
 
 //=============================== STYLES ================================
@@ -326,6 +299,15 @@ internal inline fun EditorApp.action(
     } catch (e: Exception) {
         logError(e)
     }
+}
+
+/** Runs an action, doesn't write it to history. */
+internal fun EditorApp.action(
+    action: AppAction,
+    firstTime: Boolean = false,
+) = action {
+    if (action is HistoryAction) action.invoke(this, firstTime)
+    else action.invoke(this)
 }
 
 /** Runs an action and also writes it to history. */
