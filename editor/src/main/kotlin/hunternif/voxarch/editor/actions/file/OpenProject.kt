@@ -10,7 +10,7 @@ import java.nio.file.Path
 class OpenProject(private val path: Path) : HistoryAction(
     "Open project '${path.fileName}'",
     FontAwesomeIcons.File
-) {
+), FileEvent {
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.run {
         readProject(path)
         gui.initState()

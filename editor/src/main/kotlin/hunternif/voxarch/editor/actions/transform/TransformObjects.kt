@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.transform
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.TransformEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.highlightFace
 import hunternif.voxarch.editor.actions.redrawNodes
@@ -17,7 +18,7 @@ class TransformObjects(
     private val newData: Map<out SceneObject, TransformData>,
     description: String = "Transform nodes",
     icon: String = FontAwesomeIcons.SlidersH,
-) : HistoryAction(description, icon) {
+) : HistoryAction(description, icon), TransformEvent {
 
     private val hasNodes = newData.keys.any { it is SceneNode }
     private val hasVoxels = newData.keys.any { it is SceneVoxelGroup }

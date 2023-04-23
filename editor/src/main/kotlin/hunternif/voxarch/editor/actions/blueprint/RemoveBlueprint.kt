@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.BlueprintEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
@@ -10,7 +11,10 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 class RemoveBlueprint(
     private val node: SceneNode,
     private val bp: Blueprint,
-) : HistoryAction("Remove blueprint", FontAwesomeIcons.Ban) {
+) : HistoryAction(
+    "Remove blueprint",
+    FontAwesomeIcons.Ban
+), BlueprintEvent {
     private var oldSelected: Blueprint? = null
     private var newSelected: Blueprint? = null
 

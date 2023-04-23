@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.BlueprintEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.blueprint.BlueprintLink
 import hunternif.voxarch.editor.blueprint.BlueprintNode
@@ -12,7 +13,7 @@ class BlueprintDeleteParts(
 ) : HistoryAction(
     makeDescription(nodes, links),
     FontAwesomeIcons.TrashAlt
-) {
+), BlueprintEvent {
     companion object {
         private fun makeDescription(
             nodes: Collection<BlueprintNode>,

@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.actions.scene
 import hunternif.voxarch.editor.AppStateImpl
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.SceneEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
@@ -19,7 +20,10 @@ class CreateNode(
     private val end: Vector3i,
     private val centered: Boolean = false,
     private val type: String = "Node",
-) : HistoryAction("Create node", Tool.ADD_NODE.icon) {
+) : HistoryAction(
+    "Create node",
+    Tool.ADD_NODE.icon
+), SceneEvent {
 
     lateinit var node: SceneNode
         private set

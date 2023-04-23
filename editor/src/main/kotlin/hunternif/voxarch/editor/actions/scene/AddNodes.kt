@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.scene
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.SceneEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
@@ -17,7 +18,7 @@ class AddNodes(
 ) : HistoryAction(
     "Add nodes",
     FontAwesomeIcons.Vihara,
-) {
+), SceneEvent {
     private lateinit var newSceneNodes: MutableSet<SceneNode>
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {

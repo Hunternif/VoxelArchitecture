@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.file
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.FileEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
@@ -13,7 +14,7 @@ class ImportVoxFile(
 ) : HistoryAction(
     "Import ${path.fileName}",
     FontAwesomeIcons.File
-) {
+), FileEvent {
     private lateinit var voxelGroup: SceneVoxelGroup
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.run {

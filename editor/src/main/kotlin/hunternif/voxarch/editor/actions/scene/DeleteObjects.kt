@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.scene
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.SceneEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.actions.redrawVoxels
@@ -9,7 +10,10 @@ import hunternif.voxarch.editor.scenegraph.*
 
 class DeleteObjects(
     objs: Collection<SceneObject>
-) : HistoryAction(makeDescription(objs), FontAwesomeIcons.TrashAlt) {
+) : HistoryAction(
+    makeDescription(objs),
+    FontAwesomeIcons.TrashAlt
+), SceneEvent {
     companion object {
         private fun makeDescription(objs: Collection<SceneObject>) =
             when (objs.size) {

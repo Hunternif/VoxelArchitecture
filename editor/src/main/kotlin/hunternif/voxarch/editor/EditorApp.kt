@@ -1,12 +1,13 @@
 package hunternif.voxarch.editor
 
+import com.google.common.eventbus.EventBus
 import hunternif.voxarch.editor.actions.newProject
 import hunternif.voxarch.editor.actions.openProjectFile
 import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.scene.InputController
-import hunternif.voxarch.editor.util.LogMessage
+import hunternif.voxarch.editor.actions.log.LogMessage
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
@@ -28,6 +29,7 @@ fun main(args: Array<String>) = EditorAppImpl().run(*args)
 interface EditorApp {
     val state: AppState
     val logs: List<LogMessage>
+    val eventBus: EventBus
 }
 
 class EditorAppImpl : EditorApp {
@@ -41,6 +43,7 @@ class EditorAppImpl : EditorApp {
 
     override lateinit var state: AppStateImpl
     override val logs = LinkedList<LogMessage>()
+    override val eventBus = EventBus()
 
     fun run(vararg args: String) {
         init(*args)

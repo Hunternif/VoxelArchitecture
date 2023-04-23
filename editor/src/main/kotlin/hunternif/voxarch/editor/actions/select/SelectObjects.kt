@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions.select
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.SelectEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.select.SelectMask.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -13,7 +14,7 @@ class SelectObjects(
     private val newSet: Collection<SceneObject>,
     private val mask: SelectMask = ALL,
     description: String,
-) : HistoryAction(description, Tool.SELECT.icon) {
+) : HistoryAction(description, Tool.SELECT.icon), SelectEvent {
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.applySelection(newSet)
 

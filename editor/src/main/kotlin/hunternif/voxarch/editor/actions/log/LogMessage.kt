@@ -1,4 +1,4 @@
-package hunternif.voxarch.editor.util
+package hunternif.voxarch.editor.actions.log
 
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter

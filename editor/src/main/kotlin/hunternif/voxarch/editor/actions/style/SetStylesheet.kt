@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions.style
 
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.StyleEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.history.StackingAction
 import hunternif.voxarch.editor.actions.reloadStyleEditor
@@ -22,7 +23,7 @@ class SetStylesheet(
 ) : HistoryAction(
     "Update stylesheet",
     FontAwesomeIcons.FileCode
-), StackingAction<SetStylesheet> {
+), StyleEvent, StackingAction<SetStylesheet> {
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         app.state.stylesheet = newStyle

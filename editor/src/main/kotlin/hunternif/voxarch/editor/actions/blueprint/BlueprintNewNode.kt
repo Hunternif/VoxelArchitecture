@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.BlueprintEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
@@ -18,7 +19,7 @@ class BlueprintNewNode(
 ) : HistoryAction(
     "New blueprint node",
     FontAwesomeIcons.Code
-) {
+), BlueprintEvent {
     lateinit var node: BlueprintNode
         private set
 

@@ -10,12 +10,12 @@ import hunternif.voxarch.editor.newState
 class NewProject() : HistoryAction(
     "New project",
     FontAwesomeIcons.File
-) {
+), FileEvent {
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.run {
         state = newState()
         gui.initState()
         // Reset stylesheet, but don't write this into history
-        ResetStylesheet().invoke(app, true)
+        action(ResetStylesheet())
         reloadStyleEditor()
         clearNewNodeFrame()
         redrawNodes()

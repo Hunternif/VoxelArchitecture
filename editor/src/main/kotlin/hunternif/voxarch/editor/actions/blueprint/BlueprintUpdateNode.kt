@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.BlueprintEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
@@ -14,7 +15,7 @@ class BlueprintUpdateNode(
 ) : HistoryAction(
     "Update blueprint node",
     FontAwesomeIcons.Code
-) {
+), BlueprintEvent {
     private lateinit var oldStyleClass: String
     private var oldDelegateBp: Blueprint? = null
 

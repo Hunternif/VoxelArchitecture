@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.BlueprintEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
@@ -8,7 +9,10 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 /** Deletes Blueprint from the library */
 class DeleteBlueprint(
     private val bp: Blueprint,
-) : HistoryAction("Delete blueprint", FontAwesomeIcons.TrashAlt) {
+) : HistoryAction(
+    "Delete blueprint",
+    FontAwesomeIcons.TrashAlt
+), BlueprintEvent {
     private var oldSelected: Blueprint? = null
     private var newSelected: Blueprint? = null
     private lateinit var nodeActions: List<RemoveBlueprint>

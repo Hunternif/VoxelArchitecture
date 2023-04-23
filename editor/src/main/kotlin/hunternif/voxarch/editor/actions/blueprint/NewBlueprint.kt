@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.BlueprintEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
@@ -16,7 +17,7 @@ class NewBlueprint(
 ) : HistoryAction(
     "New blueprint",
     FontAwesomeIcons.Landmark
-) {
+), BlueprintEvent {
     lateinit var bp: Blueprint
     private var oldSelected: Blueprint? = null
     private var newSelected: Blueprint? = null

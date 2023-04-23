@@ -2,6 +2,8 @@ package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.log.LogAction
+import hunternif.voxarch.editor.actions.settings.SettingsAction
 import hunternif.voxarch.editor.actions.visible.HideObject
 import hunternif.voxarch.editor.actions.visible.ShowAction
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
@@ -13,55 +15,55 @@ import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.util.LogMessage
+import hunternif.voxarch.editor.actions.log.LogMessage
 import hunternif.voxarch.editor.util.openFileDialog
 import hunternif.voxarch.editor.util.saveFileDialog
 
 // Actions that update the state of UI and don't contribute to history
 
-fun EditorApp.saveProjectOrOpenDialogToSaveAs() = action {
+fun EditorApp.saveProjectOrOpenDialogToSaveAs() = action(UIEvent.OPEN_DIALOG) {
     if (state.projectPath != null) saveProjectFile()
     else openDialogSaveProjectFile()
 }
 
-fun EditorApp.openDialogSaveProjectFile() = action {
+fun EditorApp.openDialogSaveProjectFile() = action(UIEvent.OPEN_DIALOG) {
     saveFileDialog(VOXARCH_PROJECT_FILE_EXT) {
         saveProjectFileAs(it)
     }
 }
 
-fun EditorApp.openDialogOpenProjectFile() = action {
+fun EditorApp.openDialogOpenProjectFile() = action(UIEvent.OPEN_DIALOG) {
     openFileDialog(VOXARCH_PROJECT_FILE_EXT) {
         openProjectFile(it)
     }
 }
 
-fun EditorApp.openDialogImportVoxFile() = action {
+fun EditorApp.openDialogImportVoxFile() = action(UIEvent.OPEN_DIALOG) {
     openFileDialog("vox") {
         importVoxFile(it)
         centerCamera()
     }
 }
 
-fun EditorApp.openDialogExportVoxFile() = action {
+fun EditorApp.openDialogExportVoxFile() = action(UIEvent.OPEN_DIALOG) {
     saveFileDialog("vox") {
         exportVoxFile(it)
     }
 }
 
-fun EditorApp.setTool(tool: Tool) = action {
+fun EditorApp.setTool(tool: Tool) = action(UIEvent.SET_TOOL) {
     state.currentTool = tool
 }
 
-fun EditorApp.setNewNodeType(type: String) = action {
+fun EditorApp.setNewNodeType(type: String) = action(UIEvent.SET_NODE_TYPE) {
     val actualType = if (type in nodeFactoryByName.keys) type else "Node"
     state.newNodeType = actualType
 }
 
-fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
+fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action(UIEvent.SET_RENDER_MODE) {
     if (state.settings.renderMode != mode) {
-        state.settings = state.settings.copy(renderMode = mode)
-            when (mode) {
+        action(SettingsAction(state.settings.copy(renderMode = mode)))
+        when (mode) {
             VoxelRenderMode.COLORED -> {
                 state.buildContext.materials.setSolidColorMaterials()
             }
@@ -73,12 +75,12 @@ fun EditorApp.setRenderMode(mode: VoxelRenderMode) = action {
     }
 }
 
-fun EditorApp.setShadingMode(mode: VoxelShadingMode) = action {
-    state.settings = state.settings.copy(shadingMode = mode)
+fun EditorApp.setShadingMode(mode: VoxelShadingMode) = action(UIEvent.SET_SHADING_MODE) {
+    action(SettingsAction(state.settings.copy(shadingMode = mode)))
     scene.updateShadingMode()
 }
 
-fun EditorApp.centerCamera() = action {
+fun EditorApp.centerCamera() = action(UIEvent.CENTER_CAMERA) {
     state.run {
         val selectedObjectsExceptRoot = selectedObjects - rootNode
         if (selectedObjectsExceptRoot.isNotEmpty()) {
@@ -105,57 +107,51 @@ fun EditorApp.showObject(obj: SceneObject) = action(ShowAction(obj))
 fun EditorApp.hideObject(obj: SceneObject) = action(HideObject(obj))
 
 /** Used by UI to show real-time updates that aren't yet written to history. */
-fun EditorApp.redrawNodes() = action {
+fun EditorApp.redrawNodes() = action(UIEvent.REDRAW_NODES) {
     scene.updateNodeModel()
 }
 
 /** Used by UI to show real-time updates that aren't yet written to history. */
-fun EditorApp.redrawVoxels() = action {
+fun EditorApp.redrawVoxels() = action(UIEvent.REDRAW_VOXELS) {
     scene.updateVoxelModel()
 }
 
-fun EditorApp.clearNewNodeFrame() = action {
+fun EditorApp.clearNewNodeFrame() = action(UIEvent.CLEAR_NEW_NODE_FRAME) {
     scene.clearNewNodeFrame()
 }
 
 /** Highlight the given face on a node. Passing null removes the highlight. */
-fun EditorApp.highlightFace(face: BoxFace?) = action {
+fun EditorApp.highlightFace(face: BoxFace?) = action(UIEvent.HIGHLIGHT_FACE) {
     state.highlightedFace = face
     scene.updateHighlightedFaces()
 }
 
-fun EditorApp.focusMainWindow(focused: Boolean) = action {
+fun EditorApp.focusMainWindow(focused: Boolean) = action(null) {
     state.isMainWindowFocused = focused
 }
 
-fun EditorApp.hoverMainWindow(hovered: Boolean) = action {
+fun EditorApp.hoverMainWindow(hovered: Boolean) = action(null) {
     state.isMainWindowHovered = hovered
 }
 
-fun EditorApp.setTextEditorActive(active: Boolean) = action {
+fun EditorApp.setTextEditorActive(active: Boolean) = action(null) {
     state.isTextEditorActive = active
 }
 
-fun EditorApp.logInfo(msg: String) = action {
-    logs.add(LogMessage.info(msg))
-}
+fun EditorApp.logInfo(msg: String) = action(LogAction(LogMessage.info(msg)))
 
-fun EditorApp.logWarning(msg: String) = action {
-    logs.add(LogMessage.warn(msg))
-}
+fun EditorApp.logWarning(msg: String) = action(LogAction(LogMessage.warn(msg)))
 
-fun EditorApp.logError(e: Exception) = action {
-    logs.add(LogMessage.error(e))
-}
+fun EditorApp.logError(e: Exception) = action(LogAction(LogMessage.error(e)))
 
-fun EditorApp.addOverlayText(id: String, text: String) = action {
+fun EditorApp.addOverlayText(id: String, text: String) = action(UIEvent.SET_OVERLAY_TEXT) {
     state.overlayText[id] = text
 }
 
-fun EditorApp.removeOverlayText(id: String) = action {
+fun EditorApp.removeOverlayText(id: String) = action(UIEvent.SET_OVERLAY_TEXT) {
     state.overlayText.remove(id)
 }
 
-fun EditorApp.toggleLogs() = action {
+fun EditorApp.toggleLogs() = action(UIEvent.TOGGLE_LOGS) {
     gui.showLogs.toggle()
 }

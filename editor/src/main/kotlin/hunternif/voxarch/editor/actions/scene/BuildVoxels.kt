@@ -4,6 +4,8 @@ import hunternif.voxarch.builder.IBuildListener
 import hunternif.voxarch.builder.RootBuilder
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.GenEvent
+import hunternif.voxarch.editor.actions.SceneEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.logInfo
 import hunternif.voxarch.editor.actions.redrawVoxels
@@ -18,7 +20,7 @@ import hunternif.voxarch.storage.ChunkedStorage3D
 class BuildVoxels : HistoryAction(
     "Build voxels",
     FontAwesomeIcons.Cubes
-) {
+), GenEvent, SceneEvent {
     private lateinit var oldGenerated: List<DetachedObject>
     private lateinit var newGenerated: List<DetachedObject>
 

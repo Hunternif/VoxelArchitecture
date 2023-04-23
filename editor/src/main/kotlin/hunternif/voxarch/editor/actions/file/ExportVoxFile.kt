@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.actions.file
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.AppAction
+import hunternif.voxarch.editor.actions.FileEvent
 import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -12,7 +13,7 @@ import hunternif.voxarch.util.copyTo
 import hunternif.voxarch.util.forEachSubtree
 import java.nio.file.Path
 
-class ExportVoxFile(private val path: Path) : AppAction {
+class ExportVoxFile(private val path: Path) : AppAction, FileEvent {
     override fun invoke(app: EditorAppImpl) = app.run {
         // Copy all vox groups into a single storage
         //TODO: serialize separate VOX groups

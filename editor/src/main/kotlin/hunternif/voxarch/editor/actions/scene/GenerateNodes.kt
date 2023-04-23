@@ -4,6 +4,8 @@ import hunternif.voxarch.dom.builder.IDomListener
 import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
+import hunternif.voxarch.editor.actions.GenEvent
+import hunternif.voxarch.editor.actions.SceneEvent
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.logInfo
 import hunternif.voxarch.editor.actions.redrawNodes
@@ -19,7 +21,7 @@ import hunternif.voxarch.plan.Node
 class GenerateNodes : HistoryAction(
     "Generate nodes",
     FontAwesomeIcons.Archway
-) {
+), GenEvent, SceneEvent {
     private lateinit var oldGenerated: List<DetachedObject>
     private lateinit var newGenerated: MutableList<DetachedObject>
 

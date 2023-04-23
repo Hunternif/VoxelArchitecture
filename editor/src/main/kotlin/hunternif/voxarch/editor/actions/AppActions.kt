@@ -14,6 +14,7 @@ import hunternif.voxarch.editor.actions.scene.*
 import hunternif.voxarch.editor.actions.select.SelectMask
 import hunternif.voxarch.editor.actions.select.SelectMask.ALL
 import hunternif.voxarch.editor.actions.select.SelectObjectsBuilder
+import hunternif.voxarch.editor.actions.settings.SettingsAction
 import hunternif.voxarch.editor.actions.style.ResetStylesheet
 import hunternif.voxarch.editor.actions.style.SetStylesheet
 import hunternif.voxarch.editor.actions.transform.*
@@ -40,12 +41,12 @@ fun EditorApp.newProject() = historyAction(NewProject())
 
 fun EditorApp.openProjectFile(path: Path) = historyAction(OpenProject(path))
 
-fun EditorApp.saveProjectFile() = action {
+fun EditorApp.saveProjectFile() = action(FileEvent.SAVE_PROJECT) {
     state.projectPath?.let { writeProject(it) }
     state.lastSavedAction = state.history.pastItems.last
 }
 
-fun EditorApp.saveProjectFileAs(path: Path) = action {
+fun EditorApp.saveProjectFileAs(path: Path) = action(FileEvent.SAVE_PROJECT) {
     writeProject(path)
     state.projectPath = path
     state.lastSavedAction = state.history.pastItems.last
@@ -230,21 +231,21 @@ fun EditorApp.deleteObjects(objs: Collection<SceneObject>) {
 
 //=============================== SETTINGS ===============================
 
-fun EditorApp.toggleCleanDummies() = action {
-    state.settings = state.settings.copy(cleanDummies = !state.settings.cleanDummies)
-}
+fun EditorApp.toggleCleanDummies() = action(SettingsAction(
+    state.settings.copy(cleanDummies = !state.settings.cleanDummies)
+))
 
-fun EditorApp.toggleHinting() = action {
-    state.settings = state.settings.copy(hinting = !state.settings.hinting)
-}
+fun EditorApp.toggleHinting() = action(SettingsAction(
+    state.settings.copy(hinting = !state.settings.hinting)
+))
 
-fun EditorApp.toggleVerboseDom() = action {
-    state.settings = state.settings.copy(verboseDom = !state.settings.verboseDom)
-}
+fun EditorApp.toggleVerboseDom() = action(SettingsAction(
+    state.settings.copy(verboseDom = !state.settings.verboseDom)
+))
 
-fun EditorApp.toggleVerboseBuild() = action {
-    state.settings = state.settings.copy(verboseBuild = !state.settings.verboseBuild)
-}
+fun EditorApp.toggleVerboseBuild() = action(SettingsAction(
+    state.settings.copy(verboseBuild = !state.settings.verboseBuild)
+))
 
 
 //=============================== STYLES ================================
@@ -265,30 +266,44 @@ fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) =
     ))
 
 /** Replaces text in Style Editor with the current stylesheet text */
-fun EditorApp.reloadStyleEditor() = action {
+fun EditorApp.reloadStyleEditor() = action(UIEvent.RELOAD_STYLE_EDITOR) {
     gui.styleEditor.loadText(state.stylesheetText)
 }
 
 
 //=============================== HISTORY ===============================
 
-fun EditorApp.undo() = action {
-    state.history.moveBack()?.revert(this)
+fun EditorApp.undo() {
+    val app = this as? EditorAppImpl ?: return
+    val historyAction = app.state.history.moveBack() ?: return
+    action(historyAction) {
+        historyAction.revert(this)
+    }
 }
 
-fun EditorApp.redo() = action {
-    state.history.moveForward()?.invoke(this, false)
+fun EditorApp.redo() {
+    val app = this as? EditorAppImpl ?: return
+    val historyAction = app.state.history.moveForward() ?: return
+    action(historyAction) {
+        historyAction.invoke(this, false)
+    }
 }
 
 
 /////////////////////////// TECHNICAL ACTIONS ///////////////////////////////
 
-/** Runs an action, doesn't write it to history. */
+/**
+ * Runs an action, doesn't write it to history.
+ * @param event is dispatched after a successful execution.
+ *              It can be null for technical actions that run every frame.
+ */
 internal inline fun EditorApp.action(
+    event: Event?,
     crossinline execute: EditorAppImpl.() -> Unit
 ) {
     try {
         (this as EditorAppImpl).execute()
+        event?.let { eventBus.post(it) }
     } catch (e: Exception) {
         logError(e)
     }
@@ -298,13 +313,13 @@ internal inline fun EditorApp.action(
 internal fun EditorApp.action(
     action: AppAction,
     firstTime: Boolean = false,
-) = action {
+) = action(action) {
     if (action is HistoryAction) action.invoke(this, firstTime)
     else action.invoke(this)
 }
 
 /** Runs an action and also writes it to history. */
-internal fun EditorApp.historyAction(action: HistoryAction) = action {
+internal fun EditorApp.historyAction(action: HistoryAction) = action(action) {
     action.invoke(this, true)
     val last = state.history.last()
     if (last != null && last is StackingAction<*> && last.stacksWith(action)) {
