@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.actions.history.History
 import org.junit.Assert.*
 import org.junit.Test
 

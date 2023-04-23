@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.BaseAppTest
+import hunternif.voxarch.editor.actions.select.SelectMask
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.util.emptyArray3D

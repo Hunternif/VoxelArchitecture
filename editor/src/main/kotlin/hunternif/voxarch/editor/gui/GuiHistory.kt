@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.HistoryAction
+import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImGui
 import imgui.flag.*

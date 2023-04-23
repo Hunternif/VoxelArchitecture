@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.actions.MoveObjectsBuilder
+import hunternif.voxarch.editor.actions.transform.MoveObjectsBuilder
 import hunternif.voxarch.editor.actions.moveBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.MoveController.Direction.*

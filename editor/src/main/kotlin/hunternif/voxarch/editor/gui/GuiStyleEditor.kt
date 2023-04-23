@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.History
+import hunternif.voxarch.editor.actions.history.History
 import hunternif.voxarch.editor.actions.saveProjectOrOpenDialogToSaveAs
 import hunternif.voxarch.editor.actions.setTextEditorActive
 import hunternif.voxarch.editor.actions.updateStylesheetAndText

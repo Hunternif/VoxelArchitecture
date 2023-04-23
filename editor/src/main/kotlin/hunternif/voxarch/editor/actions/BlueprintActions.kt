@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.blueprint.*
 import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
 

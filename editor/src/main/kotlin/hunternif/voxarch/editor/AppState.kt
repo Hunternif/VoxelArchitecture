@@ -3,7 +3,9 @@ package hunternif.voxarch.editor
 import com.google.common.collect.ListMultimap
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
-import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.actions.history.History
+import hunternif.voxarch.editor.actions.history.HistoryAction
+import hunternif.voxarch.editor.actions.history.ReadOnlyHistory
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.builder.*

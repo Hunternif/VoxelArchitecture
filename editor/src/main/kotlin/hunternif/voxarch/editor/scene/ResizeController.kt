@@ -2,7 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
-import hunternif.voxarch.editor.actions.ResizeNodesBuilder
+import hunternif.voxarch.editor.actions.transform.ResizeNodesBuilder
 import hunternif.voxarch.editor.actions.highlightFace
 import hunternif.voxarch.editor.actions.resizeBuilder
 import hunternif.voxarch.editor.render.OrbitalCamera

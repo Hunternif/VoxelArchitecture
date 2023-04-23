@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.actions.select.SelectObjectsBuilder
 import hunternif.voxarch.editor.gui.Timer
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scene.SelectController.Mode.*
