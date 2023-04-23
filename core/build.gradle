@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version"
-    implementation "com.google.guava:guava:21.0"
+    implementation 'com.google.guava:guava:31.1-jre'
     implementation files('libs/VoxFileParser-0.3-SNAPSHOT.jar')
     testImplementation 'junit:junit:4.12'
     testImplementation 'org.reflections:reflections:0.9.11'
