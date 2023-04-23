@@ -21,7 +21,7 @@ class BoxFrameModel(
     // 12 edges, 2 vertices per edge, 3f pos per vertex
     private var vertBufferSize = 12 * 2 * 3
 
-    override val shader = SolidColorInstancedShader()
+    override val shader = SolidColorInstancedShader(true)
 
     private var instanceVboID = 0
     private val instances = mutableListOf<BoxMesh>()
