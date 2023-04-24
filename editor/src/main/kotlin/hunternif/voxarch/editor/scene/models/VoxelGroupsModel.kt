@@ -76,7 +76,9 @@ class VoxelGroupsModel(
         // Render selection texture
         hitTester.renderVoxels {
             for ((_, model) in models) {
-                model.pickModel.runFrame(viewProj)
+                if (model.visible) {
+                    model.pickModel.runFrame(viewProj)
+                }
             }
         }
     }
