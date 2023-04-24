@@ -14,6 +14,9 @@ class SelectedNodeModel : IModel {
     )
     private val lineModel = BoxFrameModel(Colors.selectedNodeOutline)
 
+    // Rendered through voxels
+    private val bgLineModel = BoxFrameModel(Colors.selectedNodeOutline.copy(a = 0.1f))
+
     override fun init() {
         lineModel.apply {
             init()
@@ -25,24 +28,33 @@ class SelectedNodeModel : IModel {
             writeDepth = false
             shader.depthOffset = -0.001f
         }
+        bgLineModel.apply {
+            init()
+            readDepth = false
+            shader.depthOffset = 0.001f
+        }
     }
 
     fun add(box: BoxMesh) {
+        bgLineModel.add(box)
         lineModel.add(box)
         gizmoModel.addPos(box.center, box.size, box.angleY)
     }
 
     fun clear() {
+        bgLineModel.clear()
         lineModel.clear()
         gizmoModel.clear()
     }
 
     fun update() {
+        bgLineModel.update()
         lineModel.update()
         gizmoModel.update()
     }
 
     override fun runFrame(viewProj: Matrix4f) {
+        bgLineModel.runFrame(viewProj)
         lineModel.runFrame(viewProj)
         gizmoModel.runFrame(viewProj)
     }
