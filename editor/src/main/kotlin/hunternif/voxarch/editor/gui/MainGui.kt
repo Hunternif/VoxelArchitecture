@@ -92,6 +92,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     fun initState() {
         nodeTree.initState()
         voxelTree.initState()
+        nodeProperties.initState()
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {

@@ -61,6 +61,10 @@ class GuiObjectProperties(
     private val curBlueprints = mutableListOf<Blueprint>()
     private val allBlueprints = mutableListOf(newBlueprintItem)
 
+    fun initState() {
+        reloadAllBlueprints()
+    }
+
     fun render() {
         checkSelectedNodes()
         renderHeaderText()
@@ -160,6 +164,11 @@ By default, it's set so that origin is at the low-XYZ corner.""")
 
     @Subscribe
     fun onBlueprintsChange(event: BlueprintEvent) {
+        reloadAllBlueprints()
+    }
+
+    /** Reload the list of all available blueprints */
+    private fun reloadAllBlueprints() {
         allBlueprints.apply {
             clear()
             add(newBlueprintItem)
