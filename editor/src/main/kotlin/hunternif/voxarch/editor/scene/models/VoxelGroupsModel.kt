@@ -62,6 +62,10 @@ class VoxelGroupsModel(
         }
     }
 
+    fun remove(group: SceneVoxelGroup) {
+        models.remove(group)
+    }
+
     /** Re-creates voxel mesh. */
     fun updateVoxels(groups: Collection<SceneVoxelGroup>) {
         groups.forEach {

@@ -45,11 +45,18 @@ class SelectedNodeModel : IModel {
         }
     }
 
-    fun add(box: BoxMesh) {
-        bgLineModel.add(box)
-        lineModel.add(box)
-        gizmoModel.addPos(box.center, box.size, box.angleY)
-        bgGizmoModel.addPos(box.center, box.size, box.angleY)
+    fun add(ref: Any, box: BoxMesh) {
+        bgLineModel.add(ref, box)
+        lineModel.add(ref, box)
+        gizmoModel.addPos(ref, box.center, box.size, box.angleY)
+        bgGizmoModel.addPos(ref, box.center, box.size, box.angleY)
+    }
+
+    fun remove(ref: Any) {
+        lineModel.remove(ref)
+        bgLineModel.remove(ref)
+        gizmoModel.remove(ref)
+        bgGizmoModel.remove(ref)
     }
 
     fun clear() {

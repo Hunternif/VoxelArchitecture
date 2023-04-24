@@ -32,7 +32,7 @@ class GizmoModel(
     private val colZ = Colors.axisZ.copy(a = alpha)
 
     private var instanceVboID = 0
-    private val instances = mutableListOf<GizmoData>()
+    private val instances = linkedMapOf<Any, GizmoData>()
 
     override val shader = SolidColorInstancedShader()
 
@@ -69,8 +69,12 @@ class GizmoModel(
         uploadInstanceData()
     }
 
-    fun addPos(pos: Vector3f, size: Vector3f, angleY: Float = 0f) {
-        instances.add(GizmoData(pos, size, angleY))
+    fun addPos(ref: Any, pos: Vector3f, size: Vector3f, angleY: Float = 0f) {
+        instances[ref] = GizmoData(pos, size, angleY)
+    }
+
+    fun remove(ref: Any) {
+        instances.remove(ref)
     }
 
     fun clear() {
@@ -85,7 +89,7 @@ class GizmoModel(
         // 16f is used by model matrix
         val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 16)
         instanceVertexBuffer.run {
-            instances.forEach { it.run {
+            instances.values.forEach { it.run {
                 put(
                     Matrix4f()
                         .translation(pos)

@@ -15,7 +15,7 @@ import org.lwjgl.system.MemoryUtil
  */
 class PointSpriteModel(texturePath: String) : BaseModel() {
 
-    private val points = mutableListOf<Vector3f>()
+    private val points = linkedMapOf<Any, Vector3f>()
 
     override val shader = PointSpriteShader(resourcePath(texturePath))
 
@@ -27,8 +27,12 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
         uploadVertexData()
     }
 
-    fun addPoint(pos: Vector3f) {
-        points.add(pos)
+    fun addPoint(ref: Any, pos: Vector3f) {
+        points[ref] = pos
+    }
+
+    fun removePoint(ref: Any) {
+        points.remove(ref)
     }
 
     fun clear() {
@@ -43,7 +47,7 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
         val bufferSize = points.size * 3
         val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
         vertexBuffer.run {
-            points.forEach { put(it) }
+            points.values.forEach { put(it) }
             flip()
         }
         glBindVertexArray(vaoID)
