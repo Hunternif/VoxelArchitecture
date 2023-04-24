@@ -34,6 +34,7 @@ abstract class BaseSelectionController(
         if (app.state.currentTool == tool && button == GLFW_MOUSE_BUTTON_1) {
             if (action == GLFW_PRESS) {
                 onMouseDown(mods)
+                hitTester.snapshotVoxelTexture()
             } else if (action == GLFW_RELEASE && dragging) {
                 onMouseUp(mods)
             }

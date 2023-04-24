@@ -1,11 +1,11 @@
 package hunternif.voxarch.editor.scene
 
-import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.util.ByteBufferWrapper
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.joml.Vector2f
 import org.joml.Vector3f
@@ -15,7 +15,14 @@ class HitTester(
     @PublishedApi internal val camera: OrbitalCamera,
 ) {
     /** FBO with the texture from which to pick voxel groups. */
-    val voxelsFbo = FrameBuffer()
+    @PublishedApi internal val voxelsFbo = FrameBuffer()
+
+    /**
+     * After calling [snapshotVoxelTexture], the texture is written here.
+     * The format is RGB, from bottom left corner, row by row.
+     */
+    private var voxelsFboBytes = ByteBufferWrapper()
+
     private val voxelGroups = LinkedHashMap<ColorRGBa, SceneVoxelGroup>()
 
     fun init() {
@@ -63,15 +70,50 @@ class HitTester(
         voxelGroups[color] = group
     }
 
+    /** Reads pixel data and stores it for hit-testing. */
+    fun snapshotVoxelTexture() {
+        voxelsFbo.render {
+            voxelsFbo.texture.readPixels(voxelsFboBytes)
+        }
+
+        // Example of writing an image to PNG.
+        // The format is not correct, the result is wrong colors and flipped image.
+
+//        val width = voxelsFbo.texture.width
+//        val height = voxelsFbo.texture.height
+//        val totalBytes = width * height * voxelsFbo.texture.channels
+//
+//        val buf = buffer.buffer
+//        buf.rewind()
+//        val bytes = ByteArray(totalBytes)
+//        buf.get(bytes)
+//
+//        val image = BufferedImage(width, height, BufferedImage.TYPE_3BYTE_BGR)
+//        image.data = Raster.createRaster(
+//            image.sampleModel, DataBufferByte(bytes, totalBytes), Point())
+//        val path = Paths.get("./voxels_fbo_image.png")
+//        Files.newOutputStream(path).use {
+//            ImageIO.write(image, "png", it)
+//        }
+    }
+
     /** Accepts viewport coordinates, where (0, 0) is top left corner. */
     private fun hitTestVoxel(posX: Number, posY: Number): SceneVoxelGroup? {
         // OpenGL texture uses (0, 0) as bottom left corner
         val x = posX.toInt()
         val y = voxelsFbo.texture.height - posY.toInt()
-        var color: ColorRGBa = Colors.debug
-        voxelsFbo.render {
-            color = voxelsFbo.texture.readPixel(x, y)
-        }
+
+        val width = voxelsFbo.texture.width
+        val height = voxelsFbo.texture.height
+
+        if (x < 0 || x >= width || y < 0 || y >= height) return null
+
+        // Sample the texture
+        val channels = voxelsFbo.texture.channels // should be 3
+        val buf = voxelsFboBytes.buffer
+        buf.rewind()
+        buf.position((y * width + x) * channels)
+        val color = ColorRGBa.fromRGBBytes(buf)
         return voxelGroups[color]
     }
 }

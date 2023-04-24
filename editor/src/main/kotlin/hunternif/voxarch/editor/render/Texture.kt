@@ -118,6 +118,9 @@ class Texture(val filepath: String) {
     /** Reads data from the GPU */
     fun readPixels(bufferWrapper: ByteBufferWrapper) {
         val buffer = bufferWrapper.prepare(width * height * channels)
+        // this fixes image skewing at certain sizes, see answer:
+        // https://stackoverflow.com/questions/73498632/photo-generated-by-glreadpixels-is-broken
+        glPixelStorei(GL_PACK_ALIGNMENT, 1)
         glReadPixels(0, 0, width, height, format, GL_UNSIGNED_BYTE, buffer)
     }
 
