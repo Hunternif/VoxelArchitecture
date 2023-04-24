@@ -10,7 +10,7 @@ abstract class Shader {
     @PublishedApi
     internal var shaderProgramID = 0
 
-    private var isInitialized = false
+    protected var isInitialized = false
 
     abstract fun init()
 

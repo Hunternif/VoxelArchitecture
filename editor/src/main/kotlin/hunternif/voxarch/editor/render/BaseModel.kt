@@ -15,7 +15,7 @@ abstract class BaseModel : IModel {
     protected val vertexAttribList = VertexAttribList()
     protected val instanceAttribList = VertexAttribList()
 
-    protected abstract val shader: Shader
+    abstract val shader: Shader
 
     /** Whether to read from depth buffer */
     var readDepth: Boolean = true

@@ -18,10 +18,12 @@ class SelectedNodeModel : IModel {
         lineModel.apply {
             init()
             writeDepth = false
+            shader.useDepthOffset = true
         }
         gizmoModel.apply {
             init()
             writeDepth = false
+            shader.useDepthOffset = true
         }
     }
 

@@ -4,10 +4,7 @@ import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.util.resourcePath
 import org.joml.Matrix4f
 
-class SolidColorInstancedShader(
-    /** This is a cheat to prevent Z-fighting of lines on top of voxels. */
-    private var useDepthOffset: Boolean = false,
-): Shader() {
+class SolidColorInstancedShader: Shader() {
     override fun init() {
         super.init(
             resourcePath("shaders/solid-color-instanced.vert.glsl"),
@@ -18,4 +15,15 @@ class SolidColorInstancedShader(
             uploadBool("useDepthOffset", useDepthOffset)
         }
     }
+
+    /** This is a cheat to prevent Z-fighting of lines on top of voxels. */
+    var useDepthOffset: Boolean = false
+        set(value) {
+            field = value
+            if (isInitialized) {
+                use {
+                    uploadBool("useDepthOffset", value)
+                }
+            }
+        }
 }
