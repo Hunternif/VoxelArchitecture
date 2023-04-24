@@ -1,7 +1,9 @@
 package hunternif.voxarch.editor.scene
 
+import com.google.common.eventbus.Subscribe
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.scene.DeleteObjects
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -168,15 +170,15 @@ class MainScene(private val app: EditorApp) {
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
             if (obj != app.state.rootNode && obj != app.state.voxelRoot) {
-                selectedNodeModel.add(obj.box)
+                selectedNodeModel.add(obj, obj.box)
                 when (obj) {
                     is SceneNode -> {
                         val origin = obj.node.findGlobalPosition().toVector3f()
-                        originsModel.addPoint(origin)
+                        originsModel.addPoint(obj, origin)
                     }
                     is SceneVoxelGroup -> {
                         val origin = obj.findGlobalPosition().toVector3f()
-                        originsModel.addPoint(origin)
+                        originsModel.addPoint(obj, origin)
                     }
                 }
             }

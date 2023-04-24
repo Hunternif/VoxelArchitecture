@@ -25,9 +25,14 @@ class SelectedNodeModel : IModel {
         }
     }
 
-    fun add(box: BoxMesh) {
-        lineModel.add(box)
-        gizmoModel.addPos(box.center, box.size, box.angleY)
+    fun add(ref: Any, box: BoxMesh) {
+        lineModel.add(ref, box)
+        gizmoModel.addPos(ref, box.center, box.size, box.angleY)
+    }
+
+    fun remove(ref: Any) {
+        lineModel.remove(ref)
+        gizmoModel.remove(ref)
     }
 
     fun clear() {

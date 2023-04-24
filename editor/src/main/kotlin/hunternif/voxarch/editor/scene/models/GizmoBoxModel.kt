@@ -21,7 +21,7 @@ class GizmoBoxModel : IModel {
             Vector3f(-0.5f, -0.5f, -0.5f),
             lineWidth = 2f
         ).apply {
-            addPos(Vector3f(0f, 0f, 0f), Vector3f(1f, 1f, 1f))
+            addPos(this, Vector3f(0f, 0f, 0f), Vector3f(1f, 1f, 1f))
             init()
         }
         outlineModel = AABBoxFrameModel(

@@ -28,8 +28,8 @@ class NodeModel(val camera: OrbitalCamera) : IModel {
     }
 
     fun add(node: SceneNode) {
-        fillModel.add(BoxMesh(node.box.center, node.box.size, node.box.angleY, node.color.copy(a = 0.1f)))
-        lineModel.add(node.box)
+        fillModel.add(node, BoxMesh(node.box.center, node.box.size, node.box.angleY, node.color.copy(a = 0.1f)))
+        lineModel.add(node, node.box)
         if (DEBUG_NODES) {
             pointsDebugModel.add(camera.projectToViewport(node.box.floorCenter))
         }
@@ -39,6 +39,11 @@ class NodeModel(val camera: OrbitalCamera) : IModel {
         fillModel.clear()
         lineModel.clear()
         pointsDebugModel.clear()
+    }
+
+    fun remove(node: SceneNode) {
+        fillModel.remove(node)
+        lineModel.remove(node)
     }
 
     fun update() {

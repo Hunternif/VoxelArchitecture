@@ -13,7 +13,7 @@ import org.lwjgl.system.MemoryStack
 /** Renders instances of colored oriented boxes (not axis-aligned). */
 open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
     private var instanceVboID = 0
-    val instances = mutableListOf<T>()
+    val instances = linkedMapOf<Any, T>()
 
     private val instanceVertexBuffer = FloatBufferWrapper()
 
@@ -48,8 +48,12 @@ open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
         uploadInstanceData()
     }
 
-    fun add(instance: T) {
-        instances.add(instance)
+    fun add(ref: Any, instance: T) {
+        instances[ref] = instance
+    }
+
+    fun remove(ref: Any) {
+        instances.remove(ref)
     }
 
     fun clear() {
@@ -59,7 +63,7 @@ open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
     fun uploadInstanceData() {
         // 20 = 4f color + 16f matrix
         instanceVertexBuffer.prepare(instances.size * 20).run {
-            instances.forEach {
+            instances.values.forEach {
                 it.run {
                     put(color.toVector4f())
                     put(

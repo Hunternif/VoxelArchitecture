@@ -15,7 +15,7 @@ import org.lwjgl.opengl.GL33.*
  */
 class PointSpriteModel(texturePath: String) : BaseModel() {
 
-    private val points = mutableListOf<Vector3f>()
+    private val points = linkedMapOf<Any, Vector3f>()
 
     private val vertexBuffer = FloatBufferWrapper()
 
@@ -29,8 +29,12 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
         uploadVertexData()
     }
 
-    fun addPoint(pos: Vector3f) {
-        points.add(pos)
+    fun addPoint(ref: Any, pos: Vector3f) {
+        points[ref] = pos
+    }
+
+    fun removePoint(ref: Any) {
+        points.remove(ref)
     }
 
     fun clear() {
@@ -44,7 +48,7 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
     private fun uploadVertexData() {
         val bufferSize = points.size * 3
         vertexBuffer.prepare(bufferSize).run {
-            points.forEach { put(it) }
+            points.values.forEach { put(it) }
             flip()
         }
         glBindVertexArray(vaoID)

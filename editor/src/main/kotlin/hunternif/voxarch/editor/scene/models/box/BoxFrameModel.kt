@@ -24,16 +24,20 @@ class BoxFrameModel(
     override val shader = SolidColorInstancedShader(true)
 
     private var instanceVboID = 0
-    private val instances = mutableListOf<BoxMesh>()
+    private val instances = linkedMapOf<Any, BoxMesh>()
 
     private val instanceVertexBuffer = FloatBufferWrapper()
 
-    fun add(box: BoxMesh) {
+    fun add(ref: Any, box: BoxMesh) {
         if (singleColor != null) {
-            instances.add(BoxMesh(box.center, box.size, box.angleY, singleColor))
+            instances[ref] = BoxMesh(box.center, box.size, box.angleY, singleColor)
         } else {
-            instances.add(box)
+            instances[ref] = box
         }
+    }
+
+    fun remove(ref: Any) {
+        instances.remove(ref)
     }
 
     fun clear() {
@@ -76,7 +80,7 @@ class BoxFrameModel(
     private fun uploadInstanceData() {
         // 16f is used by model matrix
         instanceVertexBuffer.prepare(instances.size * (4 + 16)).run {
-            instances.forEach { it.run {
+            instances.values.forEach { it.run {
                 put(color.toVector4f())
                 put(
                     Matrix4f()
