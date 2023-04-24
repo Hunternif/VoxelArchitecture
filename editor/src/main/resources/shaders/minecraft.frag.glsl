@@ -19,6 +19,9 @@ uniform float uDarkenBottom;
 uniform float uDarkenX;
 uniform float uDarkenZ;
 
+// This is a cheat to prevent Z-fighting of lines on top of voxels.
+uniform float depthOffset;
+
 const vec3 upDir = vec3(0, 1, 0);
 const vec3 downDir = vec3(0, -1, 0);
 const vec3 xDir = vec3(1, 0, 0);
@@ -26,6 +29,7 @@ const vec3 zDir = vec3(0, 0, 1);
 
 float computeDepth(vec3 pos) {
     vec4 clip_space_pos = uViewProj * vec4(pos, 1.0);
+    clip_space_pos.z += depthOffset;
     return (clip_space_pos.z / clip_space_pos.w);
 }
 

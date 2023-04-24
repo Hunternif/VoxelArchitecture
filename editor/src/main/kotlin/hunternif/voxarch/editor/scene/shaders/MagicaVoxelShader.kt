@@ -27,8 +27,12 @@ class MagicaVoxelShader: VoxelShader() {
 
             uploadMat4f("uModel", Matrix4f())
 
+            uploadFloat("depthOffset", depthOffset)
+
             uploadTexture("uTexSampler", 0)
-            updateRenderMode(VoxelRenderMode.COLORED)
+
+            renderMode = VoxelRenderMode.COLORED
+            uploadInt("uRenderMode", renderMode.id)
 
             texture = minecraftTexAtlas.sheet
         }

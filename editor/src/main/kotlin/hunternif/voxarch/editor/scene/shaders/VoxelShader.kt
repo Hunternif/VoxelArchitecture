@@ -7,15 +7,27 @@ import org.lwjgl.opengl.GL33.*
 
 abstract class VoxelShader : Shader() {
     var renderMode: VoxelRenderMode = VoxelRenderMode.COLORED
-        private set
+        set(value) {
+            field = value
+            if (isInitialized) {
+                use {
+                    uploadInt("uRenderMode", value.id)
+                }
+            }
+        }
 
     var texture: Texture? = null
 
-    /** Must be called when shader is in use. */
-    fun updateRenderMode(newMode: VoxelRenderMode) {
-        renderMode = newMode
-        uploadInt("uRenderMode", newMode.id)
-    }
+    /** This is a cheat to prevent Z-fighting of lines on top of voxels. */
+    var depthOffset: Float = 0f
+        set(value) {
+            field = value
+            if (isInitialized) {
+                use {
+                    uploadFloat("depthOffset", value)
+                }
+            }
+        }
 
     override fun startFrame() {
         if (renderMode == VoxelRenderMode.TEXTURED) {

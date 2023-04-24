@@ -101,7 +101,7 @@ class VoxelMeshModel(
     override fun render() {
         if (!visible) return
         // Other voxel models could be reusing this shader and change render mode:
-        shader.updateRenderMode(voxels.renderMode)
+        shader.renderMode = voxels.renderMode
         shader.uploadMat4f("uModel", modelMat)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)

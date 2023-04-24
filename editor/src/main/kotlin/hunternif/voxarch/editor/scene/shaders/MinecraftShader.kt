@@ -17,7 +17,10 @@ class MinecraftShader: VoxelShader() {
 
             uploadMat4f("uModel", Matrix4f())
 
-            updateRenderMode(VoxelRenderMode.TEXTURED)
+            uploadFloat("depthOffset", depthOffset)
+
+            renderMode = VoxelRenderMode.TEXTURED
+            uploadInt("uRenderMode", renderMode.id)
 
             uploadTexture("uTexSampler", 0)
             texture = minecraftTexAtlas.sheet
