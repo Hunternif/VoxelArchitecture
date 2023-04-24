@@ -276,7 +276,7 @@ fun EditorApp.reloadStyleEditor() = action(UIEvent.RELOAD_STYLE_EDITOR) {
 fun EditorApp.undo() {
     val app = this as? EditorAppImpl ?: return
     val historyAction = app.state.history.moveBack() ?: return
-    action(historyAction) {
+    action(UndoEvent(historyAction)) {
         historyAction.revert(this)
     }
 }

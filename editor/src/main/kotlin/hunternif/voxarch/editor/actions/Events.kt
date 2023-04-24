@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.actions
 
+import hunternif.voxarch.editor.actions.history.HistoryAction
+
 /**
  * To be dispatched on the event bus
  */
@@ -48,3 +50,6 @@ interface UIEvent : Event {
         val TOGGLE_LOGS = object : UIEvent {}
     }
 }
+
+/** Indicates that [action] was reverted */
+class UndoEvent(action: HistoryAction) : Event
