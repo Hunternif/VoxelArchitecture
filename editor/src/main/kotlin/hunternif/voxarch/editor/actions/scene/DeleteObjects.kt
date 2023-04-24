@@ -9,7 +9,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.*
 
 class DeleteObjects(
-    objs: Collection<SceneObject>
+    val objs: Collection<SceneObject>
 ) : HistoryAction(
     makeDescription(objs),
     FontAwesomeIcons.TrashAlt
@@ -33,8 +33,7 @@ class DeleteObjects(
             // Parent node must not point to a deleted node:
             if (detached.obj === parentNode) parentNode = rootNode
         }
-        if (hasNodes) app.redrawNodes()
-        if (hasVoxels) app.redrawVoxels()
+        // scene model will be updated via events
     }
 
     override fun revert(app: EditorAppImpl) = app.state.run {

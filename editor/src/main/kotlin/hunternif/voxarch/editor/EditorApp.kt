@@ -73,6 +73,7 @@ class EditorAppImpl : EditorApp {
         registerWindowEventHandler()
         inputController.init(window)
         scene.init(window, vp, inputController)
+        eventBus.register(scene)
         // ImGui must be initialized after other GLFW callbacks are registered
         gui.init(window, vp, inputController, 4)
         glfwShowWindow(window)

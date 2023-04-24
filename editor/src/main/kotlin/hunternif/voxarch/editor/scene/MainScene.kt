@@ -148,6 +148,20 @@ class MainScene(private val app: EditorApp) {
         voxelModel.setShadingMode(app.state.settings.shadingMode)
     }
 
+    @Subscribe
+    fun onDeleteObjects(event: DeleteObjects) {
+        event.objs.forEach {
+            when (it) {
+                is SceneVoxelGroup -> voxelModel.remove(it)
+                is SceneNode -> nodeModel.remove(it)
+            }
+            selectedNodeModel.remove(it)
+            originsModel.removePoint(it)
+        }
+        selectedNodeModel.update()
+        originsModel.update()
+    }
+
     /** Returns all children of [root] that are not hidden directly or
      * indirectly (i.e. by a hidden parent), excluding the root itself. */
     private fun findVisibleChildren(root: SceneObject) : List<SceneObject> {
