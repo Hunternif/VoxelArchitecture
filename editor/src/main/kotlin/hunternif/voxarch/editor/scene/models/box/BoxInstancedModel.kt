@@ -1,7 +1,6 @@
 package hunternif.voxarch.editor.scene.models.box
 
 import hunternif.voxarch.editor.render.BaseModel
-import hunternif.voxarch.editor.render.Shader
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
@@ -17,7 +16,7 @@ open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
 
     private val instanceVertexBuffer = FloatBufferWrapper()
 
-    override val shader: Shader = MagicaVoxelShader()
+    override val shader = MagicaVoxelShader()
 
     override fun init() = MemoryStack.stackPush().use { stack ->
         super.init()
