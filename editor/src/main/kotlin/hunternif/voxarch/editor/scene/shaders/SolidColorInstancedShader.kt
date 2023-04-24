@@ -12,17 +12,17 @@ class SolidColorInstancedShader: Shader() {
         ) {
             uploadMat4f("uModel", Matrix4f())
 
-            uploadBool("useDepthOffset", useDepthOffset)
+            uploadFloat("depthOffset", depthOffset)
         }
     }
 
     /** This is a cheat to prevent Z-fighting of lines on top of voxels. */
-    var useDepthOffset: Boolean = false
+    var depthOffset: Float = 0f
         set(value) {
             field = value
             if (isInitialized) {
                 use {
-                    uploadBool("useDepthOffset", value)
+                    uploadFloat("depthOffset", value)
                 }
             }
         }

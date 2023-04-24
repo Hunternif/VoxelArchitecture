@@ -15,7 +15,7 @@ class NodeModel(val camera: OrbitalCamera) : IModel {
     val lineModel = BoxFrameModel().apply {
         readDepth = true // read from depth buffer
         writeDepth = false // don't write to depth buffer
-        shader.useDepthOffset = true
+        shader.depthOffset = -0.001f
     }
     val pointsDebugModel = Points2DModel()
 
