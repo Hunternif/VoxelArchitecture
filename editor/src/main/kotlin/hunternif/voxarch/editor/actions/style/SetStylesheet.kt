@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.actions.style
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.history.HistoryAction
+import hunternif.voxarch.editor.actions.history.StackingAction
 import hunternif.voxarch.editor.actions.reloadStyleEditor
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
@@ -18,7 +19,10 @@ class SetStylesheet(
     private val oldText: String,
     private var newStyle: Stylesheet,
     private var newText: String,
-) : HistoryAction("Update stylesheet", FontAwesomeIcons.FileCode) {
+) : HistoryAction(
+    "Update stylesheet",
+    FontAwesomeIcons.FileCode
+), StackingAction<SetStylesheet> {
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         app.state.stylesheet = newStyle
@@ -33,7 +37,7 @@ class SetStylesheet(
     }
 
     /** Combine this old action with the next consecutive action. */
-    fun update(nextAction: SetStylesheet) {
+    override fun update(nextAction: SetStylesheet) {
         this.newStyle = nextAction.newStyle
         this.newText = nextAction.newText
     }

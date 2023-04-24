@@ -9,6 +9,7 @@ import hunternif.voxarch.editor.actions.file.ImportVoxFile
 import hunternif.voxarch.editor.actions.file.NewProject
 import hunternif.voxarch.editor.actions.file.OpenProject
 import hunternif.voxarch.editor.actions.history.HistoryAction
+import hunternif.voxarch.editor.actions.history.StackingAction
 import hunternif.voxarch.editor.actions.scene.*
 import hunternif.voxarch.editor.actions.select.SelectMask
 import hunternif.voxarch.editor.actions.select.SelectMask.ALL
@@ -257,19 +258,11 @@ fun EditorApp.setStylesheet(stylesheet: Stylesheet) =
  * If last action was also to update style text, then the 2 actions are
  * combined into 1.
  */
-fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) {
-    val action = SetStylesheet(
+fun EditorApp.updateStylesheetAndText(stylesheet: Stylesheet, text: String) =
+    historyAction(SetStylesheet(
         state.stylesheet, state.stylesheetText,
         stylesheet, text,
-    )
-    val last = state.history.last()
-    if (last != null && last is SetStylesheet) {
-        action.invoke(this as EditorAppImpl, true)
-        last.update(action)
-    } else {
-        historyAction(action)
-    }
-}
+    ))
 
 /** Replaces text in Style Editor with the current stylesheet text */
 fun EditorApp.reloadStyleEditor() = action {
@@ -313,5 +306,10 @@ internal fun EditorApp.action(
 /** Runs an action and also writes it to history. */
 internal fun EditorApp.historyAction(action: HistoryAction) = action {
     action.invoke(this, true)
-    state.history.append(action)
+    val last = state.history.last()
+    if (last != null && last is StackingAction<*> && last.stacksWith(action)) {
+        last.maybeUpdate(action)
+    } else {
+        state.history.append(action)
+    }
 }

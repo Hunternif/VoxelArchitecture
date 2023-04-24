@@ -15,7 +15,10 @@ class History<T> : ReadOnlyHistory<T> {
     override val futureItems = LinkedList<T>()
 
     /** Returns the last past item */
-    override fun last(): T? = pastItems.last
+    override fun last(): T? {
+        if (!hasPastItems()) return null
+        return pastItems.last
+    }
 
     /**
      * Returns the last item and move current position back to it.
