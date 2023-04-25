@@ -127,21 +127,10 @@ abstract class GuiSceneTree(
         // Selectable would make more sense, but its size & position is bugged.
         // Button maintains the size & pos well, regardless of font.
 
-        val updatedHidden = node in app.state.hiddenObjects
-        if (updatedHidden)
-            gui.smallIconButton(
-                memoStrWithIndex(FontAwesomeIcons.EyeSlash, i),
-                transparent = true
-            ) {
-                app.showObject(node)
-            }
-        else
-            gui.smallIconButton(
-                memoStrWithIndex(FontAwesomeIcons.Eye, i),
-                transparent = true
-            ) {
-                app.hideObject(node)
-            }
+        gui.smallIconButton(item.visibleIconForImgui, transparent = true) {
+            if (item.isHidden) app.showObject(node)
+            else app.hideObject(node)
+        }
 
         ImGui.tableNextColumn()
         var flags = 0 or
@@ -168,23 +157,22 @@ abstract class GuiSceneTree(
             flags = flags or ImGuiTreeNodeFlags.Selected
             applyChileNodeColors(isSelected)
         }
-        val text = memoStrWithIndex(itemLabel(node), node.id)
         ImGui.alignTextToFramePadding()
-        if (updatedHidden) {
+        if (item.isHidden) {
             if (isGenerated) pushStyleColor(Text, Colors.generatedHiddenLabel)
             else pushStyleColor(Text, Colors.hiddenItemLabel)
         }
 
         // Create fake indents to make the tree work in the 2nd column.
         for (x in 1..item.depth) ImGui.indent()
-        val open = ImGui.treeNodeEx(text, flags)
+        val open = ImGui.treeNodeEx(item.labelForImgui, flags)
         if (item.isOpen != open) {
             item.isOpen = open
             isListDirty = true
         }
         for (x in 1..item.depth) ImGui.unindent()
 
-        if (updatedHidden) ImGui.popStyleColor()
+        if (item.isHidden) ImGui.popStyleColor()
         if (isParentNode || isChildNode) ImGui.popStyleColor(3)
         if (isGenerated) ImGui.popStyleColor()
 
@@ -239,7 +227,9 @@ abstract class GuiSceneTree(
         val queue = LinkedList<TreeEntry>()
         queue.add(
             TreeEntry(
-                root, 0, root !in closedObjs,
+                root, itemLabel(root),
+                0, root !in closedObjs,
+                root in app.state.hiddenObjects,
                 root === parentNode && !isParentRootNode, false,
             )
         )
@@ -249,7 +239,9 @@ abstract class GuiSceneTree(
             if (next.isOpen) {
                 queue.addAll(0, next.obj.children.map {
                     TreeEntry(
-                        it, next.depth + 1, it !in closedObjs,
+                        it, itemLabel(it),
+                        next.depth + 1, it !in closedObjs,
+                        it in app.state.hiddenObjects,
                         it === parentNode,
                         next.isChild || next.isParent,
                     )
@@ -263,10 +255,19 @@ abstract class GuiSceneTree(
 /** Data about a single entry in the UI list */
 private data class TreeEntry(
     val obj: SceneObject,
+    val label: String,
     val depth: Int,
     var isOpen: Boolean,
+    val isHidden: Boolean,
     /** Is this the current parent node? */
     val isParent: Boolean,
     /** Is this the child of the current parent node? */
     val isChild: Boolean,
-)
+) {
+    val id = obj.id
+    val labelForImgui = memoStrWithIndex(label, id)
+    val visibleIconForImgui = when {
+        isHidden -> memoStrWithIndex(FontAwesomeIcons.EyeSlash, id)
+        else -> memoStrWithIndex(FontAwesomeIcons.Eye, id)
+    }
+}
