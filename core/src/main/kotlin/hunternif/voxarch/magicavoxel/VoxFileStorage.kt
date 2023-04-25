@@ -185,7 +185,7 @@ class VoxFileStorage(
     companion object {
         /** VOX file supports models up to 256 x 256 x 256 in size.
          * Bigger voxel groups will be broken down into chunks of this size. */
-        private const val VOX_CHUNK_SIZE = 256
+        private const val VOX_CHUNK_SIZE = 16
         /** This is dictated by the VOX format */
         private const val MAX_VOX_CHUNK_SIZE = 256
         private fun GridPoint3.toIntVec3() = IntVec3(y, z, x)
