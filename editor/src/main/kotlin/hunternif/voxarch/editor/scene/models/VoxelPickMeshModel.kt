@@ -43,12 +43,11 @@ class VoxelPickMeshModel(
     }
 
     fun uploadMesh(mesh: Mesh) {
-        val vertices = mesh.iterateTriangleVertices().toList()
         // 3 = 3f pos
-        vertBufferSize = vertices.size * 3
+        vertBufferSize = mesh.vertexCount * 3
         val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
         vertexBuffer.run {
-            for (v in vertices) {
+            mesh.forEachVertex { v ->
                 put(v.pos)
             }
             flip()

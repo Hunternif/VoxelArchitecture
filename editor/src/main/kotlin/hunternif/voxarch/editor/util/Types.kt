@@ -133,8 +133,10 @@ data class Triangle2D(
 /** Generic 3D triangle mesh. */
 class Mesh {
     val triangles = mutableListOf<Triangle>()
-    fun iterateTriangleVertices() = sequence {
-        triangles.forEach { t -> t.vertices.forEach { yield(it) } }
+    val vertexCount: Int get() = triangles.size * 3
+
+    inline fun forEachVertex(crossinline block: (Vertex) -> Unit) {
+        triangles.forEach { t -> t.vertices.forEach { block(it) } }
     }
 }
 

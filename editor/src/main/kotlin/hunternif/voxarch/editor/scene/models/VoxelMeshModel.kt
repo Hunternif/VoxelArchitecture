@@ -79,12 +79,11 @@ class VoxelMeshModel(
     }
 
     private fun uploadMesh(mesh: Mesh) {
-        val vertices = mesh.iterateTriangleVertices().toList()
         // 10 = 3f pos + 3f normal + 4f color or UV
-        vertBufferSize = vertices.size * 10
+        vertBufferSize = mesh.vertexCount * 10
         val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
         vertexBuffer.run {
-            for (v in vertices) {
+            mesh.forEachVertex { v ->
                 put(v.pos)
                 put(v.normal)
                 when (voxels.renderMode) {
