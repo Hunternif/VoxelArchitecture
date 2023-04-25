@@ -2,11 +2,11 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.PointSpriteShader
-import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import hunternif.voxarch.editor.util.resourcePath
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
+import org.lwjgl.system.MemoryUtil
 
 /**
  * Renders points as textures, matching texture pixels to screen pixels,
@@ -16,8 +16,6 @@ import org.lwjgl.opengl.GL33.*
 class PointSpriteModel(texturePath: String) : BaseModel() {
 
     private val points = mutableListOf<Vector3f>()
-
-    private val vertexBuffer = FloatBufferWrapper()
 
     override val shader = PointSpriteShader(resourcePath(texturePath))
 
@@ -43,13 +41,15 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
 
     private fun uploadVertexData() {
         val bufferSize = points.size * 3
-        vertexBuffer.prepare(bufferSize).run {
+        val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
+        vertexBuffer.run {
             points.forEach { put(it) }
             flip()
         }
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
+        MemoryUtil.memFree(vertexBuffer)
     }
 
     override fun render() {

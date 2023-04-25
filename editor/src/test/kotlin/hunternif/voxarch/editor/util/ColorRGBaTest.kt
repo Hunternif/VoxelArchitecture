@@ -67,6 +67,7 @@ class ColorRGBaTest {
         val colorFromBytes = ColorRGBa.fromRGBBytes(buffer)
         val expected = ColorRGBa.fromHex(0x00cc99)
         assertEquals(expected, colorFromBytes)
+        MemoryUtil.memFree(buffer)
     }
 
     @Test

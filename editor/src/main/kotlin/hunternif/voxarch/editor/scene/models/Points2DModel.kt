@@ -4,9 +4,9 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.editor.util.FloatBufferWrapper
 import org.joml.Vector2f
 import org.lwjgl.opengl.GL33.*
+import org.lwjgl.system.MemoryUtil
 import kotlin.math.round
 
 class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
@@ -16,8 +16,6 @@ class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
 
     private var isDirty = false
     private val points = mutableListOf<Vector2f>()
-
-    private val vertexBuffer = FloatBufferWrapper()
 
     override fun init() {
         super.init()
@@ -40,7 +38,8 @@ class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
 
     fun update() {
         bufferSize = points.size * 3
-        vertexBuffer.prepare(bufferSize).run {
+        val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
+        vertexBuffer.run {
             for (p in points) {
                 // round() + 0.5 to make it snap exactly to pixel position
                 put(round(p.x) + 0.5f).put(round(p.y) + 0.5f).put(0f)
@@ -51,8 +50,9 @@ class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
         // Upload the vertex buffer
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
         isDirty = false
+        MemoryUtil.memFree(vertexBuffer)
     }
 
     override fun render() {

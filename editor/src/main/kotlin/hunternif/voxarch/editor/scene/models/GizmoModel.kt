@@ -3,13 +3,13 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
-import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
+import org.lwjgl.system.MemoryUtil
 
 /** Renders an RGB 3d gizmo at the given coordinates. */
 class GizmoModel(
@@ -25,7 +25,6 @@ class GizmoModel(
     )
 
     private var vertBufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
-    private val instanceVertexBuffer = FloatBufferWrapper()
 
     private val colX = Colors.axisX
     private val colY = Colors.axisY
@@ -83,7 +82,8 @@ class GizmoModel(
 
     private fun uploadInstanceData() {
         // 16f is used by model matrix
-        instanceVertexBuffer.prepare(instances.size * 16).run {
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 16)
+        instanceVertexBuffer.run {
             instances.forEach { it.run {
                 put(
                     Matrix4f()
@@ -95,8 +95,9 @@ class GizmoModel(
             flip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
+        MemoryUtil.memFree(instanceVertexBuffer)
     }
 
     override fun render() {

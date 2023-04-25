@@ -8,6 +8,8 @@ import hunternif.voxarch.editor.util.*
 import hunternif.voxarch.storage.IVoxel
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
+import org.lwjgl.system.MemoryStack
+import org.lwjgl.system.MemoryUtil
 
 /**
  * Renders colored or textured voxels,
@@ -16,13 +18,10 @@ import org.lwjgl.opengl.GL33.*
 class VoxelMeshModel(
     private val voxels: SceneVoxelGroup,
     private val colorMap: (IVoxel) -> ColorRGBa,
-    public override var shader: VoxelShader
+    override var shader: VoxelShader
 ) : BaseModel() {
     private var instanceVboID = 0
     private var vertBufferSize = 0
-
-    private val vertexBuffer = FloatBufferWrapper()
-    private val instanceVertexBuffer = FloatBufferWrapper()
 
     /** For quickly moving the whole model without changing its geometry. */
     private val modelMat = Matrix4f()
@@ -68,21 +67,23 @@ class VoxelMeshModel(
     }
 
     // A left-over from the instanced shader, uploads the Model matrix
-    private fun uploadInstanceData() {
-        instanceVertexBuffer.prepare(16).run {
+    private fun uploadInstanceData() = MemoryStack.stackPush().use { stack ->
+        val instanceVertexBuffer = stack.mallocFloat(16)
+        instanceVertexBuffer.run {
             put(Matrix4f())
             flip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
-        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
     private fun uploadMesh(mesh: Mesh) {
         val vertices = mesh.iterateTriangleVertices().toList()
         // 10 = 3f pos + 3f normal + 4f color or UV
-        vertBufferSize = vertices.size * 8
-        vertexBuffer.prepare(vertBufferSize).run {
+        vertBufferSize = vertices.size * 10
+        val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
+        vertexBuffer.run {
             for (v in vertices) {
                 put(v.pos)
                 put(v.normal)
@@ -95,7 +96,8 @@ class VoxelMeshModel(
         }
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
+        MemoryUtil.memFree(vertexBuffer)
     }
 
     override fun render() {

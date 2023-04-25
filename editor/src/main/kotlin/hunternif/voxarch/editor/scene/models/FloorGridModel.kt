@@ -2,8 +2,8 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
-import hunternif.voxarch.editor.util.FloatBufferWrapper
 import org.lwjgl.opengl.GL33.*
+import org.lwjgl.system.MemoryStack
 import java.lang.Integer.min
 import kotlin.math.max
 
@@ -14,7 +14,6 @@ class FloorGridModel : BaseModel() {
     private var toZ = 0
 
     private var bufferSize = 0
-    private val vertexBuffer = FloatBufferWrapper()
 
     override val shader = SolidColorShader(0x333333)
 
@@ -37,13 +36,14 @@ class FloorGridModel : BaseModel() {
         uploadVertexData()
     }
 
-    private fun uploadVertexData() {
+    private fun uploadVertexData() = MemoryStack.stackPush().use { stack ->
         val width = toX - fromX
         val length = toZ - fromZ
         val vertexCount = (width + 1)*2 + (length + 1)*2
         bufferSize = vertexCount * 3
 
-        vertexBuffer.prepare(bufferSize).run {
+        val vertexBuffer = stack.mallocFloat(bufferSize)
+        vertexBuffer.run {
             // Store line positions in the vertex buffer
             for (x in fromX..toX) {
                 put(-0.5f + x).put(-0.5f).put(-0.5f + fromZ)
@@ -59,7 +59,7 @@ class FloorGridModel : BaseModel() {
         // Upload the vertex buffer
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
     }
 
     override fun render() {

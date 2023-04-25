@@ -3,13 +3,12 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
-import hunternif.voxarch.editor.util.FloatBufferWrapper
 import hunternif.voxarch.editor.util.put
 import org.lwjgl.opengl.GL33.*
+import org.lwjgl.system.MemoryStack
 
 class NewNodeFrameModel : BaseModel() {
     private var bufferSize = 0
-    private val vertexBuffer = FloatBufferWrapper()
 
     override val shader = SolidColorShader(0xcccccc)
 
@@ -21,11 +20,12 @@ class NewNodeFrameModel : BaseModel() {
         }
     }
 
-    fun updateEdges(frame: NewNodeFrame) {
+    fun updateEdges(frame: NewNodeFrame) = MemoryStack.stackPush().use { stack ->
         val edges = frame.getEdges()
         bufferSize = edges.size * 2 * 3
 
-        vertexBuffer.prepare(bufferSize).run {
+        val vertexBuffer = stack.mallocFloat(bufferSize)
+        vertexBuffer.run {
             // Store line positions in the vertex buffer
             for (e in edges) {
                 put(e.start).put(e.end)
@@ -36,7 +36,7 @@ class NewNodeFrameModel : BaseModel() {
         // Upload the vertex buffer
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer.buffer, GL_STATIC_DRAW)
+        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
     }
 
     override fun render() {
