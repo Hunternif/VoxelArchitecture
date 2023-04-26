@@ -37,6 +37,7 @@ class VoxelPickMeshModel(
         initVertexAttributes {
             vector3f(0) // position attribute
         }
+        shader.updateColor(pickingColor)
     }
 
     /** Set reference to the original mesh model */
@@ -46,7 +47,6 @@ class VoxelPickMeshModel(
 
     override fun render() {
         if (!visible) return
-        shader.updateColor(pickingColor)
         shader.uploadMat4f("uModel", modelMat)
         glEnable(GL_CULL_FACE)
         glCullFace(GL_BACK)

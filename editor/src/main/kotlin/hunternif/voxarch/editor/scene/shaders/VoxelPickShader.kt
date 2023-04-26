@@ -29,6 +29,8 @@ class VoxelPickShader(
     /** Must be called when shader is in use. */
     fun updateColor(newColor: ColorRGBa) {
         color = newColor
-        uploadVec4f("uPickingColor", Vector4f(color.r, color.g, color.b, color.a))
+        use {
+            uploadVec4f("uPickingColor", Vector4f(color.r, color.g, color.b, color.a))
+        }
     }
 }
