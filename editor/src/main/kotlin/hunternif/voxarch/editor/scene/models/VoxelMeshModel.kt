@@ -36,7 +36,7 @@ class VoxelMeshModel(
             VoxelRenderMode.TEXTURED -> texturedMeshFromVoxelsOpt(voxels.data)
         }
         uploadMeshData(vertexBuffer)
-//        pickModel.uploadMeshData(vertexBuffer)
+        pickModel.vertBufferSize = vertBufferSize
         MemoryUtil.memFree(vertexBuffer)
     }
 
@@ -64,6 +64,7 @@ class VoxelMeshModel(
         }
         uploadInstanceData()
         pickModel.init()
+        pickModel.setMeshVao(vaoID)
     }
 
     // A left-over from the instanced shader, uploads the Model matrix

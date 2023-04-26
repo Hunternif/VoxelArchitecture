@@ -2,11 +2,10 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.VoxelPickShader
-import hunternif.voxarch.editor.util.*
+import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.WithID
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
-import org.lwjgl.system.MemoryUtil
-import java.nio.FloatBuffer
 
 /**
  * Special model for picking voxel models.
@@ -15,7 +14,7 @@ import java.nio.FloatBuffer
 class VoxelPickMeshModel(
     override val id: Int,
 ) : BaseModel(), WithID {
-    private var vertBufferSize = 0
+    internal var vertBufferSize = 0
 
     /** For quickly moving the whole model without changing its geometry. */
     private val modelMat = Matrix4f()
@@ -40,23 +39,9 @@ class VoxelPickMeshModel(
         }
     }
 
-    fun uploadMeshData(vertexBuffer: FloatBuffer) {
-        vertexBuffer.flip()
-        vertBufferSize = vertexBuffer.remaining()
-        //TODO: the buffer contains extra data from VoxelMeshModel
-        // 3 = 3f pos
-//        vertBufferSize = vertices.size * 3
-//        val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
-//        vertexBuffer.run {
-//            vertices.forEach { v ->
-//                put(v.pos)
-//            }
-//            flip()
-//        }
-        glBindVertexArray(vaoID)
-        glBindBuffer(GL_ARRAY_BUFFER, vboID)
-        glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
-        MemoryUtil.memFree(vertexBuffer)
+    /** Set reference to the original mesh model */
+    fun setMeshVao(vaoID: Int) {
+        this.vaoID = vaoID
     }
 
     override fun render() {
