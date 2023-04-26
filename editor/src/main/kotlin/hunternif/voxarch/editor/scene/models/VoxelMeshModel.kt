@@ -10,6 +10,7 @@ import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import java.nio.FloatBuffer
 
 /**
  * Renders colored or textured voxels,
@@ -27,17 +28,16 @@ class VoxelMeshModel(
     private val modelMat = Matrix4f()
     var visible = true
 
-    var mesh: Mesh = Mesh()
-
     val pickModel = VoxelPickMeshModel(voxels.id)
 
     fun updateVoxels() {
-        mesh = when (voxels.renderMode) {
-            VoxelRenderMode.COLORED -> coloredMeshFromVoxels(voxels.data, colorMap)
-            VoxelRenderMode.TEXTURED -> texturedMeshFromVoxels(voxels.data)
+        val vertexBuffer = when (voxels.renderMode) {
+            VoxelRenderMode.COLORED -> coloredMeshFromVoxelsOpt(voxels.data, colorMap)
+            VoxelRenderMode.TEXTURED -> texturedMeshFromVoxelsOpt(voxels.data)
         }
-        uploadMesh(mesh)
-        pickModel.uploadMesh(mesh)
+        uploadMeshData(vertexBuffer)
+//        pickModel.uploadMeshData(vertexBuffer)
+        MemoryUtil.memFree(vertexBuffer)
     }
 
     fun updatePosition() {
@@ -78,25 +78,12 @@ class VoxelMeshModel(
         glBindBuffer(GL_ARRAY_BUFFER, 0)
     }
 
-    private fun uploadMesh(mesh: Mesh) {
-        // 10 = 3f pos + 3f normal + 4f color or UV
-        vertBufferSize = mesh.vertexCount * 10
-        val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
-        vertexBuffer.run {
-            mesh.forEachVertex { v ->
-                put(v.pos)
-                put(v.normal)
-                when (voxels.renderMode) {
-                    VoxelRenderMode.COLORED -> put(v.color.toVector4f())
-                    VoxelRenderMode.TEXTURED -> put(v.uv).put(0f).put(0f)
-                }
-            }
-            flip()
-        }
+    private fun uploadMeshData(vertexBuffer: FloatBuffer) {
+        vertexBuffer.flip()
+        vertBufferSize = vertexBuffer.remaining()
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
-        MemoryUtil.memFree(vertexBuffer)
     }
 
     override fun render() {

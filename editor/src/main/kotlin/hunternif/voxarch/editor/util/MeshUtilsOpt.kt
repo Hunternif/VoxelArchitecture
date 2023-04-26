@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.util
 
 import hunternif.voxarch.editor.builder.TexturedBlock
+import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.Direction3D
@@ -10,60 +11,75 @@ import hunternif.voxarch.util.opposite
 import hunternif.voxarch.vector.IntVec3
 import org.joml.Vector2f
 import org.joml.Vector3f
+import org.lwjgl.system.MemoryUtil
+import java.nio.FloatBuffer
 import java.util.EnumMap
 
 /**
  * Merges voxels into a single mesh, storing colors in vertices.
- * @return a list of vertices per triangle
+ * @return all vertices for all triangle, written to buffer
  */
-fun coloredMeshFromVoxels(
+fun coloredMeshFromVoxelsOpt(
     voxels: IStorage3D<out IVoxel?>,
     colorMap: (IVoxel) -> ColorRGBa,
-): List<Vertex> {
+): FloatBuffer {
     // 1. Find all visible faces.
     val faces = findVisibleFaces(voxels)
     val faceCount = faces.values.fold(0) { out, list -> out + list.size }
 
     // 2. Reconstruct the mesh by creating triangles for each visible face.
-    val allVertices = ArrayList<Vertex>(faceCount * 2 * 3)
+    // 10 = 3f pos + 3f normal + 4f color or UV
+    val buffer = MemoryUtil.memAllocFloat(faceCount * 2 * 3 * 10)
     faces.forEach { (dir, points) ->
         points.forEach { p ->
             val v = voxels[p]!!
             val color = colorMap(v)
-            val (v0, v1, v2, v3) = makeVerticesForVoxelFace(p, dir)
-            v0.color = color
-            v1.color = color
-            v2.color = color
-            v3.color = color
+            // make vertices for face
+            val facePoints = baseFaceVertices[dir]!!
+            facePoints.forEachIndexed { i, fp ->
+                tempVertArray[i].pos.set(fp).add(p)
+                tempVertArray[i].normal.set(dir.vec)
+                tempVertArray[i].color = color
+            }
             // add vertices for triangles:
-            allVertices.add(v0)
-            allVertices.add(v1)
-            allVertices.add(v2)
-            allVertices.add(v0)
-            allVertices.add(v2)
-            allVertices.add(v3)
+            val (v0, v1, v2, v3) = tempVertArray
+            buffer.putVertex(v0, VoxelRenderMode.COLORED)
+            buffer.putVertex(v1, VoxelRenderMode.COLORED)
+            buffer.putVertex(v2, VoxelRenderMode.COLORED)
+            buffer.putVertex(v0, VoxelRenderMode.COLORED)
+            buffer.putVertex(v2, VoxelRenderMode.COLORED)
+            buffer.putVertex(v3, VoxelRenderMode.COLORED)
         }
     }
 
-    return allVertices
+    return buffer
+}
+
+private fun FloatBuffer.putVertex(v: Vertex, renderMode: VoxelRenderMode) {
+    put(v.pos)
+    put(v.normal)
+    when (renderMode) {
+        VoxelRenderMode.COLORED -> put(v.color)
+        VoxelRenderMode.TEXTURED -> put(v.uv).put(0f).put(0f)
+    }
 }
 
 /**
  * Merges voxels into a single mesh, storing texture UVs in vertices.
- * @return a list of vertices per triangle
+ * @return all vertices for all triangle, written to buffer
  */
-fun texturedMeshFromVoxels(
+fun texturedMeshFromVoxelsOpt(
     voxels: IStorage3D<out IVoxel?>,
-): List<Vertex> {
+): FloatBuffer {
     // 1. Find all visible faces.
     val faces = findVisibleFaces(voxels)
     val faceCount = faces.values.fold(0) { out, list -> out + list.size }
 
     // 2. Reconstruct the mesh by creating triangles for each visible face.
-    val allVertices = ArrayList<Vertex>(faceCount * 2 * 3)
+    // 10 = 3f pos + 3f normal + 4f color or UV
+    val buffer = MemoryUtil.memAllocFloat(faceCount * 2 * 3 * 10)
     faces.forEach { (dir, points) ->
         points.forEach { p ->
-            val (v0, v1, v2, v3) = makeVerticesForVoxelFace(p, dir)
             val uvStart = Vector2f(0f, 0f)
             val uvEnd = Vector2f(1f, 1f)
             val v = voxels[p]!!
@@ -71,21 +87,28 @@ fun texturedMeshFromVoxels(
                 uvStart.set(v.atlasEntry.uvStart)
                 uvEnd.set(v.atlasEntry.uvEnd)
             }
+            // make vertices for face
+            val facePoints = baseFaceVertices[dir]!!
+            facePoints.forEachIndexed { i, fp ->
+                tempVertArray[i].pos.set(fp).add(p)
+                tempVertArray[i].normal.set(dir.vec)
+            }
+            val (v0, v1, v2, v3) = tempVertArray
             v0.uv.set(uvEnd.x, uvStart.y)
             v1.uv.set(uvStart.x, uvStart.y)
             v2.uv.set(uvStart.x, uvEnd.y)
             v3.uv.set(uvEnd.x, uvEnd.y)
             // add vertices for triangles:
-            allVertices.add(v0)
-            allVertices.add(v1)
-            allVertices.add(v2)
-            allVertices.add(v0)
-            allVertices.add(v2)
-            allVertices.add(v3)
+            buffer.putVertex(v0, VoxelRenderMode.TEXTURED)
+            buffer.putVertex(v1, VoxelRenderMode.TEXTURED)
+            buffer.putVertex(v2, VoxelRenderMode.TEXTURED)
+            buffer.putVertex(v0, VoxelRenderMode.TEXTURED)
+            buffer.putVertex(v2, VoxelRenderMode.TEXTURED)
+            buffer.putVertex(v3, VoxelRenderMode.TEXTURED)
         }
     }
 
-    return allVertices
+    return buffer
 }
 
 /** Returns a map from a direction to faces looking into that direction. */
@@ -141,28 +164,6 @@ private val baseFaceVertices by lazy {
     }
 }
 
+
 /** Temporary array of 4 vertices to be reused */
 private val tempVertArray = arrayOf(Vertex(), Vertex(), Vertex(), Vertex())
-
-/**
- * Creates 4 vertices for a face of a voxel, ordered CCW.
- * @param p position of the voxel.
- * @param dir direction of the face.
- */
-fun makeVerticesForVoxelFace(p: IntVec3, dir: Direction3D): Array<Vertex> {
-    val points = baseFaceVertices[dir]!!
-    points.forEachIndexed { i, v ->
-        tempVertArray[i] = Vertex(Vector3f(v).add(p))
-    }
-    tempVertArray.forEach { it.normal.set(dir.vec) }
-    return tempVertArray
-}
-
-/** Assuming vertices to be ordered CCW. */
-fun makeFaceTriangles(vertices: List<Vertex>): Array<Triangle> {
-    val (v0, v1, v2, v3) = vertices
-    return arrayOf(
-        Triangle(v0, v1, v2),
-        Triangle(v0, v2, v3),
-    )
-}

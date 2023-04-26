@@ -2,13 +2,11 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.VoxelPickShader
-import hunternif.voxarch.editor.util.ColorRGBa
-import hunternif.voxarch.editor.util.Mesh
-import hunternif.voxarch.editor.util.WithID
-import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.util.*
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
+import java.nio.FloatBuffer
 
 /**
  * Special model for picking voxel models.
@@ -42,16 +40,19 @@ class VoxelPickMeshModel(
         }
     }
 
-    fun uploadMesh(mesh: Mesh) {
+    fun uploadMeshData(vertexBuffer: FloatBuffer) {
+        vertexBuffer.flip()
+        vertBufferSize = vertexBuffer.remaining()
+        //TODO: the buffer contains extra data from VoxelMeshModel
         // 3 = 3f pos
-        vertBufferSize = mesh.vertexCount * 3
-        val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
-        vertexBuffer.run {
-            mesh.forEachVertex { v ->
-                put(v.pos)
-            }
-            flip()
-        }
+//        vertBufferSize = vertices.size * 3
+//        val vertexBuffer = MemoryUtil.memAllocFloat(vertBufferSize)
+//        vertexBuffer.run {
+//            vertices.forEach { v ->
+//                put(v.pos)
+//            }
+//            flip()
+//        }
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)

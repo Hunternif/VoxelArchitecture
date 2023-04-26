@@ -189,6 +189,10 @@ fun FloatBuffer.put(vec: Vector4f): FloatBuffer = this.run {
     put(vec.x).put(vec.y).put(vec.z).put(vec.w)
 }
 
+fun FloatBuffer.put(vec: ColorRGBa): FloatBuffer = this.run {
+    put(vec.r).put(vec.g).put(vec.b).put(vec.a)
+}
+
 fun FloatBuffer.put(m: Matrix4f): FloatBuffer = this.run {
     put(m.m00())
     put(m.m01())
