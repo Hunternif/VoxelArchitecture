@@ -168,7 +168,7 @@ abstract class GuiSceneTree(
         val open = ImGui.treeNodeEx(item.labelForImgui, flags)
         if (item.isOpen != open) {
             item.isOpen = open
-            isListDirty = true
+            markListDirty()
         }
         for (x in 1..item.depth) ImGui.unindent()
 
@@ -265,9 +265,9 @@ private data class TreeEntry(
     val isChild: Boolean,
 ) {
     val id = obj.id
-    val labelForImgui = memoStrWithIndex(label, id)
+    val labelForImgui ="$label##$id"
     val visibleIconForImgui = when {
-        isHidden -> memoStrWithIndex(FontAwesomeIcons.EyeSlash, id)
-        else -> memoStrWithIndex(FontAwesomeIcons.Eye, id)
+        isHidden -> "${FontAwesomeIcons.EyeSlash}##$id"
+        else -> "${FontAwesomeIcons.Eye}##$id"
     }
 }
