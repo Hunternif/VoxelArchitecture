@@ -137,8 +137,10 @@ abstract class GuiSceneTree(
         var flags = 0 or
             ImGuiTreeNodeFlags.OpenOnArrow or
             ImGuiTreeNodeFlags.SpanFullWidth or
-            ImGuiTreeNodeFlags.NoTreePushOnOpen or // we will be faking indents, no need to pop tree
-            ImGuiTreeNodeFlags.DefaultOpen
+            ImGuiTreeNodeFlags.NoTreePushOnOpen // we will be faking indents, no need to pop tree
+        if (item.isOpen) {
+            flags = flags or ImGuiTreeNodeFlags.DefaultOpen
+        }
         if (node.children.isEmpty()) {
             flags = flags or
                 ImGuiTreeNodeFlags.Leaf or
@@ -221,15 +223,17 @@ abstract class GuiSceneTree(
 //        println("rebuildList")
         parentNode = app.state.parentNode
         val isParentRootNode = root === app.state.rootNode // root node is never highlighted
-        // remember which entries were closed:
-        val closedObjs = list.filter { !it.isOpen }.map { it.obj }.toSet()
+        // remember which entries were opened:
+        val openObjs =
+            if (list.isEmpty()) setOf(root)
+            else list.filter { it.isOpen }.map { it.obj }.toSet()
         list.clear()
         // Recursively add items using Depth-First Search
         val queue = LinkedList<TreeEntry>()
         queue.add(
             TreeEntry(
                 root, itemLabel(root),
-                0, root !in closedObjs,
+                0, root in openObjs,
                 root in app.state.hiddenObjects,
                 root === parentNode && !isParentRootNode, false,
             )
@@ -241,7 +245,7 @@ abstract class GuiSceneTree(
                 queue.addAll(0, next.obj.children.map {
                     TreeEntry(
                         it, itemLabel(it),
-                        next.depth + 1, it !in closedObjs,
+                        next.depth + 1, it in openObjs,
                         it in app.state.hiddenObjects,
                         it === parentNode,
                         next.isChild || next.isParent,
@@ -266,7 +270,7 @@ private data class TreeEntry(
     val isChild: Boolean,
 ) {
     val id = obj.id
-    val labelForImgui ="$label##$id"
+    val labelForImgui = "$label##$id"
     val visibleIconForImgui = when {
         isHidden -> "${FontAwesomeIcons.EyeSlash}##$id"
         else -> "${FontAwesomeIcons.Eye}##$id"
