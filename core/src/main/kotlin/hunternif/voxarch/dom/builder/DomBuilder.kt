@@ -25,7 +25,7 @@ open class DomBuilder {
     val styleClass = linkedSetOf<String>()
 
     /** Extension slots where other DomBuilders attach. */
-    val slots = linkedSetOf<Pair<String, DomBuilder>>()
+    val slots = mutableMapOf<String, DomBuilder>()
 
     /** If hinting is enabled, children's global positions will be rounded to int,
      * according to this strategy. */
@@ -103,7 +103,7 @@ open class DomBuilder {
     }
 
     fun addSlot(name: String, domSlot: DomBuilder) {
-        slots.add(name to domSlot)
+        slots[name] = domSlot
     }
 }
 

@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.dom.builder.DomExtend
 import hunternif.voxarch.dom.style.property.width
 import hunternif.voxarch.dom.style.set
 import hunternif.voxarch.dom.style.vx
@@ -7,6 +8,7 @@ import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.PropBlueprint
+import hunternif.voxarch.editor.util.makeTestDir
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
@@ -87,4 +89,23 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
           </link>
         </blueprint>
     """.trimIndent()
+
+    @Test
+    fun `connect slots when loading blueprint`() {
+        val bp = app.newBlueprint()
+        val extendNode = app.newBlueprintNode(bp, "Extend")!!
+        val eastSlot = extendNode.outputs.first { it.name == "east" }
+        val nextNode = app.newBlueprintNode(bp, "Node")!!
+        app.linkBlueprintSlots(eastSlot, nextNode.inputs.first())
+
+        val path = makeTestDir("test_blueprint").resolve("test_slots.voxarch")
+        app.saveProjectFileAs(path)
+
+        app.openProjectFile(path)
+        val loadedBp = app.state.blueprints.first()
+        val (_, loadedExtendNode, loadedNextNode) = loadedBp.nodes.toList()
+        val loadedExtendDom = loadedExtendNode.domBuilder as DomExtend
+        // Verify that the link connected the DomBuilders:
+        assertEquals(listOf(loadedNextNode.domBuilder), loadedExtendDom.east.children.toList())
+    }
 }

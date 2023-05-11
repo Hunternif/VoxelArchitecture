@@ -119,7 +119,9 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             bp.slotIDs.save(slot)
         }
         n.outputSlots.forEach {
-            val slot = BlueprintSlot.Out(it.id, it.name, bpNode, domBuilder)
+            // Pick the DomBuilder from the slot name
+            val domSlot = domBuilder.slots[it.name] ?: domBuilder
+            val slot = BlueprintSlot.Out(it.id, it.name, bpNode, domSlot)
             bpNode.outputs.add(slot)
             bp.slotIDs.save(slot)
         }
