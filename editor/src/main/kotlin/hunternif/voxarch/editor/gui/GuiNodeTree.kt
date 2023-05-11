@@ -130,6 +130,7 @@ abstract class GuiSceneTree(
         gui.smallIconButton(item.visibleIconForImgui, transparent = true) {
             if (item.isHidden) app.showObject(node)
             else app.hideObject(node)
+            markListDirty()
         }
 
         ImGui.tableNextColumn()
