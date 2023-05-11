@@ -7,13 +7,12 @@ import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
 import hunternif.voxarch.util.forEachFilledPos
-import hunternif.voxarch.util.opposite
 import hunternif.voxarch.vector.IntVec3
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.system.MemoryUtil
 import java.nio.FloatBuffer
-import java.util.EnumMap
+import java.util.*
 
 /**
  * Merges voxels into a single mesh, storing colors in vertices.
@@ -113,20 +112,16 @@ fun texturedMeshFromVoxelsOpt(
 
 /** Returns a map from a direction to faces looking into that direction. */
 private fun findVisibleFaces(voxels: IStorage3D<out IVoxel?>)
-    : Map<Direction3D, LinkedHashSet<IntVec3>> {
-    val faces = EnumMap<Direction3D, LinkedHashSet<IntVec3>>(Direction3D::class.java)
-    Direction3D.values().forEach { faces[it] = linkedSetOf() }
+    : Map<Direction3D, LinkedList<IntVec3>> {
+    val faces = EnumMap<Direction3D, LinkedList<IntVec3>>(Direction3D::class.java)
+    Direction3D.values().forEach { faces[it] = LinkedList() }
 
-    // For each voxel, add faces that are visible to the map.
-    // If a new voxel obscures an existing face, delete it.
-    voxels.forEachFilledPos { p, _ ->
-        values().forEach { dir ->
-            val oppositeFaces = faces[dir.opposite()]!!
-            val oppositePoint = p + dir.vec
-            if (oppositePoint !in oppositeFaces) {
+    voxels.forEachFilledPos { p, v ->
+        Direction3D.values().forEach { dir ->
+            // Check neighboring cell
+            val pos = p + dir.vec
+            if (pos !in voxels || voxels[pos] == null) {
                 faces[dir]!!.add(p)
-            } else {
-                oppositeFaces.remove(oppositePoint)
             }
         }
     }

@@ -40,6 +40,14 @@ inline fun <T> IStorage3D<out T?>.forEachFilledPos(
     }
 }
 
+inline fun <T> IStorage3D<out T?>.forEachFilledPos(
+    crossinline action: (x: Int, y: Int, z: Int, T) -> Unit
+) {
+    forEachPos { x, y, z, v ->
+        if (v != null) action(x, y, z, v)
+    }
+}
+
 inline fun IntAABB.forEachXZ(
     crossinline actionXZ: (x: Int, z: Int) -> Unit
 ) {
