@@ -17,6 +17,7 @@ class GizmoModel(
      * relative to the center of the voxel */
     private val center: Vector3f = Vector3f(0f, 0f, 0f),
     private val lineWidth: Float = 2f,
+    private val alpha: Float= 1f,
 ) : BaseModel() {
     private data class GizmoData(
         val pos: Vector3f,
@@ -26,9 +27,9 @@ class GizmoModel(
 
     private var vertBufferSize = 6 * 7 // 6 vertices, 3f pos + 4f color
 
-    private val colX = Colors.axisX
-    private val colY = Colors.axisY
-    private val colZ = Colors.axisZ
+    private val colX = Colors.axisX.copy(a = alpha)
+    private val colY = Colors.axisY.copy(a = alpha)
+    private val colZ = Colors.axisZ.copy(a = alpha)
 
     private var instanceVboID = 0
     private val instances = mutableListOf<GizmoData>()
