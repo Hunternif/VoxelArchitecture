@@ -5,7 +5,6 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.scenegraph.ISceneListener
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImGui
 import imgui.ImGuiListClipper
@@ -19,16 +18,9 @@ class GuiNodeTree(
     app: EditorApp,
     gui: GuiBase
 ) : GuiSceneTree(app, gui) {
-    override val root: SceneNode get() = app.state.rootNode
-    override fun itemLabel(item: SceneObject): String {
-        if (item is SceneNode) {
-            var result = item.nodeClassName
-            val type = item.node.tags.firstOrNull()
-            if (!type.isNullOrEmpty()) result += " $type"
-            if (item.blueprints.isNotEmpty()) result += " []"
-            return result
-        }
-        return item.toString()
+    override fun initState() {
+        root = app.state.rootNode
+        super.initState()
     }
 
     override fun onDoubleClick(item: SceneObject) {
@@ -43,9 +35,10 @@ class GuiVoxelTree(
     app: EditorApp,
     gui: GuiBase
 ) : GuiSceneTree(app, gui) {
-    override val root: SceneObject get() = app.state.voxelRoot
-    override fun itemLabel(item: SceneObject): String =
-        (item as? SceneVoxelGroup)?.label ?: item.toString()
+    override fun initState() {
+        root = app.state.voxelRoot
+        super.initState()
+    }
 }
 
 abstract class GuiSceneTree(
@@ -56,9 +49,7 @@ abstract class GuiSceneTree(
     private var isAnyTreeNodeClicked = false
     private var isThisPanelClicked = false
 
-    abstract val root: SceneObject
-
-    abstract fun itemLabel(item: SceneObject): String
+    lateinit var root: SceneObject
 
     /** List of displayed entries */
     private val list = ArrayList<TreeEntry>()
@@ -81,7 +72,7 @@ abstract class GuiSceneTree(
 
     open fun onDoubleClick(item: SceneObject) {}
 
-    fun initState() {
+    open fun initState() {
         app.state.sceneTree.addListener(this)
         parentNode = root
         markListDirty()
@@ -232,7 +223,7 @@ abstract class GuiSceneTree(
         val queue = LinkedList<TreeEntry>()
         queue.add(
             TreeEntry(
-                root, itemLabel(root),
+                root, sceneObjectToSingleLine(root),
                 0, root in openObjs,
                 root in app.state.hiddenObjects,
                 root === parentNode && !isParentRootNode, false,
@@ -244,7 +235,7 @@ abstract class GuiSceneTree(
             if (next.isOpen) {
                 queue.addAll(0, next.obj.children.map {
                     TreeEntry(
-                        it, itemLabel(it),
+                        it, sceneObjectToSingleLine(it),
                         next.depth + 1, it in openObjs,
                         it in app.state.hiddenObjects,
                         it === parentNode,
