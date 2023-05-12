@@ -166,7 +166,7 @@ class MainScene(private val app: EditorApp) {
         selectedNodeModel.clear()
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
-            obj.update()
+            obj.update() // TODO: optimize: this is called twice for most models
             if (obj != app.state.rootNode && obj != app.state.voxelRoot) {
                 selectedNodeModel.add(obj, obj.box)
                 when (obj) {
