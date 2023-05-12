@@ -18,6 +18,7 @@ import hunternif.voxarch.storage.IStorage3D
 import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.INested
 import hunternif.voxarch.util.emptyArray3D
+import hunternif.voxarch.util.forEachSubtree
 import hunternif.voxarch.vector.Vec3
 
 // Annotated classes for XML serialization of SceneObject and its subclasses, and Subsets.
@@ -114,7 +115,13 @@ private fun SceneObject.mapToXmlRecursive(mapped: MutableSet<SceneObject>): XmlS
     return xmlNode
 }
 
-internal fun XmlSceneObject.mapXml(): SceneObject? = mapXmlRecursive(mutableSetOf())
+internal fun XmlSceneObject.mapXml(): SceneObject? {
+    return mapXmlRecursive(mutableSetOf())?.apply {
+        // Now that all nodes are in a correct parent-child hierarchy,
+        // we must re-calculate their absolute positions.
+        forEachSubtree { it.update() }
+    }
+}
 
 /** The set is passed to prevent an infinite nested loop. */
 private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): SceneObject? {
