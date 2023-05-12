@@ -27,6 +27,7 @@ class GuiObjectProperties(
     private val originInput = GuiInputVec3("origin")
     private val sizeInput = GuiInputVec3("voxel size", min = 1f)
     private val startInput = GuiInputVec3("start")
+    private val tagsInput = GuiInputText("tags")
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
     private val builderInput by lazy {
@@ -59,6 +60,11 @@ class GuiObjectProperties(
     /** All blueprints currently on this node */
     private val curBlueprints = mutableListOf<Blueprint>()
     private val allBlueprints = mutableListOf(newBlueprintItem)
+
+    /** Node tags in a single string, separated by whitespace */
+    private var tagStr = ""
+    /** Node tags memoized */
+    private val tags = linkedSetOf<String>()
 
     fun render() {
         checkSelectedNodes()
@@ -95,6 +101,12 @@ Indicated on the 3D scene as a little circle.""")
 Children are placed relative to parent's origin, but parent's start
 suggests where children should be placed.
 By default, it's set so that origin is at the low-XYZ corner.""")
+
+        tagsInput.render(tagStr) {
+            app.setNodeTags(sceneNode, it.split(Regex("\\s+")))
+            updateTagStr()
+        }
+        tooltip("Node tags, separated by whitespace")
 
         snapOriginInput.render(sceneNode.snapOrigin) {
             app.transformNodeSnapOrigin(sceneNode, it)
@@ -183,6 +195,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
                 else -> null
             }
         }
+        updateTagStr()
     }
 
     /** Check whether the list of current & available builders needs to be updated */
@@ -237,6 +250,23 @@ By default, it's set so that origin is at the low-XYZ corner.""")
                     ImGui.text("nodes")
                 }
             }
+        }
+    }
+
+    private fun updateTagStr() {
+        val obj = obj
+        if (obj !is SceneNode) {
+            tagStr = ""
+            return
+        }
+        // This check exists because Java wrapper for ImGui requires String instances,
+        // which are created every frame and use heap memory.
+        // TODO: optimize string logic after ImGui wrapper fixes its strings
+        //  (see https://github.com/SpaiR/imgui-java/issues/157)
+        if (obj.node.tags != tags) {
+            tags.clear()
+            tags.addAll(obj.node.tags)
+            tagStr = tags.joinToString(" ")
         }
     }
 

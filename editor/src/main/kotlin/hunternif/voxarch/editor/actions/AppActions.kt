@@ -195,6 +195,12 @@ fun EditorApp.transformNodeSnapOrigin(
     )
 }
 
+/** Set tags */
+fun EditorApp.setNodeTags(
+    obj: SceneNode,
+    newTags: Collection<String>,
+) = historyAction(SetNodeTags(obj, newTags))
+
 fun EditorApp.setNodeBuilder(
     obj: SceneNode,
     builder: Builder<*>?,

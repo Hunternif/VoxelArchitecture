@@ -206,7 +206,8 @@ abstract class GuiSceneTree(
         pushStyleColor(HeaderActive, color.blend(headerActive))
     }
 
-    private fun markListDirty() {
+    /** The list will be re-built on the next frame */
+    fun markListDirty() {
         isListDirty = true
     }
 
