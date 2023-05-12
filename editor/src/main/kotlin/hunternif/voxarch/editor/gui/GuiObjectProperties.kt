@@ -43,8 +43,8 @@ class GuiObjectProperties(
     private val blueprintsTimer = Timer(0.1)
     private val redrawTimer = Timer(0.02)
 
-    // Currently selected items
-    private var obj: SceneObject? = null
+    /** Currently selected item */
+    var obj: SceneObject? = null
     private val voxGroupSize: Vec3 = Vec3(0, 0, 0)
 
     /** Default entry that indicates which builder will be assigned by BuilderConfig */
@@ -67,7 +67,7 @@ class GuiObjectProperties(
     private val tags = linkedSetOf<String>()
 
     fun render() {
-        checkSelectedNodes()
+        updateNodeData()
         renderHeaderText()
 
         obj?.let { obj ->
@@ -186,15 +186,8 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         }
     }
 
-    /** Check which nodes are currently selected, and update the state of gui */
-    private fun checkSelectedNodes() = nodeTimer.runAtInterval {
-        app.state.selectedObjects.run {
-            obj = when (size) {
-                0 -> null
-                1 -> first()
-                else -> null
-            }
-        }
+    /** Do any expensive updates to gui state based on changes in node data */
+    private fun updateNodeData() = nodeTimer.runAtInterval {
         updateTagStr()
     }
 
@@ -244,11 +237,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
                         ImGui.text("(generated)")
                     }
                 }
-                else -> {
-                    ImGui.text(size.toString())
-                    ImGui.sameLine()
-                    ImGui.text("nodes")
-                }
+                else -> {}
             }
         }
     }

@@ -129,6 +129,10 @@ inline fun tabItemWindow(label: String, flags: Int = 0, crossinline block: () ->
     }
 }
 
+inline fun collapsingHeader(label: String, crossinline block: () -> Unit = {}) {
+    if (ImGui.collapsingHeader(label)) block()
+}
+
 enum class Align {
     LEFT,
     RIGHT,

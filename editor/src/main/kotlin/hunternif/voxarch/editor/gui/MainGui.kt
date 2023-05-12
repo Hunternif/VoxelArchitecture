@@ -18,7 +18,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
-    @PublishedApi internal val nodeProperties = GuiObjectProperties(app, this)
+    @PublishedApi internal val properties = GuiMultiObjectProperties(app, this)
     @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
     @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
     @PublishedApi internal val history = GuiHistory(app, this)
@@ -169,7 +169,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             voxelTree.render()
         }
         panel("Properties", showProperties) {
-            nodeProperties.render()
+            properties.render()
         }
         panel(blueprintWindowTitle, showBlueprintEditor, hasPadding = false) {
             blueprintEditor.render()
