@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.unselectObject
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.util.isCollectionEqual
 import imgui.ImGui
@@ -32,8 +33,12 @@ class GuiMultiObjectProperties(
         } else {
             // Multiple items as collapsing headers
             list.forEach {
-                collapsingHeader(it.labelForImgui) {
+                if (ImGui.collapsingHeader(it.labelForImgui, it.visibleFlag)) {
                     it.gui.render()
+                }
+                if (!it.visibleFlag.get()) {
+                    app.unselectObject(it.obj)
+                    isListDirty = true
                 }
             }
         }
@@ -75,5 +80,8 @@ class GuiMultiObjectProperties(
     ) {
         val id = obj.id
         val labelForImgui = "$label##$id"
+
+        /** Used for closing this entry */
+        val visibleFlag = ImBoolean(true)
     }
 }
