@@ -1,7 +1,9 @@
 package hunternif.voxarch.util
 
-import org.junit.Assert.assertEquals
+import org.junit.Assert.*
 import org.junit.Test
+import java.util.*
+import kotlin.NoSuchElementException
 
 class CollectionUtilTest {
     @Test
@@ -60,5 +62,25 @@ class CollectionUtilTest {
             out.add(x)
         }
         assertEquals(emptyList<Double>(), out)
+    }
+
+    @Test
+    fun `are collections equal`() {
+        val a = listOf("foo", "bar")
+        val b = linkedSetOf("foo", "bar")
+        val c = listOf("foo")
+        val d = linkedSetOf("foo", 1)
+        val e = LinkedList<Any>().apply {
+            add("foo")
+            add(1)
+        }
+        assertTrue(isCollectionEqual(a, b))
+        assertFalse(isCollectionEqual(a, c))
+        assertFalse(isCollectionEqual(a, d))
+        assertFalse(isCollectionEqual(a, e))
+        assertFalse(isCollectionEqual(b, c))
+        assertFalse(isCollectionEqual(b, d))
+        assertFalse(isCollectionEqual(b, e))
+        assertTrue(isCollectionEqual(d, e))
     }
 }

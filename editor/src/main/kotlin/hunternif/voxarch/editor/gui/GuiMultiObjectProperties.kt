@@ -2,7 +2,9 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.util.isCollectionEqual
 import imgui.ImGui
+import imgui.type.ImBoolean
 
 /**
  * Displays a list of objects and their properties
@@ -13,11 +15,13 @@ class GuiMultiObjectProperties(
 ) {
     /** List of displayed entries */
     private val list = arrayListOf<Entry>()
+
     /** Lazy map of entry id to gui. */
     private val guiMap = mutableMapOf<Int, GuiObjectProperties>()
 
     // Update timer
     private val nodeTimer = Timer(0.02)
+    private var isListDirty = false
 
     fun render() {
         checkSelectedNodes()
@@ -36,11 +40,20 @@ class GuiMultiObjectProperties(
     }
 
     /** Check which nodes are currently selected, and update the state of gui */
-    private fun checkSelectedNodes() = nodeTimer.runAtInterval {
+    private fun checkSelectedNodes() {
+        nodeTimer.runAtInterval {
+            // check if list has changed:
+            if (!isCollectionEqual(list, app.state.selectedObjects)) isListDirty = true
+        }
+        if (isListDirty) updateList()
+    }
+
+    private fun updateList() {
         list.clear()
         list.addAll(app.state.selectedObjects.map {
             Entry(it, sceneObjectToSingleLine(it))
         })
+        isListDirty = false
     }
 
     private fun renderHeaderText() {

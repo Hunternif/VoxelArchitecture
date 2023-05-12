@@ -45,3 +45,14 @@ infix fun ClosedRange<Double>.step(step: Number): Iterable<Double> {
     }
     return sequence.asIterable()
 }
+
+/** Returns true if both collections contain the same elements */
+fun isCollectionEqual(a: Collection<*>, b: Collection<*>): Boolean {
+    if (a.size != b.size) return false
+    val ia = a.iterator()
+    val ib = b.iterator()
+    while (ia.hasNext() && ib.hasNext()) {
+        if (ia.next() != ib.next()) return false
+    }
+    return true
+}
