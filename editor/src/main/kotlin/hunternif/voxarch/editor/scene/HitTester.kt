@@ -1,5 +1,7 @@
 package hunternif.voxarch.editor.scene
 
+import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.OrbitalCamera
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -12,6 +14,7 @@ import org.joml.Vector3f
 import org.lwjgl.opengl.GL32.*
 
 class HitTester(
+    val app: EditorApp,
     @PublishedApi internal val camera: OrbitalCamera,
 ) {
     /** FBO with the texture from which to pick voxel groups. */
@@ -109,11 +112,16 @@ class HitTester(
         if (x < 0 || x >= width || y < 0 || y >= height) return null
 
         // Sample the texture
-        val channels = voxelsFbo.texture.channels // should be 3
-        val buf = voxelsFboBytes.buffer
-        buf.rewind()
-        buf.position((y * width + x) * channels)
-        val color = ColorRGBa.fromRGBBytes(buf)
-        return voxelGroups[color]
+        try {
+            val channels = voxelsFbo.texture.channels // should be 3
+            val buf = voxelsFboBytes.buffer
+            buf.rewind()
+            buf.position((y * width + x) * channels)
+            val color = ColorRGBa.fromRGBBytes(buf)
+            return voxelGroups[color]
+        } catch (e: Exception) {
+            app.logError(e)
+            return null
+        }
     }
 }
