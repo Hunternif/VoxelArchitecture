@@ -143,7 +143,7 @@ class AppStateImpl(
         subsets.add(generatedVoxels)
     }
 
-    override var currentTool: Tool = Tool.ADD_NODE
+    override var currentTool: Tool = Tool.SELECT
     override val newNodeFrame = NewNodeFrame()
     override val history = History<HistoryAction>()
     override var highlightedFace: BoxFace? = null
