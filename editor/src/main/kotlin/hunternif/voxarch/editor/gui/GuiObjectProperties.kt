@@ -45,6 +45,10 @@ class GuiObjectProperties(
 
     /** Currently selected item */
     var obj: SceneObject? = null
+        set(value) {
+            field = value
+            updateInputIDs()
+        }
     private val voxGroupSize: Vec3 = Vec3(0, 0, 0)
 
     /** Default entry that indicates which builder will be assigned by BuilderConfig */
@@ -274,6 +278,19 @@ By default, it's set so that origin is at the low-XYZ corner.""")
                 }
             }
         }
+    }
+
+    /** Set ID on all inputs, to make them unique on the screen. */
+    private fun updateInputIDs() {
+        val id = obj?.id ?: return
+        originInput.id = id
+        sizeInput.id = id
+        startInput.id = id
+        tagsInput.id = id
+        snapOriginInput.id = id
+        rotationInput.id = id
+        builderInput.id = id
+        blueprintInput.id = id
     }
 
     companion object {

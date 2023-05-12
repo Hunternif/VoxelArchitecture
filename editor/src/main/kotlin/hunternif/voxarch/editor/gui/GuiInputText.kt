@@ -5,9 +5,9 @@ import imgui.type.ImString
 import org.lwjgl.glfw.GLFW
 
 class GuiInputText(
-    val label: String,
+    override val label: String,
     val hint: String? = null,
-) {
+) : GuiInput() {
     /** Data storage that ImGui understands */
     @PublishedApi internal val data = ImString()
 

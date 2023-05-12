@@ -4,11 +4,11 @@ import imgui.ImGui
 
 /** Encapsulates ImGui.dragFloat3 with some convenience methods */
 class GuiInputFloat(
-    val label: String,
+    override val label: String,
     val speed: Float = 0.1f,
     val min: Float = -999f,
     val max: Float = 999f,
-) {
+) : GuiInput() {
     /** Format string for the input */
     @PublishedApi internal var format = "%.0f"
 
