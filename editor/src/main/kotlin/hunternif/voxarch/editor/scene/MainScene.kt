@@ -166,6 +166,7 @@ class MainScene(private val app: EditorApp) {
         selectedNodeModel.clear()
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
+            obj.update()
             if (obj != app.state.rootNode && obj != app.state.voxelRoot) {
                 selectedNodeModel.add(obj.box)
                 when (obj) {
