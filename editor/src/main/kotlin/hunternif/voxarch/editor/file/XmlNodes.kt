@@ -130,6 +130,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
         is XmlColumn -> Column()
         is XmlPolyRoom -> PolyRoom().also {
             it.shape = shape
+            it.polygon.origin = polygon.origin
             it.polygon.addPoints(polygon.points ?: emptyList())
         }
         is XmlRoom -> Room()

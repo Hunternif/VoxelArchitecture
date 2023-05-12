@@ -49,17 +49,19 @@ open class Path(origin: Vec3) : Node(origin) {
                 it, point, point.distanceTo(it), distance
             ))
         }
-        if (point != points.firstOrNull()) { // Don't add the looping point
-            _points.add(point)
-            aabb.union(point)
-        }
+        _points.add(point)
+        aabb.union(point)
     }
 
     fun addPoints(points: List<Vec3>) {
         for (p in points) addPoint(p)
     }
 
-    /** Connects the end of the path to the start */
+    /**
+     * Connects the end of the path to the start.
+     * Note: this causes a duplicate point to be added, and this is
+     * necessary for proper serialization.
+     */
     fun loopToStart() {
         points.firstOrNull()?.let {
             addPoint(it)

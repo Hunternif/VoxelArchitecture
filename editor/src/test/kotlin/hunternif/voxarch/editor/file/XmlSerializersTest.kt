@@ -53,6 +53,7 @@ class XmlSerializersTest {
           <polygon class="Path" origin="(0.0, 0.0, 0.0)" start="(0.0, 0.0, 0.0)" size="(1.0, 2.0, 3.0)" rotationY="0.0">
             <point>(0.0, 0.0, 0.0)</point>
             <point>(1.0, 2.0, 3.0)</point>
+            <point>(0.0, 0.0, 0.0)</point>
           </polygon>
         </node>
         """.trimIndent()

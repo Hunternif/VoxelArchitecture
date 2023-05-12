@@ -16,7 +16,7 @@ open class PolyRoom(origin: Vec3, size: Vec3) : Room(origin, size) {
     /**
      * Describes the perimeter on the XZ plane.
      * It's made of 3d points for convenience, but their Y should be 0.
-     * Assumed to be in the center of the [PolyRoom].
+     * Its origin must be in the center of the [PolyRoom].
      */
     val polygon: Path = Path(Vec3.ZERO)
 
