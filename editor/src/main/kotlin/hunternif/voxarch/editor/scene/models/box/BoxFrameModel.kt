@@ -38,6 +38,8 @@ class BoxFrameModel(
         instances.remove(ref)
     }
 
+    operator fun contains(ref: Any) = ref in instances
+
     fun clear() {
         instances.clear()
     }

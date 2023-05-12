@@ -104,6 +104,14 @@ fun EditorApp.showObject(obj: SceneObject) = action(ShowAction(obj))
 
 fun EditorApp.hideObject(obj: SceneObject) = action(HideObject(obj))
 
+fun EditorApp.highlightObject(obj: SceneObject) = action {
+    scene.highlightObject(obj)
+}
+
+fun EditorApp.unhighlightObject(obj: SceneObject) = action {
+    scene.unhighlightObject(obj)
+}
+
 /** Used by UI to show real-time updates that aren't yet written to history. */
 fun EditorApp.redrawNodes() = action {
     scene.updateNodeModel()

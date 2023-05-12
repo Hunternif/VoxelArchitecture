@@ -53,6 +53,8 @@ open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
         instances.remove(ref)
     }
 
+    operator fun contains(ref: Any) = ref in instances
+
     fun clear() {
         instances.clear()
     }

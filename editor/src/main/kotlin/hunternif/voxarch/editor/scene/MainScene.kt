@@ -42,6 +42,7 @@ class MainScene(private val app: EditorApp) {
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel(camera)
     private val selectedNodeModel = SelectedNodeModel()
+    private val highlightedNodeModel = HighlightedNodeModel()
     private val originsModel = PointSpriteModel("textures/point-circle.png").apply { readDepth = false }
     private val highlightedFaceModel = ResizeNodeModel()
     // special 3d model with a separate camera
@@ -56,6 +57,7 @@ class MainScene(private val app: EditorApp) {
         nodeModel,
         highlightedFaceModel,
         selectedNodeModel,
+        highlightedNodeModel,
         originsModel,
         newNodeController.model,
     )
@@ -164,6 +166,7 @@ class MainScene(private val app: EditorApp) {
 
     fun updateSelectedNodeModel() {
         selectedNodeModel.clear()
+        highlightedNodeModel.clear()
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
             obj.update() // TODO: optimize: this is called twice for most models
@@ -192,6 +195,20 @@ class MainScene(private val app: EditorApp) {
     fun updateHighlightedFaces() {
         highlightedFaceModel.face = app.state.highlightedFace
         highlightedFaceModel.update()
+    }
+
+    fun highlightObject(obj: SceneObject) {
+        if (obj !in highlightedNodeModel && obj != app.state.rootNode) {
+            highlightedNodeModel.add(obj)
+            highlightedNodeModel.update()
+        }
+    }
+
+    fun unhighlightObject(obj: SceneObject) {
+        if (obj in highlightedNodeModel) {
+            highlightedNodeModel.remove(obj)
+            highlightedNodeModel.update()
+        }
     }
 
     fun render() {

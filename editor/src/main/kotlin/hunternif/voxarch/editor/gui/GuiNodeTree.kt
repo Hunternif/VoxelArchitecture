@@ -180,6 +180,9 @@ abstract class GuiSceneTree(
                 onDoubleClick(node)
                 isAnyTreeNodeClicked = true
             }
+            app.highlightObject(node)
+        } else {
+            app.unhighlightObject(node)
         }
 
         contextMenu(memoStrWithIndex("node_tree_context_menu", i)) {
