@@ -4,13 +4,16 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ByteBufferWrapper
 import hunternif.voxarch.editor.util.ColorRGBa
 import org.lwjgl.opengl.GL32.*
-import org.lwjgl.stb.STBImage.stbi_image_free
-import org.lwjgl.stb.STBImage.stbi_load
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
+import java.awt.image.BufferedImage
+import java.awt.image.BufferedImage.*
 import java.nio.ByteBuffer
+import java.nio.file.Files
+import java.nio.file.Path
+import javax.imageio.ImageIO
 
-class Texture(val filepath: String) {
+class Texture(val filepath: Path) {
     /** This texture's ID for OpenGL */
     var texID = 0
 
@@ -60,7 +63,7 @@ class Texture(val filepath: String) {
     fun load() {
         val bytes = loadData()
         uploadToGPU(bytes)
-        stbi_image_free(bytes)
+//        stbi_image_free(bytes)
     }
 
     /**
@@ -68,18 +71,38 @@ class Texture(val filepath: String) {
      * This also sets parameters [width], [height], [channels].
      */
     fun loadData(): ByteBuffer = MemoryStack.stackPush().use { stack ->
-        val width = stack.mallocInt(1)
-        val height = stack.mallocInt(1)
-        val channels = stack.mallocInt(1)
-        val bytes = stbi_load(filepath, width, height, channels, 0)
-            ?: throw RuntimeException("Error: (Texture) Could not load image '$filepath'")
-        this.width = width[0]
-        this.height = height[0]
-        this.channels = channels[0]
+        // STBI only works with files in directories:
+//        val width = stack.mallocInt(1)
+//        val height = stack.mallocInt(1)
+//        val channels = stack.mallocInt(1)
+//        val bytes = stbi_load(filepath.toString(), width, height, channels, 0)
+//            ?: throw RuntimeException("Error: (Texture) Could not load image '$filepath'")
+        // BufferedImage works with files in JAR too:
+        val inputStream = Files.newInputStream(filepath)
+        val image = ImageIO.read(inputStream)
+        this.width = image.width
+        this.height = image.height
+        this.channels = image.channels
         if (this.channels != 3 && this.channels != 4) {
             throw RuntimeException("Error: (Texture) Unknown number of channels '${this.channels}'")
         }
-        return bytes
+        // Thanks to https://stackoverflow.com/a/54294080/1093712
+        val pixels = image.getRGB(0, 0, image.width, image.height, null, 0, image.width)
+        val buffer = ByteBuffer.allocateDirect(pixels.size * channels)
+        for (pixel in pixels) {
+            if (channels == 3) {
+                buffer.put((pixel shr 16 and 0xFF).toByte())
+                buffer.put((pixel shr 8 and 0xFF).toByte())
+                buffer.put((pixel and 0xFF).toByte())
+            } else if (channels == 4) {
+                buffer.put((pixel shr 16 and 0xFF).toByte())
+                buffer.put((pixel shr 8 and 0xFF).toByte())
+                buffer.put((pixel and 0xFF).toByte())
+                buffer.put((pixel shr 24 and 0xFF).toByte())
+            }
+        }
+        buffer.flip()
+        return buffer
     }
 
     /** Uploads to GPU.
@@ -141,4 +164,21 @@ class Texture(val filepath: String) {
     fun unbind() {
         glBindTexture(GL_TEXTURE_2D, 0)
     }
+}
+
+/** Get number of channels */
+// Thanks to https://stackoverflow.com/a/21464485/1093712
+private val BufferedImage.channels: Int get() = when (type) {
+    TYPE_INT_RGB -> 3
+    TYPE_INT_ARGB -> 4
+    TYPE_INT_ARGB_PRE -> 4
+    TYPE_INT_BGR -> 3
+    TYPE_3BYTE_BGR -> 3
+    TYPE_4BYTE_ABGR -> 4
+    TYPE_4BYTE_ABGR_PRE -> 4
+    TYPE_USHORT_565_RGB -> 3
+    TYPE_USHORT_555_RGB -> 3
+    TYPE_BYTE_GRAY -> 1
+    TYPE_USHORT_GRAY -> 1
+    else -> 0
 }

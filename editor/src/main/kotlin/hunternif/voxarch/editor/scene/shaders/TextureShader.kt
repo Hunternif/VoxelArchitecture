@@ -11,7 +11,7 @@ class TextureShader(
 ): Shader() {
     constructor(
         texturePath: Path
-    ) : this(Texture(texturePath.toString()))
+    ) : this(Texture(texturePath))
 
     override fun init() {
         super.init(

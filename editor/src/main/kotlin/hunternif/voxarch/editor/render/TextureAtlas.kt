@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.render
 import org.joml.Vector2f
 import org.joml.Vector2i
 import org.lwjgl.opengl.GL32.*
+import java.nio.file.Paths
 import kotlin.math.max
 
 /**
@@ -14,7 +15,7 @@ class TextureAtlas(
     /** To prevent texture bleeding. */
     val padding: Int = 0,
 ) {
-    val sheet = Texture("sheet")
+    val sheet = Texture(Paths.get("sheet"))
     private var mainFboID: Int = 0
 
     private val entries = linkedSetOf<AtlasEntry>()

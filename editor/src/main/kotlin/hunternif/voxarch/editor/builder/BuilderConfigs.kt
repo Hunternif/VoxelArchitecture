@@ -66,7 +66,7 @@ val minecraftTexAtlas by lazy {
 
 private fun loadTexturedBlock(name: String): TexturedBlock {
     val path = minecraftTexAtlas.resourcePath("textures/minecraft/block/$name.png")
-    val texture = Texture(path.toString())
+    val texture = Texture(path)
     val entry = minecraftTexAtlas.add(texture)
     return TexturedBlock(name, entry)
 }
