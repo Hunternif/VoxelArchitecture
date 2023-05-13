@@ -145,19 +145,19 @@ fun EditorApp.setTextEditorActive(active: Boolean) = action {
 }
 
 fun EditorApp.logInfo(msg: String) = action {
-    logs.add(LogMessage.info(msg))
+    gui.log.append(LogMessage.info(msg))
 }
 
 fun EditorApp.logWarning(msg: String) = action {
-    logs.add(LogMessage.warn(msg))
+    gui.log.append(LogMessage.warn(msg))
 }
 
 fun EditorApp.logError(e: Exception) = action {
-    logs.add(LogMessage.error(e))
+    gui.log.append(LogMessage.error(e))
 }
 
 fun EditorApp.logError(msg: String) = action {
-    logs.add(LogMessage.error(msg))
+    gui.log.append(LogMessage.error(msg))
 }
 
 fun EditorApp.addOverlayText(id: String, text: String) = action {

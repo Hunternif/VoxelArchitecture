@@ -25,7 +25,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val blueprintLibrary = GuiBlueprintLibrary(app, this)
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
     @PublishedApi internal val styleEditor = GuiStyleEditor(app)
-    @PublishedApi internal val statusBar = GuiStatusBar(app)
+    @PublishedApi internal val log = GuiLog()
+    @PublishedApi internal val statusBar = GuiStatusBar(app, log)
 
     @PublishedApi internal val showStyleEditor = ImBoolean(true)
     @PublishedApi internal val showBlueprintLibrary = ImBoolean(true)
@@ -174,8 +175,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
         panel(blueprintWindowTitle, showBlueprintEditor, hasPadding = false) {
             blueprintEditor.render()
         }
-        panel("Logs", showLogs) {
-            logWindow()
+        panel("Logs", showLogs, hasPadding = false) {
+            log.render()
         }
         statusBar.render()
     }
@@ -250,22 +251,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
         }
         ImGui.popStyleVar(2)
         if (!hasPadding) ImGui.popStyleVar()
-    }
-
-    @PublishedApi
-    internal fun logWindow() {
-        for (e in app.logs) {
-            if (e.hasMoreLines) {
-                if (ImGui.treeNode(e.formattedString)) {
-                    for (line in e.moreLines) {
-                        ImGui.textWrapped(line)
-                    }
-                    ImGui.treePop()
-                }
-            } else {
-                ImGui.textWrapped(e.formattedString)
-            }
-        }
     }
 
     @PublishedApi

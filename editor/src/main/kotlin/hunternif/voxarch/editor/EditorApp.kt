@@ -7,7 +7,6 @@ import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.scene.InputController
-import hunternif.voxarch.editor.util.LogMessage
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
@@ -16,7 +15,6 @@ import org.lwjgl.system.MemoryUtil
 import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.Paths
-import java.util.*
 
 fun main(args: Array<String>) = EditorAppImpl().run(*args)
 
@@ -28,7 +26,6 @@ fun main(args: Array<String>) = EditorAppImpl().run(*args)
  */
 interface EditorApp {
     val state: AppState
-    val logs: List<LogMessage>
 }
 
 class EditorAppImpl : EditorApp {
@@ -41,7 +38,6 @@ class EditorAppImpl : EditorApp {
     val scene = MainScene(this)
 
     override lateinit var state: AppStateImpl
-    override val logs = LinkedList<LogMessage>()
 
     fun run(vararg args: String) {
         init(*args)

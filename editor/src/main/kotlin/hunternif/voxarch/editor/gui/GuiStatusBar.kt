@@ -8,7 +8,10 @@ import imgui.flag.ImGuiCol
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiWindowFlags
 
-class GuiStatusBar(private val app: EditorApp) {
+class GuiStatusBar(
+    private val app: EditorApp,
+    private val log: GuiLog,
+) {
     private val updateTimer = Timer(0.1)
 
     val height: Float = 19f
@@ -50,8 +53,7 @@ class GuiStatusBar(private val app: EditorApp) {
     }
 
     private fun updateMessage() {
-        val lastMsg = app.logs.lastOrNull() ?: return
-        val lastLine = lastMsg.msg.lines().firstOrNull() ?: return
+        val lastLine = log.lastLine
         if (lastLine.length > maxMsgLength) {
             message = lastLine.substring(0, maxMsgLength - 3) + "..."
         } else {
