@@ -41,6 +41,8 @@ class FileSpecTest : BaseAppTest() {
     fun `read project 2_rooms`() {
         val path = resourcePath("project/2_rooms.voxarch")
         app.openProjectFile(path)
+        // Metadata
+        assertEquals(123, app.state.seed)
         // Nodes
         assertEquals(2, app.state.rootNode.children.size)
         assertEquals(2, app.state.rootNode.node.children.size)
@@ -66,6 +68,7 @@ class FileSpecTest : BaseAppTest() {
 
     @Test
     fun `write project 2_rooms`() {
+        app.setSeed(123)
         app.setStylesheet(Stylesheet().add {
             styleFor<Wall> {
                 width { 100.pct }

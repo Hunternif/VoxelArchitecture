@@ -156,6 +156,7 @@ fun EditorAppImpl.readProject(path: Path) {
             projectPath = path
             stylesheet = style
             stylesheetText = styleText
+            seed = metadata.seed
         }
     }
 }
@@ -176,7 +177,7 @@ fun EditorAppImpl.writeProject(path: Path) {
 
     zipfs.use {
         writeFile("/metadata.yaml") {
-            val metadata = Metadata(FORMAT_VERSION)
+            val metadata = Metadata(FORMAT_VERSION, state.seed)
             val metadataStr = serializeToYamlStr(metadata)
             it.write(metadataStr)
         }
