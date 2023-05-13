@@ -154,15 +154,16 @@ abstract class GuiSceneTree(
         val isParentNode = item.isParent && !isRootNode
         val isChildNode = item.isChild
         val isSelected = node in app.state.selectedObjects
+        val isHighlighted = node in app.state.highlightedObjects
+        val isColored = isHighlighted || isParentNode || isChildNode
         if (isSelected) {
             flags = flags or ImGuiTreeNodeFlags.Selected
         }
-        if (isParentNode) {
+        if (isColored) {
             flags = flags or ImGuiTreeNodeFlags.Selected
-            applyParentNodeColors(isSelected)
-        } else if (isChildNode) {
-            flags = flags or ImGuiTreeNodeFlags.Selected
-            applyChileNodeColors(isSelected)
+            if (isHighlighted) applyHighlightColors()
+            else if (isParentNode) applyParentNodeColors(isSelected)
+            else if (isChildNode) applyChildNodeColors(isSelected)
         }
         ImGui.alignTextToFramePadding()
         if (item.isHidden) {
@@ -185,7 +186,7 @@ abstract class GuiSceneTree(
         }
 
         if (item.isHidden) ImGui.popStyleColor()
-        if (isParentNode || isChildNode) ImGui.popStyleColor(3)
+        if (isColored) ImGui.popStyleColor(3)
         if (isGenerated) ImGui.popStyleColor()
 
         if (ImGui.isItemHovered()) {
@@ -220,11 +221,17 @@ abstract class GuiSceneTree(
         pushStyleColor(HeaderActive, color.blend(headerActive))
     }
 
-    private fun applyChileNodeColors(isSelected: Boolean) = Colors.run {
+    private fun applyChildNodeColors(isSelected: Boolean) = Colors.run {
         val color = childNode.let { if (isSelected) it.blend(headerBg) else it }
         pushStyleColor(Header, color)
         pushStyleColor(HeaderHovered, color.blend(headerHovered))
         pushStyleColor(HeaderActive, color.blend(headerActive))
+    }
+
+    private fun applyHighlightColors() = Colors.run {
+        pushStyleColor(Header, headerHovered)
+        pushStyleColor(HeaderHovered, headerHovered)
+        pushStyleColor(HeaderActive, headerActive)
     }
 
     /** The list will be re-built on the next frame */
