@@ -26,6 +26,7 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Extend" to { DomExtend() },
     "All Walls" to { DomPolySegmentBuilder() },
     "Four Walls" to { DomFourWallsBuilder() },
+    "Select Walls" to { DomSelectWalls() },
     "Random Wall" to { DomRandomSegmentBuilder() },
     "All Corners" to { DomLogicPolyCornerBuilder() },
     "Four Corners" to { DomLogicFourCornerBuilder() },
