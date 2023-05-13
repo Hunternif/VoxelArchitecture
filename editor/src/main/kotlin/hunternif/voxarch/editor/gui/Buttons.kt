@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.setTool
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.pushStyleColor
 import imgui.ImFont
 import imgui.ImGui
@@ -124,4 +125,12 @@ inline fun GuiBase.inlineIconButton(
 
 fun ImBoolean.toggle() {
     set(!get())
+}
+
+fun drawColorSquare(color: ColorRGBa) {
+    val px = ImGui.getCursorScreenPosX()
+    val py = ImGui.getCursorScreenPosY()
+    val sz = ImGui.getTextLineHeight()
+    ImGui.getWindowDrawList().addRectFilled(px, py, px + sz, py + sz, color.hexABGR)
+    ImGui.dummy(sz, sz)
 }

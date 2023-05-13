@@ -47,6 +47,11 @@ class GuiBpEditorNodeContent(
                 ImGui.sameLine()
             }
         }
+        // There is a bug in ImNodes that title color can't be changed
+        if (node.isCustomColor) {
+            drawColorSquare(node.color)
+            ImGui.sameLine()
+        }
         ImGui.text(node.name)
         // render default output on the same line as title
         node.outputs.firstOrNull()?.let {
