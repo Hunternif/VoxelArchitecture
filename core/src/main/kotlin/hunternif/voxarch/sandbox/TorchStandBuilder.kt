@@ -3,7 +3,7 @@ package hunternif.voxarch.sandbox
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.storage.IBlockStorage
-import hunternif.voxarch.util.Direction
+import hunternif.voxarch.util.Direction.*
 import hunternif.voxarch.vector.ILinearTransformation
 
 class TorchStandBuilder : ANodeBuilder() {
@@ -17,17 +17,10 @@ class TorchStandBuilder : ANodeBuilder() {
             setBlock(0, 1, 0, post)
             setBlock(0, 2, 0, block)
 
-            torch.orientation = Direction.EAST
-            setBlock(1, 2, 0, torch)
-
-            torch.rotate(90.0)
-            setBlock(0, 2, -1, torch)
-
-            torch.rotate(90.0)
-            setBlock(-1, 2, 0, torch)
-
-            torch.rotate(90.0)
-            setBlock(0, 2, 1, torch)
+            setBlock(1, 2, 0, torch.orient(EAST))
+            setBlock(0, 2, -1, torch.orient(NORTH))
+            setBlock(-1, 2, 0, torch.orient(WEST))
+            setBlock(0, 2, 1, torch.orient(SOUTH))
         }
     }
 }

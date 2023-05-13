@@ -25,8 +25,7 @@ class SimpleTorchlitWallBuilder(
         // itself because it will probably be covered by another wall:
         var x = torchWallSpacing / 2
         while (x < node.width) {
-            val block = context.materials.get(MAT_TORCH)
-            block.orientation = Direction.NORTH
+            val block = context.materials.get(MAT_TORCH).orient(Direction.NORTH)
             localWorld.setBlock(x, torchHeight, -1, block)
             x += torchWallSpacing
         }

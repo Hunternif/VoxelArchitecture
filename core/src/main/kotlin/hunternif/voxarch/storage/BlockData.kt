@@ -7,17 +7,26 @@ import hunternif.voxarch.util.Direction
  * (I tried to make this an interface, but the generics are too annoying.)
  */
 open class BlockData(
-    var key: String,
-    var orientation: Direction? = null
+    val key: String,
+    val orientation: Direction? = null
 ) : IVoxel {
 
     // Legacy constructor
     constructor(key: String) : this(key, null)
 
-    /** Rotate the Direction (if not NONE) counterclockwise by the
-     * specified angle.  */
-    fun rotate(angle: Double) {
-        orientation = orientation?.rotate(angle)
+    /**
+     * Returns an instance of this block that's rotated and facing the Direction
+     * (if not NONE) counterclockwise by the specified angle.
+     */
+    fun rotate(angle: Double): BlockData {
+        return if (angle == 0.0 || orientation == null) this
+        else orient(orientation.rotate(angle))
+    }
+
+    /** Returns an instance with the same [key] and given [newOrientation] */
+    fun orient(newOrientation: Direction): BlockData {
+        return if (orientation == newOrientation) this
+        else getInstance(newOrientation)
     }
 
     override fun equals(other: Any?): Boolean {
@@ -26,7 +35,8 @@ open class BlockData(
         else other.key == key && other.orientation == orientation
     }
 
-    open fun clone(): BlockData {
+    /** Returns an instance with the same [key] and given orientation. */
+    protected open fun getInstance(orientation: Direction): BlockData {
         return BlockData(key, orientation)
     }
 

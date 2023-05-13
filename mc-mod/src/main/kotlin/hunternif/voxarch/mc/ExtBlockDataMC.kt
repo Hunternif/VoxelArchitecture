@@ -1,6 +1,7 @@
 package hunternif.voxarch.mc
 
 import hunternif.voxarch.storage.BlockData
+import hunternif.voxarch.util.Direction
 import net.minecraft.block.Block
 import net.minecraft.world.World
 import net.minecraftforge.registries.ForgeRegistries
@@ -15,7 +16,10 @@ import net.minecraftforge.registries.ForgeRegistries
  *
  * @author Hunternif
  */
-class ExtBlockDataMC(val block: Block) : BlockData(block.key) {
+class ExtBlockDataMC(
+    val block: Block,
+    orientation: Direction? = null,
+) : BlockData(block.key, orientation) {
 
     private val resource = ForgeRegistries.BLOCKS.getKey(block)!!
 

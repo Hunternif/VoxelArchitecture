@@ -20,11 +20,7 @@ open class TransformedBlockStorage(
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: BlockData?) {
-        val rotatedBlock = block?.let {
-            it.clone().apply {
-                rotate(trans.angleY)
-            }
-        }
+        val rotatedBlock = block?.rotate(trans.angleY)
         this.setBlock(x.toDouble(), y.toDouble(), z.toDouble(), rotatedBlock)
     }
 

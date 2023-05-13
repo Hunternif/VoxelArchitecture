@@ -9,12 +9,13 @@ import hunternif.voxarch.editor.util.resourcePath
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.IVoxel
+import hunternif.voxarch.util.Direction
 
 
 // ============================ Solid color voxels ============================
 
 class SolidColorBlock(val color: Int) : BlockData(color.toString(16)) {
-    override fun clone() = SolidColorBlock(color)
+    override fun getInstance(orientation: Direction) = this
 }
 
 private val solidStoneBrick = SolidColorBlock(0x797979)
@@ -42,7 +43,7 @@ fun MaterialConfig.setSolidColorMaterials() {
 // ============================= Textured voxels ==============================
 
 class TexturedBlock(key: String, val atlasEntry: AtlasEntry) : BlockData(key) {
-    override fun clone() = TexturedBlock(key, atlasEntry)
+    override fun getInstance(orientation: Direction) = this
 }
 
 private val texStone by lazy { loadTexturedBlock("stone") }

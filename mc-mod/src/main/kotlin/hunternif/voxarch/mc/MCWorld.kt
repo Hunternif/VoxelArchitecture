@@ -35,12 +35,12 @@ class MCWorld(private val world: World) : IBlockWorld {
 
     override fun getBlock(x: Int, y: Int, z: Int): BlockData {
         val state = world.getBlockState(BlockPos(x, y, z))
-        val result = ExtBlockDataMC(state.block)
         if (state.hasProperty(HORIZONTAL_FACING)) { // Block is rotate-able
             val direction = state.getValue(HORIZONTAL_FACING)
-            result.orientation = directionMap.inverse()[direction]
+            val orientation = directionMap.inverse()[direction]
+            return ExtBlockDataMC(state.block, orientation)
         }
-        return result
+        return ExtBlockDataMC(state.block)
     }
 
     override fun setBlock(x: Int, y: Int, z: Int, block: BlockData?) {
