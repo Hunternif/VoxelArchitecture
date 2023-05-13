@@ -8,6 +8,7 @@ import hunternif.voxarch.dom.style.property.width
 import hunternif.voxarch.dom.style.vx
 import hunternif.voxarch.editor.BaseAppTest
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -68,7 +69,7 @@ class FileSpecTest : BaseAppTest() {
         assertEquals(listOf(app.state.rootNode.children.toList()[1]), app.state.registry.bpInNodes[bpMap[1]])
         assertEquals(bpMap[0], (bpMap[1]!!.nodes.toList()[2].domBuilder as DomRunBlueprint).blueprint)
         assertEquals(Colors.debug, bpMap[1]!!.nodes.toList()[1].color)
-        assertEquals(Colors.defaultNodeBox, bpMap[1]!!.nodes.toList()[2].color)
+        assertEquals(BlueprintNode.defaultColor, bpMap[1]!!.nodes.toList()[2].color)
     }
 
     @Test

@@ -147,7 +147,7 @@ class BlueprintNode(
     }
 
     companion object {
-        val defaultColor = Colors.defaultNodeBox
+        val defaultColor = Colors.defaultNodeBox.copy(a = 1f)
     }
 }
 

@@ -8,12 +8,15 @@ import hunternif.voxarch.editor.util.ColorRGBa
 
 class SetBpNodeColor(
     val node: BlueprintNode,
-    var oldColor: ColorRGBa,
-    var newColor: ColorRGBa,
+    oldColor: ColorRGBa,
+    newColor: ColorRGBa,
 ) : HistoryAction(
     "Change blueprint node color",
     FontAwesomeIcons.Code
 ) {
+    private val oldColor: ColorRGBa = oldColor.copy(a = 1f)
+    private val newColor: ColorRGBa = newColor.copy(a = 1f)
+
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         node.color.set(newColor)
     }
