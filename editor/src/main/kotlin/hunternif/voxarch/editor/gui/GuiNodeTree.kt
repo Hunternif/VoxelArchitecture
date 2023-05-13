@@ -54,6 +54,13 @@ abstract class GuiSceneTree(
     /** List of displayed entries */
     private val list = ArrayList<TreeEntry>()
     private var isListDirty = false
+
+    /** Maps object to its list entry */
+    private val entryMap = mutableMapOf<SceneObject, TreeEntry>()
+
+    /** Will scroll to this item on the next frame */
+    private var nextScrollItem: SceneObject? = null
+
     private lateinit var parentNode: SceneObject
     private val listClipperCallback = object : ImListClipperCallback() {
         override fun accept(index: Int) {
@@ -94,7 +101,13 @@ abstract class GuiSceneTree(
             ImGui.tableSetupColumn("visibility",
                 ImGuiTableColumnFlags.WidthFixed, 20f)
             ImGui.tableSetupColumn("tree")
-            ImGuiListClipper.forEach(list.size, listClipperCallback)
+            if (nextScrollItem != null) {
+                // Don't use clipper so that we render all items and scroll to the item
+                list.forEach { renderItem(it) }
+            } else {
+                // Clipper avoids rendering items outside of view
+                ImGuiListClipper.forEach(list.size, listClipperCallback)
+            }
             ImGui.endTable()
         }
         ImGui.popStyleVar(1)
@@ -166,6 +179,11 @@ abstract class GuiSceneTree(
         }
         for (x in 1..item.depth) ImGui.unindent()
 
+        if (nextScrollItem == node) {
+            ImGui.setScrollHereY()
+            nextScrollItem = null
+        }
+
         if (item.isHidden) ImGui.popStyleColor()
         if (isParentNode || isChildNode) ImGui.popStyleColor(3)
         if (isGenerated) ImGui.popStyleColor()
@@ -214,15 +232,26 @@ abstract class GuiSceneTree(
         isListDirty = true
     }
 
+    /** If [nextScrollItem] is nonnull, will open its parents and set next
+     * scroll position. */
     private fun rebuildList() {
 //        println("rebuildList")
         parentNode = app.state.parentNode
         val isParentRootNode = root === app.state.rootNode // root node is never highlighted
         // remember which entries were opened:
         val openObjs =
-            if (list.isEmpty()) setOf(root)
-            else list.filter { it.isOpen }.map { it.obj }.toSet()
+            if (list.isEmpty()) mutableSetOf(root)
+            else list.filter { it.isOpen }.map { it.obj }.toMutableSet()
+
+        // Open nextScrollItem's parents:
+        var scrollToParent = nextScrollItem?.parent
+        while (scrollToParent != null) {
+            openObjs.add(scrollToParent)
+            scrollToParent = scrollToParent.parent
+        }
+
         list.clear()
+        entryMap.clear()
         // Recursively add items using Depth-First Search
         val queue = LinkedList<TreeEntry>()
         queue.add(
@@ -231,7 +260,7 @@ abstract class GuiSceneTree(
                 0, root in openObjs,
                 root in app.state.hiddenObjects,
                 root === parentNode && !isParentRootNode, false,
-            )
+            ).also { entry -> entryMap[root] = entry }
         )
         while (queue.isNotEmpty()) {
             val next = queue.removeFirst()
@@ -244,11 +273,19 @@ abstract class GuiSceneTree(
                         it in app.state.hiddenObjects,
                         it === parentNode,
                         next.isChild || next.isParent,
-                    )
+                    ).also { entry -> entryMap[it] = entry }
                 })
             }
         }
         isListDirty = false
+    }
+
+    /**
+     * Expand the tree leading to this object, and scroll to its position.
+     */
+    fun scrollToItem(obj: SceneObject) {
+        nextScrollItem = obj
+        markListDirty()
     }
 }
 

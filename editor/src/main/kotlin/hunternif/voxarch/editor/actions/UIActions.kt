@@ -12,7 +12,9 @@ import hunternif.voxarch.editor.gui.toggle
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scene.shaders.VoxelShadingMode
+import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.LogMessage
 import hunternif.voxarch.editor.util.openFileDialog
 import hunternif.voxarch.editor.util.saveFileDialog
@@ -103,6 +105,13 @@ fun EditorApp.centerCamera() = action {
 fun EditorApp.showObject(obj: SceneObject) = action(ShowAction(obj))
 
 fun EditorApp.hideObject(obj: SceneObject) = action(HideObject(obj))
+
+fun EditorApp.scrollNodeTreeTo(obj: SceneObject) = action {
+    when (obj) {
+        is SceneNode -> gui.nodeTree.scrollToItem(obj)
+        is SceneVoxelGroup -> gui.voxelTree.scrollToItem(obj)
+    }
+}
 
 fun EditorApp.highlightObject(obj: SceneObject) = action {
     scene.highlightObject(obj)

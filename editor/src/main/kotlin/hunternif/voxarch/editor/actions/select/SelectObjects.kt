@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.actions.select
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.history.HistoryAction
+import hunternif.voxarch.editor.actions.scrollNodeTreeTo
 import hunternif.voxarch.editor.actions.select.SelectMask.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
@@ -28,6 +29,9 @@ class SelectObjects(
         for (obj in objs) {
             state.selectedObjects.add(obj)
         }
+        // Scroll to the first object
+        objs.firstOrNull { it is SceneNode }?.let { scrollNodeTreeTo(it) }
+        objs.firstOrNull { it is SceneVoxelGroup }?.let { scrollNodeTreeTo(it) }
         scene.updateSelectedNodeModel()
     }
 }
