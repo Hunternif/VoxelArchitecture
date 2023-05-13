@@ -38,6 +38,12 @@ class StyleParserTest {
     }
 
     @Test
+    fun `parse invalid unknown type selector`() {
+        val result = parser.parseStylesheet("SomeUnknownType { width: 10 }")
+        assertNotEquals(emptyList<StyleParseError>(), result.errors)
+    }
+
+    @Test
     fun `parse invalid unmatched brace`() {
         val result = parser.parseStylesheet(".selector { prop: value")
         assertNotEquals(emptyList<StyleParseError>(), result.errors)

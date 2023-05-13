@@ -62,7 +62,19 @@ class StyleParser {
             }
             is TypeSelectorContext -> {
                 val typename = other.ID()?.text
-                knownStyleTypes[typename]?.let { types.add(it) }
+                val type = knownStyleTypes[typename]
+                if (type == null) {
+                    isInvalid = true
+                    val token = other.ID()?.symbol
+                    errorListener.addError(
+                        typename,
+                        token?.line ?: 0,
+                        token?.charPositionInLine ?: 0,
+                        "invalid selector"
+                    )
+                } else {
+                    types.add(type)
+                }
             }
             is ClassSelectorContext -> {
                 val styleClass = other.ID()?.text

@@ -1,6 +1,10 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.dom.builder.DomBuildContext
+import hunternif.voxarch.dom.builder.DomBuildStats
+import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import org.junit.Assert.*
 import org.junit.Test
@@ -12,6 +16,18 @@ class SelectorTest {
         assertTrue(selector.isEmpty())
         selector.style("style")
         assertFalse(selector.isEmpty())
+    }
+
+    @Test
+    fun `invalid selector`() {
+        val ctx = DomBuildContext(Node(), Stylesheet(), 0, DomBuildStats())
+        val element = StyledElement(DomBuilder(), ctx)
+
+        val selector = Selector()
+        assertTrue(selector.appliesTo(element))
+
+        selector.isInvalid = true
+        assertFalse(selector.appliesTo(element))
     }
 
     @Test

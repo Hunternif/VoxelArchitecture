@@ -33,6 +33,12 @@ class Selector {
      */
     val types: MutableSet<Class<*>> = linkedSetOf()
 
+    /**
+     * If true, this selector will not apply to any element.
+     * This is used to indicate invalid rules without breaking parsing of other rules.
+     */
+    var isInvalid: Boolean = false
+
     /** specific instances of DOM Builder */
     //TODO: replace instance with #id.
     val instances: MutableSet<DomBuilder> = linkedSetOf()
@@ -60,6 +66,7 @@ class Selector {
     }
 
     fun appliesTo(element: StyledElement<*>): Boolean {
+        if (isInvalid) return false
         val type = when (element) {
             is StyledNode<*> -> element.node.javaClass
             else -> element.domBuilder.javaClass
