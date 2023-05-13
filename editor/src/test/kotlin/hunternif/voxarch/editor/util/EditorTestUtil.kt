@@ -14,15 +14,16 @@ fun assertNodeEquals(
     expected: Node,
     actual: Node
 ) {
-    assertEquals(expected::class, actual::class)
-    assertEquals(expected.origin, actual.origin)
-    assertEquals(expected.start, actual.start)
-    assertEquals(expected.tags, actual.tags)
-    assertEquals(expected.rotationY, actual.rotationY, 0.0)
-    assertEquals(expected.size, actual.size)
-    assertEquals(expected.width, actual.width, 0.0)
-    assertEquals(expected.height, actual.height, 0.0)
-    assertEquals(expected.depth, actual.depth, 0.0)
+    assertEquals("class", expected::class, actual::class)
+    assertEquals("origin",expected.origin, actual.origin)
+    assertEquals("start", expected.start, actual.start)
+    assertEquals("tags", expected.tags, actual.tags)
+    assertEquals("rotationY", expected.rotationY, actual.rotationY, 0.0)
+    assertEquals("size", expected.size, actual.size)
+    assertEquals("width", expected.width, actual.width, 0.0)
+    assertEquals("height",expected.height, actual.height, 0.0)
+    assertEquals("depth", expected.depth, actual.depth, 0.0)
+    assertEquals("builder", expected.builder, actual.builder)
     when (expected) {
         is PolyRoom -> {
             assertEquals(expected.shape, (actual as PolyRoom).shape)

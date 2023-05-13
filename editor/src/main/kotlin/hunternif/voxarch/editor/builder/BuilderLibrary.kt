@@ -40,6 +40,10 @@ class BuilderLibrary {
         allBuilders.associateBy { it.builder }
     }
 
+    val buildersByName: Map<String, Entry> by lazy {
+        allBuilders.associateBy { it.name }
+    }
+
     val buildersByNodeType: ListMultimap<Class<*>, Entry> by lazy {
         ArrayListMultimap.create<Class<*>, Entry>().apply {
             allBuilders.forEach { put(it.builder.nodeClass, it) }
@@ -61,6 +65,9 @@ class BuilderLibrary {
         val name: String,
         val builder: Builder<*>,
     ) {
+        init {
+            builder.name = name
+        }
         override fun toString(): String = name
     }
 }

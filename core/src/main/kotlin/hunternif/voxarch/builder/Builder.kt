@@ -19,6 +19,9 @@ open class Builder<in T : Node>(
             Builder(T::class.java)
     }
 
+    /** For serialization */
+    var name: String? = null
+
     /**
      * Override this, placing blocks in the world to represent this Node.
      * No need to build children, they are built automatically after this.

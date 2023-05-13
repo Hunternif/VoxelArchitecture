@@ -8,6 +8,7 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
+import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -71,6 +72,10 @@ class XmlSceneNode(
     /** Populated during deserialization */
     @field:JsonIgnore
     var blueprintRefs: List<Blueprint> = emptyList(),
+
+    /** Populated during deserialization */
+    @field:JsonIgnore
+    var builderRef: Builder<*>? = null,
 ) : XmlSceneObject(id, generated)
 
 class XmlSceneVoxelGroup(
@@ -127,10 +132,12 @@ internal fun XmlSceneObject.mapXml(): SceneObject? {
 private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): SceneObject? {
     if (this in mapped) return null
     mapped.add(this)
-    val node: SceneObject = when (this) {
+    val sceneNode: SceneObject = when (this) {
         is XmlSceneNode -> {
+            val node = node?.mapXmlNode() ?: return null
+            node.builder = builderRef
             val color = ColorRGBa.fromHex(colorHexRGB.toInt(16), colorAlpha)
-            SceneNode(id, node?.mapXmlNode() ?: return null, color, generated).apply {
+            SceneNode(id, node, color, generated).apply {
                 blueprintRefs.forEach { addBlueprint(it) }
             }
         }
@@ -139,8 +146,8 @@ private fun XmlSceneObject.mapXmlRecursive(mapped: MutableSet<XmlSceneObject>): 
     }
     children.forEach { xmlChild ->
         xmlChild.mapXmlRecursive(mapped)?.let { child ->
-            node.addChild(child)
+            sceneNode.addChild(child)
         }
     }
-    return node
+    return sceneNode
 }

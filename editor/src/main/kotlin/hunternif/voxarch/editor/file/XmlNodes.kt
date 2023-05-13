@@ -41,7 +41,12 @@ open class XmlNode(
     @field:JacksonXmlProperty(isAttribute = true)
     var rotationY: Double = 0.0,
     @field:JacksonXmlProperty(isAttribute = true)
-    var transparent: Boolean? = null
+    var transparent: Boolean? = null,
+
+    @field:JacksonXmlProperty(isAttribute = true)
+    /** Name of the custom builder from BuilderLibrary.
+     * The library is needed to deserialize this instance. */
+    var builder: String? = null,
 ) {
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "tag")
@@ -102,6 +107,7 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
     xmlNode.size = size
     xmlNode.rotationY = rotationY
     xmlNode.tags.addAll(tags)
+    xmlNode.builder = builder?.name
     if (transparent) xmlNode.transparent = true
     return xmlNode
 }
@@ -110,7 +116,7 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
 private fun Node.mapToXmlNodeRecursive(mapped: MutableSet<Node>): XmlNode? {
     if (this in mapped) return null
     mapped.add(this)
-    val xmlNode: XmlNode = mapToXmlNodeNoChildren() ?: return null
+    val xmlNode: XmlNode = mapToXmlNodeNoChildren()
     children.forEach { child ->
         child.mapToXmlNodeRecursive(mapped)?.let { xmlChild ->
             xmlNode.children.add(xmlChild)

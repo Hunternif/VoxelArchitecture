@@ -102,6 +102,7 @@ interface AppState {
 
 class AppStateImpl(
     val registry: SceneRegistry,
+    override val builderLibrary: BuilderLibrary,
     // base objects with IDs:
     val sceneRoot: SceneObject,
     override val rootNode: SceneNode,
@@ -119,7 +120,6 @@ class AppStateImpl(
     override val blueprints get() = registry.blueprintIDs.map.values
     override val blueprintUsage = registry.bpInNodes
 
-    override val builderLibrary = BuilderLibrary()
     override val buildContext = BuildContext(defaultEnvironment).apply {
         materials.setSolidColorMaterials()
         builders.setDefaultBuilders()
@@ -170,6 +170,7 @@ fun newState(): AppStateImpl {
     val reg = SceneRegistry()
     return AppStateImpl(
         registry = reg,
+        builderLibrary = BuilderLibrary(),
         sceneRoot = reg.newObject(),
         rootNode = reg.newNode(Structure()),
         voxelRoot = reg.newVoxelGroup("Voxel groups", emptyArray3D()),

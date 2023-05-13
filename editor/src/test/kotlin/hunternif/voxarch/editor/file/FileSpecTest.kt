@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.builder.DefaultBuilders
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.dom.style.pct
 import hunternif.voxarch.dom.style.property.height
@@ -32,6 +33,7 @@ class FileSpecTest : BaseAppTest() {
         // This structure mirrors what will be created inside AppState
         root = Structure()
         room1 = root.centeredRoom(Vec3(-4.0, 0.0, -3.5), Vec3(8, 5, 9))
+        room1.builder = DefaultBuilders.Wall
         room2 = root.room(Vec3(-4, 0, 1), Vec3(3, 3, 6))
         room3 = room2.room(Vec3(1, 2, -1), Vec3(2, 3, 0))
         tempDir = makeTestDir("project")
@@ -77,7 +79,9 @@ class FileSpecTest : BaseAppTest() {
                 height { 50.vx }
             }
         })
-        app.createNode(Vector3i(-8, 0, -8), Vector3i(0, 5, 1), true, "Room")
+        val node1 = app.createNode(Vector3i(-8, 0, -8), Vector3i(0, 5, 1), true, "Room")
+        app.setNodeBuilder(node1, DefaultBuilders.Wall)
+
         val node2 = app.createNode(Vector3i(-4, 0, 1), Vector3i(3, 3, 6), false, "Room")
         app.setParentNode(node2)
         app.createNode(

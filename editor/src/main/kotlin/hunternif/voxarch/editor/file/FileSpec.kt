@@ -9,6 +9,7 @@ import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
+import hunternif.voxarch.editor.builder.BuilderLibrary
 import hunternif.voxarch.editor.file.style.parseStylesheet
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
@@ -94,6 +95,7 @@ const val VOXARCH_PROJECT_FILE_EXT = "voxarch"
  */
 fun EditorAppImpl.readProject(path: Path) {
     val reg = SceneRegistry()
+    val builderLibrary = BuilderLibrary()
     val sceneRoot = reg.newObject()
 
     val zipfs = newZipFileSystem(path)
@@ -118,10 +120,11 @@ fun EditorAppImpl.readProject(path: Path) {
         }
         tryPopulateDelegateBlueprints(reg)
 
-        // populate VOX files & Blueprints
+        // populate VOX files, Blueprints, custom Builders
         treeXmlType.noderoot?.forEachSubtree {
             tryReadVoxFile(it, zipfs, metadata, this)
             tryAddBlueprintRefs(it, reg)
+            tryAddBuilderRef(it, builderLibrary)
         }
         treeXmlType.voxelroot?.forEachSubtree { tryReadVoxFile(it, zipfs, metadata, this) }
 
@@ -144,6 +147,7 @@ fun EditorAppImpl.readProject(path: Path) {
 
         state = AppStateImpl(
             reg,
+            builderLibrary,
             sceneRoot,
             rootNode,
             voxelRoot,
@@ -256,6 +260,14 @@ private fun tryAddBlueprintRefs(obj: XmlSceneObject, reg: SceneRegistry) {
         node.blueprintRefs = node.blueprintIDs.mapNotNull {
             reg.blueprintIDs.map[it]
         }
+    }
+}
+
+/** Finds and adds Builder references by name, if they have been loaded. */
+private fun tryAddBuilderRef(obj: XmlSceneObject, lib: BuilderLibrary) {
+    (obj as? XmlSceneNode)?.let { node ->
+        val builderName = node.node?.builder ?: return
+        node.builderRef = lib.buildersByName[builderName]?.builder
     }
 }
 

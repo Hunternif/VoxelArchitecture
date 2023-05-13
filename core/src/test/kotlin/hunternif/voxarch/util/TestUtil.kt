@@ -69,6 +69,7 @@ fun assertNodeEquals(
     assertEquals("width", expected.width, actual.width, 0.0)
     assertEquals("height", expected.height, actual.height, 0.0)
     assertEquals("depth", expected.depth, actual.depth, 0.0)
+    assertEquals("builder", expected.builder, actual.builder)
     when (expected) {
         is PolyRoom -> {
             assertEquals("shape", expected.shape, (actual as PolyRoom).shape)
