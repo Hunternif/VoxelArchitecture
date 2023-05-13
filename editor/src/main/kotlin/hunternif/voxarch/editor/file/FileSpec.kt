@@ -10,7 +10,7 @@ import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.builder.BuilderLibrary
-import hunternif.voxarch.editor.file.style.parseStylesheet
+import hunternif.voxarch.editor.file.style.StyleParser
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.magicavoxel.VoxColor
@@ -143,7 +143,7 @@ fun EditorAppImpl.readProject(path: Path) {
         // Stylesheet
         val styleText = tryReadStylesheetFile(zipfs)
         // Ignore parsing errors, they will show in the editor anyway
-        val style = Stylesheet.fromRules(parseStylesheet(styleText).rules)
+        val style = Stylesheet.fromRules(StyleParser().parseStylesheet(styleText).rules)
 
         state = AppStateImpl(
             reg,

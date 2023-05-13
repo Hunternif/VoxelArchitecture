@@ -9,7 +9,7 @@ import hunternif.voxarch.editor.actions.updateStylesheetAndText
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
 import hunternif.voxarch.editor.blueprint.styleEditorStyleProperties
-import hunternif.voxarch.editor.file.style.parseStylesheet
+import hunternif.voxarch.editor.file.style.StyleParser
 import hunternif.voxarch.editor.scene.KeyListener
 import hunternif.voxarch.util.clamp
 import imgui.extension.texteditor.TextEditor
@@ -24,6 +24,7 @@ class GuiStyleEditor(
     private val app: EditorApp,
 ) : KeyListener {
     private val editor = TextEditor()
+    private val parser = StyleParser()
 
     private var currentText: String = ""
 
@@ -135,7 +136,7 @@ class GuiStyleEditor(
             currentText = editor.text
             val totalLines = editor.totalLines
 
-            val parsed = parseStylesheet(currentText)
+            val parsed = parser.parseStylesheet(currentText)
 
             val errorMap = parsed.errors.associate {
                 // Sometimes the error is reported on the next line after EOF

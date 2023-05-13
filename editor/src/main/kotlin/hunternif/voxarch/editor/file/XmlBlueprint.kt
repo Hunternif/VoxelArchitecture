@@ -8,7 +8,7 @@ import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
-import hunternif.voxarch.editor.file.style.parseStylesheet
+import hunternif.voxarch.editor.file.style.StyleParser
 
 @JacksonXmlRootElement(localName = "blueprint")
 class XmlBlueprint(
@@ -106,6 +106,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
 
 internal fun XmlBlueprint.mapXml(): Blueprint {
     val bp = Blueprint(id, name)
+    val styleParser = StyleParser()
     for (n in nodes) {
         // Skip start node because it's added automatically:
         if (n.id == bp.start.id) continue
@@ -126,7 +127,7 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             bp.slotIDs.save(slot)
         }
         n.styleClass?.let { bpNode.extraStyleClass = it }
-        val rule = n.style?.let { parseStylesheet(it).rules.firstOrNull() }
+        val rule = n.style?.let { styleParser.parseStylesheet(it).rules.firstOrNull() }
         rule?.declarations?.forEach { bpNode.rule.add(it) }
         if (domBuilder is DomRunBlueprint) {
             domBuilder.blueprintID = n.delegateBlueprintID

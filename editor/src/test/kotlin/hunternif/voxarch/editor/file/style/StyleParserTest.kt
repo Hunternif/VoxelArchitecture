@@ -16,28 +16,30 @@ import org.junit.Ignore
 import org.junit.Test
 
 class StyleParserTest {
+    private val parser = StyleParser()
+
     @Test
     fun `parse empty stylesheet`() {
-        val rules = parseStylesheet("").rules
+        val rules = parser.parseStylesheet("").rules
         assertRulesEqual(emptyList(), rules)
     }
 
     @Test
     fun `parse empty rule`() {
-        val rules = parseStylesheet(".selector { }").rules
+        val rules = parser.parseStylesheet(".selector { }").rules
         val expected = Rule(select("selector"))
         assertRulesEqual(listOf(expected), rules)
     }
 
     @Test
     fun `parse invalid empty selector`() {
-        val result = parseStylesheet("{ prop: value }")
+        val result = parser.parseStylesheet("{ prop: value }")
         assertNotEquals(emptyList<StyleParseError>(), result.errors)
     }
 
     @Test
     fun `parse invalid unmatched brace`() {
-        val result = parseStylesheet(".selector { prop: value")
+        val result = parser.parseStylesheet(".selector { prop: value")
         assertNotEquals(emptyList<StyleParseError>(), result.errors)
     }
 
@@ -58,14 +60,14 @@ class StyleParserTest {
             ".selector { width: 1! }",
             ".selector { width: 1 2 }",
         ).forEach {
-            val result = parseStylesheet(it)
+            val result = parser.parseStylesheet(it)
             assertNotEquals(emptyList<StyleParseError>(), result.errors)
         }
     }
 
     @Test
     fun `parse invalid prop without value`() {
-        val result = parseStylesheet("""
+        val result = parser.parseStylesheet("""
             .selector {
                 prop1:
                 prop2: value
@@ -76,7 +78,7 @@ class StyleParserTest {
 
     @Test
     fun `parse base selector`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
                 .selector {
                     visibility: VISIBLE
                 }
@@ -89,7 +91,7 @@ class StyleParserTest {
 
     @Test
     fun `parse inline selector`() {
-        val rules = parseStylesheet(".selector { height: 1; width: 2 }").rules
+        val rules = parser.parseStylesheet(".selector { height: 1; width: 2 }").rules
         val expected = Rule(select("selector")).apply {
             height { 1.vx }
             width { 2.vx }
@@ -99,7 +101,7 @@ class StyleParserTest {
 
     @Test
     fun `parse multiple rules with comments`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .selector { }
             
             /** My other selector */
@@ -119,7 +121,7 @@ class StyleParserTest {
 
     @Test
     fun `parse class selector`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .tower-4 {
                 diameter: 4
             }
@@ -132,7 +134,7 @@ class StyleParserTest {
 
     @Test
     fun `parse type + class selector`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             Room.tower {
                 height: inherit
                 width: 4 ~ 50%    // randomized value, 4 is natural size in voxels
@@ -147,7 +149,7 @@ class StyleParserTest {
 
     @Test
     fun `parse multiple AND-combined class selectors`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .tower.tall.a {
                 height: 150%
             }
@@ -160,7 +162,7 @@ class StyleParserTest {
 
     @Test
     fun `parse multiple OR-combined selectors`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .tower, .tall.room, PolyRoom {
                 rotation: 0.0
             }
@@ -177,7 +179,7 @@ class StyleParserTest {
 
     @Test
     fun `parse multiline selector list`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             Wall,
             Floor
             { }
@@ -191,7 +193,7 @@ class StyleParserTest {
 
     @Test
     fun `parse descendant selector`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             [.spire-castle] .tower {
                 roof-shape: SPIRE
             }
@@ -204,7 +206,7 @@ class StyleParserTest {
 
     @Test
     fun `parse multiple OR-combined descendant selectors`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             [.inner-wall, .outer-wall] Wall {
                 depth: -1
             }
@@ -221,7 +223,7 @@ class StyleParserTest {
 
     @Test
     fun `parse direct child selector`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .tower-wall > .window {
                 padding-x: 1
             }
@@ -235,7 +237,7 @@ class StyleParserTest {
     @Test
     @Ignore("Inline content not implemented yet")
     fun `parse content property`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .turret {
                 content: "content"
             }
@@ -246,7 +248,7 @@ class StyleParserTest {
 
     @Test
     fun `parse blueprint execution rule`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .turret {
                 blueprint: "Turret Decor BP"
             }
@@ -259,7 +261,7 @@ class StyleParserTest {
 
     @Test
     fun `parse spaced selector`() {
-        val rules = parseStylesheet("Room Wall .abc .f123 { }").rules
+        val rules = parser.parseStylesheet("Room Wall .abc .f123 { }").rules
         val expected = Rule(
             select(Room::class.java, Wall::class.java).style("abc", "f123")
         )
@@ -268,7 +270,7 @@ class StyleParserTest {
 
     @Test
     fun `parse any selector`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             * {
                 visibility: GONE
             }
@@ -281,7 +283,7 @@ class StyleParserTest {
 
     @Test
     fun `parse enum value`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             * {
                 snap-origin: FLOOR_CENTER
             }
@@ -297,7 +299,7 @@ class StyleParserTest {
 
     @Test
     fun `parse expressions`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             .child {
                 width: ((100% - 2.5 * 3))
                 height: 30 / (2 + 1%)
@@ -329,7 +331,7 @@ class StyleParserTest {
 
     @Test
     fun `parse int vec3 size`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             * {
                 size: 1 2 3
             }
@@ -342,7 +344,7 @@ class StyleParserTest {
 
     @Test
     fun `parse float vec3 size`() {
-        val rules = parseStylesheet("""
+        val rules = parser.parseStylesheet("""
             * {
                 size: 1 2.5 3
             }
