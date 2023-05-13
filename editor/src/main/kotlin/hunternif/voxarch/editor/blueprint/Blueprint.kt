@@ -10,6 +10,7 @@ import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.plan.Node
 import imgui.extension.imnodes.ImNodes
+import java.util.LinkedList
 import kotlin.collections.LinkedHashSet
 
 /**
@@ -89,6 +90,27 @@ class Blueprint(
     }
 
     override fun toString(): String = name
+
+    /** For all nodes in this BP, and in any referenced BP,
+     * maps domBuilder to its parent BP node. */
+    fun mapDomBuildersToNodes(): Map<DomBuilder, BlueprintNode> {
+        val map = mutableMapOf<DomBuilder, BlueprintNode>()
+        val visitedBPs = mutableSetOf<Blueprint>()
+        val bpQueue = LinkedList<Blueprint>()
+        bpQueue.add(this)
+        while (bpQueue.isNotEmpty()) {
+            val bp = bpQueue.removeFirst()
+            visitedBPs.add(bp)
+            bp.nodes.forEach {
+                map[it.domBuilder] = it
+                if (it.domBuilder is DomRunBlueprint) {
+                    val nextBp = it.domBuilder.blueprint
+                    if (nextBp !in visitedBPs) bpQueue.add(nextBp)
+                }
+            }
+        }
+        return map
+    }
 }
 
 /**

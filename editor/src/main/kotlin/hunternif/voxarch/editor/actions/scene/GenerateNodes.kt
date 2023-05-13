@@ -111,7 +111,7 @@ class GenerateNodes : HistoryAction(
             private val nodeToBpMap: MutableMap<Node, BlueprintNode>,
         ) : IDomListener {
             /** Maps domBuilder to its parent BP node */
-            private val domBuilderMap = bp.nodes.associateBy { it.domBuilder }
+            private val domBuilderMap = bp.mapDomBuildersToNodes()
             override fun onBeginBuild(element: StyledElement<*>) {}
             override fun onPrepareChildren(parent: StyledElement<*>, children: List<StyledElement<*>>) {}
             override fun onLayoutChildren(parent: StyledElement<*>, children: List<StyledElement<*>>) {}
