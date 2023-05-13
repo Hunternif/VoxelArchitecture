@@ -18,6 +18,9 @@ val defaultStyle get() = Stylesheet().add {
     styleFor<Window> {
         width { 100.pct }
         height { 100.pct }
+        // Extra depth to punch through misaligned walls
+        depth { 100.pct + 2.vx }
+        alignZ { center() }
     }
     styleFor<DomTurretDecor> {
         roofOffset { 1.vx }
