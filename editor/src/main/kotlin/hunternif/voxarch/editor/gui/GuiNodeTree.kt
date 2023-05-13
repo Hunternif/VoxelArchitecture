@@ -82,6 +82,8 @@ abstract class GuiSceneTree(
     open fun initState() {
         app.state.sceneTree.addListener(this)
         parentNode = root
+        list.clear()
+        entryMap.clear()
         markListDirty()
     }
 
@@ -247,7 +249,7 @@ abstract class GuiSceneTree(
         val isParentRootNode = root === app.state.rootNode // root node is never highlighted
         // remember which entries were opened:
         val openObjs =
-            if (list.isEmpty()) mutableSetOf(root)
+            if (list.isEmpty()) mutableSetOf(root) // initially, open the root node
             else list.filter { it.isOpen }.map { it.obj }.toMutableSet()
 
         // Open nextScrollItem's parents:
