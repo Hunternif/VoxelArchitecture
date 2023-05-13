@@ -202,6 +202,15 @@ fun DomBuilder.subdivide(
     bld.block()
 }
 
+/** Executes only 1 child at random. */
+fun DomBuilder.random(
+    block: DomBuilder.() -> Unit = {}
+) {
+    val bld = DomRandom()
+    addChild(bld)
+    bld.block()
+}
+
 ///////////////////////////// Utility /////////////////////////////
 @DslMarker
 annotation class DomDsl

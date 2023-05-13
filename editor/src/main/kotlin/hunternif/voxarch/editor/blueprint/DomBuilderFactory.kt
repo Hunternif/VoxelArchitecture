@@ -28,6 +28,7 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Subdivide" to { DomSubdivide() },
     "Repeat" to { DomRepeat() },
     "Blueprint" to { DomRunBlueprint() },
+    "Random" to { DomRandom() },
 )
 
 /**
