@@ -16,6 +16,7 @@ class BuilderLibrary {
         Entry("Fill", DefaultBuilders.Fill),
 
         Entry("Arched Window", DefaultBuilders.ArchedWindow),
+        Entry("Arched Bridge", DefaultBuilders.ArchedBridge),
 
         Entry("Foundation", DefaultBuilders.Foundation),
         Entry("Castle crenel ground wall", DefaultBuilders.CastleCrenelGroundWall),

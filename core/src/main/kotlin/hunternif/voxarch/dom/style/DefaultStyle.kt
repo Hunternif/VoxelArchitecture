@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.builder.BLD_ARCHED_BRIDGE
 import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
@@ -33,5 +34,8 @@ val defaultStyle get() = Stylesheet().add {
     styleFor<Column> {
         height { 100.pct }
         snapOrigin { floorCenter() }
+    }
+    style(BLD_ARCHED_BRIDGE) {
+        depth { 100.pct }
     }
 }
