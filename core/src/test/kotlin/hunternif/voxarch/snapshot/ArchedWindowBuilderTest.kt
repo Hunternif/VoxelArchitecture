@@ -63,6 +63,11 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(19, 19, 1) {
     }
 
     @Test
+    fun `window 6x2`() {
+        testWindow(6, 2)
+    }
+
+    @Test
     fun `window 6x6`() {
         testWindow(6, 6)
     }
@@ -70,6 +75,11 @@ class ArchedWindowBuilderTest : BaseSnapshotTest(19, 19, 1) {
     @Test
     fun `window 8x6`() {
         testWindow(8, 6)
+    }
+
+    @Test
+    fun `window 11x3`() {
+        testWindow(11, 3)
     }
 
     @Test
