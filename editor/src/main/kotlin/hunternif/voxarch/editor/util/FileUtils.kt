@@ -3,12 +3,38 @@ package hunternif.voxarch.editor.util
 import org.lwjgl.system.MemoryUtil
 import org.lwjgl.util.nfd.NativeFileDialog.*
 import java.io.FileNotFoundException
+import java.net.URI
 import java.nio.file.*
 import java.nio.file.spi.FileSystemProvider
 
+private lateinit var jarFs: FileSystem
+
+// Thanks to https://stackoverflow.com/a/22605905/1093712
+private fun getJarFs(uri: URI): FileSystem {
+    if (!::jarFs.isInitialized) {
+        // drop the "jar:file:/" in the beginning "jar:" and what comes after "!"
+        val uriStr = uri.toString()
+        val jarFileUri = uriStr.substring(10, uriStr.indexOf('!'))
+        println("Loading jar file: $jarFileUri")
+        jarFs = newZipFileSystem(Paths.get(jarFileUri))
+    }
+    return jarFs
+}
+
+private fun getInnerFileUri(uri: URI) =
+    uri.toString().run { substring(indexOf('!') + 1) }
+
+
 fun <T: Any> T.resourcePath(path: String): Path {
     return javaClass.classLoader.getResource(path)?.let {
-        Paths.get(it.toURI())
+        val uri = it.toURI()
+        if (uri.scheme == "jar") {
+            val fs = getJarFs(uri)
+            val innerUri = getInnerFileUri(uri)
+            println("loading path from jar: $innerUri")
+            return fs.getPath(innerUri)
+        }
+        return Paths.get(uri)
     } ?: throw FileNotFoundException(path)
 }
 
