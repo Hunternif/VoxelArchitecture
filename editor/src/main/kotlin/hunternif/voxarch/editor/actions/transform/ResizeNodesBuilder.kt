@@ -18,7 +18,6 @@ import kotlin.collections.any
 import kotlin.collections.component1
 import kotlin.collections.component2
 import kotlin.collections.set
-import kotlin.math.abs
 
 class ResizeNodesBuilder(
     app: EditorAppImpl,
@@ -46,7 +45,6 @@ class ResizeNodesBuilder(
      * @param symmetric whether to resize the opposite side symmetrically.
      */
     fun dragFace(dir: AADirection3D, delta: Float, symmetric: Boolean = false) {
-        if (abs(delta) < 1f) return
         val deltaVec = when (dir) {
             POS_X, NEG_X -> Vec3(delta, 0f, 0f)
             POS_Y, NEG_Y -> Vec3(0f, delta, 0f)
