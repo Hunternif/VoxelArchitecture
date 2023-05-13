@@ -106,3 +106,14 @@ compileTestKotlin {
         jvmTarget = "1.8"
     }
 }
+
+jar {
+    manifest {
+        attributes "Main-Class": "hunternif.voxarch.editor.EditorAppKt"
+    }
+
+    // Creates a fat jar with all dependencies
+    from {
+        configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
