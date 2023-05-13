@@ -9,9 +9,7 @@ import hunternif.voxarch.plan.collapse
 import java.util.LinkedList
 
 /** Root of the DOM. */
-class DomRoot(
-    val node: Node = Structure(),
-) : DomBuilder() {
+class DomRoot : DomBuilder() {
 
     private val listeners = mutableListOf<IDomListener>()
 
@@ -23,6 +21,7 @@ class DomRoot(
     fun buildDom(
         stylesheet: Stylesheet = defaultStyle,
         seed: Long = 0L,
+        rootNode: Node = Structure(),
         maxRecursions: Int = 4,
         cleanDummies: Boolean = true,
         hinting: Boolean = false,
@@ -38,7 +37,7 @@ class DomRoot(
         // immutable, i.e. its children will never modify it.
 
         val stats = DomBuildStats()
-        val rootCtx = DomBuildContext(node, stylesheet, seed, stats)
+        val rootCtx = DomBuildContext(rootNode, stylesheet, seed, stats)
         val rootElement = prepareForLayout(rootCtx)
 
         // This queue contains fully completed parent elements,
@@ -84,7 +83,7 @@ class DomRoot(
             parent.removeChild(child)
         }
 
-        return node
+        return rootNode
     }
 
     /** Prepares children except those that exceed recursion limit. */

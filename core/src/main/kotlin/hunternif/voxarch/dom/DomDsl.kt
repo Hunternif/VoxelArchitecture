@@ -15,12 +15,9 @@ const val DOM_TURRET = "dom_turret"
 
 /** Creates DOM root. */
 fun domRoot(
-    node: Node = Structure(),
     block: DomRoot.() -> Unit = {}
 ): DomRoot {
-    return DomRoot(node).apply {
-        block()
-    }
+    return DomRoot().apply { block() }
 }
 
 /**
