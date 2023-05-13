@@ -36,7 +36,7 @@ class GuiBpEditorNodeContent(
         ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 4f, 2f)
         ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 8f, 4f)
-        val width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
+        var width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
 
         //============================ Header =============================
         ImNodes.beginNodeTitleBar()
@@ -70,6 +70,7 @@ class GuiBpEditorNodeContent(
 
         //============================= Body ==============================
         if (node.domBuilder is DomRunBlueprint) {
+            width = max(100f, width)
             ImGui.pushItemWidth(width)
             bpCombo.render(node.domBuilder.blueprint) {
                 node.domBuilder.blueprint = it
@@ -77,6 +78,7 @@ class GuiBpEditorNodeContent(
             ImGui.popItemWidth()
         }
         if (showStyleClass) {
+            width = max(100f, width)
             ImGui.pushItemWidth(width)
             styleClassInput.render(node.extraStyleClass) {
                 app.setBlueprintNodeStyle(node, it)
