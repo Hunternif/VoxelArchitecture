@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor
 
+import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.newProject
 import hunternif.voxarch.editor.actions.openProjectFile
 import hunternif.voxarch.editor.scene.MainScene
@@ -75,7 +76,6 @@ class EditorAppImpl : EditorApp {
         glfwShowWindow(window)
 
         val file = parseFileArg(args)
-        //TODO: log errors from opening initial file
         file?.let { openProjectFile(it) } ?: newProject()
     }
 
@@ -83,6 +83,7 @@ class EditorAppImpl : EditorApp {
         if (args.isNotEmpty()) {
             val path = Paths.get(args[0])
             if (Files.exists(path)) return path
+            else logError("Couldn't find project file: $path")
         }
         return null
     }

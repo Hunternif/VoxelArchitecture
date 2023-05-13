@@ -21,6 +21,7 @@ class LogMessage(
 
         fun info(msg: String) = LogMessage(msg, Severity.INFO)
         fun warn(msg: String) = LogMessage(msg, Severity.WARN)
+        fun error(msg: String) = LogMessage(msg, Severity.ERROR)
         fun error(e: Exception): LogMessage {
             val msg = "Error: ${e.javaClass.simpleName}: ${e.message}"
             val lines = e.stackTrace.map { it.toString() }

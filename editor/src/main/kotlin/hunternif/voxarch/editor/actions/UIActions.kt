@@ -156,6 +156,10 @@ fun EditorApp.logError(e: Exception) = action {
     logs.add(LogMessage.error(e))
 }
 
+fun EditorApp.logError(msg: String) = action {
+    logs.add(LogMessage.error(msg))
+}
+
 fun EditorApp.addOverlayText(id: String, text: String) = action {
     state.overlayText[id] = text
 }
