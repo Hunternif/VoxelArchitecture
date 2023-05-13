@@ -2,8 +2,9 @@ package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.builder.BLD_ARCHED_BRIDGE
 import hunternif.voxarch.dom.DOM_TURRET
-import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.dom.builder.DomTurretRoofDecor
 import hunternif.voxarch.plan.*
 
 val defaultStyle get() = Stylesheet().add {
@@ -23,9 +24,11 @@ val defaultStyle get() = Stylesheet().add {
         depth { 100.pct + 2.vx }
         alignZ { center() }
     }
-    styleFor<DomTurretDecor> {
+    styleFor<DomTurretRoofDecor> {
         roofOffset { 1.vx }
         spireRatio { set(2.5) }
+    }
+    styleFor<DomTurretDecor> {
         taperRatio { set(1.3) }
     }
     style(DOM_TURRET) {

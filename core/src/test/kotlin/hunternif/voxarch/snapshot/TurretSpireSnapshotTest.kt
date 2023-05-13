@@ -5,11 +5,11 @@ import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
 import hunternif.voxarch.builder.setCastleBuilders
+import hunternif.voxarch.dom.builder.DomTurretRoofDecor
 import hunternif.voxarch.sandbox.castle.turret.*
 import org.junit.Test
 
@@ -56,7 +56,7 @@ class TurretSpireSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                     height { 3.vx }
                     shape { set(PolyShape.SQUARE) }
                 }
-                styleFor<DomTurretDecor> {
+                styleFor<DomTurretRoofDecor> {
                     roofShape { set(RoofShape.SPIRE) }
                     spireRatio { set(spireRatio) }
                 }

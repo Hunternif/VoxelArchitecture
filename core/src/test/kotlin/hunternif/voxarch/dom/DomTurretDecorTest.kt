@@ -2,6 +2,7 @@ package hunternif.voxarch.dom
 
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.dom.builder.DomTurretRoofDecor
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.PolyRoom
@@ -17,7 +18,7 @@ class DomTurretDecorTest {
     @Test
     fun `turret adds style rules to itself but not children`() {
         val style = defaultStyle.add {
-            styleFor<DomTurretDecor>(DOM_TURRET) {
+            styleFor<DomTurretRoofDecor> {
                 // This enables the "roof" element with height 0.0
                 roofShape { set(RoofShape.FLAT_BORDERED) }
             }

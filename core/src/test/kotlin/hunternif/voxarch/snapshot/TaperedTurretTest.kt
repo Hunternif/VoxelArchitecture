@@ -5,7 +5,6 @@ import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
@@ -36,7 +35,7 @@ class TaperedTurretTest : BaseSnapshotTest(10, 15, 10) {
                     height { 6.vx }
                     shape { set(PolyShape.SQUARE) }
                 }
-                styleFor<DomTurretDecor> {
+                style(selectDescendantOf(DOM_TURRET)) {
                     roofShape { set(RoofShape.FLAT_BORDERED) }
                     bottomShape { set(BottomShape.TAPERED) }
                     roofOffset { 1.vx }

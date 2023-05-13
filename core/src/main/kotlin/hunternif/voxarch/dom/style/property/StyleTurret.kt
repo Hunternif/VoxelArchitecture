@@ -2,6 +2,7 @@ package hunternif.voxarch.dom.style.property
 
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
+import hunternif.voxarch.dom.builder.DomTurretRoofDecor
 import hunternif.voxarch.plan.naturalWidth
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
@@ -16,7 +17,7 @@ class StyleTurretRoofShape : StyleParameter
 class StyleTurretBottomShape : StyleParameter
 
 /** Offset for borders and spires in all child turrets. */
-val PropRoofOffset = newDomProperty<DomTurretDecor, Double>("roof-offset", 1.0) { value ->
+val PropRoofOffset = newDomProperty<DomTurretRoofDecor, Double>("roof-offset", 1.0) { value ->
     val baseValue = parentNode.naturalWidth
     domBuilder.roofOffset = value
         .invoke(baseValue, seed + 10000006)
@@ -24,7 +25,7 @@ val PropRoofOffset = newDomProperty<DomTurretDecor, Double>("roof-offset", 1.0) 
 }
 
 /** Y/X ratio of spires for all child turrets. */
-val PropSpireRatio = newDomProperty<DomTurretDecor, Double>("spire-ratio", 3.0) { value ->
+val PropSpireRatio = newDomProperty<DomTurretRoofDecor, Double>("spire-ratio", 3.0) { value ->
     val baseValue = 1.0
     domBuilder.spireRatio = value.invoke(baseValue, seed + 10000019)
 }
@@ -35,7 +36,7 @@ val PropTaperRatio = newDomProperty<DomTurretDecor, Double>("taper-ratio", 0.75)
     domBuilder.taperRatio = value.invoke(baseValue, seed + 10000020)
 }
 
-val PropRoofShape = newDomProperty<DomTurretDecor, RoofShape>("roof-shape", RoofShape.FLAT_BORDERED) { value ->
+val PropRoofShape = newDomProperty<DomTurretRoofDecor, RoofShape>("roof-shape", RoofShape.FLAT_BORDERED) { value ->
     val baseValue = domBuilder.roofShape
     domBuilder.roofShape = value.invoke(baseValue, seed + 10000007)
 }

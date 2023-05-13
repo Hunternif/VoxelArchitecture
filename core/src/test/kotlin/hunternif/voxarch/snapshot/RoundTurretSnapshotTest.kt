@@ -5,7 +5,6 @@ import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.turret
-import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.PolyRoom
 import hunternif.voxarch.plan.PolyShape
@@ -70,7 +69,7 @@ class RoundTurretSnapshotTest : BaseSnapshotTest(10, 20, 10) {
                     height { 6.vx }
                     shape { set(PolyShape.ROUND) }
                 }
-                styleFor<DomTurretDecor> {
+                style(selectDescendantOf(DOM_TURRET)) {
                     roofShape { set(RoofShape.SPIRE_BORDERED) }
                     bottomShape { set(BottomShape.FLAT) }
                     roofOffset { 1.vx }
