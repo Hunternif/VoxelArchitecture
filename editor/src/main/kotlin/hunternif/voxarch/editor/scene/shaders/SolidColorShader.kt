@@ -31,4 +31,15 @@ class SolidColorShader(
         color = newColor
         uploadVec4f("uColor", Vector4f(color.r, color.g, color.b, color.a))
     }
+
+    /** This is a cheat to prevent Z-fighting of lines on top of voxels. */
+    var depthOffset: Float = 0f
+        set(value) {
+            field = value
+            if (isInitialized) {
+                use {
+                    uploadFloat("depthOffset", value)
+                }
+            }
+        }
 }

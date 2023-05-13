@@ -25,6 +25,7 @@ class ResizeNodeModel : BaseModel() {
 
     override fun init() {
         super.init()
+        shader.depthOffset = -0.002f
         initVertexAttributes {
             vector3f(0) // position attribute
         }
