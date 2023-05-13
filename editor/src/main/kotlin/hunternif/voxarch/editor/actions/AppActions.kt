@@ -20,6 +20,7 @@ import hunternif.voxarch.editor.actions.transform.*
 import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.naturalToCentric
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
@@ -199,6 +200,19 @@ fun EditorApp.transformNodeSnapOrigin(
         )
     )
 }
+
+/** Passing in [oldColor] because the actual color could be already changed in the scene. */
+fun EditorApp.transformNodeColor(
+    obj: SceneNode,
+    oldColor: ColorRGBa,
+    newColor: ColorRGBa,
+) = historyAction(
+    TransformObjects(
+        mapOf(obj to obj.transformData(color = oldColor)),
+        mapOf(obj to obj.transformData(color = newColor)),
+        "Transform node (color)",
+    )
+)
 
 /** Set tags */
 fun EditorApp.setNodeTags(

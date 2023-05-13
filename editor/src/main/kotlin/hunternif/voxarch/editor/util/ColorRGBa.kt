@@ -9,16 +9,18 @@ import kotlin.math.round
 
 /** Borrowed from OpenRNDR */
 data class ColorRGBa(
-    val r: Float,
-    val g: Float,
-    val b: Float,
-    val a: Float = 1f,
+    var r: Float,
+    var g: Float,
+    var b: Float,
+    var a: Float = 1f,
 ) {
     fun toVector3f() = Vector3f(r, g, b)
     fun toVector4f() = Vector4f(r, g, b, a)
 
-    val hex: Int = calculateHexRGB()
-    val hexABGR: Int by lazy { calculateHexABGR() }
+    var hex: Int = calculateHexRGB()
+        private set
+    var hexABGR: Int = calculateHexABGR()
+        private set
 
     private fun calculateHexRGB(): Int {
         val ri = round(255f * r).toInt()
@@ -30,7 +32,7 @@ data class ColorRGBa(
         return rbit or gbit or bbit
     }
 
-    /** Add together all components of the 2 colors */
+    /** Add together all components of the 2 colors, returns new instance. */
     fun add(c: ColorRGBa) = ColorRGBa(
         min(1f, r + c.r),
         min(1f, g + c.g),
@@ -38,7 +40,17 @@ data class ColorRGBa(
         min(1f, a + c.a),
     )
 
-    /** Alpha-blend the 2 colors. The given color [c] is on top. */
+    /** Modifies this color */
+    fun set(c: ColorRGBa) = apply {
+        r = c.r
+        g = c.g
+        b = c.b
+        a = c.a
+        hex = calculateHexRGB()
+        hexABGR = calculateHexABGR()
+    }
+
+    /** Alpha-blend the 2 colors. The given color [c] is on top. Returns new instance. */
     fun blend(c: ColorRGBa): ColorRGBa {
         if (a == 0f) return c
         if (c.a == 0f) return this
@@ -68,6 +80,22 @@ data class ColorRGBa(
         return String.format("0x%06X %.0f%%", hex, a * 100)
     }
 
+    /** [array] must fit 4 items */
+    fun writeToFloatArray(array: FloatArray) {
+        array[0] = r
+        array[1] = g
+        array[2] = b
+        array[3] = a
+    }
+
+    /** [array] must fit 4 items */
+    fun readFromFloatArray(array: FloatArray) {
+        r = array[0]
+        g = array[1]
+        b = array[2]
+        a = array[3]
+    }
+
     companion object {
         fun fromHex(hex: Int, alpha: Float = 1f): ColorRGBa {
             val r = hex and (0xff0000) shr 16
@@ -81,6 +109,15 @@ data class ColorRGBa(
             val g = buffer.get().toInt() and 0xff
             val b = buffer.get().toInt() and 0xff
             return ColorRGBa(r / 255f, g / 255f, b / 255f)
+        }
+
+        /** [array] must fit 4 items */
+        fun readFromFloatArray(array: FloatArray): ColorRGBa {
+            val r = array[0]
+            val g = array[1]
+            val b = array[2]
+            val a = array[3]
+            return ColorRGBa(r, g, b, a)
         }
     }
 }

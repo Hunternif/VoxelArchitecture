@@ -30,6 +30,7 @@ class GuiObjectProperties(
     private val tagsInput = GuiInputText("tags")
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
+    private val colorInput = GuiInputColor("color")
     private val builderInput by lazy {
         GuiCombo("builder", allBuilders)
     }
@@ -132,6 +133,10 @@ By default, it's set so that origin is at the low-XYZ corner.""")
             app.setNodeBuilder(sceneNode, newBuilder)
         }
         tooltip("Override the Builder that will be used for this node during 'Build voxels'.")
+
+        colorInput.render(sceneNode.color) {
+            app.transformNodeColor(sceneNode, original, newValue)
+        }
 
         ImGui.separator()
         ImGui.text("Blueprints")
@@ -266,7 +271,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
     /** Apply the modified values to the node. */
     private fun redrawIfNeeded() = redrawTimer.runAtInterval {
         if (originInput.dirty || sizeInput.dirty || startInput.dirty
-            || rotationInput.dirty) {
+            || rotationInput.dirty || colorInput.dirty) {
             obj?.let { obj ->
                 when (obj) {
                     is SceneNode -> {
@@ -291,6 +296,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
         rotationInput.id = id
         builderInput.id = id
         blueprintInput.id = id
+        colorInput.id = id
     }
 
     companion object {

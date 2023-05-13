@@ -9,6 +9,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
 
@@ -39,6 +40,7 @@ class TransformObjects(
                         size = data.size
                     }
                     obj.snapOrigin = data.snapOrigin
+                    obj.color.set(data.color)
                 }
                 is SceneVoxelGroup -> {
                     obj.origin.set(data.origin)
@@ -59,6 +61,7 @@ data class TransformData(
     val start: Vec3,
     val rotationY: Double,
     val snapOrigin: SnapOrigin,
+    val color: ColorRGBa,
 )
 
 /** Creates an instance of [TransformData] using current values.
@@ -69,6 +72,7 @@ fun SceneObject.transformData(
     start: Vec3? = null,
     rotationY: Double? = null,
     snapOrigin: SnapOrigin? = null,
+    color: ColorRGBa? = null,
 ) = when(this) {
     is SceneNode -> TransformData(
         (origin ?: node.origin).clone(),
@@ -76,6 +80,7 @@ fun SceneObject.transformData(
         (start ?: node.start).clone(),
         rotationY ?: node.rotationY,
         snapOrigin ?: this.snapOrigin,
+        (color ?: this.color).copy(),
     )
     is SceneVoxelGroup -> TransformData(
         (origin ?: this.origin).clone(),
@@ -83,6 +88,7 @@ fun SceneObject.transformData(
         Vec3.ZERO,
         0.0,
         SnapOrigin.OFF,
+        this.color.copy(),
     )
     else -> TransformData(
         Vec3.ZERO,
@@ -90,5 +96,6 @@ fun SceneObject.transformData(
         Vec3.ZERO,
         0.0,
         SnapOrigin.OFF,
+        this.color.copy(),
     )
 }

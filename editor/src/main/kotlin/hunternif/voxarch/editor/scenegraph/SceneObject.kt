@@ -29,12 +29,14 @@ open class SceneObject(
     center: Vector3f = Vector3f(),
     size: Vector3f = Vector3f(),
     angleY: Float = 0f,
-    val color: ColorRGBa = Colors.defaultNodeBox,
+    color: ColorRGBa = Colors.defaultNodeBox,
     val isGenerated: Boolean = false,
 ) : INested<SceneObject>, WithID {
 
+    val color: ColorRGBa = color.copy()
+
     /** Oriented bounding box with rotation. */
-    val box = BoxMeshWithFaces(center, size, angleY.toRadians(), color)
+    val box = BoxMeshWithFaces(center, size, angleY.toRadians(), this.color)
 
     override var parent: SceneObject? = null
     override val children: LinkedHashSet<SceneObject> = LinkedHashSet()
