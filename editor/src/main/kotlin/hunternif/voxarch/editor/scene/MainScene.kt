@@ -197,18 +197,14 @@ class MainScene(private val app: EditorApp) {
         highlightedFaceModel.update()
     }
 
-    fun highlightObject(obj: SceneObject) {
-        if (obj !in highlightedNodeModel && obj != app.state.rootNode) {
+    /** Highlighted nodes that are hovered in Node tree */
+    fun updateHighlightedModel() {
+        highlightedNodeModel.clear()
+        for (obj in app.state.highlightedObjects) {
+            if (obj == app.state.rootNode) continue
             highlightedNodeModel.add(obj)
-            highlightedNodeModel.update()
         }
-    }
-
-    fun unhighlightObject(obj: SceneObject) {
-        if (obj in highlightedNodeModel) {
-            highlightedNodeModel.remove(obj)
-            highlightedNodeModel.update()
-        }
+        highlightedNodeModel.update()
     }
 
     fun render() {

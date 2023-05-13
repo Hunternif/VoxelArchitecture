@@ -114,11 +114,13 @@ fun EditorApp.scrollNodeTreeTo(obj: SceneObject) = action {
 }
 
 fun EditorApp.highlightObject(obj: SceneObject) = action {
-    scene.highlightObject(obj)
+    state.highlightedObjects.add(obj)
+    scene.updateHighlightedModel()
 }
 
 fun EditorApp.unhighlightObject(obj: SceneObject) = action {
-    scene.unhighlightObject(obj)
+    state.highlightedObjects.remove(obj)
+    scene.updateHighlightedModel()
 }
 
 /** Used by UI to show real-time updates that aren't yet written to history. */

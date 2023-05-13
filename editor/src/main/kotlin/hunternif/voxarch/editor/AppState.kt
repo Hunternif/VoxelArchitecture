@@ -96,6 +96,8 @@ interface AppState {
     val selectedBlueprint: Blueprint?
     /** Maps text id to text value*/
     val overlayText: Map<String, String>
+    /** Not a subset, because it shouldn't be serialized */
+    val highlightedObjects: Set<SceneObject>
 }
 
 class AppStateImpl(
@@ -160,6 +162,7 @@ class AppStateImpl(
     override var isTextEditorActive = false
     override var selectedBlueprint: Blueprint? = null
     override val overlayText = linkedMapOf<String, String>()
+    override val highlightedObjects = linkedSetOf<SceneObject>()
 }
 
 /** Create a new clean state. */
