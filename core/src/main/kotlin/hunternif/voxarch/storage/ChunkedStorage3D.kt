@@ -20,17 +20,17 @@ class ChunkedStorage3D<T>(
         }
     }
 
-    override var minX: Int = Int.MAX_VALUE
+    override var minX: Int = 0
         private set
-    override var maxX: Int = Int.MIN_VALUE
+    override var maxX: Int = 0
         private set
-    override var minY: Int = Int.MAX_VALUE
+    override var minY: Int = 0
         private set
-    override var maxY: Int = Int.MIN_VALUE
+    override var maxY: Int = 0
         private set
-    override var minZ: Int = Int.MAX_VALUE
+    override var minZ: Int = 0
         private set
-    override var maxZ: Int = Int.MIN_VALUE
+    override var maxZ: Int = 0
         private set
 
     @PublishedApi internal var _size = 0
@@ -59,12 +59,22 @@ class ChunkedStorage3D<T>(
         if (v != null && prevVal == null) _size++
         // TODO: shrink bounds when item is removed, un-ignore unit test.
         if (v != null) {
-            minX = min(minX, x)
-            minY = min(minY, y)
-            minZ = min(minZ, z)
-            maxX = max(maxX, x)
-            maxY = max(maxY, y)
-            maxZ = max(maxZ, z)
+            if (size == 0) {
+                // reset, min / max could be away from (0, 0, 0)
+                minX = x
+                minY = y
+                minZ = z
+                maxX = x
+                maxY = y
+                maxZ = z
+            } else {
+                minX = min(minX, x)
+                minY = min(minY, y)
+                minZ = min(minZ, z)
+                maxX = max(maxX, x)
+                maxY = max(maxY, y)
+                maxZ = max(maxZ, z)
+            }
         }
     }
 
