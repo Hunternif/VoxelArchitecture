@@ -1,5 +1,6 @@
 package hunternif.voxarch.dom.style.property
 
+import hunternif.voxarch.dom.builder.DomTurretBottomDecor
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.dom.builder.DomTurretRoofDecor
@@ -31,7 +32,7 @@ val PropSpireRatio = newDomProperty<DomTurretRoofDecor, Double>("spire-ratio", 3
 }
 
 /** Y/X ratio of tapered bottoms of turrets. */
-val PropTaperRatio = newDomProperty<DomTurretDecor, Double>("taper-ratio", 0.75) { value ->
+val PropTaperRatio = newDomProperty<DomTurretBottomDecor, Double>("taper-ratio", 0.75) { value ->
     val baseValue = 1.5
     domBuilder.taperRatio = value.invoke(baseValue, seed + 10000020)
 }
@@ -47,7 +48,7 @@ val PropRoofShape = newDomProperty<DomTurretRoofDecor, RoofShape>("roof-shape", 
 //    domBuilder.bodyShape = value.invoke(baseValue, seed + 10000008)
 //}
 
-val PropBottomShape = newDomProperty<DomTurretDecor, BottomShape>("bottom-shape", BottomShape.FLAT) { value ->
+val PropBottomShape = newDomProperty<DomTurretBottomDecor, BottomShape>("bottom-shape", BottomShape.FLAT) { value ->
     val baseValue = domBuilder.bottomShape
     domBuilder.bottomShape = value.invoke(baseValue, seed + 10000009)
 }

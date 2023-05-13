@@ -22,6 +22,7 @@ val domBuilderFactoryByName: Map<String, DomBuilderFactory> = mapOf(
     "Turret" to { DomPolyRoomWithTurretBuilder() },
     "Turret Decor" to { DomTurretDecor() },
     "Turret Roof Decor" to { DomTurretRoofDecor() },
+    "Turret Bottom Decor" to { DomTurretBottomDecor() },
     "Extend" to { DomExtend() },
     "All Walls" to { DomPolySegmentBuilder() },
     "Four Walls" to { DomFourWallsBuilder() },
