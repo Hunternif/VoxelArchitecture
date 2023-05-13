@@ -41,14 +41,22 @@ data class ColorRGBa(
     )
 
     /** Modifies this color */
-    fun set(c: ColorRGBa) = apply {
-        r = c.r
-        g = c.g
-        b = c.b
-        a = c.a
+    fun set(
+        r: Float = this.r,
+        g: Float = this.g,
+        b: Float = this.b,
+        a: Float = this.a,
+    ) = apply {
+        this.r = r
+        this.g = g
+        this.b = b
+        this.a = a
         hex = calculateHexRGB()
         hexABGR = calculateHexABGR()
     }
+
+    /** Modifies this color */
+    fun set(c: ColorRGBa) = set(c.r, c.g, c.b, c.a)
 
     /** Alpha-blend the 2 colors. The given color [c] is on top. Returns new instance. */
     fun blend(c: ColorRGBa): ColorRGBa {
@@ -90,10 +98,7 @@ data class ColorRGBa(
 
     /** [array] must fit 4 items */
     fun readFromFloatArray(array: FloatArray) {
-        r = array[0]
-        g = array[1]
-        b = array[2]
-        a = array[3]
+        set(array[0], array[1], array[2], array[3])
     }
 
     companion object {
