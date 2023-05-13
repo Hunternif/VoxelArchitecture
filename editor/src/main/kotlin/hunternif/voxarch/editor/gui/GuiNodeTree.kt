@@ -123,8 +123,10 @@ abstract class GuiSceneTree(
     }
 
     private fun renderItem(item: TreeEntry) {
+        item.refreshColor()
         val node = item.obj
         val isGenerated = node.isGenerated
+        val isCustomColor = item.isCustomColor
         if (isGenerated) pushStyleColor(Text, Colors.generatedLabel)
 
         ImGui.tableNextRow()
@@ -133,11 +135,13 @@ abstract class GuiSceneTree(
         // Selectable would make more sense, but its size & position is bugged.
         // Button maintains the size & pos well, regardless of font.
 
-        gui.smallIconButton(item.visibleIconForImgui, transparent = true) {
+        if (isCustomColor) pushStyleColor(Button, item.color)
+        gui.smallIconButton(item.visibleIconForImgui, transparent = !isCustomColor) {
             if (item.isHidden) app.showObject(node)
             else app.hideObject(node)
             markListDirty()
         }
+        if (isCustomColor) ImGui.popStyleColor()
 
         ImGui.tableNextColumn()
         var flags = 0 or
@@ -315,5 +319,14 @@ private data class TreeEntry(
     val visibleIconForImgui = when {
         isHidden -> "${FontAwesomeIcons.EyeSlash}##$id"
         else -> "${FontAwesomeIcons.Eye}##$id"
+    }
+    val isCustomColor
+        get() = obj.color != Colors.defaultNodeBox
+            && obj.color != Colors.defaultGeneratedNodeBox
+            && obj.color != Colors.transparent
+    val color = obj.color.copy()
+
+    fun refreshColor() {
+        color.set(obj.color).apply { a = 0.5f }
     }
 }
