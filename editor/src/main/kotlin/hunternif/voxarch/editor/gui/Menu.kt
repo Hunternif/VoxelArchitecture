@@ -23,10 +23,12 @@ inline fun menuItem(
     label: String,
     shortcut: String = "",
     enabled: Boolean = true,
+    tooltip: String? = null,
     crossinline onClick: () -> Unit,
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
     if (ImGui.menuItem(label, shortcut, false, enabled)) { onClick() }
+    tooltip(tooltip)
     ImGui.popStyleVar()
 }
 

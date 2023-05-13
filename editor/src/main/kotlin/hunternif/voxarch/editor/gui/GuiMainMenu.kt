@@ -74,15 +74,22 @@ fun MainGui.mainMenu() {
             menuCheck("Properties", showProperties.get()) {
                 showProperties.toggle()
             }
+            menuCheck("Build", showBuild.get()) {
+                showBuild.toggle()
+            }
             menuCheck("Logs", showLogs.get()) {
                 showLogs.toggle()
             }
         }
-        menu("Run") {
-            menuItem("Generate nodes") {
+        menu("Build") {
+            menuItem("Generate nodes",
+                tooltip ="Reset generated nodes and run Blueprints for all nodes that have them."
+            ) {
                 app.generateNodes()
             }
-            menuItem("Build voxels") {
+            menuItem("Build voxels",
+                tooltip = "Reset \"build voxels\" and build them again, from the root node."
+            ) {
                 app.buildVoxels()
             }
             ImGui.separator()

@@ -25,6 +25,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val blueprintLibrary = GuiBlueprintLibrary(app, this)
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
     @PublishedApi internal val styleEditor = GuiStyleEditor(app)
+    @PublishedApi internal val build = GuiBuild(app)
     @PublishedApi internal val log = GuiLog()
     @PublishedApi internal val statusBar = GuiStatusBar(app, log)
 
@@ -35,6 +36,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val showVoxelTree = ImBoolean(true)
     @PublishedApi internal val showHistory = ImBoolean(true)
     @PublishedApi internal val showProperties = ImBoolean(true)
+    @PublishedApi internal val showBuild = ImBoolean(true)
     @PublishedApi internal val showLogs = ImBoolean(false)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
@@ -44,9 +46,13 @@ class MainGui(val app: EditorApp) : GuiBase() {
             top = HorizontalSplit(
                 leftSize = 250,
                 left = VerticalSplit(
-                    bottomRatio = 0.3f,
-                    top = Window("Style editor"),
-                    bottom = Window("Blueprint library"),
+                    bottomRatio = 0.1f,
+                    top = VerticalSplit(
+                        bottomRatio = 0.3f,
+                        top = Window("Style editor"),
+                        bottom = Window("Blueprint library"),
+                    ),
+                    bottom = Window("Build"),
                 ),
                 right = VerticalSplit(
                     bottomSize = 350,
@@ -145,23 +151,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             }
         }
         panel("Node tree", showNodeTree, hasPadding = false) {
-            ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 0f, 0f)
-            childWindow("tree", toolbarHeight) { nodeTree.render() }
-            childToolbar("footer") {
-                ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 4f)
-                val width = (ImGui.getContentRegionAvailX() - 2*4 - ImGui.getFrameHeight()) / 2
-                accentButton("Build voxels", width = width) {
-                    app.buildVoxels()
-                }
-                ImGui.sameLine()
-                accentButton("Generate nodes", width = width) {
-                    app.generateNodes()
-                }
-                ImGui.sameLine()
-                iconButton(FontAwesomeIcons.Cog, accent = true, font = fontMediumIcons)
-                ImGui.popStyleVar()
-            }
-            ImGui.popStyleVar()
+            nodeTree.render()
         }
         panel("History", showHistory, hasPadding = false) {
             history.render()
@@ -174,6 +164,9 @@ class MainGui(val app: EditorApp) : GuiBase() {
         }
         panel(blueprintWindowTitle, showBlueprintEditor, hasPadding = false) {
             blueprintEditor.render()
+        }
+        panel("Build", showBuild) {
+            build.render()
         }
         panel("Logs", showLogs, hasPadding = false) {
             log.render()
