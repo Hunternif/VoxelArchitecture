@@ -99,7 +99,10 @@ class SelectController(
                 }
                 REPLACE -> {
                     selectionBuilder?.clear()
-                    hit?.let { selectionBuilder?.add(it) }
+                    hit?.let {
+                        selectionBuilder?.add(it)
+                        app.scrollNodeTreeTo(it)
+                    }
                 }
             }
         }
@@ -160,7 +163,12 @@ class SelectController(
     /** When the selection marquee includes [obj] */
     private fun onHitObject(obj: SceneObject) {
         when (mode) {
-            REPLACE, ADD -> {
+            ADD -> {
+                selectedSet.add(obj)
+                selectionBuilder?.add(obj)
+            }
+            REPLACE -> {
+                if (selectedSet.isEmpty()) app.scrollNodeTreeTo(obj)
                 selectedSet.add(obj)
                 selectionBuilder?.add(obj)
             }

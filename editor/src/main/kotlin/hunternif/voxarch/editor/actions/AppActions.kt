@@ -20,7 +20,6 @@ import hunternif.voxarch.editor.actions.transform.*
 import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.plan.naturalToCentric
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
