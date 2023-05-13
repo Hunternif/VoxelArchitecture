@@ -38,12 +38,15 @@ class GuiBlueprintEditor(
 
     private val padding = ImVec2(8f, 6f)
 
+    private var selectedBlueprint: Blueprint? = null
+
     fun init() {
         ImNodes.createContext()
     }
 
     fun render() {
-        app.state.selectedBlueprint?.run {
+        refreshPositions()
+        selectedBlueprint?.run {
             renderEditor()
             installControls()
             ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
@@ -86,6 +89,14 @@ class GuiBlueprintEditor(
                 }
             }
             ImGui.popStyleVar()
+        }
+    }
+
+    /** This is useful so that applyImNodesPos() is not called at the wrong time. */
+    private fun refreshPositions() {
+        if (selectedBlueprint != app.state.selectedBlueprint) {
+            selectedBlueprint = app.state.selectedBlueprint
+            selectedBlueprint?.nodes?.forEach { it.applyImNodesPos() }
         }
     }
 

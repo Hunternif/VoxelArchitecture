@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.deleteBlueprintNode
+import hunternif.voxarch.editor.actions.selectBlueprint
 import hunternif.voxarch.editor.actions.setBlueprintNodeColor
 import hunternif.voxarch.editor.actions.setBlueprintNodeStyle
 import hunternif.voxarch.editor.blueprint.BlueprintNode
@@ -76,6 +77,9 @@ class GuiBpEditorNodeContent(
                 node.domBuilder.blueprint = it
             }
             ImGui.popItemWidth()
+            button("Navigate", width = width) {
+                app.selectBlueprint(node.domBuilder.blueprint)
+            }
         }
         if (showStyleClass) {
             width = max(100f, width)
