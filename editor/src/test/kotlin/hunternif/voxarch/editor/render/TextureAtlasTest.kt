@@ -6,12 +6,13 @@ import org.joml.Vector2i
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import java.nio.file.Paths
 
 class TextureAtlasTest : BaseAppTest() {
-    private val tex1x1 = Texture("1x1")
-    private val tex2x1 = Texture("2x1")
-    private val tex1x2 = Texture("1x2")
-    private val tex2x2 = Texture("2x2")
+    private val tex1x1 = Texture(Paths.get("1x1"))
+    private val tex2x1 = Texture(Paths.get("2x1"))
+    private val tex1x2 = Texture(Paths.get("1x2"))
+    private val tex2x2 = Texture(Paths.get("2x2"))
 
     @Before
     fun setup() {
