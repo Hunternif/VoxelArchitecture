@@ -1,6 +1,8 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.deleteBlueprintNode
+import hunternif.voxarch.editor.actions.setBlueprintNodeColor
 import hunternif.voxarch.editor.actions.setBlueprintNodeStyle
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
@@ -25,6 +27,7 @@ class GuiBpEditorNodeContent(
     private val bpCombo by lazy {
         GuiCombo("##blueprint", app.state.blueprints)
     }
+    private val colorInput = GuiInputColor("Set color", showInput = false)
 
     var showStyleClass: Boolean = node.extraStyleClass.isNotEmpty()
 
@@ -90,11 +93,25 @@ class GuiBpEditorNodeContent(
         ImGui.popStyleVar(4)
     }
 
-    fun renderStyleMenu() {
-        ImGui.pushItemWidth(150f)
-        text("Style Rules")
+
+    fun renderContextMenu() {
+        menu("Style...") {
+            ImGui.pushItemWidth(150f)
+            text("Style Rules")
+            ImGui.separator()
+            styleMenu.items.forEach { it.render() }
+        }
         ImGui.separator()
-        styleMenu.items.forEach { it.render() }
+        colorInput.render(node.color) {
+            app.setBlueprintNodeColor(node, original, newValue)
+        }
+        menuCheck("Show class names", showStyleClass) {
+            showStyleClass = !showStyleClass
+        }
+        menuItem("Delete node") {
+            app.deleteBlueprintNode(node)
+            ImGui.closeCurrentPopup()
+        }
     }
 
     private fun renderInputPin(slot: BlueprintSlot.In, named: Boolean = true) {

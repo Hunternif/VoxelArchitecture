@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.blueprint.*
 import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
+import hunternif.voxarch.editor.util.ColorRGBa
 
 
 fun EditorApp.newBlueprint(): Blueprint {
@@ -83,3 +84,10 @@ fun EditorApp.renameBlueprint(
     bp: Blueprint,
     name: String,
 ) = historyAction(UpdateBlueprint(bp, name))
+
+/** Passing old color because the current could have changed */
+fun EditorApp.setBlueprintNodeColor(
+    node: BlueprintNode,
+    oldColor: ColorRGBa,
+    newColor: ColorRGBa,
+) = historyAction(SetBpNodeColor(node, oldColor.copy(), newColor.copy()))

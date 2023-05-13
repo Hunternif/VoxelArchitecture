@@ -4,6 +4,8 @@ import hunternif.voxarch.dom.builder.DomBuilder
 import hunternif.voxarch.dom.builder.IDomListener
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.editor.gui.Colors
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.IDRegistry
 import hunternif.voxarch.editor.util.WithID
 import hunternif.voxarch.plan.Node
@@ -99,11 +101,13 @@ class BlueprintNode(
     val domBuilder: DomBuilder,
     var x: Float = 0f,
     var y: Float = 0f,
+    var color: ColorRGBa = defaultColor.copy(),
 ) : WithID {
     val autoStyleClass = "${name}_${id}"
     val rule: Rule = Rule(select(autoStyleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
+    val isCustomColor: Boolean get() = color != defaultColor
 
     private val extraClassList = linkedSetOf<String>()
     var extraStyleClass = ""
@@ -140,6 +144,10 @@ class BlueprintNode(
 
     fun applyImNodesPos() {
         ImNodes.setNodeGridSpacePos(id, x, y)
+    }
+
+    companion object {
+        val defaultColor = Colors.defaultNodeBox
     }
 }
 

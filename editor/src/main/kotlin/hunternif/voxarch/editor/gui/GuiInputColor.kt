@@ -8,6 +8,7 @@ import imgui.flag.ImGuiColorEditFlags
 class GuiInputColor(
     label: String,
     val useAlpha: Boolean = false,
+    val showInput: Boolean = true,
 ) : GuiInput(label) {
     /** Stores the original value before modification via UI. */
     val original = ColorRGBa(0f, 0f, 0f)
@@ -44,6 +45,9 @@ class GuiInputColor(
         var flags = ImGuiColorEditFlags.DisplayHex
         if (!useAlpha) {
             flags = flags or ImGuiColorEditFlags.NoAlpha
+        }
+        if (!showInput) {
+            flags = flags or ImGuiColorEditFlags.NoInputs
         }
         if (useAlpha && ImGui.colorEdit4(labelForImgui, data, flags) ||
             ImGui.colorEdit3(labelForImgui, data, flags)

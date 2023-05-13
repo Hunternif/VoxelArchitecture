@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
-import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintSlot
-import hunternif.voxarch.editor.blueprint.DomRunBlueprint
-import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.file.style.StyleParser
+import hunternif.voxarch.editor.util.ColorRGBa
 
 @JacksonXmlRootElement(localName = "blueprint")
 class XmlBlueprint(
@@ -57,6 +55,9 @@ class XmlBlueprintNode(
 
     @field:JacksonXmlProperty
     var delegateBlueprintID: Int? = null,
+
+    @field:JacksonXmlProperty(isAttribute = true, localName = "color")
+    var colorHexRGB: String? = null,
 )
 
 class XmlBlueprintSlot(
@@ -91,6 +92,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
     }
     val jsonNodes = nodes.map { n ->
         val delegateBPID = (n.domBuilder as? DomRunBlueprint)?.blueprintID
+        val color = if (n.isCustomColor) n.color.hex.toString(16) else null
         XmlBlueprintNode(
             n.id, n.name,
             n.inputs.map { XmlBlueprintSlot(it.id, it.name) },
@@ -99,6 +101,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             n.extraStyleClass.ifEmpty { null },
             if (n.rule.isEmpty()) null else "\n${n.rule}\n",
             delegateBPID,
+            color,
         )
     }
     return XmlBlueprint(id, name, jsonNodes, jsonLinks)
@@ -114,6 +117,8 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
         val factory = domBuilderFactoryByName[n.name] ?: continue
         val domBuilder = factory()
         val bpNode = bp.createNode(n.id, n.name, n.x, n.y, domBuilder)
+        bpNode.color = n.colorHexRGB?.let { ColorRGBa.fromHex(it.toInt(16)) }
+            ?: BlueprintNode.defaultColor.copy()
         n.inputSlots.forEach {
             val slot = BlueprintSlot.In(it.id, it.name, bpNode)
             bpNode.inputs.add(slot)
