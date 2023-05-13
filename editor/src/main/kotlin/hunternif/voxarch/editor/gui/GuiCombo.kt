@@ -4,10 +4,10 @@ import imgui.ImGui
 import imgui.type.ImInt
 
 class GuiCombo<T>(
-    override val label: String,
+    label: String,
     values: List<T>,
     val width: Float? = null,
-) : GuiInput() {
+) : GuiInput(label) {
     constructor(label: String, vararg values: T, width: Float? = null)
         : this(label, values.toList(), width)
 

@@ -7,10 +7,10 @@ import imgui.ImGui
 
 /** Encapsulates ImGui.dragFloat3 with some convenience methods */
 class GuiInputVec3(
-    override val label: String,
+    label: String,
     val min: Float = -999f,
     val max: Float = 999f,
-) : GuiInput() {
+) : GuiInput(label) {
     /** Format string for the input */
     @PublishedApi internal var format = "%.0f"
 

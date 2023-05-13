@@ -3,9 +3,7 @@ package hunternif.voxarch.editor.gui
 /**
  * Base class for inputs
  */
-abstract class GuiInput {
-    abstract val label: String
-
+abstract class GuiInput(val label: String) {
     var id: Int = 0
         set(value) {
             field = value

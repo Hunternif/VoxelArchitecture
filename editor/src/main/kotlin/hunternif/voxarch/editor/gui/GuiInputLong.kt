@@ -6,11 +6,11 @@ import imgui.type.ImLong
 
 /** Encapsulates ImGui.dragScalar with some convenience methods */
 class GuiInputLong(
-    override val label: String,
+    label: String,
     val speed: Float = 0.2f,
     val min: Long = 0L,
     val max: Long = Long.MAX_VALUE,
-) : GuiInput() {
+) : GuiInput(label) {
     /** Stores the original value before modification via UI. */
     var original = 0L
 
