@@ -113,6 +113,11 @@ fun MainGui.mainMenu() {
             ) {
                 app.toggleVerboseBuild()
             }
+            menuCheck("Single \"Build\" button", build.unifyButtons.get(),
+                tooltip = "Use a single button to build nodes and voxels"
+            ) {
+                build.unifyButtons.toggle()
+            }
         }
     }
 }
