@@ -69,22 +69,22 @@ class GuiBlueprintEditorNodeContent(
         //============================= Body ==============================
         if (node.domBuilder is DomRunBlueprint) {
             width = max(100f, width)
-            ImGui.pushItemWidth(width)
-            bpCombo.render(node.domBuilder.blueprint) {
-                app.setDelegateBlueprint(node, it)
+            withWidth(width) {
+                bpCombo.render(node.domBuilder.blueprint) {
+                    app.setDelegateBlueprint(node, it)
+                }
             }
-            ImGui.popItemWidth()
             button("Navigate", width = width) {
                 app.selectBlueprint(node.domBuilder.blueprint)
             }
         }
         if (showStyleClass) {
             width = max(100f, width)
-            ImGui.pushItemWidth(width)
-            styleClassInput.render(node.extraStyleClass) {
-                app.setBlueprintNodeClass(node, it)
+            withWidth(width) {
+                styleClassInput.render(node.extraStyleClass) {
+                    app.setBlueprintNodeClass(node, it)
+                }
             }
-            ImGui.popItemWidth()
         }
         styleMenu.items.forEach { item ->
             if (item.enabled) {
