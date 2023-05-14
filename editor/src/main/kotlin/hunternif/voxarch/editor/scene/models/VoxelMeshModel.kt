@@ -81,7 +81,7 @@ class VoxelMeshModel(
 
     private fun uploadMeshData(vertexBuffer: FloatBuffer) {
         vertexBuffer.safeFlip()
-        vertBufferSize = vertexBuffer.remaining()
+        vertBufferSize = vertexBuffer.safeRemaining()
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)

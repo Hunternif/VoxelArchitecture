@@ -30,7 +30,7 @@ class ByteBufferWrapper {
             MemoryUtil.memFree(buffer)
             buffer = MemoryUtil.memAlloc(currentSize)
         }
-        buffer.clear()
+        buffer.safeClear()
         return buffer
     }
 }

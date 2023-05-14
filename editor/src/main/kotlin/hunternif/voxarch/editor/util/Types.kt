@@ -218,7 +218,19 @@ fun FloatBuffer.put(m: Matrix4f): FloatBuffer = this.run {
 fun FloatBuffer.safeFlip() {
     (this as Buffer).flip()
 }
-// From https://stackoverflow.com/a/61267496/1093712
 fun ByteBuffer.safeFlip() {
     (this as Buffer).flip()
 }
+fun FloatBuffer.safeClear() {
+    (this as Buffer).clear()
+}
+fun ByteBuffer.safeClear() {
+    (this as Buffer).clear()
+}
+fun ByteBuffer.safeRewind() {
+    (this as Buffer).rewind()
+}
+fun ByteBuffer.safePosition(newPos: Int) {
+    (this as Buffer).position(newPos)
+}
+fun FloatBuffer.safeRemaining() = (this as Buffer).remaining()

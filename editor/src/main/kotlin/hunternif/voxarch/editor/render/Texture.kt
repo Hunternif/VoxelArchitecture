@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.render
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ByteBufferWrapper
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.safeClear
 import hunternif.voxarch.editor.util.safeFlip
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryStack
@@ -151,7 +152,7 @@ class Texture(val filepath: Path) {
     /** Reads a single pixel from the GPU */
     fun readPixel(x: Int, y: Int): ColorRGBa {
         if (x < 0 || x >= width || y < 0 || y >= height) return Colors.debug
-        pixelBuffer.clear()
+        pixelBuffer.safeClear()
         glReadPixels(x, y, 1, 1, format, GL_UNSIGNED_BYTE, pixelBuffer)
         return ColorRGBa.fromRGBBytes(pixelBuffer)
     }

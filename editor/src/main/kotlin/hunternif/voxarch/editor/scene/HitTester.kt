@@ -9,6 +9,8 @@ import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.ByteBufferWrapper
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.safePosition
+import hunternif.voxarch.editor.util.safeRewind
 import org.joml.Vector2f
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL32.*
@@ -115,8 +117,8 @@ class HitTester(
         try {
             val channels = voxelsFbo.texture.channels // should be 3
             val buf = voxelsFboBytes.buffer
-            buf.rewind()
-            buf.position((y * width + x) * channels)
+            buf.safeRewind()
+            buf.safePosition((y * width + x) * channels)
             val color = ColorRGBa.fromRGBBytes(buf)
             return voxelGroups[color]
         } catch (e: Exception) {

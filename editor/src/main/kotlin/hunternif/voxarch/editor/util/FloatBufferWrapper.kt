@@ -30,7 +30,7 @@ class FloatBufferWrapper {
             MemoryUtil.memFree(buffer)
             buffer = MemoryUtil.memAllocFloat(currentSize)
         }
-        buffer.clear()
+        buffer.safeClear()
         return buffer
     }
 }
