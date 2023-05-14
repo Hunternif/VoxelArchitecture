@@ -3,6 +3,8 @@ package hunternif.voxarch.editor.util
 import hunternif.voxarch.vector.IntVec3
 import hunternif.voxarch.vector.Vec3
 import org.joml.*
+import java.nio.Buffer
+import java.nio.ByteBuffer
 import java.nio.FloatBuffer
 import kotlin.math.*
 
@@ -210,4 +212,13 @@ fun FloatBuffer.put(m: Matrix4f): FloatBuffer = this.run {
     put(m.m31())
     put(m.m32())
     put(m.m33())
+}
+
+// From https://stackoverflow.com/a/61267496/1093712
+fun FloatBuffer.safeFlip() {
+    (this as Buffer).flip()
+}
+// From https://stackoverflow.com/a/61267496/1093712
+fun ByteBuffer.safeFlip() {
+    (this as Buffer).flip()
 }

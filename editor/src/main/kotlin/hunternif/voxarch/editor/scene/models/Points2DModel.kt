@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.safeFlip
 import org.joml.Vector2f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
@@ -44,7 +45,7 @@ class Points2DModel(color: ColorRGBa = Colors.debug) : BaseModel() {
                 // round() + 0.5 to make it snap exactly to pixel position
                 put(round(p.x) + 0.5f).put(round(p.y) + 0.5f).put(0f)
             }
-            flip()
+            safeFlip()
         }
 
         // Upload the vertex buffer

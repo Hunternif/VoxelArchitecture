@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
 import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.util.safeFlip
 import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -50,7 +51,7 @@ class GizmoModel(
             // Z
             put(center.x).put(center.y).put(-0.5f).put(colZ.toVector4f())
             put(center.x).put(center.y).put( 0.5f).put(colZ.toVector4f())
-            flip()
+            safeFlip()
         }
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
@@ -97,7 +98,7 @@ class GizmoModel(
                         .scale(size)
                 )
             }}
-            flip()
+            safeFlip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)

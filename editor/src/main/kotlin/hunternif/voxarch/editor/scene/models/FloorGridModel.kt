@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
+import hunternif.voxarch.editor.util.safeFlip
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 import java.lang.Integer.min
@@ -53,7 +54,7 @@ class FloorGridModel : BaseModel() {
                 put(-0.5f + fromX).put(-0.5f).put(-0.5f + z)
                     .put(-0.5f + toX).put(-0.5f).put(-0.5f + z)
             }
-            flip() // rewind
+            safeFlip() // rewind
         }
 
         // Upload the vertex buffer

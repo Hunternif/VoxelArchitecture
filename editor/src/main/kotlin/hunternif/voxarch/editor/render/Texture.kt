@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.render
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ByteBufferWrapper
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.safeFlip
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -101,7 +102,7 @@ class Texture(val filepath: Path) {
                 buffer.put((pixel shr 24 and 0xFF).toByte())
             }
         }
-        buffer.flip()
+        buffer.safeFlip()
         return buffer
     }
 

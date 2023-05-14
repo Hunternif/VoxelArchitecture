@@ -63,7 +63,7 @@ class ColorRGBaTest {
         buffer.put(0x00.toByte())
         buffer.put(0xcc.toByte())
         buffer.put(0x99.toByte())
-        buffer.flip()
+        buffer.safeFlip()
         val colorFromBytes = ColorRGBa.fromRGBBytes(buffer)
         val expected = ColorRGBa.fromHex(0x00cc99)
         assertEquals(expected, colorFromBytes)

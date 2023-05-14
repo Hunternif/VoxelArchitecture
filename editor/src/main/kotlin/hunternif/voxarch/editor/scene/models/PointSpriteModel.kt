@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.PointSpriteShader
 import hunternif.voxarch.editor.util.put
 import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.editor.util.safeFlip
 import org.joml.Vector3f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryUtil
@@ -48,7 +49,7 @@ class PointSpriteModel(texturePath: String) : BaseModel() {
         val vertexBuffer = MemoryUtil.memAllocFloat(bufferSize)
         vertexBuffer.run {
             points.values.forEach { put(it) }
-            flip()
+            safeFlip()
         }
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)

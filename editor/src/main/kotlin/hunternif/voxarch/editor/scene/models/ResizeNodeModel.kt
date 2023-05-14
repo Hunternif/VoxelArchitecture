@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.models.box.BoxFace
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.util.safeFlip
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
@@ -42,7 +43,7 @@ class ResizeNodeModel : BaseModel() {
             // Store line positions in the vertex buffer
             face?.apply {
                 quadVertices.forEach { put(it) }
-                flip() // rewind
+                safeFlip() // rewind
             }
         }
 

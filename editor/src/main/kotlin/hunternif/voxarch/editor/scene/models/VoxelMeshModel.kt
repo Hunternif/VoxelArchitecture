@@ -72,7 +72,7 @@ class VoxelMeshModel(
         val instanceVertexBuffer = stack.mallocFloat(16)
         instanceVertexBuffer.run {
             put(Matrix4f())
-            flip()
+            safeFlip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)
@@ -80,7 +80,7 @@ class VoxelMeshModel(
     }
 
     private fun uploadMeshData(vertexBuffer: FloatBuffer) {
-        vertexBuffer.flip()
+        vertexBuffer.safeFlip()
         vertBufferSize = vertexBuffer.remaining()
         glBindVertexArray(vaoID)
         glBindBuffer(GL_ARRAY_BUFFER, vboID)

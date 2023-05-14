@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorInstancedShader
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.util.safeFlip
 import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -58,7 +59,7 @@ class BoxFrameModel(
                 put(v.start)
                 put(v.end)
             }
-            flip()
+            safeFlip()
         }
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
@@ -91,7 +92,7 @@ class BoxFrameModel(
                         .translate(-0.5f, -0.5f, -0.5f)
                 )
             }}
-            flip()
+            safeFlip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)

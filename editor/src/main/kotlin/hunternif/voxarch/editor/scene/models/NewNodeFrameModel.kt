@@ -4,6 +4,7 @@ import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
 import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.util.safeFlip
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
 
@@ -30,7 +31,7 @@ class NewNodeFrameModel : BaseModel() {
             for (e in edges) {
                 put(e.start).put(e.end)
             }
-            flip() // rewind
+            safeFlip() // rewind
         }
 
         // Upload the vertex buffer

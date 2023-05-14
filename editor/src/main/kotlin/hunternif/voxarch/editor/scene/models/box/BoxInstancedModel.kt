@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene.models.box
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.MagicaVoxelShader
 import hunternif.voxarch.editor.util.put
+import hunternif.voxarch.editor.util.safeFlip
 import hunternif.voxarch.util.toRadians
 import org.joml.Matrix4f
 import org.lwjgl.opengl.GL33.*
@@ -25,7 +26,7 @@ open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
                 put(v.pos.x).put(v.pos.y).put(v.pos.z)
                 put(v.normal.x).put(v.normal.y).put(v.normal.z)
             }
-            flip()
+            safeFlip()
         }
         glBufferData(GL_ARRAY_BUFFER, vertexBuffer, GL_STATIC_DRAW)
 
@@ -75,7 +76,7 @@ open class BoxInstancedModel<T : BoxMesh> : BaseModel() {
                     )
                 }
             }
-            flip()
+            safeFlip()
         }
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         glBufferData(GL_ARRAY_BUFFER, instanceVertexBuffer, GL_STATIC_DRAW)

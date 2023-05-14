@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.scene.models
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.TextureShader
 import hunternif.voxarch.editor.util.resourcePath
+import hunternif.voxarch.editor.util.safeFlip
 import org.joml.Vector2f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
@@ -46,7 +47,7 @@ class Sprite2DModel(texturePath: String) : BaseModel() {
             put(max.x).put(min.y).put(0f).put(1f).put(1f)
             put(max.x).put(max.y).put(0f).put(1f).put(0f)
             put(min.x).put(max.y).put(0f).put(0f).put(0f)
-            flip()
+            safeFlip()
         }
 
         // Upload the vertex buffer

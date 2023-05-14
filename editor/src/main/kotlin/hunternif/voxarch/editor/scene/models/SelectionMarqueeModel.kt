@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene.models
 
 import hunternif.voxarch.editor.render.BaseModel
 import hunternif.voxarch.editor.scene.shaders.SolidColorShader
+import hunternif.voxarch.editor.util.safeFlip
 import org.joml.Vector2f
 import org.lwjgl.opengl.GL33.*
 import org.lwjgl.system.MemoryStack
@@ -30,7 +31,7 @@ class SelectionMarqueeModel : BaseModel() {
             put(end.x + 0.5f).put(start.y + 0.5f).put(0f)
             put(end.x + 0.5f).put(end.y + 0.5f).put(0f)
             put(start.x + 0.5f).put(end.y + 0.5f).put(0f)
-            flip()
+            safeFlip()
         }
 
         // Upload the vertex buffer
