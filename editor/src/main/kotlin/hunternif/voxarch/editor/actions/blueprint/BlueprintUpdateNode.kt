@@ -14,12 +14,10 @@ class BlueprintUpdateNode(
     "Update blueprint node",
     FontAwesomeIcons.Code
 ) {
-    private var oldDelegateBp: Blueprint? = null
+    private var oldDelegateBp: Blueprint? =
+        (node.domBuilder as? DomRunBlueprint)?.blueprint
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        if (firstTime) {
-            oldDelegateBp = (node.domBuilder as? DomRunBlueprint)?.blueprint
-        }
         delegateBp?.let { (node.domBuilder as? DomRunBlueprint)?.blueprint = it }
     }
 
