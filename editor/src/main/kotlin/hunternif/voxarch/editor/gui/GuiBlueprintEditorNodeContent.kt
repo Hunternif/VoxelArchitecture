@@ -4,7 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.deleteBlueprintNode
 import hunternif.voxarch.editor.actions.selectBlueprint
 import hunternif.voxarch.editor.actions.setBlueprintNodeColor
-import hunternif.voxarch.editor.actions.setBlueprintNodeStyle
+import hunternif.voxarch.editor.actions.setBlueprintNodeClass
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
@@ -85,7 +85,7 @@ class GuiBlueprintEditorNodeContent(
             width = max(100f, width)
             ImGui.pushItemWidth(width)
             styleClassInput.render(node.extraStyleClass) {
-                app.setBlueprintNodeStyle(node, it)
+                app.setBlueprintNodeClass(node, it)
             }
             ImGui.popItemWidth()
         }

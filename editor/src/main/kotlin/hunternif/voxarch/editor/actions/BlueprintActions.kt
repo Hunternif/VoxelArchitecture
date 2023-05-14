@@ -69,10 +69,10 @@ fun EditorApp.deleteBlueprintParts(
     links: Collection<BlueprintLink>,
 ) = historyAction(BlueprintDeleteParts(nodes, links))
 
-fun EditorApp.setBlueprintNodeStyle(
+fun EditorApp.setBlueprintNodeClass(
     node: BlueprintNode,
     styleClass: String,
-) = historyAction(BlueprintUpdateNode(node, styleClass = styleClass))
+) = historyAction(SetBlueprintNodeClass(node, styleClass))
 
 /** Only works for nodes with [DomRunBlueprint] */
 fun EditorApp.setDelegateBlueprint(
