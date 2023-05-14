@@ -3,10 +3,7 @@ package hunternif.voxarch.editor.gui
 import imgui.ImGui
 import imgui.ImGuiWindowClass
 import imgui.ImVec2
-import imgui.flag.ImGuiCol
-import imgui.flag.ImGuiMouseButton
-import imgui.flag.ImGuiStyleVar
-import imgui.flag.ImGuiWindowFlags
+import imgui.flag.*
 import imgui.internal.flag.ImGuiDockNodeFlags
 
 inline fun contextMenu(
@@ -45,9 +42,13 @@ inline fun listbox(label: String, crossinline content: () -> Unit) {
     }
 }
 
-inline fun selectable(label: String, selected: Boolean = false,
-                      crossinline onClick: () -> Unit) {
-    if (ImGui.selectable(label, selected)) onClick()
+inline fun selectable(
+    label: String, selected: Boolean = false,
+    spanAllColumns: Boolean = false,
+    crossinline onClick: () -> Unit
+) {
+    val flags = if (spanAllColumns) ImGuiSelectableFlags.SpanAllColumns else 0
+    if (ImGui.selectable(label, selected, flags)) onClick()
 }
 
 inline fun toolbar(name: String, crossinline renderWindow: () -> Unit = {}) {
@@ -170,4 +171,22 @@ fun tooltip(msg: String?) {
         ImGui.setTooltip(msg)
         ImGui.popStyleVar()
     }
+}
+
+/** Sets width for the next element */
+inline fun withWidth(
+    width: Float,
+    crossinline block: () -> Unit,
+) {
+    ImGui.pushItemWidth(width)
+    block()
+    ImGui.popItemWidth()
+}
+
+/** Sets 100% width for the next element */
+inline fun withMaxWidth(
+    crossinline block: () -> Unit,
+) {
+    val width = ImGui.getWindowContentRegionMaxX() - ImGui.getWindowContentRegionMinX()
+    withWidth(width, block)
 }

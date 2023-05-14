@@ -4,7 +4,6 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import imgui.ImGui
-import imgui.flag.ImGuiSelectableFlags
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
 import org.lwjgl.glfw.GLFW
@@ -13,6 +12,10 @@ class GuiBlueprintLibrary(
     private val app: EditorApp,
     private val gui: GuiBase,
 ) {
+    private val nameInput = GuiInputTextAutoClose("##bp_name")
+    /** Bp whose name is being edited */
+    private var editingNameBp: Blueprint? = null
+
     fun render() {
         button("New blueprint...") {
             app.newBlueprint()
@@ -32,15 +35,29 @@ class GuiBlueprintLibrary(
                 centeredText(FontAwesomeIcons.Code)
 
                 ImGui.tableNextColumn()
-                val name = memoStrWithIndex(bp.name, i)
-                val selected = app.state.selectedBlueprint == bp
-                val flags = ImGuiSelectableFlags.SpanAllColumns
-                if (ImGui.selectable(name, selected, flags)) {
-                    app.selectBlueprint(bp)
+                if (bp == editingNameBp) {
+                    withMaxWidth {
+                        nameInput.render(bp.name,
+                            onCancel = { editingNameBp = null },
+                            onSubmit = {
+                                app.renameBlueprint(bp, it)
+                                editingNameBp = null
+                            }
+                        )
+                    }
+                } else {
+                    val name = memoStrWithIndex(bp.name, i)
+                    val isSelected = app.state.selectedBlueprint == bp
+                    selectable(name, isSelected, true) {
+                        app.selectBlueprint(bp)
+                    }
                 }
                 contextMenu(memoStrWithIndex("bp_lib_context_menu", i)) {
                     menuItem("Open") {
                         app.selectBlueprint(bp)
+                    }
+                    menuItem("Rename") {
+                        editingNameBp = bp
                     }
                     menuItem("Delete") {
                         // prevent concurrent modification:
@@ -62,6 +79,7 @@ class GuiBlueprintLibrary(
         }
         ImGui.popFont()
 
+        // This prevents imgui stack errors
         toDelete?.let { app.deleteBlueprint(it) }
         if (ImGui.isWindowFocused() && ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
             app.deleteSelectedBlueprint()
