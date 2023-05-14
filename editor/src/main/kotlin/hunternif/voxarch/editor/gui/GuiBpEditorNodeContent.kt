@@ -116,6 +116,12 @@ class GuiBpEditorNodeContent(
         colorInput.render(node.color) {
             app.setBlueprintNodeColor(node, original, newValue)
         }
+        if (node.isCustomColor) {
+            ImGui.sameLine()
+            button("Reset") {
+                app.setBlueprintNodeColor(node, node.color, BlueprintNode.defaultColor)
+            }
+        }
         menuCheck("Show class names", showStyleClass) {
             showStyleClass = !showStyleClass
         }
