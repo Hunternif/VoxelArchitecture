@@ -70,6 +70,7 @@ class GuiBlueprintEditorNodeContent(
         if (node.domBuilder is DomRunBlueprint) {
             width = max(100f, width)
             withWidth(width) {
+                updateBlueprints()
                 bpCombo.render(node.domBuilder.blueprint) {
                     app.setDelegateBlueprint(node, it)
                 }
@@ -99,6 +100,13 @@ class GuiBlueprintEditorNodeContent(
         }
 
         ImGui.popStyleVar(4)
+    }
+
+    private fun updateBlueprints() {
+        // Check if any new blueprints were added to the library
+        if (bpCombo.values.size != app.state.blueprints.size) {
+            bpCombo.values = app.state.blueprints.toList()
+        }
     }
 
 
