@@ -34,7 +34,7 @@ class GuiBlueprintEditor(
     private val SLOT_B = ImInt()
 
     private val titleInput = GuiInputText("title")
-    private val contentMap = mutableMapOf<BlueprintNode, GuiBpEditorNodeContent>()
+    private val contentMap = mutableMapOf<BlueprintNode, GuiBlueprintEditorNodeContent>()
 
     private val padding = ImVec2(8f, 6f)
 
@@ -210,8 +210,8 @@ class GuiBlueprintEditor(
             pos.x, pos.y - 35f, lastOutSlot)
     }
 
-    private val BlueprintNode.guiContent: GuiBpEditorNodeContent
+    private val BlueprintNode.guiContent: GuiBlueprintEditorNodeContent
         get() = contentMap.getOrPut(this) {
-            GuiBpEditorNodeContent(app, this, padding)
+            GuiBlueprintEditorNodeContent(app, this, padding)
         }
 }

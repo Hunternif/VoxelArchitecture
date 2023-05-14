@@ -6,7 +6,7 @@ import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.util.ColorRGBa
 
-class SetBpNodeColor(
+class SetBlueprintNodeColor(
     val node: BlueprintNode,
     oldColor: ColorRGBa,
     newColor: ColorRGBa,

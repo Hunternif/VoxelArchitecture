@@ -90,4 +90,4 @@ fun EditorApp.setBlueprintNodeColor(
     node: BlueprintNode,
     oldColor: ColorRGBa,
     newColor: ColorRGBa,
-) = historyAction(SetBpNodeColor(node, oldColor, newColor))
+) = historyAction(SetBlueprintNodeColor(node, oldColor, newColor))

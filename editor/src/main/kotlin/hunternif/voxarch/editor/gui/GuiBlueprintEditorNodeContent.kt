@@ -18,7 +18,7 @@ import imgui.extension.imnodes.flag.ImNodesPinShape
 import imgui.flag.ImGuiStyleVar
 import kotlin.math.max
 
-class GuiBpEditorNodeContent(
+class GuiBlueprintEditorNodeContent(
     val app: EditorApp,
     val node: BlueprintNode,
     val padding: ImVec2,
