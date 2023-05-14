@@ -114,8 +114,13 @@ class GuiBlueprintEditor(
             node.guiContent.render()
             ImNodes.endNode()
 
-            node.x = ImNodes.getNodeGridSpacePosX(node.id)
-            node.y = ImNodes.getNodeGridSpacePosY(node.id)
+            if (ImGui.isMouseReleased(ImGuiMouseButton.Left)) {
+                val x = ImNodes.getNodeGridSpacePosX(node.id)
+                val y = ImNodes.getNodeGridSpacePosY(node.id)
+                if (node.x != x || node.y != y) {
+                    app.moveBlueprintNode(node, x, y)
+                }
+            }
         }
         links.forEach { link ->
             ImNodes.link(link.id, link.from.id, link.to.id)

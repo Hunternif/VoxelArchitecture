@@ -80,6 +80,12 @@ fun EditorApp.setDelegateBlueprint(
     delegateBp: Blueprint
 ) = historyAction(BlueprintUpdateNode(node, delegateBp = delegateBp))
 
+fun EditorApp.moveBlueprintNode(
+    node: BlueprintNode,
+    x: Float,
+    y: Float,
+) = historyAction(BlueprintUpdateNode(node, "Move blueprint node", x = x, y = y))
+
 fun EditorApp.renameBlueprint(
     bp: Blueprint,
     name: String,

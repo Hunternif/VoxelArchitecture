@@ -9,19 +9,32 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
 class BlueprintUpdateNode(
     private val node: BlueprintNode,
+    description: String? = null,
     private val delegateBp: Blueprint? = null,
+    x: Float? = null,
+    y: Float? = null,
 ) : HistoryAction(
-    "Update blueprint node",
+    description ?: "Update blueprint node",
     FontAwesomeIcons.Code
 ) {
+    private val oldX: Float = node.x
+    private val oldY: Float = node.y
+    private val newX: Float = x ?: oldX
+    private val newY: Float = y ?: oldY
     private var oldDelegateBp: Blueprint? =
         (node.domBuilder as? DomRunBlueprint)?.blueprint
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         delegateBp?.let { (node.domBuilder as? DomRunBlueprint)?.blueprint = it }
+        node.x = newX
+        node.y = newY
+        node.applyImNodesPos()
     }
 
     override fun revert(app: EditorAppImpl) {
         oldDelegateBp?.let { (node.domBuilder as? DomRunBlueprint)?.blueprint = it }
+        node.x = oldX
+        node.y = oldY
+        node.applyImNodesPos()
     }
 }
