@@ -174,14 +174,20 @@ By default, it's set so that origin is at the low-XYZ corner.""")
     }
 
     private fun updateBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
+        // Check if new blueprints were added to the node
         curBlueprints.clear()
         curBlueprints.addAll(sceneNode.blueprints)
-        if (allBlueprints.size != app.state.blueprints.size + 1)
-        allBlueprints.apply {
-            clear()
-            add(newBlueprintItem)
-            addAll(app.state.blueprints)
+        // Check if new blueprints were added to the library
+        if (allBlueprints.size != app.state.blueprints.size + 1) {
+            // The combo input uses this list directly.
+            // If we change its content, the input will update too.
+            allBlueprints.apply {
+                clear()
+                add(newBlueprintItem)
+                addAll(app.state.blueprints)
+            }
         }
+        // Check if any blueprints were renamed
         blueprintInput.refreshNames()
     }
 
