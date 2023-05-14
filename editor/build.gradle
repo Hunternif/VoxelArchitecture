@@ -96,6 +96,10 @@ idea {
 compileJava.source sourceSets.generated.java, sourceSets.main.java
 compileKotlin.source sourceSets.generated.java, sourceSets.main.java, sourceSets.main.kotlin
 compileTestKotlin.source sourceSets.generated.java
+compileJava {
+    sourceCompatibility = "1.8"
+    targetCompatibility = "1.8"
+}
 compileKotlin {
     kotlinOptions {
         jvmTarget = "1.8"
