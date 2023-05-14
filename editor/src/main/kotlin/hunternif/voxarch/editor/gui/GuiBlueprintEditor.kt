@@ -181,7 +181,9 @@ class GuiBlueprintEditor(
             }
         }
 
-        if (isEditorFocused && ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
+        if (isEditorFocused && !ImGui.isAnyItemActive() &&
+            ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)
+        ) {
             deleteSelected()
         }
     }
