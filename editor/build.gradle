@@ -4,7 +4,7 @@ apply plugin: 'antlr'
 apply plugin: 'idea'
 
 buildscript {
-    ext.kotlin_version = '1.5.10'
+    ext.kotlin_version = '1.6.10'
     ext.lwjglVersion = '3.3.0'
     ext.imguiVersion = '1.86.9'
     ext.jomlVersion = '1.9.23'
