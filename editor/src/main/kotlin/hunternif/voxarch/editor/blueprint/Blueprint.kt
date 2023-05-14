@@ -125,7 +125,7 @@ class BlueprintNode(
     var y: Float = 0f,
     var color: ColorRGBa = defaultColor.copy(),
 ) : WithID {
-    val autoStyleClass = "${name}_${id}"
+    val autoStyleClass = "${name.replace(' ', '_')}_${id}"
     val rule: Rule = Rule(select(autoStyleClass))
     val inputs = mutableListOf<BlueprintSlot.In>()
     val outputs = mutableListOf<BlueprintSlot.Out>()
