@@ -6,7 +6,6 @@ import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.Texture
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
-import hunternif.voxarch.editor.scene.InputController
 import imgui.ImGui
 import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiStyleVar
@@ -83,7 +82,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
     fun init(
         windowHandle: Long,
         viewport: Viewport,
-        inputController: InputController,
         samplesMSAA: Int = 0,
     ) {
         super.init(windowHandle)
@@ -92,7 +90,6 @@ class MainGui(val app: EditorApp) : GuiBase() {
         mainWindowFbo.init(viewport)
         blueprintEditor.init()
         styleEditor.init()
-        inputController.addListener(styleEditor)
     }
 
     /** Called when a new AppState is created */

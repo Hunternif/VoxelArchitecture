@@ -72,7 +72,7 @@ class EditorAppImpl : EditorApp {
         inputController.init(window)
         scene.init(window, vp, inputController)
         // ImGui must be initialized after other GLFW callbacks are registered
-        gui.init(window, vp, inputController, 4)
+        gui.init(window, vp, 4)
         glfwShowWindow(window)
 
         val file = parseFileArg(args)

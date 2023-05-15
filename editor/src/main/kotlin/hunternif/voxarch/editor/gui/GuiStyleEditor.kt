@@ -10,7 +10,6 @@ import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
 import hunternif.voxarch.editor.blueprint.styleEditorStyleProperties
 import hunternif.voxarch.editor.file.style.StyleParser
-import hunternif.voxarch.editor.scene.KeyListener
 import hunternif.voxarch.util.clamp
 import imgui.extension.texteditor.TextEditor
 import imgui.extension.texteditor.TextEditorLanguageDefinition
@@ -22,7 +21,7 @@ import org.lwjgl.glfw.GLFW.*
 
 class GuiStyleEditor(
     private val app: EditorApp,
-) : KeyListener {
+) {
     private val editor = TextEditor()
     private val parser = StyleParser()
 
@@ -49,7 +48,6 @@ class GuiStyleEditor(
 
     /** Set to true after typing '{', for auto-completing '{ }' */
     private var openBrace: Boolean = false
-    private var lastKey: Int = 0
 
 
     /** Replaces text in the editor with [newText] */
@@ -152,13 +150,48 @@ class GuiStyleEditor(
 
     private fun handleTyping() {
         if (isActive) {
+            val io = ImGui.getIO()
+            val ctrl = io.keyCtrl
+            val shift = io.keyShift
+
+            when {
+                ctrl && shift && ImGui.isKeyPressed(GLFW_KEY_Z, false) -> {
+                    commitTypingStreak()
+                    isUndoing = true
+                    // redo n steps, because TextEditor doesn't know Ctrl + Shift + Z
+                    val redoCount = typingHistory.moveForward() ?: 0
+                    editor.redo(redoCount)
+                }
+                ctrl && ImGui.isKeyPressed(GLFW_KEY_Y, false) -> {
+                    commitTypingStreak()
+                    isUndoing = true
+                    // redo (n - 1) steps, because 1 was already redone
+                    val redoCount = typingHistory.moveForward()?.minus(1) ?: 0
+                    editor.redo(redoCount)
+                }
+                ctrl && ImGui.isKeyPressed(GLFW_KEY_Z, false) -> {
+                    commitTypingStreak()
+                    isUndoing = true
+                    // undo (n - 1) steps, because 1 was already undone
+                    val undoCount = typingHistory.moveBack()?.minus(1) ?: 0
+                    editor.undo(undoCount)
+                }
+                ctrl && ImGui.isKeyPressed(GLFW_KEY_S, false) -> {
+                    applyStylesheet()
+                    app.saveProjectOrOpenDialogToSaveAs()
+                }
+                ImGui.isKeyPressed(GLFW_KEY_KP_ENTER, false) -> {
+                    // TextEditor doesn't know this key by default
+                    insertText("\n")
+                }
+            }
+
             if (editor.isTextChanged) {
                 lastTypeTime = glfwGetTime()
                 isDirty = true
-
-                val io = ImGui.getIO()
-                val ctrl = io.keyCtrl
-                val shift = io.keyShift
+                if (editor.currentLineText.lastOrNull() == '{') {
+                    openBrace = true
+                }
                 when {
                     ctrl && shift && io.getKeysDown(GLFW_KEY_Z) -> {}
                     ctrl && io.getKeysDown(GLFW_KEY_Y) -> {}
@@ -169,7 +202,7 @@ class GuiStyleEditor(
 
             // auto-complete '{ }':
             // (the numpad 'Enter' key doesn't count as 'text changed')
-            if (openBrace && (lastKey == GLFW_KEY_ENTER || lastKey == GLFW_KEY_KP_ENTER)) {
+            if (openBrace && (io.getKeysDown(GLFW_KEY_ENTER) || io.getKeysDown(GLFW_KEY_KP_ENTER))) {
                 openBrace = false
                 insertText("  \n}")
                 editor.moveUp(1, false)
@@ -178,51 +211,6 @@ class GuiStyleEditor(
         }
         if (stoppedTyping) {
             commitTypingStreak()
-        }
-    }
-
-    override fun onKeyPress(key: Int, action: Int, mods: Int) {
-        if (action != GLFW_PRESS || !isActive) return
-
-        lastKey = key
-        val ctrl = (mods and GLFW_MOD_CONTROL != 0)
-        val shift = (mods and GLFW_MOD_SHIFT != 0)
-        when {
-            ctrl && shift && key == GLFW_KEY_Z -> {
-                commitTypingStreak()
-                isUndoing = true
-                // redo n steps, because TextEditor doesn't know Ctrl + Shift + Z
-                val redoCount = typingHistory.moveForward() ?: 0
-                editor.redo(redoCount)
-            }
-            ctrl && key == GLFW_KEY_Y -> {
-                commitTypingStreak()
-                isUndoing = true
-                // redo (n - 1) steps, because 1 was already redone
-                val redoCount = typingHistory.moveForward()?.minus(1) ?: 0
-                editor.redo(redoCount)
-            }
-            ctrl && key == GLFW_KEY_Z -> {
-                commitTypingStreak()
-                isUndoing = true
-                // undo (n - 1) steps, because 1 was already undone
-                val undoCount = typingHistory.moveBack()?.minus(1) ?: 0
-                editor.undo(undoCount)
-            }
-            ctrl && key == GLFW_KEY_S -> {
-                applyStylesheet()
-                app.saveProjectOrOpenDialogToSaveAs()
-            }
-            key == GLFW_KEY_KP_ENTER -> {
-                // TextEditor doesn't know this key by default
-                insertText("\n")
-            }
-        }
-    }
-
-    override fun onCharInput(char: Char) {
-        if (isActive) {
-            openBrace = char == '{'
         }
     }
 
