@@ -8,7 +8,10 @@ import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.blueprintEditorStyleProperties
 import imgui.ImGui
 
-class GuiBlueprintNodeStyle(
+/**
+ * Renders Blueprint node style as a list of input UIs with checkboxes.
+ */
+class GuiBlueprintNodeStyleAsInputs(
     private val app: EditorApp,
     private val node: BlueprintNode,
 ) {
@@ -64,7 +67,7 @@ class GuiBlueprintNodeStyle(
     }
 
     abstract class Item<V : Any>(
-        val rootGui: GuiBlueprintNodeStyle,
+        val rootGui: GuiBlueprintNodeStyleAsInputs,
         val property: Property<V>,
     ) {
         protected val rule = rootGui.rule
@@ -113,7 +116,7 @@ class GuiBlueprintNodeStyle(
     }
 
     class ItemNumber(
-        rootGui: GuiBlueprintNodeStyle,
+        rootGui: GuiBlueprintNodeStyleAsInputs,
         property: Property<Number>,
         min: Float = -999f,
         max: Float = 999f,
@@ -132,7 +135,7 @@ class GuiBlueprintNodeStyle(
     }
 
     class ItemEnum<E : Enum<E>>(
-        rootGui: GuiBlueprintNodeStyle,
+        rootGui: GuiBlueprintNodeStyleAsInputs,
         property: Property<E>,
     ) : Item<E>(rootGui, property) {
         private val values = property.valType.enumConstants

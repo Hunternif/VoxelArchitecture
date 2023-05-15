@@ -12,7 +12,7 @@ class GuiBlueprintNodeStyleTest {
     fun `create inputs for every property`() {
         val bp = Blueprint(0, "test blueprint")
         val node = bp.addNode("test", DomBuilder())
-        val gui = GuiBlueprintNodeStyle(EditorAppImpl(), node)
+        val gui = GuiBlueprintNodeStyleAsInputs(EditorAppImpl(), node)
         assertEquals(blueprintEditorStyleProperties.size, gui.items.size)
     }
 }

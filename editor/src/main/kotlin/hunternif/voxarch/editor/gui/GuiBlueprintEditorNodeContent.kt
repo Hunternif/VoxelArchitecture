@@ -20,7 +20,8 @@ class GuiBlueprintEditorNodeContent(
     val node: BlueprintNode,
     val padding: ImVec2,
 ) {
-    private val styleMenu by lazy { GuiBlueprintNodeStyle(app, node) }
+    private val styleGuiAsInputs by lazy { GuiBlueprintNodeStyleAsInputs(app, node) }
+    private val styleGuiAsText by lazy { GuiBlueprintNodeStyleAsText(app, node) }
     private val styleClassInput = GuiInputText("##${node.id}_classname", "class names")
     private val bpCombo by lazy {
         GuiCombo("##blueprint", app.state.blueprints)
@@ -115,8 +116,14 @@ class GuiBlueprintEditorNodeContent(
         menu("Style...") {
             ImGui.pushItemWidth(150f)
             text("Style Rules")
-            ImGui.separator()
-            styleMenu.render()
+            tabBar("style_tabs") {
+                tabItem("Inputs") {
+                    styleGuiAsInputs.render()
+                }
+                tabItem("Text") {
+                    styleGuiAsText.render()
+                }
+            }
         }
         ImGui.separator()
         colorInput.render(node.color) {
