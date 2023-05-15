@@ -12,9 +12,28 @@ import imgui.extension.texteditor.TextEditorLanguageDefinition
 import imgui.extension.texteditor.flag.TextEditorPaletteIndex
 import imgui.extension.texteditor.flag.TextEditorPaletteIndex.*
 
-class GuiStyleEditor(
+class GuiStylesheetEditor(
     app: EditorApp,
+) : GuiStyleEditor(app, Mode.STYLESHEET) {
+
+    override fun applyStyleRules(parsed: StyleParser.StyleParseResult) {
+        val newSheet = Stylesheet.fromRules(parsed.rules)
+        app.updateStylesheetAndText(newSheet, currentText)
+    }
+}
+
+abstract class GuiStyleEditor(
+    app: EditorApp,
+    private val mode: Mode,
 ) : GuiTextEditor(app) {
+    /** Determines parsing rules for error highlighting */
+    enum class Mode {
+        /** Complete stylesheet for the project */
+        STYLESHEET,
+        /** Only declarations for a single rule */
+        DECLARATIONS,
+    }
+
     private val parser = StyleParser()
 
     fun init() {
@@ -41,7 +60,10 @@ class GuiStyleEditor(
     override fun onTextChanged() {
         val totalLines = editor.totalLines
 
-        val parsed = parser.parseStylesheet(currentText)
+        val parsed = when (mode) {
+            Mode.STYLESHEET -> parser.parseStylesheet(currentText)
+            Mode.DECLARATIONS -> parser.parseDeclarations(currentText)
+        }
 
         val errorMap = parsed.errors.associate {
             // Sometimes the error is reported on the next line after EOF
@@ -49,9 +71,10 @@ class GuiStyleEditor(
         }
         editor.setErrorMarkers(errorMap)
 
-        val newSheet = Stylesheet.fromRules(parsed.rules)
-        app.updateStylesheetAndText(newSheet, currentText)
+        applyStyleRules(parsed)
     }
+
+    abstract fun applyStyleRules(parsed: StyleParser.StyleParseResult)
 
     companion object {
         val styleLanguage: TextEditorLanguageDefinition by lazy {

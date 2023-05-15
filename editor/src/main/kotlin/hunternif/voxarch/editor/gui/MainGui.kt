@@ -23,7 +23,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val history = GuiHistory(app, this)
     @PublishedApi internal val blueprintLibrary = GuiBlueprintLibrary(app, this)
     @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
-    @PublishedApi internal val styleEditor = GuiStyleEditor(app)
+    @PublishedApi internal val styleEditor = GuiStylesheetEditor(app)
     @PublishedApi internal val build = GuiBuild(app)
     @PublishedApi internal val log = GuiLog()
     @PublishedApi internal val statusBar = GuiStatusBar(app, log)

@@ -72,10 +72,12 @@ inline fun toolbar(name: String, crossinline renderWindow: () -> Unit = {}) {
 
 inline fun childWindow(
     name: String,
+    width: Float = 0f,
+    height: Float = 0f,
     paddingBottom: Float = 0f,
     crossinline render: () -> Unit
 ) {
-    ImGui.beginChild(name, 0f, -paddingBottom, false)
+    ImGui.beginChild(name, width, height - paddingBottom, false)
     render()
     ImGui.endChild()
 }

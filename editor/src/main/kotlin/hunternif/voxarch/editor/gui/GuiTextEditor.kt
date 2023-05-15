@@ -22,7 +22,8 @@ abstract class GuiTextEditor(
         private set
 
     /** Whether this text input is active, i.e. has a typing cursor */
-    private var isActive: Boolean = false
+    var isActive: Boolean = false
+        private set
 
     private val applyTimer = Timer(0.1)
     private var isDirty: Boolean = false
