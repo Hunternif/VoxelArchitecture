@@ -55,12 +55,12 @@ val blueprintEditorStyleProperties: List<Property<*>> by lazy {
         PropX,
         PropY,
         PropZ,
-        PropPosition,
+//        PropPosition,       // vector properties are not supported in UI
 
         PropOffsetY,
         PropOffsetX,
         PropOffsetZ,
-        PropOffsetPosition,
+//        PropOffsetPosition, // vector properties are not supported in UI
 
         PropStartX,
         PropStartY,

@@ -1,9 +1,6 @@
 package hunternif.voxarch.editor.gui
 
-import hunternif.voxarch.dom.style.Declaration
-import hunternif.voxarch.dom.style.Property
-import hunternif.voxarch.dom.style.Rule
-import hunternif.voxarch.dom.style.set
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.blueprintEditorStyleProperties
 import imgui.ImGui
@@ -11,7 +8,7 @@ import imgui.ImGui
 class GuiBlueprintNodeStyle(
     node: BlueprintNode,
 ) {
-    private val rule = node.rule
+    private val rule: Rule = node.rule
 
     @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
     val items: List<Item<*>> by lazy {
@@ -24,24 +21,49 @@ class GuiBlueprintNodeStyle(
         }
     }
 
+    init {
+        refreshDeclarations()
+    }
+
+    fun render() {
+        disabled {
+            ImGui.textWrapped("Note that dynamic values may not be represented correctly here")
+        }
+        items.forEach { it.render() }
+    }
+
+    /** Update declaration content from the rule */
+    private fun refreshDeclarations() {
+        val propMap = rule.propertyMap // calculate it once
+        items.forEach { it.updateDeclaration(propMap) }
+    }
+
     abstract class Item<V : Any>(
-        private val rule: Rule,
-        private val property: Property<V>,
+        val rule: Rule,
+        val property: Property<V>,
     ) {
         private val checkbox = GuiCheckbox("##enabled_${property.name}")
-        abstract val value: V
-        protected val declaration = rule.propertyMap[property]
-            ?: Declaration.defaultForProperty(property)
-        var stringRepr: String = "${property.name}:"
-            private set
+        var declaration: Declaration<V> = Declaration.defaultForProperty(property)
+        lateinit var value: V
 
-        var enabled: Boolean = property in rule.propertyMap
+        private var enabled: Boolean = property in rule.propertyMap
+
+        /**
+         * Calculates value from the declaration, to display it in the UI.
+         * Note that this can give incorrect results for dynamic values,
+         * e.g. if it's %-based.
+         */
+        protected abstract fun findValue(declaration: Declaration<V>) : V
 
         fun render() {
+            if (!::value.isInitialized) value = findValue(declaration)
             checkbox.render(enabled) {
                 enabled = it
-                if (enabled) rule.add(declaration)
-                else rule.remove(declaration)
+                if (enabled) {
+                    rule.add(declaration)
+                } else {
+                    rule.remove(declaration)
+                }
             }
             ImGui.sameLine()
             disabled(!enabled) {
@@ -51,11 +73,17 @@ class GuiBlueprintNodeStyle(
 
         protected abstract fun renderInput()
 
-        protected fun updateStringRepr() {
-            stringRepr = "${property.name}: ${valueToString()}"
+        /** Called when the underlying rule was updated from the outside, e.g. history */
+        fun updateDeclaration(propMap: PropertyMap) {
+            val newDeclaration = propMap[property]
+            if (newDeclaration != null) {
+                enabled = true
+                declaration = newDeclaration
+                value = findValue(newDeclaration)
+            } else {
+                enabled = false
+            }
         }
-
-        protected open fun valueToString(): String = value.toString()
     }
 
     class ItemNumber(
@@ -65,21 +93,16 @@ class GuiBlueprintNodeStyle(
         max: Float = 999f,
     ) : Item<Number>(rule, property) {
         private val gui = GuiInputFloat(property.name, min = min, max = max)
-        override var value: Float = declaration.value.invoke(0.0, 0L).toFloat()
 
-        init {
-            updateStringRepr()
-        }
+        override fun findValue(declaration: Declaration<Number>): Number =
+            declaration.value.invoke(0.0, 0L)
 
         override fun renderInput() {
             gui.render(value.toFloat()) {
                 value = gui.newValue
-                updateStringRepr()
                 declaration.value = set(value)
             }
         }
-
-        override fun valueToString() = gui.format.format(value)
     }
 
     class ItemEnum<E : Enum<E>>(
@@ -88,16 +111,13 @@ class GuiBlueprintNodeStyle(
     ) : Item<E>(rule, property) {
         private val values = property.valType.enumConstants
         private val gui = GuiCombo(property.name, *values)
-        override var value: E = declaration.value.invoke(property.default, 0L)
 
-        init {
-            updateStringRepr()
-        }
+        override fun findValue(declaration: Declaration<E>): E =
+            declaration.value.invoke(property.default, 0L)
 
         override fun renderInput() {
             gui.render(value) {
                 value = it
-                updateStringRepr()
                 declaration.value = set(value)
             }
         }

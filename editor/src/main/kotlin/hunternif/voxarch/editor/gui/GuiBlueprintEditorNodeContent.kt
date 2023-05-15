@@ -20,7 +20,7 @@ class GuiBlueprintEditorNodeContent(
     val node: BlueprintNode,
     val padding: ImVec2,
 ) {
-    private val styleMenu = GuiBlueprintNodeStyle(node)
+    private val styleMenu by lazy { GuiBlueprintNodeStyle(node) }
     private val styleClassInput = GuiInputText("##${node.id}_classname", "class names")
     private val bpCombo by lazy {
         GuiCombo("##blueprint", app.state.blueprints)
@@ -87,10 +87,11 @@ class GuiBlueprintEditorNodeContent(
                 }
             }
         }
-        styleMenu.items.forEach { item ->
-            if (item.enabled) {
-                ImGui.bulletText(item.stringRepr)
-            }
+        node.rule.declarations.forEach {
+            // break it down to prevent creating new Java strings
+            ImGui.bulletText(it.property.name)
+            ImGui.sameLine()
+            ImGui.text(it.value.toString())
         }
 
         //========================= Extra outputs =========================
@@ -115,7 +116,7 @@ class GuiBlueprintEditorNodeContent(
             ImGui.pushItemWidth(150f)
             text("Style Rules")
             ImGui.separator()
-            styleMenu.items.forEach { it.render() }
+            styleMenu.render()
         }
         ImGui.separator()
         colorInput.render(node.color) {
