@@ -16,6 +16,7 @@ class Rule(
 
     val declarations = mutableListOf<Declaration<*>>()
 
+    /** Read-only, constructed at runtime */
     val propertyMap get() = PropertyMap(declarations)
 
     fun isEmpty(): Boolean = declarations.isEmpty()
@@ -28,17 +29,26 @@ class Rule(
         declarations.add(declaration)
     }
 
+    fun addAll(declarations: Collection<Declaration<*>>) {
+        this.declarations.addAll(declarations)
+    }
+
     fun remove(declaration: Declaration<*>) {
         declarations.remove(declaration)
+    }
+
+    fun clear() {
+        declarations.clear()
     }
 
     fun appliesTo(element: StyledElement<*>) =
         selectors.isEmpty() || selectors.any { it.appliesTo(element) }
 
+    fun declarationsToString(indent: String = ""): String =
+        declarations.joinToString("\n") { "$indent$it" }
+
     override fun toString(): String {
         val selStr = selectors.run { if (isEmpty()) "*" else joinToString(", ") }
-        return "$selStr {\n${
-            declarations.joinToString("\n") { "  $it" }
-        }\n}"
+        return "$selStr {\n${declarationsToString("  ")}\n}"
     }
 }

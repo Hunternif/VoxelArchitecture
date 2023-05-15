@@ -361,6 +361,23 @@ class StyleParserTest {
         assertRulesEqual(listOf(expected), rules)
     }
 
+    @Test
+    fun `parse declarations`() {
+        val rules = parser.parseDeclarations("""
+            width: 100%
+            height: inherit
+            depth: 4 ~ 50%  
+            snap-origin: FLOOR_CENTER
+        """.trimIndent()).rules
+        val expected = Rule().apply {
+            width { 100.pct }
+            height { inherit() }
+            depth { 4.vx to 50.pct }
+            snapOrigin { floorCenter() }
+        }
+        assertRulesEqual(listOf(expected), rules)
+    }
+
     private fun assertRulesEqual(expected: List<Rule>, actual: List<Rule>) {
         assertEquals(expected.size, actual.size)
         expected.zip(actual).forEach { (exp, act) ->

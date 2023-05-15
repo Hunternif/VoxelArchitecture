@@ -28,6 +28,27 @@ class StyleParser {
         return StyleParseResult(rules, errorListener.errors)
     }
 
+    /**
+     * Parses a list of declarations, i.e. a rule without a selector.
+     * Returns a list with a single rule with no selectors.
+     */
+    fun parseDeclarations(
+        styleStr: String,
+    ): StyleParseResult {
+        errorListener.errors.clear()
+        if (styleStr.isEmpty()) return StyleParseResult(emptyList(), emptyList())
+        val lexer = StyleGrammarLexer(CharStreams.fromString(styleStr))
+        val parser = StyleGrammarParser(CommonTokenStream(lexer))
+
+        parser.errorListeners.clear()
+        parser.addErrorListener(errorListener)
+        val rule = Rule()
+        parser.ruleBody()?.declaration()?.forEach {
+            rule.add(it.toDecl())
+        }
+        return StyleParseResult(listOf(rule), errorListener.errors)
+    }
+
     private fun StylesheetContext.toRules() = styleRule().map { it.toRule() }
     private fun StyleRuleContext.toRule(): Rule {
         val rule = Rule(selector().toSelectors())

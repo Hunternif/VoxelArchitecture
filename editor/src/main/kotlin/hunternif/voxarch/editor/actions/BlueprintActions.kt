@@ -97,3 +97,10 @@ fun EditorApp.setBlueprintNodeColor(
     oldColor: ColorRGBa,
     newColor: ColorRGBa,
 ) = historyAction(SetBlueprintNodeColor(node, oldColor, newColor))
+
+/** The style must be serialized, see [BlueprintUpdateNodeStyle] */
+fun EditorApp.setBlueprintNodeStyle(
+    node: BlueprintNode,
+    oldDeclStr: String,
+    newDeclStr: String,
+) = historyAction(BlueprintUpdateNodeStyle(node, oldDeclStr, newDeclStr))

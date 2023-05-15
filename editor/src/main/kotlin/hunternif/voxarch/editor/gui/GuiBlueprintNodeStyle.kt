@@ -1,21 +1,28 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.dom.style.*
+import hunternif.voxarch.editor.EditorApp
+import hunternif.voxarch.editor.actions.history.HistoryAction
+import hunternif.voxarch.editor.actions.setBlueprintNodeStyle
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.blueprintEditorStyleProperties
 import imgui.ImGui
 
 class GuiBlueprintNodeStyle(
-    node: BlueprintNode,
+    private val app: EditorApp,
+    private val node: BlueprintNode,
 ) {
     private val rule: Rule = node.rule
+
+    /** If history changes, we need to update items */
+    private var lastAction: HistoryAction? = null
 
     @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
     val items: List<Item<*>> by lazy {
         blueprintEditorStyleProperties.mapNotNull { p ->
             when (p.default) {
-                is Number -> ItemNumber(rule, p as Property<Number>)
-                is Enum<*> -> ItemEnum(rule, p as Property<Enum<*>>)
+                is Number -> ItemNumber(this, p as Property<Number>)
+                is Enum<*> -> ItemEnum(this, p as Property<Enum<*>>)
                 else -> null
             }
         }
@@ -26,6 +33,7 @@ class GuiBlueprintNodeStyle(
     }
 
     fun render() {
+        checkForUpdates()
         disabled {
             ImGui.textWrapped("Note that dynamic values may not be represented correctly here")
         }
@@ -38,10 +46,28 @@ class GuiBlueprintNodeStyle(
         items.forEach { it.updateDeclaration(propMap) }
     }
 
+    private fun checkForUpdates() {
+        val newLastAction = app.state.history.last()
+        if (lastAction != newLastAction) {
+            lastAction = newLastAction
+            refreshDeclarations()
+        }
+    }
+
+    private inline fun submitStyleChange(
+        crossinline block: () -> Unit,
+    ) {
+        val oldDecls = rule.declarationsToString()
+        block()
+        val newDecls = rule.declarationsToString()
+        app.setBlueprintNodeStyle(node, oldDecls, newDecls)
+    }
+
     abstract class Item<V : Any>(
-        val rule: Rule,
+        val rootGui: GuiBlueprintNodeStyle,
         val property: Property<V>,
     ) {
+        protected val rule = rootGui.rule
         private val checkbox = GuiCheckbox("##enabled_${property.name}")
         var declaration: Declaration<V> = Declaration.defaultForProperty(property)
         lateinit var value: V
@@ -60,9 +86,9 @@ class GuiBlueprintNodeStyle(
             checkbox.render(enabled) {
                 enabled = it
                 if (enabled) {
-                    rule.add(declaration)
+                    rootGui.submitStyleChange { rule.add(declaration) }
                 } else {
-                    rule.remove(declaration)
+                    rootGui.submitStyleChange { rule.remove(declaration) }
                 }
             }
             ImGui.sameLine()
@@ -87,11 +113,11 @@ class GuiBlueprintNodeStyle(
     }
 
     class ItemNumber(
-        rule: Rule,
+        rootGui: GuiBlueprintNodeStyle,
         property: Property<Number>,
         min: Float = -999f,
         max: Float = 999f,
-    ) : Item<Number>(rule, property) {
+    ) : Item<Number>(rootGui, property) {
         private val gui = GuiInputFloat(property.name, min = min, max = max)
 
         override fun findValue(declaration: Declaration<Number>): Number =
@@ -100,15 +126,15 @@ class GuiBlueprintNodeStyle(
         override fun renderInput() {
             gui.render(value.toFloat()) {
                 value = gui.newValue
-                declaration.value = set(value)
+                rootGui.submitStyleChange { declaration.value = set(value) }
             }
         }
     }
 
     class ItemEnum<E : Enum<E>>(
-        rule: Rule,
+        rootGui: GuiBlueprintNodeStyle,
         property: Property<E>,
-    ) : Item<E>(rule, property) {
+    ) : Item<E>(rootGui, property) {
         private val values = property.valType.enumConstants
         private val gui = GuiCombo(property.name, *values)
 
@@ -118,7 +144,7 @@ class GuiBlueprintNodeStyle(
         override fun renderInput() {
             gui.render(value) {
                 value = it
-                declaration.value = set(value)
+                rootGui.submitStyleChange { declaration.value = set(value) }
             }
         }
     }

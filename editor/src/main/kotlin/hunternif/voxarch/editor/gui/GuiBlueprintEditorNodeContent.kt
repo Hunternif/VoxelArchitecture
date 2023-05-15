@@ -20,7 +20,7 @@ class GuiBlueprintEditorNodeContent(
     val node: BlueprintNode,
     val padding: ImVec2,
 ) {
-    private val styleMenu by lazy { GuiBlueprintNodeStyle(node) }
+    private val styleMenu by lazy { GuiBlueprintNodeStyle(app, node) }
     private val styleClassInput = GuiInputText("##${node.id}_classname", "class names")
     private val bpCombo by lazy {
         GuiCombo("##blueprint", app.state.blueprints)
