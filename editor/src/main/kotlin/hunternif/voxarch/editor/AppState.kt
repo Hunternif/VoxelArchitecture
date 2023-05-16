@@ -43,7 +43,6 @@ interface AppState {
     val buildContext: BuildContext
     val stylesheet: Stylesheet
     val seed: Long
-    val domBuilderNames: List<String>
     val generatedNodes: Subset<SceneNode>
     val generatedVoxels: Subset<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
@@ -127,7 +126,6 @@ class AppStateImpl(
     }
     override var stylesheet = Stylesheet()
     override var seed: Long = 0
-    override val domBuilderNames = DomBuilderFactory.allDomBuilders.map { it.name }
     override val voxelColorMap = ::mapVoxelToSolidColor
     override var renderMode = VoxelRenderMode.COLORED
     override var shadingMode = VoxelShadingMode.MAGICA_VOXEL

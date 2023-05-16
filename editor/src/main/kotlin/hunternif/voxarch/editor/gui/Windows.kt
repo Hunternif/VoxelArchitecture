@@ -75,11 +75,14 @@ inline fun childWindow(
     width: Float = 0f,
     height: Float = 0f,
     paddingBottom: Float = 0f,
+    padding: Float = 8f,
     crossinline render: () -> Unit
 ) {
+    ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, padding, padding)
     ImGui.beginChild(name, width, height - paddingBottom, false)
     render()
     ImGui.endChild()
+    ImGui.popStyleVar()
 }
 
 inline fun thinChildToolbar(name: String, crossinline render: () -> Unit = {}) {

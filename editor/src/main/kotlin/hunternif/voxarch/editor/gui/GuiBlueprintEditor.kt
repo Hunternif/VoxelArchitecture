@@ -5,12 +5,15 @@ import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.BlueprintSlot
+import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import imgui.ImGui
 import imgui.ImVec2
 import imgui.extension.imnodes.ImNodes
 import imgui.extension.imnodes.flag.ImNodesMiniMapLocation
 import imgui.flag.ImGuiMouseButton
 import imgui.flag.ImGuiStyleVar
+import imgui.flag.ImGuiTableColumnFlags
+import imgui.flag.ImGuiTableFlags
 import imgui.type.ImInt
 import org.lwjgl.glfw.GLFW
 
@@ -76,17 +79,13 @@ class GuiBlueprintEditor(
                 }
             }
             popup("node_editor_context") {
+                ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 2f, 2f)
                 menu("Add..") {
-                    text("DOM element:")
-                    listbox("##dom_elem_type") {
-                        app.state.domBuilderNames.forEach { name ->
-                            selectable(name) {
-                                addNodeWithDomElement(name, clickPos)
-                                ImGui.closeCurrentPopup()
-                            }
-                        }
+                    childWindow("style_container", 250f, 300f) {
+                        renderNewNodeMenu()
                     }
                 }
+                ImGui.popStyleVar()
             }
             ImGui.popStyleVar()
         }
@@ -133,6 +132,29 @@ class GuiBlueprintEditor(
 
         ImNodes.miniMap(0.2f, ImNodesMiniMapLocation.BottomRight)
         ImNodes.endNodeEditor()
+    }
+
+    private fun Blueprint.renderNewNodeMenu() {
+        ImGui.pushFont(gui.fontSmallIcons)
+        if (ImGui.beginTable("new_node_table", 2, ImGuiTableFlags.PadOuterX)) {
+            // it's not actually 10px wide, selectable makes it wider
+            ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
+            ImGui.tableSetupColumn("name")
+
+            DomBuilderFactory.allDomBuilders.forEach {
+                ImGui.tableNextRow()
+                ImGui.tableNextColumn()
+                centeredText(it.icon)
+
+                ImGui.tableNextColumn()
+                selectable(it.name, spanAllColumns = true) {
+                    addNodeWithDomElement(it.name, clickPos)
+                    ImGui.closeCurrentPopup()
+                }
+            }
+            ImGui.endTable()
+        }
+        ImGui.popFont()
     }
 
     /** Implements a workaround to find this value from the start node
