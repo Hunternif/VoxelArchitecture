@@ -114,16 +114,20 @@ class GuiBlueprintEditorNodeContent(
 
     fun renderContextMenu() {
         menu("Style...") {
-            ImGui.pushItemWidth(150f)
             text("Style Rules")
             tabBar("style_tabs") {
                 tabItem("Inputs") {
-                    styleGuiAsInputs.render()
+                    childWindow("style_container", 250f, 300f) {
+                        styleGuiAsInputs.render()
+                    }
                 }
                 tabItem("Text") {
-                    styleGuiAsText.render()
+                    childWindow("style_container", 250f, 300f) {
+                        styleGuiAsText.render()
+                    }
                 }
             }
+
         }
         ImGui.separator()
         colorInput.render(node.color) {

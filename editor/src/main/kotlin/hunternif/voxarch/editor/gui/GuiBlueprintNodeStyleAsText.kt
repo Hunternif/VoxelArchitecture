@@ -23,9 +23,7 @@ class GuiBlueprintNodeStyleAsText(
     private var lastAction: HistoryAction? = null
 
     fun render() {
-        childWindow("editor_container", 250f, 300f) {
-            editor.render()
-        }
+        editor.render()
         checkForUpdates()
     }
 

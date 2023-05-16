@@ -96,7 +96,9 @@ class GuiBlueprintNodeStyleAsInputs(
             }
             ImGui.sameLine()
             disabled(!enabled) {
-                renderInput()
+                withWidth(100f) {
+                    renderInput()
+                }
             }
         }
 
