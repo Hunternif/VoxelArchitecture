@@ -152,25 +152,32 @@ By default, it's set so that origin is at the low-XYZ corner.""")
 
     private fun renderBlueprintTable(sceneNode: SceneNode) {
         updateBlueprints(sceneNode)
+        ImGui.pushFont(gui.fontSmallIcons)
         if (ImGui.beginTable("blueprints_table", 2, ImGuiTableFlags.PadOuterX)) {
-            ImGui.tableSetupColumn("name")
             // it's not actually 10px wide, selectable makes it wider
-            ImGui.tableSetupColumn("remove", ImGuiTableColumnFlags.WidthFixed, 10f)
-            curBlueprints.forEachIndexed { i, blue ->
+            ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
+            ImGui.tableSetupColumn("name")
+
+            curBlueprints.forEachIndexed { i, bp ->
                 ImGui.tableNextRow()
                 ImGui.tableNextColumn()
-                if (ImGui.selectable(memoStrWithIndex(blue.name, i),
-                        app.state.selectedBlueprint == blue)
-                ) {
-                    app.selectBlueprint(blue)
-                }
+                centeredText(FontAwesomeIcons.Code)
+
                 ImGui.tableNextColumn()
-                gui.inlineIconButton(memoStrWithIndex(FontAwesomeIcons.Times, i)) {
-                    app.removeBlueprint(sceneNode, blue)
+                val name = memoStrWithIndex(bp.name, i)
+                val isSelected = app.state.selectedBlueprint == bp
+                selectable(name, isSelected, true) {
+                    app.selectBlueprint(bp)
+                }
+                contextMenu(memoStrWithIndex("bp_obj_context_menu", i)) {
+                    menuItem("Remove from node") {
+                        app.removeBlueprint(sceneNode, bp)
+                    }
                 }
             }
             ImGui.endTable()
         }
+        ImGui.popFont()
     }
 
     private fun updateBlueprints(sceneNode: SceneNode) = blueprintsTimer.runAtInterval {
