@@ -62,18 +62,3 @@ object DomBuilderFactory {
         }
     }
 }
-
-/**
- * Creates a new Node instance.
- */
-typealias NodeFactory = () -> Node
-
-val nodeFactoryByName: Map<String, NodeFactory> = mapOf(
-    "Node" to { Node() },
-    "Room" to { Room() },
-    "PolyRoom" to { PolyRoom() },
-    "Floor" to { Floor() },
-    "Wall" to { Wall() },
-    "Window" to { Window() },
-    "Column" to { Column() },
-)

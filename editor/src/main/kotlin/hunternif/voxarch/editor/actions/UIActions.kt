@@ -4,7 +4,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.visible.HideObject
 import hunternif.voxarch.editor.actions.visible.ShowAction
-import hunternif.voxarch.editor.blueprint.nodeFactoryByName
+import hunternif.voxarch.editor.blueprint.NodeFactory
 import hunternif.voxarch.editor.builder.setMinecraftMaterials
 import hunternif.voxarch.editor.builder.setSolidColorMaterials
 import hunternif.voxarch.editor.file.VOXARCH_PROJECT_FILE_EXT
@@ -56,7 +56,7 @@ fun EditorApp.setTool(tool: Tool) = action {
 }
 
 fun EditorApp.setNewNodeType(type: String) = action {
-    val actualType = if (type in nodeFactoryByName.keys) type else "Node"
+    val actualType = if (type in NodeFactory.nodeTypesByName.keys) type else "Node"
     state.newNodeType = actualType
 }
 

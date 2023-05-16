@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.actions
 
 import hunternif.voxarch.editor.BaseAppTest
-import hunternif.voxarch.editor.blueprint.nodeFactoryByName
+import hunternif.voxarch.editor.blueprint.NodeFactory
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.vector.Vec3
@@ -12,10 +12,10 @@ import org.junit.Test
 class CreateNodeTest : BaseAppTest() {
     @Test
     fun `create node of each type`() {
-        for ((type, factory) in nodeFactoryByName) {
-            val node = factory()
+        NodeFactory.allNodeTypes.forEach {
+            val node = it.create()
             val sceneNode = app.createNode(
-                Vector3i(0, 0, 0), Vector3i(1, 1, 1), false, type)
+                Vector3i(0, 0, 0), Vector3i(1, 1, 1), false, it.name)
             assertEquals(node.javaClass, sceneNode.node.javaClass)
         }
     }

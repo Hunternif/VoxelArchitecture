@@ -5,7 +5,7 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.Tool
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.redrawNodes
-import hunternif.voxarch.editor.blueprint.nodeFactoryByName
+import hunternif.voxarch.editor.blueprint.NodeFactory
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.max
 import hunternif.voxarch.editor.util.min
@@ -42,7 +42,7 @@ class CreateNode(
         // ensure size is positive
         val min = min(start, end).toVec3()
         val max = max(start, end).toVec3()
-        val node = nodeFactoryByName[type]?.invoke() ?: Node()
+        val node = NodeFactory.create(type) ?: Node()
         val globalPos = parentNode.node.findGlobalPosition()
         parentNode.node.addChild(node)
         node.minPoint = min - globalPos

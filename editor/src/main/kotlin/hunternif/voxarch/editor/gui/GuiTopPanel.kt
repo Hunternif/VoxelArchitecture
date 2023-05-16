@@ -6,12 +6,12 @@ import hunternif.voxarch.editor.actions.clearNewNodeFrame
 import hunternif.voxarch.editor.actions.createNode
 import hunternif.voxarch.editor.actions.deleteSelectedObjects
 import hunternif.voxarch.editor.actions.setNewNodeType
-import hunternif.voxarch.editor.blueprint.nodeFactoryByName
+import hunternif.voxarch.editor.blueprint.NodeFactory
 import hunternif.voxarch.editor.scene.NewNodeFrame.*
 import imgui.ImGui
 
 private val nodeTypeCombo = GuiCombo(
-    "##new_node_type", nodeFactoryByName.keys, 80f)
+    "##new_node_type", NodeFactory.nodeTypesByName.keys, 80f)
 
 fun MainGui.topPanel() {
     if (app.state.selectedObjects.isNotEmpty() && app.state.canDeleteSelection()) {
