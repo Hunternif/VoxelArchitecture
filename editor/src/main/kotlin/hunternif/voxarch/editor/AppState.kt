@@ -7,7 +7,7 @@ import hunternif.voxarch.editor.actions.history.History
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.history.ReadOnlyHistory
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.builder.*
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.box.BoxFace
@@ -127,7 +127,7 @@ class AppStateImpl(
     }
     override var stylesheet = Stylesheet()
     override var seed: Long = 0
-    override val domBuilderNames = domBuilderFactoryByName.keys.toList()
+    override val domBuilderNames = DomBuilderFactory.allDomBuilders.map { it.name }
     override val voxelColorMap = ::mapVoxelToSolidColor
     override var renderMode = VoxelRenderMode.COLORED
     override var shadingMode = VoxelShadingMode.MAGICA_VOXEL

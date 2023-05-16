@@ -49,8 +49,8 @@ fun EditorApp.newBlueprintNode(
     y: Float = 0f,
     autoLinkFrom: BlueprintSlot.Out? = null,
 ): BlueprintNode? {
-    val factory = domBuilderFactoryByName[name] ?: return null
-    val action = BlueprintNewNode(bp, name, factory(), x, y, autoLinkFrom)
+    val domBuilder = DomBuilderFactory.create(name) ?: return null
+    val action = BlueprintNewNode(bp, name, domBuilder, x, y, autoLinkFrom)
     historyAction(action)
     return action.node
 }

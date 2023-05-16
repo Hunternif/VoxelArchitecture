@@ -114,8 +114,7 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
         // Skip start node because it's added automatically:
         if (n.id == bp.start.id) continue
         // For other nodes, create and save it:
-        val factory = domBuilderFactoryByName[n.name] ?: continue
-        val domBuilder = factory()
+        val domBuilder = DomBuilderFactory.create(n.name) ?: continue
         val bpNode = bp.createNode(n.id, n.name, n.x, n.y, domBuilder)
         bpNode.color = n.colorHexRGB?.let { ColorRGBa.fromHex(it.toInt(16)) }
             ?: BlueprintNode.defaultColor.copy()

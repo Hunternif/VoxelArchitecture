@@ -3,7 +3,7 @@ package hunternif.voxarch.editor.gui
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.updateStylesheetAndText
-import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.blueprint.nodeFactoryByName
 import hunternif.voxarch.editor.blueprint.styleEditorStyleProperties
 import hunternif.voxarch.editor.file.style.StyleParser
@@ -93,9 +93,8 @@ abstract class GuiStyleEditor(
             val identifiers = mutableMapOf<String, String>()
             // Treat Node & DOM types as "identifiers":
             nodeFactoryByName.keys.forEach { identifiers[it] = "Node class '$it'" }
-            domBuilderFactoryByName.values.forEach {
-                val type = it().javaClass.simpleName
-                identifiers[type] = "DOM builder class '$type'"
+            DomBuilderFactory.allDomBuilders.forEach {
+                identifiers[it.className] = "DOM builder class '${it.className}'"
             }
             lang.setIdentifiers(identifiers)
 

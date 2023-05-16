@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.builder
 
 import hunternif.voxarch.plan.*
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Test
 
@@ -20,6 +21,13 @@ class BuilderLibraryTest {
         val pathEntries = library.findBuildersFor(Path())
         assertContainsBuilder<Node>(pathEntries)
         assertContainsBuilder<Path>(pathEntries)
+    }
+
+    @Test
+    fun `all builders have unique names`() {
+        val library = BuilderLibrary()
+        val nameSet = library.buildersByName.keys
+        assertEquals(nameSet.size, library.allBuilders.size)
     }
 
     private inline fun <reified N: Node> assertContainsBuilder(

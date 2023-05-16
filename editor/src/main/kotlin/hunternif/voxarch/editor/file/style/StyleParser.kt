@@ -1,11 +1,10 @@
 package hunternif.voxarch.editor.file.style
 
-import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.editor.antlr.StyleGrammarLexer
 import hunternif.voxarch.editor.antlr.StyleGrammarParser
 import hunternif.voxarch.editor.antlr.StyleGrammarParser.*
-import hunternif.voxarch.editor.blueprint.domBuilderFactoryByName
+import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.blueprint.styleEditorStyleProperties
 import hunternif.voxarch.vector.Vec3
 import org.antlr.v4.runtime.*
@@ -170,11 +169,8 @@ class StyleParser {
     /** All known Node and DomBuilder subclasses that can be styled.
      * Maps class name to class. */
     val knownStyleTypes: Map<String, Class<*>> by lazy {
-        domBuilderFactoryByName.values.associate {
-            val clazz = when (val domBuilder = it()) {
-                is DomNodeBuilder<*> -> domBuilder.nodeClass
-                else -> domBuilder::class.java
-            }
+        DomBuilderFactory.allDomBuilders.associate {
+            val clazz = it.nodeClass ?: it.clazz
             clazz.simpleName to clazz
         }
     }
