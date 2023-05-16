@@ -14,7 +14,7 @@ fun EditorApp.newBlueprint(): Blueprint {
 }
 
 fun EditorApp.addNewBlueprint(node: SceneNode): Blueprint {
-    val action = NewBlueprint(autoSelect = false, autoAddNode = node)
+    val action = NewBlueprint(autoSelect = true, autoAddNode = node)
     historyAction(action)
     return action.bp
 }
