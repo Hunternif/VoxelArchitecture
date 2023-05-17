@@ -12,26 +12,41 @@ import java.util.LinkedList
 /** Asserts all properties except children. */
 fun assertNodeEquals(
     expected: Node,
-    actual: Node
+    actual: Node,
+    testTags: Boolean = true,
 ) {
     assertEquals("class", expected::class, actual::class)
-    assertEquals("origin",expected.origin, actual.origin)
+    assertEquals("origin", expected.origin, actual.origin)
     assertEquals("start", expected.start, actual.start)
-    assertEquals("tags", expected.tags, actual.tags)
+    if (testTags) assertEquals("tags", expected.tags, actual.tags)
     assertEquals("rotationY", expected.rotationY, actual.rotationY, 0.0)
     assertEquals("size", expected.size, actual.size)
     assertEquals("width", expected.width, actual.width, 0.0)
-    assertEquals("height",expected.height, actual.height, 0.0)
+    assertEquals("height", expected.height, actual.height, 0.0)
     assertEquals("depth", expected.depth, actual.depth, 0.0)
     assertEquals("builder", expected.builder, actual.builder)
     when (expected) {
         is PolyRoom -> {
-            assertEquals(expected.shape, (actual as PolyRoom).shape)
-            assertEquals(expected.polygon, actual.polygon)
+            assertEquals("shape", expected.shape, (actual as PolyRoom).shape)
+            assertNodeEquals(expected.polygon, actual.polygon)
         }
         is Path -> {
-            assertEquals(expected.points, (actual as Path).points)
+            assertEquals("points", expected.points, (actual as Path).points)
         }
+    }
+}
+
+/** Asserts all properties are equal, including all children recursively. */
+fun assertNodeTreeEqualsRecursive(
+    expected: Node,
+    actual: Node,
+    testTags: Boolean = true,
+) {
+    val expectedTraversal = expected.query<Node>().toList()
+    val actualTraversal = actual.query<Node>().toList()
+    assertEquals("node count", expectedTraversal.size, actualTraversal.size)
+    expectedTraversal.zip(actualTraversal).forEach { (exp, act) ->
+        assertNodeEquals(exp, act, testTags)
     }
 }
 
