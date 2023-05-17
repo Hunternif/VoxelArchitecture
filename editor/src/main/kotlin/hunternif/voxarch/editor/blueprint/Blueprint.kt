@@ -123,6 +123,8 @@ class BlueprintNode(
     val domBuilder: DomBuilder,
     var x: Float = 0f,
     var y: Float = 0f,
+    /** Nodes derived from this BP node will have this color.
+     * For consistency, this color should always have 100% alpha internally. */
     var color: ColorRGBa = defaultColor.copy(),
 ) : WithID {
     val autoStyleClass = "${name.replace(' ', '_')}_${id}"

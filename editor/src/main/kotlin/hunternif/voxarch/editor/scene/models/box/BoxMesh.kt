@@ -138,4 +138,11 @@ open class BoxMesh(
             Intersectionf.testPointTriangle(p, it.p1, it.p2, it.p3)
         }
     }
+
+    fun copy(
+        center: Vector3f = this.center,
+        size: Vector3f = this.size,
+        angleY: Float = this.angleY,
+        color: ColorRGBa = this.color,
+    ) = BoxMesh(center, size, angleY, color)
 }

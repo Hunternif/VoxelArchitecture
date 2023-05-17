@@ -31,8 +31,8 @@ class NodeModel(val camera: OrbitalCamera) : IModel {
     }
 
     fun add(node: SceneNode) {
-        fillModel.add(node, BoxMesh(node.box.center, node.box.size, node.box.angleY, node.color.copy(a = 0.1f)))
-        lineModel.add(node, node.box)
+        fillModel.add(node, node.box.copy(color = node.color.copy(a = 0.1f)))
+        lineModel.add(node, node.box.copy(color = node.color.copy(a = 0.2f)))
         if (DEBUG_NODES) {
             pointsDebugModel.add(camera.projectToViewport(node.box.floorCenter))
         }
