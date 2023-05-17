@@ -7,7 +7,6 @@ import hunternif.voxarch.editor.actions.history.History
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.history.ReadOnlyHistory
 import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.DomBuilderFactory
 import hunternif.voxarch.editor.builder.*
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.box.BoxFace
@@ -84,6 +83,7 @@ interface AppState {
     val hinting: Boolean
     val verboseDom: Boolean
     val verboseBuild: Boolean
+    val forgetBuildHistory: Boolean
 
 
     //============================= GUI STATE ===============================
@@ -153,6 +153,7 @@ class AppStateImpl(
     override var hinting: Boolean = false
     override var verboseDom: Boolean = false
     override var verboseBuild: Boolean = false
+    override var forgetBuildHistory: Boolean = false
 
     override val DEBUG = true
     override var isMainWindowFocused = false

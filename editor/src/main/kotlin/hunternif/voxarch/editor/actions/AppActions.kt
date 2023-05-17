@@ -60,13 +60,22 @@ fun EditorApp.exportVoxFile(path: Path) = action(ExportVoxFile(path))
 fun EditorApp.importVoxFile(path: Path) = historyAction(ImportVoxFile(path))
 
 /** Clear generated nodes and run Blueprints for all nodes that have them. */
-fun EditorApp.generateNodes() = historyAction(GenerateNodes())
+fun EditorApp.generateNodes() {
+    if (state.forgetBuildHistory) action(GenerateNodes())
+    else historyAction(GenerateNodes())
+}
 
 /** Clear generated voxels and run a Builder on the current root node. */
-fun EditorApp.buildVoxels() = historyAction(BuildVoxels())
+fun EditorApp.buildVoxels() {
+    if (state.forgetBuildHistory) action(BuildVoxels())
+    else historyAction(BuildVoxels())
+}
 
 /** Combines [generateNodes] and [buildVoxels] */
-fun EditorApp.buildNodesAndVoxels() = historyAction(BuildNodesAndVoxels())
+fun EditorApp.buildNodesAndVoxels() {
+    if (state.forgetBuildHistory) action(BuildNodesAndVoxels())
+    else historyAction(BuildNodesAndVoxels())
+}
 
 fun EditorApp.setSeed(seed: Long) = historyAction(SetSeed(seed))
 
@@ -269,6 +278,10 @@ fun EditorApp.toggleVerboseDom() = action {
 
 fun EditorApp.toggleVerboseBuild() = action {
     state.verboseBuild = !state.verboseBuild
+}
+
+fun EditorApp.toggleForgetBuildHistory() = action {
+    state.forgetBuildHistory = !state.forgetBuildHistory
 }
 
 

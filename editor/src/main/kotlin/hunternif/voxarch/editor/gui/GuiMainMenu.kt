@@ -118,6 +118,11 @@ fun MainGui.mainMenu() {
             ) {
                 build.unifyButtons.toggle()
             }
+            menuCheck("Forget build history", app.state.forgetBuildHistory,
+                tooltip = "Generating Nodes or voxels doesn't write to history"
+            ) {
+                app.toggleForgetBuildHistory()
+            }
         }
     }
 }
