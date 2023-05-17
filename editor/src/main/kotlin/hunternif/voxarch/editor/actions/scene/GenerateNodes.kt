@@ -16,6 +16,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.DetachedObject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.detached
+import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Node
 
 /** Creates new nodes from all blueprints attached to nodes in the scene. */
@@ -28,6 +29,10 @@ class GenerateNodes : HistoryAction(
 
     /** Maps from a node to the BP node that generated it. */
     private val nodeToBpMap = mutableMapOf<Node, BlueprintNode>()
+
+    /** Maps from a node to the color of the BP branch
+     * (from the lowest ancestor with a custom color). */
+    private val nodeColorMap = mutableMapOf<Node, ColorRGBa>()
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::oldGenerated.isInitialized) {
@@ -71,7 +76,7 @@ class GenerateNodes : HistoryAction(
         root.blueprints.forEach {
             it.execute(root.node, state.stylesheet, state.seed, 4,
                 state.cleanDummies, state.hinting,
-                listeners + BPTrackingListener(it, nodeToBpMap),
+                listeners + BPTrackingListener(it, nodeToBpMap, nodeColorMap),
             )
         }
         // Create SceneNodes for the new nodes
@@ -85,12 +90,9 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.createSceneNodesRecursive(
         parent: SceneNode, newNode: Node
     ) {
-        val sceneNode = state.registry.newNode(newNode, Colors.defaultGeneratedNodeBox, true)
+        val color = nodeColorMap[newNode] ?: Colors.defaultGeneratedNodeBox
+        val sceneNode = state.registry.newNode(newNode, color, true)
         sceneNode.parent = parent
-        val bpNode = nodeToBpMap[newNode]
-        if (bpNode != null && bpNode.isCustomColor) {
-            sceneNode.color.set(bpNode.color)
-        }
         newGenerated.add(sceneNode.detached())
         newNode.children.forEach { createSceneNodesRecursive(sceneNode, it) }
     }
@@ -105,10 +107,14 @@ class GenerateNodes : HistoryAction(
             override fun onEndBuild(element: StyledElement<*>) {}
         }
 
-        /** This listener populates the map of Node to BlueprintNode which created it. */
+        /**
+         * This listener populates the map of Node to BlueprintNode which created it.
+         * Also, colors.
+         */
         class BPTrackingListener(
             bp: Blueprint,
             private val nodeToBpMap: MutableMap<Node, BlueprintNode>,
+            private val nodeColorMap: MutableMap<Node, ColorRGBa>,
         ) : IDomListener {
             /** Maps domBuilder to its parent BP node */
             private val domBuilderMap = bp.mapDomBuildersToNodes()
@@ -119,11 +125,23 @@ class GenerateNodes : HistoryAction(
                 if (element !is StyledNode<*>) return
                 var bpNode = domBuilderMap[element.domBuilder]
                 if (bpNode == null) {
-                    // Find the lowest ancestor Blueprint node with a custom color:
-                    val ancestor = element.ctx.lineage.lastOrNull { domBuilderMap[it.domBuilder] != null } ?: return
+                    // Find the lowest ancestor Blueprint node
+                    val ancestor = element.ctx.lineage.lastOrNull {
+                        domBuilderMap[it.domBuilder] != null
+                    } ?: return
                     bpNode = domBuilderMap[ancestor.domBuilder] ?: return
                 }
+                var color = bpNode.color
+                if (!bpNode.isCustomColor) {
+                    // Find the lowest ancestor with a custom color
+                    element.ctx.lineage.lastOrNull {
+                        domBuilderMap[it.domBuilder]?.isCustomColor == true
+                    }?.let {
+                        color = domBuilderMap[it.domBuilder]!!.color
+                    }
+                }
                 nodeToBpMap[element.node] = bpNode
+                nodeColorMap[element.node] = color
             }
         }
     }
