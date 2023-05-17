@@ -74,12 +74,12 @@ inline fun childWindow(
     name: String,
     width: Float = 0f,
     height: Float = 0f,
-    paddingBottom: Float = 0f,
     padding: Float = 8f,
+    flags: Int = 0,
     crossinline render: () -> Unit
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, padding, padding)
-    ImGui.beginChild(name, width, height - paddingBottom, false)
+    ImGui.beginChild(name, width, height, false, flags)
     render()
     ImGui.endChild()
     ImGui.popStyleVar()

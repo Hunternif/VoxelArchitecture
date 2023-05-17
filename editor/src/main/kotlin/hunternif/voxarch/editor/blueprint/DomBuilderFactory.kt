@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.blueprint
 import hunternif.voxarch.builder.BLD_ARCHED_BRIDGE
 import hunternif.voxarch.builder.BLD_ARCHED_WINDOW
 import hunternif.voxarch.dom.builder.*
+import hunternif.voxarch.editor.blueprint.DomBuilderFactory.Group.*
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Archway
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ArrowsAlt
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.BorderNone
@@ -24,40 +25,54 @@ import hunternif.voxarch.plan.*
 object DomBuilderFactory {
     val allDomBuilders: List<Entry> by lazy {
         listOf(
-            Entry("Node") { DomNodeBuilder { Node() } },
-            Entry("Room") { DomNodeBuilder { Room() } },
-            Entry("PolyRoom", Star) { DomPolyRoomBuilder { PolyRoom() } },
-            Entry("Floor", WindowMinimize) { DomNodeBuilder { Floor() } },
-            Entry("Wall", Stop) { DomNodeBuilder { Wall() } },
-            Entry("Window") { DomNodeBuilder { Window() } },
-            Entry("Column", ICursor) { DomNodeBuilder { Column() } },
-            Entry("Arched Bridge", Archway) { DomNodeBuilder { Wall() }.addStyle(BLD_ARCHED_BRIDGE) },
-            Entry("Arched Window", Archway) { DomNodeBuilder { Window() }.addStyle(BLD_ARCHED_WINDOW) },
-            Entry("Turret", ChessRook) { DomPolyRoomWithTurretBuilder() },
-            Entry("Turret Decor", ChessRook) { DomTurretDecor() },
-            Entry("Turret Roof Decor", ChessRook) { DomTurretRoofDecor() },
-            Entry("Turret Bottom Decor", CaretDown) { DomTurretBottomDecor() },
-            Entry("Extend", ArrowsAlt) { DomExtend() },
-            Entry("All Walls", Star) { DomPolySegmentBuilder() },
-            Entry("Four Walls", Square) { DomFourWallsBuilder() },
-            Entry("Select Walls") { DomSelectWalls() },
-            Entry("Random Wall") { DomRandomSegmentBuilder() },
-            Entry("All Corners", "..") { DomLogicPolyCornerBuilder() },
-            Entry("Four Corners", "::") { DomLogicFourCornerBuilder() },
-            Entry("Subdivide", BorderNone) { DomSubdivide() },
-            Entry("Repeat", EllipsisH) { DomRepeat() },
-            Entry("Blueprint", Code) { DomRunBlueprint() },
-            Entry("Random", ) { DomRandom() },
+            Entry(NODE, "Node") { DomNodeBuilder { Node() } },
+            Entry(NODE, "Room") { DomNodeBuilder { Room() } },
+            Entry(NODE, "PolyRoom", Star) { DomPolyRoomBuilder { PolyRoom() } },
+            Entry(NODE, "Floor", WindowMinimize) { DomNodeBuilder { Floor() } },
+            Entry(NODE, "Wall", Stop) { DomNodeBuilder { Wall() } },
+            Entry(NODE, "Window") { DomNodeBuilder { Window() } },
+            Entry(NODE, "Column", ICursor) { DomNodeBuilder { Column() } },
+
+            Entry(BUILDING, "Turret", ChessRook) { DomPolyRoomWithTurretBuilder() },
+            Entry(BUILDING, "Turret Decor", ChessRook) { DomTurretDecor() },
+            Entry(BUILDING, "Turret Roof Decor", ChessRook) { DomTurretRoofDecor() },
+            Entry(BUILDING, "Turret Bottom Decor", CaretDown) { DomTurretBottomDecor() },
+            Entry(BUILDING, "Arched Window", Archway) { DomNodeBuilder { Window() }.addStyle(BLD_ARCHED_WINDOW) },
+            Entry(BUILDING, "Arched Bridge", Archway) { DomNodeBuilder { Wall() }.addStyle(BLD_ARCHED_BRIDGE) },
+
+            Entry(SELECT, "Extend", ArrowsAlt) { DomExtend() },
+            Entry(SELECT, "All Walls", Star) { DomPolySegmentBuilder() },
+            Entry(SELECT, "Four Walls", Square) { DomFourWallsBuilder() },
+            Entry(SELECT, "Select Walls") { DomSelectWalls() },
+            Entry(SELECT, "Random Wall") { DomRandomSegmentBuilder() },
+            Entry(SELECT, "All Corners", "..") { DomLogicPolyCornerBuilder() },
+            Entry(SELECT, "Four Corners", "::") { DomLogicFourCornerBuilder() },
+            Entry(SELECT, "Subdivide", BorderNone) { DomSubdivide() },
+            Entry(SELECT, "Repeat", EllipsisH) { DomRepeat() },
+
+            Entry(LOGIC, "Blueprint", Code) { DomRunBlueprint() },
+            Entry(LOGIC, "Random", ) { DomRandom() },
         )
     }
 
     val domBuildersByName: Map<String, Entry> by lazy {
         allDomBuilders.associateBy { it.name }
     }
+    val domBuildersByGroup: Map<Group, List<Entry>> by lazy {
+        allDomBuilders.groupBy { it.group }
+    }
 
     fun create(name: String): DomBuilder? = domBuildersByName[name]?.create?.invoke()
 
+    enum class Group(val label: String) {
+        NODE("Basic nodes"),
+        BUILDING("Building components"),
+        SELECT("Selectors"),
+        LOGIC("Logic"),
+    }
+
     data class Entry(
+        val group: Group,
         val name: String,
         val icon: String,
         val create: () -> DomBuilder,
@@ -70,10 +85,11 @@ object DomBuilderFactory {
 
         companion object {
             inline operator fun <reified T : DomBuilder> invoke(
+                group: Group,
                 name: String,
                 icon: String = "",
                 noinline create: () -> T,
-            ) = Entry(name, icon, create, T::class.java)
+            ) = Entry(group, name, icon, create, T::class.java)
         }
     }
 }

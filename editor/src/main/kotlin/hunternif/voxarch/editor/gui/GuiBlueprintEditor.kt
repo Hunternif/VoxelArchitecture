@@ -14,6 +14,7 @@ import imgui.flag.ImGuiMouseButton
 import imgui.flag.ImGuiStyleVar
 import imgui.flag.ImGuiTableColumnFlags
 import imgui.flag.ImGuiTableFlags
+import imgui.flag.ImGuiWindowFlags
 import imgui.type.ImInt
 import org.lwjgl.glfw.GLFW
 
@@ -81,7 +82,7 @@ class GuiBlueprintEditor(
             popup("node_editor_context") {
                 ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 2f, 2f)
                 menu("Add..") {
-                    childWindow("style_container", 250f, 300f) {
+                    childWindow("style_container", 200f, 300f) {
                         renderNewNodeMenu()
                     }
                 }
@@ -136,23 +137,33 @@ class GuiBlueprintEditor(
 
     private fun Blueprint.renderNewNodeMenu() {
         ImGui.pushFont(gui.fontSmallIcons)
-        if (ImGui.beginTable("new_node_table", 2, ImGuiTableFlags.PadOuterX)) {
-            // it's not actually 10px wide, selectable makes it wider
-            ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
-            ImGui.tableSetupColumn("name")
-
-            DomBuilderFactory.allDomBuilders.forEach {
-                ImGui.tableNextRow()
-                ImGui.tableNextColumn()
-                centeredText(it.icon)
-
-                ImGui.tableNextColumn()
-                selectable(it.name, spanAllColumns = true) {
-                    addNodeWithDomElement(it.name, clickPos)
-                    ImGui.closeCurrentPopup()
-                }
+        DomBuilderFactory.domBuildersByGroup.forEach { (group, list) ->
+            childWindow(group.name, height = 22f, flags = ImGuiWindowFlags.NoScrollbar) {
+                // fake-restore padding
+                ImGui.setCursorPos(10f, 4f)
+                ImGui.indent()
+                disabled { text(group.label) }
+                ImGui.separator()
             }
-            ImGui.endTable()
+            if (ImGui.beginTable("new_node_table", 2, ImGuiTableFlags.PadOuterX)) {
+                // it's not actually 10px wide, selectable makes it wider
+                ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
+                ImGui.tableSetupColumn("name")
+
+                list.forEach {
+                    ImGui.tableNextRow()
+                    ImGui.tableNextColumn()
+                    centeredText(it.icon)
+
+                    ImGui.tableNextColumn()
+                    selectable(it.name, spanAllColumns = true) {
+                        addNodeWithDomElement(it.name, clickPos)
+                        ImGui.closeCurrentPopup()
+                    }
+                }
+                ImGui.endTable()
+            }
+            ImGui.spacing()
         }
         ImGui.popFont()
     }
