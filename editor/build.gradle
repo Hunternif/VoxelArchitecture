@@ -9,6 +9,8 @@ buildscript {
     ext.imguiVersion = '1.86.9'
     ext.jomlVersion = '1.9.23'
     ext.antlrVersion = '4.9.1'
+    ext.nativePlatform = 'windows'
+
     repositories {
         mavenCentral()
     }
@@ -112,6 +114,7 @@ compileTestKotlin {
 }
 
 jar {
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes "Main-Class": "hunternif.voxarch.editor.EditorAppKt"
     }
@@ -119,5 +122,17 @@ jar {
     // Creates a fat jar with all dependencies
     from {
         configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+
+    // For some reason native libraries are copied for all platforms.
+    // This hack excludes some of them:
+    if (nativePlatform == "windows") {
+        eachFile {
+            if (it.file.path =~ "natives-linux" || it.file.path =~ "natives-macos" ||
+                    it.file.name.endsWith(".so") || it.file.name.endsWith(".dylib")
+            ) {
+                it.exclude()
+            }
+        }
     }
 }
