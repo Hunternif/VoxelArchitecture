@@ -83,4 +83,12 @@ class CollectionUtilTest {
         assertFalse(isCollectionEqual(b, e))
         assertTrue(isCollectionEqual(d, e))
     }
+
+    @Test
+    fun `for each reversed`() {
+        val a = listOf("foo", "bar", "buz")
+        val b = mutableListOf<String>()
+        a.forEachReversed { b.add(it) }
+        assertEquals(listOf("buz", "bar", "foo"), b)
+    }
 }

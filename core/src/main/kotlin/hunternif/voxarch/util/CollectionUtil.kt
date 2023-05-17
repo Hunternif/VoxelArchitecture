@@ -56,3 +56,12 @@ fun isCollectionEqual(a: Collection<*>, b: Collection<*>): Boolean {
     }
     return true
 }
+
+/** Iterates in reverse order */
+inline fun <T> List<T>.forEachReversed(action: (T) -> Unit) {
+    val iterator = this.listIterator(size)
+    while (iterator.hasPrevious()) {
+        val element = iterator.previous()
+        action(element)
+    }
+}
