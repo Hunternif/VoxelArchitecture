@@ -15,6 +15,8 @@ class DomRunBlueprint : DomBuilder() {
             blueprintID = blueprint.id
         }
 
+    val isEmpty get() = blueprint == emptyBlueprint
+
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         ctx.stylesheet.copyRules(blueprint.internalStylesheet)
         return blueprint.start.domBuilder.children

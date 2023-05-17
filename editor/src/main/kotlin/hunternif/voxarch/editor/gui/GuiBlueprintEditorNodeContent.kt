@@ -76,8 +76,10 @@ class GuiBlueprintEditorNodeContent(
                     app.setDelegateBlueprint(node, it)
                 }
             }
-            button("Navigate", width = width) {
-                app.selectBlueprint(node.domBuilder.blueprint)
+            disabled(node.domBuilder.isEmpty) {
+                button("Navigate", width = width) {
+                    app.selectBlueprint(node.domBuilder.blueprint)
+                }
             }
         }
         if (showStyleClass) {
