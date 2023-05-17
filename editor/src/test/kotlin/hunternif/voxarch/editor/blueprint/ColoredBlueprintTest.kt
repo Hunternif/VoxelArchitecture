@@ -1,8 +1,7 @@
-package hunternif.voxarch.editor.actions
+package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.editor.BaseAppTest
-import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintNode
+import hunternif.voxarch.editor.actions.*
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.plan.Column
@@ -22,17 +21,17 @@ class ColoredBlueprintTest : BaseAppTest() {
     fun setup() {
         bp = app.addNewBlueprint(app.state.rootNode)
 
-        n1 = app.newBlueprintNode(bp, "Room")!!
+        n1 = app.newBlueprintNode(bp, "Room",
+            autoLinkFrom = bp.start.outputs.first())!!
         app.setBlueprintNodeClass(n1, "parent")
-        app.linkBlueprintSlots(bp.start.outputs.first(), n1.inputs.first())
 
-        n2 = app.newBlueprintNode(bp, "Wall")!!
+        n2 = app.newBlueprintNode(bp, "Wall",
+            autoLinkFrom = n1.outputs.first())!!
         app.setBlueprintNodeClass(n2, "child")
-        app.linkBlueprintSlots(n1.outputs.first(), n2.inputs.first())
 
-        n3 = app.newBlueprintNode(bp, "Column")!!
+        n3 = app.newBlueprintNode(bp, "Column",
+            autoLinkFrom = n2.outputs.first())!!
         app.setBlueprintNodeClass(n3, "grandchild")
-        app.linkBlueprintSlots(n2.outputs.first(), n3.inputs.first())
     }
 
     @Test
