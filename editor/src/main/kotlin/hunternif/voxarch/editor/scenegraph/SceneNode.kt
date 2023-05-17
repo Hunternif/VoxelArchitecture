@@ -7,6 +7,7 @@ import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.util.snapOrigin
+import java.util.*
 
 class SceneNode(
     id: Int,
@@ -70,4 +71,18 @@ class SceneNode(
     val nodeClassName: String = node.javaClass.simpleName
     private val strRepr: String by lazy { "$nodeClassName $id" }
     override fun toString() = strRepr
+
+    /** Finds children in the subtree with nodes matching the given class and tags. */
+    inline fun <reified N : Node> query(vararg tags: String): Sequence<SceneNode> = sequence {
+        val tagSet = tags.toSet()
+        val queue = LinkedList<SceneNode>()
+        queue.add(this@SceneNode)
+        while (queue.isNotEmpty()) {
+            val next = queue.removeFirst()
+            if (next.node is N && (tagSet.isEmpty() || next.node.tags.containsAll(tagSet))) {
+                yield(next)
+            }
+            queue.addAll(next.children.filterIsInstance<SceneNode>())
+        }
+    }
 }
