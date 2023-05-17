@@ -8,17 +8,17 @@ import org.junit.Test
 class DomBuilderFactoryTest {
     @Test
     fun `ensure all DomBuilders can be created`() {
-        DomBuilderFactory.allDomBuilders.forEach { (_, factory) ->
-            val domBuilder = factory()
+        DomBuilderFactory.allDomBuilders.forEach {
+            val domBuilder = it.create()
             assertNotNull(domBuilder)
         }
     }
 
     @Test
     fun `ensure all DomBuilders don't modify DOM during build`() {
-        DomBuilderFactory.allDomBuilders.forEach { (_, factory) ->
-            val originalDom = domRoot { addChild(factory()) }
-            val builtDom = domRoot { addChild(factory()) }
+        DomBuilderFactory.allDomBuilders.forEach {
+            val originalDom = domRoot { addChild(it.create()) }
+            val builtDom = domRoot { addChild(it.create()) }
             builtDom.buildDom()
             assertDomTreeStructureEqualsRecursive(originalDom, builtDom)
         }
