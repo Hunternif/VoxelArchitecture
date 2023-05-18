@@ -2,9 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
-import hunternif.voxarch.editor.blueprint.BlueprintNode
-import hunternif.voxarch.editor.blueprint.BlueprintSlot
-import hunternif.voxarch.editor.blueprint.DomRunBlueprint
+import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.util.ColorRGBa
 import imgui.ImColor
 import imgui.ImGui
@@ -22,7 +20,7 @@ class GuiBlueprintEditorNodeContent(
 ) {
     private val styleGuiAsInputs by lazy { GuiBlueprintNodeStyleAsInputs(app, node) }
     private val styleGuiAsText by lazy { GuiBlueprintNodeStyleAsText(app, node) }
-    private val styleClassInput = GuiInputText("##${node.id}_classname", "class names")
+    private val styleClassInput by lazy { GuiInputText("##${node.id}_classname", "class names") }
     private val bpCombo by lazy {
         GuiCombo("##blueprint", app.state.blueprints)
     }
@@ -30,19 +28,47 @@ class GuiBlueprintEditorNodeContent(
 
     var showStyleClass: Boolean = node.extraStyleClass.isNotEmpty()
 
+    /** Current node width */
+    private var width: Float = 0f
+
+    private val isStartNode = node === node.bp.start
+    private val isDelegateNode = node.domBuilder is DomRunBlueprint
+
     fun render() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 8f, 8f)
         ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, 4f, 2f)
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 4f, 2f)
         ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 8f, 4f)
-        var width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
+        width = max(20f, ImNodes.getNodeDimensionsX(node.id) - padding.x * 2f)
 
         //============================ Header =============================
+        renderHeader()
+
+        //========================= Extra inputs ==========================
+        for (slot in node.inputs) {
+            if (slot.name == "in") continue
+            renderInputPin(slot)
+        }
+
+        //============================= Body ==============================
+        when (node.domBuilder) {
+            is DomRunBlueprint -> renderDelegateNodeBody(node.domBuilder)
+            else -> {
+                renderStyleClassInput()
+                renderStyleSummary()
+                renderOutputSlots()
+            }
+        }
+
+        ImGui.popStyleVar(4)
+    }
+
+    private fun renderHeader() {
         ImNodes.beginNodeTitleBar()
         // render default input on the same line as title
         node.inputs.firstOrNull()?.let {
             if (it.name == "in") {
-                renderInputPin(it, false)
+                renderInputPin(it, "")
                 ImGui.sameLine()
             }
         }
@@ -56,32 +82,13 @@ class GuiBlueprintEditorNodeContent(
         node.outputs.firstOrNull()?.let {
             if (it.name == "out") {
                 ImGui.sameLine()
-                renderOutputPin(it, 0f, false)
+                renderOutputPin(it, 0f, "")
             }
         }
         ImNodes.endNodeTitleBar()
+    }
 
-        //========================= Extra inputs ==========================
-        for (slot in node.inputs) {
-            if (slot.name == "in") continue
-            renderInputPin(slot)
-        }
-
-        //============================= Body ==============================
-        if (node.domBuilder is DomRunBlueprint) {
-            width = max(100f, width)
-            withWidth(width) {
-                updateBlueprints()
-                bpCombo.render(node.domBuilder.blueprint) {
-                    app.setDelegateBlueprint(node, it)
-                }
-            }
-            disabled(node.domBuilder.isEmpty) {
-                button("Navigate", width = width) {
-                    app.selectBlueprint(node.domBuilder.blueprint)
-                }
-            }
-        }
+    private fun renderStyleClassInput() {
         if (showStyleClass) {
             width = max(100f, width)
             withWidth(width) {
@@ -90,20 +97,22 @@ class GuiBlueprintEditorNodeContent(
                 }
             }
         }
+    }
+
+    private fun renderStyleSummary() {
         node.rule.declarations.forEach {
             // break it down to prevent creating new Java strings
             ImGui.bulletText(it.property.name)
             ImGui.sameLine()
             ImGui.text(it.value.toString())
         }
+    }
 
-        //========================= Extra outputs =========================
+    private fun renderOutputSlots() {
         for (slot in node.outputs) {
             if (slot.name == "out") continue
             renderOutputPin(slot, width)
         }
-
-        ImGui.popStyleVar(4)
     }
 
     private fun updateBlueprints() {
@@ -113,23 +122,44 @@ class GuiBlueprintEditorNodeContent(
         }
     }
 
+    private fun renderDelegateNodeBody(domDelegate: DomRunBlueprint) {
+        width = max(100f, width)
+        withWidth(width) {
+            updateBlueprints()
+            bpCombo.render(domDelegate.blueprint) {
+                app.setDelegateBlueprint(node, it)
+            }
+        }
+        //======================= Footer ==========================
+        disabled(domDelegate.isEmpty) {
+            button("Navigate", width = width) {
+                app.selectBlueprint(domDelegate.blueprint)
+            }
+        }
+    }
+
 
     fun renderContextMenu() {
-        menu("Style...") {
-            text("Style Rules")
-            tabBar("style_tabs") {
-                tabItem("Inputs") {
-                    childWindow("style_container", 250f, 300f) {
-                        styleGuiAsInputs.render()
+        if (isStartNode) {
+            disabled { text("Start node") }
+        }
+
+        if (!isStartNode && !isDelegateNode) {
+            menu("Style...") {
+                text("Style Rules")
+                tabBar("style_tabs") {
+                    tabItem("Inputs") {
+                        childWindow("style_container", 250f, 300f) {
+                            styleGuiAsInputs.render()
+                        }
                     }
-                }
-                tabItem("Text") {
-                    childWindow("style_container", 250f, 300f) {
-                        styleGuiAsText.render()
+                    tabItem("Text") {
+                        childWindow("style_container", 250f, 300f) {
+                            styleGuiAsText.render()
+                        }
                     }
                 }
             }
-
         }
         ImGui.separator()
         colorInput.render(node.color) {
@@ -144,25 +174,28 @@ class GuiBlueprintEditorNodeContent(
         menuCheck("Show class names", showStyleClass) {
             showStyleClass = !showStyleClass
         }
-        menuItem("Delete node") {
-            app.deleteBlueprintNode(node)
-            ImGui.closeCurrentPopup()
+        if (!isStartNode) {
+            menuItem("Delete node") {
+                app.deleteBlueprintNode(node)
+                ImGui.closeCurrentPopup()
+            }
         }
     }
 
-    private fun renderInputPin(slot: BlueprintSlot.In, named: Boolean = true) {
+    private fun renderInputPin(slot: BlueprintSlot.In, name: String = slot.name) {
         pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(slot))
         ImNodes.beginInputAttribute(slot.id, ImNodesPinShape.CircleFilled)
-        if (named) text(slot.name) else ImGui.text("")
+        text(name)
         ImNodes.endInputAttribute()
         ImNodes.popColorStyle()
     }
 
     private fun renderOutputPin(
-        slot: BlueprintSlot.Out, width: Float, named: Boolean = true) {
+        slot: BlueprintSlot.Out, width: Float, name: String = slot.name) {
         pushNodesColorStyle(ImNodesColorStyle.Pin, pinColor(slot))
         ImNodes.beginOutputAttribute(slot.id, ImNodesPinShape.CircleFilled)
-        if (named) text(slot.name, Align.RIGHT, width) else ImGui.text("")
+        if (name.isNotEmpty()) text(name, Align.RIGHT, width)
+        else ImGui.text("")
         ImNodes.endOutputAttribute()
         ImNodes.popColorStyle()
     }

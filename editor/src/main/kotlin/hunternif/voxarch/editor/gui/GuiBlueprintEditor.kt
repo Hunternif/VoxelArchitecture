@@ -66,11 +66,7 @@ class GuiBlueprintEditor(
             }
             popup("node_context") {
                 val targetNode = nodeIDs.map[hoveredNodeID]
-                if (targetNode == start) {
-                    text("Start node")
-                } else {
-                    targetNode?.guiContent?.renderContextMenu()
-                }
+                targetNode?.guiContent?.renderContextMenu()
             }
             popup("link_context") {
                 menuItem("Unlink") {
