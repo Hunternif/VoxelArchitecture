@@ -78,7 +78,7 @@ fun EditorApp.setBlueprintNodeClass(
 fun EditorApp.setDelegateBlueprint(
     node: BlueprintNode,
     delegateBp: Blueprint
-) = historyAction(BlueprintUpdateNode(node, delegateBp = delegateBp))
+) = historyAction(SetBlueprintDelegate(node, delegateBp))
 
 fun EditorApp.moveBlueprintNode(
     node: BlueprintNode,
