@@ -17,7 +17,7 @@ class DeleteBlueprint(
         if (!::nodeActions.isInitialized) {
             oldSelected = app.state.selectedBlueprint
             newSelected = if (oldSelected == bp) null else oldSelected
-            nodeActions = app.state.blueprintLibrary.usageInNodes(bp).map {
+            nodeActions = app.state.blueprintLibrary.usage(bp).nodes.map {
                 RemoveBlueprint(it, bp)
             }
         }

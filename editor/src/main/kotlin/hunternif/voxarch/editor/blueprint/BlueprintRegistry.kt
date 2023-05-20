@@ -1,7 +1,5 @@
 package hunternif.voxarch.editor.blueprint
 
-import com.google.common.collect.ArrayListMultimap
-import com.google.common.collect.ListMultimap
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.util.IDRegistry
@@ -12,7 +10,7 @@ interface IBlueprintLibrary {
     val blueprints: Collection<Blueprint>
 
     /** Maps Blueprint to nodes where it's used */
-    fun usageInNodes(bp: Blueprint): List<SceneNode>
+    fun usage(bp: Blueprint): BlueprintRegistry.Usage
 }
 
 /**
@@ -28,8 +26,7 @@ interface IBlueprintLibrary {
 class BlueprintRegistry : IBlueprintLibrary {
     val blueprintIDs = IDRegistry<Blueprint>()
 
-    /** Maps BP to nodes where it's used */
-    private val bpInNodes: ListMultimap<Blueprint, SceneNode> = ArrayListMultimap.create()
+    private val usageMap = mutableMapOf<Blueprint, Usage>()
 
     override val blueprints get() = blueprintIDs.map.values
 
@@ -43,25 +40,34 @@ class BlueprintRegistry : IBlueprintLibrary {
         return blueprint
     }
 
-    override fun usageInNodes(bp: Blueprint): List<SceneNode> = bpInNodes.get(bp)
+    override fun usage(bp: Blueprint): Usage =
+        usageMap.getOrPut(bp) { Usage(bp) }
 
     /** Record that a blueprint is used in this node */
     fun addUsage(bp: Blueprint, node: SceneNode) {
-        bpInNodes.put(bp, node)
+        usage(bp)._nodes.add(node)
     }
 
     /** Record that a blueprint is used in this node */
     fun removeUsage(bp: Blueprint, node: SceneNode) {
-        bpInNodes.remove(bp, node)
+        usage(bp)._nodes.remove(node)
     }
 
     /** Find all references and fix any inconsistencies. */
     fun refreshUsages(state: AppState) {
-        bpInNodes.clear()
+        usageMap.clear()
         state.rootNode.iterateSubtree().forEach { o ->
             if (o is SceneNode) {
                 o.blueprints.forEach { addUsage(it, o) }
             }
         }
+    }
+
+    /** Record of where this blueprint is used in the project */
+    class Usage(val bp: Blueprint) {
+        internal val _nodes = mutableListOf<SceneNode>()
+        /** Nodes which have this blueprint */
+        val nodes: List<SceneNode>
+            get() = _nodes
     }
 }

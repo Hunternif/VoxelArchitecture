@@ -66,7 +66,7 @@ class GuiBlueprintLibrary(
                 }
 
                 ImGui.tableNextColumn()
-                val usages = app.state.blueprintLibrary.usageInNodes(bp).size
+                val usages = app.state.blueprintLibrary.usage(bp).nodes.size
                 if (usages > 0) {
                     disabled {
                         ImGui.text(usages.toString())
