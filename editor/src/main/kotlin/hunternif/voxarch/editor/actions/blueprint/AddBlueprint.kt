@@ -18,13 +18,13 @@ class AddBlueprint(
         oldSelected = app.state.selectedBlueprint
         newSelected = if (autoSelect) bp else oldSelected
         node.addBlueprint(bp)
-        app.state.registry.bpInNodes.put(bp, node)
+        app.state.blueprintRegistry.addUsage(bp, node)
         if (autoSelect) OpenBlueprint(newSelected).invoke(app)
     }
 
     override fun revert(app: EditorAppImpl) {
         node.removeBlueprint(bp)
-        app.state.registry.bpInNodes.remove(bp, node)
+        app.state.blueprintRegistry.addUsage(bp, node)
         OpenBlueprint(oldSelected).invoke(app)
     }
 }

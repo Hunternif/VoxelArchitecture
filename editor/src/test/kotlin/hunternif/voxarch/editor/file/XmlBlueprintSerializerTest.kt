@@ -16,8 +16,8 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
 
     @Test
     fun `serialize blueprint`() {
-        app.state.registry.blueprintIDs.lastID = 23
-        val bp = app.state.registry.newBlueprint("Test blueprint")
+        app.state.blueprintLibrary.blueprintIDs.lastID = 23
+        val bp = app.state.blueprintRegistry.newBlueprint("Test blueprint")
         val node1 = app.newBlueprintNode(bp, "Extend", 100f, 20f)!!
         val node2 = app.newBlueprintNode(bp, "Room", 200f, 30f)!!
         node2.extraStyleClass = "my_room"

@@ -1,8 +1,5 @@
 package hunternif.voxarch.editor.scenegraph
 
-import com.google.common.collect.ArrayListMultimap
-import com.google.common.collect.ListMultimap
-import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.Colors
 import hunternif.voxarch.editor.scene.shaders.VoxelRenderMode
 import hunternif.voxarch.editor.util.ColorRGBa
@@ -13,14 +10,18 @@ import hunternif.voxarch.storage.IVoxel
 import hunternif.voxarch.util.forEachSubtree
 import org.joml.Vector3f
 
-/** For creating and loading SceneObjects and Subsets. */
+/**
+ * For creating and loading objects in the scene, which are serializable
+ * and have int IDs:
+ * - SceneObjects
+ * - Subsets
+ * - etc.
+ *
+ * For Blueprints, see [hunternif.voxarch.editor.blueprint.BlueprintRegistry]
+ */
 class SceneRegistry {
     val objectIDs = IDRegistry<SceneObject>()
     val subsetIDs = IDRegistry<Subset<*>>()
-    val blueprintIDs = IDRegistry<Blueprint>()
-
-    /** Maps BP to nodes where it's used */
-    val bpInNodes: ListMultimap<Blueprint, SceneNode> = ArrayListMultimap.create()
 
     fun newObject(
         center: Vector3f = Vector3f(),
@@ -65,24 +66,9 @@ class SceneRegistry {
         return subset
     }
 
-    fun newBlueprint(name: String): Blueprint {
-        val id = blueprintIDs.newID()
-        // In case of duplicates, change "Untitled" to "Untitled (2)"
-        val nameExists = blueprintIDs.map.values.any { it.name == name }
-        val newName = if (nameExists) "$name ($id)" else name
-        val blueprint = Blueprint(id, newName)
-        blueprintIDs.save(blueprint)
-        return blueprint
-    }
-
     fun save(obj: Any) {
         when (obj) {
-            is SceneObject -> obj.forEachSubtree { o ->
-                if (o is SceneNode) {
-                    o.blueprints.forEach { bpInNodes.put(it, o) }
-                }
-                objectIDs.save(o)
-            }
+            is SceneObject -> obj.forEachSubtree { objectIDs.save(it) }
             is Subset<*> -> subsetIDs.save(obj)
         }
     }

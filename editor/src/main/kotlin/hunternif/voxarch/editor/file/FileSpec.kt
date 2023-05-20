@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.BlueprintRegistry
 import hunternif.voxarch.editor.blueprint.DomRunBlueprint
 import hunternif.voxarch.editor.builder.BuilderLibrary
 import hunternif.voxarch.editor.file.style.StyleParser
@@ -95,6 +96,7 @@ const val VOXARCH_PROJECT_FILE_EXT = "voxarch"
  */
 fun EditorAppImpl.readProject(path: Path) {
     val reg = SceneRegistry()
+    val bpReg = BlueprintRegistry()
     val builderLibrary = BuilderLibrary()
     val sceneRoot = reg.newObject()
 
@@ -116,14 +118,14 @@ fun EditorAppImpl.readProject(path: Path) {
         }
 
         treeXmlType.blueprints?.entries?.forEach {
-            tryReadBlueprintFile(it, zipfs, reg, this)
+            tryReadBlueprintFile(it, zipfs, bpReg, this)
         }
-        tryPopulateDelegateBlueprints(reg)
+        tryPopulateDelegateBlueprints(bpReg)
 
         // populate VOX files, Blueprints, custom Builders
         treeXmlType.noderoot?.forEachSubtree {
             tryReadVoxFile(it, zipfs, metadata, this)
-            tryAddBlueprintRefs(it, reg)
+            tryAddBlueprintRefs(it, bpReg)
             tryAddBuilderRef(it, builderLibrary)
         }
         treeXmlType.voxelroot?.forEachSubtree { tryReadVoxFile(it, zipfs, metadata, this) }
@@ -147,6 +149,7 @@ fun EditorAppImpl.readProject(path: Path) {
 
         state = AppStateImpl(
             reg,
+            bpReg,
             builderLibrary,
             sceneRoot,
             rootNode,
@@ -161,6 +164,7 @@ fun EditorAppImpl.readProject(path: Path) {
             stylesheet = style
             stylesheetText = styleText
             seed = metadata.seed
+            blueprintRegistry.refreshUsages(this)
         }
     }
 }
@@ -195,7 +199,7 @@ fun EditorAppImpl.writeProject(path: Path) {
                 selectedObjects = state.selectedObjects.mapToXml(),
                 hiddenObjects = state.hiddenObjects.mapToXml(),
                 manuallyHiddenObjects = state.manuallyHiddenObjects.mapToXml(),
-                blueprints = state.registry.blueprintIDs.mapToXml(),
+                blueprints = state.blueprintRegistry.blueprintIDs.mapToXml(),
             )
             val treeXmlStr = serializeToXmlStr(treeXmlType, true)
             it.write(treeXmlStr)
@@ -216,7 +220,7 @@ fun EditorAppImpl.writeProject(path: Path) {
         state.voxelRoot.forEachSubtree { tryWriteVoxFile(it) }
 
         Files.createDirectories(zipfs.getPath("/blueprints"))
-        state.registry.blueprintIDs.map.forEach { (id, bp) ->
+        state.blueprintRegistry.blueprintIDs.map.forEach { (id, bp) ->
             writeFile("/blueprints/blueprint_$id.xml") {
                 val bpJson = serializeToXmlStr(bp, true)
                 it.write(bpJson)
@@ -255,10 +259,10 @@ private fun tryReadVoxFile(
 }
 
 /** Finds and adds Blueprint references by ID, if they have been loaded. */
-private fun tryAddBlueprintRefs(obj: XmlSceneObject, reg: SceneRegistry) {
+private fun tryAddBlueprintRefs(obj: XmlSceneObject, bpReg: BlueprintRegistry) {
     (obj as? XmlSceneNode)?.let { node ->
         node.blueprintRefs = node.blueprintIDs.mapNotNull {
-            reg.blueprintIDs.map[it]
+            bpReg.blueprintIDs.map[it]
         }
     }
 }
@@ -272,14 +276,14 @@ private fun tryAddBuilderRef(obj: XmlSceneObject, lib: BuilderLibrary) {
 }
 
 private fun tryReadBlueprintFile(
-    entry: XmlBlueprintEntry, fs: FileSystem, reg: SceneRegistry, app: EditorApp,
+    entry: XmlBlueprintEntry, fs: FileSystem, bpReg: BlueprintRegistry, app: EditorApp,
 ) {
     try {
         Files.newBufferedReader(
             fs.getPath("/blueprints/blueprint_${entry.id}.xml")
         ).use {
             val bp = deserializeXml(it.readText(), Blueprint::class)
-            reg.blueprintIDs.save(bp)
+            bpReg.blueprintIDs.save(bp)
         }
     } catch (e: Exception) {
         app.logWarning("Couldn't read blueprint ${entry.id}")
@@ -300,8 +304,8 @@ private fun tryReadStylesheetFile(fs: FileSystem): String {
 /**
  * Populate blueprint nodes that reference other blueprints.
  */
-fun tryPopulateDelegateBlueprints(reg: SceneRegistry) {
-    val bpMap = reg.blueprintIDs.map
+fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
+    val bpMap = bpReg.blueprintIDs.map
     bpMap.values.forEach { bp ->
         for (node in bp.nodes) {
             val domBuilder = node.domBuilder as? DomRunBlueprint ?: continue

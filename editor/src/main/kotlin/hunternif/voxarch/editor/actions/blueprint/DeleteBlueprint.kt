@@ -17,18 +17,18 @@ class DeleteBlueprint(
         if (!::nodeActions.isInitialized) {
             oldSelected = app.state.selectedBlueprint
             newSelected = if (oldSelected == bp) null else oldSelected
-            nodeActions = app.state.registry.bpInNodes[bp].map {
+            nodeActions = app.state.blueprintLibrary.usageInNodes(bp).map {
                 RemoveBlueprint(it, bp)
             }
         }
         nodeActions.forEach { it.invoke(app) }
         app.state.selectedBlueprint = null
-        app.state.registry.blueprintIDs.remove(bp)
+        app.state.blueprintRegistry.blueprintIDs.remove(bp)
     }
 
     override fun revert(app: EditorAppImpl) {
         nodeActions.forEach { it.revert(app) }
         app.state.selectedBlueprint = oldSelected
-        app.state.registry.blueprintIDs.save(bp)
+        app.state.blueprintRegistry.blueprintIDs.save(bp)
     }
 }

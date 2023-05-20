@@ -1,12 +1,13 @@
 package hunternif.voxarch.editor
 
-import com.google.common.collect.ListMultimap
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.actions.history.History
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.history.ReadOnlyHistory
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.BlueprintRegistry
+import hunternif.voxarch.editor.blueprint.IBlueprintLibrary
 import hunternif.voxarch.editor.builder.*
 import hunternif.voxarch.editor.scene.NewNodeFrame
 import hunternif.voxarch.editor.scene.models.box.BoxFace
@@ -29,9 +30,8 @@ interface AppState {
     val projectPath: Path?
     val lastSavedAction: HistoryAction?
     val stylesheetText: String
+    val blueprintLibrary: IBlueprintLibrary
     val blueprints: Collection<Blueprint>
-    /** Maps BP to nodes where it's used */
-    val blueprintUsage: ListMultimap<Blueprint, SceneNode>
 
     //=============================== VOXELS ================================
 
@@ -101,9 +101,10 @@ interface AppState {
 
 class AppStateImpl(
     val registry: SceneRegistry,
+    val blueprintRegistry: BlueprintRegistry,
     override val builderLibrary: BuilderLibrary,
     // base objects with IDs:
-    val sceneRoot: SceneObject,
+    sceneRoot: SceneObject,
     override val rootNode: SceneNode,
     override val voxelRoot: SceneVoxelGroup,
     // base subsets with IDs:
@@ -116,8 +117,8 @@ class AppStateImpl(
     override var projectPath: Path? = null
     override var lastSavedAction: HistoryAction? = null
     override var stylesheetText: String = ""
-    override val blueprints get() = registry.blueprintIDs.map.values
-    override val blueprintUsage = registry.bpInNodes
+    override val blueprintLibrary = blueprintRegistry
+    override val blueprints get() = blueprintRegistry.blueprints
 
     override val buildContext = BuildContext(defaultEnvironment).apply {
         materials.setSolidColorMaterials()
@@ -169,6 +170,7 @@ fun newState(): AppStateImpl {
     val reg = SceneRegistry()
     return AppStateImpl(
         registry = reg,
+        blueprintRegistry = BlueprintRegistry(),
         builderLibrary = BuilderLibrary(),
         sceneRoot = reg.newObject(),
         rootNode = reg.newNode(Structure()),

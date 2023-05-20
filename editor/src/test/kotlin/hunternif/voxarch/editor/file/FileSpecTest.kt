@@ -61,12 +61,18 @@ class FileSpecTest : BaseAppTest() {
         assertEquals(1, vox.data.size)
         assertEquals(VoxColor(0xff0000), vox.data[0, 0, 0])
         // Blueprints
-        val bpMap = app.state.registry.blueprintIDs.map
+        val bpMap = app.state.blueprintLibrary.blueprintIDs.map
         assertEquals(2, bpMap.size)
         assertEquals(listOf(bpMap[0]), app.state.rootNode.blueprints)
         assertEquals(listOf(bpMap[1]), (app.state.rootNode.children.toList()[1] as SceneNode).blueprints)
-        assertEquals(listOf(app.state.rootNode), app.state.registry.bpInNodes[bpMap[0]])
-        assertEquals(listOf(app.state.rootNode.children.toList()[1]), app.state.registry.bpInNodes[bpMap[1]])
+        assertEquals(
+            listOf(app.state.rootNode),
+            app.state.blueprintLibrary.usageInNodes(bpMap[0]!!)
+        )
+        assertEquals(
+            listOf(app.state.rootNode.children.toList()[1]),
+            app.state.blueprintLibrary.usageInNodes(bpMap[1]!!)
+        )
         assertEquals(bpMap[0], (bpMap[1]!!.nodes.toList()[2].domBuilder as DomRunBlueprint).blueprint)
         assertEquals(Colors.debug, bpMap[1]!!.nodes.toList()[1].color)
         assertEquals(BlueprintNode.defaultColor, bpMap[1]!!.nodes.toList()[2].color)

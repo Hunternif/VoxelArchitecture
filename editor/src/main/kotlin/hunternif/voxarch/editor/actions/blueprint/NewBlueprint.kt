@@ -25,19 +25,19 @@ class NewBlueprint(
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (!::bp.isInitialized) {
-            bp = app.state.registry.newBlueprint(name)
+            bp = app.state.blueprintRegistry.newBlueprint(name)
             oldSelected = app.state.selectedBlueprint
             newSelected = if (autoSelect) bp else oldSelected
             addAction = autoAddNode?.let { AddBlueprint(it, bp, false) }
         }
-        app.state.registry.blueprintIDs.save(bp)
+        app.state.blueprintRegistry.blueprintIDs.save(bp)
         if (autoSelect) OpenBlueprint(newSelected).invoke(app)
         addAction?.invoke(app)
     }
 
     override fun revert(app: EditorAppImpl) {
         app.state.selectedBlueprint = oldSelected
-        app.state.registry.blueprintIDs.remove(bp)
+        app.state.blueprintRegistry.blueprintIDs.remove(bp)
         OpenBlueprint(oldSelected).invoke(app)
         addAction?.revert(app)
     }
