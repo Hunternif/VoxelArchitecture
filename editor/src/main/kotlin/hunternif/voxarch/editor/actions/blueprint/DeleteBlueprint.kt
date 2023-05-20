@@ -30,13 +30,13 @@ class DeleteBlueprint(
         cleanupActions.forEach { it.invoke(app) }
         app.state.selectedBlueprint = null
         app.state.blueprintRegistry.blueprintIDs.remove(bp)
-        app.state.blueprintRegistry.refreshUsages(app.state)
+        app.state.blueprintRegistry.refreshUsagesInBlueprints()
     }
 
     override fun revert(app: EditorAppImpl) {
         cleanupActions.forEach { it.revert(app) }
         app.state.selectedBlueprint = oldSelected
         app.state.blueprintRegistry.blueprintIDs.save(bp)
-        app.state.blueprintRegistry.refreshUsages(app.state)
+        app.state.blueprintRegistry.refreshUsagesInBlueprints()
     }
 }

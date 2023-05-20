@@ -65,14 +65,23 @@ class BlueprintRegistry : IBlueprintLibrary {
 
     /** Find all references and fix any inconsistencies. */
     fun refreshUsages(state: AppState) {
-        usageMap.clear()
-        // Update usage in scene nodes:
+        refreshUsagesInNodes(state)
+        refreshUsagesInBlueprints()
+    }
+
+    /** Refresh usages in scene nodes */
+    fun refreshUsagesInNodes(state: AppState) {
+        usageMap.values.forEach { it._nodes.clear() }
         state.rootNode.iterateSubtree().forEach { o ->
             if (o is SceneNode) {
                 o.blueprints.forEach { addUsage(it, o) }
             }
         }
-        // Update usage in blueprint delegate nodes:
+    }
+
+    /** Refresh usages in blueprint delegate nodes */
+    fun refreshUsagesInBlueprints() {
+        usageMap.values.forEach { it._delegators.clear() }
         blueprints.forEach { bp ->
             bp.nodes.forEach { node ->
                 if (node.domBuilder is DomRunBlueprint) {

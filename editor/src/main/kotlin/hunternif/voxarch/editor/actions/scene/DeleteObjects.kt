@@ -31,7 +31,7 @@ class DeleteObjects(
         }
         if (hasNodes) {
             app.redrawNodes()
-            blueprintRegistry.refreshUsages(app.state)
+            blueprintRegistry.refreshUsagesInNodes(app.state)
         }
         if (hasVoxels) app.redrawVoxels()
     }
@@ -42,7 +42,7 @@ class DeleteObjects(
         }
         if (hasNodes) {
             app.redrawNodes()
-            blueprintRegistry.refreshUsages(app.state)
+            blueprintRegistry.refreshUsagesInNodes(app.state)
         }
         if (hasVoxels) app.redrawVoxels()
     }
