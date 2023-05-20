@@ -29,7 +29,10 @@ class DeleteObjects(
             // Parent node must not point to a deleted node:
             if (detached.obj === parentNode) parentNode = rootNode
         }
-        if (hasNodes) app.redrawNodes()
+        if (hasNodes) {
+            app.redrawNodes()
+            blueprintRegistry.refreshUsages(app.state)
+        }
         if (hasVoxels) app.redrawVoxels()
     }
 
@@ -37,7 +40,10 @@ class DeleteObjects(
         for (detached in detachedObjs) {
             detached.reattach()
         }
-        if (hasNodes) app.redrawNodes()
+        if (hasNodes) {
+            app.redrawNodes()
+            blueprintRegistry.refreshUsages(app.state)
+        }
         if (hasVoxels) app.redrawVoxels()
     }
 }

@@ -63,6 +63,7 @@ class GenerateNodes : HistoryAction(
     private fun EditorAppImpl.clearGeneratedNodes() = state.run {
         generatedNodes.toList().forEach { it.remove() }
         generatedNodes.clear()
+        blueprintRegistry.refreshUsages(state)
     }
 
     /** Run all blueprints on the current node, and repeat for all its children.
