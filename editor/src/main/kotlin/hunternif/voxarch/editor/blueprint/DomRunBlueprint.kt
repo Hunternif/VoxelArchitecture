@@ -23,6 +23,7 @@ class DomRunBlueprint : DomBuilder() {
     }
 
     companion object {
+        /** Used to indicate that no actual blueprint is attached */
         val emptyBlueprint = Blueprint(-1, "")
     }
 }

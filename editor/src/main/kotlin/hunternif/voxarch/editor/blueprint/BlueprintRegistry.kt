@@ -43,22 +43,41 @@ class BlueprintRegistry : IBlueprintLibrary {
     override fun usage(bp: Blueprint): Usage =
         usageMap.getOrPut(bp) { Usage(bp) }
 
-    /** Record that a blueprint is used in this node */
+    /** Record that [bp] is used in this scene node */
     fun addUsage(bp: Blueprint, node: SceneNode) {
         usage(bp)._nodes.add(node)
     }
 
-    /** Record that a blueprint is used in this node */
+    /** Record that [bp] is used in this BP node in [DomRunBlueprint] */
+    fun addUsage(bp: Blueprint, delegator: BlueprintNode) {
+        usage(bp)._delegators.add(delegator)
+    }
+
+    /** Record that [bp] is used in this scene node */
     fun removeUsage(bp: Blueprint, node: SceneNode) {
         usage(bp)._nodes.remove(node)
+    }
+
+    /** Record that [bp] is used in this BP node in [DomRunBlueprint] */
+    fun removeUsage(bp: Blueprint, delegator: BlueprintNode) {
+        usage(bp)._delegators.remove(delegator)
     }
 
     /** Find all references and fix any inconsistencies. */
     fun refreshUsages(state: AppState) {
         usageMap.clear()
+        // Update usage in scene nodes:
         state.rootNode.iterateSubtree().forEach { o ->
             if (o is SceneNode) {
                 o.blueprints.forEach { addUsage(it, o) }
+            }
+        }
+        // Update usage in blueprint delegate nodes:
+        blueprints.forEach { bp ->
+            bp.nodes.forEach { node ->
+                if (node.domBuilder is DomRunBlueprint) {
+                    addUsage(node.domBuilder.blueprint, node)
+                }
             }
         }
     }
@@ -69,5 +88,12 @@ class BlueprintRegistry : IBlueprintLibrary {
         /** Nodes which have this blueprint */
         val nodes: List<SceneNode>
             get() = _nodes
+
+        internal val _delegators = mutableListOf<BlueprintNode>()
+        /** "Blueprint" nodes in other blueprints that use this blueprint */
+        val delegators: List<BlueprintNode>
+            get() = _delegators
+
+        val totalUsages get() = nodes.size + delegators.size
     }
 }

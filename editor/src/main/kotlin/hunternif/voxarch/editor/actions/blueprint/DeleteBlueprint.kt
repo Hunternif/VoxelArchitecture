@@ -11,24 +11,32 @@ class DeleteBlueprint(
 ) : HistoryAction("Delete blueprint", FontAwesomeIcons.TrashAlt) {
     private var oldSelected: Blueprint? = null
     private var newSelected: Blueprint? = null
-    private lateinit var nodeActions: List<RemoveBlueprint>
+    /**
+     * Actions for deleting things that use this blueprint:
+     * - scene nodes;
+     * - "run" nodes in other blueprints.
+     */
+    private lateinit var cleanupActions: List<HistoryAction>
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        if (!::nodeActions.isInitialized) {
+        if (!::cleanupActions.isInitialized) {
             oldSelected = app.state.selectedBlueprint
             newSelected = if (oldSelected == bp) null else oldSelected
-            nodeActions = app.state.blueprintLibrary.usage(bp).nodes.map {
-                RemoveBlueprint(it, bp)
-            }
+            val usage = app.state.blueprintLibrary.usage(bp)
+            cleanupActions =
+                usage.nodes.map { RemoveBlueprint(it, bp) } +
+                    usage.delegators.map { SetBlueprintDelegate(it, null) }
         }
-        nodeActions.forEach { it.invoke(app) }
+        cleanupActions.forEach { it.invoke(app) }
         app.state.selectedBlueprint = null
         app.state.blueprintRegistry.blueprintIDs.remove(bp)
+        app.state.blueprintRegistry.refreshUsages(app.state)
     }
 
     override fun revert(app: EditorAppImpl) {
-        nodeActions.forEach { it.revert(app) }
+        cleanupActions.forEach { it.revert(app) }
         app.state.selectedBlueprint = oldSelected
         app.state.blueprintRegistry.blueprintIDs.save(bp)
+        app.state.blueprintRegistry.refreshUsages(app.state)
     }
 }
