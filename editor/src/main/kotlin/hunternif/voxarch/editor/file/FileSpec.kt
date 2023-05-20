@@ -220,8 +220,8 @@ fun EditorAppImpl.writeProject(path: Path) {
         state.voxelRoot.forEachSubtree { tryWriteVoxFile(it) }
 
         Files.createDirectories(zipfs.getPath("/blueprints"))
-        state.blueprintRegistry.blueprintIDs.map.forEach { (id, bp) ->
-            writeFile("/blueprints/blueprint_$id.xml") {
+        state.blueprintRegistry.blueprints.forEach { bp ->
+            writeFile("/blueprints/blueprint_${bp.id}.xml") {
                 val bpJson = serializeToXmlStr(bp, true)
                 it.write(bpJson)
             }

@@ -30,7 +30,7 @@ class DeleteBlueprintTest : BaseAppTest() {
     fun `remove blueprint from node, undo redo`() {
         app.selectBlueprint(bp1)
         assertEquals(bp1, app.state.selectedBlueprint)
-        assertEquals(listOf(bp1, bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp1, bp2), reg.blueprints.toList())
         assertEquals(listOf(node1, node2), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp1, bp2), node1.blueprints)
@@ -38,7 +38,7 @@ class DeleteBlueprintTest : BaseAppTest() {
 
         app.removeBlueprint(node1, bp1)
         assertEquals(null, app.state.selectedBlueprint)
-        assertEquals(listOf(bp1, bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp1, bp2), reg.blueprints.toList())
         assertEquals(listOf(node2), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp2), node1.blueprints)
@@ -46,7 +46,7 @@ class DeleteBlueprintTest : BaseAppTest() {
 
         app.undo()
         assertEquals(bp1, app.state.selectedBlueprint)
-        assertEquals(listOf(bp1, bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp1, bp2), reg.blueprints.toList())
         assertEquals(setOf(node1, node2), reg.usage(bp1).nodes.toSet())
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp1, bp2), node1.blueprints)
@@ -54,7 +54,7 @@ class DeleteBlueprintTest : BaseAppTest() {
 
         app.redo()
         assertEquals(null, app.state.selectedBlueprint)
-        assertEquals(listOf(bp1, bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp1, bp2), reg.blueprints.toList())
         assertEquals(listOf(node2), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp2), node1.blueprints)
@@ -65,7 +65,7 @@ class DeleteBlueprintTest : BaseAppTest() {
     fun `delete blueprint from library, undo redo`() {
         app.selectBlueprint(bp1)
         assertEquals(bp1, app.state.selectedBlueprint)
-        assertEquals(listOf(bp1, bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp1, bp2), reg.blueprints.toList())
         assertEquals(listOf(node1, node2), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp1, bp2), node1.blueprints)
@@ -73,7 +73,7 @@ class DeleteBlueprintTest : BaseAppTest() {
 
         app.deleteSelectedBlueprint()
         assertEquals(null, app.state.selectedBlueprint)
-        assertEquals(listOf(bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp2), reg.blueprints.toList())
         assertEquals(emptyList<SceneNode>(), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp2), node1.blueprints)
@@ -81,7 +81,7 @@ class DeleteBlueprintTest : BaseAppTest() {
 
         app.undo()
         assertEquals(bp1, app.state.selectedBlueprint)
-        assertEquals(listOf(bp2, bp1), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp2, bp1), reg.blueprints.toList())
         assertEquals(listOf(node1, node2), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp1, bp2), node1.blueprints)
@@ -89,7 +89,7 @@ class DeleteBlueprintTest : BaseAppTest() {
 
         app.redo()
         assertEquals(null, app.state.selectedBlueprint)
-        assertEquals(listOf(bp2), reg.blueprintIDs.map.values.toList())
+        assertEquals(listOf(bp2), reg.blueprints.toList())
         assertEquals(emptyList<SceneNode>(), reg.usage(bp1).nodes)
         assertEquals(listOf(node1), reg.usage(bp2).nodes)
         assertEquals(listOf(bp2), node1.blueprints)
