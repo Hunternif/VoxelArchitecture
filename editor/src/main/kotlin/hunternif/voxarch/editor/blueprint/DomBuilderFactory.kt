@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Archway
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ArrowsAlt
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.BorderNone
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.CaretDown
+import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.CaretRight
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ChessRook
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Code
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.EllipsisH
@@ -51,7 +52,8 @@ object DomBuilderFactory {
             Entry(SELECT, "Repeat", EllipsisH) { DomRepeat() },
 
             Entry(LOGIC, "Blueprint", Code) { DomRunBlueprint() },
-            Entry(LOGIC, "Random", ) { DomRandom() },
+            Entry(LOGIC, "Out slot", CaretRight) { DomBlueprintOutSlot() },
+            Entry(LOGIC, "Random") { DomRandom() },
         )
     }
 

@@ -21,6 +21,7 @@ class GuiBlueprintEditorNodeContent(
     private val styleGuiAsInputs by lazy { GuiBlueprintNodeStyleAsInputs(app, node) }
     private val styleGuiAsText by lazy { GuiBlueprintNodeStyleAsText(app, node) }
     private val styleClassInput by lazy { GuiInputText("##${node.id}_classname", "class names") }
+    private val outSlotNameInput by lazy { GuiInputText("##${node.id}_out_slot_name", "slot name") }
     private val bpCombo by lazy {
         GuiCombo("##blueprint", app.state.blueprints)
     }
@@ -33,6 +34,7 @@ class GuiBlueprintEditorNodeContent(
 
     private val isStartNode = node === node.bp.start
     private val isDelegateNode = node.domBuilder is DomRunBlueprint
+    private val isOutSlotNode = node.domBuilder is DomBlueprintOutSlot
 
     fun render() {
         ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 8f, 8f)
@@ -53,6 +55,7 @@ class GuiBlueprintEditorNodeContent(
         //============================= Body ==============================
         when (node.domBuilder) {
             is DomRunBlueprint -> renderDelegateNodeBody(node.domBuilder)
+            is DomBlueprintOutSlot -> renderOutSlotBody(node.domBuilder)
             else -> {
                 renderStyleClassInput()
                 renderStyleSummary()
@@ -130,10 +133,20 @@ class GuiBlueprintEditorNodeContent(
                 app.setDelegateBlueprint(node, it)
             }
         }
+        //====================== Out slots ========================
+        renderOutputSlots()
         //======================= Footer ==========================
         disabled(domDelegate.isEmpty) {
             button("Navigate", width = width) {
                 app.selectBlueprint(domDelegate.blueprint)
+            }
+        }
+    }
+    private fun renderOutSlotBody(domSlot: DomBlueprintOutSlot) {
+        width = max(100f, width)
+        withWidth(width) {
+            outSlotNameInput.render(domSlot.slotName) {
+                // TODO add action to change out slot name
             }
         }
     }
@@ -144,7 +157,7 @@ class GuiBlueprintEditorNodeContent(
             disabled { text("Start node") }
         }
 
-        if (!isStartNode && !isDelegateNode) {
+        if (!isStartNode && !isOutSlotNode && !isDelegateNode) {
             menu("Style...") {
                 text("Style Rules")
                 tabBar("style_tabs") {
@@ -174,7 +187,7 @@ class GuiBlueprintEditorNodeContent(
         menuCheck("Show class names", showStyleClass) {
             showStyleClass = !showStyleClass
         }
-        if (!isStartNode) {
+        if (!isStartNode && !isOutSlotNode) {
             menuItem("Delete node") {
                 app.deleteBlueprintNode(node)
                 ImGui.closeCurrentPopup()

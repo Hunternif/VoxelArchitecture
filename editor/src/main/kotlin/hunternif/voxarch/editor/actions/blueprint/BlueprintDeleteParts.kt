@@ -24,6 +24,8 @@ class BlueprintDeleteParts(
         }
     }
 
+    //TODO: use other actions instead, and copy tests for this deletion method
+
     /** Includes initial [links] and links from deleted nodes */
     private lateinit var allLinks: List<BlueprintLink>
 

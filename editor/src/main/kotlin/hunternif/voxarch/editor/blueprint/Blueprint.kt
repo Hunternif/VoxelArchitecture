@@ -33,6 +33,9 @@ class Blueprint(
         addOutput("node")
     }
 
+    /** Contains nodes with [DomBlueprintOutSlot]. */
+    val outNodes = mutableListOf<BlueprintNode>()
+
     internal fun createNode(
         id: Int,
         name: String,
@@ -55,8 +58,10 @@ class Blueprint(
         y: Float = 0f,
     ): BlueprintNode = createNode(nodeIDs.newID(), name, x, y, domBuilder).apply {
         addInput("in")
-        if (domBuilder !is DomRunBlueprint) {
-            addOutput("out", domBuilder)
+        when (domBuilder) {
+            is DomRunBlueprint -> {}
+            is DomBlueprintOutSlot -> outNodes.add(this)
+            else -> addOutput("out", domBuilder)
         }
         domBuilder.slots.forEach { (name, domSlot) ->
             addOutput(name, domSlot)
@@ -68,6 +73,7 @@ class Blueprint(
         node.inputs.forEach { it.links.toList().forEach { it.unlink() } }
         node.outputs.forEach { it.links.toList().forEach { it.unlink() } }
         nodes.remove(node)
+        outNodes.remove(node)
         // not removing from the ID registry, in case of undo
     }
 
@@ -156,6 +162,7 @@ class BlueprintNode(
         }
     }
 
+    /** [domSlot] is the DomBuilder to which children will be attached via this slot */
     internal fun addOutput(
         name: String, domSlot: DomBuilder = domBuilder,
     ): BlueprintSlot.Out {
@@ -164,6 +171,17 @@ class BlueprintNode(
             outputs.add(it)
             bp.slotIDs.save(it)
         }
+    }
+
+    fun removeSlot(slot: BlueprintSlot) {
+        slot.links.forEach { it.unlink() }
+        bp.slotIDs.remove(slot)
+        inputs.remove(slot)
+        outputs.remove(slot)
+    }
+
+    fun removeAllOutputs() {
+        outputs.toList().forEach { removeSlot(it) }
     }
 
     fun applyImNodesPos() {
@@ -190,6 +208,7 @@ sealed class BlueprintSlot(
         id: Int,
         name: String,
         node: BlueprintNode,
+        /** When linking to this slot, children will be attached to this DomBuilder. */
         val domSlot: DomBuilder,
     ) : BlueprintSlot(id, name, node.bp, node) {
         fun linkTo(dest: In): BlueprintLink {
@@ -221,7 +240,7 @@ sealed class BlueprintSlot(
     }
 }
 
-class BlueprintLink(
+data class BlueprintLink(
     override val id: Int,
     val from: BlueprintSlot.Out,
     val to: BlueprintSlot.In,

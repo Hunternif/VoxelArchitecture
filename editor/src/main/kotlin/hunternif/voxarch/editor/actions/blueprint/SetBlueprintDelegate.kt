@@ -2,9 +2,8 @@ package hunternif.voxarch.editor.actions.blueprint
 
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.history.HistoryAction
-import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintNode
-import hunternif.voxarch.editor.blueprint.DomRunBlueprint
+import hunternif.voxarch.editor.actions.logError
+import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
 class SetBlueprintDelegate(
@@ -14,20 +13,64 @@ class SetBlueprintDelegate(
     "Set blueprint delegate",
     FontAwesomeIcons.Code
 ) {
-    private val domBuilder: DomRunBlueprint? = node.domBuilder as? DomRunBlueprint
+    private lateinit var refDomBuilder: DomRunBlueprint
 
     private val newDelegateBp: Blueprint = delegateBp ?: DomRunBlueprint.emptyBlueprint
-    private var oldDelegateBp: Blueprint = domBuilder?.blueprint ?: newDelegateBp
+    private lateinit var oldDelegateBp: Blueprint
+
+    /** Need to remember the original slots, to be able to restore links */
+    private lateinit var oldSlots: List<BlueprintSlot.Out>
+    private lateinit var newSlots: List<BlueprintSlot.Out>
+    private lateinit var oldLinks: List<BlueprintLink>
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        domBuilder?.blueprint = newDelegateBp
+        if (!::refDomBuilder.isInitialized) {
+            if (node.domBuilder !is DomRunBlueprint) {
+                app.logError("Attempting to set delegate blueprint on invalid " +
+                    "blueprint node type: ${node.domBuilder::class.java.simpleName}")
+                return
+            }
+            refDomBuilder = node.domBuilder
+            oldDelegateBp = refDomBuilder.blueprint
+
+            // Must remove links from the output slots of the old BP:
+            oldSlots = refDomBuilder.outSlots.toList()
+            newSlots = newDelegateBp.outNodes.map {
+                val domSlot = it.domBuilder as DomBlueprintOutSlot
+                node.addOutput(domSlot.slotName, domSlot)
+            }
+            oldLinks = mutableListOf<BlueprintLink>().apply {
+                oldSlots.forEach { addAll(it.links) }
+            }
+        }
+        refDomBuilder.blueprint = newDelegateBp
+
+        // Update slots:
+        oldLinks.forEach { it.unlink() }
+        setSlots(newSlots)
+
+        // Update usages:
         app.state.blueprintRegistry.removeUsage(oldDelegateBp, node)
         app.state.blueprintRegistry.addUsage(newDelegateBp, node)
     }
 
     override fun revert(app: EditorAppImpl) {
-        domBuilder?.blueprint = oldDelegateBp
+        if (!::refDomBuilder.isInitialized) return
+        refDomBuilder.blueprint = oldDelegateBp
+
+        // Update slots:
+        setSlots(oldSlots)
+        oldLinks.forEach { it.from.linkTo(it.to) }
+
+        // Update usages:
         app.state.blueprintRegistry.removeUsage(newDelegateBp, node)
         app.state.blueprintRegistry.addUsage(oldDelegateBp, node)
+    }
+
+    private fun setSlots(slots: List<BlueprintSlot.Out>) {
+        node.removeAllOutputs()
+        refDomBuilder.outSlots.clear()
+        node.outputs.addAll(slots)
+        refDomBuilder.outSlots.addAll(slots)
     }
 }
