@@ -60,7 +60,7 @@ inline fun Node.centeredPolyRoom(
 }
 
 /** Adds a child [Floor] */
-inline fun Room.floor(
+inline fun Node.floor(
     height: Double = 0.0,
     crossinline action: Floor.() -> Unit = {}
 ): Floor = Floor(height).also {
@@ -69,7 +69,7 @@ inline fun Room.floor(
 }
 
 /** Adds a room-bound [Floor] at ceiling level, matching room size. */
-inline fun Room.ceiling(
+inline fun Node.ceiling(
     crossinline action: Floor.() -> Unit = {}
 ): Floor = Floor(height).also {
     this.addChild(it)

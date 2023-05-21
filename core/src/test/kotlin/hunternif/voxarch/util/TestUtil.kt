@@ -60,23 +60,24 @@ fun assertNodeEquals(
     actual: Node,
     testTags: Boolean = true,
 ) {
-    assertEquals("class", expected::class, actual::class)
-    assertEquals("origin", expected.origin, actual.origin)
-    assertEquals("start", expected.start, actual.start)
-    if (testTags) assertEquals("tags", expected.tags, actual.tags)
-    assertEquals("rotationY", expected.rotationY, actual.rotationY, 0.0)
-    assertEquals("size", expected.size, actual.size)
-    assertEquals("width", expected.width, actual.width, 0.0)
-    assertEquals("height", expected.height, actual.height, 0.0)
-    assertEquals("depth", expected.depth, actual.depth, 0.0)
-    assertEquals("builder", expected.builder, actual.builder)
+    assertEquals("$expected class", expected::class, actual::class)
+    assertEquals("$expected origin", expected.origin, actual.origin)
+    assertEquals("$expected start", expected.start, actual.start)
+    if (testTags) assertEquals("$expected tags", expected.tags, actual.tags)
+    assertEquals("$expected rotationY", expected.rotationY, actual.rotationY, 0.0)
+    assertEquals("$expected size", expected.size, actual.size)
+    assertEquals("$expected width", expected.width, actual.width, 0.0)
+    assertEquals("$expected height", expected.height, actual.height, 0.0)
+    assertEquals("$expected depth", expected.depth, actual.depth, 0.0)
+    assertEquals("$expected builder", expected.builder, actual.builder)
+    assertEquals("$expected children count", expected.children.size, actual.children.size)
     when (expected) {
         is PolyRoom -> {
-            assertEquals("shape", expected.shape, (actual as PolyRoom).shape)
+            assertEquals("$expected shape", expected.shape, (actual as PolyRoom).shape)
             assertNodeEquals(expected.polygon, actual.polygon)
         }
         is Path -> {
-            assertEquals("points", expected.points, (actual as Path).points)
+            assertEquals("$expected points", expected.points, (actual as Path).points)
         }
     }
 }
