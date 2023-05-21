@@ -16,6 +16,16 @@ class BlueprintDelegateTest : BaseAppTest() {
 
     @Before
     fun setup() {
+        // Base setup:
+        //
+        // Main BP:
+        // - Room
+        //   - Blueprint(Delegate BP)
+        //
+        // Delegate BP:
+        // - Wall
+
+
         // Main BP:
         mainBp = app.addNewBlueprint(app.state.rootNode)
 
@@ -76,6 +86,43 @@ class BlueprintDelegateTest : BaseAppTest() {
                     floor()
                 }
                 room(Vec3.ZERO, Vec3.ZERO)
+            }
+        }
+        assertNodeTreeEqualsRecursive(refTree, app.state.rootNode.node, testTags = false)
+    }
+
+    @Test
+    fun `execute blueprint with out slots referenced in 2 places`() {
+        // Create "out slot" node in Delegate BP:
+        app.newBlueprintNode(delegateBp, "Out slot",
+            autoLinkFrom = wallNode.outputs.first())
+
+        // Connect to the 1st ref node:
+        val (outSlot1) = refNode.outputs
+        app.newBlueprintNode(mainBp, "Node",
+            autoLinkFrom = outSlot1
+        )
+
+        // Create one more ref node with the same Delegate BP:
+        val refNode2 = app.newBlueprintNode(mainBp, "Blueprint",
+            autoLinkFrom = mainBp.start.outputs.first()
+        )!!
+        app.setDelegateBlueprint(refNode2, delegateBp)
+
+        // Connect more stuff to the 2nd out slot:
+        val (outSlot2) = refNode2.outputs
+        app.newBlueprintNode(mainBp, "Floor", autoLinkFrom = outSlot2)
+
+        app.generateNodes()
+
+        val refTree = Structure().apply {
+            room(Vec3.ZERO, Vec3.ZERO) {
+                wall(Vec3.ZERO, Vec3.ZERO) {
+                    node(Vec3.ZERO, Vec3.ZERO)
+                }
+            }
+            wall(Vec3.ZERO, Vec3.ZERO) {
+                floor()
             }
         }
         assertNodeTreeEqualsRecursive(refTree, app.state.rootNode.node, testTags = false)
