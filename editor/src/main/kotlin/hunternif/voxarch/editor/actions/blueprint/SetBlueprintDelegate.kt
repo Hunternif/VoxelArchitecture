@@ -13,6 +13,8 @@ class SetBlueprintDelegate(
     "Set blueprint delegate",
     FontAwesomeIcons.Code
 ) {
+    /** Invalid if the node is not DonRunBlueprint */
+    private var isValid = false
     private lateinit var refDomBuilder: DomRunBlueprint
 
     private val newDelegateBp: Blueprint = delegateBp ?: DomRunBlueprint.emptyBlueprint
@@ -23,26 +25,30 @@ class SetBlueprintDelegate(
     private lateinit var newSlots: List<BlueprintSlot.Out>
     private lateinit var oldLinks: List<BlueprintLink>
 
-    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        if (!::refDomBuilder.isInitialized) {
-            if (node.domBuilder !is DomRunBlueprint) {
-                app.logError("Attempting to set delegate blueprint on invalid " +
-                    "blueprint node type: ${node.domBuilder::class.java.simpleName}")
-                return
-            }
-            refDomBuilder = node.domBuilder
-            oldDelegateBp = refDomBuilder.blueprint
-
-            // Must remove links from the output slots of the old BP:
-            oldSlots = refDomBuilder.outSlots.toList()
-            newSlots = newDelegateBp.outNodes.map {
-                val domSlot = it.domBuilder as DomBlueprintOutSlot
-                node.addOutput(domSlot.slotName, domSlot)
-            }
-            oldLinks = mutableListOf<BlueprintLink>().apply {
-                oldSlots.forEach { addAll(it.links) }
-            }
+    private fun init(app: EditorAppImpl) {
+        if (node.domBuilder !is DomRunBlueprint) {
+            app.logError("Attempting to set delegate blueprint on invalid " +
+                "blueprint node type: ${node.domBuilder::class.java.simpleName}")
+            return
         }
+        isValid = true
+        refDomBuilder = node.domBuilder
+        oldDelegateBp = refDomBuilder.blueprint
+
+        // Must remove links from the output slots of the old BP:
+        oldSlots = refDomBuilder.outSlots.toList()
+        newSlots = newDelegateBp.outNodes.map {
+            val domSlot = it.domBuilder as DomBlueprintOutSlot
+            node.addOutput(domSlot.slotName, domSlot)
+        }
+        oldLinks = mutableListOf<BlueprintLink>().apply {
+            oldSlots.forEach { addAll(it.links) }
+        }
+    }
+
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
+        if (!::refDomBuilder.isInitialized) init(app)
+        if (!isValid) return
         refDomBuilder.blueprint = newDelegateBp
 
         // Update slots:
@@ -55,7 +61,7 @@ class SetBlueprintDelegate(
     }
 
     override fun revert(app: EditorAppImpl) {
-        if (!::refDomBuilder.isInitialized) return
+        if (!isValid) return
         refDomBuilder.blueprint = oldDelegateBp
 
         // Update slots:

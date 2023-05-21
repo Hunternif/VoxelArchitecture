@@ -20,22 +20,41 @@ class BlueprintNewNode(
     lateinit var node: BlueprintNode
         private set
 
-    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        if (!::node.isInitialized) {
-            node = bp.addNode(name, domBuilder, x, y)
+    /**
+     * Map of slots to "Blueprint" nodes that reference this slot,
+     * if [node] is an "out slot" node.
+     */
+    private lateinit var outSlots: Map<BlueprintSlot.Out, DomRunBlueprint>
+
+    private fun init(app: EditorAppImpl) {
+        node = bp.addNode(name, domBuilder, x, y)
+
+        // If node type is "out slot", we must add a slot on all other BPs
+        // that reference it:
+        outSlots = mutableMapOf<BlueprintSlot.Out, DomRunBlueprint>().apply {
+            if (domBuilder is DomBlueprintOutSlot) {
+                val usage = app.state.blueprintLibrary.usage(bp)
+                usage.delegators.forEach { node ->
+                    val refDomBuilder = node.domBuilder as DomRunBlueprint
+                    val slot = node.addOutput(domBuilder.slotName, domBuilder)
+                    node.removeSlot(slot) // TODO: create out slot without adding it
+                    put(slot, refDomBuilder)
+                }
+            }
         }
+    }
+
+    override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
+        if (!::node.isInitialized) init(app)
         bp.nodes.add(node)
         node.applyImNodesPos()
         if (node.inputs.isNotEmpty())
             autoLinkFrom?.linkTo(node.inputs[0])
 
         if (domBuilder is DomBlueprintOutSlot) {
-            // If node type is "out slot", we must add a slot on all other BPs
-            // that could be referencing it:
-            val usage = app.state.blueprintLibrary.usage(bp)
-            usage.delegators.forEach { node ->
-                val refDomBuilder = node.domBuilder as DomRunBlueprint
-                val slot = node.addOutput(domBuilder.slotName, domBuilder)
+            // Add new out slots on all BPs:
+            outSlots.forEach { (slot, refDomBuilder) ->
+                slot.node.outputs.add(slot)
                 refDomBuilder.outSlots.add(slot)
             }
         }
@@ -43,14 +62,16 @@ class BlueprintNewNode(
 
     override fun revert(app: EditorAppImpl) {
         bp.removeNode(node)
+
+        outSlots.forEach { (slot, refDomBuilder) ->
+            slot.node.removeSlot(slot)
+            refDomBuilder.outSlots.remove(slot)
+        }
         if (domBuilder is DomBlueprintOutSlot) {
             // Remove the added slot on all BPs:
-            val usage = app.state.blueprintLibrary.usage(bp)
-            usage.delegators.forEach { node ->
-                val refDomBuilder = node.domBuilder as DomRunBlueprint
-                val slot = refDomBuilder.outSlots.first { it.domSlot === domBuilder }
+            outSlots.forEach { (slot, refDomBuilder) ->
+                slot.node.removeSlot(slot)
                 refDomBuilder.outSlots.remove(slot)
-                node.removeSlot(slot)
             }
         }
     }
