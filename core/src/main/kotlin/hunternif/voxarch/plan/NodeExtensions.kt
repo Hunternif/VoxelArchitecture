@@ -300,3 +300,35 @@ fun Node.collapse() {
     }
     parent.removeChild(this)
 }
+
+/**
+ * Prints the entire Node tree to string, for debugging.
+ */
+fun Node.treeToString(printTags: Boolean = true): String {
+    val sb = StringBuilder()
+    treeToStringRecursive(0, sb, mutableSetOf(), printTags)
+    return sb.toString()
+}
+/** DFS via recursion */
+private fun Node.treeToStringRecursive(
+    depth: Int, sb: StringBuilder, visited: MutableSet<Node>, printTags: Boolean,
+) {
+    for (i in 1..depth) {
+        sb.append("  ")
+    }
+    sb.append(this::class.java.simpleName)
+    if (printTags) {
+        sb.append(' ').append('[')
+        this.tags.joinTo(sb, ", ")
+        sb.append(']')
+    }
+    if (this in visited) {
+        sb.append(" loop!")
+    } else {
+        visited.add(this)
+        children.forEach {
+            sb.append('\n')
+            it.treeToStringRecursive(depth + 1, sb, visited, printTags)
+        }
+    }
+}

@@ -350,4 +350,37 @@ class NodeExtensionTest {
         assertEquals(Vec3(1, 0, -2), innerWall2.origin)
         assertEquals(Vec3(-1, 9, -2), innerWall2.end)
     }
+
+    @Test
+    fun `node tree to string`() {
+        val refTree = Structure().apply {
+            room(Vec3.ZERO, Vec3.ZERO) {
+                tags += "parent"
+                wall(Vec3.ZERO, Vec3.ZERO) {
+                    node(Vec3.ZERO)
+                    floor()
+                }
+                room(Vec3.ZERO, Vec3.ZERO) {
+                    tags += "child"
+                    tags += "bye"
+                }
+            }
+        }
+        assertEquals("""
+            Structure []
+              Room [parent]
+                Wall []
+                  Node []
+                  Floor []
+                Room [child, bye]
+        """.trimIndent(), refTree.treeToString())
+        assertEquals("""
+            Structure
+              Room
+                Wall
+                  Node
+                  Floor
+                Room
+        """.trimIndent(), refTree.treeToString(printTags = false))
+    }
 }
