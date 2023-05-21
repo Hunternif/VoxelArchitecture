@@ -89,6 +89,7 @@ interface AppState {
     //============================= GUI STATE ===============================
 
     val DEBUG: Boolean
+    val catchExceptions: Boolean
     val isMainWindowFocused: Boolean
     val isMainWindowHovered: Boolean
     val isTextEditorActive: Boolean
@@ -157,6 +158,7 @@ class AppStateImpl(
     override var forgetBuildHistory: Boolean = false
 
     override val DEBUG = true
+    override var catchExceptions = true
     override var isMainWindowFocused = false
     override var isMainWindowHovered = false
     override var isTextEditorActive = false

@@ -46,6 +46,7 @@ class EditorAppImpl : EditorApp {
                 runFrame()
             } catch (e: Exception) {
                 logError(e)
+                if (!state.catchExceptions) throw e
             }
         }
         Callbacks.glfwFreeCallbacks(window)

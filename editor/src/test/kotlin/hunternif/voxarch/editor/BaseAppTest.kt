@@ -7,6 +7,7 @@ abstract class BaseAppTest {
     @Before
     fun resetState() {
         app.newProject()
+        app.state.catchExceptions = false
     }
 
     protected val app: EditorAppImpl get() = Companion.app

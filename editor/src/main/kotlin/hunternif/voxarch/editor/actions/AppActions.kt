@@ -329,6 +329,7 @@ internal inline fun EditorApp.action(
         (this as EditorAppImpl).execute()
     } catch (e: Exception) {
         logError(e)
+        if (!state.catchExceptions) throw e
     }
 }
 
