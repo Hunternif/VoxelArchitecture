@@ -38,8 +38,9 @@ class SetBlueprintDelegate(
         // Must remove links from the output slots of the old BP:
         oldSlots = refDomBuilder.outSlots.toList()
         newSlots = newDelegateBp.outNodes.map {
-            val domSlot = it.domBuilder as DomBlueprintOutSlot
-            node.addOutput(domSlot.slotName, domSlot)
+            val slotSource = it.domBuilder as DomBlueprintOutSlot
+            val slotInstance = DomBlueprintOutSlotInstance(slotSource)
+            node.addOutput(slotSource.slotName, slotInstance)
         }
         oldLinks = mutableListOf<BlueprintLink>().apply {
             oldSlots.forEach { addAll(it.links) }

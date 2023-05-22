@@ -36,7 +36,8 @@ class BlueprintNewNode(
                 val usage = app.state.blueprintLibrary.usage(bp)
                 usage.delegators.forEach { node ->
                     val refDomBuilder = node.domBuilder as DomRunBlueprint
-                    val slot = node.addOutput(domBuilder.slotName, domBuilder)
+                    val domSlot = DomBlueprintOutSlotInstance(domBuilder)
+                    val slot = node.addOutput(domBuilder.slotName, domSlot)
                     node.removeSlot(slot) // TODO: create out slot without adding it
                     put(slot, refDomBuilder)
                 }

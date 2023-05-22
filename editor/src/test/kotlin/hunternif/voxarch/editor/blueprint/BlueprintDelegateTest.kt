@@ -69,14 +69,11 @@ class BlueprintDelegateTest : BaseAppTest() {
         // Link new nodes to that slot:
         val (outSlot1, outSlot2) = refNode.outputs
         app.newBlueprintNode(mainBp, "Room",
-            autoLinkFrom = outSlot1
-        )
+            autoLinkFrom = outSlot1)
         app.newBlueprintNode(mainBp, "Node",
-            autoLinkFrom = outSlot2
-        )
+            autoLinkFrom = outSlot2)
         app.newBlueprintNode(mainBp, "Floor",
-            autoLinkFrom = outSlot2
-        )
+            autoLinkFrom = outSlot2)
         app.generateNodes()
 
         val refTree = Structure().apply {
@@ -100,13 +97,11 @@ class BlueprintDelegateTest : BaseAppTest() {
         // Connect to the 1st ref node:
         val (outSlot1) = refNode.outputs
         app.newBlueprintNode(mainBp, "Node",
-            autoLinkFrom = outSlot1
-        )
+            autoLinkFrom = outSlot1)
 
         // Create one more ref node with the same Delegate BP:
         val refNode2 = app.newBlueprintNode(mainBp, "Blueprint",
-            autoLinkFrom = mainBp.start.outputs.first()
-        )!!
+            autoLinkFrom = mainBp.start.outputs.first())!!
         app.setDelegateBlueprint(refNode2, delegateBp)
 
         // Connect more stuff to the 2nd out slot:
@@ -123,6 +118,52 @@ class BlueprintDelegateTest : BaseAppTest() {
             }
             wall(Vec3.ZERO, Vec3.ZERO) {
                 floor()
+            }
+        }
+        assertNodeTreeEqualsRecursive(refTree, app.state.rootNode.node, testTags = false)
+    }
+
+    @Test
+    fun `execute nested blueprints with slots`() {
+        // Create a next level delegate BP with an out slot:
+        // Nested BP:
+        // - Node
+        //   - out slot
+        val nestedBP = app.newBlueprint()
+        val nestedNode = app.newBlueprintNode(nestedBP, "Node",
+            autoLinkFrom = nestedBP.start.outputs.first())!!
+        app.newBlueprintNode(nestedBP, "Out slot",
+            autoLinkFrom = nestedNode.outputs.first())!!
+
+        // Reference Nested BP inside Delegate BP, use its out slot:
+        // Delegate BP:
+        // - Wall
+        //   - Blueprint(Nested BP)
+        //     - "Nested" out slot
+        //       - "Delegate" out slot
+        val nestedRefNode = app.newBlueprintNode(delegateBp, "Blueprint",
+            autoLinkFrom = wallNode.outputs.first())!!
+        app.setDelegateBlueprint(nestedRefNode, nestedBP)
+        val (nestedOutSlotInstance) = nestedRefNode.outputs
+        app.newBlueprintNode(delegateBp, "Out slot",
+            autoLinkFrom = nestedOutSlotInstance)
+
+        // Connect to Delegate BP's out slot in Main BP:
+        val (outSlot1) = refNode.outputs
+        app.newBlueprintNode(mainBp, "Floor",
+            autoLinkFrom = outSlot1)
+
+
+
+        app.generateNodes()
+
+        val refTree = Structure().apply {
+            room(Vec3.ZERO, Vec3.ZERO) {
+                wall(Vec3.ZERO, Vec3.ZERO) {
+                    node(Vec3.ZERO, Vec3.ZERO) {
+                        floor()
+                    }
+                }
             }
         }
         assertNodeTreeEqualsRecursive(refTree, app.state.rootNode.node, testTags = false)

@@ -26,7 +26,7 @@ class BlueprintDeleteNode(private val node: BlueprintNode) : HistoryAction(
                 usage.delegators.forEach { refNode ->
                     val refDomBuilder = refNode.domBuilder as DomRunBlueprint
                     val slot = refDomBuilder.outSlots.first {
-                        it.domSlot === node.domBuilder
+                        (it.domSlot as DomBlueprintOutSlotInstance).source === node.domBuilder
                     }
                     put(slot, refDomBuilder)
                 }

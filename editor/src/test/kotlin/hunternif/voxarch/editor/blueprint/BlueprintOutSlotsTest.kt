@@ -26,7 +26,9 @@ class BlueprintOutSlotsTest : BaseAppTest() {
         val outNode = app.newBlueprintNode(delegateBp, "Out slot")!!
         assertEquals(1, refNode.outputs.size)
         assertEquals("slot", refNode.outputs[0].name)
-        assertEquals(outNode.domBuilder, refNode.outputs[0].domSlot)
+        assertEquals(outNode.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
 
         app.undo()
         assertEquals(0, refNode.outputs.size)
@@ -34,7 +36,9 @@ class BlueprintOutSlotsTest : BaseAppTest() {
         app.redo()
         assertEquals(1, refNode.outputs.size)
         assertEquals("slot", refNode.outputs[0].name)
-        assertEquals(outNode.domBuilder, refNode.outputs[0].domSlot)
+        assertEquals(outNode.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
     }
 
     @Test
@@ -43,31 +47,45 @@ class BlueprintOutSlotsTest : BaseAppTest() {
         val outNode2 = app.newBlueprintNode(delegateBp, "Out slot")!!
         app.setDelegateBlueprint(refNode, delegateBp)
         assertEquals(2, refNode.outputs.size)
-        assertEquals(outNode1.domBuilder, refNode.outputs[0].domSlot)
-        assertEquals(outNode2.domBuilder, refNode.outputs[1].domSlot)
+        assertEquals(outNode1.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[1].domSlot as DomBlueprintOutSlotInstance).source
+        )
 
         // Link from the delegate node to another node:
         val newNode = app.newBlueprintNode(mainBp, "Node",
             autoLinkFrom = refNode.outputs.first()
         )!!
         val link = newNode.inputs.first().links.first()
-        assertEquals(outNode1.domBuilder, link.from.domSlot)
+        assertEquals(outNode1.domBuilder,
+            (link.from.domSlot as DomBlueprintOutSlotInstance).source
+        )
 
         app.deleteBlueprintNode(outNode1)
         assertEquals(1, refNode.outputs.size)
-        assertEquals(outNode2.domBuilder, refNode.outputs[0].domSlot)
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
         assertEquals(emptyList<BlueprintLink>(), newNode.inputs.first().links.toList())
 
         app.undo()
         assertEquals(2, refNode.outputs.size)
         // The order has changed, but I just don't care lol:
-        assertEquals(outNode2.domBuilder, refNode.outputs[0].domSlot)
-        assertEquals(outNode1.domBuilder, refNode.outputs[1].domSlot)
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(outNode1.domBuilder,
+            (refNode.outputs[1].domSlot as DomBlueprintOutSlotInstance).source
+        )
         assertEquals(listOf(link), newNode.inputs.first().links.toList())
 
         app.redo()
         assertEquals(1, refNode.outputs.size)
-        assertEquals(outNode2.domBuilder, refNode.outputs[0].domSlot)
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
         assertEquals(emptyList<BlueprintLink>(), newNode.inputs.first().links.toList())
     }
 
@@ -91,13 +109,19 @@ class BlueprintOutSlotsTest : BaseAppTest() {
         // Swap delegates:
         app.setDelegateBlueprint(refNode, delegateBp2)
         assertEquals(1, refNode.outputs.size)
-        assertEquals(outNodeOnDele2.domBuilder, refNode.outputs[0].domSlot)
+        assertEquals(outNodeOnDele2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
         assertEquals(0, newNode.inputs.first().links.size)
 
         app.undo()
         assertEquals(2, refNode.outputs.size)
-        assertEquals(outNode1.domBuilder, refNode.outputs[0].domSlot)
-        assertEquals(outNode2.domBuilder, refNode.outputs[1].domSlot)
+        assertEquals(outNode1.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[1].domSlot as DomBlueprintOutSlotInstance).source
+        )
         assertEquals(1, newNode.inputs.first().links.size)
         val link = newNode.inputs.first().links.first()
         assertEquals(refNode.outputs[0], link.from)
@@ -105,7 +129,9 @@ class BlueprintOutSlotsTest : BaseAppTest() {
 
         app.redo()
         assertEquals(1, refNode.outputs.size)
-        assertEquals(outNodeOnDele2.domBuilder, refNode.outputs[0].domSlot)
+        assertEquals(outNodeOnDele2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
         assertEquals(0, newNode.inputs.first().links.size)
     }
 }
