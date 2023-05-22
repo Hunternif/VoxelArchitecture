@@ -89,7 +89,7 @@ fun EditorApp.moveBlueprintNode(
 fun EditorApp.renameBlueprint(
     bp: Blueprint,
     name: String,
-) = historyAction(UpdateBlueprint(bp, name))
+) = historyAction(RenameBlueprint(bp, name))
 
 /** Passing old color because the current could have changed */
 fun EditorApp.setBlueprintNodeColor(

@@ -6,13 +6,13 @@ import hunternif.voxarch.editor.actions.history.StackingAction
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
-class UpdateBlueprint(
+class RenameBlueprint(
     val bp: Blueprint,
     var newName: String,
 ) : HistoryAction(
     "Rename blueprint",
     FontAwesomeIcons.Code
-), StackingAction<UpdateBlueprint> {
+), StackingAction<RenameBlueprint> {
     private val oldName = bp.name
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
@@ -23,7 +23,7 @@ class UpdateBlueprint(
         bp.name = oldName
     }
 
-    override fun update(nextAction: UpdateBlueprint) {
+    override fun update(nextAction: RenameBlueprint) {
         this.newName = nextAction.newName
     }
 }
