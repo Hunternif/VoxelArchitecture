@@ -37,8 +37,7 @@ class BlueprintNewNode(
                 usage.delegators.forEach { node ->
                     val refDomBuilder = node.domBuilder as DomRunBlueprint
                     val domSlot = DomBlueprintOutSlotInstance(domBuilder)
-                    val slot = node.addOutput(domBuilder.slotName, domSlot)
-                    node.removeSlot(slot) // TODO: create out slot without adding it
+                    val slot = node.createOutputSlot(domBuilder.slotName, domSlot)
                     put(slot, refDomBuilder)
                 }
             }
@@ -55,7 +54,7 @@ class BlueprintNewNode(
         if (domBuilder is DomBlueprintOutSlot) {
             // Add new out slots on all BPs:
             outSlots.forEach { (slot, refDomBuilder) ->
-                slot.node.outputs.add(slot)
+                slot.node.addOutputSlot(slot)
                 refDomBuilder.outSlots.add(slot)
             }
         }
@@ -64,10 +63,6 @@ class BlueprintNewNode(
     override fun revert(app: EditorAppImpl) {
         bp.removeNode(node)
 
-        outSlots.forEach { (slot, refDomBuilder) ->
-            slot.node.removeSlot(slot)
-            refDomBuilder.outSlots.remove(slot)
-        }
         if (domBuilder is DomBlueprintOutSlot) {
             // Remove the added slot on all BPs:
             outSlots.forEach { (slot, refDomBuilder) ->

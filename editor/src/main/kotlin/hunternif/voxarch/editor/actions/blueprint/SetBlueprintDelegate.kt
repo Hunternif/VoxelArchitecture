@@ -40,7 +40,7 @@ class SetBlueprintDelegate(
         newSlots = newDelegateBp.outNodes.map {
             val slotSource = it.domBuilder as DomBlueprintOutSlot
             val slotInstance = DomBlueprintOutSlotInstance(slotSource)
-            node.addOutput(slotSource.slotName, slotInstance)
+            node.createOutputSlot(slotSource.slotName, slotInstance)
         }
         oldLinks = mutableListOf<BlueprintLink>().apply {
             oldSlots.forEach { addAll(it.links) }
@@ -77,7 +77,7 @@ class SetBlueprintDelegate(
     private fun setSlots(slots: List<BlueprintSlot.Out>) {
         node.removeAllOutputs()
         refDomBuilder.outSlots.clear()
-        node.outputs.addAll(slots)
+        slots.forEach { node.addOutputSlot(it) }
         refDomBuilder.outSlots.addAll(slots)
     }
 }

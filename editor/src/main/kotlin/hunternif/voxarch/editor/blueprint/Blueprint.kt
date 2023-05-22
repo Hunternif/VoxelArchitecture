@@ -135,8 +135,13 @@ class BlueprintNode(
 ) : WithID {
     val autoStyleClass = "${name.replace(' ', '_')}_${id}"
     val rule: Rule = Rule(select(autoStyleClass))
-    val inputs = mutableListOf<BlueprintSlot.In>()
-    val outputs = mutableListOf<BlueprintSlot.Out>()
+
+    private val _inputs = mutableListOf<BlueprintSlot.In>()
+    val inputs: List<BlueprintSlot.In> get() = _inputs
+
+    private val _outputs = mutableListOf<BlueprintSlot.Out>()
+    val outputs: List<BlueprintSlot.Out> get() = _outputs
+
     val isCustomColor: Boolean get() = color != defaultColor
 
     private val extraClassList = linkedSetOf<String>()
@@ -156,28 +161,42 @@ class BlueprintNode(
 
     internal fun addInput(name: String): BlueprintSlot.In {
         val id = bp.slotIDs.newID()
-        return BlueprintSlot.In(id, name, this).also {
-            inputs.add(it)
-            bp.slotIDs.save(it)
-        }
+        return BlueprintSlot.In(id, name, this).also { addInputSlot(it) }
+    }
+
+    fun addInputSlot(slot: BlueprintSlot.In) {
+        _inputs.add(slot)
+        bp.slotIDs.save(slot)
     }
 
     /** [domSlot] is the DomBuilder to which children will be attached via this slot */
     internal fun addOutput(
         name: String, domSlot: DomBuilder = domBuilder,
     ): BlueprintSlot.Out {
+        return createOutputSlot(name, domSlot).also { addOutputSlot(it) }
+    }
+
+    /**
+     * This method only creates a slot, but doesn't add it. Call [addOutputSlot].
+     * [domSlot] is the DomBuilder to which children will be attached via this slot
+     */
+    fun createOutputSlot(
+        name: String, domSlot: DomBuilder = domBuilder,
+    ): BlueprintSlot.Out {
         val id = bp.slotIDs.newID()
-        return BlueprintSlot.Out(id, name, this, domSlot).also {
-            outputs.add(it)
-            bp.slotIDs.save(it)
-        }
+        return BlueprintSlot.Out(id, name, this, domSlot)
+    }
+
+    fun addOutputSlot(slot: BlueprintSlot.Out) {
+        _outputs.add(slot)
+        bp.slotIDs.save(slot)
     }
 
     fun removeSlot(slot: BlueprintSlot) {
         slot.links.forEach { it.unlink() }
         bp.slotIDs.remove(slot)
-        inputs.remove(slot)
-        outputs.remove(slot)
+        _inputs.remove(slot)
+        _outputs.remove(slot)
     }
 
     fun removeAllOutputs() {

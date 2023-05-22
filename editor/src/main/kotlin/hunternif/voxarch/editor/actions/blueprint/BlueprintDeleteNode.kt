@@ -70,7 +70,7 @@ class BlueprintDeleteNode(private val node: BlueprintNode) : HistoryAction(
         else if (node.domBuilder is DomBlueprintOutSlot) {
             // Restore out slots on all BPs:
             outSlots.forEach { (slot, refDomBuilder) ->
-                slot.node.outputs.add(slot)
+                slot.node.addOutputSlot(slot)
                 refDomBuilder.outSlots.add(slot)
             }
         }

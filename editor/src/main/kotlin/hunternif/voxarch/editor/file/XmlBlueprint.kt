@@ -120,15 +120,13 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
             ?: BlueprintNode.defaultColor.copy()
         n.inputSlots.forEach {
             val slot = BlueprintSlot.In(it.id, it.name, bpNode)
-            bpNode.inputs.add(slot)
-            bp.slotIDs.save(slot)
+            bpNode.addInputSlot(slot)
         }
         n.outputSlots.forEach {
             // Pick the DomBuilder from the slot name
             val domSlot = domBuilder.slots[it.name] ?: domBuilder
             val slot = BlueprintSlot.Out(it.id, it.name, bpNode, domSlot)
-            bpNode.outputs.add(slot)
-            bp.slotIDs.save(slot)
+            bpNode.addOutputSlot(slot)
         }
         n.styleClass?.let { bpNode.extraStyleClass = it }
         val rule = n.style?.let { styleParser.parseStylesheet(it).rules.firstOrNull() }
