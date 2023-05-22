@@ -184,10 +184,12 @@ class GuiBlueprintEditorNodeContent(
                 app.setBlueprintNodeColor(node, node.color, BlueprintNode.defaultColor)
             }
         }
-        menuCheck("Show class names", showStyleClass) {
-            showStyleClass = !showStyleClass
+        if (!isOutSlotNode) {
+            menuCheck("Show class names", showStyleClass) {
+                showStyleClass = !showStyleClass
+            }
         }
-        if (!isStartNode && !isOutSlotNode) {
+        if (!isStartNode) {
             menuItem("Delete node") {
                 app.deleteBlueprintNode(node)
                 ImGui.closeCurrentPopup()
