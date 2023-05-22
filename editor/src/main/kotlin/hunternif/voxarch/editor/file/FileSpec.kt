@@ -7,9 +7,7 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
-import hunternif.voxarch.editor.blueprint.Blueprint
-import hunternif.voxarch.editor.blueprint.BlueprintRegistry
-import hunternif.voxarch.editor.blueprint.DomRunBlueprint
+import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.builder.BuilderLibrary
 import hunternif.voxarch.editor.file.style.StyleParser
 import hunternif.voxarch.editor.scenegraph.*
@@ -311,6 +309,26 @@ fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
             val domBuilder = node.domBuilder as? DomRunBlueprint ?: continue
             val delegateBp = bpMap[domBuilder.blueprintID] ?: continue
             domBuilder.blueprint = delegateBp
+            // Refresh out slots:
+            delegateBp.outNodes.forEach { outNode ->
+                // TODO: this logic is complex and duplicated across BP actions:
+                //  new node, delete node, set delegate. Refactor!
+                val slotSource = outNode.domBuilder as DomBlueprintOutSlot
+                val slotInstance = DomBlueprintOutSlotInstance(slotSource)
+                val existingSlot = node.outputs.firstOrNull { it.name == slotSource.slotName }
+                val linkedSlots = mutableListOf<BlueprintSlot.In>()
+                val newSlot = if (existingSlot != null) {
+                    linkedSlots.addAll( existingSlot.links.map { it.to })
+                    node.removeSlot(existingSlot)
+                    BlueprintSlot.Out(existingSlot.id, existingSlot.name, node, slotInstance)
+                } else {
+                    node.createOutputSlot(slotSource.slotName, slotInstance)
+                }
+                node.addOutputSlot(newSlot)
+                domBuilder.outSlots.add(newSlot)
+                // Restore links:
+                linkedSlots.forEach { newSlot.linkTo(it) }
+            }
         }
     }
 }

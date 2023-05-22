@@ -48,6 +48,9 @@ class Blueprint(
         nodes.add(node)
         domBuilder.addStyle(node.autoStyleClass)
         internalStylesheet.addRule(node.rule)
+        if (domBuilder is DomBlueprintOutSlot) {
+            outNodes.add(node)
+        }
         return node
     }
 
@@ -60,7 +63,7 @@ class Blueprint(
         addInput("in")
         when (domBuilder) {
             is DomRunBlueprint -> {}
-            is DomBlueprintOutSlot -> outNodes.add(this)
+            is DomBlueprintOutSlot -> {}
             else -> addOutput("out", domBuilder)
         }
         domBuilder.slots.forEach { (name, domSlot) ->
