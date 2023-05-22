@@ -16,18 +16,23 @@ class GuiLog {
 
     fun append(line: String) {
         lastLine = line
-        val newText = StringBuilder(text.get()).append(line).append('\n').toString()
-        text.set(newText, true)
+        appendToGui(line)
     }
 
     fun append(logMessage: LogMessage) {
         lastLine = logMessage.formattedString
-        val sb = StringBuilder(text.get())
-        sb.append(logMessage.formattedString).append('\n')
+        val sb = StringBuilder()
+        sb.append(logMessage.formattedString)
         for (line in logMessage.moreLines) {
-            sb.append(line).append('\n')
+            sb.append('\n').append(line)
         }
-        text.set(sb.toString(), true)
+        appendToGui(sb.toString())
+    }
+
+    private fun appendToGui(msg: String) {
+        val newText = StringBuilder(text.get()).append(msg).append('\n').toString()
+        text.set(newText, true)
+        println(msg) // also log to stdout
     }
 
     fun render() {
