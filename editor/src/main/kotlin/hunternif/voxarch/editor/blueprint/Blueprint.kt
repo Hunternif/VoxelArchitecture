@@ -217,7 +217,7 @@ class BlueprintNode(
 
 sealed class BlueprintSlot(
     override val id: Int,
-    val name: String,
+    var name: String,
     val bp: Blueprint,
     val node: BlueprintNode,
 ) : WithID {

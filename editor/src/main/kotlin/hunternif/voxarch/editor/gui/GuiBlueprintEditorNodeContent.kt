@@ -146,7 +146,7 @@ class GuiBlueprintEditorNodeContent(
         width = max(100f, width)
         withWidth(width) {
             outSlotNameInput.render(domSlot.slotName) {
-                // TODO add action to change out slot name
+                app.renameBlueprintOutSlot(node, it)
             }
         }
     }

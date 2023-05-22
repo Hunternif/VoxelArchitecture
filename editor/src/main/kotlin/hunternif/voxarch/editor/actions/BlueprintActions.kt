@@ -104,3 +104,9 @@ fun EditorApp.setBlueprintNodeStyle(
     oldDeclStr: String,
     newDeclStr: String,
 ) = historyAction(BlueprintUpdateNodeStyle(node, oldDeclStr, newDeclStr))
+
+/** Only works for nodes with [DomBlueprintOutSlot] */
+fun EditorApp.renameBlueprintOutSlot(
+    node: BlueprintNode,
+    name: String,
+) = historyAction(RenameBlueprintOutSlot(node, name))
