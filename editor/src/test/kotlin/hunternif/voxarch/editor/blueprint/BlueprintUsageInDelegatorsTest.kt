@@ -46,6 +46,19 @@ class BlueprintUsageInDelegatorsTest : BaseAppTest() {
     }
 
     @Test
+    fun `delete referencing node via parts, undo redo`() {
+        app.setDelegateBlueprint(refNode, delegateBp)
+        app.deleteBlueprintParts(listOf(refNode), emptyList())
+        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+
+        app.undo()
+        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+
+        app.redo()
+        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+    }
+
+    @Test
     fun `delete delegate blueprint, undo redo`() {
         assertEquals(DomRunBlueprint.emptyBlueprint, refDomBuilder.blueprint)
 

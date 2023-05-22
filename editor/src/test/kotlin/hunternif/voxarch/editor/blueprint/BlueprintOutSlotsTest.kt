@@ -90,6 +90,44 @@ class BlueprintOutSlotsTest : BaseAppTest() {
     }
 
     @Test
+    fun `deleting out nodes (by parts) on delegate BP should update slots, undo redo`() {
+        val outNode1 = app.newBlueprintNode(delegateBp, "Out slot")!!
+        val outNode2 = app.newBlueprintNode(delegateBp, "Out slot")!!
+        app.setDelegateBlueprint(refNode, delegateBp)
+
+        // Link from the delegate node to another node:
+        val newNode = app.newBlueprintNode(mainBp, "Node",
+            autoLinkFrom = refNode.outputs.first()
+        )!!
+        val link = newNode.inputs.first().links.first()
+
+        app.deleteBlueprintParts(listOf(outNode1), listOf(link))
+        assertEquals(1, refNode.outputs.size)
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(emptyList<BlueprintLink>(), newNode.inputs.first().links.toList())
+
+        app.undo()
+        assertEquals(2, refNode.outputs.size)
+        // The order has changed, but I just don't care lol:
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(outNode1.domBuilder,
+            (refNode.outputs[1].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(listOf(link), newNode.inputs.first().links.toList())
+
+        app.redo()
+        assertEquals(1, refNode.outputs.size)
+        assertEquals(outNode2.domBuilder,
+            (refNode.outputs[0].domSlot as DomBlueprintOutSlotInstance).source
+        )
+        assertEquals(emptyList<BlueprintLink>(), newNode.inputs.first().links.toList())
+    }
+
+    @Test
     fun `selecting another delegate BP should update slots, undo redo`() {
         // Set up 2 out slots on Delegate BP, add a link to one:
         val outNode1 = app.newBlueprintNode(delegateBp, "Out slot")!!

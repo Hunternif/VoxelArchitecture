@@ -24,26 +24,20 @@ class BlueprintDeleteParts(
         }
     }
 
-    //TODO: use other actions instead, and copy tests for this deletion method
-
-    /** Includes initial [links] and links from deleted nodes */
-    private lateinit var allLinks: List<BlueprintLink>
+    /** Actions for deleting individual nodes and links. */
+    private lateinit var cleanupActions: List<HistoryAction>
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        if (!::allLinks.isInitialized) {
-            allLinks = links +
-                nodes.flatMap { it.inputs.flatMap { it.links } } +
-                nodes.flatMap { it.outputs.flatMap { it.links } }
+        if (!::cleanupActions.isInitialized) {
+            cleanupActions = mutableListOf<HistoryAction>().apply {
+                links.forEach { add(BlueprintUnlink(it)) }
+                nodes.forEach { add(BlueprintDeleteNode(it)) }
+            }
         }
-        nodes.forEach { it.bp.removeNode(it) }
-        links.forEach { it.unlink() }
+        cleanupActions.forEach { it.invoke(app) }
     }
 
     override fun revert(app: EditorAppImpl) {
-        nodes.forEach {
-            it.bp.nodes.add(it)
-            it.applyImNodesPos()
-        }
-        allLinks.forEach { it.from.linkTo(it.to) }
+        cleanupActions.forEach { it.revert(app) }
     }
 }
