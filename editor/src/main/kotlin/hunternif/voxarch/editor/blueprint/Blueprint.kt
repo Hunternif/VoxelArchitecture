@@ -231,7 +231,7 @@ sealed class BlueprintSlot(
         name: String,
         node: BlueprintNode,
         /** When linking to this slot, children will be attached to this DomBuilder. */
-        val domSlot: DomBuilder,
+        var domSlot: DomBuilder,
     ) : BlueprintSlot(id, name, node.bp, node) {
         fun linkTo(dest: In): BlueprintLink {
             val existingLink = links.firstOrNull { it.from == this && it.to == dest }
@@ -269,5 +269,11 @@ data class BlueprintLink(
 ) : WithID {
     fun unlink() {
         to.unlinkFrom(from)
+    }
+    /** Runs linking code again.
+     * This can be useful if the DomBuilder on the slot has changed. */
+    fun relink() {
+        unlink()
+        from.linkTo(to)
     }
 }

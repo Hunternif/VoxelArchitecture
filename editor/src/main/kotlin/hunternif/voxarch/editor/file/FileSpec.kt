@@ -316,18 +316,14 @@ fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
                 val slotSource = outNode.domBuilder as DomBlueprintOutSlot
                 val slotInstance = DomBlueprintOutSlotInstance(slotSource)
                 val existingSlot = node.outputs.firstOrNull { it.name == slotSource.slotName }
-                val linkedSlots = mutableListOf<BlueprintSlot.In>()
-                val newSlot = if (existingSlot != null) {
-                    linkedSlots.addAll( existingSlot.links.map { it.to })
-                    node.removeSlot(existingSlot)
-                    BlueprintSlot.Out(existingSlot.id, existingSlot.name, node, slotInstance)
+                val slot = if (existingSlot != null) {
+                    existingSlot.domSlot = slotInstance
+                    existingSlot.links.forEach { it.relink() }
+                    existingSlot
                 } else {
-                    node.createOutputSlot(slotSource.slotName, slotInstance)
+                    node.addOutput(slotSource.slotName, slotInstance)
                 }
-                node.addOutputSlot(newSlot)
-                domBuilder.outSlots.add(newSlot)
-                // Restore links:
-                linkedSlots.forEach { newSlot.linkTo(it) }
+                domBuilder.outSlots.add(slot)
             }
         }
     }
