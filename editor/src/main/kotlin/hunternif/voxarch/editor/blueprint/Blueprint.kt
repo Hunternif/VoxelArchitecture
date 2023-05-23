@@ -176,18 +176,8 @@ class BlueprintNode(
     internal fun addOutput(
         name: String, domSlot: DomBuilder = domBuilder,
     ): BlueprintSlot.Out {
-        return createOutputSlot(name, domSlot).also { addOutputSlot(it) }
-    }
-
-    /**
-     * This method only creates a slot, but doesn't add it. Call [addOutputSlot].
-     * [domSlot] is the DomBuilder to which children will be attached via this slot
-     */
-    fun createOutputSlot(
-        name: String, domSlot: DomBuilder = domBuilder,
-    ): BlueprintSlot.Out {
         val id = bp.slotIDs.newID()
-        return BlueprintSlot.Out(id, name, this, domSlot)
+        return BlueprintSlot.Out(id, name, this, domSlot).also { addOutputSlot(it) }
     }
 
     fun addOutputSlot(slot: BlueprintSlot.Out) {
