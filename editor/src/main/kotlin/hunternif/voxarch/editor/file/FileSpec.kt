@@ -118,7 +118,7 @@ fun EditorAppImpl.readProject(path: Path) {
         treeXmlType.blueprints?.entries?.forEach {
             tryReadBlueprintFile(it, zipfs, bpReg, this)
         }
-        tryPopulateDelegateBlueprints(bpReg)
+        tryPopulateDelegateBlueprints(bpReg, metadata)
 
         // populate VOX files, Blueprints, custom Builders
         treeXmlType.noderoot?.forEachSubtree {
@@ -302,12 +302,18 @@ private fun tryReadStylesheetFile(fs: FileSystem): String {
 /**
  * Populate blueprint nodes that reference other blueprints.
  */
-fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
-    val bpMap = bpReg.blueprintsByID
-    bpMap.values.forEach { bp ->
+fun tryPopulateDelegateBlueprints(
+    bpReg: BlueprintRegistry, metadata: Metadata,
+) {
+    val mapByName = bpReg.blueprintsByName
+    val mapByID = bpReg.blueprintsByID
+    bpReg.blueprints.forEach { bp ->
         for (node in bp.nodes) {
             val domBuilder = node.domBuilder as? DomRunBlueprint ?: continue
-            val delegateBp = bpMap[domBuilder.blueprintID] ?: continue
+            val delegateBp = when {
+                metadata.formatVersion >= 7 -> mapByName[domBuilder.blueprintName]
+                else -> mapByID[domBuilder.blueprintID]
+            } ?: continue
             domBuilder.blueprint = delegateBp
             // Refresh out slots:
             delegateBp.outNodes.forEach { outNode ->

@@ -8,11 +8,15 @@ import hunternif.voxarch.dom.builder.DomBuilder
  */
 class DomRunBlueprint : DomBuilder() {
     /** Used for deserialization, to reference the blueprint before it has been loaded */
+    //TODO: don't store this name here! store it somewhere else during de-serialization.
+    // It value becomes obsolete after renaming the BP.
+    var blueprintName: String? = null
     var blueprintID: Int? = null
     var blueprint: Blueprint = emptyBlueprint
         set(value) {
             field = value
             blueprintID = blueprint.id
+            blueprintName = blueprint.name
         }
 
     val isEmpty get() = blueprint == emptyBlueprint
