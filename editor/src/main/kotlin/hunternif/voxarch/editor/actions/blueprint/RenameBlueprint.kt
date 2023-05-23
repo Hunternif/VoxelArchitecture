@@ -17,10 +17,12 @@ class RenameBlueprint(
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         bp.name = newName
+        app.state.blueprintRegistry.refreshMapByName()
     }
 
     override fun revert(app: EditorAppImpl) {
         bp.name = oldName
+        app.state.blueprintRegistry.refreshMapByName()
     }
 
     override fun update(nextAction: RenameBlueprint) {

@@ -9,6 +9,10 @@ interface IBlueprintLibrary {
     /** All Blueprints in the project */
     val blueprints: Collection<Blueprint>
 
+    val blueprintsByName: Map<String, Blueprint>
+
+    val blueprintsByID: Map<Int, Blueprint>
+
     /** Maps Blueprint to nodes where it's used */
     fun usage(bp: Blueprint): BlueprintRegistry.Usage
 }
@@ -24,11 +28,17 @@ interface IBlueprintLibrary {
  * Call [refreshUsages] to find all references and fix any inconsistencies.
  */
 class BlueprintRegistry : IBlueprintLibrary {
-    val blueprintIDs = IDRegistry<Blueprint>()
+    private val blueprintIDs = IDRegistry<Blueprint>()
 
     private val usageMap = mutableMapOf<Blueprint, Usage>()
 
     override val blueprints get() = blueprintIDs.map.values
+
+    private val _blueprintsByName = mutableMapOf<String, Blueprint>()
+    override val blueprintsByName: Map<String, Blueprint>
+        get() = _blueprintsByName
+
+    override val blueprintsByID: Map<Int, Blueprint> get() = blueprintIDs.map
 
     fun newBlueprint(name: String): Blueprint {
         val id = blueprintIDs.newID()
@@ -36,8 +46,18 @@ class BlueprintRegistry : IBlueprintLibrary {
         val nameExists = blueprintIDs.map.values.any { it.name == name }
         val newName = if (nameExists) "$name ($id)" else name
         val blueprint = Blueprint(id, newName)
-        blueprintIDs.save(blueprint)
+        save(blueprint)
         return blueprint
+    }
+
+    fun save(blueprint: Blueprint) {
+        blueprintIDs.save(blueprint)
+        refreshMapByName()
+    }
+
+    fun remove(blueprint: Blueprint) {
+        blueprintIDs.remove(blueprint)
+        refreshMapByName()
     }
 
     override fun usage(bp: Blueprint): Usage =
@@ -91,16 +111,23 @@ class BlueprintRegistry : IBlueprintLibrary {
         }
     }
 
+    fun refreshMapByName() {
+        _blueprintsByName.apply {
+            clear()
+            blueprints.forEach { put(it.name, it) }
+        }
+    }
+
     /** Record of where this blueprint is used in the project */
     class Usage(val bp: Blueprint) {
-        internal val _nodes = mutableListOf<SceneNode>()
+        internal val _nodes = LinkedHashSet<SceneNode>()
         /** Nodes which have this blueprint */
-        val nodes: List<SceneNode>
+        val nodes: Collection<SceneNode>
             get() = _nodes
 
-        internal val _delegators = mutableListOf<BlueprintNode>()
+        internal val _delegators = LinkedHashSet<BlueprintNode>()
         /** "Blueprint" nodes in other blueprints that use this blueprint */
-        val delegators: List<BlueprintNode>
+        val delegators: Collection<BlueprintNode>
             get() = _delegators
 
         val totalUsages get() = nodes.size + delegators.size

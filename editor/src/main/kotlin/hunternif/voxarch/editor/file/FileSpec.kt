@@ -197,7 +197,7 @@ fun EditorAppImpl.writeProject(path: Path) {
                 selectedObjects = state.selectedObjects.mapToXml(),
                 hiddenObjects = state.hiddenObjects.mapToXml(),
                 manuallyHiddenObjects = state.manuallyHiddenObjects.mapToXml(),
-                blueprints = state.blueprintRegistry.blueprintIDs.mapToXml(),
+                blueprints = state.blueprintRegistry.mapToXml(),
             )
             val treeXmlStr = serializeToXmlStr(treeXmlType, true)
             it.write(treeXmlStr)
@@ -260,7 +260,7 @@ private fun tryReadVoxFile(
 private fun tryAddBlueprintRefs(obj: XmlSceneObject, bpReg: BlueprintRegistry) {
     (obj as? XmlSceneNode)?.let { node ->
         node.blueprintRefs = node.blueprintIDs.mapNotNull {
-            bpReg.blueprintIDs.map[it]
+            bpReg.blueprintsByID[it]
         }
     }
 }
@@ -281,7 +281,7 @@ private fun tryReadBlueprintFile(
             fs.getPath("/blueprints/blueprint_${entry.id}.xml")
         ).use {
             val bp = deserializeXml(it.readText(), Blueprint::class)
-            bpReg.blueprintIDs.save(bp)
+            bpReg.save(bp)
         }
     } catch (e: Exception) {
         app.logWarning("Couldn't read blueprint ${entry.id}")
@@ -303,7 +303,7 @@ private fun tryReadStylesheetFile(fs: FileSystem): String {
  * Populate blueprint nodes that reference other blueprints.
  */
 fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
-    val bpMap = bpReg.blueprintIDs.map
+    val bpMap = bpReg.blueprintsByID
     bpMap.values.forEach { bp ->
         for (node in bp.nodes) {
             val domBuilder = node.domBuilder as? DomRunBlueprint ?: continue
@@ -315,6 +315,7 @@ fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
                 //  new node, delete node, set delegate. Refactor!
                 val slotSource = outNode.domBuilder as DomBlueprintOutSlot
                 val slotInstance = DomBlueprintOutSlotInstance(slotSource)
+                //TODO: actual slot name is not loaded until now:
                 val existingSlot = node.outputs.firstOrNull { it.name == slotSource.slotName }
                 val slot = if (existingSlot != null) {
                     existingSlot.domSlot = slotInstance

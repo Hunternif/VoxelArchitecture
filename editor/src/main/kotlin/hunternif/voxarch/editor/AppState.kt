@@ -118,7 +118,7 @@ class AppStateImpl(
     override var projectPath: Path? = null
     override var lastSavedAction: HistoryAction? = null
     override var stylesheetText: String = ""
-    override val blueprintLibrary = blueprintRegistry
+    override val blueprintLibrary: IBlueprintLibrary = blueprintRegistry
     override val blueprints get() = blueprintRegistry.blueprints
 
     override val buildContext = BuildContext(defaultEnvironment).apply {

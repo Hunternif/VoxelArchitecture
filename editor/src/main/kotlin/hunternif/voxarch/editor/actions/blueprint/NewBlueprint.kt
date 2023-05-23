@@ -30,14 +30,14 @@ class NewBlueprint(
             newSelected = if (autoSelect) bp else oldSelected
             addAction = autoAddNode?.let { AddBlueprint(it, bp, false) }
         }
-        app.state.blueprintRegistry.blueprintIDs.save(bp)
+        app.state.blueprintRegistry.save(bp)
         if (autoSelect) OpenBlueprint(newSelected).invoke(app)
         addAction?.invoke(app)
     }
 
     override fun revert(app: EditorAppImpl) {
         app.state.selectedBlueprint = oldSelected
-        app.state.blueprintRegistry.blueprintIDs.remove(bp)
+        app.state.blueprintRegistry.remove(bp)
         OpenBlueprint(oldSelected).invoke(app)
         addAction?.revert(app)
     }

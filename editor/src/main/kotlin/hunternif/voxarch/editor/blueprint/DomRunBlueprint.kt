@@ -18,7 +18,7 @@ class DomRunBlueprint : DomBuilder() {
     val isEmpty get() = blueprint == emptyBlueprint
 
     /** Actual slots that will be displayed in UI */
-    val outSlots = mutableListOf<BlueprintSlot.Out>()
+    val outSlots = LinkedHashSet<BlueprintSlot.Out>()
 
     override fun getChildrenForLayout(ctx: DomBuildContext): Iterable<DomBuilder> {
         ctx.stylesheet.copyRules(blueprint.internalStylesheet)

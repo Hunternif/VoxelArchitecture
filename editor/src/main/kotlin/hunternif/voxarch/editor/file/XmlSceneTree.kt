@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlElementWrapper
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlProperty
 import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement
 import hunternif.voxarch.editor.blueprint.Blueprint
+import hunternif.voxarch.editor.blueprint.BlueprintRegistry
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.IDRegistry
 
@@ -84,5 +85,5 @@ internal inline fun <reified T : SceneObject> XmlSubset.mapXmlSubset(
     return subset
 }
 
-internal fun IDRegistry<Blueprint>.mapToXml(): XmlBlueprintSet =
-    XmlBlueprintSet(map.map { (id, bp) -> XmlBlueprintEntry(id, bp.name) })
+internal fun BlueprintRegistry.mapToXml(): XmlBlueprintSet =
+    XmlBlueprintSet(blueprintsByID.map { (id, bp) -> XmlBlueprintEntry(id, bp.name) })

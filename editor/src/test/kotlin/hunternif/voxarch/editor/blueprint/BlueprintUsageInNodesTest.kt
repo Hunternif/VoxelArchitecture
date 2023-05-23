@@ -14,16 +14,16 @@ class BlueprintUsageInNodesTest : BaseAppTest() {
     fun `delete node, undo redo`() {
         val node = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         val bp = app.addNewBlueprint(node)
-        assertEquals(listOf(node), lib.usage(bp).nodes)
+        assertEquals(setOf(node), lib.usage(bp).nodes)
 
-        app.deleteObjects(listOf(node))
-        assertEquals(emptyList<SceneNode>(), lib.usage(bp).nodes)
+        app.deleteObjects(setOf(node))
+        assertEquals(emptySet<SceneNode>(), lib.usage(bp).nodes)
 
         app.undo()
-        assertEquals(listOf(node), lib.usage(bp).nodes)
+        assertEquals(setOf(node), lib.usage(bp).nodes)
 
         app.redo()
-        assertEquals(emptyList<SceneNode>(), lib.usage(bp).nodes)
+        assertEquals(emptySet<SceneNode>(), lib.usage(bp).nodes)
     }
 
     @Test
@@ -31,18 +31,18 @@ class BlueprintUsageInNodesTest : BaseAppTest() {
         val node = app.createNode(Vector3i(0, 0, 0), Vector3i(1, 1, 1))
         val bp = app.addNewBlueprint(node)
         assertEquals(listOf(bp), node.blueprints)
-        assertEquals(listOf(node), lib.usage(bp).nodes)
+        assertEquals(setOf(node), lib.usage(bp).nodes)
 
         app.deleteBlueprint(bp)
         assertEquals(emptyList<Blueprint>(), node.blueprints)
-        assertEquals(emptyList<SceneNode>(), lib.usage(bp).nodes)
+        assertEquals(emptySet<SceneNode>(), lib.usage(bp).nodes)
 
         app.undo()
         assertEquals(listOf(bp), node.blueprints)
-        assertEquals(listOf(node), lib.usage(bp).nodes)
+        assertEquals(setOf(node), lib.usage(bp).nodes)
 
         app.redo()
         assertEquals(emptyList<Blueprint>(), node.blueprints)
-        assertEquals(emptyList<SceneNode>(), lib.usage(bp).nodes)
+        assertEquals(emptySet<SceneNode>(), lib.usage(bp).nodes)
     }
 }

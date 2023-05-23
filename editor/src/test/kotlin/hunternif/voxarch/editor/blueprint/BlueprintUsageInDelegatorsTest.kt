@@ -24,38 +24,38 @@ class BlueprintUsageInDelegatorsTest : BaseAppTest() {
 
     @Test
     fun `delete referencing node, undo redo`() {
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.setDelegateBlueprint(refNode, delegateBp)
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.undo()
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.redo()
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.deleteBlueprintNode(refNode)
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.undo()
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.redo()
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
     }
 
     @Test
     fun `delete referencing node via parts, undo redo`() {
         app.setDelegateBlueprint(refNode, delegateBp)
-        app.deleteBlueprintParts(listOf(refNode), emptyList())
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        app.deleteBlueprintParts(setOf(refNode), emptySet())
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.undo()
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.redo()
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
     }
 
     @Test
@@ -64,51 +64,51 @@ class BlueprintUsageInDelegatorsTest : BaseAppTest() {
 
         app.setDelegateBlueprint(refNode, delegateBp)
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.deleteBlueprint(delegateBp)
         assertEquals(DomRunBlueprint.emptyBlueprint, refDomBuilder.blueprint)
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.undo()
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.redo()
         assertEquals(DomRunBlueprint.emptyBlueprint, refDomBuilder.blueprint)
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
     }
 
     @Test
     fun `delete main blueprint, undo redo`() {
         app.setDelegateBlueprint(refNode, delegateBp)
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.deleteBlueprint(mainBp)
         assertEquals(delegateBp, refDomBuilder.blueprint) // keeps the reference
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.undo()
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
 
         app.redo()
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         // Make sure ref node keeps the reference to delegate BP even after
         // the delegate BP is deleted too:
         app.deleteBlueprint(delegateBp)
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.undo()
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(emptyList<BlueprintNode>(), lib.usage(delegateBp).delegators)
+        assertEquals(emptySet<BlueprintNode>(), lib.usage(delegateBp).delegators)
 
         app.undo()
         assertEquals(delegateBp, refDomBuilder.blueprint)
-        assertEquals(listOf(refNode), lib.usage(delegateBp).delegators)
+        assertEquals(setOf(refNode), lib.usage(delegateBp).delegators)
     }
 }

@@ -16,7 +16,9 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
 
     @Test
     fun `serialize blueprint`() {
-        app.state.blueprintLibrary.blueprintIDs.lastID = 23
+        // increment "last" index:
+        app.newBlueprint()
+        app.newBlueprint()
         val bp = app.state.blueprintRegistry.newBlueprint("Test blueprint")
         val node1 = app.newBlueprintNode(bp, "Extend", 100f, 20f)!!
         val node2 = app.newBlueprintNode(bp, "Room", 200f, 30f)!!
@@ -35,7 +37,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
     @Test
     fun `deserialize blueprint`() {
         val bp = deserializeXml(exampleBpXml, Blueprint::class)
-        assertEquals(23, bp.id)
+        assertEquals(2, bp.id)
         assertEquals("Test blueprint", bp.name)
         assertEquals(3, bp.nodes.size)
         assertEquals(3, bp.nodeIDs.map.size)
@@ -56,7 +58,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
     }
 
     private val exampleBpXml = """
-        <blueprint id="23" name="Test blueprint">
+        <blueprint id="2" name="Test blueprint">
           <node id="0" name="Start" x="100.0" y="100.0">
             <outSlot id="0" name="node"/>
           </node>
