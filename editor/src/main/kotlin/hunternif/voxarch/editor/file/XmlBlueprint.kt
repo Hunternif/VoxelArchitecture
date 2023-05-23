@@ -53,8 +53,14 @@ class XmlBlueprintNode(
     @field:JacksonXmlProperty
     var style: String? = null,
 
+    /** Reference Blueprint in [DomRunBlueprint] */
+    //TODO: serialize it by name
     @field:JacksonXmlProperty
     var delegateBlueprintID: Int? = null,
+
+    /** Slot name in [DomBlueprintOutSlot] */
+    @field:JacksonXmlProperty
+    var slotName: String? = null,
 
     @field:JacksonXmlProperty(isAttribute = true, localName = "color")
     var colorHexRGB: String? = null,
@@ -92,6 +98,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
     }
     val jsonNodes = nodes.map { n ->
         val delegateBPID = (n.domBuilder as? DomRunBlueprint)?.blueprintID
+        val slotName = (n.domBuilder as? DomBlueprintOutSlot)?.slotName
         val color = if (n.isCustomColor) n.color.hex.toString(16) else null
         XmlBlueprintNode(
             n.id, n.name,
@@ -101,6 +108,7 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             n.extraStyleClass.ifEmpty { null },
             if (n.rule.isEmpty()) null else "\n${n.rule}\n",
             delegateBPID,
+            slotName,
             color,
         )
     }
@@ -131,8 +139,13 @@ internal fun XmlBlueprint.mapXml(): Blueprint {
         n.styleClass?.let { bpNode.extraStyleClass = it }
         val rule = n.style?.let { styleParser.parseStylesheet(it).rules.firstOrNull() }
         rule?.declarations?.forEach { bpNode.rule.add(it) }
-        if (domBuilder is DomRunBlueprint) {
-            domBuilder.blueprintID = n.delegateBlueprintID
+        when (domBuilder) {
+            is DomRunBlueprint -> {
+                domBuilder.blueprintID = n.delegateBlueprintID
+            }
+            is DomBlueprintOutSlot -> {
+                domBuilder.slotName = n.slotName ?: "out_slot_${n.id}"
+            }
         }
     }
     // Add any output slots that may have been introduced in newer versions:

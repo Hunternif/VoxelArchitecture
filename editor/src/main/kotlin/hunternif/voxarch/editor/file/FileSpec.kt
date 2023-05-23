@@ -315,7 +315,6 @@ fun tryPopulateDelegateBlueprints(bpReg: BlueprintRegistry) {
                 //  new node, delete node, set delegate. Refactor!
                 val slotSource = outNode.domBuilder as DomBlueprintOutSlot
                 val slotInstance = DomBlueprintOutSlotInstance(slotSource)
-                //TODO: actual slot name is not loaded until now:
                 val existingSlot = node.outputs.firstOrNull { it.name == slotSource.slotName }
                 val slot = if (existingSlot != null) {
                     existingSlot.domSlot = slotInstance

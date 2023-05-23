@@ -18,5 +18,17 @@ class OutSlotFileTest : BaseAppTest() {
         app.generateNodes()
         val generatedNodeTree = serializeToXmlStr(app.state.rootNode.node, true)
         assertEquals(refNodeTree, generatedNodeTree)
+        // Verify slot name:
+        val delegateBp = app.state.blueprintLibrary.blueprintsByName["all_walls"]!!
+        val mainBp = app.state.blueprintLibrary.blueprintsByName["main"]!!
+        val outSlot = delegateBp.nodes
+            .first { it.domBuilder is DomBlueprintOutSlot }
+        assertEquals("my_slot", (outSlot.domBuilder as DomBlueprintOutSlot).slotName)
+
+        val outSlotRef = mainBp.nodes
+            .first { it.domBuilder is DomRunBlueprint }
+            .outputs.first()
+        assertEquals("my_slot", outSlotRef.name)
+        assertEquals(outSlot.domBuilder, (outSlotRef.domSlot as DomBlueprintOutSlotInstance).source)
     }
 }
