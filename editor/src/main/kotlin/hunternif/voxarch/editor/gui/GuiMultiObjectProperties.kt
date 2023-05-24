@@ -57,9 +57,20 @@ class GuiMultiObjectProperties(
     private fun checkSelectedNodes() {
         nodeTimer.runAtInterval {
             // check if list has changed:
-            if (!isCollectionEqual(list, app.state.selectedObjects)) isListDirty = true
+            if (hasSelectionChanged()) isListDirty = true
         }
         if (isListDirty) updateList()
+    }
+
+    private fun hasSelectionChanged(): Boolean {
+        val source = app.state.selectedObjects
+        if (list.size != source.size) return true
+        val ia = list.iterator()
+        val ib = source.iterator()
+        while (ia.hasNext() && ib.hasNext()) {
+            if (ia.next().obj !== ib.next()) return true
+        }
+        return false
     }
 
     private fun updateList() {
