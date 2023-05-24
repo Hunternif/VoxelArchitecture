@@ -13,6 +13,7 @@ class BuilderLibrary {
         Entry("Basic Room", DefaultBuilders.Room),
         Entry("Basic Wall", DefaultBuilders.Wall),
         Entry("Basic Floor", DefaultBuilders.Floor),
+        Entry("Basic Column", DefaultBuilders.Column),
         Entry("Fill", DefaultBuilders.Fill),
 
         Entry("Arched Window", DefaultBuilders.ArchedWindow),
