@@ -8,6 +8,8 @@ class GuiInputFloat(
     val speed: Float = 0.1f,
     val min: Float = -999f,
     val max: Float = 999f,
+    /** How to display non-integer values */
+    private val mantissaFormat: String = "%.1f"
 ) : GuiInput(label) {
     /** Format string for the input */
     @PublishedApi internal var format = "%.0f"
@@ -61,7 +63,7 @@ class GuiInputFloat(
     @PublishedApi internal fun updateFormat() {
         for (x in data) {
             if ((x * 10).toInt() % 10 != 0) {
-                format = "%.1f"
+                format = mantissaFormat
                 return
             }
         }

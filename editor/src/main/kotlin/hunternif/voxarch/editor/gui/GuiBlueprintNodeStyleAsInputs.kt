@@ -24,7 +24,10 @@ class GuiBlueprintNodeStyleAsInputs(
     val items: List<Item<*>> by lazy {
         blueprintEditorStyleProperties.mapNotNull { p ->
             when (p.default) {
-                is Number -> ItemNumber(this, p as Property<Number>)
+                is Int -> ItemNumber(this, p as Property<Int>)
+                is Long -> ItemNumber(this, p as Property<Long>)
+                is Float -> ItemNumber(this, p as Property<Float>)
+                is Double -> ItemNumber(this, p as Property<Double>)
                 is Enum<*> -> ItemEnum(this, p as Property<Enum<*>>)
                 else -> null
             }
@@ -117,20 +120,23 @@ class GuiBlueprintNodeStyleAsInputs(
         }
     }
 
-    class ItemNumber(
+    class ItemNumber<N : Number>(
         rootGui: GuiBlueprintNodeStyleAsInputs,
-        property: Property<Number>,
+        property: Property<N>,
         min: Float = -999f,
         max: Float = 999f,
-    ) : Item<Number>(rootGui, property) {
-        private val gui = GuiInputFloat(property.name, min = min, max = max)
+    ) : Item<N>(rootGui, property) {
+        private val gui = GuiInputFloat(property.name, min = min, max = max,
+            mantissaFormat = "%.2f")
 
-        override fun findValue(declaration: Declaration<Number>): Number =
-            declaration.value.invoke(0.0, 0L)
+        // For dynamic properties, this will be incorrect
+        override fun findValue(declaration: Declaration<N>): N =
+            declaration.value.invoke(property.default, 0L)
 
         override fun renderInput() {
             gui.render(value.toFloat()) {
-                value = gui.newValue
+                @Suppress("UNCHECKED_CAST")
+                value = gui.newValue as N
                 rootGui.submitStyleChange { declaration.value = set(value) }
             }
         }
