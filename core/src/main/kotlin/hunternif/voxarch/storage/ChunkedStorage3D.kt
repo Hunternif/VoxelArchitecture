@@ -59,8 +59,9 @@ class ChunkedStorage3D<T>(
         if (v != null && prevVal == null) _size++
         // TODO: shrink bounds when item is removed, un-ignore unit test.
         if (v != null) {
-            if (size == 0) {
-                // reset, min / max could be away from (0, 0, 0)
+            if (size == 1) {
+                // setting the first block ever, must reset min / max
+                // because it could be away from (0, 0, 0)
                 minX = x
                 minY = y
                 minZ = z
