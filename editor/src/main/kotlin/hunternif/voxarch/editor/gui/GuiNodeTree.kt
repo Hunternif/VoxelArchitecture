@@ -160,7 +160,7 @@ abstract class GuiSceneTree(
         val isParentNode = item.isParent && !isRootNode
         val isChildNode = item.isChild
         val isSelected = node in app.state.selectedObjects
-        val isHighlighted = node in app.state.highlightedObjects
+        val isHighlighted = node in app.state.hoveredObjects
         val isColored = isHighlighted || isParentNode || isChildNode
         if (isSelected) {
             flags = flags or ImGuiTreeNodeFlags.Selected
@@ -205,9 +205,7 @@ abstract class GuiSceneTree(
                 onDoubleClick(node)
                 isAnyTreeNodeClicked = true
             }
-            app.highlightObject(node)
-        } else {
-            app.unhighlightObject(node)
+            app.hoverObject(node)
         }
 
         contextMenu(memoStrWithIndex("node_tree_context_menu", i)) {

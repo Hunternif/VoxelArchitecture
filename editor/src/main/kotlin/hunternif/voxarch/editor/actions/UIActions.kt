@@ -113,14 +113,18 @@ fun EditorApp.scrollNodeTreeTo(obj: SceneObject) = action {
     }
 }
 
-fun EditorApp.highlightObject(obj: SceneObject) = action {
-    state.highlightedObjects.add(obj)
-    scene.updateHighlightedModel()
+/** This can be called every frame, to mark the object as hovered */
+fun EditorApp.hoverObject(obj: SceneObject) = action {
+    gui.hoverController.hover(obj)
 }
 
-fun EditorApp.unhighlightObject(obj: SceneObject) = action {
-    state.highlightedObjects.remove(obj)
-    scene.updateHighlightedModel()
+/** This can be called every frame, to update the scene with new hovered objects. */
+fun EditorApp.setHoveredObjects(objs: Set<SceneObject>) = action {
+    if (state.hoveredObjects != objs) {
+        state.hoveredObjects.clear()
+        state.hoveredObjects.addAll(objs)
+        scene.updateHoveredModel(objs)
+    }
 }
 
 /** Used by UI to show real-time updates that aren't yet written to history. */

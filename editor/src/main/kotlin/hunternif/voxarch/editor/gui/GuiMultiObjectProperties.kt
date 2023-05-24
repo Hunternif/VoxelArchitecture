@@ -1,12 +1,10 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.highlightObject
+import hunternif.voxarch.editor.actions.hoverObject
 import hunternif.voxarch.editor.actions.scrollNodeTreeTo
-import hunternif.voxarch.editor.actions.unhighlightObject
 import hunternif.voxarch.editor.actions.unselectObject
 import hunternif.voxarch.editor.scenegraph.SceneObject
-import hunternif.voxarch.util.isCollectionEqual
 import imgui.ImGui
 import imgui.type.ImBoolean
 
@@ -37,16 +35,15 @@ class GuiMultiObjectProperties(
             // Multiple items as collapsing headers
             list.forEach {
                 val isGuiOpen = ImGui.collapsingHeader(it.labelForImgui, it.visibleFlag)
+                val isHovered = ImGui.isItemHovered()
                 if (isGuiOpen) {
                     it.gui.render()
                 }
                 if (ImGui.isItemClicked()) {
                     app.scrollNodeTreeTo(it.obj)
                 }
-                if (isGuiOpen || ImGui.isItemHovered()) {
-                    app.highlightObject(it.obj)
-                } else {
-                    app.unhighlightObject(it.obj)
+                if (isHovered) {
+                    app.hoverObject(it.obj)
                 }
                 if (!it.visibleFlag.get()) {
                     app.unselectObject(it.obj)

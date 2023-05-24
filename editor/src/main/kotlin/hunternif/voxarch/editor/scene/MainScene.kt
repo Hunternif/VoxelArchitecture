@@ -42,7 +42,7 @@ class MainScene(private val app: EditorApp) {
     private val gridModel = InfiniteGridModel()
     private val nodeModel = NodeModel(camera)
     private val selectedNodeModel = SelectedNodeModel()
-    private val highlightedNodeModel = HighlightedNodeModel()
+    private val hoveredNodeModel = HighlightedNodeModel()
     private val originsModel = PointSpriteModel("textures/point-circle.png").apply { readDepth = false }
     private val highlightedFaceModel = ResizeNodeModel()
     // special 3d model with a separate camera
@@ -57,7 +57,7 @@ class MainScene(private val app: EditorApp) {
         nodeModel,
         highlightedFaceModel,
         selectedNodeModel,
-        highlightedNodeModel,
+        hoveredNodeModel,
         originsModel,
         newNodeController.model,
     )
@@ -131,7 +131,6 @@ class MainScene(private val app: EditorApp) {
         visibleVoxels.forEach { it.update() }
         voxelModel.updateVisible(visibleVoxels)
         updateSelectedNodeModel()
-        updateHighlightedModel()
     }
 
     fun updateNodeModel() = app.state.run {
@@ -142,7 +141,6 @@ class MainScene(private val app: EditorApp) {
         }
         nodeModel.update()
         updateSelectedNodeModel()
-        updateHighlightedModel()
     }
 
     fun updateShadingMode() {
@@ -168,7 +166,6 @@ class MainScene(private val app: EditorApp) {
 
     fun updateSelectedNodeModel() {
         selectedNodeModel.clear()
-        highlightedNodeModel.clear()
         originsModel.clear()
         for (obj in app.state.selectedObjects) {
             obj.update() // TODO: optimize: this is called twice for most models
@@ -200,13 +197,13 @@ class MainScene(private val app: EditorApp) {
     }
 
     /** Highlighted nodes that are hovered in Node tree */
-    fun updateHighlightedModel() {
-        highlightedNodeModel.clear()
-        for (obj in app.state.highlightedObjects) {
+    fun updateHoveredModel(objs: Set<SceneObject>) {
+        hoveredNodeModel.clear()
+        for (obj in objs) {
             if (obj == app.state.rootNode) continue
-            highlightedNodeModel.add(obj)
+            hoveredNodeModel.add(obj)
         }
-        highlightedNodeModel.update()
+        hoveredNodeModel.update()
     }
 
     fun render() {

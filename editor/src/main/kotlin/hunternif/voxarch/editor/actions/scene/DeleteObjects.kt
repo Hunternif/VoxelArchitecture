@@ -25,7 +25,6 @@ class DeleteObjects(
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) = app.state.run {
         for (detached in detachedObjs) {
-            highlightedObjects.remove(detached.obj)
             detached.detach()
             // Parent node must not point to a deleted node:
             if (detached.obj === parentNode) parentNode = rootNode

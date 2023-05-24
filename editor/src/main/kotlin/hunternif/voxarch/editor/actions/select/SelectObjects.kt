@@ -33,12 +33,6 @@ class SelectObjects(
         objs.firstOrNull { it is SceneNode }?.let { scrollNodeTreeTo(it) }
         objs.firstOrNull { it is SceneVoxelGroup }?.let { scrollNodeTreeTo(it) }
         scene.updateSelectedNodeModel()
-
-        // Un-highlight any unselected objects:
-        state.highlightedObjects.filter { it !in objs }.forEach {
-            state.highlightedObjects.remove(it)
-        }
-        scene.updateHighlightedModel()
     }
 }
 

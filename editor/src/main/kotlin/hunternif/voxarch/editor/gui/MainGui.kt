@@ -6,6 +6,7 @@ import hunternif.voxarch.editor.render.FrameBuffer
 import hunternif.voxarch.editor.render.Texture
 import hunternif.voxarch.editor.render.msaa.FrameBufferMSAA
 import hunternif.voxarch.editor.render.Viewport
+import hunternif.voxarch.editor.scene.HoverController
 import imgui.ImGui
 import imgui.ImGuiWindowClass
 import imgui.flag.ImGuiStyleVar
@@ -37,6 +38,8 @@ class MainGui(val app: EditorApp) : GuiBase() {
     @PublishedApi internal val showProperties = ImBoolean(true)
     @PublishedApi internal val showBuild = ImBoolean(true)
     @PublishedApi internal val showLogs = ImBoolean(false)
+
+    @PublishedApi internal val hoverController = HoverController(app)
 
     @PublishedApi internal val layout = DockLayout(HorizontalSplit(
         rightSize = 250,
@@ -99,6 +102,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
     }
 
     inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
+        hoverController.onStartFrame()
 //        debugTexture((app as EditorAppImpl).scene.hitTester.voxelsFbo.texture)
         fpsCounter.run()
         mainMenu()
@@ -170,6 +174,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
             log.render()
         }
         statusBar.render()
+        hoverController.onEndFrame()
     }
 
     @PublishedApi
