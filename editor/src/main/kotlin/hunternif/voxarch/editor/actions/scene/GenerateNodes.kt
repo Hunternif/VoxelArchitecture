@@ -61,7 +61,10 @@ class GenerateNodes : HistoryAction(
 
     /** Remove all generated nodes from the scene. */
     private fun EditorAppImpl.clearGeneratedNodes() = state.run {
-        generatedNodes.toList().forEach { it.remove() }
+        generatedNodes.toList().forEach {
+            highlightedObjects.remove(it)
+            it.remove()
+        }
         generatedNodes.clear()
         blueprintRegistry.refreshUsagesInNodes(state)
     }

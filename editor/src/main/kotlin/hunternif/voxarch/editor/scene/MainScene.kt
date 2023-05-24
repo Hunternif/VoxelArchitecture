@@ -131,6 +131,7 @@ class MainScene(private val app: EditorApp) {
         visibleVoxels.forEach { it.update() }
         voxelModel.updateVisible(visibleVoxels)
         updateSelectedNodeModel()
+        updateHighlightedModel()
     }
 
     fun updateNodeModel() = app.state.run {
@@ -141,6 +142,7 @@ class MainScene(private val app: EditorApp) {
         }
         nodeModel.update()
         updateSelectedNodeModel()
+        updateHighlightedModel()
     }
 
     fun updateShadingMode() {
