@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.*
+import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.scenegraph.ISceneListener
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
@@ -322,6 +323,7 @@ private data class TreeEntry(
         get() = obj.color != Colors.defaultNodeBox
             && obj.color != Colors.defaultGeneratedNodeBox
             && obj.color != Colors.transparent
+            && obj.color != BlueprintNode.defaultColor
     val color = obj.color.copy()
 
     fun refreshColor() {
