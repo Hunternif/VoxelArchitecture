@@ -48,6 +48,7 @@ abstract class BaseBuilderTest(
             set(MAT_WALL) { BlockData(ID_WALL) }
             set(MAT_ROOF) { BlockData(ID_ROOF) }
             set(MAT_WALL_DECORATION) { BlockData(ID_WALL_DECO) }
+            set(MAT_STAIRS) { BlockData(ID_WALL_DECO) }
         }
     }
 

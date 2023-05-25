@@ -52,6 +52,14 @@ fun DomBuilder.floor(
     this.addChildNodeBuilder(styleClass) { Floor() }.block()
 }
 
+/** Adds child [Staircase]. See [node]. */
+fun DomBuilder.stairs(
+    vararg styleClass: String,
+    block: DomNodeBuilder<Staircase>.() -> Unit = {}
+) {
+    this.addChildNodeBuilder(styleClass) { Staircase() }.block()
+}
+
 /** Adds child [PolyRoom]. See [node]. */
 fun DomBuilder.polyRoom(
     vararg styleClass: String,

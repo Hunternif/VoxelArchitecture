@@ -37,6 +37,7 @@ fun MaterialConfig.setSolidColorMaterials() {
     set(MAT_ROOF) { solidDarkOak }
     set(MAT_TORCH) { solidTorch }
     set(MAT_POST) { solidDarkOak }
+    set(MAT_STAIRS) { solidStoneBrick }
 }
 
 
@@ -58,6 +59,7 @@ fun MaterialConfig.setMinecraftMaterials() {
     set(MAT_ROOF) { texDarkOak }
 //    set(MAT_TORCH) { solidTorch }
     set(MAT_POST) { texDarkOak }
+    set(MAT_STAIRS) { texStoneBrick }
 }
 
 val minecraftTexAtlas by lazy {

@@ -14,6 +14,8 @@ class BuilderLibrary {
         Entry("Basic Wall", DefaultBuilders.Wall),
         Entry("Basic Floor", DefaultBuilders.Floor),
         Entry("Basic Column", DefaultBuilders.Column),
+        Entry("Basic Stairs", DefaultBuilders.Stairs),
+        Entry("Thin Stairs", DefaultBuilders.ThinStairs),
         Entry("Fill", DefaultBuilders.Fill),
 
         Entry("Arched Window", DefaultBuilders.ArchedWindow),

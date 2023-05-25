@@ -13,6 +13,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ChessRook
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Code
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.EllipsisH
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ICursor
+import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Signal
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Square
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Star
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Stop
@@ -33,6 +34,7 @@ object DomBuilderFactory {
             Entry(NODE, "Wall", Stop) { DomNodeBuilder { Wall() } },
             Entry(NODE, "Window") { DomNodeBuilder { Window() } },
             Entry(NODE, "Column", ICursor) { DomNodeBuilder { Column() } },
+            Entry(NODE, "Staircase", Signal) { DomNodeBuilder { Staircase() } },
 
             Entry(BUILDING, "Turret", ChessRook) { DomPolyRoomWithTurretBuilder() },
             Entry(BUILDING, "Turret Decor", ChessRook) { DomTurretDecor() },

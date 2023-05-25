@@ -26,6 +26,7 @@ const val MAT_FLOOR = "floor"
 const val MAT_ROOF = "roof"
 const val MAT_TORCH = "torch"
 const val MAT_POST = "post"
+const val MAT_STAIRS = "stairs"
 
 // Castle Node tags
 const val BLD_FOUNDATION = "foundation"
@@ -51,6 +52,8 @@ class DefaultBuilders {
         val Gate = SimpleGateBuilder()
         val Hatch = SimpleHatchBuilder()
         val Fill = FillBuilder(MAT_WALL)
+        val Stairs = StairsBuilder(MAT_STAIRS, downToFloor = true)
+        val ThinStairs = StairsBuilder(MAT_STAIRS, downToFloor = false)
 
         // Castle builders
         val Foundation = FloorFoundationBuilder(MAT_WALL)
@@ -77,6 +80,7 @@ fun BuilderConfig.setDefaultBuilders() {
     setDefault<Wall>(DefaultBuilders.Wall)
     setDefault<Window>(DefaultBuilders.ArchedWindow)
     setDefault<Column>(DefaultBuilders.Column)
+    setDefault<Staircase>(DefaultBuilders.Stairs)
     setDefault<Room>(DefaultBuilders.Room)
     setDefault<Gate>(DefaultBuilders.Gate)
     setDefault<Hatch>(DefaultBuilders.Hatch)
