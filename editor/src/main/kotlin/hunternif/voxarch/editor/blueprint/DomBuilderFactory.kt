@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.builder.BLD_ARCHED_BRIDGE
 import hunternif.voxarch.builder.BLD_ARCHED_WINDOW
+import hunternif.voxarch.builder.BLD_SPACE
 import hunternif.voxarch.dom.builder.*
 import hunternif.voxarch.editor.blueprint.DomBuilderFactory.Group.*
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Archway
@@ -28,6 +29,7 @@ object DomBuilderFactory {
     val allDomBuilders: List<Entry> by lazy {
         listOf(
             Entry(NODE, "Node") { DomNodeBuilder { Node() } },
+            Entry(NODE, "Space") { DomNodeBuilder { Node() }.addStyle(BLD_SPACE) },
             Entry(NODE, "Room") { DomNodeBuilder { Room() } },
             Entry(NODE, "PolyRoom", Star) { DomPolyRoomBuilder { PolyRoom() } },
             Entry(NODE, "Floor", WindowMinimize) { DomNodeBuilder { Floor() } },

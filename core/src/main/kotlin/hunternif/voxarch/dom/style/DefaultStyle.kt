@@ -1,6 +1,7 @@
 package hunternif.voxarch.dom.style
 
 import hunternif.voxarch.builder.BLD_ARCHED_BRIDGE
+import hunternif.voxarch.builder.BLD_SPACE
 import hunternif.voxarch.dom.DOM_TURRET
 import hunternif.voxarch.dom.builder.DomTurretBottomDecor
 import hunternif.voxarch.dom.style.property.*
@@ -9,6 +10,11 @@ import hunternif.voxarch.plan.*
 
 val defaultStyle get() = Stylesheet().add {
     styleFor<Room> {
+        width { 100.pct }
+        height { 100.pct }
+        depth { 100.pct }
+    }
+    style(BLD_SPACE) {
         width { 100.pct }
         height { 100.pct }
         depth { 100.pct }

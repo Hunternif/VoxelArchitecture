@@ -33,7 +33,7 @@ fun DomBuilder.node(
     vararg styleClass: String,
     block: DomNodeBuilder<Node>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Node() }.block()
+    this.addChildNodeBuilder(*styleClass) { Node() }.block()
 }
 
 /** Adds child [Room]. See [node]. */
@@ -41,7 +41,7 @@ fun DomBuilder.room(
     vararg styleClass: String,
     block: DomNodeBuilder<Room>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Room() }.block()
+    this.addChildNodeBuilder(*styleClass) { Room() }.block()
 }
 
 /** Adds child [Floor]. See [node]. */
@@ -49,7 +49,7 @@ fun DomBuilder.floor(
     vararg styleClass: String,
     block: DomNodeBuilder<Floor>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Floor() }.block()
+    this.addChildNodeBuilder(*styleClass) { Floor() }.block()
 }
 
 /** Adds child [Staircase]. See [node]. */
@@ -57,7 +57,7 @@ fun DomBuilder.stairs(
     vararg styleClass: String,
     block: DomNodeBuilder<Staircase>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Staircase() }.block()
+    this.addChildNodeBuilder(*styleClass) { Staircase() }.block()
 }
 
 /** Adds child [PolyRoom]. See [node]. */
@@ -68,6 +68,14 @@ fun DomBuilder.polyRoom(
     val bld = DomPolyRoomBuilder().apply { +styleClass }
     addChild(bld)
     bld.block()
+}
+
+/** Adds child [Node] that takes 100% space. See [node]. */
+fun DomBuilder.space(
+    vararg styleClass: String,
+    block: DomNodeBuilder<Node>.() -> Unit = {}
+) {
+    this.addChildNodeBuilder(BLD_SPACE, *styleClass) { Node() }.block()
 }
 
 /** Adds child [PolyRoom] with a [DomTurretDecor]. See [node]. */
@@ -142,7 +150,7 @@ fun DomBuilder.wall(
     vararg styleClass: String,
     block: DomNodeBuilder<Wall>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Wall() }.block()
+    this.addChildNodeBuilder(*styleClass) { Wall() }.block()
 }
 
 /** Adds a wall with a window type assigned to it. */
@@ -150,8 +158,7 @@ fun DomBuilder.archedWindow(
     vararg styleClass: String,
     block: DomNodeBuilder<Window>.() -> Unit = {}
 ) {
-    val styles = arrayOf(*styleClass, BLD_ARCHED_WINDOW)
-    this.addChildNodeBuilder(styles) { Window() }.block()
+    this.addChildNodeBuilder(BLD_ARCHED_WINDOW, *styleClass) { Window() }.block()
 }
 
 /** Creates a [Path] on the line segment. */
@@ -170,7 +177,7 @@ fun DomBuilder.prop(
     vararg styleClass: String,
     block: DomNodeBuilder<Prop>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Prop(propType) }.block()
+    this.addChildNodeBuilder(*styleClass) { Prop(propType) }.block()
 }
 
 /** Adds child [Column]. See [node]. */
@@ -178,7 +185,7 @@ fun DomBuilder.column(
     vararg styleClass: String,
     block: DomNodeBuilder<Column>.() -> Unit = {}
 ) {
-    this.addChildNodeBuilder(styleClass) { Column() }.block()
+    this.addChildNodeBuilder(*styleClass) { Column() }.block()
 }
 
 /** Adds an extra element in the DOM that doesn't do anything.
@@ -225,7 +232,7 @@ annotation class DomDsl
 
 /** Creates a child [DomBuilder], adds it to parent and returns. */
 private inline fun <reified N : Node> DomBuilder.addChildNodeBuilder(
-    styleClass: Array<out String>,
+    vararg styleClass: String,
     noinline createNode: () -> N
 ): DomNodeBuilder<N> {
     val child = DomNodeBuilder(createNode).apply { +styleClass }

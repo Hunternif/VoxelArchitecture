@@ -28,7 +28,8 @@ const val MAT_TORCH = "torch"
 const val MAT_POST = "post"
 const val MAT_STAIRS = "stairs"
 
-// Castle Node tags
+// Node tags
+const val BLD_SPACE = "space"
 const val BLD_FOUNDATION = "foundation"
 const val BLD_TURRET_BOTTOM = "turret_bottom"
 const val BLD_TOWER_MAIN = "tower_main"
