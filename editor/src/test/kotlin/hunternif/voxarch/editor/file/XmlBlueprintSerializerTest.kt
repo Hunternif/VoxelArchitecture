@@ -47,7 +47,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
         val node2 = bp.nodes.toList()[2]
         assertEquals("my_room", node2.extraStyleClass)
         assertEquals("""
-            .Room_2 {
+            ._x_Room_2 {
               width: 10
               blueprint: "some blueprint"
             }
@@ -73,7 +73,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
           <node id="2" name="Room" x="200.0" y="30.0">
             <styleClass>my_room</styleClass>
             <style>
-        .Room_2 {
+        ._x_Room_2 {
           width: 10
           blueprint: "some blueprint"
         }

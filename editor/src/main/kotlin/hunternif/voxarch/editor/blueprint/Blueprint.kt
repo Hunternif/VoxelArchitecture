@@ -1,6 +1,7 @@
 package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.builder.DomBuilder
+import hunternif.voxarch.dom.builder.DomBuilder.Companion.TECH_STYLE_PREFIX
 import hunternif.voxarch.dom.builder.IDomListener
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.style.*
@@ -136,7 +137,7 @@ class BlueprintNode(
      * For consistency, this color should always have 100% alpha internally. */
     var color: ColorRGBa = defaultColor.copy(),
 ) : WithID {
-    val autoStyleClass = "${name.replace(' ', '_')}_${id}"
+    val autoStyleClass = "$TECH_STYLE_PREFIX${name.replace(' ', '_')}_${id}"
     val rule: Rule = Rule(select(autoStyleClass))
 
     private val _inputs = mutableListOf<BlueprintSlot.In>()

@@ -34,7 +34,7 @@ open class DomBuilder {
     /** The unique class name ensures that the following style rules
      * will only apply to this turret instance. */
     internal val uniqueClass by lazy {
-        "u_${this::class.java.simpleName}_${hashCode()}"
+        "$TECH_STYLE_PREFIX${this::class.java.simpleName}_${hashCode()}"
     }
 
     init {
@@ -104,6 +104,11 @@ open class DomBuilder {
 
     fun addSlot(name: String, domSlot: DomBuilder) {
         slots[name] = domSlot
+    }
+
+    companion object {
+        /** Style classes with this prefix will not be copied to node tags */
+        const val TECH_STYLE_PREFIX = "_x_"
     }
 }
 

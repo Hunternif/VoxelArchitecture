@@ -18,7 +18,7 @@ open class DomNodeBuilder<N : Node>(
 
     override fun prepareForLayout(ctx: DomBuildContext): StyledNode<N> {
         val node = createNode()
-        node.tags += (styleClass - uniqueClass)
+        node.tags += styleClass.filter { !it.startsWith(TECH_STYLE_PREFIX) }
         ctx.parentNode.addChild(node)
         return StyledNode(node, this, ctx)
     }
