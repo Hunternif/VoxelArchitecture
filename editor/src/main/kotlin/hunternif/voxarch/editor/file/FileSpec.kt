@@ -92,7 +92,7 @@ const val VOXARCH_PROJECT_FILE_EXT = "voxarch"
 /**
  * Reads the project from file and produces a new app state.
  */
-fun EditorAppImpl.readProject(path: Path) {
+fun EditorApp.readProject(path: Path): AppStateImpl {
     val reg = SceneRegistry()
     val bpReg = BlueprintRegistry()
     val builderLibrary = BuilderLibrary()
@@ -145,7 +145,7 @@ fun EditorAppImpl.readProject(path: Path) {
         // Ignore parsing errors, they will show in the editor anyway
         val style = Stylesheet.fromRules(StyleParser().parseStylesheet(styleText).rules)
 
-        state = AppStateImpl(
+        return AppStateImpl(
             reg,
             bpReg,
             builderLibrary,
