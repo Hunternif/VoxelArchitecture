@@ -3,9 +3,10 @@ package hunternif.voxarch.dom.builder
 import hunternif.voxarch.dom.style.StyledElement
 import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.dom.style.pct
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.centricToNatural
-import hunternif.voxarch.plan.localSizeInDir
+import hunternif.voxarch.dom.style.property.PropAspectRatioXY
+import hunternif.voxarch.dom.style.property.PropHeight
+import hunternif.voxarch.dom.style.property.PropWidth
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
 import kotlin.math.min
@@ -22,6 +23,7 @@ class DomSubdivide(
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         if (children.isEmpty()) return children
 
+        val aspectRatioXYMap = mutableMapOf<Node, Double>()
         val allNodes = ArrayList<Node>(children.size)
         val solidNodes = ArrayList<Node>(children.size)
         val pctNodes = ArrayList<Node>(children.size)
@@ -29,6 +31,9 @@ class DomSubdivide(
             if (it is StyledNode<*>) {
                 allNodes.add(it.node)
                 val props = it.ctx.stylesheet.getProperties(it)
+                if (props[PropAspectRatioXY] != null && it.node.naturalHeight != 0.0) {
+                    aspectRatioXYMap[it.node] = it.node.run { naturalWidth / naturalHeight }
+                }
                 val prop = it.node.propertyForDir
                 val size = props[prop]?.value ?: 100.pct
                 if (size.isPct) pctNodes.add(it.node)
@@ -61,10 +66,26 @@ class DomSubdivide(
                 // TODO: create a first / last / symmetry bias in subdivide layout
                 pctNodes.first().dirSize += remaining
             }
+
+            // Need to re-apply aspect ratio
+            pctNodes.forEach {
+                val aspectRatioXY = aspectRatioXYMap[it]
+                if (aspectRatioXY != null) {
+                    when (it.propertyForDir) {
+                        PropWidth -> {
+                            // Subdivide changed width, need to recalculate height:
+                            it.naturalHeight = it.naturalWidth / aspectRatioXY
+                        }
+                        PropHeight -> {
+                            // Subdivide changed height, need to recalculate width:
+                            it.naturalWidth = it.naturalHeight * aspectRatioXY
+                        }
+                    }
+                }
+            }
         }
 
         layoutInDir(parentNode, allNodes)
-        //TODO apply aspect ratio
 
         return children
     }

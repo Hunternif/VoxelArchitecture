@@ -83,6 +83,8 @@ fun Rule.size(block: () -> Value<Vec3>) {
     add(PropSize, block())
 }
 
+//TODO: make size contribute to individual 'width' properties, so that
+// we know they are set, e.g. for 'aspect-ratio'.
 fun Rule.size(x: Value<Number>, y: Value<Number>, z: Value<Number>) {
     val value = value<Vec3>("$x $y $z", true) { base, seed ->
         Vec3(

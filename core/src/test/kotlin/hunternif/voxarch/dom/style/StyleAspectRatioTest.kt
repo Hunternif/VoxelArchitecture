@@ -7,9 +7,11 @@ import hunternif.voxarch.dom.style.property.aspectRatioXY
 import hunternif.voxarch.dom.style.property.height
 import hunternif.voxarch.dom.style.property.size
 import hunternif.voxarch.dom.style.property.width
+import hunternif.voxarch.dom.subdivide
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.naturalSize
 import hunternif.voxarch.plan.query
+import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.assertVec3Equals
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
@@ -88,5 +90,59 @@ class StyleAspectRatioTest {
         }.buildDom(style)
         val node = dom.query<Node>("test").first()
         assertVec3Equals(Vec3(8.0, 2.0, 1.0), node.naturalSize)
+    }
+
+    @Test
+    fun `apply aspect ratio after subdivide X`() {
+        val style = defaultStyle.add {
+            style("container") {
+                size(10.vx, 10.vx, 10.vx)
+            }
+            style("test") {
+                width { 100.pct }
+                aspectRatioXY { set(2.0) }
+            }
+            style("block") {
+                width { 2.vx }
+            }
+        }
+        val dom = domRoot {
+            node("container") {
+                subdivide(Direction3D.EAST) {
+                    node("block")
+                    node("test")
+                    node("block")
+                }
+            }
+        }.buildDom(style)
+        val node = dom.query<Node>("test").first()
+        assertVec3Equals(Vec3(6.0, 3.0, 1.0), node.naturalSize)
+    }
+
+    @Test
+    fun `apply aspect ratio after subdivide Y`() {
+        val style = defaultStyle.add {
+            style("container") {
+                size(10.vx, 10.vx, 10.vx)
+            }
+            style("test") {
+                width { 100.pct }
+                aspectRatioXY { set(2.0) }
+            }
+            style("block") {
+                height { 2.vx }
+            }
+        }
+        val dom = domRoot {
+            node("container") {
+                subdivide(Direction3D.UP) {
+                    node("block")
+                    node("test")
+                    node("block")
+                }
+            }
+        }.buildDom(style)
+        val node = dom.query<Node>("test").first()
+        assertVec3Equals(Vec3(12.0, 6.0, 1.0), node.naturalSize)
     }
 }
