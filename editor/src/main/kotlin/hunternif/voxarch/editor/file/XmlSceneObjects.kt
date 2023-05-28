@@ -67,7 +67,12 @@ class XmlSceneNode(
 
     @field:JacksonXmlElementWrapper(useWrapping = false)
     @field:JacksonXmlProperty(localName = "blueprintID")
+    @Deprecated("reference blueprints by name")
     var blueprintIDs: List<Int> = emptyList(),
+
+    @field:JacksonXmlElementWrapper(useWrapping = false)
+    @field:JacksonXmlProperty(localName = "blueprintName")
+    var blueprintNames: List<String> = emptyList(),
 
     /** Populated during deserialization */
     @field:JsonIgnore
@@ -107,7 +112,7 @@ private fun SceneObject.mapToXmlRecursive(mapped: MutableSet<SceneObject>): XmlS
     val xmlNode: XmlSceneObject = when (this) {
         is SceneNode -> XmlSceneNode(
             id, node.mapToXmlNodeNoChildren(), colorHex, color.a, isGenerated,
-            blueprints.map { it.id }
+            blueprintNames = blueprints.map { it.name }
         )
         is SceneVoxelGroup -> XmlSceneVoxelGroup(id, label, isGenerated, origin)
         else -> XmlSceneObject(id, isGenerated)

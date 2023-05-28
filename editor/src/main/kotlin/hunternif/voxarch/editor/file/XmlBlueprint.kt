@@ -11,6 +11,7 @@ import hunternif.voxarch.editor.util.ColorRGBa
 @JacksonXmlRootElement(localName = "blueprint")
 class XmlBlueprint(
     @field:JacksonXmlProperty(isAttribute = true)
+    @Deprecated("reference blueprints by name")
     var id: Int = -1,
 
     @field:JacksonXmlProperty(isAttribute = true)

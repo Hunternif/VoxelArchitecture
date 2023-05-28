@@ -22,6 +22,7 @@ import java.nio.file.Files
 import java.nio.file.Path
 import java.nio.file.StandardOpenOption.CREATE
 import java.nio.file.StandardOpenOption.TRUNCATE_EXISTING
+import java.util.stream.Collectors
 import kotlin.io.path.isRegularFile
 
 /*
@@ -115,15 +116,13 @@ fun EditorApp.readProject(path: Path): AppStateImpl {
             deserializeXml(it.readText(), XmlSceneTree::class)
         }
 
-        treeXmlType.blueprints?.entries?.forEach {
-            tryReadBlueprintFile(it, zipfs, bpReg, this)
-        }
+        readBlueprints(zipfs, bpReg, this)
         tryPopulateDelegateBlueprints(bpReg, metadata)
 
         // populate VOX files, Blueprints, custom Builders
         treeXmlType.noderoot?.forEachSubtree {
             tryReadVoxFile(it, zipfs, metadata, this)
-            tryAddBlueprintRefs(it, bpReg)
+            tryAddBlueprintRefs(it, bpReg, metadata)
             tryAddBuilderRef(it, builderLibrary)
         }
         treeXmlType.voxelroot?.forEachSubtree { tryReadVoxFile(it, zipfs, metadata, this) }
@@ -197,7 +196,6 @@ fun EditorAppImpl.writeProject(path: Path) {
                 selectedObjects = state.selectedObjects.mapToXml(),
                 hiddenObjects = state.hiddenObjects.mapToXml(),
                 manuallyHiddenObjects = state.manuallyHiddenObjects.mapToXml(),
-                blueprints = state.blueprintRegistry.mapToXml(),
             )
             val treeXmlStr = serializeToXmlStr(treeXmlType, true)
             it.write(treeXmlStr)
@@ -257,11 +255,20 @@ private fun tryReadVoxFile(
 }
 
 /** Finds and adds Blueprint references by ID, if they have been loaded. */
-private fun tryAddBlueprintRefs(obj: XmlSceneObject, bpReg: BlueprintRegistry) {
+private fun tryAddBlueprintRefs(
+    obj: XmlSceneObject, bpReg: BlueprintRegistry, metadata: Metadata,
+) {
     (obj as? XmlSceneNode)?.let { node ->
-        node.blueprintRefs = node.blueprintIDs.mapNotNull {
-            bpReg.blueprintsByID[it]
-        }
+        node.blueprintRefs =
+            if (metadata.formatVersion >= 8) {
+                node.blueprintNames.mapNotNull {
+                    bpReg.blueprintsByName[it]
+                }
+            } else {
+                node.blueprintIDs.mapNotNull {
+                    bpReg.blueprintsByID[it]
+                }
+            }
     }
 }
 
@@ -273,19 +280,18 @@ private fun tryAddBuilderRef(obj: XmlSceneObject, lib: BuilderLibrary) {
     }
 }
 
-private fun tryReadBlueprintFile(
-    entry: XmlBlueprintEntry, fs: FileSystem, bpReg: BlueprintRegistry, app: EditorApp,
-) {
-    try {
-        Files.newBufferedReader(
-            fs.getPath("/blueprints/blueprint_${entry.id}.xml")
-        ).use {
-            val bp = deserializeXml(it.readText(), Blueprint::class)
-            bpReg.save(bp)
+private fun readBlueprints(fs: FileSystem, bpReg: BlueprintRegistry, app: EditorApp) {
+    val files = Files.list(fs.getPath("/blueprints")).collect(Collectors.toList())
+    for (file in files) {
+        try {
+            Files.newBufferedReader(file).use {
+                val bp = deserializeXml(it.readText(), Blueprint::class)
+                bpReg.save(bp)
+            }
+        } catch (e: Exception) {
+            app.logWarning("Couldn't read blueprint $file")
+            app.logError(e)
         }
-    } catch (e: Exception) {
-        app.logWarning("Couldn't read blueprint ${entry.id}")
-        app.logError(e)
     }
 }
 

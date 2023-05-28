@@ -61,21 +61,23 @@ class FileSpecTest : BaseAppTest() {
         assertEquals(1, vox.data.size)
         assertEquals(VoxColor(0xff0000), vox.data[0, 0, 0])
         // Blueprints
-        val bpMap = app.state.blueprints.toList()
+        val bpMap = app.state.blueprintLibrary.blueprintsByName
+        val bp1 = bpMap["Untitled"]!!
+        val bp2 = bpMap["Untitled (1)"]!!
         assertEquals(2, bpMap.size)
-        assertEquals(listOf(bpMap[0]), app.state.rootNode.blueprints)
-        assertEquals(listOf(bpMap[1]), (app.state.rootNode.children.toList()[1] as SceneNode).blueprints)
+        assertEquals(listOf(bp1), app.state.rootNode.blueprints)
+        assertEquals(listOf(bp2), (app.state.rootNode.children.toList()[1] as SceneNode).blueprints)
         assertEquals(
             setOf(app.state.rootNode),
-            app.state.blueprintLibrary.usage(bpMap[0]).nodes
+            app.state.blueprintLibrary.usage(bp1).nodes
         )
         assertEquals(
             setOf(app.state.rootNode.children.toList()[1]),
-            app.state.blueprintLibrary.usage(bpMap[1]).nodes
+            app.state.blueprintLibrary.usage(bp2).nodes
         )
-        assertEquals(bpMap[0], (bpMap[1].nodes.toList()[2].domBuilder as DomRunBlueprint).blueprint)
-        assertEquals(Colors.debug, bpMap[1].nodes.toList()[1].color)
-        assertEquals(BlueprintNode.defaultColor, bpMap[1].nodes.toList()[2].color)
+        assertEquals(bp1, (bp2.nodes.toList()[2].domBuilder as DomRunBlueprint).blueprint)
+        assertEquals(Colors.debug, bp2.nodes.toList()[1].color)
+        assertEquals(BlueprintNode.defaultColor, bp2.nodes.toList()[2].color)
     }
 
     @Test

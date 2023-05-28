@@ -42,15 +42,17 @@ class BlueprintRegistry : IBlueprintLibrary {
 
     fun newBlueprint(name: String): Blueprint {
         val id = blueprintIDs.newID()
-        // In case of duplicates, change "Untitled" to "Untitled (2)"
-        val nameExists = blueprintIDs.map.values.any { it.name == name }
-        val newName = if (nameExists) "$name ($id)" else name
+        val newName = makeUniqueName(name)
         val blueprint = Blueprint(id, newName)
         save(blueprint)
         return blueprint
     }
 
     fun save(blueprint: Blueprint) {
+        // If name is already taken, refresh name:
+        if (blueprintsByName[blueprint.name] !== blueprint) {
+            blueprint.name = makeUniqueName(blueprint.name)
+        }
         blueprintIDs.save(blueprint)
         refreshMapByName()
     }
@@ -116,6 +118,19 @@ class BlueprintRegistry : IBlueprintLibrary {
             clear()
             blueprints.forEach { put(it.name, it) }
         }
+    }
+
+    /** In case of duplicates, changes "Untitled" to "Untitled (2)" */
+    private fun makeUniqueName(name: String): String {
+        if (blueprintsByName[name] == null) return name
+        var i = 0
+        var newName: String
+        do {
+            i++
+            newName = "$name ($i)"
+        }
+        while (blueprintsByName[newName] != null)
+        return newName
     }
 
     /** Record of where this blueprint is used in the project */
