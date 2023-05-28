@@ -23,6 +23,7 @@ class GuiBlueprintLibrary(
         ImGui.separator()
 
         var toDelete: Blueprint? = null
+        var toRename: Pair<Blueprint, String>? = null
         ImGui.pushFont(gui.fontSmallIcons)
         if (ImGui.beginTable("blueprints_table", 3, ImGuiTableFlags.PadOuterX)) {
             ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
@@ -40,7 +41,7 @@ class GuiBlueprintLibrary(
                         nameInput.render(bp.name,
                             onCancel = { editingNameBp = null },
                             onSubmit = {
-                                app.renameBlueprint(bp, it)
+                                toRename = bp to it
                                 editingNameBp = null
                             }
                         )
@@ -84,5 +85,6 @@ class GuiBlueprintLibrary(
         if (ImGui.isWindowFocused() && ImGui.isKeyPressed(GLFW.GLFW_KEY_DELETE, false)) {
             app.deleteSelectedBlueprint()
         }
+        toRename?.let { (bp, name) -> app.renameBlueprint(bp, name)}
     }
 }

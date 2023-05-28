@@ -52,6 +52,10 @@ class BlueprintRegistry : IBlueprintLibrary {
         _blueprintsByName.remove(blueprint.name)
     }
 
+    fun removeByName(name: String) {
+        _blueprintsByName.remove(name)
+    }
+
     override fun usage(bp: Blueprint): Usage =
         usageMap.getOrPut(bp) { Usage(bp) }
 
