@@ -9,17 +9,18 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
 class RenameBlueprint(
     val bp: Blueprint,
-    var newName: String,
+    newName: String,
 ) : HistoryAction(
     "Rename blueprint",
     FontAwesomeIcons.Code
 ), StackingAction<RenameBlueprint> {
     private val oldName = bp.name
+    private var newName = newName.trim()
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (firstTime) {
-            newName = newName.trim()
-            if (app.state.blueprintLibrary.blueprintsByName[newName] != null) {
+            val existingBp = app.state.blueprintLibrary.blueprintsByName[newName]
+            if (existingBp != null && existingBp !== bp) {
                 app.logWarning("Duplicate blueprint name $newName")
             }
         }

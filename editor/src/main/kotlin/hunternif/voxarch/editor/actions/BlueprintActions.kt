@@ -89,7 +89,9 @@ fun EditorApp.moveBlueprintNode(
 fun EditorApp.renameBlueprint(
     bp: Blueprint,
     name: String,
-) = historyAction(RenameBlueprint(bp, name))
+) {
+    if (bp.name != name.trim()) historyAction(RenameBlueprint(bp, name))
+}
 
 /** Passing old color because the current could have changed */
 fun EditorApp.setBlueprintNodeColor(
@@ -109,4 +111,8 @@ fun EditorApp.setBlueprintNodeStyle(
 fun EditorApp.renameBlueprintOutSlot(
     node: BlueprintNode,
     name: String,
-) = historyAction(RenameBlueprintOutSlot(node, name))
+) {
+    if (node.domBuilder is DomBlueprintOutSlot && node.domBuilder.slotName != name.trim()) {
+        historyAction(RenameBlueprintOutSlot(node, name))
+    }
+}

@@ -9,7 +9,7 @@ import hunternif.voxarch.editor.gui.FontAwesomeIcons
 
 class RenameBlueprintOutSlot(
     private val node: BlueprintNode,
-    var newName: String,
+    newName: String,
 ) : HistoryAction(
     "Rename blueprint out slot",
     FontAwesomeIcons.Code
@@ -21,6 +21,7 @@ class RenameBlueprintOutSlot(
     private lateinit var domBuilder: DomBlueprintOutSlot
 
     private lateinit var oldName: String
+    private var newName: String = newName.trim()
 
     /**
      * Slots on "Blueprint" nodes that reference this slot.
@@ -36,7 +37,6 @@ class RenameBlueprintOutSlot(
         isValid = true
         domBuilder = node.domBuilder
         oldName = domBuilder.slotName
-        newName = newName.trim()
 
         val usage = app.state.blueprintLibrary.usage(node.bp)
         slots = mutableListOf<BlueprintSlot.Out>().apply {
