@@ -119,42 +119,6 @@ class FileSpecTest : BaseAppTest() {
         val testPath = tempDir.resolve("2_rooms.voxarch")
         app.saveProjectFileAs(testPath)
 
-        val zipfsRef = newZipFileSystem(refPath)
-        val zipfsTest = newZipFileSystem(testPath)
-        zipfsRef.use {
-            zipfsTest.use {
-                // for comparing entire file tree recursively:
-//                val refFiles = Files.walk(zipfsRef.getPath("/"), 2)
-//                    .filter { it.isRegularFile() }
-//                    .collect(Collectors.toList())
-//                refFiles.forEach {
-//                    assertTextFilesEqual(it, zipfsTest.getPath(it.toString()))
-//                }
-                assertTextFilesEqual(
-                    zipfsRef.getPath("/metadata.yaml"),
-                    zipfsTest.getPath("/metadata.yaml")
-                )
-                assertTextFilesEqual(
-                    zipfsRef.getPath("/scenetree.xml"),
-                    zipfsTest.getPath("/scenetree.xml")
-                )
-                assertTextFilesEqual(
-                    zipfsRef.getPath("/stylesheet.vcss"),
-                    zipfsTest.getPath("/stylesheet.vcss")
-                )
-                assertFilesEqual(
-                    zipfsRef.getPath("/voxels/group_6.vox"),
-                    zipfsTest.getPath("/voxels/group_6.vox")
-                )
-                assertTextFilesEqual(
-                    zipfsRef.getPath("/blueprints/blueprint_0.xml"),
-                    zipfsTest.getPath("/blueprints/blueprint_0.xml")
-                )
-                assertTextFilesEqual(
-                    zipfsRef.getPath("/blueprints/blueprint_1.xml"),
-                    zipfsTest.getPath("/blueprints/blueprint_1.xml")
-                )
-            }
-        }
+        assertProjectFilesEqual(refPath, testPath)
     }
 }

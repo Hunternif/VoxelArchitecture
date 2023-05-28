@@ -8,6 +8,9 @@ import org.junit.Assert.assertTrue
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.util.LinkedList
+import java.util.stream.Collectors
+import kotlin.io.path.extension
+import kotlin.io.path.isRegularFile
 
 /** Asserts all properties except children. */
 fun assertNodeEquals(
@@ -72,6 +75,37 @@ fun assertTextFilesEqual(
     val expectedText = Files.newBufferedReader(expected).use { it.readText() }
     val actualText = Files.newBufferedReader(actual).use { it.readText() }
     assertEquals(expectedText, actualText)
+}
+
+fun assertProjectFilesEqual(
+    expected: java.nio.file.Path,
+    actual: java.nio.file.Path
+) {
+    val zipfsRef = newZipFileSystem(expected)
+    val zipfsTest = newZipFileSystem(actual)
+    zipfsRef.use {
+        zipfsTest.use {
+            val refFiles = Files.walk(zipfsRef.getPath("/"), 2)
+                .filter { it.isRegularFile() }
+                .collect(Collectors.toList())
+            val testFiles = Files.walk(zipfsTest.getPath("/"), 2)
+                .filter { it.isRegularFile() }
+                .collect(Collectors.toList())
+            assertEquals(
+                refFiles.sorted().joinToString("\n"),
+                testFiles.sorted().joinToString("\n"),
+            )
+
+            refFiles.forEach {
+                val testFilePath = zipfsTest.getPath(it.toString())
+                if (it.extension in setOf("yaml", "json", "xml", "vcss")) {
+                    assertTextFilesEqual(it, testFilePath)
+                } else {
+                    assertFilesEqual(it, testFilePath)
+                }
+            }
+        }
+    }
 }
 
 fun makeTestDir(name: String): java.nio.file.Path {
