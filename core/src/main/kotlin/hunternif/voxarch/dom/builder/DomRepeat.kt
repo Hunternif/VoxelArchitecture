@@ -6,6 +6,7 @@ import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.Direction3D
 import hunternif.voxarch.util.Direction3D.*
+import hunternif.voxarch.util.rotateY
 import kotlin.math.max
 
 /**
@@ -93,24 +94,33 @@ private class DomRepeatTile(
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         if (children.isEmpty()) return children
 
-        // Apply mode via styling the children:
-        val rule = Rule().apply {
-            when (mode) {
-                OFF -> {}
-                STRETCH -> when (dir) {
-                    UP, DOWN -> {}
-                    EAST, WEST -> width { 100.pct }
-                    SOUTH, NORTH -> depth { 100.pct }
+        when (mode) {
+            OFF -> {}
+            SPACE -> {
+                // Align children in the middle of the tile:
+                val rule = Rule().apply {
+                    when (dir) {
+                        UP, DOWN -> {}
+                        EAST, WEST -> alignX { center() }
+                        SOUTH, NORTH -> alignZ { center() }
+                    }
                 }
-                SPACE -> when (dir) {
-                    UP, DOWN -> {}
-                    EAST, WEST -> alignX { center() }
-                    SOUTH, NORTH -> alignZ { center() }
+                for (decl in rule.declarations) {
+                    children.forEach { decl.applyTo(it) }
                 }
             }
-        }
-        for (decl in rule.declarations) {
-            children.forEach { decl.applyTo(it) }
+            STRETCH -> {
+                // Can't use style because each child could be rotated:
+                children.filterIsInstance<StyledNode<*>>().forEach {
+                    val childDir = dir.rotateY(it.node.rotationY)
+                    val parentSize = it.parentNode.localSizeInDir(dir).centricToNatural()
+                    when (childDir) {
+                        UP, DOWN -> {}
+                        EAST, WEST -> it.node.naturalWidth = parentSize
+                        SOUTH, NORTH -> it.node.naturalDepth = parentSize
+                    }
+                }
+            }
         }
 
         return children
