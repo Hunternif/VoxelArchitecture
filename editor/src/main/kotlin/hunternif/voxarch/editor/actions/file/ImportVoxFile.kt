@@ -12,7 +12,7 @@ class ImportVoxFile(
     private val path: Path
 ) : HistoryAction(
     "Import ${path.fileName}",
-    FontAwesomeIcons.File
+    FontAwesomeIcons.FileImport
 ) {
     private lateinit var voxelGroup: SceneVoxelGroup
 

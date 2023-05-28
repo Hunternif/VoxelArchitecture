@@ -38,6 +38,12 @@ fun EditorApp.openDialogOpenProjectFile() = action {
     }
 }
 
+fun EditorApp.openDialogImportProjectFile() = action {
+    openFileDialog(VOXARCH_PROJECT_FILE_EXT) {
+        importProject(it, importBlueprints = true)
+    }
+}
+
 fun EditorApp.openDialogImportVoxFile() = action {
     openFileDialog("vox") {
         importVoxFile(it)

@@ -103,20 +103,8 @@ fun EditorApp.readProject(path: Path): AppStateImpl {
 
     val zipfs = newZipFileSystem(path)
     zipfs.use {
-        val metadata = Files.newBufferedReader(zipfs.getPath("/metadata.yaml")).use {
-            deserializeYaml(it.readText(), Metadata::class)
-        }
-        if (metadata.formatVersion < FORMAT_VERSION) {
-            logWarning(
-                "Attempting to open $path which uses old version ${metadata.formatVersion}, " +
-                    "while current version is $FORMAT_VERSION. " +
-                    "Things may not work as expected."
-            )
-        }
-
-        val treeXmlType = Files.newBufferedReader(zipfs.getPath("/scenetree.xml")).use {
-            deserializeXml(it.readText(), XmlSceneTree::class)
-        }
+        val metadata = readMetadata(path, zipfs, this)
+        val treeXmlType = readSceneTree(zipfs)
 
         readBlueprints(zipfs, bpReg, legacyBpIdMap, this)
         tryPopulateDelegateBlueprints(bpReg, legacyBpIdMap, metadata)
@@ -239,6 +227,25 @@ fun EditorAppImpl.writeProject(path: Path) {
     }
 }
 
+internal fun readMetadata(path: Path, zipfs: FileSystem, app: EditorApp): Metadata {
+    val metadata = Files.newBufferedReader(zipfs.getPath("/metadata.yaml")).use {
+        deserializeYaml(it.readText(), Metadata::class)
+    }
+    if (metadata.formatVersion < FORMAT_VERSION) {
+        app.logWarning(
+            "Attempting to open $path which uses old version ${metadata.formatVersion}, " +
+                "while current version is $FORMAT_VERSION. " +
+                "Things may not work as expected."
+        )
+    }
+    return metadata
+}
+
+private fun readSceneTree(zipfs: FileSystem): XmlSceneTree =
+    Files.newBufferedReader(zipfs.getPath("/scenetree.xml")).use {
+        deserializeXml(it.readText(), XmlSceneTree::class)
+    }
+
 private fun tryReadVoxFile(
     obj: XmlSceneObject, fs: FileSystem, metadata: Metadata, app: EditorApp,
 ) {
@@ -286,7 +293,7 @@ private fun tryAddBuilderRef(obj: XmlSceneObject, lib: BuilderLibrary) {
     }
 }
 
-private fun readBlueprints(
+internal fun readBlueprints(
     fs: FileSystem,
     bpReg: BlueprintRegistry,
     /** For legacy BPs in format < 8*/

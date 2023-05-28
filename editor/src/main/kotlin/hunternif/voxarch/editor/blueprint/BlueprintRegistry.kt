@@ -40,8 +40,8 @@ class BlueprintRegistry : IBlueprintLibrary {
         return blueprint
     }
 
+    /** If [blueprint]'s name is already taken, a new unique name will be given. */
     fun save(blueprint: Blueprint) {
-        // If name is already taken, refresh name:
         if (blueprintsByName[blueprint.name] !== blueprint) {
             blueprint.name = makeUniqueName(blueprint.name)
         }
@@ -49,7 +49,7 @@ class BlueprintRegistry : IBlueprintLibrary {
     }
 
     fun remove(blueprint: Blueprint) {
-        _blueprintsByName.remove(blueprint.name)
+        removeByName(blueprint.name)
     }
 
     fun removeByName(name: String) {

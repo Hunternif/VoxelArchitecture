@@ -21,6 +21,9 @@ fun MainGui.mainMenu() {
                 app.openDialogSaveProjectFile()
             }
             ImGui.separator()
+            menuItem("Import blueprints...") {
+                app.openDialogImportProjectFile()
+            }
             menuItem("Import VOX...", "Ctrl+I") {
                 app.openDialogImportVoxFile()
             }

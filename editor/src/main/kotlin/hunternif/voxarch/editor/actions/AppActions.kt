@@ -4,10 +4,7 @@ import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.dom.style.Stylesheet
 import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
-import hunternif.voxarch.editor.actions.file.ExportVoxFile
-import hunternif.voxarch.editor.actions.file.ImportVoxFile
-import hunternif.voxarch.editor.actions.file.NewProject
-import hunternif.voxarch.editor.actions.file.OpenProject
+import hunternif.voxarch.editor.actions.file.*
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.history.StackingAction
 import hunternif.voxarch.editor.actions.scene.*
@@ -53,6 +50,11 @@ fun EditorApp.saveProjectFileAs(path: Path) = action {
 }
 
 fun EditorApp.exportVoxFile(path: Path) = action(ExportVoxFile(path))
+
+fun EditorApp.importProject(
+    path: Path,
+    importBlueprints: Boolean = false,
+) = historyAction(ImportProject(path, importBlueprints))
 
 
 //=============================== VOXELS ================================
