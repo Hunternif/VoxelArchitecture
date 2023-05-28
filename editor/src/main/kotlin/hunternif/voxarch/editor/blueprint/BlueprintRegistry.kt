@@ -109,12 +109,13 @@ class BlueprintRegistry : IBlueprintLibrary {
 
     /** In case of duplicates, changes "Untitled" to "Untitled (2)" */
     private fun makeUniqueName(name: String): String {
-        if (blueprintsByName[name] == null) return name
+        val trimName = name.trim()
+        if (blueprintsByName[trimName] == null) return trimName
         var i = 0
         var newName: String
         do {
             i++
-            newName = "$name ($i)"
+            newName = "$trimName ($i)"
         }
         while (blueprintsByName[newName] != null)
         return newName

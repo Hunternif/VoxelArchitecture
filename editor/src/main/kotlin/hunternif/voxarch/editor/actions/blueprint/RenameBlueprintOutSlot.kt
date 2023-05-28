@@ -36,6 +36,7 @@ class RenameBlueprintOutSlot(
         isValid = true
         domBuilder = node.domBuilder
         oldName = domBuilder.slotName
+        newName = newName.trim()
 
         val usage = app.state.blueprintLibrary.usage(node.bp)
         slots = mutableListOf<BlueprintSlot.Out>().apply {

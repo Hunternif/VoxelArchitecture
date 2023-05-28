@@ -17,8 +17,11 @@ class RenameBlueprint(
     private val oldName = bp.name
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
-        if (firstTime && app.state.blueprintLibrary.blueprintsByName[newName] != null) {
-            app.logWarning("Duplicate blueprint name $newName")
+        if (firstTime) {
+            newName = newName.trim()
+            if (app.state.blueprintLibrary.blueprintsByName[newName] != null) {
+                app.logWarning("Duplicate blueprint name $newName")
+            }
         }
         bp.name = newName
         app.state.blueprintRegistry.removeByName(oldName)
