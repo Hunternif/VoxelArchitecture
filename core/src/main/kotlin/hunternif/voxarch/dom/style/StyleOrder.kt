@@ -24,6 +24,9 @@ val GlobalStyleOrderByGroups: List<List<Property<*>>> by lazy {
             PropSize,
         ),
 
+        // Aspect ratio comes after size
+        listOf(PropAspectRatioXY),
+
         // "snap origin" modifies both origin and start
         listOf(PropSnapOrigin),
 

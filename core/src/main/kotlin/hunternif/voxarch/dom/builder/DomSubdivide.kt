@@ -64,6 +64,7 @@ class DomSubdivide(
         }
 
         layoutInDir(parentNode, allNodes)
+        //TODO apply aspect ratio
 
         return children
     }

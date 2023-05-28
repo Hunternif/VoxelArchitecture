@@ -65,6 +65,8 @@ class DomRepeat(
             x += sign * (newTileSize + gap)
         }
 
+        //TODO: maybe apply aspect ratio?
+
         return tileBuilders
     }
 }
