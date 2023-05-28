@@ -98,6 +98,8 @@ fun EditorApp.readProject(path: Path): AppStateImpl {
     val bpReg = BlueprintRegistry()
     val builderLibrary = BuilderLibrary()
     val sceneRoot = reg.newObject()
+    // Blueprints in format < 8 used IDs:
+    val legacyBpIdMap = mutableMapOf<Int, Blueprint>()
 
     val zipfs = newZipFileSystem(path)
     zipfs.use {
@@ -116,13 +118,13 @@ fun EditorApp.readProject(path: Path): AppStateImpl {
             deserializeXml(it.readText(), XmlSceneTree::class)
         }
 
-        readBlueprints(zipfs, bpReg, this)
-        tryPopulateDelegateBlueprints(bpReg, metadata)
+        readBlueprints(zipfs, bpReg, legacyBpIdMap, this)
+        tryPopulateDelegateBlueprints(bpReg, legacyBpIdMap, metadata)
 
         // populate VOX files, Blueprints, custom Builders
         treeXmlType.noderoot?.forEachSubtree {
             tryReadVoxFile(it, zipfs, metadata, this)
-            tryAddBlueprintRefs(it, bpReg, metadata)
+            tryAddBlueprintRefs(it, bpReg, legacyBpIdMap, metadata)
             tryAddBuilderRef(it, builderLibrary)
         }
         treeXmlType.voxelroot?.forEachSubtree { tryReadVoxFile(it, zipfs, metadata, this) }
@@ -216,8 +218,8 @@ fun EditorAppImpl.writeProject(path: Path) {
         state.voxelRoot.forEachSubtree { tryWriteVoxFile(it) }
 
         Files.createDirectories(zipfs.getPath("/blueprints"))
-        state.blueprintRegistry.blueprints.forEach { bp ->
-            writeFile("/blueprints/blueprint_${bp.id}.xml") {
+        state.blueprintRegistry.blueprints.forEachIndexed { i, bp ->
+            writeFile("/blueprints/blueprint_$i.xml") {
                 val bpJson = serializeToXmlStr(bp, true)
                 it.write(bpJson)
             }
@@ -256,7 +258,11 @@ private fun tryReadVoxFile(
 
 /** Finds and adds Blueprint references by ID, if they have been loaded. */
 private fun tryAddBlueprintRefs(
-    obj: XmlSceneObject, bpReg: BlueprintRegistry, metadata: Metadata,
+    obj: XmlSceneObject,
+    bpReg: BlueprintRegistry,
+    /** For legacy BPs in format < 8*/
+    idMap: MutableMap<Int, Blueprint>,
+    metadata: Metadata,
 ) {
     (obj as? XmlSceneNode)?.let { node ->
         node.blueprintRefs =
@@ -266,7 +272,7 @@ private fun tryAddBlueprintRefs(
                 }
             } else {
                 node.blueprintIDs.mapNotNull {
-                    bpReg.blueprintsByID[it]
+                    idMap[it]
                 }
             }
     }
@@ -280,13 +286,21 @@ private fun tryAddBuilderRef(obj: XmlSceneObject, lib: BuilderLibrary) {
     }
 }
 
-private fun readBlueprints(fs: FileSystem, bpReg: BlueprintRegistry, app: EditorApp) {
+private fun readBlueprints(
+    fs: FileSystem,
+    bpReg: BlueprintRegistry,
+    /** For legacy BPs in format < 8*/
+    idMap: MutableMap<Int, Blueprint>,
+    app: EditorApp,
+) {
     val files = Files.list(fs.getPath("/blueprints")).collect(Collectors.toList())
     for (file in files) {
         try {
             Files.newBufferedReader(file).use {
-                val bp = deserializeXml(it.readText(), Blueprint::class)
+                val xmlBp = deserializeXml(it.readText(), XmlBlueprint::class)
+                val bp = xmlBp.mapXml()
                 bpReg.save(bp)
+                xmlBp.id?.let { idMap[it] = bp }
             }
         } catch (e: Exception) {
             app.logWarning("Couldn't read blueprint $file")
@@ -309,16 +323,18 @@ private fun tryReadStylesheetFile(fs: FileSystem): String {
  * Populate blueprint nodes that reference other blueprints.
  */
 fun tryPopulateDelegateBlueprints(
-    bpReg: BlueprintRegistry, metadata: Metadata,
+    bpReg: BlueprintRegistry,
+    /** For legacy BPs in format < 8*/
+    idMap: MutableMap<Int, Blueprint>,
+    metadata: Metadata,
 ) {
     val mapByName = bpReg.blueprintsByName
-    val mapByID = bpReg.blueprintsByID
     bpReg.blueprints.forEach { bp ->
         for (node in bp.nodes) {
             val domBuilder = node.domBuilder as? DomRunBlueprint ?: continue
             val delegateBp = when {
                 metadata.formatVersion >= 7 -> mapByName[domBuilder.blueprintName]
-                else -> mapByID[domBuilder.blueprintID]
+                else -> idMap[domBuilder.blueprintID]
             } ?: continue
             domBuilder.blueprint = delegateBp
             // Refresh out slots:

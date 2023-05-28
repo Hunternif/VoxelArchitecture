@@ -15,7 +15,6 @@ class DomRunBlueprint : DomBuilder() {
     var blueprint: Blueprint = emptyBlueprint
         set(value) {
             field = value
-            blueprintID = blueprint.id
             blueprintName = blueprint.name
         }
 
@@ -31,6 +30,6 @@ class DomRunBlueprint : DomBuilder() {
 
     companion object {
         /** Used to indicate that no actual blueprint is attached */
-        val emptyBlueprint = Blueprint(-1, "")
+        val emptyBlueprint = Blueprint("")
     }
 }

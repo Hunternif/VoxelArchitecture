@@ -9,10 +9,11 @@ import hunternif.voxarch.editor.file.style.StyleParser
 import hunternif.voxarch.editor.util.ColorRGBa
 
 @JacksonXmlRootElement(localName = "blueprint")
+@JsonInclude(JsonInclude.Include.NON_NULL)
 class XmlBlueprint(
     @field:JacksonXmlProperty(isAttribute = true)
-    @Deprecated("reference blueprints by name")
-    var id: Int = -1,
+    @Deprecated("For legacy blueprints in format < 8")
+    var id: Int? = null,
 
     @field:JacksonXmlProperty(isAttribute = true)
     var name: String = "",
@@ -55,7 +56,7 @@ class XmlBlueprintNode(
     var style: String? = null,
 
     /** Reference Blueprint in [DomRunBlueprint] */
-    @Deprecated("This is for backwards compatibility. Use delegateBlueprintName")
+    @Deprecated("This is for legacy blueprints in format < 7. Instead use delegateBlueprintName")
     @field:JacksonXmlProperty
     var delegateBlueprintID: Int? = null,
 
@@ -118,11 +119,11 @@ internal fun Blueprint.mapToXml(): XmlBlueprint {
             color,
         )
     }
-    return XmlBlueprint(id, name, jsonNodes, jsonLinks)
+    return XmlBlueprint(null, name, jsonNodes, jsonLinks)
 }
 
 internal fun XmlBlueprint.mapXml(): Blueprint {
-    val bp = Blueprint(id, name)
+    val bp = Blueprint(name)
     val styleParser = StyleParser()
     for (n in nodes) {
         // Skip start node because it's added automatically:

@@ -121,7 +121,7 @@ class GenerateNodesTest : BaseAppTest() {
     }
 
     private fun makeBlueprint(domBuilder: DomBuilder) =
-        Blueprint(0, "test blueprint").apply {
+        Blueprint("test blueprint").apply {
             val node = addNode("test", domBuilder)
             start.outputs[0].linkTo(node.inputs[0])
         }

@@ -18,9 +18,8 @@ import kotlin.collections.LinkedHashSet
  * Represents a graph of DomBuilders.
  */
 class Blueprint(
-    override val id: Int,
     var name: String,
-) : WithID {
+) {
     val nodes = LinkedHashSet<BlueprintNode>()
     val links = LinkedHashSet<BlueprintLink>()
 

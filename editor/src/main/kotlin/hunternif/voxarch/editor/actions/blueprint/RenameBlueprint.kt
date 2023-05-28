@@ -21,12 +21,12 @@ class RenameBlueprint(
             app.logWarning("Duplicate blueprint name $newName")
         }
         bp.name = newName
-        app.state.blueprintRegistry.refreshMapByName()
+        app.state.blueprintRegistry.save(bp)
     }
 
     override fun revert(app: EditorAppImpl) {
         bp.name = oldName
-        app.state.blueprintRegistry.refreshMapByName()
+        app.state.blueprintRegistry.save(bp)
     }
 
     override fun update(nextAction: RenameBlueprint) {

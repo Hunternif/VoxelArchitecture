@@ -37,7 +37,6 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
     @Test
     fun `deserialize blueprint`() {
         val bp = deserializeXml(exampleBpXml, Blueprint::class)
-        assertEquals(2, bp.id)
         assertEquals("Test blueprint", bp.name)
         assertEquals(3, bp.nodes.size)
         assertEquals(3, bp.nodeIDs.map.size)
@@ -58,7 +57,7 @@ class XmlBlueprintSerializerTest : BaseAppTest() {
     }
 
     private val exampleBpXml = """
-        <blueprint id="2" name="Test blueprint">
+        <blueprint name="Test blueprint">
           <node id="0" name="Start" x="100.0" y="100.0">
             <outSlot id="0" name="node"/>
           </node>

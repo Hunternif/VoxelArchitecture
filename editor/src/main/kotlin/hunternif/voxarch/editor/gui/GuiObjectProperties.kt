@@ -59,7 +59,7 @@ class GuiObjectProperties(
     private val allBuilders = mutableListOf(defaultBuilderEntry)
 
     /** Default blueprint entry that causes a new blueprint to be created */
-    private val newBlueprintItem = Blueprint(-2, "New...")
+    private val newBlueprintItem = Blueprint("New...")
     /** Selected blueprint in combo box */
     private var selectedBlueprint = newBlueprintItem
     /** All blueprints currently on this node */

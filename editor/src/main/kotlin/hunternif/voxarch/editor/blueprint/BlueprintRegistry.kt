@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.editor.AppState
 import hunternif.voxarch.editor.scenegraph.SceneNode
-import hunternif.voxarch.editor.util.IDRegistry
 
 /** Read-only interface for [BlueprintRegistry] */
 interface IBlueprintLibrary {
@@ -10,8 +9,6 @@ interface IBlueprintLibrary {
     val blueprints: Collection<Blueprint>
 
     val blueprintsByName: Map<String, Blueprint>
-
-    val blueprintsByID: Map<Int, Blueprint>
 
     /** Maps Blueprint to nodes where it's used */
     fun usage(bp: Blueprint): BlueprintRegistry.Usage
@@ -28,22 +25,17 @@ interface IBlueprintLibrary {
  * Call [refreshUsages] to find all references and fix any inconsistencies.
  */
 class BlueprintRegistry : IBlueprintLibrary {
-    private val blueprintIDs = IDRegistry<Blueprint>()
-
     private val usageMap = mutableMapOf<Blueprint, Usage>()
 
-    override val blueprints get() = blueprintIDs.map.values
+    override val blueprints get() = blueprintsByName.values
 
-    private val _blueprintsByName = mutableMapOf<String, Blueprint>()
+    private val _blueprintsByName = LinkedHashMap<String, Blueprint>()
     override val blueprintsByName: Map<String, Blueprint>
         get() = _blueprintsByName
 
-    override val blueprintsByID: Map<Int, Blueprint> get() = blueprintIDs.map
-
     fun newBlueprint(name: String): Blueprint {
-        val id = blueprintIDs.newID()
         val newName = makeUniqueName(name)
-        val blueprint = Blueprint(id, newName)
+        val blueprint = Blueprint(newName)
         save(blueprint)
         return blueprint
     }
@@ -53,13 +45,11 @@ class BlueprintRegistry : IBlueprintLibrary {
         if (blueprintsByName[blueprint.name] !== blueprint) {
             blueprint.name = makeUniqueName(blueprint.name)
         }
-        blueprintIDs.save(blueprint)
-        refreshMapByName()
+        _blueprintsByName[blueprint.name] = blueprint
     }
 
     fun remove(blueprint: Blueprint) {
-        blueprintIDs.remove(blueprint)
-        refreshMapByName()
+        _blueprintsByName.remove(blueprint.name)
     }
 
     override fun usage(bp: Blueprint): Usage =
@@ -110,13 +100,6 @@ class BlueprintRegistry : IBlueprintLibrary {
                     addUsage(node.domBuilder.blueprint, node)
                 }
             }
-        }
-    }
-
-    fun refreshMapByName() {
-        _blueprintsByName.apply {
-            clear()
-            blueprints.forEach { put(it.name, it) }
         }
     }
 
