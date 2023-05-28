@@ -50,9 +50,17 @@ class DomRepeat(
             .filterIsInstance<StyledNode<*>>()
             .fold(0.0) { o, child -> o + child.node.dirSize }
 
+        var gap = gap
         val tileSize = max(minSize, childrenWidth)
         val tileCount = ((totalSpace + gap) / (tileSize + gap)).toInt()
-        val remainingSpace = (totalSpace + gap) - tileCount * (tileSize + gap)
+        var remainingSpace = (totalSpace + gap) - tileCount * (tileSize + gap)
+
+        // If spacing items apart, stretch the gap between them:
+        if (mode == SPACE && tileCount > 1) {
+            gap = (totalSpace - tileSize * tileCount) / (tileCount - 1)
+            remainingSpace = 0.0
+        }
+
         // TODO: snap to voxels?
         val newTileSize = tileSize + remainingSpace / tileCount
 
@@ -142,8 +150,8 @@ enum class RepeatMode {
 
     /**
      * Children are repeated to fill the area with a whole number of tiles,
-     * and any extra space is distributed around the tiles.
-     * I.e. each tile sits in the middle of its own box.
+     * and any extra space is distributed between the tiles, widening the gap.
+     * The tiles at each end of the line will stick to that end.
      */
     SPACE,
 }
