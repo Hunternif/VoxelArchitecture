@@ -42,8 +42,7 @@ class StyledNode<N : Node>(
 
     override fun postLayout() {
         domBuilder.postLayout(this)
-        val originHint = findOriginHint(node, parent?.domBuilder?.hintDir ?: HintDir.OFF)
-        ctx.stats.hintedOrigins[node] = originHint
+        ctx.stats.hints[node] = parent?.domBuilder?.hintDir ?: HintDir.OFF
     }
 
     override fun cleanup() {

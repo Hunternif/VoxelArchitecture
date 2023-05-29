@@ -95,6 +95,7 @@ private class DomRepeatTile(
         dummyNode.dirX = dirX
         dummyNode.tags.add("_dummy_")
         ctx.stats.dummyNodes.add(dummyNode)
+        ctx.stats.hints[dummyNode] = ctx.parent?.domBuilder?.hintDir ?: HintDir.OFF
         // Using a generic StyledElement avoids calling styles on dummy node:
         return StyledElement(this, ctx.copy(parentNode = dummyNode))
     }

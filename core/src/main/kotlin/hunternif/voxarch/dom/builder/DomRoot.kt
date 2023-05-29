@@ -70,8 +70,10 @@ class DomRoot : DomBuilder() {
 
         // Apply hinting
         if (hinting) {
-            stats.hintedOrigins.forEach { (node, hint) ->
-                node.origin = hint
+            // Assuming parents are added before theirr children.
+            //TODO: perform topological sort just in case
+            stats.hints.forEach { (node, hintDir) ->
+                node.origin = findOriginHint(node, hintDir)
             }
         }
         // Collapse dummy nodes:

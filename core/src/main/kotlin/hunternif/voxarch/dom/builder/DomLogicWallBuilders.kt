@@ -22,6 +22,7 @@ class DomLineSegmentBuilder(
             tags.add("_dummy_")
         }
         ctx.stats.dummyNodes.add(dummyWall)
+        ctx.stats.hints[dummyWall] = hintDir
         // Using a generic StyledElement avoids calling styles on dummyWall:
         return StyledElement(this, ctx.copy(parentNode = dummyWall))
     }
