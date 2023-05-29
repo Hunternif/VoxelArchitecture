@@ -60,12 +60,12 @@ class RoomBuilderTest {
 
         RootBuilder().build(room, world, buildContext)
 
-        inOrder.verify(builder).build(eq(floor), any(), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(wall), any(), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(node), any(), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(childRoom), any(), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(prop), any(), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(gate), any(), eq(world), eq(buildContext))
-        inOrder.verify(builder).build(eq(hatch), any(), eq(world), eq(buildContext))
+        inOrder.verify(builder).build(eq(floor), any(), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(wall), any(), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(node), any(), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(childRoom), any(), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(prop), any(), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(gate), any(), any(), eq(buildContext))
+        inOrder.verify(builder).build(eq(hatch), any(), any(), eq(buildContext))
     }
 }

@@ -59,6 +59,8 @@ fun Node.fillXZ(
  * Same as [fillXZ], but the arguments (x, y, z) are in node's local space.
  * This method is useless because it will cause aliasing gaps, but serves as
  * a reference implementation.
+ *
+ * See [fillXZ] about parameters.
  */
 fun Node.fillXZLocal(
     trans: ILinearTransformation,
@@ -74,6 +76,8 @@ fun Node.fillXZLocal(
 
 /**
  * Runs [buildAt] at every (x, y, z) point inside the node's boundary.
+ *
+ * See [fillXZ] about parameters.
  */
 fun Node.fillXYZ(
     trans: ILinearTransformation,

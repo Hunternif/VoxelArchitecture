@@ -1,6 +1,7 @@
 package hunternif.voxarch.builder
 
 import hunternif.voxarch.plan.*
+import hunternif.voxarch.storage.ClippedBlockStorage
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.LinearTransformation
 import java.util.*
@@ -23,7 +24,7 @@ class RootBuilder : ANodeBuilder() {
     fun build(rootNode: Node, world: IBlockStorage, context: BuildContext) {
         val buildQueue = LinkedList<Entry>()
         val visited = mutableSetOf<Node>()
-        buildQueue.add(newTransform(rootNode))
+        buildQueue.add(newTransform(rootNode, world))
 
         // Use Depth-first search, so that inner rooms and walls are built
         // before holes (e.g. gates, windows)
@@ -36,7 +37,7 @@ class RootBuilder : ANodeBuilder() {
 
             val builder = context.builders.get(node)
             if (builder != null && !node.transparent) {
-                builder.build(node, entry.trans, world, context)
+                builder.build(node, entry.trans, entry.world, context)
             }
 
             val sortedChildren = LinkedHashSet<Node>().apply {
@@ -50,7 +51,7 @@ class RootBuilder : ANodeBuilder() {
             listeners.forEach { it.onPrepareChildren(node, sortedChildren) }
 
             buildQueue.addAll(0, sortedChildren.map {
-                continueTransform(it, entry.trans.clone())
+                continueTransform(it, entry.trans.clone(), entry.world)
             })
         }
     }
@@ -60,19 +61,25 @@ class RootBuilder : ANodeBuilder() {
     private data class Entry(
         val node: Node,
         val trans: LinearTransformation,
+        val world: IBlockStorage,
     )
 
-    private fun newTransform(node: Node) =
-        continueTransform(node, LinearTransformation())
+    private fun newTransform(node: Node, world: IBlockStorage) =
+        continueTransform(node, LinearTransformation(), world)
 
     private fun continueTransform(
         node: Node,
         trans: LinearTransformation,
+        world: IBlockStorage,
     ): Entry {
         val newTrans = trans.apply {
             translate(node.origin)
             rotateY(node.rotationY)
         }
-        return Entry(node, newTrans)
+        val newWorld = when (node.clipMask) {
+            ClipMask.OFF -> world
+            else -> ClippedBlockStorage(world, node)
+        }
+        return Entry(node, newTrans, newWorld)
     }
 }

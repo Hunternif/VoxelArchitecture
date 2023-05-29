@@ -77,6 +77,9 @@ open class Node(
     /** If true, the node will not be generated, only used as boundary for calculations. */
     var transparent: Boolean = false
 
+    /** Children will only place voxels inside this mask. */
+    var clipMask: ClipMask = ClipMask.OFF
+
     override val children: MutableList<Node> = mutableListOf()
 
     /**
