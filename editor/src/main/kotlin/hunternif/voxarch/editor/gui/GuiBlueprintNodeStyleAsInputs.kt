@@ -5,7 +5,9 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.actions.history.HistoryAction
 import hunternif.voxarch.editor.actions.setBlueprintNodeStyle
 import hunternif.voxarch.editor.blueprint.BlueprintNode
+import hunternif.voxarch.editor.blueprint.PropBlueprint
 import hunternif.voxarch.editor.blueprint.blueprintEditorStyleProperties
+import hunternif.voxarch.editor.builder.PropEditorBuilder
 import imgui.ImGui
 
 /**
@@ -20,16 +22,30 @@ class GuiBlueprintNodeStyleAsInputs(
     /** If history changes, we need to update items */
     private var lastAction: HistoryAction? = null
 
+    private val builderCombo by lazy {
+        ItemStringCombo(this, PropEditorBuilder,
+            app.state.builderLibrary.buildersByName.keys)
+    }
+
+    private val blueprintCombo by lazy {
+        ItemStringCombo(this, PropBlueprint,
+            app.state.blueprintLibrary.blueprintsByName.keys)
+    }
+
     @Suppress("TYPE_MISMATCH_WARNING", "UNCHECKED_CAST")
     val items: List<Item<*>> by lazy {
         blueprintEditorStyleProperties.mapNotNull { p ->
-            when (p.default) {
-                is Int -> ItemNumber(this, p as Property<Int>)
-                is Long -> ItemNumber(this, p as Property<Long>)
-                is Float -> ItemNumber(this, p as Property<Float>)
-                is Double -> ItemNumber(this, p as Property<Double>)
-                is Enum<*> -> ItemEnum(this, p as Property<Enum<*>>)
-                else -> null
+            when (p) {
+                PropEditorBuilder -> builderCombo
+                PropBlueprint -> blueprintCombo
+                else -> when (p.default) {
+                    is Int -> ItemNumber(this, p as Property<Int>)
+                    is Long -> ItemNumber(this, p as Property<Long>)
+                    is Float -> ItemNumber(this, p as Property<Float>)
+                    is Double -> ItemNumber(this, p as Property<Double>)
+                    is Enum<*> -> ItemEnum(this, p as Property<Enum<*>>)
+                    else -> null
+                }
             }
         }
     }
@@ -57,6 +73,24 @@ class GuiBlueprintNodeStyleAsInputs(
         if (lastAction != newLastAction) {
             lastAction = newLastAction
             refreshDeclarations()
+            updateBuilders()
+            updateBlueprints()
+        }
+    }
+
+    private fun updateBuilders() {
+        // Check if any new builders were added to the library
+        val builderMap = app.state.builderLibrary.buildersByName
+        if (builderCombo.gui.values.size != builderMap.size) {
+            blueprintCombo.gui.values = builderMap.keys.toList()
+        }
+    }
+
+    private fun updateBlueprints() {
+        // Check if any new blueprints were added to the library
+        val bpMap = app.state.blueprintLibrary.blueprintsByName
+        if (blueprintCombo.gui.values.size != bpMap.size) {
+            blueprintCombo.gui.values = bpMap.keys.toList()
         }
     }
 
@@ -150,6 +184,24 @@ class GuiBlueprintNodeStyleAsInputs(
         private val gui = GuiCombo(property.name, *values)
 
         override fun findValue(declaration: Declaration<E>): E =
+            declaration.value.invoke(property.default, 0L)
+
+        override fun renderInput() {
+            gui.render(value) {
+                value = it
+                rootGui.submitStyleChange { declaration.value = set(value) }
+            }
+        }
+    }
+
+    class ItemStringCombo(
+        rootGui: GuiBlueprintNodeStyleAsInputs,
+        property: Property<String>,
+        values: Iterable<String>,
+    ) : Item<String>(rootGui, property) {
+        val gui = GuiCombo(property.name, values)
+
+        override fun findValue(declaration: Declaration<String>): String =
             declaration.value.invoke(property.default, 0L)
 
         override fun renderInput() {
