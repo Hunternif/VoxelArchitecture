@@ -103,6 +103,8 @@ val GlobalStyleOrderByGroups: List<List<Property<*>>> by lazy {
 
         // TODO: 'content' property should be executable multiple times
         listOf(PropContent),
+
+        listOf(PropBuilder),
     )
 }
 

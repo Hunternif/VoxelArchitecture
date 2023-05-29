@@ -18,7 +18,7 @@ val PropContent = newDomProperty<DomBuilder, DomBuilder?>("content", null) { val
     }
 
     val baseValue = this.domBuilder // this value is generally not used
-    val newContent = value.invoke(baseValue, seed) ?: return@newDomProperty
+    val newContent = value.invoke(baseValue, seed + 10000039) ?: return@newDomProperty
 
     newContent.addStyle(invocationClass)
     domBuilder.addChild(newContent)
