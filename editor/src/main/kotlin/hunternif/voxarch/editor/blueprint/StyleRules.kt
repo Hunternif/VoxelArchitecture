@@ -2,12 +2,18 @@ package hunternif.voxarch.editor.blueprint
 
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.editor.builder.PropEditorBuilder
 
 /**
  * Style properties available in Style editor.
  */
 val styleEditorStyleProperties: List<Property<*>> by lazy {
-    AllStyleProperties + PropBlueprint
+    mutableListOf<Property<*>>().apply {
+        addAll(AllStyleProperties)
+        // Replace the core 'builder' property with string-based builder
+        set(indexOf(PropBuilder), PropEditorBuilder)
+        add(PropBlueprint)
+    }
 }
 
 /**

@@ -11,6 +11,7 @@ import hunternif.voxarch.editor.actions.redrawNodes
 import hunternif.voxarch.editor.blueprint.Blueprint
 import hunternif.voxarch.editor.blueprint.BlueprintNode
 import hunternif.voxarch.editor.blueprint.PropBlueprint
+import hunternif.voxarch.editor.builder.PropEditorBuilder
 import hunternif.voxarch.editor.gui.FontAwesomeIcons
 import hunternif.voxarch.editor.scenegraph.DetachedObject
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -41,6 +42,7 @@ class GenerateNodes : HistoryAction(
         if (!::newGenerated.isInitialized) {
             newGenerated = mutableListOf()
             PropBlueprint.updateBlueprints(app.state.blueprints)
+            PropEditorBuilder.updateBuilders(app.state.builderLibrary)
             app.runBlueprintsRecursive(app.state.rootNode)
         }
         newGenerated.forEach {
