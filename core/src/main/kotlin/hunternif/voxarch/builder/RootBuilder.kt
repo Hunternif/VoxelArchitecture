@@ -5,6 +5,7 @@ import hunternif.voxarch.storage.ClippedBlockStorage
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.vector.LinearTransformation
 import java.util.*
+import kotlin.collections.LinkedHashSet
 
 /**
  * Use this builder to start building in an open world.
@@ -26,8 +27,13 @@ class RootBuilder : ANodeBuilder() {
         val visited = mutableSetOf<Node>()
         buildQueue.add(newTransform(rootNode, world))
 
+        // Deferred queue for things to be built after all other nodes.
+        // Windows go here by default.
+        val deferredQueue = LinkedList<Entry>()
+        var buildingDeferred = false
+
         // Use Depth-first search, so that inner rooms and walls are built
-        // before holes (e.g. gates, windows)
+        // before outer siblings.
         while (buildQueue.isNotEmpty()) {
             val entry = buildQueue.removeFirst()
             val node = entry.node
@@ -45,14 +51,29 @@ class RootBuilder : ANodeBuilder() {
                 addAll(node.children.filterIsInstance<Wall>())
                 // all children except windows:
                 addAll(node.children.filterNot { it.isWindow() })
-                // only windows are left:
-                addAll(node.children)
-            }.toList()
+            }
+            // only windows are left, defer them:
+            if (buildingDeferred) {
+                sortedChildren.addAll(node.children)
+            } else {
+                val deferred = LinkedHashSet<Node>().apply {
+                    node.children.forEach { if (it !in sortedChildren) add(it) }
+                }
+                deferredQueue.addAll(0, deferred.map {
+                    continueTransform(it, entry.trans.clone(), entry.world)
+                })
+            }
+
             listeners.forEach { it.onPrepareChildren(node, sortedChildren) }
 
             buildQueue.addAll(0, sortedChildren.map {
                 continueTransform(it, entry.trans.clone(), entry.world)
             })
+
+            if (buildQueue.isEmpty() && !buildingDeferred) {
+                buildingDeferred = true
+                buildQueue.addAll(deferredQueue)
+            }
         }
     }
 

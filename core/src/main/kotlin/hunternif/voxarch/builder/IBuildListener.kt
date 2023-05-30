@@ -4,5 +4,5 @@ import hunternif.voxarch.plan.Node
 
 interface IBuildListener {
     fun onBeginBuild(node: Node)
-    fun onPrepareChildren(parent: Node, children: List<Node>)
+    fun onPrepareChildren(parent: Node, children: Collection<Node>)
 }

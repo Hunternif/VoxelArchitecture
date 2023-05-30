@@ -88,7 +88,7 @@ abstract class BaseBuilderTest(
             override fun onBeginBuild(node: Node) {
                 println("Building $node")
             }
-            override fun onPrepareChildren(parent: Node, children: List<Node>) {}
+            override fun onPrepareChildren(parent: Node, children: Collection<Node>) {}
         }
     }
 }

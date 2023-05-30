@@ -96,7 +96,7 @@ class BuildVoxels : HistoryAction(
                 app.logInfo("Building Node $node")
             }
 
-            override fun onPrepareChildren(parent: Node, children: List<Node>) {}
+            override fun onPrepareChildren(parent: Node, children: Collection<Node>) {}
         }
     }
 }
