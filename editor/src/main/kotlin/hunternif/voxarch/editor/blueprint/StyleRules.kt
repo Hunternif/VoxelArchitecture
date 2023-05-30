@@ -81,6 +81,8 @@ val blueprintEditorStyleProperties: List<Property<*>> by lazy {
         PropSeed,
 //        PropVisibility,
 
+        PropClipMask,
+
         PropEditorBuilder,
         PropBlueprint,
     )

@@ -105,6 +105,7 @@ val GlobalStyleOrderByGroups: List<List<Property<*>>> by lazy {
         listOf(PropContent),
 
         listOf(PropBuilder),
+        listOf(PropClipMask),
     )
 }
 
