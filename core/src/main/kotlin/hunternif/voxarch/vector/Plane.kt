@@ -19,6 +19,16 @@ class Plane(
     constructor(point: Vec3, normal: Vec3) :
         this(normal.x, normal.y, normal.z, -point.dotProduct(normal))
 
+    constructor() : this(1.0, 1.0, 1.0, 0.0)
+
+    /** Sets values in this plane to be equal to [other] */
+    fun set(other: Plane) {
+        this.a = other.a
+        this.b = other.b
+        this.c = other.c
+        this.d = other.d
+    }
+
     /**
      * Returns true if [p] is in the "inside" half-space produced by this plane.
      * [normal] points to the "outside" direction.
@@ -33,6 +43,35 @@ class Plane(
     fun distance(p: Vec3): Double {
         val n = sqrt(a * a + b * b + c * c)
         return (a * p.x + b * p.y + c * p.z + d) / n
+    }
+
+    /** Finds a point on the plane */
+    fun findPoint(): Vec3 {
+        val p = Vec3(
+            if (a == 0.0) 0.0 else 1 / a,
+            if (b == 0.0) 0.0 else 1 / b,
+            if (c == 0.0) 0.0 else 1 / c,
+        )
+        val dot = a * p.x + b * p.y + c * p.z
+        if (dot != 0.0) p.multiplyLocal(-d / dot)
+        return p
+    }
+
+    /**
+     * Moves the plane by vector [delta]. I.e. if it passed through point `A`,
+     * now it will pass through point `A + delta`.
+     * Returns a new plane.
+     */
+    fun move(delta: Vec3): Plane = transform(LinearTransformation().translate(delta))
+
+    /** Applies the given transformation to this plane and returns a new plane. */
+    fun transform(trans: ILinearTransformation): Plane {
+        // transform 2 points: point P1 on the plane, and point N1 = P1 + normal
+        val p1 = findPoint()
+        val n1 = p1 + normal
+        val p2 = trans.transform(p1)
+        val n2 = trans.transform(n1)
+        return Plane(p2, n2 - p2)
     }
 
     companion object {
