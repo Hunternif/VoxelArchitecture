@@ -37,6 +37,7 @@ object DomBuilderFactory {
             Entry(NODE, "Window") { DomNodeBuilder { Window() } },
             Entry(NODE, "Column", ICursor) { DomNodeBuilder { Column() } },
             Entry(NODE, "Staircase", Signal) { DomNodeBuilder { Staircase() } },
+            Entry(NODE, "Slope") { DomNodeBuilder { Slope() } },
 
             Entry(BUILDING, "Turret", ChessRook) { DomPolyRoomWithTurretBuilder() },
             Entry(BUILDING, "Turret Decor", ChessRook) { DomTurretDecor() },

@@ -15,6 +15,6 @@ import hunternif.voxarch.vector.Vec3
  *  | (start)
  *  +--------------> X (East)
  */
-class Staircase(origin: Vec3) : Node(origin) {
+class Staircase(origin: Vec3) : Slope(origin) {
     constructor() : this(Vec3.ZERO)
 }
