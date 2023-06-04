@@ -1,9 +1,9 @@
 package hunternif.voxarch.storage
 
-import hunternif.voxarch.builder.fillXYZ
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.IntAABB
 import hunternif.voxarch.vector.LinearTransformation
+import hunternif.voxarch.vector.Plane
 
 /**
  * Allows modifying storage according to [node]'s clipping mask.
@@ -16,15 +16,11 @@ class ClippedBlockStorage(
     /** Node's global AABB */
     private val aabb: IntAABB by lazy { node.findGlobalAABB().toIntAABB() }
 
-    /** Storage that defines the mask. BLocks that are set, are allowed. */
-    private val maskStorage: IBlockStorage by lazy {
+    private val boundaries: List<Plane> by lazy {
         val trans = LinearTransformation()
         trans.translate(node.findGlobalPosition())
         trans.rotateY(node.findGlobalRotation())
-
-        val maskStorage = BlockStorageDelegate(ChunkedStorage3D())
-        node.fillXYZ(trans) { x, y, z -> maskStorage.setBlock(x, y, z, maskBlock)}
-        maskStorage
+        node.getBoundaries().map { it.transform(trans) }
     }
 
     override fun getBlock(x: Int, y: Int, z: Int): BlockData? =
@@ -42,11 +38,7 @@ class ClippedBlockStorage(
         return when (node.clipMask) {
             ClipMask.OFF -> true
             ClipMask.BOX -> aabb.testPoint(x, y, z)
-            ClipMask.BOUNDARY -> maskStorage.getBlock(x, y, z) != null
+            ClipMask.BOUNDARY -> boundaries.all { it.isInside(x, y, z) }
         }
-    }
-
-    companion object {
-        private val maskBlock = BlockData("_mask_")
     }
 }

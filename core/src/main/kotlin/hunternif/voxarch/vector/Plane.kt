@@ -33,7 +33,10 @@ open class Plane(
      * Returns true if [p] is in the "inside" half-space produced by this plane.
      * [normal] points to the "outside" direction.
      */
-    fun isInside(p: Vec3): Boolean = distance(p) <= 0.0
+    fun isInside(p: Vec3): Boolean = isInside(p.x, p.y, p.z)
+
+    /** See [isInside] */
+    fun isInside(x: Number, y: Number, z: Number): Boolean = distance(x, y, z) <= 0.0
 
     /** Returns true if [p] sits on the plane, within error [margin]. */
     fun isOnPlane(p: Vec3, margin: Double = 0.00001): Boolean =
@@ -44,13 +47,16 @@ open class Plane(
      * Distance is positive, if the point is on the "outside", i.e. on the side
      * where [normal] is pointing.
      */
-    fun distance(p: Vec3): Double {
+    fun distance(p: Vec3): Double = distance(p.x, p.y, p.z)
+
+    /** Signed distance from the given point to this plane. */
+    fun distance(x: Number, y: Number, z: Number): Double {
         val n = sqrt(a * a + b * b + c * c)
         if (n == 0.0) {
             // degenerate case, will use distance to a point instead:
-            return findPoint().distanceTo(p)
+            return findPoint().distanceTo(x.toDouble(), y.toDouble(), z.toDouble())
         }
-        return (a * p.x + b * p.y + c * p.z + d) / n
+        return (a * x.toDouble() + b * y.toDouble() + c * z.toDouble() + d) / n
     }
 
     /** Finds a point on the plane */

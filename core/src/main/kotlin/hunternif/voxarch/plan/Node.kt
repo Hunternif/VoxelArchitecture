@@ -3,6 +3,7 @@ package hunternif.voxarch.plan
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.util.INested
 import hunternif.voxarch.vector.GroundBoundary
+import hunternif.voxarch.vector.Plane
 import hunternif.voxarch.vector.Vec3
 
 /**
@@ -117,7 +118,7 @@ open class Node(
     }
 
     /**
-     * Returns boundaries defined by node size and its walls, if it has any.
+     * Returns vertical boundaries defined by node size and its walls, if it has any.
      * Relative to local origin, not accounting for rotation.
      */
     open fun getGroundBoundaries(): List<GroundBoundary> {
@@ -130,6 +131,19 @@ open class Node(
             corner,
         ).zipWithNext()
         return pairs.map { (p1, p2) -> GroundBoundary(p1, p2) }
+    }
+
+    /**
+     * Returns boundaries including vertical [getGroundBoundaries] and
+     * horizontal floor & ceiling.
+     */
+    open fun getBoundaries(): List<Plane> {
+        val walls = getGroundBoundaries()
+        return ArrayList<Plane>(walls.size + 2).apply {
+            addAll(walls)
+            add(Plane(Vec3(0.0, start.y, 0.0), -Vec3.UNIT_Y)) // floor
+            add(Plane(Vec3(0.0, start.y + height, 0.0), Vec3.UNIT_Y)) // ceiling
+        }
     }
 
     constructor() : this(Vec3.ZERO)

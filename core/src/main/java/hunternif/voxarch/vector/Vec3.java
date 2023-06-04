@@ -170,8 +170,16 @@ public class Vec3 {
 	public double squareDistanceTo(Vec3 vec) {
 		return (x-vec.x)*(x-vec.x) + (y-vec.y)*(y-vec.y) + (z-vec.z)*(z-vec.z);
 	}
+
+	public double squareDistanceTo(double x1, double y1, double z1) {
+		return (x-x1)*(x-x1) + (y-y1)*(y-y1) + (z-z1)*(z-z1);
+	}
 	public double distanceTo(Vec3 vec) {
 		return Math.sqrt(squareDistanceTo(vec));
+	}
+
+	public double distanceTo(double x1, double y1, double z1) {
+		return Math.sqrt(squareDistanceTo(x1, y1, z1));
 	}
 	
 	@Override
