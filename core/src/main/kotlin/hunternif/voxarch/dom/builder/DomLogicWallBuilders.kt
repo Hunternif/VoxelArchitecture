@@ -90,13 +90,3 @@ class DomRandomSegmentBuilder : DomPolySegmentBuilder() {
         return createSegmentBuilders(polygon.origin, listOf(segment))
     }
 }
-
-/** Creates a temporary dummy wall */
-class DomTempWallBuilder : DomNodeBuilder<Wall>(Wall::class.java, { Wall() }) {
-    override fun prepareForLayout(ctx: DomBuildContext): StyledNode<Wall> {
-        return super.prepareForLayout(ctx).apply {
-            node.transparent = true
-            ctx.stats.dummyNodes.add(node)
-        }
-    }
-}

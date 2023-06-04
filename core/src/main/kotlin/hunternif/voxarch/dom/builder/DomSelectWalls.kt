@@ -3,6 +3,7 @@ package hunternif.voxarch.dom.builder
 import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.style.select
 import hunternif.voxarch.dom.style.set
+import hunternif.voxarch.plan.Wall
 
 /**
  * Provides slots to attach new DOM elements to 4 walls of a Room.
@@ -10,16 +11,16 @@ import hunternif.voxarch.dom.style.set
  */
 class DomSelectWalls : DomBuilder() {
     /** negative Z */
-    val north = DomTempWallBuilder()
+    val north = DomTempNodeBuilder { Wall() }
 
     /** positive Z */
-    val south = DomTempWallBuilder()
+    val south = DomTempNodeBuilder { Wall() }
 
     /** positive X */
-    val east = DomTempWallBuilder()
+    val east = DomTempNodeBuilder { Wall() }
 
     /** negative X */
-    val west = DomTempWallBuilder()
+    val west = DomTempNodeBuilder { Wall() }
 
     init {
         addChild(north)
