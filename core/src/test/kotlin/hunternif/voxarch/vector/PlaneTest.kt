@@ -9,18 +9,18 @@ class PlaneTest {
     @Test
     fun `vertical plane`() {
         val planeX = Plane.vertical(Vec3(0, 0, 0), Vec3(1, 0, 0))
-        assertVec3Equals(Vec3(0, 0, -1), planeX.normal)
+        assertVec3Equals(Vec3(0, 0, 1), planeX.normal)
         assertVec3Equals(Vec3(0, 0, 0), planeX.findPoint())
         assertEquals(0.0, planeX.distance(Vec3(2, 1, 0)), 0.0)
-        assertEquals(-1.0, planeX.distance(Vec3(2, 1, 1)), 0.0)
-        assertEquals(1.0, planeX.distance(Vec3(2, 1, -1)), 0.0)
+        assertEquals(1.0, planeX.distance(Vec3(2, 1, 1)), 0.0)
+        assertEquals(-1.0, planeX.distance(Vec3(2, 1, -1)), 0.0)
 
         val planeZ = Plane.vertical(Vec3(0, 0, 0), Vec3(0, 0, 1))
-        assertVec3Equals(Vec3(1, 0, 0), planeZ.normal)
+        assertVec3Equals(Vec3(-1, 0, 0), planeZ.normal)
         assertVec3Equals(Vec3(0, 0, 0), planeZ.findPoint())
         assertEquals(0.0, planeZ.distance(Vec3(0, 1, 2)), 0.0)
-        assertEquals(1.0, planeZ.distance(Vec3(1, 1, 2)), 0.0)
-        assertEquals(-1.0, planeZ.distance(Vec3(-1, 1, 2)), 0.0)
+        assertEquals(-1.0, planeZ.distance(Vec3(1, 1, 2)), 0.0)
+        assertEquals(1.0, planeZ.distance(Vec3(-1, 1, 2)), 0.0)
     }
 
     @Test
@@ -49,19 +49,19 @@ class PlaneTest {
     fun `move vertical plane`() {
         val planeX = Plane.vertical(Vec3(0, 0, 0), Vec3(1, 0, 0))
             .move(Vec3(2, 2, 2))
-        assertVec3Equals(Vec3(0, 0, -1), planeX.normal)
+        assertVec3Equals(Vec3(0, 0, 1), planeX.normal)
         assertVec3Equals(Vec3(0, 0, 2), planeX.findPoint())
         assertEquals(0.0, planeX.distance(Vec3(4, 1, 2)), 0.0)
-        assertEquals(-1.0, planeX.distance(Vec3(4, 1, 3)), 0.0)
-        assertEquals(1.0, planeX.distance(Vec3(4, 1, 1)), 0.0)
+        assertEquals(1.0, planeX.distance(Vec3(4, 1, 3)), 0.0)
+        assertEquals(-1.0, planeX.distance(Vec3(4, 1, 1)), 0.0)
 
         val planeZ = Plane.vertical(Vec3(0, 0, 0), Vec3(0, 0, 1))
             .move(Vec3(2, 2, 2))
-        assertVec3Equals(Vec3(1, 0, 0), planeZ.normal)
+        assertVec3Equals(Vec3(-1, 0, 0), planeZ.normal)
         assertVec3Equals(Vec3(2, 0, 0), planeZ.findPoint())
         assertEquals(0.0, planeZ.distance(Vec3(2, 1, 4)), 0.0)
-        assertEquals(1.0, planeZ.distance(Vec3(3, 1, 4)), 0.0)
-        assertEquals(-1.0, planeZ.distance(Vec3(1, 1, 4)), 0.0)
+        assertEquals(-1.0, planeZ.distance(Vec3(3, 1, 4)), 0.0)
+        assertEquals(1.0, planeZ.distance(Vec3(1, 1, 4)), 0.0)
     }
 
     @Test
@@ -89,18 +89,18 @@ class PlaneTest {
     fun `rotate vertical plane`() {
         val planeX = Plane.vertical(Vec3(0, 0, 0), Vec3(1, 0, 0))
             .transform(LinearTransformation().rotateY(90.0))
-        assertVec3Equals(Vec3(-1, 0, 0), planeX.normal)
+        assertVec3Equals(Vec3(1, 0, 0), planeX.normal)
         assertVec3Equals(Vec3(0, 0, 0), planeX.findPoint())
         assertEquals(0.0, planeX.distance(Vec3(0, 1, 2)), 0.0)
-        assertEquals(-1.0, planeX.distance(Vec3(1, 1, 2)), 0.0)
-        assertEquals(1.0, planeX.distance(Vec3(-1, 1, 2)), 0.0)
+        assertEquals(1.0, planeX.distance(Vec3(1, 1, 2)), 0.0)
+        assertEquals(-1.0, planeX.distance(Vec3(-1, 1, 2)), 0.0)
 
         val planeZ = Plane.vertical(Vec3(0, 0, 0), Vec3(0, 0, 1))
             .transform(LinearTransformation().rotateY(90.0))
-        assertVec3Equals(Vec3(0, 0, -1), planeZ.normal)
+        assertVec3Equals(Vec3(0, 0, 1), planeZ.normal)
         assertVec3Equals(Vec3(0, 0, 0), planeZ.findPoint())
         assertEquals(0.0, planeZ.distance(Vec3(2, 1, 0)), 0.0)
-        assertEquals(-1.0, planeZ.distance(Vec3(2, 1, 1)), 0.0)
-        assertEquals(1.0, planeZ.distance(Vec3(2, 1, -1)), 0.0)
+        assertEquals(1.0, planeZ.distance(Vec3(2, 1, 1)), 0.0)
+        assertEquals(-1.0, planeZ.distance(Vec3(2, 1, -1)), 0.0)
     }
 }

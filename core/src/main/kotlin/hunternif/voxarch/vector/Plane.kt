@@ -33,15 +33,23 @@ open class Plane(
      * Returns true if [p] is in the "inside" half-space produced by this plane.
      * [normal] points to the "outside" direction.
      */
-    fun isInside(p: Vec3): Boolean = distance(p) >= 0.0
+    fun isInside(p: Vec3): Boolean = distance(p) <= 0.0
 
     /** Returns true if [p] sits on the plane, within error [margin]. */
     fun isOnPlane(p: Vec3, margin: Double = 0.00001): Boolean =
         abs(distance(p)) < margin
 
-    /** Signed distance from [p] to this plane. */
+    /**
+     * Signed distance from [p] to this plane.
+     * Distance is positive, if the point is on the "outside", i.e. on the side
+     * where [normal] is pointing.
+     */
     fun distance(p: Vec3): Double {
         val n = sqrt(a * a + b * b + c * c)
+        if (n == 0.0) {
+            // degenerate case, will use distance to a point instead:
+            return findPoint().distanceTo(p)
+        }
         return (a * p.x + b * p.y + c * p.z + d) / n
     }
 
@@ -75,16 +83,21 @@ open class Plane(
     }
 
     companion object {
+        /** Normal points according to the right-hand rule */
         fun from3Points(p1: Vec3, p2: Vec3, p3: Vec3): Plane {
             // calculate normal, assuming CCW winding
             val normal = (p2 - p1).crossProduct(p3 - p1).normalizeLocal()
             return Plane(p1, normal)
         }
 
+        /** Normal points to the right, when going from [p1] to [p2] */
         fun vertical(p1: Vec3, p2: Vec3): Plane =
-            from3Points(p1, p2, p2 - Vec3.UNIT_Y)
+            from3Points(p1, p2, p2 + Vec3.UNIT_Y)
 
+        /** Normal points up */
         fun horizontal(p: Vec3): Plane = Plane(p, Vec3.UNIT_Y)
+
+        /** Normal points up */
         fun horizontal(y: Double): Plane = Plane(Vec3(0.0, y, 0.0), Vec3.UNIT_Y)
     }
 }
