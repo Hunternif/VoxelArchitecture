@@ -2,6 +2,7 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.builder.Builder
 import hunternif.voxarch.util.INested
+import hunternif.voxarch.vector.GroundBoundary
 import hunternif.voxarch.vector.Vec3
 
 /**
@@ -121,13 +122,14 @@ open class Node(
      */
     open fun getGroundBoundaries(): List<GroundBoundary> {
         val corner = start
-        return listOf(
+        val pairs = listOf(
             corner,
             corner.addZ(size.z),
             corner.add(size.x, 0.0, size.z),
             corner.addX(size.x),
             corner,
         ).zipWithNext()
+        return pairs.map { (p1, p2) -> GroundBoundary(p1, p2) }
     }
 
     constructor() : this(Vec3.ZERO)
@@ -135,5 +137,3 @@ open class Node(
     override fun toString(): String =
         "${this::class.java.simpleName} [${tags.joinToString(", ")}]"
 }
-
-typealias GroundBoundary = Pair<Vec3, Vec3>

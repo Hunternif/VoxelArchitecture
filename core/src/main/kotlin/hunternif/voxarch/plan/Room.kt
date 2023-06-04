@@ -2,6 +2,7 @@ package hunternif.voxarch.plan
 
 import hunternif.voxarch.util.Box
 import hunternif.voxarch.util.MathUtil
+import hunternif.voxarch.vector.GroundBoundary
 import hunternif.voxarch.vector.Vec3
 
 /**
@@ -102,7 +103,7 @@ open class Room(
     override fun getGroundBoundaries(): List<GroundBoundary> {
         // add walls
         return super.getGroundBoundaries() +
-            walls.map { it.bottomStart to it.bottomEnd }
+            walls.map { GroundBoundary(it.bottomStart, it.bottomEnd) }
     }
 
 

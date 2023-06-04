@@ -1,5 +1,6 @@
 package hunternif.voxarch.plan
 
+import hunternif.voxarch.vector.GroundBoundary
 import hunternif.voxarch.vector.Vec3
 
 /**
@@ -34,8 +35,7 @@ open class Floor(
 
     override fun getGroundBoundaries(): List<GroundBoundary> {
         val originXZ = origin.clone().apply { y = 0.0 }
-        return parent?.getGroundBoundaries()?.map {
-            it.first - originXZ to it.second - originXZ
-        } ?: super.getGroundBoundaries()
+        return parent?.getGroundBoundaries()?.map { it.move(-originXZ) }
+            ?: super.getGroundBoundaries()
     }
 }

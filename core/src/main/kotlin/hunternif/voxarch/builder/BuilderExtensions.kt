@@ -36,17 +36,14 @@ fun Node.fillXZ(
     buildAt: (x: Int, y: Int, z: Int) -> Unit
 ) {
     val aabb = findIntAABB(trans)
-    val boundaries = getGroundBoundaries()
-        .map { trans.transform(it.first) to trans.transform(it.second) }
+    val boundaries = getGroundBoundaries().map { it.transform(trans) }
     aabb.forEachXZ { x, z ->
         val q = Vec3(x, aabb.minY, z)
         // Test if the point q is contained on the inside of each wall
         var inside = true
         for (b in boundaries) {
-            val p1p2 = b.second - b.first
-            val p1q = q - b.first
-            val cross = p1p2.crossProduct(p1q)
-            if (cross.y < 0) {
+            if (b.length < 0.00001) continue // 0-size boundaries are useless
+            if (!b.isInside(q)) {
                 inside = false
                 break
             }

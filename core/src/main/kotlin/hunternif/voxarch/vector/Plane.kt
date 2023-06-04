@@ -7,7 +7,7 @@ import kotlin.math.sqrt
  * Represents a 3D plane.
  * [a], [b], [c], [d] are factors in the plane equation `a*x + b*y + c*z + d = 0`.
  */
-class Plane(
+open class Plane(
     var a: Double,
     var b: Double,
     var c: Double,
@@ -33,7 +33,7 @@ class Plane(
      * Returns true if [p] is in the "inside" half-space produced by this plane.
      * [normal] points to the "outside" direction.
      */
-    fun isInside(p: Vec3): Boolean = distance(p) > 0
+    fun isInside(p: Vec3): Boolean = distance(p) >= 0.0
 
     /** Returns true if [p] sits on the plane, within error [margin]. */
     fun isOnPlane(p: Vec3, margin: Double = 0.00001): Boolean =
@@ -62,10 +62,10 @@ class Plane(
      * now it will pass through point `A + delta`.
      * Returns a new plane.
      */
-    fun move(delta: Vec3): Plane = transform(LinearTransformation().translate(delta))
+    open fun move(delta: Vec3): Plane = transform(LinearTransformation().translate(delta))
 
     /** Applies the given transformation to this plane and returns a new plane. */
-    fun transform(trans: ILinearTransformation): Plane {
+    open fun transform(trans: ILinearTransformation): Plane {
         // transform 2 points: point P1 on the plane, and point N1 = P1 + normal
         val p1 = findPoint()
         val n1 = p1 + normal

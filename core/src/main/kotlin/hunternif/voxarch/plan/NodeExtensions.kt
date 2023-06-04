@@ -60,8 +60,8 @@ fun Node.findAABB(trans: ITransformation): AABB {
     val aabb = AABB()
     val boundaries = getGroundBoundaries()
     for (b in boundaries) {
-        aabb.union(trans.transform(b.first))
-        aabb.union(trans.transform(b.second))
+        aabb.union(trans.transform(b.start))
+        aabb.union(trans.transform(b.end))
     }
     aabb.maxY = aabb.minY + height // we assume Y is always up
     aabb.correctBounds()
