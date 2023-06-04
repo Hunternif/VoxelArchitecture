@@ -1,10 +1,14 @@
 package hunternif.voxarch.dom.style
 
+import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.domRoot
+import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.property.*
+import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.query
+import hunternif.voxarch.util.assertVec3Equals
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -108,6 +112,38 @@ class StyleAlignmentTest {
         testAlignment(Vec3(0.0, 0.0, 3.5), true, true) { alignZ { southOut() } }
         testAlignment(Vec3(0.0, 0.0, -0.5), true, true) { alignZ { northIn() } }
         testAlignment(Vec3(0.0, 0.0, -3.5), true, true) { alignZ { northOut() } }
+    }
+
+    @Test
+    fun `align node that was moved`() {
+        val style = Stylesheet().add {
+            style("parent") {
+                size(4.vx, 4.vx, 4.vx)
+            }
+            style("child") {
+                size(3.vx, 3.vx, 3.vx)
+                alignX { center() }
+                alignZ { southIn() }
+            }
+        }
+
+        val dom = domRoot {
+            node("parent") {
+                node("child")
+            }
+        }.buildDom(style)
+        val child = dom.query<Node>("child").first()
+        assertVec3Equals(Vec3(0.5, 0.0, 1.0), child.origin)
+
+        val movedDom = domRoot {
+            node("parent") {
+                val bld = DomNodeBuilder { Node(Vec3(10, 20, 30)) }
+                bld.addStyle("child")
+                addChild(bld)
+            }
+        }.buildDom(style)
+        val movedChild = movedDom.query<Node>("child").first()
+        assertVec3Equals(Vec3(0.5, 20.0, 1.0), movedChild.origin)
     }
 
     private fun testAlignment(

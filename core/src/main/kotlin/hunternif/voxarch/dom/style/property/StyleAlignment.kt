@@ -3,7 +3,6 @@ package hunternif.voxarch.dom.style.property
 import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.findLocalAABB
-import hunternif.voxarch.plan.innerFloorCenter
 
 class StyleAlignmentY : StyleParameter
 class StyleAlignmentX : StyleParameter
@@ -80,6 +79,7 @@ enum class AlignZ {
 
 val PropAlignY = newNodeProperty<Node, AlignY>("align-y", AlignY.ORIGIN) { value ->
     val p = parentNode
+    node.origin.y = 0.0 // reset origin
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignY.ORIGIN
     val align = value.invoke(baseValue, seed)
@@ -97,6 +97,7 @@ val PropAlignY = newNodeProperty<Node, AlignY>("align-y", AlignY.ORIGIN) { value
 
 val PropAlignX = newNodeProperty<Node, AlignX>("align-x", AlignX.ORIGIN) { value ->
     val p = parentNode
+    node.origin.x = 0.0 // reset origin
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignX.ORIGIN
     val align = value.invoke(baseValue, seed)
@@ -115,6 +116,7 @@ val PropAlignX = newNodeProperty<Node, AlignX>("align-x", AlignX.ORIGIN) { value
 
 val PropAlignZ = newNodeProperty<Node, AlignZ>("align-z", AlignZ.ORIGIN) { value ->
     val p = parentNode
+    node.origin.z = 0.0 // reset origin
     val nodeAABB = node.findLocalAABB()
     val baseValue = AlignZ.ORIGIN
     val align = value.invoke(baseValue, seed)
