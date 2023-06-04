@@ -1,13 +1,18 @@
 package hunternif.voxarch;
 
 import static org.junit.Assert.assertEquals;
+
+import hunternif.voxarch.plan.NodeExtensionsKt;
 import hunternif.voxarch.plan.Room;
+import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.util.MathUtil;
 import hunternif.voxarch.util.RoomUtil;
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
 import org.junit.Test;
+
+import java.util.List;
 
 /**
  * 
@@ -22,15 +27,16 @@ public class RoomTest {
 		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3));
 		room.setStart(new Vec3(-1, 0, -1.5));
 		room.createFourWalls();
-		assertEquals(4, room.getWalls().size());
-		assertEquals(new Vec2(1, 1.5), room.getWalls().get(0).getP1());
-		assertEquals(new Vec2(1, -1.5), room.getWalls().get(0).getP2());
-		assertEquals(new Vec2(1, -1.5), room.getWalls().get(1).getP1());
-		assertEquals(new Vec2(-1, -1.5), room.getWalls().get(1).getP2());
-		assertEquals(new Vec2(-1, -1.5), room.getWalls().get(2).getP1());
-		assertEquals(new Vec2(-1, 1.5), room.getWalls().get(2).getP2());
-		assertEquals(new Vec2(-1, 1.5), room.getWalls().get(3).getP1());
-		assertEquals(new Vec2(1, 1.5), room.getWalls().get(3).getP2());
+		List<Wall> walls = NodeExtensionsKt.getWalls(room);
+		assertEquals(4, walls.size());
+		assertEquals(new Vec2(1, 1.5), walls.get(0).getP1());
+		assertEquals(new Vec2(1, -1.5), walls.get(0).getP2());
+		assertEquals(new Vec2(1, -1.5), walls.get(1).getP1());
+		assertEquals(new Vec2(-1, -1.5), walls.get(1).getP2());
+		assertEquals(new Vec2(-1, -1.5), walls.get(2).getP1());
+		assertEquals(new Vec2(-1, 1.5), walls.get(2).getP2());
+		assertEquals(new Vec2(-1, 1.5), walls.get(3).getP1());
+		assertEquals(new Vec2(1, 1.5), walls.get(3).getP2());
 	}
 	
 	@Test
@@ -38,15 +44,16 @@ public class RoomTest {
 		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3));
 		room.setStart(new Vec3(-1, 0, -1.5));
 		room.createRoundWalls(4);
-		assertEquals(4, room.getWalls().size());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), room.getWalls().get(0).getP1());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(45), -1.5*MathUtil.sinDeg(45)), room.getWalls().get(0).getP2());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(45), -1.5*MathUtil.sinDeg(45)), room.getWalls().get(1).getP1());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(135), -1.5*MathUtil.sinDeg(135)), room.getWalls().get(1).getP2());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(135), -1.5*MathUtil.sinDeg(135)), room.getWalls().get(2).getP1());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(225), -1.5*MathUtil.sinDeg(225)), room.getWalls().get(2).getP2());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(225), -1.5*MathUtil.sinDeg(225)), room.getWalls().get(3).getP1());
-		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), room.getWalls().get(3).getP2());
+		List<Wall> walls = NodeExtensionsKt.getWalls(room);
+		assertEquals(4, walls.size());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), walls.get(0).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(45), -1.5*MathUtil.sinDeg(45)), walls.get(0).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(45), -1.5*MathUtil.sinDeg(45)), walls.get(1).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(135), -1.5*MathUtil.sinDeg(135)), walls.get(1).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(135), -1.5*MathUtil.sinDeg(135)), walls.get(2).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(225), -1.5*MathUtil.sinDeg(225)), walls.get(2).getP2());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(225), -1.5*MathUtil.sinDeg(225)), walls.get(3).getP1());
+		assertEquals(new Vec2(1*MathUtil.cosDeg(-45), -1.5*MathUtil.sinDeg(-45)), walls.get(3).getP2());
 	}
 	
 	@Test
@@ -54,13 +61,14 @@ public class RoomTest {
 		Room room = new Room(new Vec3(0, 0, 0), new Vec3(2, 1, 3));
 		room.setStart(new Vec3(-1, 0, -1.5));
 		room.createFourWalls();
-		assertEquals(room.getWalls().get(0), roomUtil.findClosestWall(room, new Vec2(1, 0)));
-		assertEquals(room.getWalls().get(3), roomUtil.findClosestWall(room, new Vec2(1, 1.5)));
-		assertEquals(room.getWalls().get(3), roomUtil.findClosestWall(room, new Vec2(0.9, 1.6)));
-		assertEquals(room.getWalls().get(2), roomUtil.findClosestWall(room, new Vec2(-1, 0)));
-		assertEquals(room.getWalls().get(3), roomUtil.findClosestWall(room, new Vec2(-0.9, 1.5)));
-		assertEquals(room.getWalls().get(2), roomUtil.findClosestWall(room, new Vec2(-1, 0)));
-		assertEquals(room.getWalls().get(2), roomUtil.findClosestWall(room, new Vec2(-2, 0)));
+		List<Wall> walls = NodeExtensionsKt.getWalls(room);
+		assertEquals(walls.get(0), roomUtil.findClosestWall(room, new Vec2(1, 0)));
+		assertEquals(walls.get(3), roomUtil.findClosestWall(room, new Vec2(1, 1.5)));
+		assertEquals(walls.get(3), roomUtil.findClosestWall(room, new Vec2(0.9, 1.6)));
+		assertEquals(walls.get(2), roomUtil.findClosestWall(room, new Vec2(-1, 0)));
+		assertEquals(walls.get(3), roomUtil.findClosestWall(room, new Vec2(-0.9, 1.5)));
+		assertEquals(walls.get(2), roomUtil.findClosestWall(room, new Vec2(-1, 0)));
+		assertEquals(walls.get(2), roomUtil.findClosestWall(room, new Vec2(-2, 0)));
 	}
 	
 	@Test
@@ -68,10 +76,11 @@ public class RoomTest {
 		Room room = new Room(null, new Vec3(0, 0, 0), new Vec3(3, 1, 3), 45);
 		room.setStart(new Vec3(-1.5, 0, -1.5));
 		room.createFourWalls();
-		assertEquals(room.getWalls().get(0), roomUtil.findClosestWall(room, new Vec2(1, -1)));
-		assertEquals(room.getWalls().get(3), roomUtil.findClosestWall(room, new Vec2(1, 1)));
-		assertEquals(room.getWalls().get(1), roomUtil.findClosestWall(room, new Vec2(-1, -1)));
-		assertEquals(room.getWalls().get(2), roomUtil.findClosestWall(room, new Vec2(-1, 1)));
+		List<Wall> walls = NodeExtensionsKt.getWalls(room);
+		assertEquals(walls.get(0), roomUtil.findClosestWall(room, new Vec2(1, -1)));
+		assertEquals(walls.get(3), roomUtil.findClosestWall(room, new Vec2(1, 1)));
+		assertEquals(walls.get(1), roomUtil.findClosestWall(room, new Vec2(-1, -1)));
+		assertEquals(walls.get(2), roomUtil.findClosestWall(room, new Vec2(-1, 1)));
 	}
 	
 	@Test

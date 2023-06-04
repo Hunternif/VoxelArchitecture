@@ -332,3 +332,11 @@ private fun Node.treeToStringRecursive(
         }
     }
 }
+
+val Node.rooms   get() = children.filterIsInstance<Room>()
+val Node.floors  get() = children.filterIsInstance<Floor>()
+val Node.walls   get() = children.filterIsInstance<Wall>()
+val Node.props   get() = children.filterIsInstance<Prop>()
+val Node.gates   get() = children.filterIsInstance<Gate>()
+val Node.hatches get() = children.filterIsInstance<Hatch>()
+val Node.slopes  get() = children.filterIsInstance<Slope>()

@@ -1,6 +1,7 @@
 package hunternif.voxarch.sandbox;
 
 import hunternif.voxarch.plan.IIncrementalBuilding;
+import hunternif.voxarch.plan.NodeExtensionsKt;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.plan.gate.IGateFactory;
@@ -188,7 +189,7 @@ public class FlatDungeon extends Room implements IIncrementalBuilding {
 			//TODO make room.
 			// Determine how many corridors can fit on each wall, except where we just came from.
 			int totalPotentialCorridors = 0;
-			for (Wall wall : node.getWalls()) {
+			for (Wall wall : NodeExtensionsKt.getWalls(node)) {
 				totalPotentialCorridors += MathUtil.roundDown(wall.getWidth() / corridorWidth);
 			}
 			// Pick a random number of corridors (including the current node)

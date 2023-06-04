@@ -2,13 +2,13 @@ package hunternif.voxarch;
 
 import java.util.Iterator;
 import java.util.LinkedList;
+import java.util.List;
 
+import hunternif.voxarch.plan.*;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
-import hunternif.voxarch.plan.Corridor;
-import hunternif.voxarch.plan.Gate;
-import hunternif.voxarch.plan.Room;
+
 import hunternif.voxarch.vector.Vec2;
 import hunternif.voxarch.vector.Vec3;
 
@@ -49,7 +49,7 @@ public class CorridorTest {
 		cor.appendPoint(new Vec3(4, 2, 0));
 		Vec3 point = cor.findPointOnNormalToWall(room, cor.getPath().getFirst(), cor.getPath().get(1), true);
 		assertEquals(new Vec3(4, 0, 0), point);
-		Gate gate = base.getGates().get(0);
+		Gate gate = NodeExtensionsKt.getGates(base).get(0);
 		assertEquals(new Vec3(1, 0, 0), gate.getCenter());
 		assertEquals(new Vec2(2, 3), gate.getSizeXY());
 		assertEquals(90, gate.getRotationY(), 0.0001);
@@ -146,14 +146,15 @@ public class CorridorTest {
 		assertEquals(new Vec3(1, 0, 0), r.getOrigin());
 		assertEquals(new Vec3(2, 3, 4), r.getSize());
 		assertEquals(0, r.getRotationY(), 0);
-		assertEquals(new Vec2(1, 2), r.getWalls().get(0).getP1());
-		assertEquals(new Vec2(1, -2), r.getWalls().get(0).getP2());
-		assertEquals(new Vec2(1, -2), r.getWalls().get(1).getP1());
-		assertEquals(new Vec2(-1, -2), r.getWalls().get(1).getP2());
-		assertEquals(new Vec2(-1, -2), r.getWalls().get(2).getP1());
-		assertEquals(new Vec2(-1, 2), r.getWalls().get(2).getP2());
-		assertEquals(new Vec2(-1, 2), r.getWalls().get(3).getP1());
-		assertEquals(new Vec2(1, 2), r.getWalls().get(3).getP2());
+		List<Wall> walls = NodeExtensionsKt.getWalls(r);
+		assertEquals(new Vec2(1, 2), walls.get(0).getP1());
+		assertEquals(new Vec2(1, -2), walls.get(0).getP2());
+		assertEquals(new Vec2(1, -2), walls.get(1).getP1());
+		assertEquals(new Vec2(-1, -2), walls.get(1).getP2());
+		assertEquals(new Vec2(-1, -2), walls.get(2).getP1());
+		assertEquals(new Vec2(-1, 2), walls.get(2).getP2());
+		assertEquals(new Vec2(-1, 2), walls.get(3).getP1());
+		assertEquals(new Vec2(1, 2), walls.get(3).getP2());
 	}
 	
 	@Test
@@ -168,38 +169,41 @@ public class CorridorTest {
 		assertEquals(new Vec3(1, -1, 0), r.getOrigin());
 		assertEquals(new Vec3(4, 3, 2), r.getSize());
 		assertEquals(0, r.getRotationY(), 0);
-		assertEquals(new Vec2(0, 1), r.getWalls().get(0).getP1());
-		assertEquals(new Vec2(2, -1), r.getWalls().get(0).getP2());
-		assertEquals(new Vec2(2, -1), r.getWalls().get(1).getP1());
-		assertEquals(new Vec2(-1, -1), r.getWalls().get(1).getP2());
-		assertEquals(new Vec2(-1, -1), r.getWalls().get(2).getP1());
-		assertEquals(new Vec2(-1, 1), r.getWalls().get(2).getP2());
-		assertEquals(new Vec2(-1, 1), r.getWalls().get(3).getP1());
-		assertEquals(new Vec2(0, 1), r.getWalls().get(3).getP2());
+		List<Wall> walls = NodeExtensionsKt.getWalls(r);
+		assertEquals(new Vec2(0, 1), walls.get(0).getP1());
+		assertEquals(new Vec2(2, -1), walls.get(0).getP2());
+		assertEquals(new Vec2(2, -1), walls.get(1).getP1());
+		assertEquals(new Vec2(-1, -1), walls.get(1).getP2());
+		assertEquals(new Vec2(-1, -1), walls.get(2).getP1());
+		assertEquals(new Vec2(-1, 1), walls.get(2).getP2());
+		assertEquals(new Vec2(-1, 1), walls.get(3).getP1());
+		assertEquals(new Vec2(0, 1), walls.get(3).getP2());
 		r = iter.next();
+		walls = NodeExtensionsKt.getWalls(r);
 		assertEquals(new Vec3(2, 2.5, 1.5), r.getOrigin());
 		assertEquals(new Vec3(5, 3, 2), r.getSize());
 		assertEquals(-90, r.getRotationY(), 0);
-		assertEquals(new Vec2(2.5, 1), r.getWalls().get(0).getP1());
-		assertEquals(new Vec2(0.5, -1), r.getWalls().get(0).getP2());
-		assertEquals(new Vec2(0.5, -1), r.getWalls().get(1).getP1());
-		assertEquals(new Vec2(-2.5, -1), r.getWalls().get(1).getP2());
-		assertEquals(new Vec2(-2.5, -1), r.getWalls().get(2).getP1());
-		assertEquals(new Vec2(-0.5, 1), r.getWalls().get(2).getP2());
-		assertEquals(new Vec2(-0.5, 1), r.getWalls().get(3).getP1());
-		assertEquals(new Vec2(2.5, 1), r.getWalls().get(3).getP2());
+		assertEquals(new Vec2(2.5, 1), walls.get(0).getP1());
+		assertEquals(new Vec2(0.5, -1), walls.get(0).getP2());
+		assertEquals(new Vec2(0.5, -1), walls.get(1).getP1());
+		assertEquals(new Vec2(-2.5, -1), walls.get(1).getP2());
+		assertEquals(new Vec2(-2.5, -1), walls.get(2).getP1());
+		assertEquals(new Vec2(-0.5, 1), walls.get(2).getP2());
+		assertEquals(new Vec2(-0.5, 1), walls.get(3).getP1());
+		assertEquals(new Vec2(2.5, 1), walls.get(3).getP2());
 		r = iter.next();
+		walls = NodeExtensionsKt.getWalls(r);
 		assertEquals(new Vec3(3, 3.5, 3), r.getOrigin());
 		assertEquals(new Vec3(4, 3, 2), r.getSize());
 		assertEquals(0, r.getRotationY(), 0);
-		assertEquals(new Vec2(1, 1), r.getWalls().get(0).getP1());
-		assertEquals(new Vec2(1, -1), r.getWalls().get(0).getP2());
-		assertEquals(new Vec2(1, -1), r.getWalls().get(1).getP1());
-		assertEquals(new Vec2(0, -1), r.getWalls().get(1).getP2());
-		assertEquals(new Vec2(0, -1), r.getWalls().get(2).getP1());
-		assertEquals(new Vec2(-2, 1), r.getWalls().get(2).getP2());
-		assertEquals(new Vec2(-2, 1), r.getWalls().get(3).getP1());
-		assertEquals(new Vec2(1, 1), r.getWalls().get(3).getP2());
+		assertEquals(new Vec2(1, 1), walls.get(0).getP1());
+		assertEquals(new Vec2(1, -1), walls.get(0).getP2());
+		assertEquals(new Vec2(1, -1), walls.get(1).getP1());
+		assertEquals(new Vec2(0, -1), walls.get(1).getP2());
+		assertEquals(new Vec2(0, -1), walls.get(2).getP1());
+		assertEquals(new Vec2(-2, 1), walls.get(2).getP2());
+		assertEquals(new Vec2(-2, 1), walls.get(3).getP1());
+		assertEquals(new Vec2(1, 1), walls.get(3).getP2());
 		assertEquals(false, iter.hasNext());
 	}
 }

@@ -4,6 +4,7 @@ import hunternif.voxarch.builder.MAT_ROOF
 import hunternif.voxarch.plan.Room
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredPolyRoom
+import hunternif.voxarch.plan.walls
 import hunternif.voxarch.sandbox.castle.builder.PyramidBuilder
 import hunternif.voxarch.util.circle
 import hunternif.voxarch.util.square

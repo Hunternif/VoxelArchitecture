@@ -3,6 +3,7 @@ package hunternif.voxarch.sandbox.castle.builder
 import hunternif.voxarch.builder.*
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.Room
+import hunternif.voxarch.plan.walls
 import hunternif.voxarch.storage.IBlockStorage
 import hunternif.voxarch.util.roundToInt
 import hunternif.voxarch.vector.ILinearTransformation

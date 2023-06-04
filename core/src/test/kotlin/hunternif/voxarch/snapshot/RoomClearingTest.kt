@@ -4,6 +4,7 @@ import hunternif.voxarch.builder.MAT_FLOOR
 import hunternif.voxarch.plan.Structure
 import hunternif.voxarch.plan.centeredRoom
 import hunternif.voxarch.plan.room
+import hunternif.voxarch.plan.walls
 import hunternif.voxarch.vector.Vec3
 import org.junit.Test
 

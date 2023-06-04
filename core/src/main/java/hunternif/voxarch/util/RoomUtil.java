@@ -7,6 +7,7 @@ import java.util.ListIterator;
 import java.util.Map;
 
 import hunternif.voxarch.plan.Node;
+import hunternif.voxarch.plan.NodeExtensionsKt;
 import hunternif.voxarch.plan.Room;
 import hunternif.voxarch.plan.Wall;
 import hunternif.voxarch.vector.Matrix2;
@@ -32,7 +33,7 @@ public class RoomUtil {
 	 */
 	public Wall findClosestWall(Room room, Vec2 point) {
 		// Check if the room has no walls:
-		if (room.getWalls().isEmpty()) return null;
+		if (NodeExtensionsKt.getWalls(room).isEmpty()) return null;
 		Vec2 p = new Vec2(point.x - room.getOrigin().x,
 						  point.y - room.getOrigin().z);
 		Matrix2 rot = Matrix2.rotationMatrix(room.getRotationY());
@@ -40,7 +41,7 @@ public class RoomUtil {
 		double distance = Double.MAX_VALUE;
 		// First measure the actual distance:
 		List<Wall> candidates = new ArrayList<>();
-		for (Wall wall : room.getWalls()) {
+		for (Wall wall : NodeExtensionsKt.getWalls(room)) {
 			Vec2 dest = VectorUtil.closestPointOnLineSegment(p, wall.getP1(), wall.getP2());
 			double curDistance = p.squareDistanceTo(dest);
 			if (curDistance == distance) {
@@ -56,7 +57,7 @@ public class RoomUtil {
 			//TODO: test the new improved RoomUtil.findClosestWall()
 			Wall closest = null;
 			distance = Double.MAX_VALUE;
-			for (Wall wall : room.getWalls()) {
+			for (Wall wall : NodeExtensionsKt.getWalls(room)) {
 				double curDistance = p.squareDistanceTo(wall.getP1()) + p.squareDistanceTo(wall.getP2());
 				if (curDistance < distance) {
 					distance = curDistance;
