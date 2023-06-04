@@ -165,6 +165,10 @@ fun select(vararg instance: DomBuilder) = Selector().apply {
     instances.addAll(instance)
 }
 
+/**
+ * Combines this selector with [other], so that they both need to match.
+ * This is actually an AND operator.
+ */
 operator fun Selector.plus(other: Selector): Selector {
     if (this.isEmpty()) return other
     else if (other.isEmpty()) return this

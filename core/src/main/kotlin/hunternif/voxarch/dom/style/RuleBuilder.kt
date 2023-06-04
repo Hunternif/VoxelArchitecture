@@ -14,10 +14,11 @@ class RuleBuilder(
      * Register a style rule wih the given selector.
      */
     fun style(
-        selector: Selector,
+        vararg selector: Selector,
         block: Rule.() -> Unit,
     ) {
-        val rule = Rule(baseSelector + selector).apply(block)
+        val selectors = selector.map { baseSelector + it }
+        val rule = Rule(selectors).apply(block)
         stylesheet.addRule(rule)
     }
 
