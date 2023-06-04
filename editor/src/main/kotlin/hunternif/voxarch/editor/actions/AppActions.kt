@@ -18,6 +18,7 @@ import hunternif.voxarch.editor.file.writeProject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.plan.ClipMask
 import hunternif.voxarch.plan.naturalToCentric
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
@@ -211,6 +212,17 @@ fun EditorApp.transformNodeSnapOrigin(
         )
     )
 }
+
+fun EditorApp.transformNodeClipMask(
+    obj: SceneNode,
+    clipMask: ClipMask,
+) = historyAction(
+    TransformObjects(
+        mapOf(obj to obj.transformData()),
+        mapOf(obj to obj.transformData(clipMask = clipMask)),
+        "Transform node (clip mask)",
+    )
+)
 
 /** Passing in [oldColor] because the actual color could be already changed in the scene. */
 fun EditorApp.transformNodeColor(

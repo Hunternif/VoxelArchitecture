@@ -10,6 +10,7 @@ import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.plan.ClipMask
 import hunternif.voxarch.util.SnapOrigin
 import hunternif.voxarch.vector.Vec3
 
@@ -38,6 +39,7 @@ class TransformObjects(
                         start = data.start
                         rotationY = data.rotationY
                         size = data.size
+                        clipMask = data.clipMask
                     }
                     obj.snapOrigin = data.snapOrigin
                     obj.color.set(data.color)
@@ -61,6 +63,7 @@ data class TransformData(
     val start: Vec3,
     val rotationY: Double,
     val snapOrigin: SnapOrigin,
+    val clipMask: ClipMask,
     val color: ColorRGBa,
 )
 
@@ -72,6 +75,7 @@ fun SceneObject.transformData(
     start: Vec3? = null,
     rotationY: Double? = null,
     snapOrigin: SnapOrigin? = null,
+    clipMask: ClipMask? = null,
     color: ColorRGBa? = null,
 ) = when(this) {
     is SceneNode -> TransformData(
@@ -80,6 +84,7 @@ fun SceneObject.transformData(
         (start ?: node.start).clone(),
         rotationY ?: node.rotationY,
         snapOrigin ?: this.snapOrigin,
+        clipMask ?: node.clipMask,
         (color ?: this.color).copy(),
     )
     is SceneVoxelGroup -> TransformData(
@@ -88,6 +93,7 @@ fun SceneObject.transformData(
         Vec3.ZERO,
         0.0,
         SnapOrigin.OFF,
+        ClipMask.OFF,
         this.color.copy(),
     )
     else -> TransformData(
@@ -96,6 +102,7 @@ fun SceneObject.transformData(
         Vec3.ZERO,
         0.0,
         SnapOrigin.OFF,
+        ClipMask.OFF,
         this.color.copy(),
     )
 }

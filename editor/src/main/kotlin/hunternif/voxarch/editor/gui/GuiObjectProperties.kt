@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.builder.BuilderLibrary
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.plan.ClipMask
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.naturalSize
 import hunternif.voxarch.util.SnapOrigin
@@ -30,6 +31,7 @@ class GuiObjectProperties(
     private val tagsInput = GuiInputText("tags")
     private val snapOriginInput = GuiCombo("snap origin", *SnapOrigin.values())
     private val rotationInput = GuiInputFloat("rotation", speed = 5f, min = -360f, max = 360f)
+    private val clipInput = GuiCombo("clip mask", *ClipMask.values())
     private val colorInput = GuiInputColor("color")
     private val builderInput by lazy {
         GuiCombo("builder", allBuilders)
@@ -133,6 +135,11 @@ By default, it's set so that origin is at the low-XYZ corner.""")
             app.setNodeBuilder(sceneNode, newBuilder)
         }
         tooltip("Override the Builder that will be used for this node during 'Build voxels'.")
+
+        clipInput.render(node.clipMask) {
+            app.transformNodeClipMask(sceneNode, it)
+        }
+        tooltip("Node's children will only place voxels inside this mask.")
 
         colorInput.render(sceneNode.color) {
             app.transformNodeColor(sceneNode, original, newValue)
