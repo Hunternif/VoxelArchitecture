@@ -8,6 +8,7 @@ import hunternif.voxarch.editor.blueprint.DomBuilderFactory.Group.*
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Archway
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ArrowsAlt
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.BorderNone
+import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.Campground
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.CaretDown
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.CaretRight
 import hunternif.voxarch.editor.gui.FontAwesomeIcons.Companion.ChessRook
@@ -38,6 +39,7 @@ object DomBuilderFactory {
             Entry(NODE, "Column", ICursor) { DomNodeBuilder { Column() } },
             Entry(NODE, "Staircase", Signal) { DomNodeBuilder { Staircase() } },
             Entry(NODE, "Slope") { DomNodeBuilder { Slope() } },
+            Entry(NODE, "SlopedRoof", Campground) { DomNodeBuilder { SlopedRoof() } },
 
             Entry(BUILDING, "Turret", ChessRook) { DomPolyRoomWithTurretBuilder() },
             Entry(BUILDING, "Turret Decor", ChessRook) { DomTurretDecor() },

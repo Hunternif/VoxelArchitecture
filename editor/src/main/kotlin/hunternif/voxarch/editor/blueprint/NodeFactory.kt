@@ -18,6 +18,7 @@ object NodeFactory {
             Entry("Column") { Column() },
             Entry("Staircase") { Staircase() },
             Entry("Slope") { Slope() },
+            Entry("SlopedRoof") { SlopedRoof() },
         )
     }
 
