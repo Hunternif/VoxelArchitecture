@@ -3,11 +3,8 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.builder.DomNodeBuilder
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.node
-import hunternif.voxarch.dom.room
 import hunternif.voxarch.dom.style.property.*
-import hunternif.voxarch.plan.Node
-import hunternif.voxarch.plan.Room
-import hunternif.voxarch.plan.query
+import hunternif.voxarch.plan.*
 import hunternif.voxarch.util.assertVec3Equals
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
@@ -164,11 +161,11 @@ class StyleAlignmentTest {
             }
         }
         val dom = domRoot {
-            room("parent") {
-                room("child")
+            node("parent") {
+                node("child")
             }
         }.buildDom(style)
-        val child = dom.query<Room>("child").first()
+        val child = dom.query<Node>("child").first()
 
         assertEquals(expectedOrigin, child.origin)
     }
