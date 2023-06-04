@@ -5,15 +5,15 @@ import hunternif.voxarch.dom.style.StyledNode
 import hunternif.voxarch.vector.Vec3
 
 /**
- * During layout, moves children's origins by [offset]
+ * During layout, sets children's origins to [position]
  */
-class DomTranslateBuilder(
-    private val offset: Vec3,
+class DomPositionBuilder(
+    private val position: Vec3,
 ) : DomBuilder() {
 
     override fun layout(children: List<StyledElement<*>>): List<StyledElement<*>> {
         children.filterIsInstance<StyledNode<*>>().forEach {
-            it.node.origin.addLocal(offset)
+            it.node.origin.set(position)
         }
         return children
     }

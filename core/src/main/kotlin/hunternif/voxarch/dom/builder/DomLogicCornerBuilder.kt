@@ -32,7 +32,7 @@ open class DomLogicPolyCornerBuilder : DomBuilder() {
     protected fun createCornerBuilders(ctx: DomBuildContext, polygon: Path): List<DomBuilder> =
         polygon.segments.map { seg ->
             // Add origin because points are defined vs polygon origin
-            val bld = DomTranslateBuilder((seg.p1 + polygon.origin).round())
+            val bld = DomPositionBuilder((seg.p1 + polygon.origin).round())
             //TODO: round to global voxels, not local
             bld.seedOffset = 10000
             bld.children.addAll(children)
