@@ -137,13 +137,19 @@ open class Node(
      * Returns boundaries including vertical [getGroundBoundaries] and
      * horizontal floor & ceiling.
      */
-    open fun getBoundaries(): List<Plane> {
+    fun getBoundaries(): List<Plane> {
         val walls = getGroundBoundaries()
-        return ArrayList<Plane>(walls.size + 2).apply {
+        val roofs = getRoofBoundaries()
+        return ArrayList<Plane>(walls.size + roofs.size + 1).apply {
             addAll(walls)
             add(Plane(Vec3(0.0, start.y, 0.0), -Vec3.UNIT_Y)) // floor
-            add(Plane(Vec3(0.0, start.y + height, 0.0), Vec3.UNIT_Y)) // ceiling
+            addAll(roofs) // ceiling
         }
+    }
+
+    /** Returns planes that define the ceiling or roof shape. */
+    open fun getRoofBoundaries(): List<Plane> {
+        return listOf(Plane(Vec3(0.0, start.y + height, 0.0), Vec3.UNIT_Y))
     }
 
     constructor() : this(Vec3.ZERO)
