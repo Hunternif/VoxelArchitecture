@@ -28,6 +28,7 @@ class BuilderLibrary {
         Entry("Castle crenel decor", DefaultBuilders.CastleCrenelDecor),
         Entry("Castle corbel", DefaultBuilders.CastleCorbel),
         Entry("Spire roof", DefaultBuilders.PyramidRoof),
+        Entry("Slope roof", DefaultBuilders.SlopeRoof),
         Entry("Tapered bottom", DefaultBuilders.TowerTaperedBottom),
 
         Entry("Torch stand", DefaultBuilders.TorchStand),

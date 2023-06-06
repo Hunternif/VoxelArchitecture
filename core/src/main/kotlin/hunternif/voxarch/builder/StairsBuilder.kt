@@ -16,6 +16,7 @@ class StairsBuilder(
         val localWorld = world.toLocal(trans)
         val lowXY = node.start.clone().apply { z = 0.0 }
         val highXY = (node.start + node.size).apply { z = 0.0 }
+        //TODO: use fill to close holes in rotated nodes
         line2(lowXY, highXY) { p ->
             for (dz in 0.0 .. node.depth step 1) {
                 val minY = if (downToFloor) lowXY.y else p.y

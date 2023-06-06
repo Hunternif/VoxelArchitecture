@@ -40,6 +40,7 @@ const val BLD_TOWER_ROOF = "tower_roof"
 const val BLD_TOWER_SPIRE = "tower_spire"
 const val BLD_ARCHED_BRIDGE = "arched_bridge"
 const val BLD_ARCHED_WINDOW = "arched_window"
+const val BLD_SLOPE_ROOF = "slope_roof"
 
 // Builders
 class DefaultBuilders {
@@ -67,6 +68,7 @@ class DefaultBuilders {
         val TowerTaperedBottom = PyramidBuilder(MAT_WALL, upsideDown = true)
         val ArchedWindow = ArchedWindowBuilder()
         val ArchedBridge = ArchedBridgeBuilder(MAT_WALL)
+        val SlopeRoof = SlopeBuilder(MAT_ROOF)
 
         // Special builders
         val SnakePath = SnakePathBuilder(MAT_WALL)
@@ -95,6 +97,7 @@ fun BuilderConfig.setCastleBuilders() {
     set<Wall>(BLD_TOWER_BODY to DefaultBuilders.Wall)
     set<Path>(BLD_TOWER_CORBEL to DefaultBuilders.CastleCorbel)
     set<Wall>(BLD_TOWER_ROOF to DefaultBuilders.CastleCrenelDecor)
+    set<Slope>(BLD_SLOPE_ROOF to DefaultBuilders.SlopeRoof)
     set<Node>(BLD_ARCHED_BRIDGE to DefaultBuilders.ArchedBridge)
     set<Wall>(BLD_ARCHED_BRIDGE to DefaultBuilders.ArchedBridge)
     set<Node>(BLD_ARCHED_WINDOW to DefaultBuilders.ArchedWindow)
