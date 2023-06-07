@@ -39,6 +39,7 @@ val PropAspectRatioXY = newNodeProperty<Node, Number>("aspect-ratio-xy", 1.0) { 
     }
 }
 
+/** Aspect ratio of width / height. See [PropAspectRatioXY] */
 fun Rule.aspectRatioXY(block: StyleSize.() -> Value<Number>) {
     add(PropAspectRatioXY, StyleSize().block())
 }

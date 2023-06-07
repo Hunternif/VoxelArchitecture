@@ -188,6 +188,22 @@ fun DomBuilder.column(
     this.addChildNodeBuilder(*styleClass) { Column() }.block()
 }
 
+/** Adds child [Slope]. See [node]. */
+fun DomBuilder.slope(
+    vararg styleClass: String,
+    block: DomNodeBuilder<Slope>.() -> Unit = {}
+) {
+    this.addChildNodeBuilder(*styleClass) { Slope() }.block()
+}
+
+/** Adds child [SlopedRoof]. See [node]. */
+fun DomBuilder.slopedRoof(
+    vararg styleClass: String,
+    block: DomNodeBuilder<SlopedRoof>.() -> Unit = {}
+) {
+    this.addChildNodeBuilder(*styleClass) { SlopedRoof() }.block()
+}
+
 /** Adds an extra element in the DOM that doesn't do anything.
  * This is useful for wrapping other DOM builders. */
 fun DomBuilder.passthrough(

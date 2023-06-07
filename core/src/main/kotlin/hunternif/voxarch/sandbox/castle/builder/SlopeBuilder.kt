@@ -19,6 +19,7 @@ class SlopeBuilder(private val material: String) : ANodeBuilder() {
         val slopeFactor = node.height / node.width
         val inverse = trans.inverse()
         val vec = Vec3(0, 0, 0)
+        // TODO for slopes > 45 degrees, fill YZ instead
         node.fillXZ(trans) { x, y, z ->
             inverse.transformLocal(vec.set(x, y, z))
             val block = context.materials.get(material)

@@ -74,6 +74,16 @@ class MathUtilTest {
         assertEquals(2.0, 2.0.roundToEven(), 0.0)
         assertEquals(2.0, 2.1.roundToEven(), 0.0)
         assertEquals(4.0, 3.1.roundToEven(), 0.0)
+        assertEquals(4.0, 3.0.roundToEven(), 0.0)
+    }
+
+    @Test
+    fun `test roundUpToEven`() {
+        assertEquals(2.0, 1.5.roundUpToEven(), 0.0)
+        assertEquals(2.0, 2.0.roundUpToEven(), 0.0)
+        assertEquals(4.0, 2.1.roundUpToEven(), 0.0)
+        assertEquals(4.0, 3.1.roundUpToEven(), 0.0)
+        assertEquals(4.0, 3.0.roundUpToEven(), 0.0)
     }
 
     @Test
@@ -97,7 +107,7 @@ class MathUtilTest {
     }
 
     @Test
-    fun `test next random weighted 100%`() {
+    fun `test next random weighted 100 pct`() {
         class TestOption(override val probability: Double) : IRandomOption
         val a = TestOption(1.0)
         val b = TestOption(0.0)

@@ -45,6 +45,7 @@ object DomBuilderFactory {
             Entry(BUILDING, "Turret Decor", ChessRook) { DomTurretDecor() },
             Entry(BUILDING, "Turret Roof Decor", ChessRook) { DomTurretRoofDecor() },
             Entry(BUILDING, "Turret Bottom Decor", CaretDown) { DomTurretBottomDecor() },
+            Entry(BUILDING, "Gable Roof Decor", Campground) { DomGableRoofDecor() },
             Entry(BUILDING, "Arched Window", Archway) { DomNodeBuilder { Window() }.addStyle(BLD_ARCHED_WINDOW) },
             Entry(BUILDING, "Arched Bridge", Archway) { DomNodeBuilder { Wall() }.addStyle(BLD_ARCHED_BRIDGE) },
 

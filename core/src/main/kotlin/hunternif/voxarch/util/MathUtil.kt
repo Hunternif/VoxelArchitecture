@@ -134,6 +134,7 @@ fun Float.clamp(min: Float, max: Float): Float {
 
 fun Double.round(): Double = this.roundToInt().toDouble()
 fun Double.roundToEven() = round(this / 2) * 2
+fun Double.roundUpToEven() =  ceil(this / 2) * 2
 
 /** If the value comes within [delta] to any of the [values],
  * the result snaps to the value. */
