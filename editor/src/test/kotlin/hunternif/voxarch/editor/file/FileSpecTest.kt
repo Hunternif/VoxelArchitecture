@@ -28,7 +28,6 @@ class FileSpecTest : BaseAppTest() {
     private lateinit var room1: Room
     private lateinit var room2: Room
     private lateinit var room3: Room
-    private lateinit var tempDir: java.nio.file.Path
 
     @Before
     fun setup() {
@@ -38,7 +37,6 @@ class FileSpecTest : BaseAppTest() {
         room1.builder = DefaultBuilders.Wall
         room2 = root.room(Vec3(-4, 0, 1), Vec3(3, 3, 6))
         room3 = room2.room(Vec3(1, 2, -1), Vec3(2, 3, 0))
-        tempDir = makeTestDir("project")
     }
 
     @Test
