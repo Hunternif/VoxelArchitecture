@@ -8,6 +8,9 @@ import hunternif.voxarch.editor.actions.redrawVoxels
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
+import hunternif.voxarch.editor.util.toVec3
+import hunternif.voxarch.plan.findGlobalRotation
+import hunternif.voxarch.util.rotateY
 import org.joml.Vector3f
 
 class MoveObjectsBuilder(
@@ -28,18 +31,16 @@ class MoveObjectsBuilder(
     private val movingNodes = objs.any { it is SceneNode }
     private val movingVoxels = objs.any { it is SceneVoxelGroup }
 
-    fun setMove(vec: Vector3f) = setMove(
-        vec.x.toDouble(),
-        vec.y.toDouble(),
-        vec.z.toDouble()
-    )
-
-    private fun setMove(x: Double, y: Double, z: Double) {
+    fun setMove(vec: Vector3f){
+        val delta = vec.toVec3()
         for ((obj, data) in oldData) {
-            val newOrigin = data.origin.add(x, y, z)
-            when (obj) {
-                is SceneNode -> obj.node.origin.set(newOrigin)
-                is SceneVoxelGroup -> obj.origin.set(newOrigin)
+            val newOrigin = when (obj) {
+                is SceneNode -> {
+                    val angle = obj.node.parent?.findGlobalRotation() ?: 0.0
+                    obj.node.origin.set(data.origin + delta.rotateY(-angle))
+                }
+                is SceneVoxelGroup -> obj.origin.set(data.origin + delta)
+                else -> data.origin + delta
             }
             newData[obj]!!.run {
                 origin.set(newOrigin)
