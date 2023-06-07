@@ -14,11 +14,13 @@ import kotlin.math.ceil
 /**
  * Adds decorative child elements on the roof to make a node look like a castle turret.
  */
-class DomTurretRoofDecor : DomBuilder() {
+class DomTurretRoofDecor : DomBuilder(), IRoofDomBuilder {
     // TODO: reset properties between runs
     var roofShape: RoofShape = RoofShape.FLAT_BORDERED
+
     /** Offset for roof border and spire. */
-    var roofOffset: Int = 1
+    override var roofOffset: Int = 1
+
     /** Y/X slope of roof spire. */
     var spireRatio: Double = 3.0
 
@@ -74,10 +76,12 @@ class DomTurretRoofDecor : DomBuilder() {
         RoofShape.SPIRE, RoofShape.SPIRE_BORDERED -> true
         else -> false
     }
+
     private fun hasCrenellation() = when (roofShape) {
         RoofShape.FLAT_BORDERED, RoofShape.SPIRE_BORDERED -> true
         else -> false
     }
+
     private fun Node.avgRadius() = ceil((naturalWidth + naturalDepth) / 4).vx
     private fun roofOffset() = roofOffset.vx
     private fun spireRatio() = spireRatio

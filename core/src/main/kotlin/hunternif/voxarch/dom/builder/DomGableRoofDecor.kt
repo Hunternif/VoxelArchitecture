@@ -14,25 +14,27 @@ import hunternif.voxarch.util.roundUpToEven
 /**
  * Adds a gable roof with 2 slopes.
  */
-class DomGableRoofDecor : DomBuilder() {
+class DomGableRoofDecor : DomBuilder(), IRoofDomBuilder {
     //TODO: add roof offset, unify with DomTurretRoofDecor
     /** Y/X slope of roof slopes. */
     var roofSlopeRatio: Double = 1.0
 
+    override var roofOffset = 1
+
     /** For adding stuff under the roof, clipped under its boundary. */
     val roof = DomNodeBuilder { SlopedRoof() }.apply {
-        addStyle("roof_mask")
-        slope("left")
-        slope("right")
+        addStyle(ROOF_MASK)
+        slope(LEFT_SLOPE)
+        slope(RIGHT_SLOPE)
     }
 
     init {
         addChild(roof)
         addSlot("roof", roof)
         // this sloped roof is separate from "roof", because it doesn't have the clipping mask
-        space("slope_container") {
-            slope(BLD_SLOPE_ROOF, "left")
-            slope(BLD_SLOPE_ROOF, "right")
+        space(ROOF_CONTAINER) {
+            slope(BLD_SLOPE_ROOF, LEFT_SLOPE)
+            slope(BLD_SLOPE_ROOF, RIGHT_SLOPE)
         }
     }
 
@@ -46,14 +48,17 @@ class DomGableRoofDecor : DomBuilder() {
         // Create style rules for this instance:
         ctx.stylesheet.add {
             styleFamily(selectDescendantOf(this@DomGableRoofDecor)) {
-                style(select("roof_mask"), select("slope_container")) {
+                style(select(ROOF_CONTAINER), select(ROOF_MASK)) {
                     width { 100.pct }
                     depth { 100.pct }
                     height { slopeHeight }
                     alignY { above() }
                 }
-                style(select(roof)) {
+                style(ROOF_MASK) {
                     clipMask { set(ClipMask.BOUNDARY) }
+                }
+                style(ROOF_CONTAINER) {
+                    width { 100.pct + roofOffset.vx * 2 }
                 }
                 styleFor<Slope> {
                     width { slopeWidth }
@@ -61,16 +66,23 @@ class DomGableRoofDecor : DomBuilder() {
                     height { 100.pct }
                     alignX { center() }
                 }
-                style("left") {
+                style(LEFT_SLOPE) {
                     rotation { set(-90.0) }
                     alignZ { northIn() }
                 }
-                style("right") {
+                style(RIGHT_SLOPE) {
                     rotation { set(90.0) }
                     alignZ { southIn() }
                 }
             }
         }
         return super.getChildrenForLayout(ctx)
+    }
+
+    companion object {
+        const val LEFT_SLOPE = "left"
+        const val RIGHT_SLOPE = "right"
+        const val ROOF_CONTAINER = "roof_container"
+        const val ROOF_MASK = "roof_mask"
     }
 }

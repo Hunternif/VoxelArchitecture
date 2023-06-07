@@ -1,29 +1,18 @@
 package hunternif.voxarch.dom.style.property
 
 import hunternif.voxarch.dom.builder.DomTurretBottomDecor
-import hunternif.voxarch.dom.style.*
-import hunternif.voxarch.dom.builder.DomTurretDecor
 import hunternif.voxarch.dom.builder.DomTurretRoofDecor
-import hunternif.voxarch.plan.naturalWidth
+import hunternif.voxarch.dom.style.*
 import hunternif.voxarch.sandbox.castle.turret.BodyShape
 import hunternif.voxarch.sandbox.castle.turret.BottomShape
 import hunternif.voxarch.sandbox.castle.turret.RoofShape
 import hunternif.voxarch.util.RandomOption
 import hunternif.voxarch.util.nextWeighted
-import kotlin.math.roundToInt
 import kotlin.random.Random
 
 class StyleTurretBodyShape : StyleParameter
 class StyleTurretRoofShape : StyleParameter
 class StyleTurretBottomShape : StyleParameter
-
-/** Offset for borders and spires in all child turrets. */
-val PropRoofOffset = newDomProperty<DomTurretRoofDecor, Double>("roof-offset", 1.0) { value ->
-    val baseValue = parentNode.naturalWidth
-    domBuilder.roofOffset = value
-        .invoke(baseValue, seed + 10000006)
-        .roundToInt()
-}
 
 /** Y/X ratio of spires for all child turrets. */
 val PropSpireRatio = newDomProperty<DomTurretRoofDecor, Double>("spire-ratio", 3.0) { value ->
