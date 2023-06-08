@@ -140,9 +140,8 @@ open class Node(
     fun getBoundaries(): List<Plane> {
         val walls = getGroundBoundaries()
         val roofs = getRoofBoundaries()
-        return ArrayList<Plane>(walls.size + roofs.size + 1).apply {
+        return ArrayList<Plane>(walls.size + roofs.size).apply {
             addAll(walls)
-            add(Plane(Vec3(0.0, start.y, 0.0), -Vec3.UNIT_Y)) // floor
             addAll(roofs) // ceiling
         }
     }
