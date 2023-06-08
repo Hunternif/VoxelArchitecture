@@ -9,7 +9,10 @@ import hunternif.voxarch.dom.builder.DomTurretRoofDecor
 import hunternif.voxarch.plan.*
 
 val defaultStyle get() = Stylesheet().add {
-    style(select(Room::class.java), select(BLD_SPACE)) {
+    style(
+        select(Room::class.java, Slope::class.java, SlopedRoof::class.java),
+        select(BLD_SPACE)
+    ) {
         width { 100.pct }
         height { 100.pct }
         depth { 100.pct }
