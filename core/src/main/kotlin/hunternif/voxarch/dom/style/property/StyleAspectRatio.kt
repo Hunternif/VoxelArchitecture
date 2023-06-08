@@ -4,6 +4,7 @@ import hunternif.voxarch.dom.style.Rule
 import hunternif.voxarch.dom.style.Value
 import hunternif.voxarch.dom.style.newNodeProperty
 import hunternif.voxarch.plan.Node
+import hunternif.voxarch.plan.naturalDepth
 import hunternif.voxarch.plan.naturalHeight
 import hunternif.voxarch.plan.naturalWidth
 
@@ -39,7 +40,43 @@ val PropAspectRatioXY = newNodeProperty<Node, Number>("aspect-ratio-xy", 1.0) { 
     }
 }
 
+/**
+ * Aspect ratio of width / depth.
+ * If any value is changed, recalculates the other value.
+ * The order of properties decides which one is changed last.
+ * If none was changed, then changes height based on width.
+ */
+val PropAspectRatioXZ = newNodeProperty<Node, Number>("aspect-ratio-xz", 1.0) { value ->
+    val baseValue = node.run {
+        if (naturalDepth == 0.0) 0.0
+        else naturalWidth / naturalDepth
+    }
+    val newValue = value.invoke(baseValue, seed + 10000038).toDouble()
+    if (newValue == 0.0) return@newNodeProperty
+
+    // Find which property was changed last
+    val properties = ctx.stylesheet.getProperties(this)
+    val lastProp = properties.values.lastOrNull {
+        it.property === PropDepth || it.property === PropWidth
+    }
+    when (lastProp?.property) {
+        PropWidth, null -> {
+            // Calculate height
+            node.naturalDepth = node.naturalWidth / newValue
+        }
+        PropDepth -> {
+            // Calculate width
+            node.naturalWidth = node.naturalDepth * newValue
+        }
+    }
+}
+
 /** Aspect ratio of width / height. See [PropAspectRatioXY] */
 fun Rule.aspectRatioXY(block: StyleSize.() -> Value<Number>) {
     add(PropAspectRatioXY, StyleSize().block())
+}
+
+/** Aspect ratio of width / depth. See [PropAspectRatioXZ] */
+fun Rule.aspectRatioXZ(block: StyleSize.() -> Value<Number>) {
+    add(PropAspectRatioXZ, StyleSize().block())
 }

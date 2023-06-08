@@ -26,6 +26,7 @@ val blueprintEditorStyleProperties: List<Property<*>> by lazy {
         PropHeight,
         PropDepth,
 
+        PropAspectRatioXZ,
         PropAspectRatioXY,
 
         PropSnapOrigin,

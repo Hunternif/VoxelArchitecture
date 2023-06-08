@@ -3,10 +3,7 @@ package hunternif.voxarch.dom.style
 import hunternif.voxarch.dom.domRoot
 import hunternif.voxarch.dom.node
 import hunternif.voxarch.dom.space
-import hunternif.voxarch.dom.style.property.aspectRatioXY
-import hunternif.voxarch.dom.style.property.height
-import hunternif.voxarch.dom.style.property.size
-import hunternif.voxarch.dom.style.property.width
+import hunternif.voxarch.dom.style.property.*
 import hunternif.voxarch.dom.subdivide
 import hunternif.voxarch.plan.Node
 import hunternif.voxarch.plan.naturalSize
@@ -69,6 +66,26 @@ class StyleAspectRatioTest {
         }.buildDom(style)
         val node = dom.query<Node>("test").first()
         assertVec3Equals(Vec3(8.0, 4.0, 5.0), node.naturalSize)
+    }
+
+    @Test
+    fun `use last depth`() {
+        val style = defaultStyle.add {
+            style("container") {
+                size(3.vx, 4.vx, 5.vx)
+            }
+            style("test") {
+                width { 100.pct }
+                aspectRatioXZ { set(2.0) }
+            }
+        }
+        val dom = domRoot {
+            node("container") {
+                space("test")
+            }
+        }.buildDom(style)
+        val node = dom.query<Node>("test").first()
+        assertVec3Equals(Vec3(3.0, 4.0, 1.5), node.naturalSize)
     }
 
     @Test
