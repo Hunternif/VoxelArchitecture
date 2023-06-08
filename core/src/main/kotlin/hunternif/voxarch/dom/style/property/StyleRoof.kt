@@ -12,7 +12,7 @@ import kotlin.math.roundToInt
  */
 val PropRoofOffset = newDomProperty<DomBuilder, Double>("roof-offset", 1.0) { value ->
     val baseValue = parentNode.naturalWidth
-    (domBuilder as IRoofDomBuilder).roofOffset = value
+    (domBuilder as? IRoofDomBuilder)?.roofOffset = value
         .invoke(baseValue, seed + 10000006)
         .roundToInt()
 }
