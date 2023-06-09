@@ -1,8 +1,10 @@
 package hunternif.voxarch.editor.file
 
+import hunternif.voxarch.editor.blueprint.NodeFactory
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneObject
 import hunternif.voxarch.editor.scenegraph.SceneRegistry
+import hunternif.voxarch.editor.util.assertNodeTreeEqualsRecursive
 import hunternif.voxarch.plan.*
 import hunternif.voxarch.vector.Vec3
 import org.junit.Assert.assertEquals
@@ -86,5 +88,16 @@ class XmlSceneObjectSerializerTest {
 
         val reserialized = serializeToXmlStr(obj, true)
         assertEquals(sceneXml, reserialized.fixCRLF())
+    }
+
+    @Test
+    fun `serialize all node types`() {
+        val root = Structure()
+        NodeFactory.allNodeTypes.forEach {
+            root.addChild(it.create())
+        }
+        val xml = serializeToXmlStr(root)
+        val testRoot = deserializeXml(xml, Node::class)
+        assertNodeTreeEqualsRecursive(root, testRoot)
     }
 }

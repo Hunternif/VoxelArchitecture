@@ -25,6 +25,9 @@ import hunternif.voxarch.vector.Vec3
     JsonSubTypes.Type(name = "Floor", value = XmlFloor::class),
     JsonSubTypes.Type(name = "Wall", value = XmlWall::class),
     JsonSubTypes.Type(name = "Window", value = XmlWindow::class),
+    JsonSubTypes.Type(name = "Staircase", value = XmlStaircase::class),
+    JsonSubTypes.Type(name = "SlopedRoof", value = XmlSlopedRoof::class),
+    JsonSubTypes.Type(name = "Slope", value = XmlSlope::class),
     JsonSubTypes.Type(name = "Path", value = XmlPath::class),
     JsonSubTypes.Type(name = "Node", value = XmlNode::class),
 ])
@@ -73,6 +76,12 @@ class XmlWall : XmlNode()
 
 class XmlWindow : XmlNode()
 
+class XmlStaircase : XmlNode()
+
+class XmlSlope : XmlNode()
+
+class XmlSlopedRoof : XmlNode()
+
 class XmlFloor(
     @field:JacksonXmlProperty(isAttribute = true)
     var y: Double = 0.0,
@@ -98,6 +107,9 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
         is Room -> XmlRoom()
         is Wall -> XmlWall()
         is Window -> XmlWindow()
+        is Staircase -> XmlStaircase()
+        is SlopedRoof -> XmlSlopedRoof()
+        is Slope -> XmlSlope()
         is Floor -> XmlFloor(origin.y)
         is Path -> XmlPath(points)
         else -> XmlNode()
@@ -142,6 +154,9 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
         is XmlRoom -> Room()
         is XmlWall -> Wall()
         is XmlWindow -> Window()
+        is XmlStaircase -> Staircase()
+        is XmlSlopedRoof -> SlopedRoof()
+        is XmlSlope -> Slope()
         is XmlFloor -> Floor(y)
         is XmlPath -> Path().also {
             it.addPoints(points ?: emptyList())
