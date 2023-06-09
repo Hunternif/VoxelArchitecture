@@ -69,6 +69,7 @@ class DomTurretRoofDecor : DomBuilder(), IRoofDomBuilder {
         }
         style(BLD_TOWER_CORBEL) {
             alignY { top() }
+            visibleIf { roofOffset > 0 }
         }
     }
 
