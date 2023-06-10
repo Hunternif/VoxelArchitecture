@@ -85,17 +85,18 @@ class TextureAtlas(
         fun loadFromFile(
             path: Path,
             tileWidth: Int, tileHeight: Int,
+            padding: Int = 0,
         ): TextureAtlas {
             val sheet = Texture(path)
             if (!sheet.isLoaded) sheet.load()
-            val atlas = TextureAtlas(sheet.width, sheet.height, 0, sheet)
+            val atlas = TextureAtlas(sheet.width, sheet.height, padding, sheet)
             atlas.init()
 
             val fakeTileTexture = Texture(Paths.get("tile"))
             fakeTileTexture.generate(tileWidth, tileHeight)
 
             // Add entries from the grid:
-            val totalTiles = sheet.width * sheet.height / tileWidth / tileHeight
+            val totalTiles = sheet.width * sheet.height / (tileWidth + padding*2) / (tileHeight + padding*2)
             for (i in 0 until totalTiles) {
                 atlas.run {
                     updateCursor(fakeTileTexture)

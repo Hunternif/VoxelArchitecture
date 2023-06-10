@@ -21,8 +21,8 @@ Courtesy of Noobody: https://www.minecraftforum.net/forums/minecraft-java-editio
  */
 
 val aoTextureAtlas by lazy {
-    val path = TextureAtlas.resourcePath("textures/AO.png")
-    TextureAtlas.loadFromFile(path, 32, 32)
+    val path = TextureAtlas.resourcePath("textures/AO_padded.png")
+    TextureAtlas.loadFromFile(path, 32, 32, 2)
 }
 
 val aoTiles: List<AtlasEntry> by lazy { aoTextureAtlas.entries.toList() }
