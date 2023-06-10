@@ -42,11 +42,7 @@ fun coloredMeshFromVoxelsOpt(
             }
             val (v0, v1, v2, v3) = tempVertArray
             // set AO texture UVs:
-            val aoTile = aoTiles[0] // white
-            v0.uv2.set(aoTile.uvEnd.x, aoTile.uvStart.y)
-            v1.uv2.set(aoTile.uvStart.x, aoTile.uvStart.y)
-            v2.uv2.set(aoTile.uvStart.x, aoTile.uvEnd.y)
-            v3.uv2.set(aoTile.uvEnd.x, aoTile.uvEnd.y)
+            setAOUVs(voxels, p, dir)
             // add vertices for triangles:
             buffer.putVertex(v0, VoxelRenderMode.COLORED)
             buffer.putVertex(v1, VoxelRenderMode.COLORED)
@@ -68,6 +64,21 @@ private fun FloatBuffer.putVertex(v: Vertex, renderMode: VoxelRenderMode) {
         VoxelRenderMode.TEXTURED -> put(v.uv).put(0f).put(0f)
     }
     put(v.uv2)
+}
+
+/** Updates UVs for the Ambient Occlusion tile texture, based on neighbor voxels.
+ * Assumes that vertices in [tempVertArray] are up to date. */
+private fun setAOUVs(voxels: IStorage3D<out IVoxel?>, pos: IntVec3, dir: Direction3D) {
+    val (v0, v1, v2, v3) = tempVertArray
+    val aoTile = getAOTile(voxels, pos, dir)
+    if (aoTile != null) {
+        v0.uv2.set(aoTile.uvEnd.x, aoTile.uvStart.y)
+        v1.uv2.set(aoTile.uvStart.x, aoTile.uvStart.y)
+        v2.uv2.set(aoTile.uvStart.x, aoTile.uvEnd.y)
+        v3.uv2.set(aoTile.uvEnd.x, aoTile.uvEnd.y)
+    } else {
+        tempVertArray.forEach { it.uv2.set(-1f, -1f) }
+    }
 }
 
 /**
@@ -106,11 +117,7 @@ fun texturedMeshFromVoxelsOpt(
             v2.uv.set(uvStart.x, uvEnd.y)
             v3.uv.set(uvEnd.x, uvEnd.y)
             // set AO texture UVs:
-            val aoTile = aoTiles[0] // white
-            v0.uv2.set(aoTile.uvEnd.x, aoTile.uvStart.y)
-            v1.uv2.set(aoTile.uvStart.x, aoTile.uvStart.y)
-            v2.uv2.set(aoTile.uvStart.x, aoTile.uvEnd.y)
-            v3.uv2.set(aoTile.uvEnd.x, aoTile.uvEnd.y)
+            setAOUVs(voxels, p, dir)
             // add vertices for triangles:
             buffer.putVertex(v0, VoxelRenderMode.TEXTURED)
             buffer.putVertex(v1, VoxelRenderMode.TEXTURED)
@@ -163,8 +170,8 @@ private val baseBoxCorners: Array<Vector3f> by lazy {
 private val baseFaceVertices by lazy {
     baseBoxCorners.let {
         mapOf(
-            UP    to arrayOf(it[6], it[7], it[4], it[5]),
-            DOWN  to arrayOf(it[3], it[2], it[1], it[0]),
+            UP    to arrayOf(it[5], it[6], it[7], it[4]),
+            DOWN  to arrayOf(it[2], it[1], it[0], it[3]),
             EAST  to arrayOf(it[5], it[4], it[0], it[1]),
             SOUTH to arrayOf(it[4], it[7], it[3], it[0]),
             WEST  to arrayOf(it[7], it[6], it[2], it[3]),
