@@ -152,7 +152,7 @@ class AppStateImpl(
     override var newNodeType: String = "Node"
 
     override var cleanDummies: Boolean = true
-    override var hinting: Boolean = false
+    override var hinting: Boolean = true
     override var verboseDom: Boolean = false
     override var verboseBuild: Boolean = false
     override var forgetBuildHistory: Boolean = false
