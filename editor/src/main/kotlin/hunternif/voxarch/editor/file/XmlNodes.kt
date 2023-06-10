@@ -45,6 +45,8 @@ open class XmlNode(
     var rotationY: Double = 0.0,
     @field:JacksonXmlProperty(isAttribute = true)
     var transparent: Boolean? = null,
+    @field:JacksonXmlProperty(isAttribute = true)
+    var clipMask: ClipMask? = null,
 
     @field:JacksonXmlProperty(isAttribute = true)
     /** Name of the custom builder from BuilderLibrary.
@@ -121,6 +123,7 @@ internal fun Node.mapToXmlNodeNoChildren(): XmlNode {
     xmlNode.tags.addAll(tags)
     xmlNode.builder = builder?.name
     if (transparent) xmlNode.transparent = true
+    if (clipMask != ClipMask.OFF) xmlNode.clipMask = clipMask
     return xmlNode
 }
 
@@ -169,6 +172,7 @@ private fun XmlNode.mapXmlNodeRecursive(mapped: MutableSet<XmlNode>): Node? {
     node.size = size
     node.tags += tags
     node.transparent = transparent == true
+    node.clipMask = clipMask ?: ClipMask.OFF
     children.forEach { xmlChild ->
         xmlChild.mapXmlNodeRecursive(mapped)?.let { child ->
             node.addChild(child)
