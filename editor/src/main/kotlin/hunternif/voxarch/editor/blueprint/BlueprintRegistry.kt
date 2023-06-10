@@ -109,9 +109,15 @@ class BlueprintRegistry : IBlueprintLibrary {
 
     /** In case of duplicates, changes "Untitled" to "Untitled (2)" */
     private fun makeUniqueName(name: String): String {
-        val trimName = name.trim()
+        var trimName = name.trim()
         if (blueprintsByName[trimName] == null) return trimName
         var i = 0
+        // If the name already contains (N), remove that
+        val match = Regex(".* \\((\\d+)\\)").find(trimName)
+        match?.let {
+            i = it.groups.last()?.value?.toInt() ?: 0
+            trimName = trimName.removeSuffix(" ($i)").trim()
+        }
         var newName: String
         do {
             i++

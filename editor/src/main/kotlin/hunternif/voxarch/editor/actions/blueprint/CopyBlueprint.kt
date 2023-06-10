@@ -15,6 +15,7 @@ class CopyBlueprint(
     private var newSelected: Blueprint? = null
 
     private lateinit var bpCopy: Blueprint
+    val blueprint: Blueprint get() = bpCopy
 
     override fun invoke(app: EditorAppImpl, firstTime: Boolean) {
         if (firstTime) {

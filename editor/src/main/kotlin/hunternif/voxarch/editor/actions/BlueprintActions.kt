@@ -25,7 +25,11 @@ fun EditorApp.addBlueprint(
 
 fun EditorApp.copyBlueprint(
     blueprint: Blueprint, autoSelect: Boolean = true
-) = historyAction(CopyBlueprint(blueprint, autoSelect))
+): Blueprint {
+    val action = CopyBlueprint(blueprint, autoSelect)
+    historyAction(action)
+    return action.blueprint
+}
 
 /** Removes Blueprint from the node, but keeps it in the library. */
 fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) =
