@@ -237,6 +237,12 @@ internal fun readMetadata(path: Path, zipfs: FileSystem, app: EditorApp): Metada
                 "while current version is $FORMAT_VERSION. " +
                 "Things may not work as expected."
         )
+    } else if (metadata.formatVersion > FORMAT_VERSION) {
+        app.logWarning(
+            "Attempting to open $path which uses NEW version ${metadata.formatVersion}, " +
+                "while current version is $FORMAT_VERSION. " +
+                "Things will probably not work as expected."
+        )
     }
     return metadata
 }
