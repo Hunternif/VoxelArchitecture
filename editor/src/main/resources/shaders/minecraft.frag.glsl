@@ -4,13 +4,15 @@ out vec4 FragColor;
 in vec3 Normal;
 in vec3 FragPos;
 in vec4 ColorOrUV;
+in vec2 AOUV;
 
 uniform int uRenderMode; // colored or textured
 const int MODE_COLORED = 1;
 const int MODE_TEXTURED = 2;
 const vec4 UNKNOWN_COLOR = vec4(1, 0, 1, 1); // pink
 
-uniform sampler2D uTexSampler;
+uniform sampler2D uBlockTexture;
+uniform sampler2D uAOTexture;
 
 uniform mat4 uViewProj;
 
@@ -37,9 +39,18 @@ vec4 getColor() {
     if (uRenderMode == MODE_COLORED) {
         return ColorOrUV;
     } else if (uRenderMode == MODE_TEXTURED) {
-        return texture(uTexSampler, ColorOrUV.xy);
+        return texture(uBlockTexture, ColorOrUV.xy);
     } else {
         return UNKNOWN_COLOR;
+    }
+}
+
+vec4 getAOColor() {
+    // Negative UV means no AO
+    if (AOUV.x >= 0 && AOUV.y >= 0) {
+        return texture(uAOTexture, AOUV.xy);
+    } else {
+        return vec4(1, 1, 1, 1);
     }
 }
 
@@ -74,7 +85,7 @@ void main()
     float xFactor = mix(1.0, 1.0 - uDarkenX, xPct);
     float zFactor = mix(1.0, 1.0 - uDarkenZ, zPct);
 
-    vec4 color = getColor();
+    vec4 color = getColor() * getAOColor();
     float darkFactor = topFactor * bottomFactor * xFactor * zFactor;
     FragColor.rgb = color.rgb * darkFactor;
     FragColor.a = color.a;

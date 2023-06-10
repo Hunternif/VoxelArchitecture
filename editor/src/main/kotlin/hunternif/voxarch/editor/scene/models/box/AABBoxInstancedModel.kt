@@ -41,7 +41,8 @@ open class AABBoxInstancedModel<T : AABBoxMesh> : BaseModel() {
 
         initInstanceAttributes {
             vector4f(2) // color instance attribute
-            mat4f(3) // model matrix instance attribute, uses ids 3-6
+            vector2f(3) // AO UV, unused
+            mat4f(4) // model matrix instance attribute, uses ids 4-7
         }
         uploadInstanceData()
     }
@@ -55,11 +56,12 @@ open class AABBoxInstancedModel<T : AABBoxMesh> : BaseModel() {
     }
 
     fun uploadInstanceData() {
-        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 20)
-        // 20 = 4f color + 16f matrix
+        val instanceVertexBuffer = MemoryUtil.memAllocFloat(instances.size * 22)
+        // 22 = 4f color + 2f + 16f matrix
         instanceVertexBuffer.run {
             instances.forEach { it.run {
                 put(color.toVector4f())
+                put(0f).put(0f) // AO UV, unused
                 put(Matrix4f().translation(start).scale(size))
             }}
             safeFlip()

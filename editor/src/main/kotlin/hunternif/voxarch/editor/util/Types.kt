@@ -84,7 +84,9 @@ data class Vertex(
     val pos: Vector3f = Vector3f(),
     val normal: Vector3f = Vector3f(),
     val uv: Vector2f = Vector2f(),
-    var color: ColorRGBa = ColorRGBa(1f, 1f, 1f, 1f)
+    var color: ColorRGBa = ColorRGBa(1f, 1f, 1f, 1f),
+    /** used for AO. Negative values are ignored. */
+    val uv2: Vector2f = Vector2f(-1f, -1f)
 ) {
     constructor(
         posX: Float,

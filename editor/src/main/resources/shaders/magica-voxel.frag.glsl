@@ -4,13 +4,15 @@ out vec4 FragColor;
 in vec3 Normal;
 in vec3 FragPos;
 in vec4 ColorOrUV;
+in vec2 AOUV;
 
 uniform int uRenderMode; // colored or textured
 const int MODE_COLORED = 1;
 const int MODE_TEXTURED = 2;
 const vec4 UNKNOWN_COLOR = vec4(1, 0, 1, 1); // pink
 
-uniform sampler2D uTexSampler;
+uniform sampler2D uBlockTexture;
+uniform sampler2D uAOTexture;
 
 uniform mat4 uViewProj;
 
@@ -39,9 +41,18 @@ vec4 getColor() {
     if (uRenderMode == MODE_COLORED) {
         return ColorOrUV;
     } else if (uRenderMode == MODE_TEXTURED) {
-        return texture(uTexSampler, ColorOrUV.xy);
+        return texture(uBlockTexture, ColorOrUV.xy);
     } else {
         return UNKNOWN_COLOR;
+    }
+}
+
+vec4 getAOColor() {
+    // Negative UV means no AO
+    if (AOUV.x >= 0 && AOUV.y >= 0) {
+        return texture(uAOTexture, AOUV.xy);
+    } else {
+        return vec4(1, 1, 1, 1);
     }
 }
 
@@ -61,7 +72,7 @@ void main()
 
     // sum up everything
     vec4 totalLight = vec4(ambientLight + skyDiffLight + backDiffLight, 1.0);
-    FragColor = totalLight * getColor();
+    FragColor = totalLight * getColor() * getAOColor();
 
     // To use depth correctly with other elements like the grid:
     gl_FragDepth = computeDepth(FragPos);

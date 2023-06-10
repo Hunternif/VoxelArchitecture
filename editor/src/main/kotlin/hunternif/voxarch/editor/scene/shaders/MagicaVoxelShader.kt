@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene.shaders
 
 import hunternif.voxarch.editor.builder.minecraftTexAtlas
 import hunternif.voxarch.editor.util.ColorRGBa
+import hunternif.voxarch.editor.util.aoTextureAtlas
 import hunternif.voxarch.editor.util.resourcePath
 import org.joml.Matrix4f
 import org.joml.Vector3f
@@ -29,12 +30,14 @@ class MagicaVoxelShader: VoxelShader() {
 
             uploadFloat("depthOffset", depthOffset)
 
-            uploadTexture("uTexSampler", 0)
+            uploadTexture("uBlockTexture", 0)
+            uploadTexture("uAOTexture", 1)
 
             renderMode = VoxelRenderMode.COLORED
             uploadInt("uRenderMode", renderMode.id)
 
             texture = minecraftTexAtlas.sheet
+            aoTexture = aoTextureAtlas.sheet
         }
     }
 }

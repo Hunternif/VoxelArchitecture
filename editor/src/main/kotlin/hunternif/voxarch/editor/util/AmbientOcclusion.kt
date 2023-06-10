@@ -1,5 +1,6 @@
 package hunternif.voxarch.editor.util
 
+import hunternif.voxarch.editor.render.AtlasEntry
 import hunternif.voxarch.editor.render.TextureAtlas
 
 /*
@@ -18,3 +19,5 @@ val aoTextureAtlas by lazy {
     val path = TextureAtlas.resourcePath("textures/AO.png")
     TextureAtlas.loadFromFile(path, 32, 32)
 }
+
+val aoTiles: List<AtlasEntry> by lazy { aoTextureAtlas.entries.toList() }

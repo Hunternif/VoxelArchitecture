@@ -27,8 +27,8 @@ fun coloredMeshFromVoxelsOpt(
     val faceCount = faces.values.fold(0) { out, list -> out + list.size }
 
     // 2. Reconstruct the mesh by creating triangles for each visible face.
-    // 10 = 3f pos + 3f normal + 4f color or UV
-    val buffer = MemoryUtil.memAllocFloat(faceCount * 2 * 3 * 10)
+    // 12 = 3f pos + 3f normal + 4f color or UV + 2f AOUV
+    val buffer = MemoryUtil.memAllocFloat(faceCount * 2 * 3 * 12)
     faces.forEach { (dir, points) ->
         points.forEach { p ->
             val v = voxels[p]!!
@@ -40,8 +40,14 @@ fun coloredMeshFromVoxelsOpt(
                 tempVertArray[i].normal.set(dir.vec)
                 tempVertArray[i].color = color
             }
-            // add vertices for triangles:
             val (v0, v1, v2, v3) = tempVertArray
+            // set AO texture UVs:
+            val aoTile = aoTiles[0] // white
+            v0.uv2.set(aoTile.uvEnd.x, aoTile.uvStart.y)
+            v1.uv2.set(aoTile.uvStart.x, aoTile.uvStart.y)
+            v2.uv2.set(aoTile.uvStart.x, aoTile.uvEnd.y)
+            v3.uv2.set(aoTile.uvEnd.x, aoTile.uvEnd.y)
+            // add vertices for triangles:
             buffer.putVertex(v0, VoxelRenderMode.COLORED)
             buffer.putVertex(v1, VoxelRenderMode.COLORED)
             buffer.putVertex(v2, VoxelRenderMode.COLORED)
@@ -61,6 +67,7 @@ private fun FloatBuffer.putVertex(v: Vertex, renderMode: VoxelRenderMode) {
         VoxelRenderMode.COLORED -> put(v.color)
         VoxelRenderMode.TEXTURED -> put(v.uv).put(0f).put(0f)
     }
+    put(v.uv2)
 }
 
 /**
@@ -75,8 +82,8 @@ fun texturedMeshFromVoxelsOpt(
     val faceCount = faces.values.fold(0) { out, list -> out + list.size }
 
     // 2. Reconstruct the mesh by creating triangles for each visible face.
-    // 10 = 3f pos + 3f normal + 4f color or UV
-    val buffer = MemoryUtil.memAllocFloat(faceCount * 2 * 3 * 10)
+    // 12 = 3f pos + 3f normal + 4f color or UV + 2f AOUV
+    val buffer = MemoryUtil.memAllocFloat(faceCount * 2 * 3 * 12)
     faces.forEach { (dir, points) ->
         points.forEach { p ->
             val uvStart = Vector2f(0f, 0f)
@@ -93,10 +100,17 @@ fun texturedMeshFromVoxelsOpt(
                 tempVertArray[i].normal.set(dir.vec)
             }
             val (v0, v1, v2, v3) = tempVertArray
+            // set block texture UVs:
             v0.uv.set(uvEnd.x, uvStart.y)
             v1.uv.set(uvStart.x, uvStart.y)
             v2.uv.set(uvStart.x, uvEnd.y)
             v3.uv.set(uvEnd.x, uvEnd.y)
+            // set AO texture UVs:
+            val aoTile = aoTiles[0] // white
+            v0.uv2.set(aoTile.uvEnd.x, aoTile.uvStart.y)
+            v1.uv2.set(aoTile.uvStart.x, aoTile.uvStart.y)
+            v2.uv2.set(aoTile.uvStart.x, aoTile.uvEnd.y)
+            v3.uv2.set(aoTile.uvEnd.x, aoTile.uvEnd.y)
             // add vertices for triangles:
             buffer.putVertex(v0, VoxelRenderMode.TEXTURED)
             buffer.putVertex(v1, VoxelRenderMode.TEXTURED)

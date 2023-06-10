@@ -54,13 +54,14 @@ class VoxelMeshModel(
             vector3f(0) // position attribute
             vector3f(1) // normal attribute
             vector4f(2) // color or UV attribute
+            vector2f(3) // Ambient Occlusion UV attribute
         }
 
         // The shader is instanced, but it will only render 1 instance:
         instanceVboID = glGenBuffers()
         glBindBuffer(GL_ARRAY_BUFFER, instanceVboID)
         initInstanceAttributes {
-            mat4f(3) // model matrix instance attribute, uses ids 3-6
+            mat4f(4) // model matrix instance attribute, uses ids 4-7
         }
         uploadInstanceData()
         pickModel.init()
