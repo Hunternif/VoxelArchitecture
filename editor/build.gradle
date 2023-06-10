@@ -3,6 +3,9 @@ apply plugin: 'kotlin'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 
+version = "0.1.3"
+archivesBaseName = "VoxArch-editor"
+
 buildscript {
     ext.kotlin_version = '1.6.10'
     ext.lwjglVersion = '3.3.0'
@@ -117,6 +120,7 @@ jar {
     duplicatesStrategy = DuplicatesStrategy.EXCLUDE
     manifest {
         attributes "Main-Class": "hunternif.voxarch.editor.EditorAppKt"
+        attributes "Editor-Version": project.version
     }
 
     // Creates a fat jar with all dependencies
@@ -127,6 +131,7 @@ jar {
     // For some reason native libraries are copied for all platforms.
     // This hack excludes some of them:
     if (nativePlatform == "windows") {
+        archiveClassifier = "win"
         eachFile {
             if (it.file.path =~ "natives-linux" || it.file.path =~ "natives-macos" ||
                     it.file.name.endsWith(".so") || it.file.name.endsWith(".dylib")
