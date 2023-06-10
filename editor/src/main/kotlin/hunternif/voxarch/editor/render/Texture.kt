@@ -5,6 +5,8 @@ import hunternif.voxarch.editor.util.ByteBufferWrapper
 import hunternif.voxarch.editor.util.ColorRGBa
 import hunternif.voxarch.editor.util.safeClear
 import hunternif.voxarch.editor.util.safeFlip
+import org.joml.Vector2f
+import org.joml.Vector2i
 import org.lwjgl.opengl.GL32.*
 import org.lwjgl.system.MemoryStack
 import org.lwjgl.system.MemoryUtil
@@ -183,4 +185,49 @@ private val BufferedImage.channels: Int get() = when (type) {
     TYPE_BYTE_GRAY -> 1
     TYPE_USHORT_GRAY -> 1
     else -> 0
+}
+
+/**
+ * Renders a texture onto a frame buffer.
+ */
+fun copyTexture(
+    source: Texture,
+    sourceUVStart: Vector2f,
+    sourceUVEnd: Vector2f,
+    targetFbo: FrameBuffer,
+    targetCoordStart: Vector2i,
+    targetCoordEnd: Vector2i,
+) = targetFbo.render {
+    val target = targetFbo.texture
+
+    glEnable(GL_TEXTURE_2D)
+    glDisable(GL_LIGHTING)
+    glDisable(GL_BLEND)
+    glDisable(GL_DEPTH_TEST)
+    glColor4f(1f, 1f, 1f, 1f)
+
+    source.bind()
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
+    glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
+
+    glViewport(0, 0, target.width, target.height)
+    glMatrixMode(GL_PROJECTION)
+    glPushMatrix()
+    glLoadIdentity()
+    glOrtho(0.0, target.width.toDouble(), 0.0, target.height.toDouble(), 0.0, 100.0)
+
+    glBegin(GL_QUADS)
+    glTexCoord2f(sourceUVEnd.x, sourceUVStart.y)
+    glVertex3i(targetCoordEnd.x, targetCoordStart.y, 0)
+    glTexCoord2f(sourceUVEnd.x, sourceUVEnd.y)
+    glVertex3i(targetCoordEnd.x, targetCoordEnd.y, 0)
+    glTexCoord2f(sourceUVStart.x, sourceUVEnd.y)
+    glVertex3i(targetCoordStart.x, targetCoordEnd.y, 0)
+    glTexCoord2f(sourceUVStart.x, sourceUVStart.y)
+    glVertex3i(targetCoordStart.x, targetCoordStart.y, 0)
+    glEnd()
+
+    glPopMatrix()
 }

@@ -3,15 +3,18 @@ package hunternif.voxarch.editor.render
 import org.lwjgl.opengl.GL32.*
 import java.nio.file.Paths
 
-open class FrameBuffer {
-    private val vp = Viewport(0, 0, 0, 0)
+open class FrameBuffer(
+    val texture: Texture = Texture(Paths.get("generated"))
+) {
+    private val vp = Viewport(0, 0, texture.width, texture.height)
     var fboID: Int = 0
     var rboID: Int = 0
-    val texture = Texture(Paths.get("generated"))
 
     open fun init(viewport: Viewport) {
         setViewport(viewport)
-        texture.generate(vp.width, vp.height)
+        if (!texture.isLoaded) {
+            texture.generate(vp.width, vp.height)
+        }
 
         fboID = glGenFramebuffers()
         glBindFramebuffer(GL_FRAMEBUFFER, fboID)

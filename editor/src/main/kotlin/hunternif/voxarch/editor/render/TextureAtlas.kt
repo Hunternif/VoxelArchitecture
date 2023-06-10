@@ -2,7 +2,6 @@ package hunternif.voxarch.editor.render
 
 import org.joml.Vector2f
 import org.joml.Vector2i
-import org.lwjgl.opengl.GL32.*
 import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.math.max
@@ -17,7 +16,7 @@ class TextureAtlas(
     val padding: Int = 0,
     val sheet: Texture = Texture(Paths.get("sheet"))
 ) {
-    private var mainFboID: Int = 0
+    private val mainFbo = FrameBuffer(sheet)
 
     private val _entries = linkedSetOf<AtlasEntry>()
     val entries: Collection<AtlasEntry> get() = _entries
@@ -29,16 +28,10 @@ class TextureAtlas(
     private var rowHeight = 0
 
     fun init() {
-        sheet.generate(width, height)
-        mainFboID = glGenFramebuffers()
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mainFboID)
-        glFramebufferTexture2D(
-            GL_DRAW_FRAMEBUFFER,
-            GL_COLOR_ATTACHMENT0,
-            GL_TEXTURE_2D,
-            sheet.texID,
-            0
-        )
+        if (!sheet.isLoaded) {
+            sheet.generate(width, height)
+        }
+        mainFbo.init(Viewport(0, 0, width, height))
     }
 
     /** Adds a new texture to the atlas, if it fits. */
@@ -49,7 +42,18 @@ class TextureAtlas(
         val entry = AtlasEntry(this, texture, cursor)
         _entries.add(entry)
 
-        copyTexture(entry)
+        // Add an extra layer of padding around the texture to prevent bleeding.
+        // UVs on the source texture including padding:
+        val uvPadding = Vector2f(padding.toFloat(), padding.toFloat())
+            .mul(1f / entry.texture.width, 1f / entry.texture.height)
+        copyTexture(
+            texture,
+            Vector2f(0f, 0f).sub(uvPadding),
+            Vector2f(1f, 1f).add(uvPadding),
+            mainFbo,
+            entry.startPadded,
+            entry.endPadded
+        )
 
         cursor.x += entry.sizePadded.x
         rowHeight = max(rowHeight, entry.sizePadded.y)
@@ -76,51 +80,6 @@ class TextureAtlas(
         }
     }
 
-    /** Renders the entry's texture onto the main sheet texture at [cursor],
-     * adding an extra layer of [padding] to prevent bleeding. */
-    private fun copyTexture(entry: AtlasEntry) {
-        glBindFramebuffer(GL_DRAW_FRAMEBUFFER, mainFboID)
-
-        glEnable(GL_TEXTURE_2D)
-        glDisable(GL_LIGHTING)
-        glDisable(GL_BLEND)
-        glDisable(GL_DEPTH_TEST)
-        glColor4f(1f, 1f, 1f, 1f)
-
-        entry.texture.bind()
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST)
-        glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST)
-
-        glViewport(0, 0, sheet.width, sheet.height)
-        glMatrixMode(GL_PROJECTION)
-        glPushMatrix()
-        glLoadIdentity()
-        glOrtho(0.0, sheet.width.toDouble(), 0.0, sheet.height.toDouble(), 0.0, 100.0)
-
-        // UVs on the source texture including padding:
-        val uvPadding = Vector2f(padding.toFloat(), padding.toFloat())
-            .mul(1f / entry.texture.width, 1f / entry.texture.height)
-        val uvStartPadded = Vector2f(0f, 0f).sub(uvPadding)
-        val uvEndPadded = Vector2f(1f, 1f).add(uvPadding)
-
-        glBegin(GL_QUADS)
-        glTexCoord2f(uvEndPadded.x, uvStartPadded.y)
-        glVertex3i(entry.endPadded.x, entry.startPadded.y, 0)
-        glTexCoord2f(uvEndPadded.x, uvEndPadded.y)
-        glVertex3i(entry.endPadded.x, entry.endPadded.y, 0)
-        glTexCoord2f(uvStartPadded.x, uvEndPadded.y)
-        glVertex3i(entry.startPadded.x, entry.endPadded.y, 0)
-        glTexCoord2f(uvStartPadded.x, uvStartPadded.y)
-        glVertex3i(entry.startPadded.x, entry.startPadded.y, 0)
-        glEnd()
-
-        glPopMatrix()
-
-        glBindFramebuffer(GL_FRAMEBUFFER, 0)
-    }
-
     companion object {
         /** Loads a file that contains a texture of an atlas with a rectangular grid */
         fun loadFromFile(
@@ -130,6 +89,7 @@ class TextureAtlas(
             val sheet = Texture(path)
             if (!sheet.isLoaded) sheet.load()
             val atlas = TextureAtlas(sheet.width, sheet.height, 0, sheet)
+            atlas.init()
 
             val fakeTileTexture = Texture(Paths.get("tile"))
             fakeTileTexture.generate(tileWidth, tileHeight)
