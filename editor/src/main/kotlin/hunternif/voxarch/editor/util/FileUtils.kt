@@ -5,6 +5,7 @@ import org.lwjgl.util.nfd.NativeFileDialog.*
 import java.io.FileNotFoundException
 import java.nio.file.*
 import java.nio.file.spi.FileSystemProvider
+import java.util.jar.Manifest
 
 private lateinit var jarFs: FileSystem
 
@@ -76,5 +77,15 @@ fun saveFileDialog(fileFilter: String, onPathChosen: (Path) -> Unit) {
         }
     } finally {
         MemoryUtil.memFree(outPath)
+    }
+}
+
+fun <T: Any> T.getManifest(): Manifest? {
+    return try {
+        val url = javaClass.classLoader.getResource("META-INF/MANIFEST.MF")
+        Manifest(url!!.openStream())
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
     }
 }

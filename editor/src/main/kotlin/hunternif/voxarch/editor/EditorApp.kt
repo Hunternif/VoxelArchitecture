@@ -7,6 +7,7 @@ import hunternif.voxarch.editor.scene.MainScene
 import hunternif.voxarch.editor.gui.MainGui
 import hunternif.voxarch.editor.render.Viewport
 import hunternif.voxarch.editor.scene.InputController
+import hunternif.voxarch.editor.util.getManifest
 import org.lwjgl.glfw.Callbacks
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL
@@ -25,11 +26,12 @@ fun main(args: Array<String>) = EditorAppImpl().run(*args)
  * This interface hides details like GUI, scene etc.
  */
 interface EditorApp {
+    val appVersion: String
     val state: AppState
 }
 
 class EditorAppImpl : EditorApp {
-    private val title = "Voxel Architecture Editor"
+    private val baseTitle = "Voxel Architecture Editor"
     private var window: Long = 0
     private var width: Int = 1280
     private var height: Int = 720
@@ -37,6 +39,7 @@ class EditorAppImpl : EditorApp {
     internal val gui = MainGui(this)
     val scene = MainScene(this)
 
+    override lateinit var appVersion: String
     override lateinit var state: AppStateImpl
 
     fun run(vararg args: String) {
@@ -67,7 +70,9 @@ class EditorAppImpl : EditorApp {
 
     fun init(vararg args: String) {
         glfwInit()
-        window = createWindow(width, height, title)
+        appVersion = getManifest()?.mainAttributes?.getValue("Editor-Version")
+            ?: "UNKNOWN"
+        window = createWindow(width, height, "$baseTitle - $appVersion")
         val vp = Viewport(0, 0, width, height)
         registerWindowEventHandler()
         inputController.init(window)
