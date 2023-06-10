@@ -8,10 +8,9 @@ import hunternif.voxarch.util.isRightAngle
 import hunternif.voxarch.util.rotateY
 import hunternif.voxarch.util.round
 import hunternif.voxarch.vector.LinearTransformation
-import hunternif.voxarch.vector.Vec3
 
 /**
- * See [findOriginHint]
+ * See [applyHint]
  */
 enum class HintDir {
     /** No hinting */
@@ -30,15 +29,17 @@ enum class HintDir {
 }
 
 /**
- * Move this [node]'s origin so that it's global position rounds to int,
+ * Move this [node]'s origin and size so that its global position rounds to int,
  * using the given strategy [dir].
- * @return new origin value after hinting.
+ *
+ * Moving origin instead of start, because that leads to cleaner final positions
+ * for all children.
  */
-fun findOriginHint(node: Node, dir: HintDir): Vec3 {
+fun applyHint(node: Node, dir: HintDir) {
     // TODO: hint rotated nodes
-    if (!node.rotationY.isRightAngle()) return node.origin
-    val hint = when (dir) {
-        OFF -> node.origin
+    if (!node.rotationY.isRightAngle()) return
+    when (dir) {
+        OFF -> {}
         ROUND -> {
             val globalPos = node.findGlobalPosition()
             val globalRot = node.findGlobalRotation()
@@ -50,15 +51,23 @@ fun findOriginHint(node: Node, dir: HintDir): Vec3 {
                 rotateY(-globalRot)
                 translate(-globalPos)
             }
+
             val globalStart = localToGlobal.transform(node.start)
             val globalStartHint = globalStart.round()
             val localStartHint = globalToLocal.transform(globalStartHint)
+
+            val globalEnd = localToGlobal.transform(node.start + node.size)
+            val globalEndHint = globalEnd.round()
+            val localEndHint = globalToLocal.transform(globalEndHint)
+
             val deltaStart = localStartHint - node.start
+            val newSize = localEndHint - node.start - deltaStart
+
             // rotate to local angle because we're moving origin, not start:
-            node.origin + deltaStart.rotateY(node.rotationY)
+            node.origin += deltaStart.rotateY(node.rotationY)
+            node.size = newSize
         }
-        OUT_X -> node.origin /* not implemented */
-        OUT_X_Z -> node.origin /* not implemented */
+        OUT_X -> { /* not implemented */ }
+        OUT_X_Z -> { /* not implemented */ }
     }
-    return hint
 }
