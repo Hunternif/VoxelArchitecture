@@ -1,7 +1,7 @@
 package hunternif.voxarch.editor.file
 
 /** Current version */
-const val FORMAT_VERSION: Int = 8
+const val FORMAT_VERSION: Int = 9
 
 /** Project metadata */
 class Metadata(
