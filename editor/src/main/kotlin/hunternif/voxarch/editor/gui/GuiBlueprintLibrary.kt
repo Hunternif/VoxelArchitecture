@@ -23,6 +23,7 @@ class GuiBlueprintLibrary(
         ImGui.separator()
 
         var toDelete: Blueprint? = null
+        var toCopy: Blueprint? = null
         var toRename: Pair<Blueprint, String>? = null
         ImGui.pushFont(gui.fontSmallIcons)
         if (ImGui.beginTable("blueprints_table", 3, ImGuiTableFlags.PadOuterX)) {
@@ -60,6 +61,10 @@ class GuiBlueprintLibrary(
                     menuItem("Rename") {
                         editingNameBp = bp
                     }
+                    menuItem("Duplicate") {
+                        // prevent concurrent modification:
+                        toCopy = bp
+                    }
                     menuItem("Delete") {
                         // prevent concurrent modification:
                         toDelete = bp
@@ -86,5 +91,6 @@ class GuiBlueprintLibrary(
             app.deleteSelectedBlueprint()
         }
         toRename?.let { (bp, name) -> app.renameBlueprint(bp, name)}
+        toCopy?.let { app.copyBlueprint(it) }
     }
 }

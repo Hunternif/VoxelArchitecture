@@ -23,6 +23,10 @@ fun EditorApp.addBlueprint(
     node: SceneNode, blueprint: Blueprint, autoSelect: Boolean = true
 ) = historyAction(AddBlueprint(node, blueprint, autoSelect))
 
+fun EditorApp.copyBlueprint(
+    blueprint: Blueprint, autoSelect: Boolean = true
+) = historyAction(CopyBlueprint(blueprint, autoSelect))
+
 /** Removes Blueprint from the node, but keeps it in the library. */
 fun EditorApp.removeBlueprint(node: SceneNode, blueprint: Blueprint) =
     historyAction(RemoveBlueprint(node, blueprint))
