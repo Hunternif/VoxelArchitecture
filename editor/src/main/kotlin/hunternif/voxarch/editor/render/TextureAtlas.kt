@@ -3,6 +3,7 @@ package hunternif.voxarch.editor.render
 import org.joml.Vector2f
 import org.joml.Vector2i
 import org.lwjgl.opengl.GL32.*
+import java.nio.file.Path
 import java.nio.file.Paths
 import kotlin.math.max
 
@@ -14,11 +15,12 @@ class TextureAtlas(
     val height: Int,
     /** To prevent texture bleeding. */
     val padding: Int = 0,
+    val sheet: Texture = Texture(Paths.get("sheet"))
 ) {
-    val sheet = Texture(Paths.get("sheet"))
     private var mainFboID: Int = 0
 
-    private val entries = linkedSetOf<AtlasEntry>()
+    private val _entries = linkedSetOf<AtlasEntry>()
+    val entries: Collection<AtlasEntry> get() = _entries
 
     /** Points to the nearest free space, to its top-left corner. */
     private val cursor = Vector2i()
@@ -45,7 +47,7 @@ class TextureAtlas(
         updateCursor(texture)
 
         val entry = AtlasEntry(this, texture, cursor)
-        entries.add(entry)
+        _entries.add(entry)
 
         copyTexture(entry)
 
@@ -117,6 +119,37 @@ class TextureAtlas(
         glPopMatrix()
 
         glBindFramebuffer(GL_FRAMEBUFFER, 0)
+    }
+
+    companion object {
+        /** Loads a file that contains a texture of an atlas with a rectangular grid */
+        fun loadFromFile(
+            path: Path,
+            tileWidth: Int, tileHeight: Int,
+        ): TextureAtlas {
+            val sheet = Texture(path)
+            if (!sheet.isLoaded) sheet.load()
+            val atlas = TextureAtlas(sheet.width, sheet.height, 0, sheet)
+
+            val fakeTileTexture = Texture(Paths.get("tile"))
+            fakeTileTexture.generate(tileWidth, tileHeight)
+
+            // Add entries from the grid:
+            val totalTiles = sheet.width * sheet.height / tileWidth / tileHeight
+            for (i in 0 until totalTiles) {
+                atlas.run {
+                    updateCursor(fakeTileTexture)
+
+                    val entry = AtlasEntry(this, fakeTileTexture, cursor)
+                    _entries.add(entry)
+
+                    cursor.x += entry.sizePadded.x
+                    rowHeight = max(rowHeight, entry.sizePadded.y)
+                }
+            }
+
+            return atlas
+        }
     }
 }
 
