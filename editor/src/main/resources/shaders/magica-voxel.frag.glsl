@@ -27,6 +27,8 @@ uniform float uBacklightPower;
 uniform vec3 uAmbientColor;
 uniform float uAmbientPower;
 
+uniform float uAOPower;
+
 // This is a cheat to prevent Z-fighting of lines on top of voxels.
 uniform float depthOffset;
 
@@ -50,7 +52,7 @@ vec4 getColor() {
 vec4 getAOColor() {
     // Negative UV means no AO
     if (AOUV.x >= 0 && AOUV.y >= 0) {
-        return texture(uAOTexture, AOUV.xy);
+        return mix(vec4(1, 1, 1, 1), texture(uAOTexture, AOUV.xy), uAOPower);
     } else {
         return vec4(1, 1, 1, 1);
     }

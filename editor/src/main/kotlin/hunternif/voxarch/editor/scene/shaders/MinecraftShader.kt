@@ -25,6 +25,9 @@ class MinecraftShader: VoxelShader() {
 
             uploadTexture("uBlockTexture", 0)
             uploadTexture("uAOTexture", 1)
+
+            uploadFloat("uAOPower", 0.6f)
+
             texture = minecraftTexAtlas.sheet
             aoTexture = aoTextureAtlas.sheet
         }

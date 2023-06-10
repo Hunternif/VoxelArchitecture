@@ -33,6 +33,8 @@ class MagicaVoxelShader: VoxelShader() {
             uploadTexture("uBlockTexture", 0)
             uploadTexture("uAOTexture", 1)
 
+            uploadFloat("uAOPower", 0.6f)
+
             renderMode = VoxelRenderMode.COLORED
             uploadInt("uRenderMode", renderMode.id)
 
