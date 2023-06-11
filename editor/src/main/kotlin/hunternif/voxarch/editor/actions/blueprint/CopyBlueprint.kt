@@ -21,6 +21,7 @@ class CopyBlueprint(
         if (firstTime) {
             val xml = serializeToXmlStr(originalBp)
             bpCopy = deserializeXml(xml, Blueprint::class)
+            //TODO: populate delegates and out slot links
         }
         oldSelected = app.state.selectedBlueprint
         newSelected = if (autoSelect) bpCopy else oldSelected
