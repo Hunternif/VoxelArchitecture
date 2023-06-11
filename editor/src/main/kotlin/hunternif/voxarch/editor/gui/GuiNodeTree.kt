@@ -15,10 +15,7 @@ import imgui.flag.ImGuiCol.*
 import org.lwjgl.glfw.GLFW.*
 import java.util.LinkedList
 
-class GuiNodeTree(
-    app: EditorApp,
-    gui: GuiBase
-) : GuiSceneTree(app, gui) {
+class GuiNodeTree(app: EditorApp) : GuiSceneTree(app) {
     override fun initState() {
         root = app.state.rootNode
         super.initState()
@@ -32,20 +29,14 @@ class GuiNodeTree(
     }
 }
 
-class GuiVoxelTree(
-    app: EditorApp,
-    gui: GuiBase
-) : GuiSceneTree(app, gui) {
+class GuiVoxelTree(app: EditorApp) : GuiSceneTree(app) {
     override fun initState() {
         root = app.state.voxelRoot
         super.initState()
     }
 }
 
-abstract class GuiSceneTree(
-    val app: EditorApp,
-    private val gui: GuiBase,
-) : ISceneListener {
+abstract class GuiSceneTree(val app: EditorApp) : ISceneListener {
     /** Used to detect click outside the tree, which resets selection */
     private var isAnyTreeNodeClicked = false
     private var isThisPanelClicked = false
@@ -137,7 +128,7 @@ abstract class GuiSceneTree(
         // Button maintains the size & pos well, regardless of font.
 
         if (isCustomColor) pushStyleColor(Button, item.color)
-        gui.smallIconButton(item.visibleIconForImgui, transparent = !isCustomColor) {
+        smallIconButton(item.visibleIconForImgui, transparent = !isCustomColor) {
             if (item.isHidden) app.showObject(node)
             else app.hideObject(node)
             markListDirty()

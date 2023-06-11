@@ -23,7 +23,6 @@ import imgui.flag.ImGuiTableFlags
  */
 class GuiObjectProperties(
     private val app: EditorApp,
-    private val gui: GuiBase,
 ) {
     private val originInput = GuiInputVec3("origin")
     private val sizeInput = GuiInputVec3("voxel size", min = 1f)
@@ -159,7 +158,7 @@ By default, it's set so that origin is at the low-XYZ corner.""")
 
     private fun renderBlueprintTable(sceneNode: SceneNode) {
         updateBlueprints(sceneNode)
-        ImGui.pushFont(gui.fontSmallIcons)
+        ImGui.pushFont(GuiBase.fontSmallIcons)
         if (ImGui.beginTable("blueprints_table", 2, ImGuiTableFlags.PadOuterX)) {
             // it's not actually 10px wide, selectable makes it wider
             ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)

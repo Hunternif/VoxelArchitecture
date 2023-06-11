@@ -14,16 +14,16 @@ import imgui.flag.ImGuiWindowFlags
 import imgui.internal.flag.ImGuiDockNodeFlags
 import imgui.type.ImBoolean
 
-class MainGui(val app: EditorApp) : GuiBase() {
+class MainGui(val app: EditorApp) {
     @PublishedApi internal val vp = Viewport(0, 0, 0, 0)
     @PublishedApi internal var mainWindowFbo = FrameBuffer()
     @PublishedApi internal val fpsCounter = FpsCounter()
-    @PublishedApi internal val properties = GuiMultiObjectProperties(app, this)
-    @PublishedApi internal val nodeTree = GuiNodeTree(app, this)
-    @PublishedApi internal val voxelTree = GuiVoxelTree(app, this)
-    @PublishedApi internal val history = GuiHistory(app, this)
-    @PublishedApi internal val blueprintLibrary = GuiBlueprintLibrary(app, this)
-    @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app, this)
+    @PublishedApi internal val properties = GuiMultiObjectProperties(app)
+    @PublishedApi internal val nodeTree = GuiNodeTree(app)
+    @PublishedApi internal val voxelTree = GuiVoxelTree(app)
+    @PublishedApi internal val history = GuiHistory(app)
+    @PublishedApi internal val blueprintLibrary = GuiBlueprintLibrary(app)
+    @PublishedApi internal val blueprintEditor = GuiBlueprintEditor(app)
     @PublishedApi internal val styleEditor = GuiStylesheetEditor(app)
     @PublishedApi internal val build = GuiBuild(app)
     @PublishedApi internal val log = GuiLog()
@@ -87,7 +87,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         viewport: Viewport,
         samplesMSAA: Int = 0,
     ) {
-        super.init(windowHandle)
+        GuiBase.init(windowHandle)
         vp.set(viewport)
         if (samplesMSAA > 0) mainWindowFbo = FrameBufferMSAA(samplesMSAA)
         mainWindowFbo.init(viewport)
@@ -101,7 +101,7 @@ class MainGui(val app: EditorApp) : GuiBase() {
         voxelTree.initState()
     }
 
-    inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = runFrame {
+    inline fun render(crossinline renderMainWindow: (Viewport) -> Unit) = GuiBase.runFrame {
         hoverController.onStartFrame()
 //        debugTexture((app as EditorAppImpl).scene.hitTester.voxelsFbo.texture)
         fpsCounter.run()

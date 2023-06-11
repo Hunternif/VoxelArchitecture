@@ -11,10 +11,9 @@ import imgui.glfw.ImGuiImplGlfw
 import org.lwjgl.glfw.GLFW
 
 /**
- * Encapsulates basic gui setup methods for the main gui class.
- * Don't extend this in any other classes!
+ * Encapsulates ImGui setup methods.
  */
-abstract class GuiBase {
+object GuiBase {
     @PublishedApi internal val imGuiGlfw = ImGuiImplGlfw()
     @PublishedApi internal val imGuiGl3 = ImGuiImplGl3()
     var window: Long = 0

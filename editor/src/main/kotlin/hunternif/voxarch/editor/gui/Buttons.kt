@@ -34,7 +34,7 @@ inline fun accentButton(
 }
 
 /** Draws a square button with an icon from FontAwesome */
-inline fun GuiBase.iconButton(
+inline fun iconButton(
     icon: String,
     tooltip: String = "",
     accent: Boolean = false,
@@ -42,7 +42,7 @@ inline fun GuiBase.iconButton(
     transparent: Boolean = false,
     width: Float = ImGui.getFrameHeight(),
     height: Float = width,
-    font: ImFont = fontBigIcons,
+    font: ImFont = GuiBase.fontBigIcons,
     crossinline onClick: () -> Unit = {}
 ) {
     ImGui.pushStyleVar(ImGuiStyleVar.FramePadding, -1f, -1f)
@@ -67,25 +67,25 @@ inline fun GuiBase.iconButton(
     else if (transparent) ImGui.popStyleColor()
 }
 
-inline fun GuiBase.bigIconButton(
+inline fun bigIconButton(
     icon: String,
     tooltip: String = "",
     selected: Boolean = false,
     transparent: Boolean = false,
     crossinline onClick: () -> Unit = {}
 ) {
-    iconButton(icon, tooltip, false, selected, transparent, 22f, 22f, fontBigIcons, onClick)
+    iconButton(icon, tooltip, false, selected, transparent, 22f, 22f, GuiBase.fontBigIcons, onClick)
 }
 
 /** Draws a smaller square button with an icon from FontAwesome */
-inline fun GuiBase.smallIconButton(
+inline fun smallIconButton(
     icon: String,
     tooltip: String = "",
     selected: Boolean = false,
     transparent: Boolean = false,
     crossinline onClick: () -> Unit = {}
 ) {
-    iconButton(icon, tooltip, false, selected, transparent, 20f, 19f, fontSmallIcons, onClick)
+    iconButton(icon, tooltip, false, selected, transparent, 20f, 19f, GuiBase.fontSmallIcons, onClick)
 }
 
 fun MainGui.toolButton(tool: Tool) {
@@ -111,9 +111,9 @@ fun centeredText(text: String) {
     ImGui.popStyleVar(1)
 }
 
-inline fun GuiBase.inlineIconButton(
+inline fun inlineIconButton(
     text: String,
-    font: ImFont = fontSmallIcons,
+    font: ImFont = GuiBase.fontSmallIcons,
     crossinline onClick: () -> Unit = {}
 ) {
     ImGui.pushFont(font)

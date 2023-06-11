@@ -8,7 +8,6 @@ import imgui.flag.*
 
 class GuiHistory(
     private val app: EditorApp,
-    private val gui: GuiBase,
 ) {
     private var historyLength = 0
 
@@ -16,7 +15,7 @@ class GuiHistory(
         // CellPadding = 0 makes rows appear next to each other without breaks
         ImGui.pushStyleVar(ImGuiStyleVar.CellPadding, 0f, 0f)
         // Using a single font for icons and label keeps them aligned
-        ImGui.pushFont(gui.fontSmallIcons)
+        ImGui.pushFont(GuiBase.fontSmallIcons)
         if (ImGui.beginTable("history_table", 2)) {
             ImGui.tableSetupColumn(
                 "icon",

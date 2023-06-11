@@ -20,7 +20,6 @@ import org.lwjgl.glfw.GLFW
 
 class GuiBlueprintEditor(
     private val app: EditorApp,
-    private val gui: GuiBase,
 ) {
     private var hoveredLinkID: Int = -1
     private var hoveredNodeID: Int = -1
@@ -55,7 +54,7 @@ class GuiBlueprintEditor(
             installControls()
             ImGui.pushStyleVar(ImGuiStyleVar.WindowPadding, 10f, 10f)
             overlay("toolbar", Corner.TOP_LEFT, padding = 0f, bgAlpha = 0f) {
-                gui.iconButton(FontAwesomeIcons.Cog, font = gui.fontMediumIcons) {
+                iconButton(FontAwesomeIcons.Cog, font = GuiBase.fontMediumIcons) {
                     ImGui.openPopup("settings_context")
                 }
                 popup("settings_context") {
@@ -132,7 +131,7 @@ class GuiBlueprintEditor(
     }
 
     private fun Blueprint.renderNewNodeMenu() {
-        ImGui.pushFont(gui.fontSmallIcons)
+        ImGui.pushFont(GuiBase.fontSmallIcons)
         DomBuilderFactory.domBuildersByGroup.forEach { (group, list) ->
             childWindow(group.name, height = 22f, flags = ImGuiWindowFlags.NoScrollbar) {
                 // fake-restore padding

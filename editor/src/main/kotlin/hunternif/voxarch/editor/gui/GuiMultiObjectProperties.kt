@@ -13,7 +13,6 @@ import imgui.type.ImBoolean
  */
 class GuiMultiObjectProperties(
     private val app: EditorApp,
-    private val guiBase: GuiBase,
 ) {
     /** List of displayed entries */
     private val list = arrayListOf<Entry>()
@@ -90,7 +89,7 @@ class GuiMultiObjectProperties(
     }
 
     private val Entry.gui: GuiObjectProperties
-        get() = guiMap.getOrPut(id) { GuiObjectProperties(app, guiBase) }.also {
+        get() = guiMap.getOrPut(id) { GuiObjectProperties(app) }.also {
             it.obj = obj
         }
 

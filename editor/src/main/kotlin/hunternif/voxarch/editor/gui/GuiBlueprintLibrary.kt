@@ -10,7 +10,6 @@ import org.lwjgl.glfw.GLFW
 
 class GuiBlueprintLibrary(
     private val app: EditorApp,
-    private val gui: GuiBase,
 ) {
     private val nameInput = GuiInputTextAutoClose("##bp_name")
     /** Bp whose name is being edited */
@@ -25,7 +24,7 @@ class GuiBlueprintLibrary(
         var toDelete: Blueprint? = null
         var toCopy: Blueprint? = null
         var toRename: Pair<Blueprint, String>? = null
-        ImGui.pushFont(gui.fontSmallIcons)
+        ImGui.pushFont(GuiBase.fontSmallIcons)
         if (ImGui.beginTable("blueprints_table", 3, ImGuiTableFlags.PadOuterX)) {
             ImGui.tableSetupColumn("icon", ImGuiTableColumnFlags.WidthFixed, 10f)
             ImGui.tableSetupColumn("name")
