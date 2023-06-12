@@ -1,10 +1,7 @@
 package hunternif.voxarch.editor.gui
 
 import hunternif.voxarch.editor.EditorApp
-import hunternif.voxarch.editor.actions.buildNodesAndVoxels
-import hunternif.voxarch.editor.actions.buildVoxels
-import hunternif.voxarch.editor.actions.generateNodes
-import hunternif.voxarch.editor.actions.setSeed
+import hunternif.voxarch.editor.actions.*
 import imgui.ImGui
 import imgui.flag.ImGuiStyleVar
 import imgui.type.ImBoolean
@@ -13,7 +10,7 @@ import kotlin.random.Random
 class GuiBuild(
     private val app: EditorApp,
 ) {
-    private val seedInput = GuiInputLong("seed", speed = 1f)
+    private val seedInput = GuiInputLong("##seed", speed = 1f)
 
     /**
      * If true, display a single "Build" button.
@@ -23,14 +20,18 @@ class GuiBuild(
 
     fun render() {
         ImGui.pushStyleVar(ImGuiStyleVar.ItemSpacing, 4f, 4f)
-        button("Random") {
-            app.setSeed(Random.nextInt(0, Int.MAX_VALUE).toLong())
-        }
-        ImGui.sameLine()
-        withWidth(120f) {
+
+        withWidth(100f) {
             seedInput.render(app.state.seed) {
                 app.setSeed(newValue)
             }
+            ImGui.sameLine()
+            smallIconButton(FontAwesomeIcons.DiceThree) {
+                app.setSeed(Random.nextInt(0, Int.MAX_VALUE).toLong())
+            }
+            tooltip("Randomize seed")
+            ImGui.sameLine()
+            ImGui.text("seed")
         }
         ImGui.popStyleVar()
 
