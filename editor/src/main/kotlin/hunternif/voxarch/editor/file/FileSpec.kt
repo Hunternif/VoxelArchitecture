@@ -7,14 +7,19 @@ import hunternif.voxarch.editor.EditorApp
 import hunternif.voxarch.editor.EditorAppImpl
 import hunternif.voxarch.editor.actions.logError
 import hunternif.voxarch.editor.actions.logWarning
+import hunternif.voxarch.editor.actions.scene.BuildVoxels.Companion.BUILT_VOXELS_GROUP_NAME
 import hunternif.voxarch.editor.blueprint.*
 import hunternif.voxarch.editor.builder.BuilderLibrary
+import hunternif.voxarch.editor.builder.SolidColorBlock
 import hunternif.voxarch.editor.file.style.StyleParser
 import hunternif.voxarch.editor.scenegraph.*
 import hunternif.voxarch.editor.util.newZipFileSystem
 import hunternif.voxarch.magicavoxel.VoxColor
 import hunternif.voxarch.magicavoxel.readVoxFile
 import hunternif.voxarch.magicavoxel.writeToVoxFile
+import hunternif.voxarch.storage.BlockStorageDelegate
+import hunternif.voxarch.storage.ChunkedStorage3D
+import hunternif.voxarch.util.copyTo
 import hunternif.voxarch.util.forEachSubtree
 import java.io.BufferedWriter
 import java.nio.file.FileSystem
@@ -259,7 +264,17 @@ private fun tryReadVoxFile(
     if (obj is XmlSceneVoxelGroup) {
         try {
             val useModelOffset = metadata.formatVersion >= 3
-            obj.data = readVoxFile(voxPath, useModelOffset)
+            val vox = readVoxFile(voxPath, useModelOffset)
+            if (obj.label == BUILT_VOXELS_GROUP_NAME) {
+                // Map to IBlockStorage:
+                val newData = BlockStorageDelegate(ChunkedStorage3D())
+                vox.copyTo(newData) { voxColor -> SolidColorBlock(voxColor.color) }
+                obj.data = newData
+                //TODO: create a universal voxel storage format that retains
+                // all Editor data.
+            } else {
+                obj.data = vox
+            }
         } catch (e: java.nio.file.NoSuchFileException) {
             // ignore this because data could have been empty
         } catch (e: Exception) {

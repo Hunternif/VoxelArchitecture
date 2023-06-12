@@ -43,7 +43,7 @@ class BuildVoxels : HistoryAction(
 
                 builder.build(rootNode.node, offsetWorld, buildContext)
                 val builtVoxels = registry.newVoxelGroup(
-                    "Built voxels", world, renderMode, true)
+                    BUILT_VOXELS_GROUP_NAME, world, renderMode, true)
                 builtVoxels.origin.set(newOrigin)
 
                 voxelRoot.addChild(builtVoxels)
@@ -91,6 +91,8 @@ class BuildVoxels : HistoryAction(
     }
 
     companion object {
+        const val BUILT_VOXELS_GROUP_NAME = "Built voxels"
+
         class VerboseLogger(val app: EditorApp) : IBuildListener {
             override fun onBeginBuild(node: Node) {
                 app.logInfo("Building Node $node")

@@ -129,6 +129,23 @@ fun <T> IStorage3D<out T?>.copyTo(
     }
 }
 
+/**
+ * Copy all data to [dest] at the same coordinates,
+ * mapping to a different format
+ * optionally offset by [offset].
+ */
+fun <I, O> IStorage3D<out I?>.copyTo(
+    dest: IStorage3D<in O>,
+    offset: IntVec3 = IntVec3(0, 0, 0),
+    mapper: (I) -> O?,
+) {
+    forEachPos { x, y, z, t ->
+        val res = t?.let { mapper(t) }
+        if (res != null)
+            dest[x + offset.x, y + offset.y, z + offset.z] = res
+    }
+}
+
 /** Carves a subarray from this array and returns it.
  * @param from starting point, inclusive.
  * @param size size of the subarray.
