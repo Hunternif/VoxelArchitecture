@@ -46,12 +46,18 @@ class CopyBlueprint(
         }
         oldSelected = app.state.selectedBlueprint
         newSelected = if (autoSelect) bpCopy else oldSelected
-        app.state.blueprintRegistry.save(bpCopy)
+        app.state.blueprintRegistry.run {
+            save(bpCopy)
+            refreshUsages(app.state)
+        }
         if (autoSelect) OpenBlueprint(newSelected).invoke(app)
     }
 
     override fun revert(app: EditorAppImpl) {
-        app.state.blueprintRegistry.remove(bpCopy)
+        app.state.blueprintRegistry.run {
+            remove(bpCopy)
+            refreshUsages(app.state)
+        }
         OpenBlueprint(oldSelected).invoke(app)
     }
 }
