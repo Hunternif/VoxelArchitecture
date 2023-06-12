@@ -3,7 +3,7 @@ apply plugin: 'kotlin'
 apply plugin: 'antlr'
 apply plugin: 'idea'
 
-version = "0.1.3"
+version = "0.1.4"
 archivesBaseName = "VoxArch-editor"
 
 buildscript {
