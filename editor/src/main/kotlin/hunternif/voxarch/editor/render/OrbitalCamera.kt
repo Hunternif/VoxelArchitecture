@@ -48,6 +48,7 @@ class OrbitalCamera : MouseListener {
             field = value
             viewMatrixDirty = true
         }
+    var minZoomVelocity = 1f
 
 
     fun setViewport(viewport: Viewport) {
@@ -152,7 +153,17 @@ class OrbitalCamera : MouseListener {
     @Suppress("UNUSED_PARAMETER")
     override fun onScroll(offsetX: Double, offsetY: Double) {
         if (vp.contains(mouseX, mouseY)) {
-            radius *= if (offsetY > 0) 1f / 1.1f else 1.1f
+            val newRadius = radius * if (offsetY > 0) 1f / 1.1f else 1.1f
+            val zoomVelocity = abs(newRadius - radius)
+            if (zoomVelocity >= minZoomVelocity) {
+                radius = newRadius
+            } else {
+                // we're too close. instead of zooming, move forward:
+                pointRayDir.set(0f, 0f, 1f)
+                pointRayDir.rotateX(-xAngle)
+                pointRayDir.rotateY(-yAngle)
+                translation.add(pointRayDir.mul(minZoomVelocity))
+            }
             viewMatrixDirty = true
         }
     }
