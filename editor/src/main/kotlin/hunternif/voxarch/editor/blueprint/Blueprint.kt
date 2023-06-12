@@ -98,6 +98,17 @@ class Blueprint(
         root.buildDom(finalStylesheet, seed, rootNode, maxRecursions, cleanDummies, hinting)
     }
 
+    fun findNodeById(id: Int): BlueprintNode? = nodeIDs.map[id]
+
+    fun findNodesByName(name: String) =
+        nodes.filter { it.name == name }
+
+    fun findNodesByStyleClass(styleClass: String) =
+        nodes.filter { it.autoStyleClass == styleClass }
+
+    inline fun <reified T : DomBuilder> findNodesByType() =
+        nodes.filter { it.domBuilder is T }
+
     override fun toString(): String = name
 
     /** For all nodes in this BP, and in any referenced BP,
