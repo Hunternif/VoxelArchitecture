@@ -12,6 +12,7 @@ import hunternif.voxarch.editor.scenegraph.DetachedObject
 import hunternif.voxarch.editor.scenegraph.SceneNode
 import hunternif.voxarch.editor.scenegraph.SceneVoxelGroup
 import hunternif.voxarch.editor.scenegraph.detached
+import hunternif.voxarch.plan.findGlobalPosition
 import hunternif.voxarch.storage.BlockData
 import hunternif.voxarch.storage.BlockStorageDelegate
 import hunternif.voxarch.storage.ChunkedStorage3D
@@ -49,7 +50,7 @@ class BuildNodeVoxels(
                 newBuiltVoxels.origin.set(oldBuiltVoxels.origin)
             } else {
                 // move the future voxel group's origin:
-                newBuiltVoxels.origin.set(node.node.origin.round())
+                newBuiltVoxels.origin.set(node.node.findGlobalPosition().round())
             }
 
             val transform = LinearTransformation().translate(-newBuiltVoxels.origin)

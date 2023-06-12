@@ -85,8 +85,14 @@ class RootBuilder : ANodeBuilder() {
         val world: IBlockStorage,
     )
 
-    private fun newTransform(node: Node, world: IBlockStorage) =
-        continueTransform(node, LinearTransformation(), world)
+    private fun newTransform(node: Node, world: IBlockStorage): Entry {
+        val trans = LinearTransformation()
+        node.parent?.let {
+            trans.translate(it.findGlobalPosition())
+            trans.rotateY(it.findGlobalRotation())
+        }
+        return continueTransform(node, trans, world)
+    }
 
     private fun continueTransform(
         node: Node,
