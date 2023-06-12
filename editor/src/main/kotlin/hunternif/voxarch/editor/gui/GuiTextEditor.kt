@@ -60,6 +60,7 @@ abstract class GuiTextEditor(
         editor.render("TextEditor")
 
         handleTyping()
+        if (isActive && ImGui.isAnyMouseDown()) { checkIfTextChanged() }
         applyTimer.runAtInterval { checkIfTextChanged(checkTyping = true) }
     }
 
