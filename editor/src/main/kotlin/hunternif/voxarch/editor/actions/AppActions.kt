@@ -74,6 +74,13 @@ fun EditorApp.buildVoxels() {
     else historyAction(BuildVoxels())
 }
 
+/** Clear generated voxels and run a Builder a single node.
+ * Updates the current "Built voxels" group, if it exists. */
+fun EditorApp.buildOneNodeVoxels(node: SceneNode) {
+    if (state.forgetBuildHistory) action(BuildNodeVoxels(node))
+    else historyAction(BuildNodeVoxels(node))
+}
+
 /** Combines [generateNodes] and [buildVoxels] */
 fun EditorApp.buildNodesAndVoxels() {
     if (state.forgetBuildHistory) action(BuildNodesAndVoxels())

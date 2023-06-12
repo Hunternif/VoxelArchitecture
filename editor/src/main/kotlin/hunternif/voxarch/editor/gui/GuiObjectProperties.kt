@@ -144,6 +144,9 @@ By default, it's set so that origin is at the low-XYZ corner.""")
             app.transformNodeColor(sceneNode, original, newValue)
         }
 
+        button("Build") { app.buildOneNodeVoxels(sceneNode) }
+        tooltip("Run builder for this node")
+
         ImGui.separator()
         ImGui.text("Blueprints")
         blueprintInput.render(selectedBlueprint) { selectedBlueprint = it }
