@@ -49,7 +49,7 @@ class MainGui(val app: EditorApp) {
                 leftSize = 250,
                 left = VerticalSplit(
                     // there seems to be a bug in docking, absolute bottom size doesn't work
-                    bottomRatio = 0.12f,
+                    bottomRatio = 0.15f,
                     top = VerticalSplit(
                         bottomRatio = 0.3f,
                         top = Window("Style editor"),

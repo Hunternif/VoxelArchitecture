@@ -11,6 +11,7 @@ class GuiBuild(
     private val app: EditorApp,
 ) {
     private val seedInput = GuiInputLong("##seed", speed = 1f)
+    private val maxRecInput = GuiInputIntCount("max recursions")
 
     /**
      * If true, display a single "Build" button.
@@ -32,6 +33,11 @@ class GuiBuild(
             tooltip("Randomize seed")
             ImGui.sameLine()
             ImGui.text("seed")
+        }
+        withWidth(124f) {
+            maxRecInput.render(app.state.maxRecursions) {
+                app.setMaxRecursions(newValue)
+            }
         }
         ImGui.popStyleVar()
 

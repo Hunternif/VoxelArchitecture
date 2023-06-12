@@ -76,7 +76,7 @@ class GenerateNodes : HistoryAction(
         val listeners = mutableListOf<IDomListener>()
         if (state.verboseDom) listeners.add(VerboseLogger(this))
         root.blueprints.forEach {
-            it.execute(root.node, state.stylesheet, state.seed, 4,
+            it.execute(root.node, state.stylesheet, state.seed, state.maxRecursions,
                 state.cleanDummies, state.hinting,
                 listeners + BPTrackingListener(it, nodeToBpMap, nodeColorMap),
             )

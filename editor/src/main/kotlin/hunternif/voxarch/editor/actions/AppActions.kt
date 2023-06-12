@@ -89,6 +89,9 @@ fun EditorApp.buildNodesAndVoxels() {
 
 fun EditorApp.setSeed(seed: Long) = historyAction(SetSeed(seed))
 
+fun EditorApp.setMaxRecursions(newMax: Int) =
+    historyAction(SetMaxRecursions(newMax))
+
 
 //============================== SELECTION ==============================
 

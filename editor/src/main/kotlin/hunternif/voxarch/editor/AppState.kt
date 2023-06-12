@@ -42,6 +42,7 @@ interface AppState {
     val buildContext: BuildContext
     val stylesheet: Stylesheet
     val seed: Long
+    val maxRecursions: Int
     val generatedNodes: Subset<SceneNode>
     val generatedVoxels: Subset<SceneVoxelGroup>
     val voxelColorMap: (IVoxel) -> ColorRGBa
@@ -128,6 +129,7 @@ class AppStateImpl(
     }
     override var stylesheet = Stylesheet()
     override var seed: Long = 0
+    override var maxRecursions: Int = 2
     override val voxelColorMap = ::mapVoxelToSolidColor
     override var renderMode = VoxelRenderMode.COLORED
     override var shadingMode = VoxelShadingMode.MAGICA_VOXEL
