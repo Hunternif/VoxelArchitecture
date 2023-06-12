@@ -2,6 +2,7 @@ package hunternif.voxarch.editor.scene
 
 import hunternif.voxarch.editor.*
 import hunternif.voxarch.editor.Tool
+import hunternif.voxarch.editor.actions.toggleSpinCamera
 import hunternif.voxarch.editor.render.*
 import hunternif.voxarch.editor.scene.models.*
 import hunternif.voxarch.editor.scenegraph.SceneNode
@@ -16,6 +17,7 @@ import org.joml.Vector3f
 import org.lwjgl.glfw.GLFW.*
 import org.lwjgl.opengl.GL32.*
 import java.util.*
+import kotlin.math.PI
 
 class MainScene(private val app: EditorApp) {
     // data
@@ -49,6 +51,9 @@ class MainScene(private val app: EditorApp) {
     private val gizmoModel = GizmoBoxModel()
 
     // 2d models
+
+    private var cameraSpinStartTime: Long = 0L
+    private var cameraSpinStartAngle: Float = 0f
 
 
     private val models3d = listOf(
@@ -208,6 +213,7 @@ class MainScene(private val app: EditorApp) {
 
     fun render() {
         updateCursor()
+        if (app.state.spinCamera) spinCamera()
         setGLViewport(vp)
         glDepthMask(true)
         glClearColor(0.1f, 0.1f, 0.1f, 1.0f)
@@ -231,6 +237,25 @@ class MainScene(private val app: EditorApp) {
             }
             glfwSetCursor(window, cursor)
         }
+    }
+
+    private fun spinCamera() {
+        if (camera.rotating) {
+            app.toggleSpinCamera()
+        } else {
+            val elapsed = System.currentTimeMillis() - cameraSpinStartTime
+            val yAngle = cameraSpinStartAngle + 0.0003f * elapsed
+            if (yAngle > 7f) {
+                cameraSpinStartAngle -= PI.toFloat() * 2f
+            }
+            camera.setAngle(camera.xAngle, yAngle)
+            gizmoCamera.setAngle(camera.xAngle, yAngle)
+        }
+    }
+
+    fun startSpinCamera() {
+        cameraSpinStartTime = System.currentTimeMillis()
+        cameraSpinStartAngle = camera.yAngle
     }
 
     companion object {

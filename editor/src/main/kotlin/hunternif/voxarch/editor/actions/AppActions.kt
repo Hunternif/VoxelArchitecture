@@ -308,6 +308,11 @@ fun EditorApp.toggleForgetBuildHistory() = action {
     state.forgetBuildHistory = !state.forgetBuildHistory
 }
 
+fun EditorApp.toggleSpinCamera() = action {
+    state.spinCamera = !state.spinCamera
+    scene.startSpinCamera()
+}
+
 
 //=============================== STYLES ================================
 

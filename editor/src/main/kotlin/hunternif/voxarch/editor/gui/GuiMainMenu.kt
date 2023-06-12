@@ -55,6 +55,11 @@ fun MainGui.mainMenu() {
                     app.setShadingMode(MINECRAFT)
                 }
             }
+            menuCheck("Spin Camera", app.state.spinCamera,
+                tooltip = "Set the camera to slowly orbit around the scene, for cinematic effect"
+            ) {
+                app.toggleSpinCamera()
+            }
             ImGui.separator()
             menuCheck("Style Editor", showStyleEditor.get()) {
                 showStyleEditor.toggle()

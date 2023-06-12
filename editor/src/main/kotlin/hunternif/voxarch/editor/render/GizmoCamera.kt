@@ -72,9 +72,13 @@ class GizmoCamera(
         if (xAngle != orbitalCamera.xAngle ||
             yAngle != orbitalCamera.yAngle
         ) {
-            xAngle = orbitalCamera.xAngle
-            yAngle = orbitalCamera.yAngle
-            viewMatrixDirty = true
+            setAngle(orbitalCamera.xAngle, orbitalCamera.yAngle)
         }
+    }
+
+    fun setAngle(xAngle: Float, yAngle: Float) {
+        this.xAngle = xAngle
+        this.yAngle = yAngle
+        viewMatrixDirty = true
     }
 }

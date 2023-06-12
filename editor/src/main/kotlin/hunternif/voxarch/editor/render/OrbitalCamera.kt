@@ -26,8 +26,8 @@ class OrbitalCamera : MouseListener {
 
     private var mouseX = 0f
     private var mouseY = 0f
-    private var panning = false
-    private var rotating = false
+    var panning = false
+    var rotating = false
 
     // temporary vectors
     private val pointRayOrigin: Vector3f = Vector3f()
@@ -202,6 +202,12 @@ class OrbitalCamera : MouseListener {
         val deltaY = posY.toFloat() - mouseY
         xAngle = (xAngle + deltaY * 0.01f).clamp(MIN_X_ANGLE, MAX_X_ANGLE)
         yAngle += deltaX * 0.01f
+        viewMatrixDirty = true
+    }
+
+    fun setAngle(xAngle: Float, yAngle: Float) {
+        this.xAngle = xAngle
+        this.yAngle = yAngle
         viewMatrixDirty = true
     }
 

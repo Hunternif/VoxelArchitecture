@@ -85,6 +85,7 @@ interface AppState {
     val verboseDom: Boolean
     val verboseBuild: Boolean
     val forgetBuildHistory: Boolean
+    val spinCamera: Boolean
 
 
     //============================= GUI STATE ===============================
@@ -158,6 +159,7 @@ class AppStateImpl(
     override var verboseDom: Boolean = false
     override var verboseBuild: Boolean = false
     override var forgetBuildHistory: Boolean = false
+    override var spinCamera: Boolean = false
 
     override val DEBUG = true
     override var catchExceptions = true
