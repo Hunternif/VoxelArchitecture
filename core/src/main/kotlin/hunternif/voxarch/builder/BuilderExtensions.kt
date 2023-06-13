@@ -54,8 +54,6 @@ fun Node.fillXZ(
 
 /**
  * Same as [fillXZ], but the arguments (x, y, z) are in node's local space.
- * This method is useless because it will cause aliasing gaps, but serves as
- * a reference implementation.
  *
  * See [fillXZ] about parameters.
  */
