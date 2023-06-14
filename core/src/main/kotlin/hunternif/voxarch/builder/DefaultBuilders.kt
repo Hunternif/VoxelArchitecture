@@ -20,6 +20,7 @@ default ones saves memory and helps to distinguish default vs custom behavior.
 
 
 // Materials
+const val MAT_GROUND = "ground"
 const val MAT_WALL = "wall"
 const val MAT_WALL_DECORATION = "wall_decoration"
 const val MAT_FLOOR = "floor"
@@ -75,6 +76,7 @@ class DefaultBuilders {
         val OneBlock = OneBlockPropBuilder(MAT_WALL_DECORATION)
         val TorchStand = TorchStandBuilder()
         val WallWithTorches = SimpleTorchlitWallBuilder(MAT_WALL)
+        val PerlinNoise = PerlinNoiseBuilder(MAT_GROUND)
     }
 }
 

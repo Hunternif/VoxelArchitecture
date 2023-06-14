@@ -39,6 +39,7 @@ class BuilderLibrary {
 
         Entry("Snake path", DefaultBuilders.SnakePath),
         Entry("One block", DefaultBuilders.OneBlock),
+        Entry("Perlin noise", DefaultBuilders.PerlinNoise),
     )
 
     val buildersByInstance: Map<Builder<*>, Entry> by lazy {

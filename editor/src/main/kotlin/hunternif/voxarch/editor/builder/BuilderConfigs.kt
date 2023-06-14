@@ -23,6 +23,7 @@ private val solidStone = SolidColorBlock(0x6C6C6C)
 private val solidCobblestone = SolidColorBlock(0x626162)
 private val solidDarkOak = SolidColorBlock(0x3F2813)
 private val solidTorch = SolidColorBlock(0xFCE6A3)
+private val solidGrass = SolidColorBlock(0x77B249)
 
 fun mapVoxelToSolidColor(voxel: IVoxel): ColorRGBa = when (voxel) {
     is SolidColorBlock -> ColorRGBa.fromHex(voxel.color)
@@ -31,6 +32,7 @@ fun mapVoxelToSolidColor(voxel: IVoxel): ColorRGBa = when (voxel) {
 }
 
 fun MaterialConfig.setSolidColorMaterials() {
+    set(MAT_GROUND) { solidGrass }
     set(MAT_FLOOR) { solidStone }
     set(MAT_WALL) { arrayOf(solidStone, solidCobblestone).random() }
     set(MAT_WALL_DECORATION) { solidStoneBrick }
