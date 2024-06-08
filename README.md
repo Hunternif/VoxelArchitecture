@@ -33,6 +33,10 @@ The second part is the procedural generation algorithm. It's still in early stag
 
 ## `editor` preview
 
-[![Editor demo, click to see video](https://drive.google.com/uc?id=1Ur1-t52ME9Ok0qzZsVWvDeB8PInjo2bq)](https://video.twimg.com/ext_tw_video/1495597787773386754/pu/vid/1008x604/l7ox57HoSsarY-mF.mp4?tag=12)
+A node-based recursive procedural generator of "gothic cathedrals". Click on the image to see video:
 
-![Screenshot 2023-05-13 15 10 05](https://github.com/Hunternif/VoxelArchitecture/assets/3252331/24254de0-96a3-49b3-ae0f-f600992404a2)
+[![Cathedral generator](https://drive.google.com/uc?id=1MOyj1NiUng7wJYO_94mqH0tRauzF2esR)](https://video.twimg.com/ext_tw_video/1799498121308667904/pu/vid/avc1/1232x720/d-88zDKswYI8Hi8Z.mp4?tag=12)
+
+Example node-based workflow, building a procedural castle generator:
+
+![Screenshot 2023-05-13 15 10 05](https://drive.google.com/uc?id=1MVyLhridPcddcgfmR_HWbiOBtoVaXn_B)
